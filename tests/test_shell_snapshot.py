@@ -140,15 +140,19 @@ def test_le_dossier_de_la_demo_est_le_seul_chemin_qui_passe():
 
 def test_la_page_separation_du_rack_de_reference(tmp_path, monkeypatch):
     home = os.path.expanduser("~").rstrip("/")
-    page = {"engines": [{"label": "local-model", "program": home + "/opt/audio-separator/bin/audio-separator",
-                         "args": ["{input}", "--model_file_dir", home + "/opt/audio-separator/models"]}],
+    page = {"engines": [{"label": "model-x", "program": home + "/opt/audio-separator/bin/audio-separator",
+                         "args": ["{input}", "--model_filename", "model-x_6s.yaml", "--model_file_dir", home + "/opt/m"],
+                         "map": {"input_(Bass)_model-x_6s.wav": "bass", "input_(Vocals)_model-x_6s.wav": "vocals"},
+                         "used_by": ["model-y + model-x"], "first_label": "model-y"}],
             "excerpt": {"name": "A protected song (original).mp3", "seconds": 30.0, "start": 59.6}, "threads": 4}
     monkeypatch.setattr(S, "_get", lambda base, read: json.loads(json.dumps(page)))
     S.separation_from("http://rack", str(tmp_path))
     got = json.loads((tmp_path / "api" / "separation.json").read_text())
     e = got["engines"][0]
     assert e["program"] == "/home/golem/opt/audio-separator/bin/audio-separator"
-    assert e["args"][2] == "/home/golem/opt/audio-separator/models"
+    # aucun modèle nommé : libellé, arguments, fichiers produits, renvois entre moteurs
+    assert "model-" not in json.dumps(got)
+    assert e["label"] == "Local engine 1" and e["map"] == {"input_(bass).wav": "bass", "input_(vocals).wav": "vocals"}
     assert got["excerpt"] == {"name": S.DEMO_EXCERPT, "seconds": 30.0, "start": 59.6} and got["threads"] == 4
 
 

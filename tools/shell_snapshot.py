@@ -1044,6 +1044,24 @@ def collect_media(base, out_dir, written, log=print):
 DEMO_EXCERPT = "Golem Rising (mix).wav"
 
 
+def _neutral_engines(data):
+    """Aucun modèle de séparation nommé dans la coquille publique (règle de separation.md) : le libellé, les arguments
+    (fichiers de modèle), les noms de fichiers produits et les renvois entre moteurs d'un rack les nomment tous.
+    Vécu le 2026-11-06 : l'instantané d'usine servi par le site les portait encore."""
+    for i, e in enumerate(data.get("engines") or []):
+        if not isinstance(e, dict):
+            continue
+        stems = sorted({v for v in (e.get("map") or {}).values() if isinstance(v, str)})
+        e["label"] = "Local engine %d" % (i + 1)
+        e["args"] = ["{input}", "--output_dir", "{outdir}", "--output_format", "WAV"]
+        e["map"] = {"input_(%s).wav" % s: s for s in stems}
+        e["used_by"] = []
+        for k in list(e):
+            if k.endswith("_label"):
+                e[k] = "Local engine"
+    return data
+
+
 def separation_from(url, out_dir, log=print):
     data = _get(url.rstrip("/"), "/api/separation")
     home = os.path.expanduser("~").rstrip("/")
@@ -1056,7 +1074,7 @@ def separation_from(url, out_dir, log=print):
         if isinstance(x, list):
             return [fix(v) for v in x]
         return x
-    data = fix(data)
+    data = _neutral_engines(fix(data))
     if isinstance(data.get("excerpt"), dict) and data["excerpt"].get("name"):
         data["excerpt"] = dict(data["excerpt"], name=DEMO_EXCERPT)
     clean = redact(data)

@@ -203,7 +203,7 @@ bypass) become `scene_apply`.
    scene switch — `reapply_scene` sets each block's whole state) passes its working copy through
    `app._exp_bake` before compiling: the known position is written on each role's target, base params
    and scene overrides alike. The volume role always has a value — the last one received (pedal or
-   screen, `POST /api/pedal`), else **100 %** after a bridge start (0 dB, never a silent start). The block
+   screen, `POST /api/exp`), else **100 %** after a bridge start (0 dB, never a silent start). The block
    role is written only once its pedal has moved (`state.exp_known`); until then the preset's own setting
    stays. Nothing is saved to disk: after a restart the pedal may have moved.
 

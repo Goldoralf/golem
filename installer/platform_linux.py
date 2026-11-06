@@ -386,6 +386,38 @@ def step_source(ctx, src, target):
     return rc
 
 
+def ensure_git_repo(ctx, target, src):
+    """UNE INSTALL VENUE D'UNE ARCHIVE DEVIENT UN DÉPÔT GIT (2026-11-06). Sans git (une Ubuntu neuve n'en a pas), le
+    bootstrap télécharge l'archive de la release, et un dossier sans .git ne pouvait JAMAIS se mettre à jour par
+    System ▸ About (« Update to … » vit de `git fetch --tags` / `git checkout <tag>`). git arrive avec les paquets
+    système (provision/packages.txt) : juste après, le dossier devient le dépôt de la release installée — le tag seul,
+    profondeur 1, `git reset` qui aligne l'index sans toucher aux fichiers, puis ce qu'une archive aurait omis. La
+    version se lit dans le nom du cache du bootstrap (golem-<tag>). Jamais fatal : au pire, la mise à jour reste à la
+    main, comme avant."""
+    if ctx.S["dry"] or os.path.isdir(os.path.join(target, ".git")) or not shutil.which("git"):
+        return
+    base = os.path.basename(os.path.abspath(src or ""))
+    ref = base[len("golem-"):] if base.startswith("golem-") else ""
+    if not ref:
+        ctx.log("⚠ not a git checkout and no release name — updates from System ▸ About need a git clone", "system")
+        return
+    tag = ref.startswith("v")
+    steps = [["-c", "init.defaultBranch=main", "init", "-q"], ["remote", "add", "origin", DEFAULT_REPO],
+             ["fetch", "-q", "--depth", "1", "origin", f"refs/tags/{ref}:refs/tags/{ref}" if tag else ref],
+             ["reset", "-q", ref if tag else "FETCH_HEAD"]]
+    for args in steps:
+        if ctx.run(["git", "-C", target, *args], "system") != 0:
+            shutil.rmtree(os.path.join(target, ".git"), ignore_errors=True)   # pas de dépôt à moitié fait
+            ctx.log("⚠ could not link this folder to the golem repository — updates from System ▸ About will "
+                    "need a git clone (the install itself is fine)", "system")
+            return
+    gone = subprocess.run(["git", "-C", target, "ls-files", "-d", "-z"], capture_output=True, text=True).stdout
+    gone = [g for g in gone.split("\0") if g]
+    if gone:
+        ctx.run(["git", "-C", target, "checkout", "-q", "--", *gone], "system")
+    ctx.log(f"✓ linked to the golem repository at {ref} — updates come from System ▸ About", "system")
+
+
 def step_profile(ctx, target):
     """Les deux lanceurs (golem desktop / golem server), toujours posés (docs/installer.md §4, FIXÉ 2026-10-16).
     Plus de « boîte dédiée » ici : démarrer avec l'ordinateur et verrouiller la machine sont des gestes de l'app
@@ -424,7 +456,10 @@ def run_step(sid, ctx):
         args = [os.path.join(target, "provision", "install.sh")]
         if not S["packs"]:
             args.append("--light")                  # rien à télécharger : dev
-        return ctx.run(args, sid, cwd=target, extra_env={"GOLEM_PACKS": ",".join(S["packs"])})
+        rc = ctx.run(args, sid, cwd=target, extra_env={"GOLEM_PACKS": ",".join(S["packs"])})
+        if rc == 0:
+            ensure_git_repo(ctx, target, src)       # git vient d'arriver avec les paquets : la mise à jour depuis About
+        return rc
     if sid == "profile":
         return step_profile(ctx, target)
     if sid == "start":

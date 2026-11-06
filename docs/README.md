@@ -103,6 +103,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [audio-engine-choice.md](audio-engine-choice.md) | PARTLY CODED | Engine descriptors and the local engine choice |
 | [ardour-engine.md](ardour-engine.md) | PROPOSED | A free engine built from Ardour, next to REAPER |
 | [release-signing.md](release-signing.md) | CODED, inactive until a key is declared | Verifying signed release tags |
+| [update.md](update.md) | CODED | The "Update to …" button of Settings ▸ About, installs from an archive, and how to cut a release |
 | [network.md](network.md) | CODED (macOS reads only) | How a tablet or phone reaches the rack: station, access point |
 | [connect.md](connect.md) | CODED (rack side) | Joining the rack without typing an address |
 | [backups.md](backups.md) | CODED | What a backup carries, where it goes, how it is restored |

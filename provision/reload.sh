@@ -25,5 +25,15 @@ fi
 # aseqdump orphelins d'anciens bridges (pré-PDEATHSIG) : on nettoie avant de relancer
 pkill -x aseqdump 2>/dev/null || true   # -x = nom exact (pas la cmdline : évite de tuer un shell qui la cite)
 
+# --with-reaper (la mise à jour depuis System ▸ About, 2026-11-06) : REAPER aussi, pour qu'il charge les scripts Lua et
+# les JSFX de la nouvelle version — start.sh le relance, puisqu'il n'y en a plus
+# Sans l'option : REAPER aussi quand ses scripts ont changé depuis son lancement (reaper_scripts_stale) — c'est le cas
+# d'une mise à jour lancée par une version d'avant, qui ne passe pas --with-reaper.
+. "$HERE/provision/lib-reaper.sh"
+if [ -n "$(rack_reaper_pids)" ] && { [ "${1:-}" = "--with-reaper" ] || reaper_scripts_stale "$HERE"; }; then
+  echo "→ Reaper : arrêt (ses scripts ont changé)…"
+  stop_rack_reaper || true
+fi
+
 echo "→ bridge : relance via start.sh"
 exec ./provision/start.sh

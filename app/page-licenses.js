@@ -42,9 +42,10 @@ function GolemUpdateCard() {
         <span class=${cls('upd-status', stState)}>${stLabel}</span></div>
     </div>
     ${u && u.fetch_error ? html`<p class="muted warn">✗ ${u.fetch_error}</p>` : ''}
-    ${u && u.status === 'update-available' && u.log.length ? html`
-      <div class="upd-log"><b>Changes in ${u.latest}:</b>
-        ${u.log.map(l => html`<div class="upd-log-line">${l}</div>`)}</div>` : ''}
+    ${/* LES NOTES DE LA RELEASE (message du tag annoté, en anglais) — plus les sujets de commit, en français */''}
+    ${u && u.status === 'update-available' && u.notes ? html`
+      <div class="upd-log"><b>What's new in ${u.latest}</b>
+        ${u.notes.split('\n').map(l => html`<div class="upd-log-line">${l}</div>`)}</div>` : ''}
     <div class="upd-actions">
       <button class="chip" disabled=${checking} onClick=${check}>${checking ? '⏳ checking…' : '⟳ Check for releases'}</button>
       ${u && u.status === 'update-available' ? html`

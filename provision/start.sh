@@ -55,7 +55,10 @@ if [ "${GOLEM_SHOW_REAPER:-0}" != "1" ]; then
   fi
 fi
 
-if pgrep -x reaper >/dev/null; then
+# le REAPER de CE rack, jamais un zombie ni celui d'un banc (provision/lib-reaper.sh)
+. "$HERE/provision/lib-reaper.sh"
+
+if [ -n "$(rack_reaper_pids)" ]; then
   echo "→ Reaper déjà ouvert (ouvre sets/golem-set.rpp si besoin)"
 elif [ -x "$REAPER_BIN" ]; then
   # Le lecteur des captures vivantes voyage avec golem ; le poser avant le scan REAPER.
@@ -90,6 +93,7 @@ elif [ -x "$REAPER_BIN" ]; then
     setsid nohup "$REAPER_BIN" -nosplash "${REAPER_PROJ[@]}" >>"$REAPER_LOG" 2>&1 < /dev/null &
     echo "→ Reaper + Set lancés (à l'écran)"
   fi
+  record_reaper_tree "$HERE"                 # la version des scripts que ce REAPER charge (reload.sh la compare)
 else
   echo "⚠ Reaper introuvable ($REAPER_BIN) — ouvre-le avec sets/golem-set.rpp"
 fi

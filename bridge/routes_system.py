@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Routes système (dashboard /api/system + perf-mode + buffer audio Reaper) — extrait d'app.py (P3)."""
-import os, re, json, shutil, subprocess, threading, time, asyncio, contextlib, sys
+import os, re, json, shutil, signal, subprocess, threading, time, asyncio, contextlib, sys
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse
@@ -56,16 +56,41 @@ def _read_bsize():
 
 
 
+RESTART_LOG = "/tmp/golem-reaper-restart.log"
+
+
+def _rack_reaper_pids():
+    """Les PID du REAPER DE CE RACK : un processus « reaper » qui n'est ni un zombie ni le REAPER d'un banc (les bancs
+    check-rig-materialize / shell_snapshot lancent le leur avec -cfgfile) — même règle que provision/start.sh. Avant
+    (2026-11-06), `pgrep -x reaper` voyait le zombie d'un banc : le redémarrage attendait une mort qui ne venait pas,
+    start.sh croyait REAPER ouvert et ne le relançait pas ; et `pkill -x reaper` tuait aussi le REAPER du banc."""
+    try:
+        out = subprocess.run(["pgrep", "-x", "reaper"], capture_output=True, text=True, timeout=3).stdout.split()
+    except Exception as _e:
+        _swallowed(_e)
+        return []
+    pids = []
+    for p in out:
+        try:
+            with open(f"/proc/{p}/stat") as f:
+                if f.read().rsplit(")", 1)[-1].split()[0] == "Z":
+                    continue
+            with open(f"/proc/{p}/cmdline", "rb") as f:
+                if b"-cfgfile" in f.read().split(b"\0"):
+                    continue
+        except OSError:
+            continue
+        pids.append(int(p))
+    return pids
+
+
 def _wait_reaper_dead(timeout=12.0):
-    """Attend la mort RÉELLE du process après pkill (SIGTERM est asynchrone : Reaper sauve
-    d'abord sa config et peut mettre >2 s). True si mort, False si toujours là au timeout."""
+    """Attend la mort RÉELLE du process après le SIGTERM (asynchrone : Reaper sauve d'abord sa config et peut mettre
+    >2 s). True si mort, False si toujours là au timeout."""
     t0 = time.time()
     while time.time() - t0 < timeout:
-        try:
-            if subprocess.run(["pgrep", "-x", "reaper"], capture_output=True, timeout=3).returncode != 0:
-                return True
-        except Exception as _e:
-            _swallowed(_e)
+        if not _rack_reaper_pids():
+            return True
         time.sleep(0.3)
     return False
 
@@ -89,12 +114,18 @@ def _restart_reaper_async(after_dead=None, why="requested"):
         with __import__("contextlib").suppress(Exception):
             from . import recall
             recall.invalidate_shape()
-        subprocess.run(["pkill", "-x", "reaper"], timeout=5)
-        _wait_reaper_dead()
+        for pid in _rack_reaper_pids():                    # le REAPER de CE rack seulement, jamais celui d'un banc
+            with __import__("contextlib").suppress(OSError):
+                os.kill(pid, signal.SIGTERM)
+        dead = _wait_reaper_dead()
         if after_dead:
             after_dead()
+        # la sortie de start.sh dans un JOURNAL (2026-11-06) : jetée, un REAPER qui ne repartait pas ne disait pas pourquoi
+        logf = open(RESTART_LOG, "a")
+        logf.write(time.strftime("\n── %Y-%m-%d %H:%M:%S ") + f"restart ({why}) — reaper mort : {dead}\n")
+        logf.flush()
         subprocess.Popen(["bash", os.path.join(C.ROOT, "provision", "start.sh")],
-                         start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                         start_new_session=True, stdout=logf, stderr=subprocess.STDOUT)
     threading.Thread(target=run, daemon=True).start()
 
 
@@ -1180,14 +1211,25 @@ def system_update(fetch: int = 0):
         else:
             status = "update-available"
             log = _git("log", "--oneline", "--no-decorate", "HEAD.." + latest).splitlines()[:20]
+    # LES NOTES DE LA RELEASE (2026-11-06) : le message du tag annoté, écrit en anglais pour l'écran — les sujets de
+    # commit sont en français (CLAUDE.md, règle 4) et ne s'affichent plus. Arrivé avec le même `git fetch --tags`.
+    notes = _tag_notes(latest) if status == "update-available" else ""
     return {"current": _git("describe", "--tags", "--always"),
             "branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
             "clean": not (changes := _code_changes()), "changes": changes[:20],
             # POSTE : la bascule relance TOUT (fenêtre, REAPER, bridge), pas seulement le bridge
             "full_restart": sys.platform in ("win32", "darwin"),
-            "latest": latest, "status": status, "log": log, "fetch_error": fetch_err,
+            "latest": latest, "status": status, "log": log, "notes": notes, "fetch_error": fetch_err,
             # True signée · False refusée à l'installation · None aucune clé déclarée (docs/release-signing.md)
             "signed": _release_signed(latest)}
+
+
+def _tag_notes(tag):
+    """Le message d'un tag ANNOTÉ, sans sa signature ; « » pour un tag léger (son message serait celui du commit)."""
+    if not tag or _git("cat-file", "-t", tag) != "tag":
+        return ""
+    body = _git("tag", "-l", "--format=%(contents)", tag)
+    return body.split("-----BEGIN ", 1)[0].strip()[:4000]
 
 
 def _release_signed(tag):

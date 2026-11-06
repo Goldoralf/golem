@@ -1041,6 +1041,18 @@ local function poll_cmd()
     else
       log("  x mix : pas de drums:mix sur la piste (kit non multi-micros ?)")
     end
+  elseif op == "load" then
+    -- LE KIT SANS LE JEU (rendu des blocs, docs/preset-preview.md §8) : la piste Drums porte le kit du bloc et son
+    -- mix, le séquenceur ne part pas. golem_preview clone ensuite la piste, sans golem_drumseq, et y joue 8 mesures.
+    -- ⚠ jamais pendant qu'un groove joue : build_kit change le kit de la piste VIVANTE (et un kit sfz/drumgizmo
+    -- réécrit son chunk, ce qui relance golem_drumseq au tick 0 en pleine mesure). Le bridge ne le demande pas ; la
+    -- garde est ici aussi (relecture du 2026-11-06).
+    if (reaper.gmem_read(G.PLAYING) or 0) >= 0.5 then log("load refusé : un groove joue"); return end
+    local tr = ensure_track()
+    build_kit(tr, body:match('"kit"%s*:%s*"([^"]*)"'))
+    local mix = parse_mix(body)
+    if mix then apply_mix(tr, mix, tonumber(body:match('"master"%s*:%s*(%-?[%d%.]+)'))) end
+    log("load bloc " .. tostring(bid) .. " : kit posé, rien ne joue")
   elseif op == "stop" then
     op_stop(bid)
   else

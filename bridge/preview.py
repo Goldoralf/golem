@@ -337,12 +337,14 @@ MIDI_FIRST_SETTLE_S = 5.0
 SILENT_DB = -60.0                  # un clip plus bas que ça n'a rien rendu : on le refait une fois, plus patiemment
 
 
-def _peak_db(wav):
-    """La crête d'un WAV rendu, en dBFS (ffmpeg décode tous les formats de REAPER) ; None si illisible."""
+def _peak_db(wav, start=None, dur=None):
+    """La crête d'un WAV rendu, en dBFS (ffmpeg décode tous les formats de REAPER) ; None si illisible. `start`/`dur` :
+    sur cette fenêtre seulement (la 1re mesure d'un rendu de bloc : un kit qui charge en retard la laisse muette)."""
     import array
     import math
+    win = [*(["-ss", f"{start:.3f}"] if start else []), *(["-t", f"{dur:.3f}"] if dur else [])]
     try:
-        r = subprocess.run(["ffmpeg", "-v", "error", "-i", wav, "-f", "s16le", "-ac", "1", "-"],
+        r = subprocess.run(["ffmpeg", "-v", "error", *win, "-i", wav, "-f", "s16le", "-ac", "1", "-"],
                            capture_output=True, timeout=60)
         a = array.array("h")
         a.frombytes(r.stdout[:len(r.stdout) // 2 * 2])
@@ -1053,3 +1055,341 @@ def render_patch_borrowed(patch_id, seq, force=False):
         with __import__("contextlib").suppress(OSError):
             os.remove(ppath)
         shutil.rmtree(out_tmp, ignore_errors=True)
+
+
+# ── LE RENDU D'UN BLOC : DRUM MACHINE, STANDARD (docs/preset-preview.md §8, 2026-11-06) ──────────────────────────────
+# Ce qu'un bloc GÉNÈRE s'écoute aussi : 8 mesures (décision du mainteneur : partout le même nombre) du motif d'un bloc
+# drums ou de la grille d'un bloc standard, au tempo du preset, avec sa traîne. Rien ne passe par une lane : le bridge
+# demande aux boucles de poser leurs instruments SANS jouer (op « load » de golem_drums / golem_chordseq), calcule
+# lui-même les notes de ces 8 mesures, datées en secondes, et golem_preview les joue dans des clones des pistes « Drums »
+# ou « Standard … » privés de leur séquenceur. Ni rappel de preset, ni tempo projet touché, ni sortie matérielle.
+# Rangement : library/previews/block-<preset>/<switch>/<drums|standard>.opus (+ .json), le preset écrit comme un dossier
+# de démo (« patch:x » → « patch-x ») — l'adresse que la démo de golem.fm cherche.
+BLOCK_BARS = 8
+BLOCK_TAIL_S = 4.0
+BLOCK_LOAD_SETTLE_S = 4.0          # l'instrument se pose (un kit avldrums, sfizz et son piano) avant le clone
+BLOCK_LOAD_SETTLE_DG_S = 12.0      # un kit drumgizmo (des Go d'échantillons, et le clone en charge une 2e instance)
+BLOCK_KINDS = ("drums", "standard")
+DRUMS_CHANNEL = 9                  # canal 10, celui où golem_drums émet (avldrums est omni ; les autres kits lisent la note)
+DRUMS_HIT_S = 0.1                  # les kits jouent en one-shot : la durée d'une frappe ne compte pas
+STD_TRACKS = {0: ("keys", "Standard Keys"), 1: ("bass", "Standard Bass"), 2: ("drums", "Standard Drums"),
+              4: ("guitar", "Standard Guitar")}
+STD_CHANNELS = {0: 0}              # golem_chordseq : canal 1 pour les accords, canal 2 pour tout le reste
+
+
+def block_dir(pid, sw):
+    patch_id = _patch_of(pid)
+    name = ("patch-" + store._safe_id(patch_id)) if patch_id else store._safe_id(pid)
+    return os.path.join(C.PREVIEWS_DIR, "block-" + name, str(int(sw)))
+
+
+def _mid_hits(path):
+    """Les frappes d'un .mid comme golem_drums les lit : (frappes [(noire, note, vélocité)], longueur en noires arrondie
+    à la mesure, mesure en noires). Les note-on seuls ; la 1re signature rythmique fixe la mesure (4/4 sinon)."""
+    import struct
+    b = open(path, "rb").read()
+    if b[:4] != b"MThd":
+        raise ValueError("not a MIDI file")
+    ntr, div = struct.unpack(">HH", b[10:14])
+    if div & 0x8000 or div < 1:
+        raise ValueError("SMPTE division")
+    i, hits, bar, max_t = 14, [], 4.0, 0
+    got_sig = False
+    for _ in range(ntr):
+        if b[i:i + 4] != b"MTrk":
+            break
+        ln = struct.unpack(">I", b[i + 4:i + 8])[0]
+        d, j, t, run = b[i + 8:i + 8 + ln], 0, 0, None
+        i += 8 + ln
+
+        def vlq():
+            nonlocal j
+            v = 0
+            while True:
+                c = d[j]; j += 1; v = (v << 7) | (c & 0x7F)
+                if not c & 0x80:
+                    return v
+        while j < len(d):
+            t += vlq()
+            st = d[j]
+            if st == 0xFF:
+                ty = d[j + 1]; j += 2; n = vlq(); data = d[j:j + n]; j += n
+                if ty == 0x58 and n >= 2 and not got_sig:
+                    bar, got_sig = data[0] * 4 / (2 ** data[1]), True
+                max_t = max(max_t, t)
+                continue
+            if st in (0xF0, 0xF7):
+                j += 1; n = vlq(); j += n; run = None; continue
+            if st & 0x80:
+                run = st; j += 1
+            if run is None:
+                break
+            k = run & 0xF0
+            nb = 1 if k in (0xC0, 0xD0) else 2
+            d1, d2 = d[j], (d[j + 1] if nb == 2 else 0); j += nb
+            if k == 0x90 and d2 > 0:
+                hits.append((t / div, d1, d2))
+            max_t = max(max_t, t)
+    bar = bar if bar > 0 else 4.0
+    import math
+    length = max(1, math.ceil(max_t / div / bar - 1e-6)) * bar
+    return sorted(hits), length, bar
+
+
+def drum_lines(pm, bpm, bars=BLOCK_BARS, offset=MIDI_LEAD_IN):
+    """Les 8 mesures d'un bloc drums, comme le joue le pied : le groove 0 en boucle — ou la séquence du bloc (mode
+    SONG : étapes {fichier, fois}, 0 = sans fin), rejouée depuis son début. Rend (durée en s, lignes golem_preview)."""
+    from . import drums as D
+    patterns, seq = D._resolve_sequence(pm or {})
+    if not patterns:
+        raise ValueError("no groove in this block")
+    spb = 60.0 / float(bpm)
+    loaded = {}
+
+    def pat(idx):
+        if idx not in loaded:
+            loaded[idx] = _mid_hits(os.path.join(C.ROOT, patterns[idx]))
+        return loaded[idx]
+    steps = [(s["i"], s["times"]) for s in seq] or [(0, 0)]
+    lines, at, k, done = [], 0.0, 0, 0              # at, en noires depuis le début
+    first_bar = pat(steps[0][0])[2]
+    want = bars * first_bar
+    guard = 0
+    while at < want - 1e-9 and guard < 10000:
+        guard += 1
+        idx, times = steps[k % len(steps)]
+        hits, length, _bar = pat(idx)
+        for q, note, vel in hits:
+            if at + q < want - 1e-9:
+                s = offset + (at + q) * spb
+                lines.append(f"n {s:.6f} {s + DRUMS_HIT_S:.6f} {DRUMS_CHANNEL} {note} {vel}")
+        at += length
+        done += 1
+        if times and done >= times:
+            k, done = k + 1, 0
+    return round(offset + want * spb, 6), lines
+
+
+def standard_lines(pm, bpm, bars=BLOCK_BARS, offset=MIDI_LEAD_IN):
+    """Les 8 mesures d'un bloc standard depuis le début de la grille (sans décompte), avec le feel et les réglages du
+    bloc, au tempo du preset ; une grille plus courte reboucle, comme au pied. Rend (durée en s, {piste: lignes})."""
+    from . import standards as S
+    kw = S.block_kwargs(pm, bpm)
+    kw["count_in"], kw["choruses"] = 0, 1
+    b = S.build((pm or {}).get("standard"), click_div=0, write=False, **kw)
+    if not b:
+        raise ValueError(f"chart not found: {(pm or {}).get('standard')!r}")
+    r = b["render"]
+    bar, total = int(r["bar_ppq"]), int(r["len_ppq"])
+    want = bars * bar
+    spt = 60.0 / float(bpm) / S.PPQ
+    by_lane, open_ = {}, {}
+    for rep in range(max(1, -(-want // max(1, total)))):         # une grille plus courte que 8 mesures reboucle
+        base = rep * total
+        for ppq, note, vel, lane in r["events"]:
+            if lane not in STD_TRACKS or not b["parts"].get(STD_TRACKS[lane][0]):
+                continue
+            t = base + int(ppq)
+            key = (lane, note)
+            if vel > 0:
+                if t < want:
+                    open_.setdefault(key, []).append((t, vel))
+            elif open_.get(key):
+                t0, v = open_[key].pop(0)
+                by_lane.setdefault(lane, []).append((t0, min(t, want), note, v))
+        for key, lst in open_.items():                          # au rebouclage, le lecteur coupe tout (panic)
+            for t0, v in lst:
+                by_lane.setdefault(key[0], []).append((t0, min(base + total, want), key[1], v))
+            lst.clear()
+    out = {}
+    for lane, notes in sorted(by_lane.items()):
+        ch = STD_CHANNELS.get(lane, 1)
+        out[STD_TRACKS[lane][1]] = [f"n {offset + a * spt:.6f} {offset + max(z, a + 1) * spt:.6f} {ch} {n} {v}"
+                                    for a, z, n, v in sorted(notes)]
+    return round(offset + want * spt, 6), out
+
+
+def block_targets(pids=None):
+    """[(pid, switch, kind, block)] : chaque bloc drums ou standard AU PIED des presets et patchs d'usine (ou de `pids`)."""
+    from . import drums as D, standards as S
+    if pids is None:
+        pids = factory_preset_ids() + [PATCH_PREFIX + p for p in factory_patch_ids()]
+    out = []
+    for pid in pids:
+        preset = store.load_preset(pid) or {}
+        for sw, d in sorted(D.switches(preset).items()):
+            out.append((pid, sw, "drums", d.get("block")))
+        for sw, d in sorted(S.switches(preset).items()):
+            out.append((pid, sw, "standard", d.get("block")))
+    return out
+
+
+def _block_of(preset, block_id):
+    for b, _lane in store.all_blocks(preset or {}):
+        if isinstance(b, dict) and b.get("id") == block_id:
+            return b
+    return None
+
+
+def _block_fingerprint(kind, pm, bpm):
+    return hashlib.sha1(json.dumps([kind, pm, bpm, BLOCK_BARS], sort_keys=True, default=str).encode()).hexdigest()[:16]
+
+
+def block_previews(pid):
+    """{switch: {kind: entrée}} des rendus de blocs de ce preset (lecture seule)."""
+    root = os.path.dirname(block_dir(pid, 0))
+    out = {}
+    for f in glob.glob(os.path.join(root, "*", "*.json")):
+        e = store._read_json(f, None)
+        if isinstance(e, dict) and e.get("file") and os.path.isfile(os.path.join(C.ROOT, e["file"])):
+            out.setdefault(os.path.basename(os.path.dirname(f)), {})[e.get("kind")] = e
+    return out
+
+
+def live_players_busy():
+    """Le texte du refus si une boîte à rythmes ou une grille joue (anglais : l'écran le montre), sinon None. Le rendu
+    d'un bloc pose ses instruments sur les pistes VIVANTES « Drums » / « Standard … » : jamais pendant qu'elles jouent
+    (golem_drums et golem_chordseq refusent aussi le « load » dans ce cas)."""
+    d = store._read_json(C.DRUMS_FILE, {}) or {}
+    if any(isinstance(b, dict) and b.get("playing") for b in (d.get("blocks") or {}).values()):
+        return "the drum machine is playing — stop it, then run again (it resumes)"
+    if (store._read_json(os.path.join(C.PRESETS_DIR, ".standard.json"), {}) or {}).get("playing"):
+        return "a standard is playing — stop it, then run again (it resumes)"
+    return None
+
+
+def render_block(pid, sw, kind, seq, force=False):
+    """Rend le bloc `kind` du switch `sw` de `pid`. Bloquant. Rend {"status", "reason"?, "file"?} (comme le lot)."""
+    from . import drums as D, standards as S
+    if kind not in BLOCK_KINDS:
+        return {"status": "skipped", "reason": f"unknown block kind: {kind}"}
+    preset = store.load_preset(pid)
+    if not preset:
+        return {"status": "skipped", "reason": "preset not found"}
+    bpm = float(preset.get("bpm") or 120)
+    sws = D.switches(preset) if kind == "drums" else S.switches(preset)
+    d = sws.get(int(sw))
+    if not d:
+        return {"status": "skipped", "reason": f"no {kind} block on switch {sw}"}
+    blk = _block_of(preset, d.get("block")) or {}
+    pm = dict(blk.get("params") or {})
+    out_dir = block_dir(pid, sw)
+    meta_path, opus = os.path.join(out_dir, kind + ".json"), os.path.join(out_dir, kind + ".opus")
+    fp = _block_fingerprint(kind, pm, bpm)
+    if not force and os.path.isfile(opus) and (store._read_json(meta_path, {}) or {}).get("fingerprint") == fp:
+        return {"status": "skipped", "reason": "up to date"}
+    try:
+        if kind == "drums":
+            dur, lines = drum_lines(pm, bpm)
+            parts = {"Drums": lines}
+            load = {"action": "drums", "op": "load", "block": d.get("block"), "kit": pm.get("kit"),
+                    **D.resolve_mix(pm.get("kit"), pm)}
+            strip = "drumseq"
+            from . import kits as K
+            settle = BLOCK_LOAD_SETTLE_DG_S if ((K.get_kit(pm.get("kit")) or {}).get("engine") == "drumgizmo") \
+                else BLOCK_LOAD_SETTLE_S
+        else:
+            dur, parts = standard_lines(pm, bpm)
+            kw = S.block_kwargs(pm)["parts"]
+            load = {"action": "standard", "op": "load", "arp": pm.get("arp") or "", "kit": pm.get("kit") or "black-pearl",
+                    **{k: bool(v) for k, v in kw.items()}}
+            strip = "chordseq"
+            settle = BLOCK_LOAD_SETTLE_S
+    except (OSError, ValueError) as e:
+        return {"status": "skipped", "reason": str(e)}
+    parts = {t: ls for t, ls in parts.items() if ls}
+    if not parts:
+        return {"status": "skipped", "reason": "the block plays no note in 8 bars"}
+    os.makedirs(out_dir, exist_ok=True)
+    files = []
+    for k, (track, ls) in enumerate(parts.items()):
+        f = os.path.join(out_dir, f"{kind}.{k}.midi.txt")
+        with open(f, "w", encoding="utf-8") as fh:
+            fh.write(f"len {dur:.6f}\n" + "\n".join(ls) + "\n")
+        files.append(f)
+    wav = os.path.join(out_dir, kind + ".wav")
+    scene = f"block-{int(sw)}-{kind}"
+    cmd = {"action": "preview", "seq": seq, "op": "render", "scene": scene, "out": wav, "tail": BLOCK_TAIL_S,
+           "chains": "|".join(parts), "midis": "|".join(files), "strip": strip,
+           "settle": MIDI_CLONE_SETTLE_S, "_route": "preview"}
+    first_bar = (dur - MIDI_LEAD_IN) / BLOCK_BARS              # la durée d'une mesure, en secondes
+    try:
+        got, pk = None, None
+        for attempt in (1, 2):
+            busy = live_players_busy()
+            if busy:
+                return {"status": "skipped", "reason": busy}
+            write_command(load)                                   # l'instrument posé, rien ne joue
+            time.sleep(settle * attempt)
+            with __import__("contextlib").suppress(OSError):
+                os.remove(C.PREVIEW_FILE)
+            write_command(dict(cmd, settle=cmd["settle"] * attempt))
+            got = _poll_scene(seq, scene, timeout=150)
+            # la crête de la PREMIÈRE mesure : un instrument qui charge en retard la laisse muette, le reste sonne
+            pk = _peak_db(got, start=MIDI_LEAD_IN, dur=first_bar) if got and os.path.isfile(got) else None
+            if pk is None or pk >= SILENT_DB:
+                break
+            log.warning(f"bloc {pid} sw{sw} {kind} : 1re mesure muette ({pk:.0f} dBFS), nouveau rendu plus patient")
+        if not (got and os.path.isfile(got)):
+            return {"status": "failed", "reason": _ST.get("msg") or "no clip rendered (check on the rig)"}
+        if pk is not None and pk < SILENT_DB:                       # muet deux fois : on ne range pas un silence
+            return {"status": "failed", "reason": f"silent first bar twice ({pk:.0f} dBFS) — check the instrument"}
+        if not _encode_opus(got, opus, start=MIDI_LEAD_IN - MIDI_KEEP_S):
+            return {"status": "failed", "reason": "encoding failed"}
+        store._write_json_atomic(meta_path, {
+            "kind": kind, "block": d.get("block"), "switch": int(sw), "bars": BLOCK_BARS, "bpm": bpm,
+            "fingerprint": fp, "file": C.rel(opus), "seconds": round(_clip_duration(opus) or 0, 2),
+            "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+        return {"status": "rendered", "file": C.rel(opus)}
+    finally:
+        for f in files + [wav]:
+            with __import__("contextlib").suppress(OSError):
+                os.remove(f)
+
+
+_BLOCKS = {"running": False, "total": 0, "done": 0, "current": None, "items": [], "stopped": None,
+           "started": None, "ended": None}
+_blocks_stop = threading.Event()
+
+
+def blocks_status():
+    return json.loads(json.dumps(_BLOCKS))
+
+
+def stop_blocks():
+    _blocks_stop.set()
+
+
+def batch_blocks(pids=None, force=False, seq_of=None):
+    """Rend chaque bloc drums/standard au pied des presets et patchs d'usine (ou de `pids`), un à la fois, reprenable
+    (un rendu à jour est sauté). Bloquant : à lancer dans un thread. Prend le verrou des démos. Ne lève jamais."""
+    from .state import state
+    if not _gen_lock.acquire(blocking=False):
+        _BLOCKS.update(stopped="a generation is already running"); return
+    try:
+        targets = block_targets(pids)
+        _blocks_stop.clear()
+        _BLOCKS.update(running=True, total=len(targets), done=0, current=None, stopped=None, ended=None,
+                       started=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                       items=[{"id": p, "switch": sw, "kind": k, "status": "waiting"} for p, sw, k, _b in targets])
+        for n, (pid, sw, kind, _b) in enumerate(targets):
+            item = _BLOCKS["items"][n]
+            if _blocks_stop.is_set():
+                _BLOCKS["stopped"] = "stopped"; break
+            if (state.perf or {}).get("recording"):
+                _BLOCKS["stopped"] = "a take started — run it again after, it resumes"; break
+            busy = live_players_busy()
+            if busy:                                              # on s'arrête, on ne saute pas les 40 un par un
+                _BLOCKS["stopped"] = busy; break
+            _BLOCKS["current"] = f"{pid} · {sw} · {kind}"
+            item.update(status="rendering")
+            item.update(render_block(pid, sw, kind, seq_of() if seq_of else n + 1, force))
+            _BLOCKS["done"] = n + 1
+            log.info(f"rendu des blocs : {pid} sw{sw} {kind} → {item['status']}"
+                     + (f" ({item.get('reason')})" if item.get("reason") else ""))
+    except Exception as e:                                       # le lot ne meurt jamais en silence
+        _BLOCKS["stopped"] = f"error: {e}"
+        log.error(f"rendu des blocs interrompu : {e}")
+    finally:
+        _BLOCKS.update(running=False, current=None, ended=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+        _gen_lock.release()

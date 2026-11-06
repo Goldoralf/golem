@@ -651,6 +651,23 @@ local function poll_cmd()
     cur = { playing = true, slug = slug, nev = info.nev, bars = math.floor(info.len / info.bar) }
     log(string.format("%s %s — %d événements, %d mesures%s%s", arm and "armée" or "play", tostring(slug),
                       info.nev, cur.bars, loop_on and " (boucle)" or "", held_bpm and (" à " .. held_bpm.take .. " BPM") or ""))
+  elseif op == "load" then
+    -- LES INSTRUMENTS SANS LE JEU (rendu des blocs, docs/preset-preview.md §8) : les pistes des parties demandées
+    -- existent avec leur instrument (et l'arpégiateur des claviers) ; ni banque, ni nonce, ni mute touchés — la grille
+    -- en cours, s'il y en a une, continue. golem_preview clone ensuite ces pistes sans golem_chordseq.
+    -- ⚠ jamais pendant qu'une grille joue : l'arpégiateur, le kit, le volume de la basse sont ceux des pistes VIVANTES
+    if (reaper.gmem_read(G.PLAYING) or 0) >= 0.5 then log("load refusé : une grille joue"); return end
+    if not body:find('"keys"%s*:%s*false') then
+      apply_arp(ensure_track(TRACK_KEYS, 0, build_piano), body:match('"arp"%s*:%s*"([^"]*)"'))
+    end
+    local guitar = body:find('"guitar"%s*:%s*true') ~= nil
+    bass_vol = (guitar and body:find('"keys"%s*:%s*false')) and BASS_VOL_POMPE or BASS_VOL_COMBO   -- comme au play
+    if not body:find('"bass"%s*:%s*false') then ensure_track(TRACK_BASS, 1, build_bass) end
+    if body:find('"drums"%s*:%s*true') then
+      ensure_track(TRACK_DRUMS, 2, build_drums(body:match('"kit"%s*:%s*"([^"]*)"')))
+    end
+    if guitar then ensure_track(TRACK_GUITAR, 4, build_guitar) end
+    log("load : instruments posés, rien ne joue")
   elseif op == "stop" then
     bump(0, false)
     cur.playing = false

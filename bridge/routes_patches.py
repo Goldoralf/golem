@@ -40,6 +40,9 @@ def api_list():
             pv = preview.patch_preview(x["id"])
             if pv:
                 x["preview"] = pv
+            bp = preview.block_previews(preview.PATCH_PREFIX + x["id"])     # 8 mesures de ses blocs drums / standard
+            if bp:
+                x["block_previews"] = bp
     return {"patches": out}
 
 

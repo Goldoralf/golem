@@ -113,7 +113,9 @@ ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/re
                 # « Ask golem » : envoie l'état de la machine à golem.fm (docs/assistant.md §6) — le geste d'un admin
                 "/api/health/assistant",
                 # les démos d'usine par lot (docs/preset-preview.md §7) : le moteur pris une demi-heure
-                "/api/preview/batch")
+                "/api/preview/batch",
+                # le rendu des blocs (docs/preset-preview.md §8) : le moteur pris, comme le lot des démos
+                "/api/preview/blocks", "/api/preview/blocks/stop")
 ADMIN_WRITE_PREFIX = ("/api/devices/",)              # vérification du karaoké : remplace le preset joué
 ADMIN_PREFIX = ("/api/network/", "/api/auth/devices", "/api/backup", "/api/cards/",
                 # docs/separation.md : ajouter un moteur « programme », c'est faire EXÉCUTER un fichier choisi

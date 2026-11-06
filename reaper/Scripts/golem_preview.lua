@@ -181,7 +181,93 @@ local function lay_midi(track, ev)
   return true
 end
 
+-- ── LE RENDU D'UN BLOC (drum machine, standard — docs/preset-preview.md §8, 2026-11-06) ──
+-- Ce que joue un bloc ne passe par aucune lane : la piste « Drums » (golem_drums) ou les pistes « Standard … »
+-- (golem_chordseq) portent leur séquenceur JSFX PUIS l'instrument. Le bridge a d'abord posé les instruments sans rien
+-- jouer (op « load ») et écrit 8 mesures de notes datées en secondes, une liste par piste. Chaque piste est clonée
+-- par son chunk (le kit, le piano, l'arpégiateur, le mix multi-micros, le nombre de canaux), SANS son séquenceur —
+-- il lirait la banque gmem partagée avec la piste vivante —, démutée, envoyée au master vide, et joue sa liste.
+--   chains = "Standard Keys|Standard Bass"   midis = "<fichier>|<fichier>"   strip = "chordseq|drumseq"
+local function split_bar(s)
+  local t = {}
+  for x in (s or ""):gmatch("[^|]+") do t[#t + 1] = x end
+  return t
+end
+
+-- Un instrument qui CHARGE encore écrit un chunk sans son état (CLAUDE.md : « le chunk ment pendant qu'un plugin
+-- charge ») : sfizz LV2 sans son fichier sfz, drumgizmo sans sa config de kit. Le clone hériterait d'un instrument
+-- vide, et le rendu serait muet ou tardif. On refuse plutôt : le bridge refait, plus patient (relecture du 2026-11-06).
+local function still_loading(chunk)
+  local low = chunk:lower()
+  if low:find("<lv2[^\n]*sfizz") and not low:find("sfzfile", 1, true) then return "sfizz" end
+  if low:find("<lv2[^\n]*drumgizmo") and not low:find("atom#config", 1, true) then return "drumgizmo" end
+  return nil
+end
+
+-- Le clone naît DÉSARMÉ : le chunk de la source porte « REC 1 … 1 2 » (armée, monitorée), et entre le
+-- SetTrackStateChunk et un I_RECARM=0, le clone serait une piste du graphe vivant — chaque plugin s'y active sur le
+-- thread audio du live. On met à 0 le 1er champ (armement) et le 3e (monitoring) avant de poser le chunk.
+local function unarmed(chunk)
+  return (chunk:gsub("\n(%s*)REC (%S+) (%S+) (%S+)", function(ind, _a, inp, _m) return "\n" .. ind .. "REC 0 " .. inp .. " 0" end, 1))
+end
+
+local function prepare_block_inner(cmd, parts, strip, desc)
+  for k, p in ipairs(parts) do
+    reaper.InsertTrackAtIndex(reaper.CountTracks(0), false)
+    local cl = reaper.GetTrack(0, reaper.CountTracks(0) - 1)
+    reaper.SetTrackStateChunk(cl, p.chunk, false)
+    reaper.GetSetMediaTrackInfo_String(cl, "P_NAME", k == 1 and CLONE or (CLONE .. "/" .. k), true)
+    reaper.SetMediaTrackInfo_Value(cl, "I_RECARM", 0)
+    reaper.SetMediaTrackInfo_Value(cl, "I_RECMON", 0)
+    reaper.SetMediaTrackInfo_Value(cl, "B_MUTE", 0)    -- une partie coupée sur la piste vivante joue ici
+    reaper.SetMediaTrackInfo_Value(cl, "I_FOLDERDEPTH", 0)
+    reaper.SetMediaTrackInfo_Value(cl, "B_MAINSEND", 1) -- le master est vide : seuls les clones y arrivent
+    for fx = reaper.TrackFX_GetCount(cl) - 1, 0, -1 do
+      local _, nm = reaper.TrackFX_GetFXName(cl, fx, "")
+      nm = (nm or ""):lower()
+      for _, s in ipairs(strip) do
+        if nm:find(s:lower(), 1, true) then reaper.TrackFX_Delete(cl, fx); break end
+      end
+    end
+    -- sans instrument (kit introuvable, plugin absent), le rendu serait muet deux fois : on le dit
+    if reaper.TrackFX_GetCount(cl) == 0 then return nil, "pas d'instrument sur " .. p.name end
+    if not lay_midi(cl, p.ev) then return nil, "item MIDI non créé" end
+    local _, fx0 = reaper.TrackFX_GetFXName(cl, 0, "")
+    desc[#desc + 1] = ("%s (%d FX, 1er : %s, %d évts)"):format(p.name, reaper.TrackFX_GetCount(cl), tostring(fx0 or "-"), #p.ev.list)
+  end
+  return true
+end
+
+local function prepare_block(cmd)
+  local chains, midis, strip = split_bar(cmd.chains), split_bar(cmd.midis), split_bar(cmd.strip)
+  if #strip == 0 then strip = { "drumseq", "chordseq" } end   -- jamais un séquenceur dans un clone
+  if #chains == 0 or #chains ~= #midis then return nil, "chains/midis incohérents" end
+  local parts, len = {}, 0
+  for k, name in ipairs(chains) do
+    local tr = find_track(name)
+    if not tr then return nil, "piste " .. name .. " absente" end
+    local ev = read_midi_events(midis[k])
+    if not ev then return nil, "MIDI illisible : " .. tostring(midis[k]) end
+    local chunk = clone_chunk(tr)
+    if not chunk then return nil, "chunk illisible : " .. name end
+    local busy = still_loading(chunk)
+    if busy then return nil, busy .. " encore en chargement sur " .. name end
+    parts[k] = { ev = ev, name = name, chunk = unarmed(chunk) }
+    if ev.len > len then len = ev.len end
+  end
+  local desc = {}
+  reaper.PreventUIRefresh(1)
+  delete_clone()                                       -- un orphelin d'un job précédent
+  -- l'UI se rafraîchit de nouveau quoi qu'il arrive dans la boucle (une erreur Lua laissait le compteur monté)
+  local okc, res, err = pcall(prepare_block_inner, cmd, parts, strip, desc)
+  reaper.PreventUIRefresh(-1)
+  if not okc or not res then delete_clone(); return nil, okc and err or tostring(res) end
+  log(("render bloc %s : %s"):format(tostring(cmd.scene), table.concat(desc, " · ")))
+  return { len = len }
+end
+
 local function prepare(cmd)
+  if cmd.chains then return prepare_block(cmd) end
   local chain = cmd.chain or CHAIN
   local src = lane_tracks(chain, cmd.tree)
   if #src == 0 then return nil, "piste " .. chain .. " absente" end
@@ -323,6 +409,9 @@ local function parse(cur)
     sr = cur:match('"sr"%s*:%s*(%d+)'),
     settle = tonumber(cur:match('"settle"%s*:%s*([%d%.]+)')) or 0,
     midi = cur:match('"midi"%s*:%s*"([^"]+)"'),
+    chains = cur:match('"chains"%s*:%s*"([^"]+)"'),
+    midis = cur:match('"midis"%s*:%s*"([^"]+)"'),
+    strip = cur:match('"strip"%s*:%s*"([^"]+)"'),
   }
 end
 
@@ -344,7 +433,7 @@ local function poll()
   if ok == 1 and cur and #cur > 0 then
     local cmd = parse(cur)
     local key = tostring(cmd.seq) .. ":" .. tostring(cmd.scene)
-    if key ~= last_key and cmd.op == "render" and cmd.di and cmd.out then
+    if key ~= last_key and cmd.op == "render" and (cmd.di or cmd.chains) and cmd.out then
       last_key = key
       local okp, prep, perr = pcall(prepare, cmd)
       if not okp then delete_clone(); done(cmd, prep); return end

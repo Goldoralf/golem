@@ -141,18 +141,22 @@ function LoopProgress({ looper }) {
 // ── UNE LIGNE À LA FOIS (maquette mockups/live-tiles-v2.html, 2026-10-14) : le tiers bas d'une case montre
 // UN élément (instrument · son, ou effet), puis le suivant toutes les 1,5 s — rien ne glisse pendant qu'on lit, et
 // la case ne déborde plus quel que soit le nombre de lanes. Un seul élément : affiché fixe.
-function Cycle({ items, ms = 1500 }) {
+// `hold` (index ≥ 0) : l'item TENU, sans défilement — la démo de golem.fm y met la lane qu'on entend (st.preview_lane,
+// 2026-11-06 ; le bridge ne le pose jamais). Revenu à -1, le défilement reprend.
+function Cycle({ items, ms = 1500, hold = -1 }) {
   const [k, setK] = useState(0);
   const n = items.length;
+  const held = hold >= 0 && hold < n;
   useEffect(() => {
-    if (n < 2) return;
+    if (n < 2 || held) return;
     const t = setInterval(() => setK(x => x + 1), ms);
     return () => clearInterval(t);
-  }, [n, ms]);
+  }, [n, ms, held]);
   if (!n) return '';
-  const it = items[k % n];
-  return html`<span class="lcy">${n > 1 ? html`<i class="lcy-n">${(k % n) + 1}/${n}</i>` : ''}
-    <span class=${cls('lcy-it', it.off && 'off')} key=${k}>${it.tag ? html`<em class=${'li-tag ' + (it.cls || '')}>${it.tag}</em>` : ''}<b>${esc(it.t || '')}</b></span></span>`;
+  const at = held ? hold : k % n;
+  const it = items[at];
+  return html`<span class="lcy">${n > 1 ? html`<i class="lcy-n">${at + 1}/${n}</i>` : ''}
+    <span class=${cls('lcy-it', it.off && 'off')} key=${held ? 'h' + at : k}>${it.tag ? html`<em class=${'li-tag ' + (it.cls || '')}>${it.tag}</em>` : ''}<b>${esc(it.t || '')}</b></span></span>`;
 }
 
 // ── LE LOOPER LISIBLE (maquette mockups/live-looper.html v2, 2026-10-13) : la position en ANNEAU, le chrono
@@ -922,7 +926,9 @@ function PedalboardLive({ rig, presets }) {
           <span class="lsc-main"><b>${s.id}</b><em>${esc(s.name || '')}</em></span>
           <span class="lsc-low">${(() => { const per = {}, seen = {};
             rows.forEach(r => { per[r.role] = (per[r.role] || 0) + 1; });
-            return html`<${Cycle} items=${rows.map(r => { seen[r.role] = (seen[r.role] || 0) + 1;
+            // la démo joue les lanes l'une après l'autre : la case de la scène active montre celle qu'on entend
+            const hold = active && st.preview_lane ? rows.findIndex(r => r.id === st.preview_lane) : -1;
+            return html`<${Cycle} hold=${hold} items=${rows.map(r => { seen[r.role] = (seen[r.role] || 0) + 1;
               return { tag: (LANE_TAG[r.role] || String(r.role || '').toUpperCase()) + (per[r.role] > 1 ? ' ' + seen[r.role] : ''),
                        cls: laneCls(r.role), t: r.mute ? 'silent' : (r.state && !r.implicit ? r.state : s.name || ''), off: r.mute }; })} />`; })()}</span>
           ${/* « LES INSTRUMENTS, PAS LES EFFETS » (2026-10-08) tient toujours : une entrée par lane, son SON quand la

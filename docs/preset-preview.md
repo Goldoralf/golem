@@ -171,3 +171,42 @@ envelope carries `preview_fingerprint` so golem.fm can show a demo as possibly s
   careful rule on the scene's **name** — *solo*/*lead* → the lead DI, *clean* → the clean DI. A tag never puts a
   whole patch in solo any more (Singing Clean, tagged *lead*, played the solo on every scene). Only when the DI is
   chosen automatically, only with DIs that exist. The demo records `refs: {scene: ref}`.
+
+## 8. What a block plays — drum machine and standard
+
+> **Status: CODED 2026-11-06, not rendered on the rig yet** — asked for the golem.fm demo: a tap on a switch that carries
+> a drums or a standard block plays what that block generates. **8 bars everywhere** (the maintainer's decision), at the
+> preset's tempo, with a tail. The arrangement block waits (later, or a real-time take — to be discussed).
+
+- **Where it lands.** `library/previews/block-<preset>/<switch>/<drums|standard>.opus` with a `.json` beside it (`kind`,
+  `block`, `switch`, `bars`, `bpm`, `fingerprint`, `file`, `seconds`, `generated`). `<preset>` is written like a demo
+  folder: `patch:<id>` → `patch-<id>`. `GET /api/presets` and `GET /api/patches` return them as `block_previews`
+  (`{switch: {kind: entry}}`), which is how `tools/shell_snapshot.py` finds the clips for the demo's media (prefixes
+  `block-factory-`, `block-patch-factory-`).
+- **The notes are computed by the bridge, not recorded from the live players.** Drums: the block's groove 0 looped as
+  the foot plays it (or its SONG sequence from the first step), read from the `.mid` the way `golem_drums` reads it
+  (note-ons, the first time signature, length rounded up to the bar), channel 10 (`preview.drum_lines`). Standard:
+  `standards.build` with the block's own settings (`standards.block_kwargs`, the same function the foot uses), no
+  count-in, from the start of the chart, the preset's tempo; a chart shorter than 8 bars loops; notes held past bar 8
+  stop there; one list per part on the channels `golem_chordseq` uses (`preview.standard_lines`). `build(write=False)`
+  leaves `presets/.standard.seq` alone.
+- **The sound is the engine's own.** The bridge asks the loop to set its instruments up **without playing** (new op
+  `load` in `golem_drums` — kit and multi-mic mix — and in `golem_chordseq` — piano, bass, kit, pompe guitar and the
+  keys' arpeggiator; no bank, no nonce, no mute touched), then `golem_preview` clones the `Drums` or `Standard …`
+  tracks by their chunk **without their sequencer JSFX** (it would read the gmem bank shared with the live track),
+  unmutes the clones, sends them to the empty master and lays each part's notes on its clone (command fields
+  `chains`, `midis`, `strip`). No preset recall, no project tempo change, no hardware output.
+- **Safeguards (Lua review of 2026-11-06).** `load` acts on the **live** tracks, so it never runs while they play: the
+  bridge skips the block (and stops the batch) when `.drums.json` or `.standard.json` says playing, and both loops
+  refuse `load` when their JSFX reports playing. The clone's chunk is written **unarmed** (its `REC` line), so it never
+  joins the live graph; a chunk whose sfizz (LV2) has no `sfzfile` or whose drumgizmo has no kit config is refused as
+  "still loading" rather than cloned empty; a clone left with no FX after the sequencer is stripped is refused ("no
+  instrument"); `strip` defaults to both sequencers. Silence is judged on the **first bar** (a late instrument leaves
+  it silent while the rest sounds): below −60 dBFS the block is rendered once more, twice as patient, and a second
+  silent first bar is a failure, never stored. A drumgizmo kit waits 12 s after `load` instead of 4.
+- **Batch.** `POST /api/preview/blocks {ids?, force?}` (admin), `GET /api/preview/blocks`, `POST
+  /api/preview/blocks/stop`: every drums/standard block on a switch of the factory presets and patches (40 on
+  2026-11-06), one at a time, resumable (a clip whose fingerprint — kind, block params, bpm, bars — is unchanged is
+  skipped), stopped by a take. It shares the demos' lock: never at the same time as a demo render.
+- **Known limit.** The keys' arpeggiator (`midi_arp`) follows the **project** tempo, not the preset's: a block with
+  `arp` set renders at the wrong arpeggio rate when the two differ. No factory standard block uses it today.

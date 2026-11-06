@@ -39,6 +39,9 @@ def get_presets():
         lp = preview.lane_previews(p.get("id")) if isinstance(p, dict) and p.get("id") else None
         if lp:
             p["lane_previews"] = lp
+        bp = preview.block_previews(p.get("id")) if isinstance(p, dict) and p.get("id") else None
+        if bp:                       # 8 mesures de chaque bloc drums / standard au pied (docs/preset-preview.md §8)
+            p["block_previews"] = bp
     return out
 
 
@@ -1720,6 +1723,46 @@ def preview_batch_stop():
     from . import preview as preview_mod
     preview_mod.stop_batch()
     return {"ok": True, "running": preview_mod._BATCH["running"]}
+
+
+@router.post("/api/preview/blocks")
+async def preview_blocks(request: Request):
+    """LE RENDU DES BLOCS (docs/preset-preview.md §8) : 8 mesures de chaque bloc drums / standard au pied des presets et
+    patchs d'usine, une à la fois, reprenable. Body optionnel {ids: [preset id ou « patch:<id> »…], force: bool}. 409 si
+    un rendu tourne ou si une prise enregistre. Se suit par GET /api/preview/blocks, s'arrête par …/blocks/stop."""
+    from . import preview as preview_mod
+    from .state import state
+    global _preview_thread
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    if (_preview_thread and _preview_thread.is_alive()) or preview_mod._BATCH["running"] or preview_mod._BLOCKS["running"]:
+        return JSONResponse({"error": "a generation is already running"}, status_code=409)
+    if (state.perf or {}).get("recording"):
+        return JSONResponse({"error": "a take is recording — try after it"}, status_code=409)
+    ids = (body or {}).get("ids")
+    if ids is not None and not (isinstance(ids, list) and all(isinstance(i, str) for i in ids)):
+        return JSONResponse({"error": "ids: a list of preset ids"}, status_code=400)
+    _preview_thread = _threading.Thread(
+        target=preview_mod.batch_blocks, kwargs={"pids": ids, "force": bool((body or {}).get("force")),
+                                                 "seq_of": lambda: next(_preview_seq)}, daemon=True)
+    _preview_thread.start()
+    return {"ok": True}
+
+
+@router.get("/api/preview/blocks")
+def preview_blocks_status():
+    from . import preview as preview_mod
+    return preview_mod.blocks_status()
+
+
+@router.post("/api/preview/blocks/stop")
+def preview_blocks_stop():
+    """Arrête le lot APRÈS le bloc en cours."""
+    from . import preview as preview_mod
+    preview_mod.stop_blocks()
+    return {"ok": True, "running": preview_mod._BLOCKS["running"]}
 
 
 @router.post("/api/preview/{pid}")

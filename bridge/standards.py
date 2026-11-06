@@ -1886,10 +1886,27 @@ def _click_div():
         return 0
 
 
+def block_kwargs(pm, bpm=None):
+    """Les params d'un bloc `standard` → les arguments de `build` (sans le slug). UN endroit pour le pied, l'écran et
+    le rendu d'un bloc (preview.render_block) : un réglage lu ici vaut partout."""
+    pm = pm or {}
+    return {"key": pm.get("key") if pm.get("key") not in (None, "Original") else None,
+            "feel": pm.get("feel") if pm.get("feel") not in (None, "auto") else None,
+            "motion": pm.get("motion") or "comp", "groove": pm.get("groove"), "groove_take": pm.get("groove_take"),
+            "parts": {"keys": pm.get("keys", True) is not False, "bass": pm.get("bass", True) is not False,
+                      "drums": bool(pm.get("drums")), "guitar": bool(pm.get("guitar"))},
+            "choruses": int(pm.get("choruses") or 1), "count_in": int(pm.get("count_in") or 0),
+            "rootless": (pm.get("voicing") or "rootless") == "rootless", "bpm": bpm,
+            "play": {k: pm.get(k) for k in PLAY_KEYS}}
+
+
 def build(slug, key=None, feel=None, motion="comp", parts=None, choruses=1,
           count_in=0, rootless=True, groove=None, groove_take=None, bass_mode=None,
-          bpm=None, play=None, click_div=None):
+          bpm=None, play=None, click_div=None, write=True):
     """Compile + rend + écrit la séquence. Rend le dossier complet pour l'UI et le pied.
+
+    `write=False` : rend sans écrire presets/.standard.seq — le rendu d'un bloc (preview.render_block) ne touche pas
+    la séquence que le lecteur relira au prochain play.
 
     `play` : les réglages de jeu (§PLAY_KEYS). Absent -> comportement d'avant, au bit près.
     """
@@ -1908,7 +1925,7 @@ def build(slug, key=None, feel=None, motion="comp", parts=None, choruses=1,
     r = render(grid, key=key or grid.get("key"), feel=feel, motion=motion, parts=parts,
                choruses=choruses, count_in=count_in, rootless=rootless, groove=groove,
                groove_take=groove_take, bass_mode=bass_mode, bpm=bpm, click_div=cdiv, **pk)
-    path, n = write_seq(r)
+    path, n = write_seq(r) if write else (None, len(r["events"]))
     # ⚠ On rend les réglages EFFECTIFS (défauts de la grille + surcouche du bloc). L'appelant
     # doit muter les pistes d'après EUX, pas d'après sa requête : une requête sans `parts`
     # laissait la batterie rendue dans la séquence mais MUETTE sur sa piste.

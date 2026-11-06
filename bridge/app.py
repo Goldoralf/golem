@@ -689,22 +689,9 @@ def _standard_cmd(op, pm):
         log_standard.warning("standard : lecture refusée — service coupé par le mode courant")
         return
     pm = pm or {}
-    b = standards_mod.build(pm.get("standard"),
-                            key=(pm.get("key") if pm.get("key") not in (None, "Original") else None),
-                            feel=(pm.get("feel") if pm.get("feel") not in (None, "auto") else None),
-                            motion=pm.get("motion") or "comp", groove=pm.get("groove"),
-                            groove_take=pm.get("groove_take"),
-                            parts={"keys": pm.get("keys", True) is not False,
-                                   "bass": pm.get("bass", True) is not False,
-                                   "drums": bool(pm.get("drums")),
-                                   "guitar": bool(pm.get("guitar"))},
-                            choruses=int(pm.get("choruses") or 1),
-                            count_in=int(pm.get("count_in") or 0),
-                            rootless=(pm.get("voicing") or "rootless") == "rootless",
-                            bpm=_preset_bpm(),
-                            # les réglages de jeu vivent dans les params DU BLOC : le pied
-                            # joue donc exactement ce que le tiroir montre.
-                            play={k: pm.get(k) for k in standards_mod.PLAY_KEYS})
+    # les réglages de jeu vivent dans les params DU BLOC : le pied joue donc exactement ce que le tiroir montre — et
+    # le rendu d'un bloc (preview.render_block) lit les mêmes, par la même fonction
+    b = standards_mod.build(pm.get("standard"), **standards_mod.block_kwargs(pm, _preset_bpm()))
     if not b:
         log_standard.warning(f"grille introuvable : {pm.get('standard')!r}")
         return

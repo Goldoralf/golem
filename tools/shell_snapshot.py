@@ -913,7 +913,8 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
 # scène, et les lanes des presets d'usine), plus une vraie prise dans Recordings. L'app les charge par <audio src>,
 # HORS de fetch — golem.fm les sert sur de vraies routes : l'instantané les met dans `media/` et `SNAPSHOT.json`
 # (`media`) dit, pour chacun, l'adresse que l'app demande, le fichier et son type.
-DEMO_PREFIXES = ("patch-factory-", "preset-factory-")
+# + les rendus des blocs drums / standard au pied (docs/preset-preview.md §8) : block-<preset>/<switch>/<type>.opus
+DEMO_PREFIXES = ("patch-factory-", "preset-factory-", "block-factory-", "block-patch-factory-")
 RE_DEMO_CLIP = re.compile(r"^library/previews/[^\s\"]+\.opus$")
 # les sons des kits de PADS d'usine (48 one-shots synthétisés par golem, CC0 — docs/licence.md) : Library ▸ Drums ▸ Kits
 # les joue par /api/sample?file=… et dessine leur forme par /api/peaks?file=… ; aucun autre échantillon ne part

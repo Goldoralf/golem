@@ -5,3 +5,4 @@
 # REFUSE un tag qu'elle n'a pas signé — et c'est la liste de la version DÉJÀ INSTALLÉE qui fait foi : une release ne
 # peut pas apporter sa propre clé. Changer de clé = publier d'abord une release, signée par l'ancienne, qui ajoute la
 # nouvelle.
+golem namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJjcxUxxUG4j7eBBraww7MiR5QdCOorn9cNjuozesVk9 golem release

@@ -1284,13 +1284,10 @@ async def system_update_apply(body: dict):
 
 async def _update_by_archive(tag):
     """La release `tag` posée par archive (install sans git), puis le même redémarrage que la voie git."""
-    from . import release_update, release_sig
+    from . import release_update
     if not release_update.vkey(tag):
         return JSONResponse({"error": f"unknown release: {tag}"}, status_code=400)
-    # une release SIGNÉE ne se vérifie qu'avec git (git verify-tag) : déclarer une clé ferme la voie archive
-    if release_sig._keys(os.path.join(C.ROOT, release_sig.SIGNERS)):
-        return JSONResponse({"error": "releases are signed: updating needs git — run the install line again"},
-                            status_code=409)
+    # une clé déclarée : la liste signée de la release est vérifiée avant toute copie (release_update._verify)
     try:
         await asyncio.get_running_loop().run_in_executor(None, release_update.apply, tag)
     except Exception as e:

@@ -61,8 +61,8 @@ by `routes_system` whenever the install is not a git repository:
 4. **Restart**: the same as the git way — everything on Windows/macOS, `reload.sh --with-reaper` on Linux (without git,
    the scripts' fingerprint cannot be compared).
 
-A declared release key closes this way (a signed tag is only checked with git): the button then asks to run the install
-line again. When signing comes, a signed checksum published with the release will open it again.
+When a release key is declared (from v0.6.2), the release's signed file list is checked before anything is copied
+([`release-signing.md`](release-signing.md) §5).
 
 ## 4. Which REAPER is the rack's
 
@@ -75,14 +75,15 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
 ## 5. Cutting a release
 
 1. Everything on `main`, CI green on that commit, `tools/public_export.py --summary` at 0 forbidden occurrences.
-2. An **annotated** tag, version bumped (`v0.6.0` → `v0.6.1` for fixes): never move a published tag. Its message is the
-   release notes, **in English** — the update screen shows it.
-3. A GitHub release on that tag, marked **Latest** (not pre-release: the bootstrap and the update read "latest"), with
-   the same notes. GitHub attaches the source archives itself; nothing else to upload.
+2. `tools/release.sh vX.Y.Z notes.md`: an **annotated, signed** tag, version bumped (`v0.6.1` → `v0.6.2` for fixes) —
+   never move a published tag. Its message is the release notes, **in English** — the update screen shows it. The
+   script refuses an unclean tree, a HEAD that is not `origin/main`, a red CI or a non-zero public scan.
+3. The script then publishes the GitHub release, marked **Latest** (not pre-release: the bootstrap and the update read
+   "latest"), with the same notes and the signed file list (`SHA256SUMS`, `SHA256SUMS.sig`); GitHub attaches the
+   source archives itself.
 4. The website's Download button points at `releases/latest`: nothing to change there.
 
 ## 6. Not covered yet
 
 - On a git install (Linux), Python dependencies are not reinstalled by the button: a release that changes
   `bridge/requirements.lock` needs that step there too (the archive way already has it). None did up to v0.6.1.
-- Signed tags: inactive until a release key is declared ([`release-signing.md`](release-signing.md)).

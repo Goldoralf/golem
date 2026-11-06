@@ -1,7 +1,9 @@
 # Release signing
 
-> **Status: CODED, INACTIVE until a key is declared** — verification of signed release tags by the built-in update and by
-> the bootstrap installer; it does nothing while no release key is listed.
+> **Status: ACTIVE from v0.6.2 (2026-11-06)** — releases are signed with the maintainer's SSH release key: the tag
+> (checked by `git verify-tag`) and a signed file list joined to each release (§5, for everything that installs without
+> git). v0.6.2 is the first release that carries the key, so it is the last one installed without verification; every
+> later release must be signed. Releases are cut with `tools/release.sh`.
 
 ## 1. What it protects, and what it does not
 
@@ -43,8 +45,10 @@ git config --global user.signingkey ~/.ssh/golem_release.pub
 echo "golem namespaces=\"git\" $(cat ~/.ssh/golem_release.pub)" >> provision/release-signers
 ```
 
-Then put the same line in `GOLEM_RELEASE_SIGNERS` in `provision/bootstrap.sh` (and publish that script on
-get.golem.fm), commit, and **sign every tag**: `git tag -s vX.Y.Z -m vX.Y.Z`. Because the installed list is the one that
+Then put the same line in `GOLEM_RELEASE_SIGNERS` in `provision/bootstrap.sh` (the install line serves it from `main`),
+commit, and cut every release with `tools/release.sh vX.Y.Z notes.md` (signed tag, signed file list, checks). The key
+lives in the agent (`ssh-add ~/.ssh/golem_release`): the passphrase is never typed into a script. Done on 2026-11-06
+with a repository-local signing configuration, not a global one. Because the installed list is the one that
 counts, the first release that carries the key is the last one installed without verification; every later release must
 be signed.
 
@@ -55,3 +59,20 @@ be signed.
 
 First publish a release **signed with the old key** that ADDS the new key to `provision/release-signers` (and to
 `GOLEM_RELEASE_SIGNERS`). Once racks have moved to it, a later release removes the old key.
+
+## 5. The signed file list — installing without git
+
+A GitHub archive cannot be signed: its bytes are not guaranteed to stay the same. So each release also carries
+**`SHA256SUMS`** — the SHA-256 of every file of the tag, as `git archive` (and therefore GitHub's zip and tar.gz) ships
+it (`tools/release_manifest.py`; 0 differences measured on v0.6.1) — and **`SHA256SUMS.sig`**, its signature with the
+tag key (`ssh-keygen -Y sign -n git`). Who checks it:
+
+| Who | How |
+|---|---|
+| the update by archive (Windows, macOS — [`update.md`](update.md) §3) | `release_update._verify`: `release_sig.verify_manifest` (`ssh-keygen -Y verify`, the **installed** key list), then `release_sig.check_tree` — every file listed, unchanged, and **no file the list does not name**. Before anything is copied. |
+| the bootstrap without git (`provision/bootstrap.sh`, `verify_archive`) | same checks with `ssh-keygen`, `sha256sum -c` and a file-list comparison; on any difference the download is erased and the install stops |
+| the bootstrap and the update **with** git | `git verify-tag` (§2) |
+
+**Not covered:** the Windows bootstrap (`provision/bootstrap.ps1`) checks no signature yet — it downloads the archive
+as before. Once installed, a Windows golem's updates are checked (by the bridge, which needs `ssh-keygen.exe`, part of
+Windows' OpenSSH client).

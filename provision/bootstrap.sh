@@ -21,6 +21,28 @@ CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/golem-installer"
 say() { printf '\033[1;36m▶ %s\033[0m\n' "$*"; }
 die() { printf '\033[1;31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
 
+# SANS GIT, LA LISTE SIGNÉE DE LA RELEASE (docs/release-signing.md §5, 2026-11-06) : une archive GitHub ne se signe pas.
+# La release joint SHA256SUMS (l'empreinte de chaque fichier du tag) et SHA256SUMS.sig ; on vérifie la signature avec la
+# clé ci-dessus, puis chaque fichier extrait — et aucun fichier en plus. ssh-keygen et sha256sum sont dans une Ubuntu de
+# base (openssh-client, coreutils). Tout écart : on efface et on s'arrête.
+verify_archive() {
+  bad() { rm -rf "$SRC" "$SRC.signers" "$SRC.sums" "$SRC.sums.sig" "$SRC.have" "$SRC.want"; die "$1"; }
+  command -v ssh-keygen >/dev/null 2>&1 || bad "ssh-keygen is needed to check the release signature (sudo apt install openssh-client)."
+  printf '%s\n' "$GOLEM_RELEASE_SIGNERS" > "$SRC.signers"
+  curl -fsSL "$REPO/releases/download/$REF/SHA256SUMS" -o "$SRC.sums" \
+    && curl -fsSL "$REPO/releases/download/$REF/SHA256SUMS.sig" -o "$SRC.sums.sig" \
+    || bad "release $REF has no signed file list — not installing it."
+  ssh-keygen -Y verify -f "$SRC.signers" -I golem -n git -s "$SRC.sums.sig" < "$SRC.sums" >/dev/null 2>&1 \
+    || bad "release $REF is NOT signed by the golem release key — not installing it."
+  (cd "$SRC" && sha256sum -c --quiet --strict "$SRC.sums") >/dev/null 2>&1 \
+    || bad "the downloaded files of $REF do not match its signed list — not installing it."
+  (cd "$SRC" && find . -type f | sed 's#^\./##' | LC_ALL=C sort) > "$SRC.have"
+  cut -c67- "$SRC.sums" | LC_ALL=C sort > "$SRC.want"
+  cmp -s "$SRC.have" "$SRC.want" || bad "the download of $REF holds files its signed list does not name — not installing it."
+  rm -f "$SRC.signers" "$SRC.sums" "$SRC.sums.sig" "$SRC.have" "$SRC.want"
+  say "release $REF: signed file list verified"
+}
+
 # ── 1. le strict minimum (le reste est vérifié À L'ÉCRAN, avec des phrases) ──
 . /etc/os-release 2>/dev/null || true
 # les systèmes testés : installer/platform_linux.py TESTED (le même texte à l'écran)
@@ -50,8 +72,7 @@ else
   say "golem $REF"
   mkdir -p "$CACHE"; SRC="$CACHE/golem-$REF"
   if [ -n "$GOLEM_RELEASE_SIGNERS" ]; then
-    # vérifier la signature d'un tag demande git (l'archive n'en porte pas) — et une branche ne se signe pas
-    command -v git >/dev/null 2>&1 || die "git is needed to check the release signature (sudo apt install git)."
+    # une branche ne se signe pas ; avec git on vérifie le TAG, sans git la LISTE SIGNÉE de la release (verify_archive)
     [ "$REF" != main ] || die "no signed release found — refusing to install an unverified branch."
     rm -rf "$SRC"                                        # jamais un cache qu'on n'a pas vérifié nous-mêmes
   fi
@@ -71,6 +92,7 @@ else
     else
       curl -fsSL "$REPO/archive/refs/tags/$REF.tar.gz" -o "$SRC.tgz" 2>/dev/null || curl -fsSL "$REPO/archive/refs/heads/$REF.tar.gz" -o "$SRC.tgz" || die "download failed ($REPO @ $REF)"
       tar -xzf "$SRC.tgz" -C "$SRC" --strip-components=1 && rm -f "$SRC.tgz"
+      [ -z "$GOLEM_RELEASE_SIGNERS" ] || verify_archive
     fi
   fi
 fi

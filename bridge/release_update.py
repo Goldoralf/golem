@@ -150,9 +150,39 @@ def download(tag, dest_dir):
     return inner[0]
 
 
-def apply(tag, fetch_src=None):
+def signed_list(tag):
+    """(SHA256SUMS, SHA256SUMS.sig) joints à la release (docs/release-signing.md §5), en octets."""
+    out = []
+    for name in ("SHA256SUMS", "SHA256SUMS.sig"):
+        req = urllib.request.Request(f"{REPO}/releases/download/{tag}/{name}", headers={"User-Agent": UA["User-Agent"]})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            out.append(r.read())
+    return tuple(out)
+
+
+def _verify(tag, src, fetch_signed=None):
+    """La release signée, quand une clé est déclarée (la liste de la version INSTALLÉE) : la signature de SHA256SUMS, puis
+    chaque fichier extrait. Lève si quelque chose cloche — rien n'a encore été copié."""
+    from . import release_sig
+    if not release_sig.declared():
+        return
+    try:
+        sums, sig = (fetch_signed or signed_list)(tag)
+    except Exception as e:
+        raise RuntimeError(f"release {tag} has no signed file list ({e.__class__.__name__}) — not installing it")
+    ok, why = release_sig.verify_manifest(sums, sig)
+    if not ok:
+        raise RuntimeError(why)
+    bad = release_sig.check_tree(src, sums.decode("utf-8"))
+    if bad:
+        raise RuntimeError(f"the downloaded release does not match its signed list ({len(bad)}: {bad[0]})")
+    n = sums.count(b"\n")
+    log.info(f"release {tag} : liste signée vérifiée, {n} fichiers conformes")
+
+
+def apply(tag, fetch_src=None, fetch_signed=None):
     """Pose la release `tag` par-dessus cette install. Rend {"ok", "pip", "removed"} ou lève (le message va à l'écran).
-    `fetch_src(tag, dir)` remplace le téléchargement (les tests)."""
+    `fetch_src(tag, dir)` et `fetch_signed(tag)` remplacent les téléchargements (les tests)."""
     from installer import desktop_steps
     if not vkey(tag):
         raise ValueError(f"not a release tag: {tag}")
@@ -165,6 +195,7 @@ def apply(tag, fetch_src=None):
     work = tempfile.mkdtemp(prefix="golem-update-")
     try:
         src = (fetch_src or download)(tag, work)
+        _verify(tag, src, fetch_signed)
         new_files = code_files(src)
         if desktop_steps.step_source(_Ctx(), src, C.ROOT) != 0:
             raise RuntimeError("copying the new version failed")

@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "ringmod",
+ "factory": true,
+ "params": {
+  "freq": 0.3,
+  "fine": 0.5,
+  "feedback": 0
+ },
+ "default": true,
+ "inst": "any"
+}

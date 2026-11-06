@@ -1,0 +1,11 @@
+{
+ "name": "AM radio",
+ "type": "bitcrusher",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "quant": 0.35,
+  "rate": 0.25,
+  "nonlin": 0.3
+ }
+}

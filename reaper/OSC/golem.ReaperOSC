@@ -1,0 +1,46 @@
+# GoleM — pattern config OSC pour Reaper (couche de contrôle, P1).
+# À déposer dans ~/.config/REAPER/OSC/ (fait par link-reaper.sh), puis dans Reaper :
+#   Préférences → Control/OSC/web → Add → OSC (Open Sound Control)
+#     Mode            : Configure device IP+local port
+#     Device IP       : 127.0.0.1   (ou IP du bridge si distant)
+#     Device port     : 9000        ← Reaper ENVOIE son feedback ici (le bridge écoute)
+#     Local listen port: 8000       ← Reaper REÇOIT les commandes ici (le bridge envoie)
+#     Pattern config  : golem
+#
+# Format : <NOM_MESSAGE> <motifs>.  Préfixes : t=trigger f=float n=normalisé b=bool s=string.  @ = index.
+
+# ⚠ La TAILLE DE LA BANQUE du « device » (2026-10-14). Sans ces lignes, REAPER prend 8 pistes, 8 FX par piste et
+# 16 paramètres par FX, et lit `/track/N/…` comme la N-ième piste de la BANQUE courante : un message vers la piste
+# 21 (le Looper, ce jour-là), le 9e FX d'une piste ou le 17e paramètre d'un plugin est IGNORÉ, sans un message, alors
+# que le port écoute et que le reste répond. Vécu : le looper ne démarrait plus après une relance de REAPER (sa piste
+# était passée au-delà de 8 avec les lanes du rig), et la « récidive » du 2026-10-13 (EXP figée, OSC « muet »)
+# en est très probablement une autre forme. Les index du bridge sont ABSOLUS : la banque doit tout couvrir.
+# Lu au DÉMARRAGE de REAPER seulement : relancer.
+# ⚠ PAS de grandes valeurs : REAPER suit (et renvoie en feedback) pistes × FX × paramètres de la banque à chaque
+# rafraîchissement. 512 × 64 × 2048 (≈ 67 M) l'a figé au CHARGEMENT, fil principal à 100 %, le 2026-10-14. Le
+# produit ci-dessous reste ≈ 25 000 (le défaut : 1 024) ; un paramètre au-delà du 32e d'un FX reste hors banque.
+DEVICE_TRACK_COUNT 48
+DEVICE_FX_COUNT 16
+DEVICE_FX_PARAM_COUNT 32
+DEVICE_FX_INST_PARAM_COUNT 32
+
+# Déclencher une action (le bridge envoie /action <id> ; id natif ou named command _RS...)
+# ⚠ `i/action`, PAS `t/action` (corrigé le 2026-10-06) : `t/` est un DÉCLENCHEUR sans argument, il ne lit
+# pas l'entier de « /action 1007 ». Mesuré au rack : ni play (1007), ni stop (1016), ni retour au début
+# (40042) ne s'exécutaient — le transport du backing piloté par le bridge était mort, sans un message.
+# Forme du Default.ReaperOSC de Reaper. Ce fichier n'est lu qu'au DÉMARRAGE de Reaper : relancer.
+ACTION i/action t/action/@ s/action/str f/action/cc
+
+# Volumes de tracks (Guitare = 1, Voix = 2)
+TRACK_VOLUME n/track/@/volume
+TRACK_MUTE b/track/@/mute t/track/@/mute/toggle
+
+# Feedback meters (VU) -> le bridge les lit pour l'affichage live
+TRACK_VU n/track/@/vu
+
+# Param d'FX en temps réel (pédale EXP -> wah/whammy/mix…) : le bridge envoie la valeur NORMALISÉE.
+# Indices 1-based côté OSC (fx 1 = premier FX). Résolution bloc->indices via presets/.livemap.json.
+FX_PARAM_VALUE n/track/@/fx/@/fxparam/@/value
+
+# Tempo
+TEMPO f/tempo/raw

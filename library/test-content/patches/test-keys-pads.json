@@ -1,0 +1,73 @@
+{
+ "id": "test-keys-pads",
+ "name": "Test — Keys pads",
+ "role": "keys-pads",
+ "tags": [
+  "test"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "bpm": 120,
+ "origin": "test",
+ "lanes": [
+  {
+   "id": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Test pads",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-house"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp"
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Pads",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Pads",
+   "blocks": {},
+   "branches": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,10667 @@
+{
+ "version": 1,
+ "status": "draft",
+ "families": [
+  {
+   "id": "metal",
+   "label": "Metal",
+   "subgenres": [
+    {
+     "id": "alternative-metal",
+     "label": "Alternative metal",
+     "tier": "core",
+     "aliases": [
+      "alt-metal"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "black-metal",
+     "label": "Black metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "death-metal",
+     "label": "Death metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "deathcore",
+     "label": "Deathcore",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "djent",
+     "label": "Djent",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "doom-metal",
+     "label": "Doom metal",
+     "tier": "core",
+     "aliases": [
+      "traditional doom metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "folk-metal",
+     "label": "Folk metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "glam-metal",
+     "label": "Glam metal",
+     "tier": "core",
+     "aliases": [
+      "hair metal",
+      "pop metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gothic-metal",
+     "label": "Gothic metal",
+     "tier": "core",
+     "aliases": [
+      "goth metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "grindcore",
+     "label": "Grindcore",
+     "tier": "core",
+     "aliases": [
+      "grind"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "groove-metal",
+     "label": "Groove metal",
+     "tier": "core",
+     "aliases": [
+      "post-thrash"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "heavy-metal",
+     "label": "Heavy metal (traditional)",
+     "tier": "core",
+     "aliases": [
+      "traditional heavy metal",
+      "trad metal",
+      "classic metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "industrial-metal",
+     "label": "Industrial metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "melodic-death-metal",
+     "label": "Melodic death metal",
+     "tier": "core",
+     "aliases": [
+      "melodeath",
+      "Gothenburg metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "metalcore",
+     "label": "Metalcore",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nu-metal",
+     "label": "Nu metal",
+     "tier": "core",
+     "aliases": [
+      "nü-metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-metal",
+     "label": "Post-metal",
+     "tier": "core",
+     "aliases": [
+      "atmospheric sludge metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "power-metal",
+     "label": "Power metal",
+     "tier": "core",
+     "aliases": [
+      "melodic power metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "progressive-metal",
+     "label": "Progressive metal",
+     "tier": "core",
+     "aliases": [
+      "prog metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rap-metal",
+     "label": "Rap metal",
+     "tier": "core",
+     "aliases": [
+      "rapcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sludge-metal",
+     "label": "Sludge metal",
+     "tier": "core",
+     "aliases": [
+      "sludge"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "speed-metal",
+     "label": "Speed metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "stoner-metal",
+     "label": "Stoner metal",
+     "tier": "core",
+     "aliases": [
+      "stoner doom"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "symphonic-metal",
+     "label": "Symphonic metal",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "technical-death-metal",
+     "label": "Technical death metal",
+     "tier": "core",
+     "aliases": [
+      "tech death"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "thrash-metal",
+     "label": "Thrash metal",
+     "tier": "core",
+     "aliases": [
+      "thrash"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "atmospheric-black-metal",
+     "label": "Atmospheric black metal",
+     "tier": "niche",
+     "aliases": [
+      "ambient black metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "avant-garde-metal",
+     "label": "Avant-garde metal",
+     "tier": "niche",
+     "aliases": [
+      "experimental metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "black-n-roll",
+     "label": "Black 'n' roll",
+     "tier": "niche",
+     "aliases": [
+      "blackened rock 'n' roll"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "blackened-crust",
+     "label": "Blackened crust",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "blackened-death-metal",
+     "label": "Blackened death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "blackgaze",
+     "label": "Blackgaze",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "brutal-death-metal",
+     "label": "Brutal death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cavernous-death-metal",
+     "label": "Cavernous death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "celtic-metal",
+     "label": "Celtic metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "christian-metal",
+     "label": "Christian metal",
+     "tier": "niche",
+     "aliases": [
+      "white metal"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "crossover-thrash",
+     "label": "Crossover thrash",
+     "tier": "niche",
+     "aliases": [
+      "crossover"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cyber-metal",
+     "label": "Cyber metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "death-n-roll",
+     "label": "Death 'n' roll",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "death-doom",
+     "label": "Death-doom",
+     "tier": "niche",
+     "aliases": [
+      "death/doom"
+     ],
+     "refs": []
+    },
+    {
+     "id": "deathgrind",
+     "label": "Deathgrind",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "depressive-black-metal",
+     "label": "Depressive suicidal black metal",
+     "tier": "niche",
+     "aliases": [
+      "DSBM",
+      "depressive black metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dissonant-death-metal",
+     "label": "Dissonant death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "drone-metal",
+     "label": "Drone metal",
+     "tier": "niche",
+     "aliases": [
+      "drone doom"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electrogrind",
+     "label": "Electrogrind",
+     "tier": "niche",
+     "aliases": [
+      "cybergrind"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "electronicore",
+     "label": "Electronicore",
+     "tier": "niche",
+     "aliases": [
+      "trancecore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "epic-doom-metal",
+     "label": "Epic doom metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "funeral-doom",
+     "label": "Funeral doom",
+     "tier": "niche",
+     "aliases": [
+      "funeral doom metal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "funk-metal",
+     "label": "Funk metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "goregrind",
+     "label": "Goregrind",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "industrial-black-metal",
+     "label": "Industrial black metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "kawaii-metal",
+     "label": "Kawaii metal",
+     "tier": "niche",
+     "aliases": [
+      "idol metal",
+      "cute metal"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "latin-metal",
+     "label": "Latin metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "mathcore",
+     "label": "Mathcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "melodic-black-metal",
+     "label": "Melodic black metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "melodic-metalcore",
+     "label": "Melodic metalcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neoclassical-metal",
+     "label": "Neoclassical metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neue-deutsche-harte",
+     "label": "Neue Deutsche Härte",
+     "tier": "niche",
+     "aliases": [
+      "NDH"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nwobhm",
+     "label": "New wave of British heavy metal",
+     "tier": "niche",
+     "aliases": [
+      "NWOBHM"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nwothm",
+     "label": "New wave of traditional heavy metal",
+     "tier": "niche",
+     "aliases": [
+      "NWOTHM"
+     ],
+     "refs": []
+    },
+    {
+     "id": "nu-metalcore",
+     "label": "Nu metalcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "oriental-metal",
+     "label": "Oriental metal",
+     "tier": "niche",
+     "aliases": [
+      "Middle Eastern metal"
+     ],
+     "refs": []
+    },
+    {
+     "id": "pagan-metal",
+     "label": "Pagan metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "pirate-metal",
+     "label": "Pirate metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "pornogrind",
+     "label": "Pornogrind",
+     "tier": "niche",
+     "aliases": [
+      "porngrind"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-black-metal",
+     "label": "Post-black metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "progressive-death-metal",
+     "label": "Progressive death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "progressive-metalcore",
+     "label": "Progressive metalcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "raw-black-metal",
+     "label": "Raw black metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "slam-death-metal",
+     "label": "Slam death metal",
+     "tier": "niche",
+     "aliases": [
+      "slam"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "symphonic-black-metal",
+     "label": "Symphonic black metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "symphonic-death-metal",
+     "label": "Symphonic death metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "technical-thrash-metal",
+     "label": "Technical thrash metal",
+     "tier": "niche",
+     "aliases": [
+      "tech thrash"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "unblack-metal",
+     "label": "Unblack metal",
+     "tier": "niche",
+     "aliases": [
+      "Christian black metal"
+     ],
+     "refs": []
+    },
+    {
+     "id": "us-power-metal",
+     "label": "US power metal",
+     "tier": "niche",
+     "aliases": [
+      "American power metal"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "viking-metal",
+     "label": "Viking metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "war-metal",
+     "label": "War metal",
+     "tier": "niche",
+     "aliases": [
+      "bestial black metal"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rock",
+   "label": "Rock",
+   "subgenres": [
+    {
+     "id": "alternative-rock",
+     "label": "Alternative Rock",
+     "tier": "core",
+     "aliases": [
+      "alt-rock",
+      "college rock",
+      "modern rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "art-rock",
+     "label": "Art Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "blues-rock",
+     "label": "Blues Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "britpop",
+     "label": "Britpop",
+     "tier": "core",
+     "aliases": [
+      "Brit pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "classic-rock",
+     "label": "Classic Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "folk-rock",
+     "label": "Folk Rock",
+     "tier": "core",
+     "aliases": [
+      "British folk rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "garage-rock",
+     "label": "Garage Rock",
+     "tier": "core",
+     "aliases": [
+      "garage revival"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "glam-rock",
+     "label": "Glam Rock",
+     "tier": "core",
+     "aliases": [
+      "glam"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gothic-rock",
+     "label": "Gothic Rock",
+     "tier": "core",
+     "aliases": [
+      "goth rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "grunge",
+     "label": "Grunge",
+     "tier": "core",
+     "aliases": [
+      "Seattle sound"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hard-rock",
+     "label": "Hard Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "indie-rock",
+     "label": "Indie Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "krautrock",
+     "label": "Krautrock",
+     "tier": "core",
+     "aliases": [
+      "kosmische Musik",
+      "motorik"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "math-rock",
+     "label": "Math Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "new-wave",
+     "label": "New Wave",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "noise-rock",
+     "label": "Noise Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "pop-rock",
+     "label": "Pop Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-grunge",
+     "label": "Post-Grunge",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-punk",
+     "label": "Post-Punk",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-punk-revival",
+     "label": "Post-Punk Revival",
+     "tier": "core",
+     "aliases": [
+      "garage rock revival",
+      "new rock revolution"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-rock",
+     "label": "Post-Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "power-pop",
+     "label": "Power Pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "progressive-rock",
+     "label": "Progressive Rock",
+     "tier": "core",
+     "aliases": [
+      "prog",
+      "prog rock",
+      "symphonic prog"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "psychedelic-rock",
+     "label": "Psychedelic Rock",
+     "tier": "core",
+     "aliases": [
+      "psych rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rock-and-roll",
+     "label": "Rock and Roll",
+     "tier": "core",
+     "aliases": [
+      "rock & roll",
+      "rock 'n' roll"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rockabilly",
+     "label": "Rockabilly",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "shoegaze",
+     "label": "Shoegaze",
+     "tier": "core",
+     "aliases": [
+      "shoegazing"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "soft-rock",
+     "label": "Soft Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "southern-rock",
+     "label": "Southern Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "space-rock",
+     "label": "Space Rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "stoner-rock",
+     "label": "Stoner Rock",
+     "tier": "core",
+     "aliases": [
+      "stoner"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "surf-rock",
+     "label": "Surf Rock",
+     "tier": "core",
+     "aliases": [
+      "surf",
+      "instrumental surf"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "acid-rock",
+     "label": "Acid Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "anatolian-rock",
+     "label": "Anatolian Rock",
+     "tier": "niche",
+     "aliases": [
+      "Anadolu rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "album-oriented-rock",
+     "label": "AOR",
+     "tier": "niche",
+     "aliases": [
+      "album-oriented rock",
+      "melodic rock",
+      "adult-oriented rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "arena-rock",
+     "label": "Arena Rock",
+     "tier": "niche",
+     "aliases": [
+      "stadium rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "avant-prog",
+     "label": "Avant-Prog",
+     "tier": "niche",
+     "aliases": [
+      "avant-garde progressive rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "beat-music",
+     "label": "Beat Music",
+     "tier": "niche",
+     "aliases": [
+      "beat",
+      "Merseybeat",
+      "British beat",
+      "Nederbeat"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "boogie-rock",
+     "label": "Boogie Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "canterbury-scene",
+     "label": "Canterbury Scene",
+     "tier": "niche",
+     "aliases": [
+      "Canterbury sound"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "celtic-rock",
+     "label": "Celtic Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "christian-rock",
+     "label": "Christian Rock",
+     "tier": "niche",
+     "aliases": [
+      "Christian alternative rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "coldwave",
+     "label": "Coldwave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "comedy-rock",
+     "label": "Comedy Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "country-rock",
+     "label": "Country Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "crank-wave",
+     "label": "Crank Wave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "dance-punk",
+     "label": "Dance-Punk",
+     "tier": "niche",
+     "aliases": [
+      "disco-punk",
+      "punk funk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "desert-rock",
+     "label": "Desert Rock",
+     "tier": "niche",
+     "aliases": [
+      "Palm Desert Scene"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dream-pop",
+     "label": "Dream Pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dunedin-sound",
+     "label": "Dunedin Sound",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "electronic-rock",
+     "label": "Electronic Rock",
+     "tier": "niche",
+     "aliases": [
+      "synth-rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ethereal-wave",
+     "label": "Ethereal Wave",
+     "tier": "niche",
+     "aliases": [
+      "ethereal",
+      "ethereal darkwave"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "experimental-rock",
+     "label": "Experimental Rock",
+     "tier": "niche",
+     "aliases": [
+      "avant-rock"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "freakbeat",
+     "label": "Freakbeat",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "funk-rock",
+     "label": "Funk Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "geek-rock",
+     "label": "Geek Rock",
+     "tier": "niche",
+     "aliases": [
+      "nerd rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "group-sounds",
+     "label": "Group Sounds",
+     "tier": "niche",
+     "aliases": [
+      "GS"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "grungegaze",
+     "label": "Grungegaze",
+     "tier": "niche",
+     "aliases": [
+      "zoomergaze"
+     ],
+     "refs": []
+    },
+    {
+     "id": "heartland-rock",
+     "label": "Heartland Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "heavy-psych",
+     "label": "Heavy Psych",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "indorock",
+     "label": "Indorock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "industrial-rock",
+     "label": "Industrial Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "instrumental-rock",
+     "label": "Instrumental Rock",
+     "tier": "niche",
+     "aliases": [
+      "guitar instrumental"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "j-rock",
+     "label": "J-Rock",
+     "tier": "niche",
+     "aliases": [
+      "Japanese rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jam-band",
+     "label": "Jam Band",
+     "tier": "niche",
+     "aliases": [
+      "jam rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jangle-pop",
+     "label": "Jangle Pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "lo-fi-indie",
+     "label": "Lo-Fi Indie",
+     "tier": "niche",
+     "aliases": [
+      "lo-fi"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "madchester",
+     "label": "Madchester",
+     "tier": "niche",
+     "aliases": [
+      "baggy"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mod-revival",
+     "label": "Mod Revival",
+     "tier": "niche",
+     "aliases": [
+      "mod"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neo-prog",
+     "label": "Neo-Prog",
+     "tier": "niche",
+     "aliases": [
+      "neo-progressive rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neo-psychedelia",
+     "label": "Neo-Psychedelia",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neue-deutsche-welle",
+     "label": "Neue Deutsche Welle",
+     "tier": "niche",
+     "aliases": [
+      "NDW"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "new-wave-of-classic-rock",
+     "label": "New Wave of Classic Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "no-wave",
+     "label": "No Wave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "noise-pop",
+     "label": "Noise Pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nu-gaze",
+     "label": "Nu Gaze",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "occult-rock",
+     "label": "Occult Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "paisley-underground",
+     "label": "Paisley Underground",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-britpop",
+     "label": "Post-Britpop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "proto-metal",
+     "label": "Proto-metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "proto-prog",
+     "label": "Proto-Prog",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "pub-rock",
+     "label": "Pub Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "raga-rock",
+     "label": "Raga Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rap-rock",
+     "label": "Rap Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "reggae-rock",
+     "label": "Reggae Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rock-in-opposition",
+     "label": "Rock in Opposition",
+     "tier": "niche",
+     "aliases": [
+      "RIO"
+     ],
+     "refs": []
+    },
+    {
+     "id": "rock-opera",
+     "label": "Rock Opera",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "roots-rock",
+     "label": "Roots Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "shock-rock",
+     "label": "Shock Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "skiffle",
+     "label": "Skiffle",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "slacker-rock",
+     "label": "Slacker Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "slowcore",
+     "label": "Slowcore",
+     "tier": "niche",
+     "aliases": [
+      "sadcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "swamp-rock",
+     "label": "Swamp Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "symphonic-rock",
+     "label": "Symphonic Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "twist",
+     "label": "Twist",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "visual-kei",
+     "label": "Visual Kei",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "yacht-rock",
+     "label": "Yacht Rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "zamrock",
+     "label": "Zamrock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "zeuhl",
+     "label": "Zeuhl",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "punk",
+   "label": "Punk & Hardcore",
+   "subgenres": [
+    {
+     "id": "crust-punk",
+     "label": "Crust Punk",
+     "tier": "core",
+     "aliases": [
+      "crust"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "d-beat",
+     "label": "D-Beat",
+     "tier": "core",
+     "aliases": [
+      "Discore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "emo",
+     "label": "Emo",
+     "tier": "core",
+     "aliases": [
+      "emocore"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "folk-punk",
+     "label": "Folk Punk",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hardcore-punk",
+     "label": "Hardcore Punk",
+     "tier": "core",
+     "aliases": [
+      "hardcore",
+      "HC"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "melodic-hardcore",
+     "label": "Melodic Hardcore",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "oi",
+     "label": "Oi!",
+     "tier": "core",
+     "aliases": [
+      "Oi"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "pop-punk",
+     "label": "Pop Punk",
+     "tier": "core",
+     "aliases": [
+      "pop-punk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-hardcore",
+     "label": "Post-Hardcore",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "punk-rock",
+     "label": "Punk Rock",
+     "tier": "core",
+     "aliases": [
+      "'77 punk",
+      "first-wave punk",
+      "Punk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "screamo",
+     "label": "Screamo",
+     "tier": "core",
+     "aliases": [
+      "skramz"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ska-punk",
+     "label": "Ska Punk",
+     "tier": "core",
+     "aliases": [
+      "skacore",
+      "ska-core"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "skate-punk",
+     "label": "Skate Punk",
+     "tier": "core",
+     "aliases": [
+      "melodic punk",
+      "Epi-fat"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "street-punk",
+     "label": "Street Punk",
+     "tier": "core",
+     "aliases": [
+      "UK82"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "anarcho-punk",
+     "label": "Anarcho-Punk",
+     "tier": "niche",
+     "aliases": [
+      "peace punk"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "art-punk",
+     "label": "Art Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bandana-thrash",
+     "label": "Bandana Thrash",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "beatdown-hardcore",
+     "label": "Beatdown Hardcore",
+     "tier": "niche",
+     "aliases": [
+      "beatdown",
+      "tough guy hardcore"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "burning-spirits",
+     "label": "Burning Spirits",
+     "tier": "niche",
+     "aliases": [
+      "Japanese hardcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "celtic-punk",
+     "label": "Celtic Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "christian-punk",
+     "label": "Christian Punk",
+     "tier": "niche",
+     "aliases": [
+      "Christian hardcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cowpunk",
+     "label": "Cowpunk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "deathrock",
+     "label": "Deathrock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "easycore",
+     "label": "Easycore",
+     "tier": "niche",
+     "aliases": [
+      "pop-punk hardcore"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "egg-punk",
+     "label": "Egg Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "emo-pop",
+     "label": "Emo Pop",
+     "tier": "niche",
+     "aliases": [
+      "pop emo"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "emo-revival",
+     "label": "Emo Revival",
+     "tier": "niche",
+     "aliases": [
+      "fourth-wave emo"
+     ],
+     "refs": []
+    },
+    {
+     "id": "emoviolence",
+     "label": "Emoviolence",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "garage-punk",
+     "label": "Garage Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "glam-punk",
+     "label": "Glam Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gypsy-punk",
+     "label": "Gypsy Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "horror-punk",
+     "label": "Horror Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "latin-punk",
+     "label": "Latin Punk",
+     "tier": "niche",
+     "aliases": [
+      "Chicano punk",
+      "Latino punk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "midwest-emo",
+     "label": "Midwest Emo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "new-york-hardcore",
+     "label": "New York Hardcore",
+     "tier": "niche",
+     "aliases": [
+      "NYHC"
+     ],
+     "refs": []
+    },
+    {
+     "id": "noisecore",
+     "label": "Noisecore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "positive-hardcore",
+     "label": "Positive Hardcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "powerviolence",
+     "label": "Powerviolence",
+     "tier": "niche",
+     "aliases": [
+      "power violence"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "proto-punk",
+     "label": "Proto-Punk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "psychobilly",
+     "label": "Psychobilly",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "punk-blues",
+     "label": "Punk Blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "punk-pathetique",
+     "label": "Punk Pathétique",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "queercore",
+     "label": "Queercore",
+     "tier": "niche",
+     "aliases": [
+      "homocore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "riot-grrrl",
+     "label": "Riot Grrrl",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sasscore",
+     "label": "Sasscore",
+     "tier": "niche",
+     "aliases": [
+      "sass"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "synth-punk",
+     "label": "Synth-Punk",
+     "tier": "niche",
+     "aliases": [
+      "electropunk"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "taqwacore",
+     "label": "Taqwacore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "thrashcore",
+     "label": "Thrashcore",
+     "tier": "niche",
+     "aliases": [
+      "fastcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "trallpunk",
+     "label": "Trallpunk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "dc-hardcore",
+     "label": "Washington D.C. Hardcore",
+     "tier": "niche",
+     "aliases": [
+      "DC hardcore"
+     ],
+     "refs": []
+    },
+    {
+     "id": "youth-crew",
+     "label": "Youth Crew",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    }
+   ]
+  },
+  {
+   "id": "pop",
+   "label": "Pop",
+   "subgenres": [
+    {
+     "id": "alt-pop",
+     "label": "Alternative pop",
+     "tier": "core",
+     "aliases": [
+      "alt-pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "art-pop",
+     "label": "Art pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bedroom-pop",
+     "label": "Bedroom pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bubblegum",
+     "label": "Bubblegum pop",
+     "tier": "core",
+     "aliases": [
+      "bubblegum"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "c-pop",
+     "label": "C-pop",
+     "tier": "core",
+     "aliases": [
+      "Chinese pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chanson",
+     "label": "Chanson française",
+     "tier": "core",
+     "aliases": [
+      "chanson",
+      "French chanson"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dance-pop",
+     "label": "Dance-pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electropop",
+     "label": "Electropop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "europop",
+     "label": "Europop",
+     "tier": "core",
+     "aliases": [
+      "Euro-pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hyperpop",
+     "label": "Hyperpop",
+     "tier": "core",
+     "aliases": [
+      "bubblegum bass"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "indie-pop",
+     "label": "Indie pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "j-pop",
+     "label": "J-pop",
+     "tier": "core",
+     "aliases": [
+      "Japanese pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "k-pop",
+     "label": "K-pop",
+     "tier": "core",
+     "aliases": [
+      "Korean pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "singer-songwriter",
+     "label": "Singer-songwriter",
+     "tier": "core",
+     "aliases": [
+      "auteur-compositeur-interprète"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "synth-pop",
+     "label": "Synth-pop",
+     "tier": "core",
+     "aliases": [
+      "synthpop",
+      "technopop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "teen-pop",
+     "label": "Teen pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "traditional-pop",
+     "label": "Traditional pop",
+     "tier": "core",
+     "aliases": [
+      "vocal pop",
+      "standards",
+      "Vocal (Discogs)"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "variete-francaise",
+     "label": "Variété française",
+     "tier": "core",
+     "aliases": [
+      "French pop",
+      "variété"
+     ],
+     "refs": []
+    },
+    {
+     "id": "filmi",
+     "label": "Filmi (Bollywood)",
+     "tier": "core",
+     "aliases": [
+      "Bollywood",
+      "Indian film song"
+     ],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "adult-contemporary",
+     "label": "Adult contemporary",
+     "tier": "niche",
+     "aliases": [
+      "AC",
+      "soft pop"
+     ],
+     "refs": []
+    },
+    {
+     "id": "ambient-pop",
+     "label": "Ambient pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "arabic-pop",
+     "label": "Arabic pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "avant-pop",
+     "label": "Avant-pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "baroque-pop",
+     "label": "Baroque pop",
+     "tier": "niche",
+     "aliases": [
+      "chamber pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "brill-building",
+     "label": "Brill Building",
+     "tier": "niche",
+     "aliases": [
+      "Brill Building pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bubblegum-dance",
+     "label": "Bubblegum dance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cantopop",
+     "label": "Cantopop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "city-pop",
+     "label": "City pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ccm",
+     "label": "Contemporary Christian music",
+     "tier": "niche",
+     "aliases": [
+      "CCM",
+      "Christian pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "disco-polo",
+     "label": "Disco polo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "easy-listening",
+     "label": "Easy listening",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "enka",
+     "label": "Enka",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "exotica",
+     "label": "Exotica",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "girl-group",
+     "label": "Girl group",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "glitch-pop",
+     "label": "Glitch pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hypnagogic-pop",
+     "label": "Hypnagogic pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "indian-pop",
+     "label": "Indian pop",
+     "tier": "niche",
+     "aliases": [
+      "Indipop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "canzone-italiana",
+     "label": "Italian pop",
+     "tier": "niche",
+     "aliases": [
+      "musica leggera",
+      "canzone italiana"
+     ],
+     "refs": []
+    },
+    {
+     "id": "kayokyoku",
+     "label": "Kayōkyoku",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "light-music",
+     "label": "Light music",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "lounge",
+     "label": "Lounge",
+     "tier": "niche",
+     "aliases": [
+      "lounge music",
+      "cocktail"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "mandopop",
+     "label": "Mandopop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "music-hall",
+     "label": "Music hall",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nederpop",
+     "label": "Nederpop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nouvelle-chanson",
+     "label": "Nouvelle chanson",
+     "tier": "niche",
+     "aliases": [
+      "nouvelle scène française"
+     ],
+     "refs": []
+    },
+    {
+     "id": "novelty",
+     "label": "Novelty",
+     "tier": "niche",
+     "aliases": [
+      "comedy song",
+      "parody"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "operatic-pop",
+     "label": "Operatic pop",
+     "tier": "niche",
+     "aliases": [
+      "popera",
+      "classical crossover pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "orchestral-pop",
+     "label": "Orchestral pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "p-pop",
+     "label": "P-pop",
+     "tier": "niche",
+     "aliases": [
+      "OPM",
+      "Pinoy pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ballad",
+     "label": "Pop ballad",
+     "tier": "niche",
+     "aliases": [
+      "ballad"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "progressive-pop",
+     "label": "Progressive pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "psychedelic-pop",
+     "label": "Psychedelic pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "russian-pop",
+     "label": "Russian pop",
+     "tier": "niche",
+     "aliases": [
+      "estrada"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "schlager",
+     "label": "Schlager",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "shibuya-kei",
+     "label": "Shibuya-kei",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sophisti-pop",
+     "label": "Sophisti-pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "space-age-pop",
+     "label": "Space age pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sunshine-pop",
+     "label": "Sunshine pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "t-pop",
+     "label": "T-pop",
+     "tier": "niche",
+     "aliases": [
+      "Thai pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "trot",
+     "label": "Trot",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "turkish-pop",
+     "label": "Turkish pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "twee-pop",
+     "label": "Twee pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "v-pop",
+     "label": "V-pop",
+     "tier": "niche",
+     "aliases": [
+      "Vietnamese pop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "wonky-pop",
+     "label": "Wonky pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ye-ye",
+     "label": "Yé-yé",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "electronic",
+   "label": "Electronic",
+   "subgenres": [
+    {
+     "id": "acid-house",
+     "label": "Acid house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-house",
+     "label": "Afro house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "amapiano",
+     "label": "Amapiano",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ambient",
+     "label": "Ambient",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bass-house",
+     "label": "Bass house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "big-beat",
+     "label": "Big beat",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "big-room-house",
+     "label": "Big room house",
+     "tier": "core",
+     "aliases": [
+      "big room"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "breakbeat",
+     "label": "Breakbeat",
+     "tier": "core",
+     "aliases": [
+      "breaks"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chiptune",
+     "label": "Chiptune",
+     "tier": "core",
+     "aliases": [
+      "8-bit"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "deep-house",
+     "label": "Deep house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "detroit-techno",
+     "label": "Detroit techno",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "downtempo",
+     "label": "Downtempo",
+     "tier": "core",
+     "aliases": [
+      "chill-out",
+      "chillout"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "drum-and-bass",
+     "label": "Drum and bass",
+     "tier": "core",
+     "aliases": [
+      "DnB",
+      "D&B",
+      "drum n bass"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dubstep",
+     "label": "Dubstep",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electro",
+     "label": "Electro",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electro-house",
+     "label": "Electro house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "industrial-electronic",
+     "label": "Electro-industrial",
+     "tier": "core",
+     "aliases": [
+      "industrial (electronic)",
+      "dark electro"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ebm",
+     "label": "Electronic body music",
+     "tier": "core",
+     "aliases": [
+      "EBM"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electronica",
+     "label": "Electronica",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "eurodance",
+     "label": "Eurodance",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "french-house",
+     "label": "French house",
+     "tier": "core",
+     "aliases": [
+      "French touch",
+      "filter house"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "future-bass",
+     "label": "Future bass",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hard-techno",
+     "label": "Hard techno",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hardstyle",
+     "label": "Hardstyle",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "house",
+     "label": "House",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "idm",
+     "label": "IDM",
+     "tier": "core",
+     "aliases": [
+      "intelligent dance music",
+      "braindance"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jungle",
+     "label": "Jungle",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "melodic-house",
+     "label": "Melodic house & techno",
+     "tier": "core",
+     "aliases": [
+      "melodic techno"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "minimal-techno",
+     "label": "Minimal techno",
+     "tier": "core",
+     "aliases": [
+      "minimal"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nu-disco",
+     "label": "Nu-disco",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "progressive-house",
+     "label": "Progressive house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "psytrance",
+     "label": "Psychedelic trance",
+     "tier": "core",
+     "aliases": [
+      "psytrance",
+      "psy"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "synthwave",
+     "label": "Synthwave",
+     "tier": "core",
+     "aliases": [
+      "retrowave",
+      "outrun"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "tech-house",
+     "label": "Tech house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "techno",
+     "label": "Techno",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "trance",
+     "label": "Trance",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "trap-edm",
+     "label": "Trap (EDM)",
+     "tier": "core",
+     "aliases": [
+      "EDM trap",
+      "festival trap"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "trip-hop",
+     "label": "Trip hop",
+     "tier": "core",
+     "aliases": [
+      "Bristol sound"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "tropical-house",
+     "label": "Tropical house",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "uk-garage",
+     "label": "UK garage",
+     "tier": "core",
+     "aliases": [
+      "UKG"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "vaporwave",
+     "label": "Vaporwave",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "two-step",
+     "label": "2-step garage",
+     "tier": "niche",
+     "aliases": [
+      "2-step"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "acid-techno",
+     "label": "Acid techno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-tech",
+     "label": "Afro tech",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "aggrotech",
+     "label": "Aggrotech",
+     "tier": "niche",
+     "aliases": [
+      "hellektro"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ambient-dub",
+     "label": "Ambient dub",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ambient-house",
+     "label": "Ambient house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ambient-techno",
+     "label": "Ambient techno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "balearic",
+     "label": "Balearic beat",
+     "tier": "niche",
+     "aliases": [
+      "Balearic"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "baltimore-club",
+     "label": "Baltimore club",
+     "tier": "niche",
+     "aliases": [
+      "B-more"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bassline",
+     "label": "Bassline",
+     "tier": "niche",
+     "aliases": [
+      "4x4 garage"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "berlin-school",
+     "label": "Berlin School",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bitpop",
+     "label": "Bitpop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bleep-techno",
+     "label": "Bleep techno",
+     "tier": "niche",
+     "aliases": [
+      "bleep"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "breakbeat-hardcore",
+     "label": "Breakbeat hardcore",
+     "tier": "niche",
+     "aliases": [
+      "rave",
+      "oldskool hardcore"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "breakcore",
+     "label": "Breakcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "broken-beat",
+     "label": "Broken beat",
+     "tier": "niche",
+     "aliases": [
+      "bruk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "brostep",
+     "label": "Brostep",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chicago-house",
+     "label": "Chicago house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chillwave",
+     "label": "Chillwave",
+     "tier": "niche",
+     "aliases": [
+      "glo-fi"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "complextro",
+     "label": "Complextro",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cyberpunk",
+     "label": "Cyberpunk",
+     "tier": "niche",
+     "aliases": [
+      "cyber"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dark-ambient",
+     "label": "Dark ambient",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dark-psytrance",
+     "label": "Dark psytrance",
+     "tier": "niche",
+     "aliases": [
+      "darkpsy"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "darksynth",
+     "label": "Darksynth",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "darkwave",
+     "label": "Darkwave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "deconstructed-club",
+     "label": "Deconstructed club",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "deep-techno",
+     "label": "Deep techno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "diva-house",
+     "label": "Diva house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "donk",
+     "label": "Donk",
+     "tier": "niche",
+     "aliases": [
+      "bounce (UK)"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "drill-n-bass",
+     "label": "Drill 'n' bass",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "dub-techno",
+     "label": "Dub techno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dungeon-synth",
+     "label": "Dungeon synth",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dutch-house",
+     "label": "Dutch house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "electro-swing",
+     "label": "Electro swing",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "electroclash",
+     "label": "Electroclash",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "euro-house",
+     "label": "Euro house",
+     "tier": "niche",
+     "aliases": [
+      "Eurohouse"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "euro-disco",
+     "label": "Euro-disco",
+     "tier": "niche",
+     "aliases": [
+      "Eurodisco"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "eurobeat",
+     "label": "Eurobeat",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "fidget-house",
+     "label": "Fidget house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "florida-breaks",
+     "label": "Florida breaks",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "folktronica",
+     "label": "Folktronica",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "footwork",
+     "label": "Footwork",
+     "tier": "niche",
+     "aliases": [
+      "juke"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "freestyle",
+     "label": "Freestyle",
+     "tier": "niche",
+     "aliases": [
+      "Latin freestyle"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "full-on",
+     "label": "Full-on",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "funky-house",
+     "label": "Funky house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "future-funk",
+     "label": "Future funk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "future-garage",
+     "label": "Future garage",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "future-house",
+     "label": "Future house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "futurepop",
+     "label": "Futurepop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gabber",
+     "label": "Gabber",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "garage-house",
+     "label": "Garage house",
+     "tier": "niche",
+     "aliases": [
+      "New Jersey sound"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ghetto-house",
+     "label": "Ghetto house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ghettotech",
+     "label": "Ghettotech",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "glitch",
+     "label": "Glitch",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "glitch-hop",
+     "label": "Glitch hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "goa-trance",
+     "label": "Goa trance",
+     "tier": "niche",
+     "aliases": [
+      "Goa"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gqom",
+     "label": "Gqom",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "halftime",
+     "label": "Halftime",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hands-up",
+     "label": "Hands up",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "happy-hardcore",
+     "label": "Happy hardcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hard-house",
+     "label": "Hard house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hard-trance",
+     "label": "Hard trance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hardcore-techno",
+     "label": "Hardcore (electronic)",
+     "tier": "niche",
+     "aliases": [
+      "hardcore techno"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hardwave",
+     "label": "Hardwave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hi-nrg",
+     "label": "Hi-NRG",
+     "tier": "niche",
+     "aliases": [
+      "high energy"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hip-house",
+     "label": "Hip house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "illbient",
+     "label": "Illbient",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "indietronica",
+     "label": "Indietronica",
+     "tier": "niche",
+     "aliases": [
+      "indie electronic"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "industrial-techno",
+     "label": "Industrial techno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "italodance",
+     "label": "Italo dance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "italo-disco",
+     "label": "Italo disco",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "italo-house",
+     "label": "Italo house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "j-core",
+     "label": "J-core",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jackin-house",
+     "label": "Jackin house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jazzdance",
+     "label": "Jazzdance",
+     "tier": "niche",
+     "aliases": [
+      "jazz dance"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jersey-club",
+     "label": "Jersey club",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jump-up",
+     "label": "Jump-up",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jumpstyle",
+     "label": "Jumpstyle",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "latin-house",
+     "label": "Latin house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "leftfield",
+     "label": "Leftfield",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "liquid-funk",
+     "label": "Liquid funk",
+     "tier": "niche",
+     "aliases": [
+      "liquid DnB"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "lo-fi-house",
+     "label": "Lo-fi house",
+     "tier": "niche",
+     "aliases": [
+      "outsider house"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "makina",
+     "label": "Makina",
+     "tier": "niche",
+     "aliases": [
+      "mákina"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "melbourne-bounce",
+     "label": "Melbourne bounce",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "microhouse",
+     "label": "Microhouse",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "midtempo-bass",
+     "label": "Midtempo bass",
+     "tier": "niche",
+     "aliases": [
+      "midtempo"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "minimal-wave",
+     "label": "Minimal wave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "moombahton",
+     "label": "Moombahton",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neurofunk",
+     "label": "Neurofunk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "new-beat",
+     "label": "New beat",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "new-age",
+     "label": "New-age",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nightcore",
+     "label": "Nightcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nu-jazz",
+     "label": "Nu jazz",
+     "tier": "niche",
+     "aliases": [
+      "future jazz",
+      "jazztronica"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nu-skool-breaks",
+     "label": "Nu skool breaks",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-dubstep",
+     "label": "Post-dubstep",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-breaks",
+     "label": "Progressive breaks",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "progressive-electronic",
+     "label": "Progressive electronic",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-psytrance",
+     "label": "Progressive psytrance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-trance",
+     "label": "Progressive trance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "psybient",
+     "label": "Psybient",
+     "tier": "niche",
+     "aliases": [
+      "psychill",
+      "psydub"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ragga-jungle",
+     "label": "Ragga jungle",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rawstyle",
+     "label": "Rawstyle",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rhythmic-noise",
+     "label": "Rhythmic noise",
+     "tier": "niche",
+     "aliases": [
+      "power noise"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "riddim",
+     "label": "Riddim",
+     "tier": "niche",
+     "aliases": [
+      "riddim dubstep"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "schranz",
+     "label": "Schranz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "slap-house",
+     "label": "Slap house",
+     "tier": "niche",
+     "aliases": [
+      "Brazilian bass"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "soulful-house",
+     "label": "Soulful house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "space-disco",
+     "label": "Space disco",
+     "tier": "niche",
+     "aliases": [
+      "cosmic disco"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "space-music",
+     "label": "Space music",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "spacesynth",
+     "label": "Spacesynth",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "speed-garage",
+     "label": "Speed garage",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "speedcore",
+     "label": "Speedcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "tech-trance",
+     "label": "Tech trance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "techstep",
+     "label": "Techstep",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "tribal-house",
+     "label": "Tribal house",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "uk-bass",
+     "label": "UK bass",
+     "tier": "niche",
+     "aliases": [
+      "bass music (UK)"
+     ],
+     "refs": []
+    },
+    {
+     "id": "uk-funky",
+     "label": "UK funky",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "uk-hardcore",
+     "label": "UK hardcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "uplifting-trance",
+     "label": "Uplifting trance",
+     "tier": "niche",
+     "aliases": [
+      "epic trance"
+     ],
+     "refs": []
+    },
+    {
+     "id": "vocal-trance",
+     "label": "Vocal trance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "wave",
+     "label": "Wave",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "witch-house",
+     "label": "Witch house",
+     "tier": "niche",
+     "aliases": [
+      "drag"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "wonky",
+     "label": "Wonky",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hip-hop",
+   "label": "Hip-hop",
+   "subgenres": [
+    {
+     "id": "alternative-hip-hop",
+     "label": "Alternative hip-hop",
+     "tier": "core",
+     "aliases": [
+      "alt-rap"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "boom-bap",
+     "label": "Boom bap",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "uk-hip-hop",
+     "label": "British hip-hop",
+     "tier": "core",
+     "aliases": [
+      "UK rap"
+     ],
+     "refs": []
+    },
+    {
+     "id": "cloud-rap",
+     "label": "Cloud rap",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "conscious-hip-hop",
+     "label": "Conscious hip-hop",
+     "tier": "core",
+     "aliases": [
+      "conscious rap"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "drill",
+     "label": "Drill",
+     "tier": "core",
+     "aliases": [
+      "Chicago drill"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "east-coast-hip-hop",
+     "label": "East Coast hip-hop",
+     "tier": "core",
+     "aliases": [
+      "NY rap"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "emo-rap",
+     "label": "Emo rap",
+     "tier": "core",
+     "aliases": [
+      "sad rap"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "experimental-hip-hop",
+     "label": "Experimental hip-hop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "french-hip-hop",
+     "label": "French hip-hop",
+     "tier": "core",
+     "aliases": [
+      "rap français",
+      "French rap"
+     ],
+     "refs": []
+    },
+    {
+     "id": "g-funk",
+     "label": "G-funk",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gangsta-rap",
+     "label": "Gangsta rap",
+     "tier": "core",
+     "aliases": [
+      "thug rap"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "grime",
+     "label": "Grime",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hardcore-hip-hop",
+     "label": "Hardcore hip-hop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "instrumental-hip-hop",
+     "label": "Instrumental hip-hop",
+     "tier": "core",
+     "aliases": [
+      "beats"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jazz-rap",
+     "label": "Jazz rap",
+     "tier": "core",
+     "aliases": [
+      "jazz hip-hop",
+      "jazzy hip-hop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "lo-fi-hip-hop",
+     "label": "Lo-fi hip-hop",
+     "tier": "core",
+     "aliases": [
+      "chillhop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "phonk",
+     "label": "Phonk",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pop-rap",
+     "label": "Pop rap",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "southern-hip-hop",
+     "label": "Southern hip-hop",
+     "tier": "core",
+     "aliases": [
+      "dirty south"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "trap",
+     "label": "Trap",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "uk-drill",
+     "label": "UK drill",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "west-coast-hip-hop",
+     "label": "West Coast hip-hop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "abstract-hip-hop",
+     "label": "Abstract hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-trap",
+     "label": "Afro trap",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "afroswing",
+     "label": "Afroswing",
+     "tier": "niche",
+     "aliases": [
+      "afrobashment"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bounce",
+     "label": "Bounce",
+     "tier": "niche",
+     "aliases": [
+      "New Orleans bounce"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "britcore",
+     "label": "Britcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "brooklyn-drill",
+     "label": "Brooklyn drill",
+     "tier": "niche",
+     "aliases": [
+      "New York drill"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chicano-rap",
+     "label": "Chicano rap",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chopped-and-screwed",
+     "label": "Chopped and screwed",
+     "tier": "niche",
+     "aliases": [
+      "screw"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chopper",
+     "label": "Chopper",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "christian-hip-hop",
+     "label": "Christian hip-hop",
+     "tier": "niche",
+     "aliases": [
+      "holy hip-hop"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "comedy-hip-hop",
+     "label": "Comedy hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "country-rap",
+     "label": "Country rap",
+     "tier": "niche",
+     "aliases": [
+      "hick-hop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "crunk",
+     "label": "Crunk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "digicore",
+     "label": "Digicore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "drift-phonk",
+     "label": "Drift phonk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "german-hip-hop",
+     "label": "German hip-hop",
+     "tier": "niche",
+     "aliases": [
+      "Deutschrap"
+     ],
+     "refs": []
+    },
+    {
+     "id": "horrorcore",
+     "label": "Horrorcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hyphy",
+     "label": "Hyphy",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "industrial-hip-hop",
+     "label": "Industrial hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jerk",
+     "label": "Jerk",
+     "tier": "niche",
+     "aliases": [
+      "jerkin'"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "latin-hip-hop",
+     "label": "Latin hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "mafioso-rap",
+     "label": "Mafioso rap",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "memphis-rap",
+     "label": "Memphis rap",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "miami-bass",
+     "label": "Miami bass",
+     "tier": "niche",
+     "aliases": [
+      "booty bass",
+      "Bass Music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "midwest-hip-hop",
+     "label": "Midwest hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "nerdcore",
+     "label": "Nerdcore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "old-school-hip-hop",
+     "label": "Old-school hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "plugg",
+     "label": "Plugg",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pluggnb",
+     "label": "Pluggnb",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "political-hip-hop",
+     "label": "Political hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rage",
+     "label": "Rage",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ragga-hip-hop",
+     "label": "Ragga hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "road-rap",
+     "label": "Road rap",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "sigilkore",
+     "label": "Sigilkore",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "snap",
+     "label": "Snap",
+     "tier": "niche",
+     "aliases": [
+      "snap music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "soundcloud-rap",
+     "label": "SoundCloud rap",
+     "tier": "niche",
+     "aliases": [
+      "mumble rap"
+     ],
+     "refs": []
+    },
+    {
+     "id": "trap-metal",
+     "label": "Trap metal",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "turntablism",
+     "label": "Turntablism",
+     "tier": "niche",
+     "aliases": [
+      "cut-up/DJ",
+      "scratch"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "underground-hip-hop",
+     "label": "Underground hip-hop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rnb",
+   "label": "R&B, Soul & Funk",
+   "subgenres": [
+    {
+     "id": "alternative-r-and-b",
+     "label": "Alternative R&B",
+     "tier": "core",
+     "aliases": [
+      "PBR&B",
+      "indie R&B"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "blue-eyed-soul",
+     "label": "Blue-eyed soul",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "classic-soul",
+     "label": "Classic soul",
+     "tier": "core",
+     "aliases": [
+      "soul",
+      "60s soul"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "contemporary-r-and-b",
+     "label": "Contemporary R&B",
+     "tier": "core",
+     "aliases": [
+      "urban contemporary",
+      "modern R&B"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "disco",
+     "label": "Disco",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "doo-wop",
+     "label": "Doo-wop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "funk",
+     "label": "Funk",
+     "tier": "core",
+     "aliases": [
+      "classic funk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "motown",
+     "label": "Motown",
+     "tier": "core",
+     "aliases": [
+      "Motown sound",
+      "Detroit soul"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neo-soul",
+     "label": "Neo soul",
+     "tier": "core",
+     "aliases": [
+      "nu soul"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "new-jack-swing",
+     "label": "New jack swing",
+     "tier": "core",
+     "aliases": [
+      "swingbeat",
+      "RnB/Swing"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "northern-soul",
+     "label": "Northern soul",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "p-funk",
+     "label": "P-Funk",
+     "tier": "core",
+     "aliases": [
+      "Parliament-Funkadelic sound"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "philly-soul",
+     "label": "Philadelphia soul",
+     "tier": "core",
+     "aliases": [
+      "Philly soul",
+      "Philly sound"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "psychedelic-soul",
+     "label": "Psychedelic soul",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "quiet-storm",
+     "label": "Quiet storm",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "retro-soul",
+     "label": "Retro soul",
+     "tier": "core",
+     "aliases": [
+      "soul revival"
+     ],
+     "refs": []
+    },
+    {
+     "id": "rhythm-and-blues",
+     "label": "Rhythm and blues",
+     "tier": "core",
+     "aliases": [
+      "classic R&B",
+      "R&B (1940s–50s)"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "southern-soul",
+     "label": "Southern soul",
+     "tier": "core",
+     "aliases": [
+      "deep soul"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "traditional-black-gospel",
+     "label": "Traditional gospel",
+     "tier": "core",
+     "aliases": [
+      "gospel",
+      "Black gospel"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "urban-contemporary-gospel",
+     "label": "Urban contemporary gospel",
+     "tier": "core",
+     "aliases": [
+      "contemporary gospel"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "beach-music",
+     "label": "Beach music",
+     "tier": "niche",
+     "aliases": [
+      "Carolina beach music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "boogie",
+     "label": "Boogie",
+     "tier": "niche",
+     "aliases": [
+      "post-disco funk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "brit-funk",
+     "label": "Brit funk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "uk-soul",
+     "label": "British soul",
+     "tier": "niche",
+     "aliases": [
+      "UK soul"
+     ],
+     "refs": []
+    },
+    {
+     "id": "chicago-soul",
+     "label": "Chicago soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "christian-r-and-b",
+     "label": "Christian R&B",
+     "tier": "niche",
+     "aliases": [
+      "gospel R&B"
+     ],
+     "refs": []
+    },
+    {
+     "id": "cinematic-soul",
+     "label": "Cinematic soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "deep-funk",
+     "label": "Deep funk",
+     "tier": "niche",
+     "aliases": [
+      "rare funk"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "go-go",
+     "label": "Go-go",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hip-hop-soul",
+     "label": "Hip-hop soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "memphis-soul",
+     "label": "Memphis soul",
+     "tier": "niche",
+     "aliases": [
+      "Stax sound"
+     ],
+     "refs": []
+    },
+    {
+     "id": "minneapolis-sound",
+     "label": "Minneapolis sound",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "new-orleans-funk",
+     "label": "New Orleans funk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "new-orleans-r-and-b",
+     "label": "New Orleans R&B",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pop-soul",
+     "label": "Pop soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-disco",
+     "label": "Post-disco",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "progressive-soul",
+     "label": "Progressive soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "smooth-soul",
+     "label": "Smooth soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "spirituals",
+     "label": "Spirituals",
+     "tier": "niche",
+     "aliases": [
+      "Negro spirituals"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "synth-funk",
+     "label": "Synth funk",
+     "tier": "niche",
+     "aliases": [
+      "electro-funk"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "uk-street-soul",
+     "label": "UK street soul",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "blues",
+   "label": "Blues",
+   "subgenres": [
+    {
+     "id": "boogie-woogie",
+     "label": "Boogie-woogie",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "british-blues",
+     "label": "British blues",
+     "tier": "core",
+     "aliases": [
+      "British blues boom"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chicago-blues",
+     "label": "Chicago blues",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "classic-female-blues",
+     "label": "Classic female blues",
+     "tier": "core",
+     "aliases": [
+      "vaudeville blues",
+      "classic blues"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "country-blues",
+     "label": "Country blues",
+     "tier": "core",
+     "aliases": [
+      "acoustic blues",
+      "folk blues",
+      "rural blues"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "delta-blues",
+     "label": "Delta blues",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electric-blues",
+     "label": "Electric blues",
+     "tier": "core",
+     "aliases": [
+      "urban blues"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jump-blues",
+     "label": "Jump blues",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "modern-electric-blues",
+     "label": "Modern electric blues",
+     "tier": "core",
+     "aliases": [
+      "contemporary blues"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "piedmont-blues",
+     "label": "Piedmont blues",
+     "tier": "core",
+     "aliases": [
+      "East Coast blues"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "soul-blues",
+     "label": "Soul blues",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "texas-blues",
+     "label": "Texas blues",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "barrelhouse",
+     "label": "Barrelhouse",
+     "tier": "niche",
+     "aliases": [
+      "barrelhouse piano"
+     ],
+     "refs": []
+    },
+    {
+     "id": "detroit-blues",
+     "label": "Detroit blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "dirty-blues",
+     "label": "Dirty blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "fife-and-drum-blues",
+     "label": "Fife and drum blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gospel-blues",
+     "label": "Gospel blues",
+     "tier": "niche",
+     "aliases": [
+      "holy blues"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "harmonica-blues",
+     "label": "Harmonica blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "hill-country-blues",
+     "label": "Hill country blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hokum-blues",
+     "label": "Hokum",
+     "tier": "niche",
+     "aliases": [
+      "hokum blues"
+     ],
+     "refs": []
+    },
+    {
+     "id": "jug-band",
+     "label": "Jug band",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kansas-city-blues",
+     "label": "Kansas City blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "louisiana-blues",
+     "label": "Louisiana blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "memphis-blues",
+     "label": "Memphis blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "new-orleans-blues",
+     "label": "New Orleans blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "piano-blues",
+     "label": "Piano blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "st-louis-blues",
+     "label": "St. Louis blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "swamp-blues",
+     "label": "Swamp blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "west-coast-blues",
+     "label": "West Coast blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    }
+   ]
+  },
+  {
+   "id": "jazz",
+   "label": "Jazz",
+   "subgenres": [
+    {
+     "id": "acid-jazz",
+     "label": "Acid jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-cuban-jazz",
+     "label": "Afro-Cuban jazz",
+     "tier": "core",
+     "aliases": [
+      "Cubop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "avant-garde-jazz",
+     "label": "Avant-garde jazz",
+     "tier": "core",
+     "aliases": [
+      "avant-jazz"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bebop",
+     "label": "Bebop",
+     "tier": "core",
+     "aliases": [
+      "bop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "big-band",
+     "label": "Big band",
+     "tier": "core",
+     "aliases": [
+      "jazz orchestra"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "contemporary-jazz",
+     "label": "Contemporary jazz",
+     "tier": "core",
+     "aliases": [
+      "modern jazz"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "cool-jazz",
+     "label": "Cool jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dixieland",
+     "label": "Dixieland",
+     "tier": "core",
+     "aliases": [
+      "New Orleans jazz",
+      "hot jazz",
+      "early jazz"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "free-jazz",
+     "label": "Free jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gypsy-jazz",
+     "label": "Gypsy jazz",
+     "tier": "core",
+     "aliases": [
+      "jazz manouche",
+      "manouche",
+      "Hot Club jazz",
+      "gypsy swing"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hard-bop",
+     "label": "Hard bop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jazz-fusion",
+     "label": "Jazz fusion",
+     "tier": "core",
+     "aliases": [
+      "fusion"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jazz-funk",
+     "label": "Jazz-funk",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "latin-jazz",
+     "label": "Latin jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "modal-jazz",
+     "label": "Modal jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "post-bop",
+     "label": "Post-bop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ragtime",
+     "label": "Ragtime",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "smooth-jazz",
+     "label": "Smooth jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "soul-jazz",
+     "label": "Soul jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "spiritual-jazz",
+     "label": "Spiritual jazz",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "swing",
+     "label": "Swing",
+     "tier": "core",
+     "aliases": [
+      "swing era"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "vocal-jazz",
+     "label": "Vocal jazz",
+     "tier": "core",
+     "aliases": [
+      "jazz vocals"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-jazz",
+     "label": "Afro-jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "british-dance-band",
+     "label": "British dance band",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "cape-jazz",
+     "label": "Cape jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chamber-jazz",
+     "label": "Chamber jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "chicago-jazz",
+     "label": "Chicago jazz",
+     "tier": "niche",
+     "aliases": [
+      "Chicago-style jazz",
+      "Chicago Dixieland"
+     ],
+     "refs": []
+    },
+    {
+     "id": "continental-jazz",
+     "label": "Continental jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "crossover-jazz",
+     "label": "Crossover jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dark-jazz",
+     "label": "Dark jazz",
+     "tier": "niche",
+     "aliases": [
+      "jazz noir",
+      "doom jazz"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ecm-style-jazz",
+     "label": "ECM style jazz",
+     "tier": "niche",
+     "aliases": [
+      "Nordic jazz"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "ethio-jazz",
+     "label": "Ethio-jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ethno-jazz",
+     "label": "Ethno jazz",
+     "tier": "niche",
+     "aliases": [
+      "world fusion jazz"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "european-free-jazz",
+     "label": "European free jazz",
+     "tier": "niche",
+     "aliases": [
+      "European free improvisation"
+     ],
+     "refs": []
+    },
+    {
+     "id": "flamenco-jazz",
+     "label": "Flamenco jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "free-funk",
+     "label": "Free funk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "indo-jazz",
+     "label": "Indo jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jazz-blues",
+     "label": "Jazz blues",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jazz-poetry",
+     "label": "Jazz poetry",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "jazz-pop",
+     "label": "Jazz pop",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jazz-rock",
+     "label": "Jazz rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "kansas-city-jazz",
+     "label": "Kansas City jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "loft-jazz",
+     "label": "Loft jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "m-base",
+     "label": "M-Base",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "mainstream-jazz",
+     "label": "Mainstream jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "marabi",
+     "label": "Marabi",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neo-bop",
+     "label": "Neo-bop",
+     "tier": "niche",
+     "aliases": [
+      "young lions"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neo-swing",
+     "label": "Neo-swing",
+     "tier": "niche",
+     "aliases": [
+      "swing revival"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "orchestral-jazz",
+     "label": "Orchestral jazz",
+     "tier": "niche",
+     "aliases": [
+      "symphonic jazz"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-big-band",
+     "label": "Progressive big band",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "punk-jazz",
+     "label": "Punk jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "samba-jazz",
+     "label": "Samba-jazz",
+     "tier": "niche",
+     "aliases": [
+      "Brazilian jazz",
+      "jazz-samba"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "straight-ahead-jazz",
+     "label": "Straight-ahead jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "stride",
+     "label": "Stride piano",
+     "tier": "niche",
+     "aliases": [
+      "stride jazz"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "third-stream",
+     "label": "Third stream",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "trad-jazz",
+     "label": "Trad jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "west-coast-jazz",
+     "label": "West Coast jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    }
+   ]
+  },
+  {
+   "id": "folk",
+   "label": "Folk & Country",
+   "subgenres": [
+    {
+     "id": "alt-country",
+     "label": "Alt-country",
+     "tier": "core",
+     "aliases": [
+      "alternative country",
+      "insurgent country"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "americana",
+     "label": "Americana",
+     "tier": "core",
+     "aliases": [
+      "roots music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bluegrass",
+     "label": "Bluegrass",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "contemporary-country",
+     "label": "Contemporary country",
+     "tier": "core",
+     "aliases": [
+      "modern country",
+      "mainstream country"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "contemporary-folk",
+     "label": "Contemporary folk",
+     "tier": "core",
+     "aliases": [
+      "modern folk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "country-pop",
+     "label": "Country pop",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "honky-tonk",
+     "label": "Honky tonk",
+     "tier": "core",
+     "aliases": [
+      "honky-tonk country"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "indie-folk",
+     "label": "Indie folk",
+     "tier": "core",
+     "aliases": [
+      "nu-folk"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "outlaw-country",
+     "label": "Outlaw country",
+     "tier": "core",
+     "aliases": [
+      "outlaw"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "traditional-folk",
+     "label": "Traditional folk",
+     "tier": "core",
+     "aliases": [
+      "trad folk",
+      "folk ballads"
+     ],
+     "refs": []
+    },
+    {
+     "id": "american-primitive-guitar",
+     "label": "American primitive guitar",
+     "tier": "niche",
+     "aliases": [
+      "American primitivism",
+      "fingerstyle primitive"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "anti-folk",
+     "label": "Anti-folk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "appalachian-folk",
+     "label": "Appalachian folk",
+     "tier": "niche",
+     "aliases": [
+      "mountain music",
+      "Appalachian music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "avant-folk",
+     "label": "Avant-folk",
+     "tier": "niche",
+     "aliases": [
+      "experimental folk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bakersfield-sound",
+     "label": "Bakersfield sound",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bro-country",
+     "label": "Bro-country",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bush-ballad",
+     "label": "Bush ballad",
+     "tier": "niche",
+     "aliases": [
+      "Australian country"
+     ],
+     "refs": []
+    },
+    {
+     "id": "cajun",
+     "label": "Cajun",
+     "tier": "niche",
+     "aliases": [
+      "Cajun music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chamber-folk",
+     "label": "Chamber folk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "country-gospel",
+     "label": "Country gospel",
+     "tier": "niche",
+     "aliases": [
+      "southern gospel",
+      "bluegrass gospel"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "filk",
+     "label": "Filk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "folk-baroque",
+     "label": "Folk baroque",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "folk-revival",
+     "label": "Folk revival",
+     "tier": "niche",
+     "aliases": [
+      "American folk revival",
+      "British folk revival",
+      "second folk revival"
+     ],
+     "refs": []
+    },
+    {
+     "id": "freak-folk",
+     "label": "Freak folk",
+     "tier": "niche",
+     "aliases": [
+      "new weird America"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gothic-country",
+     "label": "Gothic country",
+     "tier": "niche",
+     "aliases": [
+      "dark country",
+      "Southern Gothic"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hillbilly-boogie",
+     "label": "Hillbilly boogie",
+     "tier": "niche",
+     "aliases": [
+      "country boogie",
+      "hillbilly"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nashville-sound",
+     "label": "Nashville sound",
+     "tier": "niche",
+     "aliases": [
+      "countrypolitan"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "neofolk",
+     "label": "Neofolk",
+     "tier": "niche",
+     "aliases": [
+      "apocalyptic folk",
+      "dark folk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neotraditional-country",
+     "label": "Neotraditional country",
+     "tier": "niche",
+     "aliases": [
+      "new traditionalist"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "old-time",
+     "label": "Old-time",
+     "tier": "niche",
+     "aliases": [
+      "old-time string band",
+      "string band"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-bluegrass",
+     "label": "Progressive bluegrass",
+     "tier": "niche",
+     "aliases": [
+      "newgrass"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-country",
+     "label": "Progressive country",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "progressive-folk",
+     "label": "Progressive folk",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "psychedelic-folk",
+     "label": "Psychedelic folk",
+     "tier": "niche",
+     "aliases": [
+      "psych folk",
+      "acid folk"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "red-dirt",
+     "label": "Red dirt",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sacred-harp",
+     "label": "Sacred Harp",
+     "tier": "niche",
+     "aliases": [
+      "shape-note singing"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sea-shanty",
+     "label": "Sea shanty",
+     "tier": "niche",
+     "aliases": [
+      "shanty",
+      "sea song"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "stomp-and-holler",
+     "label": "Stomp and holler",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "texas-country",
+     "label": "Texas country",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "truck-driving-country",
+     "label": "Truck-driving country",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "western-music",
+     "label": "Western",
+     "tier": "niche",
+     "aliases": [
+      "cowboy music",
+      "cowboy songs"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "western-swing",
+     "label": "Western swing",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "zydeco",
+     "label": "Zydeco",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "latin",
+   "label": "Latin",
+   "subgenres": [
+    {
+     "id": "bachata",
+     "label": "Bachata",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "banda",
+     "label": "Banda",
+     "tier": "core",
+     "aliases": [
+      "banda sinaloense"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bolero",
+     "label": "Bolero",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bossa-nova",
+     "label": "Bossa nova",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "corridos-tumbados",
+     "label": "Corridos tumbados",
+     "tier": "core",
+     "aliases": [
+      "trap corridos"
+     ],
+     "refs": []
+    },
+    {
+     "id": "cumbia",
+     "label": "Cumbia",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "forro",
+     "label": "Forró",
+     "tier": "core",
+     "aliases": [
+      "xote",
+      "xaxado"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "funk-carioca",
+     "label": "Funk carioca",
+     "tier": "core",
+     "aliases": [
+      "baile funk",
+      "funk brasileiro"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "latin-pop",
+     "label": "Latin pop",
+     "tier": "core",
+     "aliases": [
+      "pop latino",
+      "balada"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "latin-trap",
+     "label": "Latin trap",
+     "tier": "core",
+     "aliases": [
+      "trap latino"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mariachi",
+     "label": "Mariachi",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "merengue",
+     "label": "Merengue",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "mpb",
+     "label": "MPB",
+     "tier": "core",
+     "aliases": [
+      "música popular brasileira"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "norteno",
+     "label": "Norteño",
+     "tier": "core",
+     "aliases": [
+      "conjunto norteño",
+      "música norteña"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ranchera",
+     "label": "Ranchera",
+     "tier": "core",
+     "aliases": [
+      "canción ranchera"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "reggaeton",
+     "label": "Reggaeton",
+     "tier": "core",
+     "aliases": [
+      "reguetón"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "regional-mexican",
+     "label": "Regional Mexican",
+     "tier": "core",
+     "aliases": [
+      "música regional mexicana"
+     ],
+     "refs": []
+    },
+    {
+     "id": "rock-en-espanol",
+     "label": "Rock en español",
+     "tier": "core",
+     "aliases": [
+      "Latin rock",
+      "rock latino",
+      "rock nacional"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "salsa",
+     "label": "Salsa",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "samba",
+     "label": "Samba",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sertanejo",
+     "label": "Sertanejo",
+     "tier": "core",
+     "aliases": [
+      "música sertaneja",
+      "sertanejo universitário"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "son-cubano",
+     "label": "Son cubano",
+     "tier": "core",
+     "aliases": [
+      "son",
+      "Cubano"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "tango",
+     "label": "Tango",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-peruvian",
+     "label": "Afro-Peruvian",
+     "tier": "niche",
+     "aliases": [
+      "landó",
+      "festejo"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "andean",
+     "label": "Andean",
+     "tier": "niche",
+     "aliases": [
+      "huayno",
+      "música andina",
+      "sikuri"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "arrocha",
+     "label": "Arrocha",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "axe",
+     "label": "Axé",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "baiao",
+     "label": "Baião",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "batucada",
+     "label": "Batucada",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bomba",
+     "label": "Bomba",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "brega",
+     "label": "Brega",
+     "tier": "niche",
+     "aliases": [
+      "tecnobrega"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bullerengue",
+     "label": "Bullerengue",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "candombe",
+     "label": "Candombe",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cha-cha-cha",
+     "label": "Cha-cha-chá",
+     "tier": "niche",
+     "aliases": [
+      "cha-cha"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chacarera",
+     "label": "Chacarera",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chamame",
+     "label": "Chamamé",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "champeta",
+     "label": "Champeta",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "changui",
+     "label": "Changüí",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "charanga",
+     "label": "Charanga",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chicha",
+     "label": "Chicha",
+     "tier": "niche",
+     "aliases": [
+      "cumbia peruana"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "choro",
+     "label": "Choro",
+     "tier": "niche",
+     "aliases": [
+      "chorinho"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "corrido",
+     "label": "Corrido",
+     "tier": "niche",
+     "aliases": [
+      "narcocorrido"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cueca",
+     "label": "Cueca",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cumbia-villera",
+     "label": "Cumbia villera",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "danzon",
+     "label": "Danzón",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dembow",
+     "label": "Dembow (Dominican)",
+     "tier": "niche",
+     "aliases": [
+      "dembow dominicano"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "descarga",
+     "label": "Descarga",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "duranguense",
+     "label": "Duranguense",
+     "tier": "niche",
+     "aliases": [
+      "pasito duranguense"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "frevo",
+     "label": "Frevo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "guajira",
+     "label": "Guajira",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "guaracha",
+     "label": "Guaracha",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "guarania",
+     "label": "Guarania",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "huapango",
+     "label": "Huapango",
+     "tier": "niche",
+     "aliases": [
+      "son huasteco"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "joropo",
+     "label": "Joropo",
+     "tier": "niche",
+     "aliases": [
+      "música llanera"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "jovem-guarda",
+     "label": "Jovem Guarda",
+     "tier": "niche",
+     "aliases": [
+      "iê-iê-iê"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "lambada",
+     "label": "Lambada",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "boogaloo",
+     "label": "Latin boogaloo",
+     "tier": "niche",
+     "aliases": [
+      "bugalú"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "mambo",
+     "label": "Mambo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "manguebeat",
+     "label": "Manguebeat",
+     "tier": "niche",
+     "aliases": [
+      "mangue bit"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "maracatu",
+     "label": "Maracatu",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "marimba",
+     "label": "Marimba",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "musica-criolla",
+     "label": "Música criolla",
+     "tier": "niche",
+     "aliases": [
+      "vals criollo"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nueva-cancion",
+     "label": "Nueva canción",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nueva-trova",
+     "label": "Nueva trova",
+     "tier": "niche",
+     "aliases": [
+      "trova"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nuevo-tango",
+     "label": "Nuevo tango",
+     "tier": "niche",
+     "aliases": [
+      "electrotango",
+      "neotango"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pachanga",
+     "label": "Pachanga",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "pagode",
+     "label": "Pagode",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "piseiro",
+     "label": "Piseiro",
+     "tier": "niche",
+     "aliases": [
+      "pisadinha"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "plena",
+     "label": "Plena",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "porro",
+     "label": "Porro",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afro-cuban-rumba",
+     "label": "Rumba (Cuban)",
+     "tier": "niche",
+     "aliases": [
+      "guaguancó",
+      "yambú",
+      "columbia"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "salsa-romantica",
+     "label": "Salsa romántica",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "samba-cancao",
+     "label": "Samba-canção",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "samba-enredo",
+     "label": "Samba-enredo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "samba-reggae",
+     "label": "Samba-reggae",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "samba-rock",
+     "label": "Samba-rock",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sierreno",
+     "label": "Sierreño",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "son-jarocho",
+     "label": "Son jarocho",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "son-montuno",
+     "label": "Son montuno",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "songo",
+     "label": "Songo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "tejano",
+     "label": "Tejano",
+     "tier": "niche",
+     "aliases": [
+      "Tex-Mex"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "timba",
+     "label": "Timba",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "tropicalia",
+     "label": "Tropicália",
+     "tier": "niche",
+     "aliases": [
+      "tropicalismo"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "vallenato",
+     "label": "Vallenato",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "zamba",
+     "label": "Zamba",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "caribbean",
+   "label": "Reggae & Caribbean",
+   "subgenres": [
+    {
+     "id": "two-tone",
+     "label": "2 Tone",
+     "tier": "core",
+     "aliases": [
+      "ska revival"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "calypso",
+     "label": "Calypso",
+     "tier": "core",
+     "aliases": [
+      "kaiso"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dancehall",
+     "label": "Dancehall",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "dub",
+     "label": "Dub",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "kompa",
+     "label": "Kompa",
+     "tier": "core",
+     "aliases": [
+      "compas",
+      "konpa",
+      "compas direct"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "lovers-rock",
+     "label": "Lovers rock",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "reggae",
+     "label": "Reggae",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rocksteady",
+     "label": "Rocksteady",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "roots-reggae",
+     "label": "Roots reggae",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "ska",
+     "label": "Ska",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "soca",
+     "label": "Soca",
+     "tier": "core",
+     "aliases": [
+      "power soca",
+      "groovy soca"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "zouk",
+     "label": "Zouk",
+     "tier": "core",
+     "aliases": [
+      "zouk love"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "biguine",
+     "label": "Biguine",
+     "tier": "niche",
+     "aliases": [
+      "beguine"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "bouyon",
+     "label": "Bouyon",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bele",
+     "label": "Bèlè",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cadence-lypso",
+     "label": "Cadence-lypso",
+     "tier": "niche",
+     "aliases": [
+      "kadans"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chutney",
+     "label": "Chutney",
+     "tier": "niche",
+     "aliases": [
+      "chutney soca"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dennery-segment",
+     "label": "Dennery segment",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dub-poetry",
+     "label": "Dub poetry",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "early-reggae",
+     "label": "Early reggae",
+     "tier": "niche",
+     "aliases": [
+      "skinhead reggae"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gwo-ka",
+     "label": "Gwo ka",
+     "tier": "niche",
+     "aliases": [
+      "gwoka"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "meringue-haitian",
+     "label": "Haitian méringue",
+     "tier": "niche",
+     "aliases": [
+      "méringue"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "junkanoo",
+     "label": "Junkanoo",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kaseko",
+     "label": "Kaseko",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mento",
+     "label": "Mento",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mini-jazz",
+     "label": "Mini-jazz",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "nyabinghi",
+     "label": "Nyabinghi",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "island-reggae",
+     "label": "Pacific reggae",
+     "tier": "niche",
+     "aliases": [
+      "island reggae"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "parang",
+     "label": "Parang",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "punta",
+     "label": "Punta",
+     "tier": "niche",
+     "aliases": [
+      "punta rock"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "quelbe",
+     "label": "Quelbe",
+     "tier": "niche",
+     "aliases": [
+      "scratch band"
+     ],
+     "refs": []
+    },
+    {
+     "id": "ragga",
+     "label": "Ragga",
+     "tier": "niche",
+     "aliases": [
+      "raggamuffin",
+      "digital dancehall"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "rake-and-scrape",
+     "label": "Rake-and-scrape",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "rapso",
+     "label": "Rapso",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rara",
+     "label": "Rara",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "reggae-fusion",
+     "label": "Reggae fusion",
+     "tier": "niche",
+     "aliases": [
+      "reggae-pop"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "reggae-gospel",
+     "label": "Reggae gospel",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "shatta",
+     "label": "Shatta",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "spouge",
+     "label": "Spouge",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "steelpan",
+     "label": "Steelband",
+     "tier": "niche",
+     "aliases": [
+      "steel pan"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "steppers",
+     "label": "Steppers",
+     "tier": "niche",
+     "aliases": [
+      "UK dub",
+      "digital dub"
+     ],
+     "refs": []
+    },
+    {
+     "id": "twoubadou",
+     "label": "Twoubadou",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "world",
+   "label": "World",
+   "subgenres": [
+    {
+     "id": "afrobeat",
+     "label": "Afrobeat",
+     "tier": "core",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "afrobeats",
+     "label": "Afrobeats",
+     "tier": "core",
+     "aliases": [
+      "afropop (Nigeria/Ghana)"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "desert-blues",
+     "label": "Desert blues",
+     "tier": "core",
+     "aliases": [
+      "assouf",
+      "tishoumaren",
+      "Tuareg guitar"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "highlife",
+     "label": "Highlife",
+     "tier": "core",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "juju",
+     "label": "Jùjú",
+     "tier": "core",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mbalax",
+     "label": "Mbalax",
+     "tier": "core",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "soukous",
+     "label": "Soukous",
+     "tier": "core",
+     "aliases": [
+      "rumba congolaise",
+      "Congolese rumba"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "gamelan",
+     "label": "Gamelan",
+     "tier": "core",
+     "aliases": [
+      "Javanese gamelan",
+      "Balinese gamelan"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "balkan-brass",
+     "label": "Balkan brass",
+     "tier": "core",
+     "aliases": [
+      "truba"
+     ],
+     "region": "Europe",
+     "refs": []
+    },
+    {
+     "id": "celtic",
+     "label": "Celtic",
+     "tier": "core",
+     "aliases": [
+      "Irish traditional",
+      "Scottish traditional",
+      "sean-nós",
+      "Cape Breton fiddling"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "fado",
+     "label": "Fado",
+     "tier": "core",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "flamenco",
+     "label": "Flamenco",
+     "tier": "core",
+     "aliases": [
+      "cante jondo",
+      "nuevo flamenco"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "klezmer",
+     "label": "Klezmer",
+     "tier": "core",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "musette",
+     "label": "Musette",
+     "tier": "core",
+     "aliases": [
+      "bal-musette",
+      "valse musette"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chaabi",
+     "label": "Chaabi",
+     "tier": "core",
+     "aliases": [
+      "Algerian chaâbi",
+      "Moroccan chaabi",
+      "Egyptian shaabi"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gnawa",
+     "label": "Gnawa",
+     "tier": "core",
+     "aliases": [
+      "gnaoua"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rai",
+     "label": "Raï",
+     "tier": "core",
+     "aliases": [],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "hawaiian",
+     "label": "Hawaiian",
+     "tier": "core",
+     "aliases": [
+      "hapa haole"
+     ],
+     "region": "Oceania",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bhangra",
+     "label": "Bhangra",
+     "tier": "core",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "carnatic",
+     "label": "Carnatic",
+     "tier": "core",
+     "aliases": [
+      "Karnatic"
+     ],
+     "region": "South Asia",
+     "refs": []
+    },
+    {
+     "id": "hindustani",
+     "label": "Hindustani classical",
+     "tier": "core",
+     "aliases": [
+      "North Indian classical",
+      "raga"
+     ],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "qawwali",
+     "label": "Qawwali",
+     "tier": "core",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "entekhno",
+     "label": "Éntekhno",
+     "tier": "niche",
+     "aliases": [
+      "entechno"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "apala",
+     "label": "Apala",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "benga",
+     "label": "Benga",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bikutsi",
+     "label": "Bikutsi",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bongo-flava",
+     "label": "Bongo Flava",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chimurenga",
+     "label": "Chimurenga",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "coupe-decale",
+     "label": "Coupé-décalé",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "fuji",
+     "label": "Fuji",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "funana",
+     "label": "Funaná",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "griot",
+     "label": "Griot / Mande",
+     "tier": "niche",
+     "aliases": [
+      "jeli",
+      "Manding",
+      "kora music"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "hiplife",
+     "label": "Hiplife",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "isicathamiya",
+     "label": "Isicathamiya",
+     "tier": "niche",
+     "aliases": [
+      "mbube"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kizomba",
+     "label": "Kizomba",
+     "tier": "niche",
+     "aliases": [
+      "semba"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kuduro",
+     "label": "Kuduro",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kwaito",
+     "label": "Kwaito",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kwela",
+     "label": "Kwela",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "makossa",
+     "label": "Makossa",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "maloya",
+     "label": "Maloya",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "marrabenta",
+     "label": "Marrabenta",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "maskandi",
+     "label": "Maskandi",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": []
+    },
+    {
+     "id": "mbaqanga",
+     "label": "Mbaqanga",
+     "tier": "niche",
+     "aliases": [
+      "township jive"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "morna",
+     "label": "Morna",
+     "tier": "niche",
+     "aliases": [
+      "coladeira"
+     ],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ndombolo",
+     "label": "Ndombolo",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": []
+    },
+    {
+     "id": "palm-wine",
+     "label": "Palm-wine",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sega",
+     "label": "Séga",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "taarab",
+     "label": "Taarab",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "wassoulou",
+     "label": "Wassoulou",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "zouglou",
+     "label": "Zouglou",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "native-american",
+     "label": "Native American",
+     "tier": "niche",
+     "aliases": [
+      "powwow",
+      "First Nations music"
+     ],
+     "region": "Americas (non-Latin)",
+     "refs": []
+    },
+    {
+     "id": "mugham",
+     "label": "Mugham",
+     "tier": "niche",
+     "aliases": [
+      "mugam"
+     ],
+     "region": "Central Asia & Caucasus",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "shashmaqam",
+     "label": "Shashmaqam",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Central Asia & Caucasus",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "throat-singing",
+     "label": "Throat singing",
+     "tier": "niche",
+     "aliases": [
+      "overtone singing",
+      "khoomei"
+     ],
+     "region": "Central Asia & Caucasus",
+     "refs": []
+    },
+    {
+     "id": "worldbeat",
+     "label": "Worldbeat",
+     "tier": "niche",
+     "aliases": [
+      "world fusion"
+     ],
+     "region": "Cross-regional",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ca-tru",
+     "label": "Ca trù",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chinese-opera",
+     "label": "Chinese opera",
+     "tier": "niche",
+     "aliases": [
+      "Peking opera",
+      "Cantonese opera"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "chinese-traditional",
+     "label": "Chinese traditional",
+     "tier": "niche",
+     "aliases": [
+      "guoyue",
+      "Chinese classical"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "dangdut",
+     "label": "Dangdut",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gagaku",
+     "label": "Gagaku",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gugak",
+     "label": "Gugak",
+     "tier": "niche",
+     "aliases": [
+      "Korean traditional"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": []
+    },
+    {
+     "id": "hogaku",
+     "label": "Hōgaku",
+     "tier": "niche",
+     "aliases": [
+      "Japanese traditional",
+      "shakuhachi",
+      "koto"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": []
+    },
+    {
+     "id": "jaipongan",
+     "label": "Jaipongan",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kroncong",
+     "label": "Kroncong",
+     "tier": "niche",
+     "aliases": [
+      "keroncong"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kulintang",
+     "label": "Kulintang",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "kundiman",
+     "label": "Kundiman",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "luk-thung",
+     "label": "Luk thung",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "minyo",
+     "label": "Min'yō",
+     "tier": "niche",
+     "aliases": [
+      "Japanese folk"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mor-lam",
+     "label": "Mor lam",
+     "tier": "niche",
+     "aliases": [
+      "molam"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "nhac-vang",
+     "label": "Nhạc vàng",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "okinawan",
+     "label": "Okinawan",
+     "tier": "niche",
+     "aliases": [
+      "shima-uta"
+     ],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pansori",
+     "label": "Pansori",
+     "tier": "niche",
+     "aliases": [],
+     "region": "East & Southeast Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "bal-folk",
+     "label": "Bal folk",
+     "tier": "niche",
+     "aliases": [
+      "folk dance revival"
+     ],
+     "region": "Europe",
+     "refs": []
+    },
+    {
+     "id": "basque",
+     "label": "Basque",
+     "tier": "niche",
+     "aliases": [
+      "trikitixa"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "breton",
+     "label": "Breton",
+     "tier": "niche",
+     "aliases": [
+      "fest-noz",
+      "kan ha diskan"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "canzone-napoletana",
+     "label": "Canzone napoletana",
+     "tier": "niche",
+     "aliases": [
+      "Neapolitan song"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "cobla",
+     "label": "Cobla / sardana",
+     "tier": "niche",
+     "aliases": [
+      "Catalan music"
+     ],
+     "region": "Europe",
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "copla",
+     "label": "Copla",
+     "tier": "niche",
+     "aliases": [
+      "canción española"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "polyphonic-corsican",
+     "label": "Corsican & Sardinian polyphony",
+     "tier": "niche",
+     "aliases": [
+      "paghjella",
+      "cantu a tenore"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "cretan",
+     "label": "Cretan",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": []
+    },
+    {
+     "id": "georgian-polyphony",
+     "label": "Georgian polyphony",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": []
+    },
+    {
+     "id": "italian-folk",
+     "label": "Italian folk",
+     "tier": "niche",
+     "aliases": [
+      "tarantella",
+      "pizzica"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "joik",
+     "label": "Joik",
+     "tier": "niche",
+     "aliases": [
+      "yoik"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "laiko",
+     "label": "Laïkó",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "nordic-folk",
+     "label": "Nordic folk",
+     "tier": "niche",
+     "aliases": [
+      "Scandinavian folk"
+     ],
+     "region": "Europe",
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "polka",
+     "label": "Polka",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chalga",
+     "label": "Pop-folk (Balkan)",
+     "tier": "niche",
+     "aliases": [
+      "chalga",
+      "turbo-folk",
+      "manele"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rebetiko",
+     "label": "Rebetiko",
+     "tier": "niche",
+     "aliases": [
+      "rembetika"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "romani",
+     "label": "Romani",
+     "tier": "niche",
+     "aliases": [
+      "Gypsy music",
+      "lăutari"
+     ],
+     "region": "Europe",
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "rumba-catalana",
+     "label": "Rumba catalana",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "russian-romance",
+     "label": "Russian chanson",
+     "tier": "niche",
+     "aliases": [
+      "Russian romance",
+      "blatnaya pesnya"
+     ],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sephardic",
+     "label": "Sephardic",
+     "tier": "niche",
+     "aliases": [
+      "Ladino song"
+     ],
+     "region": "Europe",
+     "refs": []
+    },
+    {
+     "id": "sevdalinka",
+     "label": "Sevdalinka",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Europe",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "volksmusik",
+     "label": "Volksmusik",
+     "tier": "niche",
+     "aliases": [
+      "alpine folk",
+      "yodel"
+     ],
+     "region": "Europe",
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "andalusian-classical",
+     "label": "Andalusi nubah",
+     "tier": "niche",
+     "aliases": [
+      "Andalusian classical",
+      "malouf"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "arabesk",
+     "label": "Arabesk",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "arabic-classical",
+     "label": "Arabic classical",
+     "tier": "niche",
+     "aliases": [
+      "tarab",
+      "maqam"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": []
+    },
+    {
+     "id": "dabke",
+     "label": "Dabke",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "khaleeji",
+     "label": "Khaleeji",
+     "tier": "niche",
+     "aliases": [],
+     "region": "Middle East & North Africa",
+     "refs": []
+    },
+    {
+     "id": "mahraganat",
+     "label": "Mahraganat",
+     "tier": "niche",
+     "aliases": [
+      "electro-chaabi"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "mizrahi",
+     "label": "Mizrahi",
+     "tier": "niche",
+     "aliases": [
+      "muzika mizrahit"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ottoman-classical",
+     "label": "Ottoman classical",
+     "tier": "niche",
+     "aliases": [
+      "Turkish classical",
+      "makam"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "persian-classical",
+     "label": "Persian classical",
+     "tier": "niche",
+     "aliases": [
+      "dastgah"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "turkish-folk",
+     "label": "Turkish folk",
+     "tier": "niche",
+     "aliases": [
+      "türkü",
+      "halk müziği"
+     ],
+     "region": "Middle East & North Africa",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "aboriginal",
+     "label": "Aboriginal Australian",
+     "tier": "niche",
+     "aliases": [
+      "didgeridoo music"
+     ],
+     "region": "Oceania",
+     "refs": []
+    },
+    {
+     "id": "pacific",
+     "label": "Pacific Islands",
+     "tier": "niche",
+     "aliases": [
+      "Polynesian",
+      "Melanesian",
+      "Māori"
+     ],
+     "region": "Oceania",
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "slack-key-guitar",
+     "label": "Slack-key guitar",
+     "tier": "niche",
+     "aliases": [
+      "kī hōʻalu"
+     ],
+     "region": "Oceania",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "baila",
+     "label": "Baila",
+     "tier": "niche",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "baul",
+     "label": "Baul",
+     "tier": "niche",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": []
+    },
+    {
+     "id": "bhajan",
+     "label": "Bhajan / kirtan",
+     "tier": "niche",
+     "aliases": [
+      "devotional Hindu song"
+     ],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ghazal",
+     "label": "Ghazal",
+     "tier": "niche",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "rabindra-sangeet",
+     "label": "Rabindra Sangeet",
+     "tier": "niche",
+     "aliases": [],
+     "region": "South Asia",
+     "refs": []
+    }
+   ]
+  },
+  {
+   "id": "classical",
+   "label": "Classical",
+   "subgenres": [
+    {
+     "id": "baroque",
+     "label": "Baroque",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "chamber-music",
+     "label": "Chamber music",
+     "tier": "core",
+     "aliases": [
+      "string quartet",
+      "piano trio"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "choral",
+     "label": "Choral",
+     "tier": "core",
+     "aliases": [
+      "sacred choral",
+      "oratorio",
+      "mass"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "classical-period",
+     "label": "Classical period",
+     "tier": "core",
+     "aliases": [
+      "Viennese classicism"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "contemporary-classical",
+     "label": "Contemporary classical",
+     "tier": "core",
+     "aliases": [
+      "new music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "minimalism",
+     "label": "Minimalism",
+     "tier": "core",
+     "aliases": [
+      "minimal music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "modern-classical",
+     "label": "Modern classical",
+     "tier": "core",
+     "aliases": [
+      "20th-century classical",
+      "modernism"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neoclassical-new-age",
+     "label": "Neoclassical (post-classical)",
+     "tier": "core",
+     "aliases": [
+      "post-classical",
+      "modern classical piano"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "opera",
+     "label": "Opera",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "orchestral",
+     "label": "Orchestral",
+     "tier": "core",
+     "aliases": [
+      "symphonic",
+      "symphony",
+      "concerto"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "romantic",
+     "label": "Romantic",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "solo-piano",
+     "label": "Solo piano",
+     "tier": "core",
+     "aliases": [
+      "keyboard"
+     ],
+     "refs": []
+    },
+    {
+     "id": "art-song",
+     "label": "Art song",
+     "tier": "niche",
+     "aliases": [
+      "lied",
+      "mélodie"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "ballet",
+     "label": "Ballet",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "classical-crossover",
+     "label": "Classical crossover",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "classical-guitar",
+     "label": "Classical guitar",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "concert-band",
+     "label": "Concert band",
+     "tier": "niche",
+     "aliases": [
+      "wind band",
+      "wind ensemble"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "expressionism",
+     "label": "Expressionism",
+     "tier": "niche",
+     "aliases": [
+      "Second Viennese School"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "gregorian-chant",
+     "label": "Gregorian chant",
+     "tier": "niche",
+     "aliases": [
+      "plainchant",
+      "plainsong"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "holy-minimalism",
+     "label": "Holy minimalism",
+     "tier": "niche",
+     "aliases": [
+      "mystic minimalism",
+      "tintinnabuli"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "impressionism",
+     "label": "Impressionism",
+     "tier": "niche",
+     "aliases": [
+      "Impressionist"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "medieval",
+     "label": "Medieval",
+     "tier": "niche",
+     "aliases": [
+      "early music",
+      "ars nova"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neo-romanticism",
+     "label": "Neo-romanticism",
+     "tier": "niche",
+     "aliases": [
+      "Neo-Romantic"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "neoclassicism-20c",
+     "label": "Neoclassicism (20th c.)",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "new-complexity",
+     "label": "New complexity",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "operetta",
+     "label": "Operetta",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "post-minimalism",
+     "label": "Post-minimalism",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "postmodern-classical",
+     "label": "Postmodern classical",
+     "tier": "niche",
+     "aliases": [
+      "postmodern music"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "renaissance",
+     "label": "Renaissance",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "serialism",
+     "label": "Serialism",
+     "tier": "niche",
+     "aliases": [
+      "twelve-tone",
+      "dodecaphony"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "spectral-music",
+     "label": "Spectralism",
+     "tier": "niche",
+     "aliases": [
+      "spectral music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "zarzuela",
+     "label": "Zarzuela",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "screen",
+   "label": "Stage & Screen",
+   "subgenres": [
+    {
+     "id": "film-score",
+     "label": "Film score",
+     "tier": "core",
+     "aliases": [
+      "score",
+      "original motion picture score"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "musical-theatre",
+     "label": "Musical theatre",
+     "tier": "core",
+     "aliases": [
+      "Broadway",
+      "cast recording",
+      "West End",
+      "Musical"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "soundtrack",
+     "label": "Soundtrack (compilation)",
+     "tier": "core",
+     "aliases": [
+      "OST",
+      "song soundtrack"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "tv-music",
+     "label": "Television music",
+     "tier": "core",
+     "aliases": [
+      "TV soundtrack",
+      "theme"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "video-game-music",
+     "label": "Video game music",
+     "tier": "core",
+     "aliases": [
+      "VGM",
+      "game soundtrack"
+     ],
+     "refs": []
+    },
+    {
+     "id": "anime-music",
+     "label": "Anime music",
+     "tier": "niche",
+     "aliases": [
+      "anison"
+     ],
+     "refs": []
+    },
+    {
+     "id": "cabaret",
+     "label": "Cabaret",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "incidental-music",
+     "label": "Incidental music",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "jingle",
+     "label": "Jingles & advertising",
+     "tier": "niche",
+     "aliases": [
+      "ad music"
+     ],
+     "refs": []
+    },
+    {
+     "id": "library-music",
+     "label": "Library music",
+     "tier": "niche",
+     "aliases": [
+      "production music",
+      "stock music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "spaghetti-western",
+     "label": "Spaghetti western score",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "trailer-music",
+     "label": "Trailer music",
+     "tier": "niche",
+     "aliases": [
+      "epic music"
+     ],
+     "refs": []
+    }
+   ]
+  },
+  {
+   "id": "experimental",
+   "label": "Experimental",
+   "subgenres": [
+    {
+     "id": "avant-garde",
+     "label": "Avant-garde",
+     "tier": "core",
+     "aliases": [
+      "experimental music (generic)"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "drone",
+     "label": "Drone",
+     "tier": "core",
+     "aliases": [
+      "drone music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "electroacoustic",
+     "label": "Electroacoustic",
+     "tier": "core",
+     "aliases": [
+      "acousmatic music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "free-improvisation",
+     "label": "Free improvisation",
+     "tier": "core",
+     "aliases": [
+      "free improv",
+      "non-idiomatic improvisation"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "musique-concrete",
+     "label": "Musique concrète",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "noise",
+     "label": "Noise",
+     "tier": "core",
+     "aliases": [
+      "noise music"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "aleatoric",
+     "label": "Aleatoric music",
+     "tier": "niche",
+     "aliases": [
+      "chance music",
+      "indeterminacy"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "circuit-bending",
+     "label": "Circuit bending",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "computer-music",
+     "label": "Computer music",
+     "tier": "niche",
+     "aliases": [
+      "algorithmic composition"
+     ],
+     "refs": []
+    },
+    {
+     "id": "eai",
+     "label": "Electroacoustic improvisation",
+     "tier": "niche",
+     "aliases": [
+      "EAI",
+      "reductionism"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "field-recording",
+     "label": "Field recording",
+     "tier": "niche",
+     "aliases": [
+      "phonography"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "generative-music",
+     "label": "Generative music",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "harsh-noise",
+     "label": "Harsh noise",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "harsh-noise-wall",
+     "label": "Harsh noise wall",
+     "tier": "niche",
+     "aliases": [
+      "HNW"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "japanoise",
+     "label": "Japanoise",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "live-electronics",
+     "label": "Live electronics",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "lowercase",
+     "label": "Lowercase",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "microtonal",
+     "label": "Microtonal",
+     "tier": "niche",
+     "aliases": [
+      "just intonation",
+      "xenharmonic"
+     ],
+     "refs": []
+    },
+    {
+     "id": "onkyo",
+     "label": "Onkyō",
+     "tier": "niche",
+     "aliases": [
+      "onkyokei"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "outsider-music",
+     "label": "Outsider music",
+     "tier": "niche",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "plunderphonics",
+     "label": "Plunderphonics",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "power-electronics",
+     "label": "Power electronics",
+     "tier": "niche",
+     "aliases": [
+      "death industrial"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sound-art",
+     "label": "Sound art",
+     "tier": "niche",
+     "aliases": [
+      "sound installation"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "sound-collage",
+     "label": "Sound collage",
+     "tier": "niche",
+     "aliases": [
+      "cut-up"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sound-poetry",
+     "label": "Sound poetry",
+     "tier": "niche",
+     "aliases": [
+      "phonetic poetry"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "tape-music",
+     "label": "Tape music",
+     "tier": "niche",
+     "aliases": [
+      "tape loops"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "other",
+   "label": "Other",
+   "subgenres": [
+    {
+     "id": "a-cappella",
+     "label": "A cappella",
+     "tier": "core",
+     "aliases": [],
+     "refs": []
+    },
+    {
+     "id": "brass-band",
+     "label": "Brass band",
+     "tier": "core",
+     "aliases": [
+      "fanfare"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "childrens-music",
+     "label": "Children's music",
+     "tier": "core",
+     "aliases": [
+      "kids music"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "comedy",
+     "label": "Comedy",
+     "tier": "core",
+     "aliases": [
+      "stand-up"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "holiday",
+     "label": "Holiday",
+     "tier": "core",
+     "aliases": [
+      "Christmas",
+      "Noël",
+      "seasonal"
+     ],
+     "refs": []
+    },
+    {
+     "id": "meditation",
+     "label": "Meditation & relaxation",
+     "tier": "core",
+     "aliases": [
+      "relaxation",
+      "sleep music",
+      "wellness"
+     ],
+     "refs": []
+    },
+    {
+     "id": "nursery-rhymes",
+     "label": "Nursery rhymes",
+     "tier": "core",
+     "aliases": [
+      "comptines"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "spoken-word",
+     "label": "Spoken word",
+     "tier": "core",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "asmr",
+     "label": "ASMR",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "audiobook",
+     "label": "Audiobook",
+     "tier": "niche",
+     "aliases": [
+      "livre audio"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "barbershop",
+     "label": "Barbershop",
+     "tier": "niche",
+     "aliases": [
+      "barbershop quartet"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "childrens-story",
+     "label": "Children's story",
+     "tier": "niche",
+     "aliases": [
+      "story",
+      "contes"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "educational",
+     "label": "Educational",
+     "tier": "niche",
+     "aliases": [
+      "learning songs",
+      "Education"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "interview",
+     "label": "Interview",
+     "tier": "niche",
+     "aliases": [],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "karaoke",
+     "label": "Karaoke & backing tracks",
+     "tier": "niche",
+     "aliases": [
+      "instrumental versions",
+      "minus-one"
+     ],
+     "refs": []
+    },
+    {
+     "id": "marching-band",
+     "label": "Marching band",
+     "tier": "niche",
+     "aliases": [
+      "drum corps"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "military",
+     "label": "Military",
+     "tier": "niche",
+     "aliases": [
+      "military band",
+      "marches"
+     ],
+     "refs": [
+      "discogs"
+     ]
+    },
+    {
+     "id": "nature-sounds",
+     "label": "Nature sounds",
+     "tier": "niche",
+     "aliases": [
+      "environmental sounds"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "pipe-band",
+     "label": "Pipe band",
+     "tier": "niche",
+     "aliases": [
+      "pipe and drum"
+     ],
+     "refs": []
+    },
+    {
+     "id": "poetry",
+     "label": "Poetry",
+     "tier": "niche",
+     "aliases": [
+      "recited poetry"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "radio-play",
+     "label": "Radio play",
+     "tier": "niche",
+     "aliases": [
+      "radio drama",
+      "audio drama"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sermon",
+     "label": "Sermon & religious speech",
+     "tier": "niche",
+     "aliases": [
+      "preaching",
+      "religious"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "sound-effects",
+     "label": "Sound effects",
+     "tier": "niche",
+     "aliases": [
+      "SFX"
+     ],
+     "refs": [
+      "musicbrainz"
+     ]
+    },
+    {
+     "id": "speech",
+     "label": "Speech",
+     "tier": "niche",
+     "aliases": [
+      "political speech",
+      "monologue",
+      "Monolog",
+      "Dialogue"
+     ],
+     "refs": [
+      "musicbrainz",
+      "discogs"
+     ]
+    },
+    {
+     "id": "fitness",
+     "label": "Workout & fitness",
+     "tier": "niche",
+     "aliases": [
+      "workout music"
+     ],
+     "refs": []
+    }
+   ]
+  }
+ ],
+ "verified": {
+  "date": "2026-10-06",
+  "musicbrainz": "genre/all (2211 genres)",
+  "discogs": "400 most-used styles (Essentia genre_discogs400)"
+ }
+}

@@ -1,0 +1,6626 @@
+{
+ "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
+ "catalog_version": 32,
+ "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
+ "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
+ "_bench_comment": "Per-block `bench` (v26) = the block has NOT yet passed the engine-stall bench (tools/check-block-stall.py: does switching it on/off freeze Reaper?). Only value: \"pending\". The rack Designer still offers the block (a person can try it); golem.fm's AI must NOT propose it. The key is REMOVED once the bench concludes clean; a block that fails goes to `quarantine` instead. Never infer it from the plugin family: it is measured, block by block.",
+ "_exp_comment": "Per-param `exp: true` (v21) = a knob worth putting on the EXP pedal. The rack Designer shows the EXP chip ONLY on those knobs for a block that declares any (a block without the flag keeps the chip on every knob), and the Assign modal targets the first one. golem.fm's AI reads the same flag. `depends: {param: value}` = the knob only acts when that other param has that value (shown greyed otherwise).",
+ "_pedals_comment": "Named pedal ARCHETYPES (docs/archive/named-pedals.md) — each is a pedal-nam block pre-bound to a TONE3000 capture search. `match` = T3K query (gear=pedal). Adding one opens the capture picker pre-filtered (installed + downloadable). Pure DATA: the engine block stays type 'pedal-nam' + variant=id. Grows without code.",
+ "pedals": [
+  {
+   "id": "tube-screamer",
+   "name": "Tube Screamer",
+   "short": "TS",
+   "family": "overdrive",
+   "match": "tube screamer",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": [
+    "ts9",
+    "ts-9",
+    "ts808",
+    "ts 808",
+    "bonsai"
+   ]
+  },
+  {
+   "id": "klon",
+   "name": "Klon Centaur",
+   "short": "Klon",
+   "family": "overdrive",
+   "match": "klon",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": [
+    "centaur",
+    "ktr"
+   ]
+  },
+  {
+   "id": "bluesbreaker",
+   "name": "Bluesbreaker",
+   "short": "B-Brkr",
+   "family": "overdrive",
+   "match": "bluesbreaker",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "ocd",
+   "name": "OCD",
+   "short": "OCD",
+   "family": "overdrive",
+   "match": "ocd",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "blues-driver",
+   "name": "Blues Driver",
+   "short": "BD-2",
+   "family": "overdrive",
+   "match": "blues driver",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "timmy",
+   "name": "Timmy",
+   "short": "Timmy",
+   "family": "overdrive",
+   "match": "timmy",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "rat",
+   "name": "RAT",
+   "short": "RAT",
+   "family": "distortion",
+   "match": "rat",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": [
+    "proco"
+   ]
+  },
+  {
+   "id": "ds-1",
+   "name": "DS-1",
+   "short": "DS-1",
+   "family": "distortion",
+   "match": "ds-1",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": []
+  },
+  {
+   "id": "fortin-grind",
+   "name": "Fortin Grind",
+   "short": "Grind",
+   "family": "distortion",
+   "match": "fortin grind",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": [
+    "grind"
+   ]
+  },
+  {
+   "id": "fortin-33",
+   "name": "Fortin 33",
+   "short": "F-33",
+   "family": "distortion",
+   "match": "fortin 33",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": [
+    "fortin33"
+   ]
+  },
+  {
+   "id": "be-od",
+   "name": "Friedman BE-OD",
+   "short": "BE-OD",
+   "family": "distortion",
+   "match": "be-od",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": [
+    "be od"
+   ]
+  },
+  {
+   "id": "amp-in-a-box",
+   "name": "Amp-in-a-box",
+   "short": "Amp Box",
+   "family": "distortion",
+   "match": "amp in a box",
+   "glyph": "◆",
+   "color": "#ff7a3c",
+   "aliases": []
+  },
+  {
+   "id": "big-muff",
+   "name": "Big Muff",
+   "short": "Muff",
+   "family": "fuzz",
+   "match": "big muff",
+   "glyph": "✷",
+   "color": "#e05a3c",
+   "aliases": [
+    "op-amp muff"
+   ]
+  },
+  {
+   "id": "fuzz-face",
+   "name": "Fuzz Face",
+   "short": "Fuzz Fc",
+   "family": "fuzz",
+   "match": "fuzz face",
+   "glyph": "✷",
+   "color": "#e05a3c",
+   "aliases": [
+    "fuzzface"
+   ]
+  },
+  {
+   "id": "tone-bender",
+   "name": "Tone Bender",
+   "short": "Bender",
+   "family": "fuzz",
+   "match": "tone bender",
+   "glyph": "✷",
+   "color": "#e05a3c",
+   "aliases": []
+  },
+  {
+   "id": "octavia",
+   "name": "Octavia",
+   "short": "Octav",
+   "family": "fuzz",
+   "match": "octavia",
+   "glyph": "✷",
+   "color": "#e05a3c",
+   "aliases": []
+  },
+  {
+   "id": "rangemaster",
+   "name": "Rangemaster",
+   "short": "Range",
+   "family": "boost",
+   "match": "rangemaster",
+   "glyph": "⇧",
+   "color": "#ffcf3a",
+   "aliases": []
+  },
+  {
+   "id": "sho",
+   "name": "SHO Boost",
+   "short": "SHO",
+   "family": "boost",
+   "match": "sho",
+   "glyph": "⇧",
+   "color": "#ffcf3a",
+   "aliases": []
+  },
+  {
+   "id": "darkglass-b7k",
+   "name": "Darkglass B7K",
+   "short": "B7K",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "darkglass b7k",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": [
+    "b7k ultra"
+   ]
+  },
+  {
+   "id": "darkglass-alpha-omega",
+   "name": "Darkglass Alpha Omega",
+   "short": "AlphaOmega",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "alpha omega",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": [
+    "alpha·omega",
+    "aou"
+   ]
+  },
+  {
+   "id": "sansamp-bass",
+   "name": "SansAmp Bass DI",
+   "short": "SansAmp",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "sansamp bass",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": [
+    "sansamp",
+    "bass driver"
+   ]
+  },
+  {
+   "id": "bass-big-muff",
+   "name": "Bass Big Muff",
+   "short": "B-Muff",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "bass big muff",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "mxr-bass-comp",
+   "name": "MXR Bass Comp",
+   "short": "MXR Comp",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "mxr bass comp",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "ebs-multicomp",
+   "name": "EBS MultiComp",
+   "short": "EBS",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "ebs multicomp",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  },
+  {
+   "id": "bass-fuzz",
+   "name": "Bass Fuzz",
+   "short": "B-Fuzz",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "bass fuzz",
+   "glyph": "△",
+   "color": "#ffb03a",
+   "aliases": []
+  }
+ ],
+ "_amps_comment": "Named AMP archetypes — same mechanism as pedals but block 'amp' (gear amp-cab = full amp+cab capture). Adding one opens the capture picker pre-filtered to that amp's TONE3000 captures.",
+ "amps": [
+  {
+   "id": "twin-reverb",
+   "name": "Fender Twin Reverb",
+   "short": "Twin",
+   "family": "clean",
+   "match": "twin reverb",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Fender",
+   "aliases": [
+    "twin"
+   ]
+  },
+  {
+   "id": "deluxe-reverb",
+   "name": "Fender Deluxe Reverb",
+   "short": "Deluxe",
+   "family": "clean",
+   "match": "deluxe reverb",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Fender",
+   "aliases": []
+  },
+  {
+   "id": "ac30",
+   "name": "Vox AC30",
+   "short": "AC30",
+   "family": "clean",
+   "match": "ac30",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Vox",
+   "aliases": [
+    "ac-30",
+    "ac 30",
+    "top boost"
+   ]
+  },
+  {
+   "id": "jcm800",
+   "name": "Marshall JCM800",
+   "short": "JCM800",
+   "family": "crunch",
+   "match": "jcm800",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Marshall",
+   "aliases": [
+    "jcm 800",
+    "2203",
+    "2204"
+   ]
+  },
+  {
+   "id": "plexi",
+   "name": "Marshall Plexi",
+   "short": "Plexi",
+   "family": "crunch",
+   "match": "plexi",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Marshall",
+   "aliases": [
+    "1959",
+    "super lead",
+    "slp",
+    "1987x",
+    "jmp 50",
+    "jmp-50"
+   ]
+  },
+  {
+   "id": "orange",
+   "name": "Orange",
+   "short": "Orange",
+   "family": "crunch",
+   "match": "orange",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Orange",
+   "aliases": [
+    "rockerverb",
+    "tiny terror",
+    "or120",
+    "ad30",
+    "thunderverb"
+   ]
+  },
+  {
+   "id": "5150",
+   "name": "EVH 5150",
+   "short": "5150",
+   "family": "high-gain",
+   "match": "5150",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "EVH",
+   "aliases": [
+    "5153"
+   ]
+  },
+  {
+   "id": "dual-rectifier",
+   "name": "Mesa Dual Rectifier",
+   "short": "Recto",
+   "family": "high-gain",
+   "match": "dual rectifier",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Mesa",
+   "aliases": [
+    "rectifier",
+    "recto"
+   ]
+  },
+  {
+   "id": "soldano-slo",
+   "name": "Soldano SLO-100",
+   "short": "SLO",
+   "family": "high-gain",
+   "match": "soldano",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Soldano",
+   "aliases": [
+    "soldano",
+    "slo-100",
+    "slo 100",
+    "slo100"
+   ]
+  },
+  {
+   "id": "friedman-be",
+   "name": "Friedman BE-100",
+   "short": "BE-100",
+   "family": "high-gain",
+   "match": "friedman be",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Friedman",
+   "aliases": [
+    "friedman",
+    "be-100",
+    "be100"
+   ]
+  },
+  {
+   "id": "bogner",
+   "name": "Bogner",
+   "short": "Bogner",
+   "family": "high-gain",
+   "match": "bogner",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Bogner",
+   "aliases": [
+    "ecstasy",
+    "shiva",
+    "xtc"
+   ]
+  },
+  {
+   "id": "ampeg-svt",
+   "name": "Ampeg SVT",
+   "short": "SVT",
+   "family": "bass",
+   "match": "ampeg svt",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "roles": [
+    "bass"
+   ],
+   "brand": "Ampeg",
+   "aliases": [
+    "svt"
+   ]
+  },
+  {
+   "id": "ampeg-b15",
+   "name": "Ampeg B-15",
+   "short": "B-15",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "ampeg b-15",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Ampeg",
+   "aliases": [
+    "b-15",
+    "b15",
+    "portaflex"
+   ]
+  },
+  {
+   "id": "gk-800rb",
+   "name": "Gallien-Krueger 800RB",
+   "short": "GK 800",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "gallien krueger",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Gallien-Krueger",
+   "aliases": [
+    "gallien",
+    "800rb",
+    "800 rb"
+   ]
+  },
+  {
+   "id": "darkglass-900",
+   "name": "Darkglass Microtubes 900",
+   "short": "DG 900",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "darkglass",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Darkglass",
+   "aliases": [
+    "darkglass",
+    "microtubes",
+    "b7k",
+    "alpha omega"
+   ]
+  },
+  {
+   "id": "aguilar-th",
+   "name": "Aguilar Tone Hammer",
+   "short": "Aguilar",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "aguilar",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Aguilar",
+   "aliases": [
+    "aguilar",
+    "tone hammer",
+    "th500",
+    "th-500"
+   ]
+  },
+  {
+   "id": "mesa-bass",
+   "name": "Mesa Bass",
+   "short": "Mesa B",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "mesa bass",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Mesa",
+   "aliases": [
+    "subway",
+    "carbine",
+    "walkabout",
+    "bass 400"
+   ]
+  },
+  {
+   "id": "fender-bassman",
+   "name": "Fender Bassman",
+   "short": "Bassman",
+   "family": "bass",
+   "roles": [
+    "bass"
+   ],
+   "match": "bassman",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Fender",
+   "aliases": [
+    "bassman"
+   ]
+  },
+  {
+   "id": "jc-120",
+   "name": "Roland JC-120",
+   "short": "JC-120",
+   "family": "clean",
+   "match": "jc-120",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Roland",
+   "aliases": [
+    "jc120",
+    "jc 120",
+    "jazz chorus"
+   ]
+  },
+  {
+   "id": "fender-princeton",
+   "name": "Fender Princeton",
+   "short": "Princeton",
+   "family": "clean",
+   "match": "princeton",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Fender",
+   "aliases": [
+    "princeton"
+   ]
+  },
+  {
+   "id": "matchless",
+   "name": "Matchless",
+   "short": "Matchless",
+   "family": "clean",
+   "match": "matchless",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Matchless",
+   "aliases": [
+    "dc30",
+    "dc-30",
+    "chieftain"
+   ]
+  },
+  {
+   "id": "supro",
+   "name": "Supro",
+   "short": "Supro",
+   "family": "clean",
+   "match": "supro",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Supro",
+   "aliases": []
+  },
+  {
+   "id": "jtm45",
+   "name": "Marshall JTM45",
+   "short": "JTM45",
+   "family": "crunch",
+   "match": "jtm45",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Marshall",
+   "aliases": [
+    "jtm 45",
+    "jtm-45",
+    "bluesbreaker"
+   ]
+  },
+  {
+   "id": "marshall-jubilee",
+   "name": "Marshall Silver Jubilee",
+   "short": "Jubilee",
+   "family": "crunch",
+   "match": "jubilee 2555",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Marshall",
+   "aliases": [
+    "jubilee",
+    "2555",
+    "2550"
+   ]
+  },
+  {
+   "id": "two-rock",
+   "name": "Two-Rock",
+   "short": "Two-Rock",
+   "family": "crunch",
+   "match": "two-rock",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Two-Rock",
+   "aliases": [
+    "two rock",
+    "tworock"
+   ]
+  },
+  {
+   "id": "dr-z",
+   "name": "Dr. Z",
+   "short": "Dr. Z",
+   "family": "crunch",
+   "match": "dr z",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Dr. Z",
+   "aliases": [
+    "dr z",
+    "dr. z",
+    "maz 18",
+    "maz 38",
+    "z wreck",
+    "z-wreck"
+   ]
+  },
+  {
+   "id": "peavey-6505",
+   "name": "Peavey 6505",
+   "short": "6505",
+   "family": "high-gain",
+   "match": "6505",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Peavey",
+   "aliases": [
+    "6505",
+    "6534",
+    "invective"
+   ]
+  },
+  {
+   "id": "mesa-mark",
+   "name": "Mesa Mark IV",
+   "short": "Mark IV",
+   "family": "high-gain",
+   "match": "mesa mark",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Mesa",
+   "aliases": [
+    "mark iv",
+    "mark v",
+    "mark ii",
+    "boogie mark"
+   ]
+  },
+  {
+   "id": "engl-powerball",
+   "name": "ENGL Powerball",
+   "short": "Powerball",
+   "family": "high-gain",
+   "match": "engl powerball",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "ENGL",
+   "aliases": [
+    "powerball"
+   ]
+  },
+  {
+   "id": "engl-savage",
+   "name": "ENGL Savage",
+   "short": "Savage",
+   "family": "high-gain",
+   "match": "engl savage",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "ENGL",
+   "aliases": [
+    "savage"
+   ]
+  },
+  {
+   "id": "diezel-vh4",
+   "name": "Diezel VH4",
+   "short": "VH4",
+   "family": "high-gain",
+   "match": "diezel vh4",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Diezel",
+   "aliases": [
+    "vh4",
+    "vh-4"
+   ]
+  },
+  {
+   "id": "diezel-herbert",
+   "name": "Diezel Herbert",
+   "short": "Herbert",
+   "family": "high-gain",
+   "match": "diezel herbert",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Diezel",
+   "aliases": [
+    "herbert"
+   ]
+  },
+  {
+   "id": "bogner-uberschall",
+   "name": "Bogner Uberschall",
+   "short": "Uber",
+   "family": "high-gain",
+   "match": "bogner uberschall",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Bogner",
+   "aliases": [
+    "uberschall",
+    "überschall"
+   ]
+  },
+  {
+   "id": "marshall-jvm",
+   "name": "Marshall JVM",
+   "short": "JVM",
+   "family": "high-gain",
+   "match": "jvm",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Marshall",
+   "aliases": [
+    "jvm410",
+    "jvm 410",
+    "jvm205"
+   ]
+  },
+  {
+   "id": "prs-archon",
+   "name": "PRS Archon",
+   "short": "Archon",
+   "family": "high-gain",
+   "match": "prs archon",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "PRS",
+   "aliases": [
+    "archon"
+   ]
+  },
+  {
+   "id": "framus-cobra",
+   "name": "Framus Cobra",
+   "short": "Cobra",
+   "family": "high-gain",
+   "match": "framus cobra",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Framus",
+   "aliases": [
+    "cobra"
+   ]
+  },
+  {
+   "id": "revv",
+   "name": "Revv Generator",
+   "short": "Revv",
+   "family": "high-gain",
+   "match": "revv generator",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Revv",
+   "aliases": [
+    "generator"
+   ]
+  },
+  {
+   "id": "wizard",
+   "name": "Wizard",
+   "short": "Wizard",
+   "family": "high-gain",
+   "match": "wizard amp",
+   "glyph": "▦",
+   "color": "#ff5a3c",
+   "brand": "Wizard",
+   "aliases": []
+  }
+ ],
+ "categories": [
+  "dynamics",
+  "preamp",
+  "drive",
+  "lofi",
+  "filter",
+  "amp",
+  "cab",
+  "eq",
+  "modulation",
+  "delay",
+  "reverb",
+  "pitch",
+  "utility",
+  "drums"
+ ],
+ "role_blocks": {
+  "_comment": "The EXACT blocks a lane ROLE is offered, within its role_categories — the finer sieve (2026-09-17: a drums lane must get blocks that suit a kit, sorted like guitar or voice). A role absent here sees every block of its categories (guitar, bass, voice, keys…). Read by the rack Designer drawer, golem.fm's drawer and the AI vocabulary; kept in one place, in data. drums = the kit instrument, dynamics (gate/comp/captured comp/limiter), a captured preamp, Grit, the three EQs, the two studio modulations that belong on drums (flanger, phaser), delays (slapback), room/plate/hall reverbs, level and bitcrusher — never amp, cab, drive, wah, pitch, tuner, tremolo, rotary, vibrato, ring mod, granular, shimmer, spring.",
+  "drums": [
+   "drumkit",
+   "gate",
+   "comp",
+   "comp-nam",
+   "limiter",
+   "preamp-nam",
+   "grit",
+   "eq",
+   "eq-para",
+   "eq-graphic",
+   "flanger",
+   "phaser",
+   "delay",
+   "delay-tape",
+   "reverb",
+   "reverb-plate",
+   "reverb-room",
+   "volume",
+   "bitcrusher"
+  ]
+ },
+ "role_categories": {
+  "_comment": "Categories offered to each lane ROLE — the add-block drawer (rack Designer AND golem.fm) and the AI vocabulary read THIS table; guitar and line: every category except drums (the Drum Kit is the drums lane's instrument — offered on a guitar lane it only showed a greyed tile, 2026-10-25); a role absent here sees every category. voice: vocal FX + captured outboard + lofi (Grit, the ONLY saturation allowed on a voice) — never amp, cab or drive. keys/pads: instruments + keyboard-coherent FX (no wah, no pitch, no amp). drums (docs/drums-kit.md): an electronic kit — the Drum Kit instrument (category drums, lot 2), then dynamics, preamp, lofi, eq, modulation, delay, reverb, utility; never amp, cab, drive, filter or pitch.",
+  "guitar": [
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "filter",
+   "amp",
+   "cab",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb",
+   "pitch",
+   "utility"
+  ],
+  "line": [
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "filter",
+   "amp",
+   "cab",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb",
+   "pitch",
+   "utility"
+  ],
+  "drums": [
+   "drums",
+   "dynamics",
+   "preamp",
+   "lofi",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb",
+   "utility"
+  ],
+  "bass": [
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "filter",
+   "amp",
+   "cab",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb",
+   "pitch",
+   "utility"
+  ],
+  "voice": [
+   "dynamics",
+   "preamp",
+   "lofi",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb",
+   "pitch"
+  ],
+  "keys": [
+   "keys",
+   "pads",
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb"
+  ],
+  "keys-pads": [
+   "keys",
+   "pads",
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb"
+  ],
+  "pads": [
+   "keys",
+   "pads",
+   "dynamics",
+   "preamp",
+   "drive",
+   "lofi",
+   "eq",
+   "modulation",
+   "delay",
+   "reverb"
+  ]
+ },
+ "effects": [
+  {
+   "type": "gate",
+   "name": "Noise Gate",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "ReaGate",
+   "icon": "▣",
+   "params": [
+    {
+     "id": "thresh",
+     "name": "Threshold",
+     "min": -70,
+     "max": -10,
+     "default": -50,
+     "unit": "dB",
+     "size": 2,
+     "fmt": 1
+    },
+    {
+     "id": "attack",
+     "name": "Attack",
+     "min": 0,
+     "max": 50,
+     "default": 3,
+     "unit": "ms",
+     "fmt": 1
+    },
+    {
+     "id": "hold",
+     "name": "Hold",
+     "min": 0,
+     "max": 500,
+     "default": 20,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "release",
+     "name": "Release",
+     "min": 20,
+     "max": 1000,
+     "default": 150,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "hpf",
+     "name": "Hipass",
+     "min": 0,
+     "max": 1000,
+     "default": 0,
+     "unit": "Hz",
+     "fmt": 0,
+     "group": "sidechain (detection)"
+    },
+    {
+     "id": "lpf",
+     "name": "Lowpass",
+     "min": 1000,
+     "max": 20000,
+     "default": 20000,
+     "unit": "Hz",
+     "fmt": 0,
+     "group": "sidechain (detection)"
+    },
+    {
+     "id": "hyst",
+     "name": "Hysteresis",
+     "min": -12,
+     "max": 0,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "group": "sidechain (detection)"
+    }
+   ],
+   "note": "Noise gate pedal-grade (ReaGate). Sidechain filters shape what the gate LISTENS to (hipass keeps low rumble from opening it) ; hysteresis separates open/close thresholds (no chatter). Block presets: Soft / Standard / Chug-tight.",
+   "short": "Gate",
+   "color": "#8a94a3",
+   "glyph": "⊓"
+  },
+  {
+   "type": "comp",
+   "name": "Compressor",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "ReaComp",
+   "icon": "◧",
+   "params": [
+    {
+     "id": "thresh",
+     "name": "Threshold",
+     "min": -40,
+     "max": -6,
+     "default": -18,
+     "unit": "dB"
+    },
+    {
+     "id": "ratio",
+     "name": "Ratio",
+     "min": 1.5,
+     "max": 10,
+     "default": 4,
+     "unit": ":1",
+     "fmt": 1
+    },
+    {
+     "id": "makeup",
+     "name": "Wet",
+     "min": -6,
+     "max": 12,
+     "default": 3,
+     "unit": "dB",
+     "label": "Makeup"
+    },
+    {
+     "id": "attack",
+     "name": "Attack",
+     "min": 1,
+     "max": 50,
+     "default": 15,
+     "unit": "ms"
+    },
+    {
+     "id": "release",
+     "name": "Release",
+     "min": 40,
+     "max": 400,
+     "default": 150,
+     "unit": "ms"
+    }
+   ],
+   "note": "ReaComp — Makeup = Wet port (dB); Auto Make Up Gain forced OFF on insert (FX_INIT golem_rig).",
+   "short": "Comp",
+   "color": "#8a94a3",
+   "glyph": "◇"
+  },
+  {
+   "type": "boost",
+   "name": "Overdrive / Boost",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "Proteus",
+   "icon": "▲",
+   "params": [
+    {
+     "id": "drive",
+     "name": "Drive",
+     "min": 0,
+     "max": 100,
+     "default": 30,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "treble",
+     "name": "Treble",
+     "min": -8,
+     "max": 8,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "bass",
+     "name": "Bass",
+     "min": -8,
+     "max": 8,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "mid",
+     "name": "Mid",
+     "min": -8,
+     "max": 8,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "GuitarML Proteus (confirmed on the rig) — Drive/Level ports 0..1 (scale), B/M/T ±8 raw.",
+   "short": "Boost",
+   "color": "#ffb03a",
+   "glyph": "△"
+  },
+  {
+   "type": "pedal-nam",
+   "name": "Pedal (NAM capture)",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "Neural Amp Modeler",
+   "icon": "⬢",
+   "note": "A real PEDAL actually scanned (TONE3000 gear=pedal) loaded into a NAM instance, placed before the amp. Input = drive level into the pedal (very expressive, 🦶-able). Input = the capture's gain knob (push to saturate, pull to clean up) — stay within ±6 dB, the model's training range. Output is a pure trim (loudness-normalized at compile).",
+   "params": [
+    {
+     "id": "input",
+     "name": "Input Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "output",
+     "name": "Output Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "short": "Pedal",
+   "color": "#ffb03a",
+   "glyph": "⬢"
+  },
+  {
+   "type": "preamp-nam",
+   "name": "Preamp (NAM capture)",
+   "category": "preamp",
+   "engine": "plugin",
+   "plugin": "Neural Amp Modeler",
+   "icon": "⬡",
+   "note": "A real PREAMP or channel strip actually scanned (TONE3000 gear=outboard, .nam) loaded into a NAM instance. Head of the chain, right after the gate: gate → preamp → deesser → pitch → comp → eq → delay/reverb. One per lane. Input = the capture's gain knob (push to saturate, pull to clean up) — stay within ±6 dB, the model's training range. Output is a pure trim (loudness-normalized at compile, like an amp). Packs with one model per gain setting drive the Capture dial.",
+   "params": [
+    {
+     "id": "input",
+     "name": "Input Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "output",
+     "name": "Output Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "short": "Pre",
+   "color": "#d9a441",
+   "glyph": "⬡"
+  },
+  {
+   "type": "comp-nam",
+   "name": "Compressor (NAM capture)",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "Neural Amp Modeler",
+   "icon": "◈",
+   "note": "A real COMPRESSOR/limiter actually scanned (TONE3000 gear=outboard, .nam) loaded into a NAM instance. Takes the place of the Compressor block (two dynamics stages max in series). Input = how hard the capture is hit (its threshold, in effect) — stay within ±6 dB, the model's training range. Output is a pure trim (loudness-normalized at compile).",
+   "params": [
+    {
+     "id": "input",
+     "name": "Input Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "output",
+     "name": "Output Lvl",
+     "min": -20,
+     "max": 20,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "short": "Comp",
+   "color": "#8a94a3",
+   "glyph": "◈"
+  },
+  {
+   "type": "grit",
+   "name": "Grit (multiband distortion)",
+   "category": "lofi",
+   "engine": "plugin",
+   "plugin": "Prisma",
+   "icon": "◩",
+   "note": "Prisma (UnplugRed, AGPL, built from source by provision/install-prisma.sh): 4 bands, 2 exposed modules per band (Soft/Hard clip, Heavy, Fold, Bit crush, Sample divide, Lowpass, Ring mod, Cabinet…), crossovers, per-band gain, wet. The Trash-style tool: dirty the mids, keep lows clean, no fizz on top. VOICE: after the de-esser (saturation multiplies sibilance), before the compressor; a preset (Grit / Megaphone / Telephone / Broken) on a footswitch. Keep Quality OFF live: zero latency.",
+   "params": [
+    {
+     "id": "lo_m1",
+     "name": "Low Module 1 Type",
+     "label": "Mod 1",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "Low",
+     "size": 2
+    },
+    {
+     "id": "lo_v1",
+     "name": "Low Module 1 Value",
+     "label": "Amt 1",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low"
+    },
+    {
+     "id": "lo_m2",
+     "name": "Low Module 2 Type",
+     "label": "Mod 2",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "Low",
+     "size": 2
+    },
+    {
+     "id": "lo_v2",
+     "name": "Low Module 2 Value",
+     "label": "Amt 2",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low"
+    },
+    {
+     "id": "lo_gain",
+     "name": "Low Gain",
+     "label": "Gain",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low"
+    },
+    {
+     "id": "lm_m1",
+     "name": "Low Mid Module 1 Type",
+     "label": "Mod 1",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "Low Mid",
+     "size": 2
+    },
+    {
+     "id": "lm_v1",
+     "name": "Low Mid Module 1 Value",
+     "label": "Amt 1",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low Mid"
+    },
+    {
+     "id": "lm_m2",
+     "name": "Low Mid Module 2 Type",
+     "label": "Mod 2",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "Low Mid",
+     "size": 2
+    },
+    {
+     "id": "lm_v2",
+     "name": "Low Mid Module 2 Value",
+     "label": "Amt 2",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low Mid"
+    },
+    {
+     "id": "lm_gain",
+     "name": "Low Mid Gain",
+     "label": "Gain",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Low Mid"
+    },
+    {
+     "id": "hm_m1",
+     "name": "High Mid Module 1 Type",
+     "label": "Mod 1",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "High Mid",
+     "size": 2
+    },
+    {
+     "id": "hm_v1",
+     "name": "High Mid Module 1 Value",
+     "label": "Amt 1",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High Mid"
+    },
+    {
+     "id": "hm_m2",
+     "name": "High Mid Module 2 Type",
+     "label": "Mod 2",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "High Mid",
+     "size": 2
+    },
+    {
+     "id": "hm_v2",
+     "name": "High Mid Module 2 Value",
+     "label": "Amt 2",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High Mid"
+    },
+    {
+     "id": "hm_gain",
+     "name": "High Mid Gain",
+     "label": "Gain",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High Mid"
+    },
+    {
+     "id": "hi_m1",
+     "name": "High Module 1 Type",
+     "label": "Mod 1",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "High",
+     "size": 2
+    },
+    {
+     "id": "hi_v1",
+     "name": "High Module 1 Value",
+     "label": "Amt 1",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High"
+    },
+    {
+     "id": "hi_m2",
+     "name": "High Module 2 Type",
+     "label": "Mod 2",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft clip",
+      "Hard clip",
+      "Heavy",
+      "Asym",
+      "Rectify",
+      "Fold",
+      "Sine fold",
+      "Zero cross",
+      "Bit crush",
+      "Sample divide",
+      "DC",
+      "Width",
+      "Gain",
+      "Pan",
+      "Lowpass",
+      "Highpass",
+      "Peak",
+      "Dry/wet",
+      "Stereo rectify",
+      "Stereo DC",
+      "Ring mod",
+      "Cabinet"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "norm"
+     },
+     "group": "High",
+     "size": 2
+    },
+    {
+     "id": "hi_v2",
+     "name": "High Module 2 Value",
+     "label": "Amt 2",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High"
+    },
+    {
+     "id": "hi_gain",
+     "name": "High Gain",
+     "label": "Gain",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "High"
+    },
+    {
+     "id": "x1",
+     "name": "Low Mid Crossover",
+     "label": "X1",
+     "min": 0,
+     "max": 100,
+     "default": 25,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Crossovers",
+     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
+    },
+    {
+     "id": "x2",
+     "name": "High Mid Crossover",
+     "label": "X2",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Crossovers",
+     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
+    },
+    {
+     "id": "x3",
+     "name": "High Crossover",
+     "label": "X3",
+     "min": 0,
+     "max": 100,
+     "default": 75,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "group": "Crossovers",
+     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
+    },
+    {
+     "id": "wet",
+     "name": "Wet",
+     "label": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "size": 2
+    },
+    {
+     "id": "quality",
+     "name": "Quality",
+     "label": "Oversampling",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "OFF = zero latency (live). ON = oversampled, adds latency."
+    }
+   ],
+   "short": "Grit",
+   "color": "#e07a3a",
+   "glyph": "◩",
+   "_validation": "2026-09-14 : VALIDÉ sur le rig — lane vide, deux reconstructions (REBUILD puis REBUILD avec gate), fxparams : 86 params, noms conformes, pdc=0 samples Quality OFF et ON, Reaper indemne (pid inchangé, apport muet). Correctif lu : Type = normalisé 0..1, pas raw 0..22."
+  },
+  {
+   "type": "amp",
+   "name": "Head+Cab (NAM)",
+   "category": "amp",
+   "engine": "plugin",
+   "plugin": "neural_amp_modeler",
+   "icon": "⬛",
+   "loads": [
+    "nam_model",
+    "ir_cab"
+   ],
+   "params": [
+    {
+     "id": "input",
+     "name": "Input",
+     "unit": "dB",
+     "min": -20,
+     "max": 20,
+     "default": 0
+    },
+    {
+     "id": "output",
+     "name": "Output",
+     "unit": "dB",
+     "min": -20,
+     "max": 20,
+     "default": 0
+    },
+    {
+     "id": "quality",
+     "name": "Quality",
+     "unit": "",
+     "min": 0,
+     "max": 1,
+     "default": 1,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Full-rig NAM capture (head + cab baked in) — no cab block needed after it. Input = the capture's gain knob (push to saturate, pull to clean up) — stay within ±6 dB, the model's training range. Output is a pure trim (loudness-normalized at compile).",
+   "short": "Head+Cab",
+   "color": "#ff5a3c",
+   "glyph": "▦"
+  },
+  {
+   "type": "amp-nam",
+   "name": "Head (NAM)",
+   "category": "amp",
+   "engine": "plugin",
+   "plugin": "neural_amp_modeler",
+   "icon": "⬛",
+   "loads": [
+    "nam_model"
+   ],
+   "params": [
+    {
+     "id": "input",
+     "name": "Input",
+     "unit": "dB",
+     "min": -20,
+     "max": 20,
+     "default": 0
+    },
+    {
+     "id": "output",
+     "name": "Output",
+     "unit": "dB",
+     "min": -20,
+     "max": 20,
+     "default": 0
+    },
+    {
+     "id": "quality",
+     "name": "Quality",
+     "unit": "",
+     "min": 0,
+     "max": 1,
+     "default": 1,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "NAM head only — add a Cab (IR) block after it. Input = the capture's gain knob (push to saturate, pull to clean up) — stay within ±6 dB, the model's training range. Output is a pure trim (loudness-normalized at compile).",
+   "short": "Head",
+   "color": "#ff5a3c",
+   "glyph": "▦"
+  },
+  {
+   "type": "cab",
+   "name": "Cab (IR)",
+   "category": "cab",
+   "engine": "plugin",
+   "plugin": "x42 - IR Convolver Mono",
+   "icon": "◰",
+   "loads": [
+    "ir_cab"
+   ],
+   "params": [
+    {
+     "id": "level",
+     "name": "Wet Signal Level",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "x42 IR Convolver — Level = Wet Signal Level (trim dB, level-matching cabs in stereo).",
+   "short": "Cab",
+   "color": "#1ab7b0",
+   "glyph": "◨"
+  },
+  {
+   "type": "eq",
+   "name": "EQ",
+   "category": "eq",
+   "engine": "plugin",
+   "plugin": "ReaEQ",
+   "icon": "∿",
+   "params": [
+    {
+     "id": "midgain",
+     "name": "Gain-Band 3",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "size": 2
+    },
+    {
+     "id": "midfreq",
+     "name": "Freq-Band 3",
+     "min": 300,
+     "max": 2500,
+     "default": 800,
+     "unit": "Hz"
+    },
+    {
+     "id": "lowcut",
+     "name": "Freq-High Pass",
+     "min": 20,
+     "max": 200,
+     "default": 80,
+     "unit": "Hz"
+    },
+    {
+     "id": "highs",
+     "name": "Gain-High Shelf",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB"
+    }
+   ],
+   "note": "ReaEQ instantiated with 5 bands: bell = Band 3, low cut = High Pass 5, highs = High Shelf 4 (by name).",
+   "short": "EQ",
+   "color": "#3d9be9",
+   "glyph": "∿"
+  },
+  {
+   "type": "chorus",
+   "name": "Chorus",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "Calf Multi Chorus",
+   "icon": "≈",
+   "params": [
+    {
+     "id": "rate",
+     "name": "Mod Rate",
+     "min": 0.1,
+     "max": 3,
+     "default": 0.6,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 1
+    },
+    {
+     "id": "depth",
+     "name": "Mod Depth",
+     "min": 1,
+     "max": 8,
+     "default": 4,
+     "unit": "ms",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "mix",
+     "name": "Amount",
+     "min": 0,
+     "max": 1,
+     "default": 0.4,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Calf Multi Chorus — Dry Amount forced to 1.0 on insert (FX_INIT).",
+   "short": "Chorus",
+   "color": "#2ecc71",
+   "glyph": "≈"
+  },
+  {
+   "type": "flanger",
+   "name": "Flanger",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "Calf Flanger",
+   "icon": "⋊",
+   "params": [
+    {
+     "id": "rate",
+     "name": "Mod rate",
+     "min": 0.05,
+     "max": 2,
+     "default": 0.3,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "depth",
+     "name": "Mod depth",
+     "min": 0.5,
+     "max": 6,
+     "default": 2,
+     "unit": "ms",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "feedback",
+     "name": "Feedback",
+     "min": -0.9,
+     "max": 0.9,
+     "default": 0.6,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "short": "Flanger",
+   "color": "#2ecc71",
+   "glyph": "⋈"
+  },
+  {
+   "type": "chorus-js",
+   "bench": "pending",
+   "name": "Stereo Chorus (JSFX)",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "JS: sstillwell/chorus_stereo",
+   "icon": "≈",
+   "params": [
+    {"id": "length", "name": "Chorus Length (ms)", "min": 1, "max": 100, "default": 15, "unit": "ms", "map": {"mode": "raw", "idx": 0}},
+    {"id": "voices", "name": "Number Of Voices", "min": 1, "max": 8, "default": 2, "map": {"mode": "raw", "idx": 1}},
+    {"id": "rate", "name": "Rate (Hz) (0=tempo sync)", "min": 0.1, "max": 3, "default": 0.5, "unit": "Hz", "map": {"mode": "raw", "idx": 2}},
+    {"id": "wet", "name": "Wet Mix (dB)", "min": -60, "max": 0, "default": -12, "unit": "dB", "map": {"mode": "raw", "idx": 4}},
+    {"id": "dry", "name": "Dry Mix (dB)", "min": -60, "max": 0, "default": 0, "unit": "dB", "map": {"mode": "raw", "idx": 5}}
+   ],
+   "short": "Chorus",
+   "color": "#2ecc71",
+   "glyph": "≈"
+  },
+  {
+   "type": "flanger-js",
+   "bench": "pending",
+   "name": "Flanger (JSFX)",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "JS: guitar/flanger",
+   "icon": "⋊",
+   "params": [
+    {"id": "length", "name": "Length (ms)", "min": 0, "max": 30, "default": 6, "unit": "ms", "map": {"mode": "raw", "idx": 0}},
+    {"id": "feedback", "name": "Feedback (dB)", "min": -60, "max": -6, "default": -24, "unit": "dB", "map": {"mode": "raw", "idx": 1}},
+    {"id": "wet", "name": "Wet Mix (dB)", "min": -60, "max": 0, "default": -10, "unit": "dB", "map": {"mode": "raw", "idx": 2}},
+    {"id": "dry", "name": "Dry Mix (dB)", "min": -60, "max": 0, "default": 0, "unit": "dB", "map": {"mode": "raw", "idx": 3}},
+    {"id": "rate", "name": "Rate (Hz)", "min": 0.05, "max": 2, "default": 0.3, "unit": "Hz", "map": {"mode": "raw", "idx": 4}}
+   ],
+   "short": "Flanger",
+   "color": "#2ecc71",
+   "glyph": "⋈"
+  },
+  {
+   "type": "phaser-js",
+   "name": "Phaser (JSFX)",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "JS: guitar/phaser",
+   "icon": "◍",
+   "params": [
+    {"id": "rate", "name": "Rate (Hz)", "min": 0.05, "max": 5, "default": 0.5, "unit": "Hz", "map": {"mode": "raw", "idx": 0}, "exp": true},
+    {"id": "low", "name": "Range Min (Hz)", "min": 40, "max": 2000, "default": 440, "unit": "Hz", "map": {"mode": "raw", "idx": 1}, "label": "Low"},
+    {"id": "high", "name": "Range Max (Hz)", "min": 200, "max": 8000, "default": 1600, "unit": "Hz", "map": {"mode": "raw", "idx": 2}, "label": "High"},
+    {"id": "feedback", "name": "Feedback (dB)", "min": -60, "max": -1, "default": -3, "unit": "dB", "map": {"mode": "raw", "idx": 3}},
+    {"id": "wet", "name": "Wet Mix (dB)", "min": -60, "max": 6, "default": 0, "unit": "dB", "map": {"mode": "raw", "idx": 4}}
+   ],
+   "note": "REAPER's stock 4-tap phaser (Cockos, LGPL) — ships with REAPER on Linux and Windows. The dry signal always passes at unity; Feedback and Wet are sliders with a NEGATIVE minimum, written raw and never put under an EXP pedal (bipolar taper).",
+   "short": "Phaser",
+   "color": "#2ecc71",
+   "glyph": "◍"
+  },
+  {
+   "type": "phaser",
+   "name": "Phaser",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "Calf Phaser",
+   "icon": "◍",
+   "params": [
+    {
+     "id": "rate",
+     "name": "Mod rate",
+     "min": 0.05,
+     "max": 2,
+     "default": 0.4,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "depth",
+     "name": "Mod depth",
+     "min": 1000,
+     "max": 8000,
+     "default": 4000,
+     "unit": "cents",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "stages",
+     "name": "# Stages",
+     "type": "enum",
+     "options": [
+      "4",
+      "6",
+      "8",
+      "12"
+     ],
+     "values": [
+      4,
+      6,
+      8,
+      12
+     ],
+     "default": "6",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "feedback",
+     "name": "Feedback",
+     "min": 0,
+     "max": 0.8,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "short": "Phaser",
+   "color": "#2ecc71",
+   "glyph": "◍"
+  },
+  {
+   "type": "tremolo",
+   "name": "Tremolo",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "Calf Pulsator",
+   "icon": "◢",
+   "params": [
+    {
+     "id": "rate",
+     "name": "Frequency",
+     "min": 2,
+     "max": 12,
+     "default": 5,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "depth",
+     "name": "Modulation",
+     "min": 0,
+     "max": 1,
+     "default": 0.6,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "wave",
+     "name": "Mode",
+     "type": "enum",
+     "options": [
+      "Sine",
+      "Triangle",
+      "Square"
+     ],
+     "values": [
+      0,
+      1,
+      2
+     ],
+     "default": "Sine",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Calf Pulsator = tremolo (amplitude). Rate=Frequency (Timing=Hz by default), Depth=Modulation. Surf / dreamy-clean flavored.",
+   "short": "Tremolo",
+   "color": "#2ecc71",
+   "glyph": "∿"
+  },
+  {
+   "type": "killswitch",
+   "name": "Kill Switch",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "golem_killswitch",
+   "icon": "⊘",
+   "glyph": "⊘",
+   "short": "Kill",
+   "color": "#2ecc71",
+   "roles": [
+    "guitar",
+    "bass",
+    "voice"
+   ],
+   "params": [
+    {
+     "id": "depth",
+     "name": "Depth (%)",
+     "label": "Depth",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "exp": true,
+     "note": "how much each cut kills: 100 % = the real toggle (silence), less = a hard chop that leaves some signal. On the EXP pedal: heel = no effect, toe = full kill — the stutter comes in with the foot, no stomp needed"
+    },
+    {
+     "id": "length",
+     "name": "Length (%)",
+     "label": "Length",
+     "min": 5,
+     "max": 95,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "exp": true,
+     "note": "share of each step where the sound PASSES (the rest is cut). Low = short blips, high = the cuts become flickers. On the EXP pedal: staccato to legato"
+    },
+    {
+     "id": "sync",
+     "name": "Sync",
+     "label": "Sync",
+     "type": "enum",
+     "options": [
+      "Free",
+      "1/4",
+      "1/8",
+      "1/8T",
+      "1/16",
+      "1/16T",
+      "1/32"
+     ],
+     "default": "1/16",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "chips",
+     "size": 2,
+     "note": "one step per subdivision of the preset BPM (the BPM is the quarter note). Free = Rate in Hz"
+    },
+    {
+     "id": "rate",
+     "name": "Rate (Hz)",
+     "label": "Rate",
+     "min": 1,
+     "max": 30,
+     "default": 8,
+     "unit": "Hz",
+     "fmt": 1,
+     "map": {
+      "mode": "raw"
+     },
+     "exp": true,
+     "depends": {
+      "sync": "Free"
+     },
+     "note": "steps per second when Sync = Free. On the EXP pedal: the machine-gun sweep (slow to frantic)"
+    },
+    {
+     "id": "trigger",
+     "name": "Trigger",
+     "label": "Trigger",
+     "type": "enum",
+     "options": [
+      "Engage",
+      "Pick",
+      "Beat"
+     ],
+     "default": "Engage",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "chips",
+     "note": "when the cycle restarts, always on an OPEN step. Engage = when the block turns on (scene, stomp). Pick = on every pick attack heard at the block's input (the chop follows the hand; place it before the amp). Beat = on the song grid while the transport plays (backing track), else like Engage"
+    },
+    {
+     "id": "sens",
+     "name": "Pick sensitivity (%)",
+     "label": "Sens",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "depends": {
+      "trigger": "Pick"
+     },
+     "note": "Pick trigger only: 0 % = only hard attacks (12 dB rise above -30 dBFS), 100 % = light touches (2 dB above -60 dBFS)"
+    },
+    {
+     "id": "smooth",
+     "name": "Smooth (ms)",
+     "label": "Smooth",
+     "min": 0,
+     "max": 20,
+     "default": 1,
+     "unit": "ms",
+     "fmt": 1,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "ramp of each cut: 0 = the dry click of a real toggle switch, a few ms = cuts without clicks"
+    }
+   ],
+   "note": "GoleM JSFX (reaper/Effects/golem_killswitch.jsfx, MIT): the kill-switch technique — the sound is CUT then given back in rhythm, not faded like a tremolo. Tempo-synced to the preset BPM (1/4 to 1/32, triplets) or free in Hz; each step starts OPEN (the note lands on the beat, the hole comes after). Placement: guitar/bass before the amp = the real toggle on the guitar (amp noise included, and the Pick trigger hears clean attacks), after the amp = cleaner, harder cuts; always BEFORE delay/reverb so the tails ring through the cuts. Voice: after comp/EQ, before delay/reverb (stutter vocal). Usual use: a stomp or a scene that engages it (Depth 100, 1/16), or leave it on and put Depth on the EXP pedal. Zero latency, no negative-min slider (EXP-safe). Guitar, bass and voice only (roles).",
+   "_validation": "2026-09-22 : VALIDÉ sur le rig — fxadd sous les deux noms, check-block-stall 0 gel (max 2 ms), banc gapmeter (1/16 à 120 BPM = 125,00 ms, 1/8T 166,7, 1/32 62,5, Free 10 Hz 100,0), deux vraies reconstructions (seul puis derrière un gate), 7 potards écrits en brut au bon index, override de scène, EXP 0/64/127 -> Depth 0/50/100, pid Reaper inchangé. Trigger Pick : zéro fausse attaque sur un ton continu, PAS encore validé sous les doigts."
+  },
+  {
+   "type": "wah",
+   "name": "Wah (Cry Baby)",
+   "category": "filter",
+   "engine": "plugin",
+   "plugin": "Gxgcb_95",
+   "icon": "◑",
+   "params": [
+    {
+     "id": "wah",
+     "name": "Wah",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "volume",
+     "name": "Volume",
+     "unit": "dB",
+     "min": -20,
+     "max": 4,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Dunlop Cry Baby GCB-95 (guitarix gx_gcb_95). Wah = pedal position: drive it with an FCB EXP pedal for expressiveness (otherwise a fixed filter).",
+   "short": "Cry Baby",
+   "color": "#5ec8e0",
+   "glyph": "◑"
+  },
+  {
+   "type": "wah-color",
+   "name": "Multi Wah",
+   "category": "filter",
+   "engine": "plugin",
+   "plugin": "GxWahwah",
+   "icon": "◑",
+   "params": [
+    {
+     "id": "model",
+     "name": "MODEL",
+     "label": "Model",
+     "type": "enum",
+     "options": [
+      "Colorsound",
+      "Dallas",
+      "Foxx",
+      "Jen",
+      "Maestro",
+      "Selmer",
+      "Vox V847"
+     ],
+     "values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "default": "Colorsound",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2
+    },
+    {
+     "id": "wah",
+     "name": "WAH",
+     "label": "Wah",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "freq",
+     "name": "FREQ",
+     "label": "Freq",
+     "min": 24,
+     "max": 360,
+     "default": 24,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "mix",
+     "name": "WET_DRY",
+     "label": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "mode",
+     "name": "MODE",
+     "label": "Mode",
+     "type": "enum",
+     "options": [
+      "manual",
+      "auto",
+      "alien"
+     ],
+     "values": [
+      0,
+      1,
+      2
+     ],
+     "default": "manual",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "7 modelled wahs (guitarix colwah) : Colorsound, Dallas, Foxx, Jen, Maestro, Selmer, Vox V847. Mode auto = envelope follower, alien = weird. EXP pedal drives Wah.",
+   "short": "Colorsound",
+   "color": "#5ec8e0",
+   "glyph": "◑"
+  },
+  {
+   "type": "autowah",
+   "name": "Auto-Wah",
+   "category": "filter",
+   "engine": "plugin",
+   "plugin": "GxAutoWah",
+   "icon": "◠",
+   "params": [
+    {
+     "id": "wah",
+     "name": "Wah",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Envelope auto-wah (guitarix gxautowah) — the filter follows playing dynamics, no pedal. Wah = intensity/sensitivity.",
+   "short": "Auto-Wah",
+   "color": "#5ec8e0",
+   "glyph": "◠"
+  },
+  {
+   "type": "delay",
+   "name": "Tempo Delay",
+   "category": "delay",
+   "engine": "plugin",
+   "plugin": "ReaDelay",
+   "icon": "⇆",
+   "params": [
+    {
+     "id": "time",
+     "name": "1: Length (musical)",
+     "type": "enum",
+     "options": [
+      "1/4•",
+      "1/4",
+      "1/8•",
+      "1/8",
+      "1/8T",
+      "1/16"
+     ],
+     "values": [
+      1.5,
+      1,
+      0.75,
+      0.5,
+      0.333,
+      0.25
+     ],
+     "default": "1/8•",
+     "min": 0,
+     "max": 4,
+     "note": "values = QUARTER NOTES shown by ReaDelay (project BPM sync). 1/4\u2022 added 2026-10-20: nine factory objects asked for it and silently played a 1/4 (an unknown option falls back to the first).",
+     "label": "Time"
+    },
+    {
+     "id": "feedback",
+     "name": "1: Feedback",
+     "min": 0,
+     "max": 75,
+     "default": 35,
+     "unit": "%",
+     "map": {
+      "curve": "pct_db"
+     },
+     "label": "Feedback"
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "min": 0,
+     "max": 50,
+     "default": 25,
+     "unit": "%",
+     "map": {
+      "curve": "pct_db"
+     },
+     "label": "Mix"
+    }
+   ],
+   "note": "ReaDelay — time = Length (musical) in quarter notes (project BPM sync), feedback/mix in % -> dB (pct_db).",
+   "short": "Tempo Delay",
+   "color": "#5a7cff",
+   "glyph": "⇉"
+  },
+  {
+   "type": "reverb",
+   "name": "Reverb",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "Dragonfly Hall Reverb",
+   "icon": "◌",
+   "params": [
+    {
+     "id": "mix",
+     "name": "Late Level",
+     "min": 0,
+     "max": 60,
+     "default": 30,
+     "unit": "%",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "label": "Mix"
+    },
+    {
+     "id": "decay",
+     "name": "Decay",
+     "min": 0.4,
+     "max": 4,
+     "default": 1.3,
+     "unit": "s",
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 1
+    },
+    {
+     "id": "size",
+     "name": "Size",
+     "min": 10,
+     "max": 50,
+     "default": 24,
+     "unit": "m",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "hicut",
+     "name": "High Cut",
+     "min": 3000,
+     "max": 12000,
+     "default": 7000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Dragonfly Hall — mix = Late Level (dry fixed at 80 by the plugin default), raw native ports.",
+   "short": "Reverb",
+   "color": "#5a7cff",
+   "glyph": "❈"
+  },
+  {
+   "type": "pitch-spectral",
+   "bench": "pending",
+   "name": "Digital Detuner",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "Spectral Shift",
+   "icon": "♭",
+   "params": [
+    {"id": "shift", "name": "Pitch (semitones)", "min": -12, "max": 12, "default": 0, "unit": "st", "map": {"mode": "pow", "min": -24, "max": 24, "exp": 1}},
+    {"id": "formant_comp", "name": "Formant Compensation", "type": "bool", "default": false}
+   ],
+   "note": "Signalsmith Stretch pitch transposition. Use ahead of gate and amp; Windows VST3 name is mapped in effects-windows.json.",
+   "short": "Detune",
+   "color": "#b06cf0",
+   "glyph": "♭"
+  },
+  {
+   "type": "pitch-shift-js",
+   "bench": "pending",
+   "name": "Pitch Shift (JSFX)",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "JS: pitch/superpitch",
+   "icon": "♭",
+   "params": [
+    {"id": "shift", "name": "Pitch Adjust (st)", "min": -12, "max": 12, "default": 0, "unit": "st", "map": {"mode": "raw", "idx": 1}},
+    {"id": "window", "name": "Window Size (ms)", "min": 10, "max": 100, "default": 50, "unit": "ms", "map": {"mode": "raw", "idx": 3}},
+    {"id": "overlap", "name": "Overlap Size (ms)", "min": 1, "max": 50, "default": 20, "unit": "ms", "map": {"mode": "raw", "idx": 4}},
+    {"id": "wet", "name": "Wet Mix (dB)", "min": -120, "max": 6, "default": 0, "unit": "dB", "map": {"mode": "raw", "idx": 5}},
+    {"id": "dry", "name": "Dry Mix (dB)", "min": -120, "max": 6, "default": -120, "unit": "dB", "map": {"mode": "raw", "idx": 6}}
+   ],
+   "note": "Stock REAPER JSFX. Fixed full-wet guitar detune; use ahead of gate and amp. ReaPitch remains quarantined.",
+   "short": "Detune",
+   "color": "#b06cf0",
+   "glyph": "♭"
+  },
+  {
+   "type": "pitch",
+   "name": "Pitch / Harmonizer (soft)",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "ReaPitch",
+   "icon": "♯",
+   "params": [
+    {
+     "id": "shift",
+     "name": "1: Shift (semitones)",
+     "min": -12,
+     "max": 12,
+     "default": 12,
+     "unit": "st",
+     "size": 2
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "map": {
+      "curve": "pct_db"
+     }
+    }
+   ],
+   "note": "Software pitch (harmonies). For the hardware Whammy, see the whammy-dt block.",
+   "short": "Pitch",
+   "color": "#b06cf0",
+   "glyph": "♯",
+   "quarantine": "ReaPitch fige TOUT le moteur audio de Reaper ~435 ms à chaque activation et ~97 ms à chaque extinction — mesuré le 2026-09-21 (tools/check-block-stall.py --catalog) : 12 fois sur 12. Utilisé par aucun preset ni patch du rack. Retiré du tiroir, du vocabulaire de l'IA et de la compile."
+  },
+  {
+   "type": "whammy-dt",
+   "name": "Whammy DT (MIDI)",
+   "category": "pitch",
+   "engine": "midi",
+   "plugin": null,
+   "icon": "⤓",
+   "midi": {
+    "device": "Whammy DT",
+    "out": "Volt MIDI OUT",
+    "pedal_cc": 11,
+    "mode_pc": true,
+    "note": "DigiTech Whammy DT: Program Change selects the mode/preset, CC (treadle, often CC11) drives the pedal position (0-127). Confirm the exact map in the DT manual."
+   },
+   "params": [
+    {
+     "id": "won",
+     "name": "Whammy ON",
+     "type": "bool",
+     "default": true,
+     "note": "Whammy/Harmony/Detune engine (clean active/bypass PC)"
+    },
+    {
+     "id": "mode",
+     "name": "Mode",
+     "type": "enum",
+     "dynamic": "whammy-modes",
+     "default": "↑1 Oct",
+     "options": [
+      "↑1 Oct"
+     ],
+     "note": "whammy + harmony + detune modes (PC 0-20)"
+    },
+    {
+     "id": "pedal",
+     "name": "Treadle",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "note": "treadle position (live = EXP pedal 2)"
+    },
+    {
+     "id": "don",
+     "name": "Drop Tune ON",
+     "type": "bool",
+     "default": false,
+     "note": "Drop/Raise Tune engine — INDEPENDENT (playable at the same time as the whammy)"
+    },
+    {
+     "id": "drop",
+     "name": "Drop / Raise",
+     "type": "enum",
+     "dynamic": "drop-modes",
+     "default": "Drop −2 semitones (1 step)",
+     "options": [
+      "Drop −2 semitones (1 step)"
+     ]
+    }
+   ],
+   "note": "Dual-engine hardware MIDI block: the DT has TWO independent, combinable effects — Whammy/Harmony/Detune (treadle) AND Drop/Raise Tune (fixed tuning). Each has its own active/bypass PC. Always FIRST in the lane (the pedal is physically before the input).",
+   "short": "Whammy",
+   "foot_scene_claim": true,
+   "color": "#b06cf0",
+   "glyph": "↕"
+  },
+  {
+   "type": "midi-pedal",
+   "name": "MIDI Pedal",
+   "category": "hardware",
+   "engine": "midi",
+   "plugin": null,
+   "icon": "⇄",
+   "params": [
+    {
+     "id": "on",
+     "name": "Active",
+     "type": "bool",
+     "default": true,
+     "note": "send the setting's active PC; off = the setting's bypass PC when the descriptor declares one"
+    },
+    {
+     "id": "setting",
+     "name": "Setting",
+     "type": "enum",
+     "dynamic": "pedal-settings",
+     "options": [],
+     "size": 2,
+     "note": "settings come from the installed pedal descriptor (mappings/<id>.json)"
+    },
+    {
+     "id": "pedal",
+     "name": "Treadle",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "note": "expression CC position — only shown when the descriptor declares a treadle CC"
+    }
+   ],
+   "note": "Generic hardware MIDI pedal from the pedal registry (docs/pedal-registry.md): the block is a MIDI beacon — per scene GoleM sends the chosen setting's Program Change on the descriptor's channel, and its bypass PC when the scene bypasses the block. No audio runs through the rack. Add it from the drawer's `hardware` category (installed pedals).",
+   "short": "MIDI",
+   "foot_scene_claim": true,
+   "color": "#e06ac0",
+   "glyph": "⇄"
+  },
+  {
+   "type": "volume",
+   "name": "Volume / Level",
+   "category": "utility",
+   "engine": "plugin",
+   "plugin": "ReaPlugs Volume",
+   "icon": "▮",
+   "params": [
+    {
+     "id": "gain",
+     "name": "Adjustment",
+     "min": -60,
+     "max": 6,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Volume pedal (assignable to an expression pedal). Bloc VISIBLE et déplaçable (doctrine 2026-07-20, option B) : la POSITION compte (avant les delays = volume guitare, après = master). Seedé en fin de chaîne par ensure_volume, piloté par la pédale EXP au rôle volume (Settings ▸ Pedalboard ▸ Expression roles).",
+   "short": "Volume",
+   "unique": true,
+   "color": "#8a94a3",
+   "glyph": "▮"
+  },
+  {
+   "type": "clean-boost",
+   "name": "Clean Boost",
+   "category": "utility",
+   "engine": "plugin",
+   "plugin": "Volume Adjustment",
+   "icon": "▲",
+   "params": [
+    {
+     "id": "gain",
+     "name": "Boost",
+     "min": 0,
+     "max": 12,
+     "default": 6,
+     "unit": "dB",
+     "map": {
+      "mode": "raw",
+      "idx": 0
+     }
+    }
+   ],
+   "short": "Boost",
+   "foot_scene_claim": true,
+   "note": "Clean boost — same engine as the Volume pedal, fixed positive gain (no colour, unlike the Proteus Overdrive/Boost). Engage = +N dB at this point of the chain (before the amp = more drive, after = louder solo). Assignable to stomps 6-10 OR the scene row (foot_scene_claim): e.g. switch 5 becomes the solo boost.",
+   "color": "#ffb03a",
+   "glyph": "△"
+  },
+  {
+   "type": "vital",
+   "name": "Vital",
+   "category": "keys",
+   "engine": "plugin",
+   "plugin": "VST3i:Vital",
+   "icon": "🎹",
+   "params": [
+    {
+     "id": "preset",
+     "name": "Preset",
+     "type": "enum",
+     "dynamic": "vital-presets",
+     "options": [],
+     "note": "preset .vital (library/synth/vital) — scene-first: one sound PER SCENE via scene.params"
+    },
+    {
+     "id": "macro1",
+     "name": "Macro 1",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Macro 1",
+     "note": "macro Vital — nom + valeur de base réétiquetés par le patch (.vital) dans la feuille",
+     "sub": "AKAI K1"
+    },
+    {
+     "id": "macro2",
+     "name": "Macro 2",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Macro 2",
+     "note": "macro Vital — nom + valeur de base réétiquetés par le patch (.vital) dans la feuille",
+     "sub": "AKAI K2"
+    },
+    {
+     "id": "macro3",
+     "name": "Macro 3",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Macro 3",
+     "note": "macro Vital — nom + valeur de base réétiquetés par le patch (.vital) dans la feuille",
+     "sub": "AKAI K3"
+    },
+    {
+     "id": "macro4",
+     "name": "Macro 4",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Macro 4",
+     "note": "macro Vital — nom + valeur de base réétiquetés par le patch (.vital) dans la feuille",
+     "sub": "AKAI K4"
+    },
+    {
+     "id": "fcut",
+     "name": "Filter 1 Cutoff",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Filter",
+     "sub": "AKAI K5"
+    },
+    {
+     "id": "rmix",
+     "name": "Reverb Mix",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Reverb",
+     "sub": "AKAI K6"
+    },
+    {
+     "id": "dmix",
+     "name": "Delay Mix",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Delay",
+     "sub": "AKAI K7"
+    },
+    {
+     "id": "vol",
+     "name": "Volume",
+     "min": 0,
+     "max": 1,
+     "default": 0.65,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Volume",
+     "sub": "AKAI K8",
+     "note": "params VST3 normalisés 0..1 (comme les macros) — cibles K5-K8 du knobmap, indices vérifiés fxdump 2026-07-14"
+    },
+    {
+     "id": "arp",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Up 1/4",
+      "Up 1/8",
+      "Down 1/8",
+      "Up-Down 1/8",
+      "Up 1/16",
+      "Up-Down 1/16",
+      "Up 2 oct"
+     ],
+     "default": "Off",
+     "label": "Arpeggiator",
+     "widget": "chips",
+     "size": 2,
+     "note": "arpégiateur LOGICIEL (JSFX stock midi_arp, inséré à la demande devant le moteur, estampille du bloc) — configs nommées -> Rate ×BPM/Mode/Variants côté golem_rig (apply_vital_arp). Scene-first comme tout param. Vital uniquement (2026-07-24)."
+    },
+    {
+     "id": "zone_lo",
+     "name": "Zone Low",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI basse de la zone (P2 splits/layers)"
+    },
+    {
+     "id": "zone_hi",
+     "name": "Zone High",
+     "min": 0,
+     "max": 127,
+     "default": 127,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI haute de la zone"
+    },
+    {
+     "id": "transpose",
+     "name": "Transpose",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "demi-tons, appliqué dans la zone"
+    }
+   ],
+   "note": "Vital synth (Vitalium VST3 build). Keys lane (In3) driven by the GoleM USB MIDI controller. The preset is loaded by vst_chunk splice (spike 2026-07-08).",
+   "short": "Vital",
+   "knobs": {
+    "bank": "A",
+    "targets": [
+     "Macro 1",
+     "Macro 2",
+     "Macro 3",
+     "Macro 4",
+     "Filter 1 Cutoff",
+     "Reverb Mix",
+     "Delay Mix",
+     "Volume"
+    ],
+    "_note": "noms VST3 Vital VERIFIES au fxdump 2026-07-14 (match exact) : Macro 1-4 (idx 211-214), Filter 1 Cutoff (104), Volume (462). CORRIGE : Reverb Wet->Reverb Mix (440), Delay Wet->Delay Mix (30) — les noms 'Wet' n'existent pas sur ces sections."
+   },
+   "unique": true,
+   "color": "#e0b23a",
+   "glyph": "♫",
+   "content_param": "preset"
+  },
+  {
+   "type": "pads",
+   "name": "Pads",
+   "category": "pads",
+   "engine": "rs5k",
+   "icon": "🥁",
+   "unique": true,
+   "input_claim": "pads",
+   "scene_invariant": false,
+   "params": [
+    {
+     "id": "kit",
+     "name": "Kit",
+     "type": "enum",
+     "dynamic": "pad-kits",
+     "options": [],
+     "note": "kit de la bibliothèque (library/kits) — scene-first : un kit PAR SCÈNE via scene.params"
+    }
+   ],
+   "note": "Sampler des pads du contrôleur USB (AKAI MPK mini). Une instance ReaSamplOmatic5000 par pad garni, note-filtrée ; mode gate/oneshot/toggle par pad (docs/blocks-doctrine.md).",
+   "short": "Pads",
+   "color": "#d97742",
+   "glyph": "🥁",
+   "content_param": "kit"
+  },
+  {
+   "type": "drumkit",
+   "name": "Drum Kit",
+   "category": "drums",
+   "engine": "drumkit",
+   "icon": "🥁",
+   "unique": true,
+   "input_claim": "drums",
+   "scene_invariant": false,
+   "params": [
+    {
+     "id": "kit",
+     "name": "Kit",
+     "type": "kitref",
+     "note": "batterie de la bibliothèque (library/kits, moteur avldrums d'abord) — scene-first : un kit PAR SCÈNE via scene.params"
+    }
+   ],
+   "note": "L'instrument d'une lane Drums en MIDI (docs/drums-kit.md lot 2) : le module de batterie (port USB au rôle drums) joue les kits du rack. En tête de chaîne, le JSFX golem_drumtrans traduit les notes du MODULE (descripteur config/drumkits/) vers celles du KIT (kit.notes) et décide la charleston en 3 positions d'après la pédale (CC). Un seul par lane, comme les instruments claviers. Lot 2 = moteur avldrums ; drumgizmo/sfz suivent.",
+   "short": "Kit",
+   "color": "#e07a4a",
+   "glyph": "🥁",
+   "content_param": "kit"
+  },
+  {
+   "type": "organ",
+   "name": "Organ",
+   "category": "keys",
+   "engine": "b3",
+   "icon": "🎛",
+   "unique": true,
+   "input_claim": "keys",
+   "params": [
+    {
+     "id": "db16",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "1: Drawbar 16",
+     "min": 0,
+     "max": 8,
+     "default": 8
+    },
+    {
+     "id": "db513",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "2: Drawbar 5 1/3",
+     "min": 0,
+     "max": 8,
+     "default": 8
+    },
+    {
+     "id": "db8",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "3: Drawbar 8",
+     "min": 0,
+     "max": 8,
+     "default": 8
+    },
+    {
+     "id": "db4",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "4: Drawbar 4",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "db223",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "5: Drawbar 2 2/3",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "db2",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "6: Drawbar 2",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "db135",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "7: Drawbar 1 3/5",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "db113",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "8: Drawbar 1 1/3",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "db1",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "9: Drawbar 1",
+     "min": 0,
+     "max": 8,
+     "default": 0
+    },
+    {
+     "id": "leslie",
+     "name": "10: Leslie",
+     "type": "enum",
+     "options": [
+      "stop",
+      "slow",
+      "fast"
+     ],
+     "default": "slow",
+     "note": "rotary.speed-preset (CC1) — assignable au stomp/EXP (P3)",
+     "label": "Leslie",
+     "widget": "chips",
+     "size": 2
+    },
+    {
+     "id": "vibrato",
+     "name": "11: Vibrato",
+     "type": "enum",
+     "options": [
+      "off",
+      "V1",
+      "C1",
+      "V2",
+      "C2",
+      "V3",
+      "C3"
+     ],
+     "default": "off",
+     "note": "vibrato.knob (CC92) — scanner vibrato/chorus",
+     "label": "Vibrato / Chorus",
+     "widget": "chips",
+     "size": 2
+    },
+    {
+     "id": "perc",
+     "name": "12: Percussion",
+     "type": "bool",
+     "default": false,
+     "note": "percussion.enable (CC80)",
+     "label": "Percussion"
+    },
+    {
+     "id": "perc_harm",
+     "name": "13: Perc Harmonic",
+     "type": "enum",
+     "options": [
+      "2nd",
+      "3rd"
+     ],
+     "default": "3rd",
+     "note": "percussion.harmonic (CC83)",
+     "label": "Harmonic",
+     "widget": "chips"
+    },
+    {
+     "id": "perc_decay",
+     "name": "14: Perc Decay",
+     "type": "enum",
+     "options": [
+      "slow",
+      "fast"
+     ],
+     "default": "fast",
+     "note": "percussion.decay (CC82)",
+     "label": "Decay",
+     "widget": "chips"
+    },
+    {
+     "id": "drive",
+     "name": "15: Drive",
+     "type": "bool",
+     "default": false,
+     "note": "overdrive.enable (CC65)",
+     "label": "Drive"
+    },
+    {
+     "id": "character",
+     "map": {
+      "mode": "raw"
+     },
+     "name": "16: Drive Character",
+     "min": 0,
+     "max": 100,
+     "default": 30,
+     "unit": "%",
+     "note": "overdrive.character (CC93)",
+     "label": "Character"
+    },
+    {
+     "id": "zone_lo",
+     "name": "Zone Low",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI basse de la zone (P2 splits/layers)"
+    },
+    {
+     "id": "zone_hi",
+     "name": "Zone High",
+     "min": 0,
+     "max": 127,
+     "default": 127,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI haute de la zone"
+    },
+    {
+     "id": "transpose",
+     "name": "Transpose",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "demi-tons, appliqué dans la zone"
+    },
+    {
+     "id": "arp",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Up 1/4",
+      "Up 1/8",
+      "Down 1/8",
+      "Up-Down 1/8",
+      "Up 1/16",
+      "Up-Down 1/16",
+      "Up 2 oct"
+     ],
+     "default": "Off",
+     "label": "Arpeggiator",
+     "widget": "chips",
+     "size": 2,
+     "note": "arpégiateur LOGICIEL (JSFX stock midi_arp, inséré à la demande devant le moteur, estampille du bloc) — configs nommées -> Rate ×BPM/Mode/Variants côté golem_rig (apply_vital_arp). Scene-first comme tout param. Vital uniquement (2026-07-24)."
+    }
+   ],
+   "note": "setBfree DSP Tonewheel Organ (LV2 b_synth — chemin signal COMPLET : tonewheels, vibrato scanner, preamp/overdrive, Leslie, reverb). Piloté par MIDI CC (map défaut src/midi.c) via le JSFX golem/b3-ctl posé DEVANT : ses sliders = params Reaper -> tirettes/leslie/percussion scène-first gratuits (registration par scène). Leslie CC1 preset + CC64 toggle (défaut setBfree).",
+   "short": "B3",
+   "color": "#b06ad4",
+   "glyph": "🎛"
+  },
+  {
+   "type": "piano",
+   "name": "Piano",
+   "category": "keys",
+   "engine": "sfizz",
+   "icon": "🎹",
+   "unique": true,
+   "input_claim": "keys",
+   "params": [
+    {
+     "id": "sfz",
+     "name": "Instrument",
+     "type": "enum",
+     "dynamic": "sfz-instruments",
+     "options": [],
+     "note": "instrument .sfz (library/sfz) — scene-first : un instrument PAR SCÈNE via scene.params"
+    },
+    {
+     "id": "volume",
+     "name": "Volume",
+     "min": -30,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "note": "port LV2 Volume de sfizz"
+    },
+    {
+     "id": "zone_lo",
+     "name": "Zone Low",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI basse de la zone (P2 splits/layers)"
+    },
+    {
+     "id": "zone_hi",
+     "name": "Zone High",
+     "min": 0,
+     "max": 127,
+     "default": 127,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI haute de la zone"
+    },
+    {
+     "id": "transpose",
+     "name": "Transpose",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "demi-tons, appliqué dans la zone"
+    },
+    {
+     "id": "arp",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Up 1/4",
+      "Up 1/8",
+      "Down 1/8",
+      "Up-Down 1/8",
+      "Up 1/16",
+      "Up-Down 1/16",
+      "Up 2 oct"
+     ],
+     "default": "Off",
+     "label": "Arpeggiator",
+     "widget": "chips",
+     "size": 2,
+     "note": "arpégiateur LOGICIEL (JSFX stock midi_arp, inséré à la demande devant le moteur, estampille du bloc) — configs nommées -> Rate ×BPM/Mode/Variants côté golem_rig (apply_vital_arp). Scene-first comme tout param. Vital uniquement (2026-07-24)."
+    }
+   ],
+   "note": "Sampler SFZ (sfizz LV2). Seed : Salamander Grand v3 (Yamaha C5, 16 velocity layers, sustain CC64 + release samples). Le .sfz de la scène est résolu à la compile (b.sfz_file) et chargé côté golem_rig (patch atom sfizz:sfzfile — spike).",
+   "short": "Piano",
+   "color": "#4aa3df",
+   "glyph": "🎹",
+   "content_param": "sfz"
+  },
+  {
+   "type": "ep",
+   "name": "E-Piano",
+   "category": "keys",
+   "engine": "dexed",
+   "icon": "🎹",
+   "unique": true,
+   "input_claim": "keys",
+   "params": [
+    {
+     "id": "bank",
+     "name": "Bank",
+     "type": "enum",
+     "dynamic": "dx7-banks",
+     "options": [],
+     "note": "banque SysEx DX7 (library/dx7) — scene-first : une banque PAR SCÈNE"
+    },
+    {
+     "id": "patch",
+     "name": "Patch",
+     "min": 0,
+     "max": 31,
+     "default": 0,
+     "note": "n° de programme dans la banque (0-31)",
+     "map": {
+      "mode": "raw"
+     },
+     "dynamic": "dx7-patches",
+     "label": "Patch"
+    },
+    {
+     "id": "fcut",
+     "name": "Cutoff",
+     "min": 0,
+     "max": 1,
+     "default": 1.0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Cutoff",
+     "note": "param Dexed (VST3 normalisé) — cible K2 de la Bank B AKAI (CC à re-vérifier)"
+    },
+    {
+     "id": "res",
+     "name": "Resonance",
+     "min": 0,
+     "max": 1,
+     "default": 0.0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Resonance"
+    },
+    {
+     "id": "out",
+     "name": "Output",
+     "min": 0,
+     "max": 1,
+     "default": 0.8,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Output"
+    },
+    {
+     "id": "zone_lo",
+     "name": "Zone Low",
+     "min": 0,
+     "max": 127,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI basse de la zone (P2 splits/layers)"
+    },
+    {
+     "id": "zone_hi",
+     "name": "Zone High",
+     "min": 0,
+     "max": 127,
+     "default": 127,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "note MIDI haute de la zone"
+    },
+    {
+     "id": "transpose",
+     "name": "Transpose",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "demi-tons, appliqué dans la zone"
+    },
+    {
+     "id": "arp",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Up 1/4",
+      "Up 1/8",
+      "Down 1/8",
+      "Up-Down 1/8",
+      "Up 1/16",
+      "Up-Down 1/16",
+      "Up 2 oct"
+     ],
+     "default": "Off",
+     "label": "Arpeggiator",
+     "widget": "chips",
+     "size": 2,
+     "note": "arpégiateur LOGICIEL (JSFX stock midi_arp, inséré à la demande devant le moteur, estampille du bloc) — configs nommées -> Rate ×BPM/Mode/Variants côté golem_rig (apply_vital_arp). Scene-first comme tout param. Vital uniquement (2026-07-24)."
+    }
+   ],
+   "note": "Dexed (VST3 JUCE) — EP FM DX7, charge les banques SysEx d'origine. Banque+patch par scène via vst_chunk splice (technique Vital) ou program change (spike golem_rig).",
+   "short": "EP",
+   "knobs": {
+    "bank": "B",
+    "targets": [
+     "Patch",
+     "Cutoff",
+     "Resonance",
+     "Output"
+    ],
+    "_note": "Patch = slider du JSFX dx7-ctl (golem:<id>) ; Cutoff/Resonance/Output = params Dexed (ep:<id>:synth)"
+   },
+   "color": "#e0669a",
+   "glyph": "🎺",
+   "content_param": "bank"
+  },
+  {
+   "type": "backing-track",
+   "name": "Backing Track",
+   "category": "utility",
+   "engine": "virtual",
+   "plugin": null,
+   "icon": "▶",
+   "note": "golem.fm backing track transport. No audio FX — the stems play on the permanent 'Sandbox #Backing' bus (golem_backing.lua). Assign to a footswitch: tap = play/pause, double-tap = restart, long-press = stop+rewind. Songs are linked per preset (Preset settings ▸ Backing).",
+   "params": [],
+   "foot_scene_claim": true,
+   "scene_invariant": true,
+   "color": "#1ab7b0",
+   "glyph": "▶"
+  },
+  {
+   "type": "looper",
+   "name": "Looper",
+   "category": "utility",
+   "engine": "mode",
+   "icon": "⟳",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_mode": "transport",
+   "params": [],
+   "note": "Marker block (docs/blocks-doctrine.md): its PRESENCE enables looper mode — the 5 stomps become the transport (tap=rec/play/stop, double-tap=overdub, hold=delete) while the preset is loaded. Audio lives on the Sandbox #Looper track (super8 fork), position-independent. Scene-invariant: a recorded loop survives scene changes.",
+   "short": "Loop",
+   "color": "#2ecc71",
+   "glyph": "⟳"
+  },
+  {
+   "type": "delay-tape",
+   "name": "Tape Delay",
+   "category": "delay",
+   "engine": "plugin",
+   "plugin": "Calf Vintage Delay",
+   "icon": "⟲",
+   "params": [
+    {
+     "id": "time",
+     "name": "Time L",
+     "type": "enum",
+     "options": [
+      "16th",
+      "8th",
+      "dotted 8th",
+      "quarter",
+      "5 16ths",
+      "dotted quarter",
+      "half",
+      "dotted half",
+      "whole"
+     ],
+     "values": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      16
+     ],
+     "default": "dotted 8th",
+     "min": 1,
+     "max": 16,
+     "map": {
+      "mode": "raw"
+     },
+     "renamed": {
+      "1/4": "16th",
+      "1/2": "8th",
+      "3/4": "dotted 8th",
+      "1 bar": "quarter"
+     },
+     "note": "note value at the block's OWN BPM (not the song tempo): Calf counts ticks of 60 / (BPM x Subdivide) s with Subdivide left at 4, so one tick is a sixteenth note (Calf source, 2026-10-22). Default = Calf's (3 ticks). `renamed`: the labels before catalog 31 ('1/4', '1/2', '3/4', '1 bar' for 1–4 ticks) — bridge/option_renames.py rewrites them on load",
+     "label": "Time"
+    },
+    {
+     "id": "time_r",
+     "name": "Time R",
+     "type": "enum",
+     "options": [
+      "16th",
+      "8th",
+      "dotted 8th",
+      "quarter",
+      "5 16ths",
+      "dotted quarter",
+      "half",
+      "dotted half",
+      "whole"
+     ],
+     "values": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      16
+     ],
+     "default": "5 16ths",
+     "min": 1,
+     "max": 16,
+     "map": {
+      "mode": "raw"
+     },
+     "renamed": {
+      "1/4": "16th",
+      "1/2": "8th",
+      "3/4": "dotted 8th",
+      "1 bar": "quarter"
+     },
+     "note": "right/2nd tap (Ping-Pong mix mode by default); default = Calf's (5 ticks)"
+    },
+    {
+     "id": "tempo",
+     "name": "BPM",
+     "min": 60,
+     "max": 300,
+     "default": 120,
+     "unit": "bpm",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "own tempo (plugin Timing=BPM default) - free-running, not project sync"
+    },
+    {
+     "id": "feedback",
+     "name": "Feedback",
+     "min": 0,
+     "max": 80,
+     "default": 40,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "min": 0,
+     "max": 100,
+     "default": 30,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "medium",
+     "name": "Medium",
+     "type": "enum",
+     "options": [
+      "Plain",
+      "Tape",
+      "Old Tape"
+     ],
+     "values": [
+      0,
+      1,
+      2
+     ],
+     "default": "Tape",
+     "min": 0,
+     "max": 2,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Calf Vintage Delay - Timing left on plugin default BPM mode (bpm port, NOT host sync); a tick = 1/Subdivide of a bar (default 4 = quarter). Stereo, Ping-Pong default.",
+   "short": "Tape",
+   "color": "#8a94a3",
+   "glyph": "⟲"
+  },
+  {
+   "type": "delay-tape-aw",
+   "name": "Tape Delay (Airwindows)",
+   "category": "delay",
+   "engine": "plugin",
+   "plugin": "VST: TapeDelay2 (airwindows)",
+   "icon": "⟲",
+   "defaults": "compile",
+   "params": [
+    {"id": "time", "name": "Time", "type": "enum", "options": ["80 ms", "120 ms", "180 ms", "250 ms", "350 ms", "500 ms", "750 ms", "1 s", "1.5 s"], "values": [0.9898, 0.8897, 0.7975, 0.7274, 0.659, 0.5886, 0.5081, 0.4472, 0.3398], "default": "350 ms", "map": {"mode": "raw", "idx": 0}, "note": "TapeDelay2 has no time readout: delay = 2 s / (25·A⁴+1) at 44.1 kHz (≈8 % shorter at 48 kHz) — values precomputed"},
+    {"id": "regen", "name": "Regen", "min": 0, "max": 100, "default": 35, "unit": "%", "map": {"mode": "raw", "idx": 1, "scale": 0.01}, "label": "Feedback", "exp": true},
+    {"id": "tone", "name": "Freq", "min": 0, "max": 100, "default": 50, "unit": "%", "map": {"mode": "raw", "idx": 2, "scale": 0.01}, "label": "Tone"},
+    {"id": "reso", "name": "Reso", "min": 0, "max": 100, "default": 0, "unit": "%", "map": {"mode": "raw", "idx": 3, "scale": 0.01}},
+    {"id": "flutter", "name": "Flutter", "min": 0, "max": 100, "default": 15, "unit": "%", "map": {"mode": "raw", "idx": 4, "scale": 0.01}},
+    {"id": "mix", "name": "Dry/Wet", "min": 0, "max": 100, "default": 30, "unit": "%", "map": {"mode": "raw", "idx": 5, "scale": 0.01}, "label": "Mix", "exp": true, "note": "50 % = full dry AND full echo (not a crossfade); above 50 % the dry fades out"}
+   ],
+   "note": "Airwindows TapeDelay2 (MIT) — the same VST2 on Linux and Windows (provision/airwindows.py). ⚠ its own Dry/Wet default is 1.0 = echo only, no dry: defaults are written at compile.",
+   "short": "Tape",
+   "color": "#8a94a3",
+   "glyph": "⟲"
+  },
+  {
+   "type": "delay-echo",
+   "name": "Echo Cat",
+   "category": "delay",
+   "engine": "plugin",
+   "plugin": "GxEchoCat",
+   "icon": "↺",
+   "params": [
+    {
+     "id": "time",
+     "name": "BPM",
+     "min": 60,
+     "max": 240,
+     "default": 120,
+     "unit": "bpm",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "repeat tempo (head pattern)",
+     "label": "Time"
+    },
+    {
+     "id": "repeats",
+     "name": "Sustain",
+     "min": 0,
+     "max": 100,
+     "default": 30,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "mix",
+     "name": "Swell",
+     "min": 0,
+     "max": 100,
+     "default": 35,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "note": "echo level (wet)"
+    },
+    {
+     "id": "input",
+     "name": "Input",
+     "min": 0,
+     "max": 100,
+     "default": 25,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "note": "level into the tape (drive)"
+    },
+    {
+     "id": "head1",
+     "name": "Head 1",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "head2",
+     "name": "Head 2",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "head3",
+     "name": "Head 3",
+     "type": "bool",
+     "default": true,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "at least one head ON for audible repeats"
+    }
+   ],
+   "note": "GxEchoCat (guitarix) - WEM Copicat style tape echo. MONO plugin (unlike ReaDelay): prefer pre-merge placement; post-merge it processes ch1 only. Heads all default OFF in the plugin - block default turns Head 3 on.",
+   "quarantine": "GxEchoCat fige TOUT le moteur audio de Reaper ~520 ms à chaque activation — mesuré le 2026-09-21 (tools/check-block-stall.py) : 7 allumages sur 8, sur n'importe quelle lane, alors que ReaDelay, Calf Vintage Delay et les sept autres guitarix du catalogue ne figent rien (0 sur 72). C'était le « blanc de A vers B » de Paper Kite. Retiré du tiroir, du vocabulaire de l'IA et de la compile ; le Tape Delay (Calf) le remplace.",
+   "short": "Echo",
+   "color": "#8a94a3",
+   "glyph": "↺"
+  },
+  {
+   "type": "reverb-plate",
+   "name": "Plate Reverb",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "Dragonfly Plate Reverb",
+   "icon": "▢",
+   "params": [
+    {
+     "id": "mix",
+     "name": "Wet Level",
+     "min": 0,
+     "max": 60,
+     "default": 25,
+     "unit": "%",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "label": "Mix"
+    },
+    {
+     "id": "decay",
+     "name": "Decay",
+     "min": 0.3,
+     "max": 3,
+     "default": 0.8,
+     "unit": "s",
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 1
+    },
+    {
+     "id": "predelay",
+     "name": "Predelay",
+     "min": 0,
+     "max": 40,
+     "default": 0,
+     "unit": "ms",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "hicut",
+     "name": "High Cut",
+     "min": 3000,
+     "max": 12000,
+     "default": 8000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Dragonfly Plate - mix = Wet Level (dry fixed at 80 by the plugin default), raw native ports. Same recipe as the Hall block.",
+   "short": "Plate",
+   "color": "#8a94a3",
+   "glyph": "▢"
+  },
+  {
+   "type": "reverb-room",
+   "name": "Room Reverb",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "Dragonfly Room Reverb",
+   "icon": "⌂",
+   "params": [
+    {
+     "id": "mix",
+     "name": "Late Level",
+     "min": 0,
+     "max": 60,
+     "default": 25,
+     "unit": "%",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "label": "Mix"
+    },
+    {
+     "id": "decay",
+     "name": "Decay",
+     "min": 0.3,
+     "max": 2.5,
+     "default": 0.7,
+     "unit": "s",
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 1
+    },
+    {
+     "id": "size",
+     "name": "Size",
+     "min": 8,
+     "max": 24,
+     "default": 12,
+     "unit": "m",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "hicut",
+     "name": "High Cut",
+     "min": 3000,
+     "max": 12000,
+     "default": 7000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Dragonfly Room - mix = Late Level (Early Level stays at plugin default 10), raw native ports.",
+   "short": "Room",
+   "color": "#8a94a3",
+   "glyph": "⌂"
+  },
+  {
+   "type": "reverb-shimmer",
+   "name": "Shimmer",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "Gxshimmizita",
+   "icon": "✧",
+   "params": [
+    {
+     "id": "mix",
+     "name": "DRYWET",
+     "min": 0,
+     "max": 100,
+     "default": 40,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "label": "Mix"
+    },
+    {
+     "id": "decay",
+     "name": "T60M",
+     "min": 1,
+     "max": 8,
+     "default": 4,
+     "unit": "s",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "mid-band T60 decay",
+     "fmt": 1
+    },
+    {
+     "id": "shimmer",
+     "name": "PSDRYWET",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     },
+     "note": "pitch-shifter blend (shimmer amount)"
+    },
+    {
+     "id": "pitch",
+     "name": "SHIFT",
+     "min": -6,
+     "max": 6,
+     "default": 5,
+     "unit": "st",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "plugin caps at +/-6 semitones (no full octave)"
+    },
+    {
+     "id": "hicut",
+     "name": "F2",
+     "min": 2000,
+     "max": 12000,
+     "default": 6000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "high damping crossover"
+    }
+   ],
+   "note": "GxShimmiZita (guitarix, Reaper name \"Gxshimmizita\") - zita-rev1 + 8-voice pitch shifter. SHIFT is limited to +/-6 st by the plugin (classic +12 octave shimmer not reachable); MODE left at 0.",
+   "short": "Shim",
+   "color": "#8a94a3",
+   "glyph": "✧"
+  },
+  {
+   "type": "rotary",
+   "name": "Rotary",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "Calf Rotary Speaker",
+   "icon": "۞",
+   "params": [
+    {
+     "id": "speed",
+     "name": "Speed Mode",
+     "type": "enum",
+     "options": [
+      "stop",
+      "slow",
+      "fast"
+     ],
+     "values": [
+      0,
+      1,
+      2
+     ],
+     "default": "slow",
+     "min": 0,
+     "max": 5,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "Off / Chorale / Tremolo"
+    },
+    {
+     "id": "mic",
+     "name": "Mic Distance",
+     "min": 0,
+     "max": 100,
+     "default": 70,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "spacing",
+     "name": "Tap Spacing",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    },
+    {
+     "id": "depth",
+     "name": "FM Depth",
+     "min": 0,
+     "max": 100,
+     "default": 60,
+     "unit": "%",
+     "map": {
+      "mode": "raw",
+      "scale": 0.01
+     }
+    }
+   ],
+   "note": "Calf Rotary Speaker - speed = Speed Mode port (Off=0/Chorale=1/Tremolo=2; MIDI modes 3-5 unused). Stereo.",
+   "short": "Rotary",
+   "color": "#8a94a3",
+   "glyph": "۞"
+  },
+  {
+   "type": "eq-para",
+   "name": "Parametric EQ",
+   "category": "eq",
+   "engine": "plugin",
+   "plugin": "x42-eq - Parametric Equalizer Mono",
+   "icon": "∿",
+   "params": [
+    {
+     "id": "lowcut_on",
+     "name": "Highpass",
+     "type": "bool",
+     "default": true,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "enable the low cut (plugin default OFF)"
+    },
+    {
+     "id": "lowcut",
+     "name": "Highpass Frequency",
+     "min": 20,
+     "max": 250,
+     "default": 80,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "bass",
+     "name": "Lowshelf Gain",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "shelf @80Hz (active by default)"
+    },
+    {
+     "id": "f1",
+     "name": "Frequency 1",
+     "min": 60,
+     "max": 600,
+     "default": 160,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "g1",
+     "name": "Gain 1",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "f2",
+     "name": "Frequency 2",
+     "min": 200,
+     "max": 2000,
+     "default": 500,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "g2",
+     "name": "Gain 2",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "f3",
+     "name": "Frequency 3",
+     "min": 500,
+     "max": 8000,
+     "default": 2000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "g3",
+     "name": "Gain 3",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "treble",
+     "name": "Highshelf Gain",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "note": "shelf @8kHz (active by default)"
+    }
+   ],
+   "note": "x42-eq (fil4) Mono - chosen over LSP Parametric x8: LSP bands default to type Off, so gain knobs would be silently dead until a hidden \"Filter type\" enum is set (GoleM only writes touched params). fil4: 3 bells + 2 shelves ACTIVE by default, native dB/Hz ports. Section 4 not exposed.",
+   "short": "PEQ",
+   "color": "#8a94a3",
+   "glyph": "∿"
+  },
+  {
+   "type": "eq-graphic",
+   "name": "Graphic EQ",
+   "category": "eq",
+   "engine": "plugin",
+   "plugin": "GxGraphicEQ",
+   "icon": "≡",
+   "params": [
+    {
+     "id": "g1",
+     "name": "G1",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "30"
+    },
+    {
+     "id": "g2",
+     "name": "G2",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "60"
+    },
+    {
+     "id": "g3",
+     "name": "G3",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "125"
+    },
+    {
+     "id": "g4",
+     "name": "G4",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "250"
+    },
+    {
+     "id": "g5",
+     "name": "G5",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "500"
+    },
+    {
+     "id": "g6",
+     "name": "G6",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "1k"
+    },
+    {
+     "id": "g7",
+     "name": "G7",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "2k"
+    },
+    {
+     "id": "g8",
+     "name": "G8",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "4k"
+    },
+    {
+     "id": "g9",
+     "name": "G9",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "8k"
+    },
+    {
+     "id": "g10",
+     "name": "G10",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "12k"
+    },
+    {
+     "id": "g11",
+     "name": "G11",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "fader",
+     "label": "16k"
+    }
+   ],
+   "note": "GxGraphicEQ (guitarix) - 11 octave-spaced bands, G1=lows -> G11=highs (~30Hz-16kHz), native dB ports (-30/+20 clamped to +/-12). Chosen over LSP Graphic x16 Mono: LSP band-gain ports are LINEAR multipliers (no dB mapping mode in golem_rig -> knobs would read as meaningless ratios). MONO plugin.",
+   "short": "GEQ",
+   "color": "#8a94a3",
+   "glyph": "≡"
+  },
+  {
+   "type": "tuner",
+   "name": "Tuner",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "⊙",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "foot_suggest": 5,
+   "params": [
+    {
+     "id": "tuning",
+     "name": "Tuning",
+     "type": "enum",
+     "dynamic": "tunings",
+     "default": ""
+    }
+   ],
+   "note": "Bloc-MARQUEUR (doctrine 2026-07-20) : surface UI + claim de pied, jamais matérialisé (runtime = JSFX système golem_tuner). Posé dans une lane, il désigne la source écoutée. foot_scene_claim : assignable aux switches 1-5 (remplace le slot de scène).",
+   "short": "Tuner",
+   "color": "#8a94a3",
+   "glyph": "⊙"
+  },
+  {
+   "type": "rec",
+   "name": "Rec",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "●",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "params": [],
+   "note": "Bloc-MARQUEUR (doctrine 2026-07-20) : start/stop de l'enregistrement de performance (Library ▸ Loops) au pied. Assignable stomps 6-10 OU rangée scènes (foot_scene_claim). Remplace perf_foot (lu en legacy). Sources : coches IN 1 / IN 2 / USB dans la fiche (params.in1/in2/usb, défaut tout) — backing & looper toujours inclus (le mix entendu).",
+   "short": "Rec",
+   "color": "#ff4136",
+   "glyph": "●"
+  },
+  {
+   "type": "click",
+   "name": "Click",
+   "category": "utility",
+   "engine": "mode",
+   "icon": "◔",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "params": [
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -60,
+     "max": 6,
+     "default": -12,
+     "unit": "dB"
+    },
+    {
+     "id": "beats",
+     "name": "Beats / bar",
+     "type": "enum",
+     "options": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+     ],
+     "values": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "default": "4",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Bloc-SERVICE permanent (lane Recorder, chantier Click 2026-07-25) : métronome free-running (piste Click + golem_click.jsfx) qui suit le BPM du preset, tique transport arrêté, et sort sur le rôle 'click' du patch de la carte (défaut : monitors — jamais gravé dans les prises perf-rec). Config GLOBALE (config/click.json) comme le bloc Rec. On/off au pied via claim.",
+   "short": "Click",
+   "color": "#e0b23a",
+   "glyph": "◔"
+  },
+  {
+   "type": "compo",
+   "name": "Riff",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "🔥",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "params": [],
+   "note": "Permanent marker block (docs/compo.md): a RIFF sent to the golem.fm composer. Displayed \"Riff\" — \"comp\" reads as the compressor; the id `compo` never shows and stays in the golem.fm contract, the `compo-target` uplink command and config/compo.json. Gesture: tap = start a capture (through the Rec take path, with the Rec block's count-in), tap = stop; a second tap during the count-in cancels. Same tap from the footswitch, the screen or a Companion (POST /api/compo/tap), and golem.fm can start/stop it remotely. After the stop the rack holds the take 20 s before sending; Drop is ON SCREEN only (/live). There is no long press, no double tap and no retro-capture (keep the last N seconds) yet: proposed, not coded. GLOBAL config (config/compo.json) like Rec and Click: each person's lanes, transcription on the rack; only the footswitch is per preset. The author = the person of the device that taps (footswitch: foot_person, Companion: its device). \"Follow Golem\" target received through the uplink (compo-target, per person, in memory).",
+   "short": "Riff",
+   "color": "#ff7a45",
+   "glyph": "🔥"
+  },
+  {
+   "type": "sample",
+   "name": "Sample",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "✱",
+   "unique": false,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "foot_mode": "sample",
+   "params": [
+    {
+     "id": "samples",
+     "name": "Samples",
+     "type": "samplelist",
+     "default": []
+    }
+   ],
+   "note": "Lanceur de one-shots au pied (bloc-marqueur, doctrine 2026-07-21). foot_scene_claim : occupe un switch de la 1re rangee ; NON-unique (plusieurs lanceurs). Geste : TAP = coupe le sample en cours + lance le SUIVANT de la liste (repos = le premier ; liste d'un seul = retrigger) ; APPUI LONG = stop. One-shot : chaque sample joue jusqu'au bout ou jusqu'au prochain tap/stop. Cycle. scene-invariant (un sample lance survit au changement de scene). Audio via RS5k (golem_sample.lua).",
+   "color": "#5fce8f",
+   "glyph": "✱"
+  },
+  {
+   "type": "drums",
+   "name": "Drum Machine",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "⊞",
+   "unique": false,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "foot_mode": "drums",
+   "params": [
+    {
+     "id": "patterns",
+     "name": "Grooves",
+     "type": "midilist",
+     "default": []
+    },
+    {
+     "id": "fills",
+     "name": "Fills",
+     "type": "midilist",
+     "default": []
+    },
+    {
+     "id": "kit",
+     "name": "Kit",
+     "type": "kitref",
+     "default": null
+    }
+   ],
+   "note": "Boite a rythmes au pied (bloc-marqueur, doctrine 2026-07-21, approche B). Joue des patterns MIDI de batterie en BOUCLE synchro-tempo a travers un kit RS5k. foot_scene_claim ; NON-unique ; scene-invariant. Geste : ARRETE+tap = play ; EN COURS+tap = FILL (instantane, revient au groove) ; EN COURS+appui 0,6-1,5 s = VARIATION (partie suivante, a la mesure) ; EN COURS+appui >=1,5 s = STOP. Synchro sur le BPM du preset. Audio via golem_drums.lua.",
+   "color": "#7fd4a8",
+   "glyph": "⊞",
+   "content_param": "kit"
+  },
+  {
+   "type": "standard",
+   "name": "Standard",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "♭",
+   "unique": true,
+   "conflicts": [
+    "backing-track",
+    "drums"
+   ],
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "params": [
+    {
+     "id": "standard",
+     "name": "Standard",
+     "type": "standardref",
+     "default": null
+    },
+    {
+     "id": "key",
+     "name": "Key",
+     "type": "enum",
+     "options": [
+      "Original",
+      "C",
+      "Db",
+      "D",
+      "Eb",
+      "E",
+      "F",
+      "Gb",
+      "G",
+      "Ab",
+      "A",
+      "Bb",
+      "B",
+      "Cm",
+      "C#m",
+      "Dm",
+      "Ebm",
+      "Em",
+      "Fm",
+      "F#m",
+      "Gm",
+      "G#m",
+      "Am",
+      "Bbm",
+      "Bm"
+     ],
+     "default": "Original",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "feel",
+     "name": "Feel",
+     "type": "enum",
+     "options": [
+      "auto",
+      "swing",
+      "bossa",
+      "latin",
+      "samba",
+      "funk",
+      "ballad",
+      "even",
+      "waltz"
+     ],
+     "default": "auto",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "motion",
+     "name": "Motion",
+     "type": "enum",
+     "options": [
+      "block",
+      "comp",
+      "arp",
+      "arp+bass"
+     ],
+     "default": "comp",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "voicing",
+     "name": "Voicing",
+     "type": "enum",
+     "options": [
+      "rootless",
+      "full"
+     ],
+     "default": "rootless",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "arp",
+     "name": "Arpeggiator",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Up 1/4",
+      "Up 1/8",
+      "Down 1/8",
+      "Up-Down 1/8",
+      "Up 1/16",
+      "Up-Down 1/16",
+      "Up 2 oct"
+     ],
+     "default": "Off",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "keys",
+     "name": "Piano",
+     "type": "bool",
+     "default": true
+    },
+    {
+     "id": "bass",
+     "name": "Bass",
+     "type": "bool",
+     "default": true
+    },
+    {
+     "id": "drums",
+     "name": "Drums",
+     "type": "bool",
+     "default": false
+    },
+    {
+     "id": "guitar",
+     "name": "Guitar",
+     "type": "bool",
+     "default": false
+    },
+    {
+     "id": "pompe",
+     "name": "Pompe",
+     "type": "enum",
+     "options": [
+      "auto",
+      "pompe",
+      "pompe-fast",
+      "ballad",
+      "valse",
+      "bolero",
+      "rumba",
+      "bossa"
+     ],
+     "default": "auto",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "groove",
+     "name": "Groove",
+     "type": "enum",
+     "options": [
+      "auto",
+      "swing",
+      "bossa",
+      "latin",
+      "samba",
+      "funk",
+      "ballad",
+      "even",
+      "waltz"
+     ],
+     "default": "auto",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "kit",
+     "name": "Kit",
+     "type": "enum",
+     "options": [
+      "black-pearl",
+      "red-zeppelin",
+      "blonde-bop"
+     ],
+     "default": "black-pearl",
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "choruses",
+     "name": "Choruses",
+     "min": 1,
+     "max": 16,
+     "default": 1,
+     "unit": "x"
+    },
+    {
+     "id": "count_in",
+     "name": "Count-in",
+     "min": 0,
+     "max": 2,
+     "default": 0,
+     "unit": "bar"
+    },
+    {
+     "id": "live_view",
+     "name": "Live view",
+     "type": "enum",
+     "options": [
+      "Chart",
+      "Pedalboard"
+     ],
+     "default": "Chart",
+     "_note": "UI seulement — la page /live lit ce param pour savoir quoi rendre. Pas de `map` : rien ne descend vers Reaper."
+    }
+   ],
+   "note": "Bloc-SERVICE (contrat docs/standards.md) : joue la GRILLE d'accords d'un standard — piano (voicings sans fondamentale, conduite des voix) + walking bass — pendant que le musicien joue le theme. UNIQUE ; scene-invariant (la tonalite d'un standard ne change pas au refrain) ; foot_scene_claim (un switch = play/stop). NE PORTE PAS DE TEMPO : preset.bpm est LA source de verite (le bloc l'AMORCE au chargement avec le tempo conventionnel du standard, et c'est fini). La FORME (chorus, solos, coda) appartient au bloc arrangement, pas ici. Pas de guitare SOLO : la lane guitare est l'entree du musicien, et le guitariste c'est toi ; la seule guitare du bloc est la POMPE manouche (parts.guitar, piste Standard Guitar, docs/standards.md §10). Moteur : bridge/standards.py rend les evenements -> golem_chordseq.lua les pose en gmem -> golem_chordseq.jsfx les emet a l'echantillon pres (ReaScript ne peut pas injecter du MIDI dans une instance FX precise). CONFLITS : backing-track et drums. Un preset EST un morceau, et un morceau est soit un backing soit un standard ; et le standard porte DEJA sa batterie (parts.drums), donc une boite a rythmes a cote ferait deux batteurs. Le tiroir d'ajout les grise dans les deux sens et dit pourquoi.",
+   "color": "#9ad9be",
+   "glyph": "▦"
+  },
+  {
+   "type": "arrangement",
+   "name": "Arrangement",
+   "category": "utility",
+   "engine": "virtual",
+   "icon": "▤",
+   "unique": true,
+   "scene_invariant": true,
+   "foot_scene_claim": true,
+   "params": [
+    {
+     "id": "live_view",
+     "name": "Live view",
+     "type": "enum",
+     "options": [
+      "Pedalboard",
+      "Timeline"
+     ],
+     "default": "Pedalboard",
+     "_note": "UI seulement. Défaut Pedalboard : un arrangement bascule les scènes tout seul, la pastille de la rangée haute suffit — le pupitre (Timeline) est le besoin du BATTEUR, donc du mode Show, ou une demande explicite ici."
+    }
+   ],
+   "note": "Bloc CHEF D'ORCHESTRE (docs/arrangement.md, genre inaugure le 2026-07-30). Donne au preset - donc au morceau - sa structure dans le temps : une suite de SECTIONS (intro/verse/chorus...), chacune portant les CUES qui s'appliquent quand elle commence. IL NE FABRIQUE AUCUN SON : il sequence des scenes, la granularite par instrument EST la scene. Aucune piste Reaper (moteur dans le bridge). PERMANENT et SANS TIROIR (decision 2026-07-30) : il a son propre ONGLET du Designer, l'icone ▤ apres le ⚙ - le corps du Designer fait 481 px contre 257 pour un tiroir, et l'edition passait par cinq niveaux. Le bloc reste la donnee (config.arr), le switch au pied et le on/off ; l'onglet est son editeur. Metrique par section (7/8, 9/4) avec heritage section -> arrangement -> 4/4.",
+   "short": "Arrangement",
+   "color": "#c98a2e",
+   "glyph": "▤"
+  },
+  {
+   "type": "limiter",
+   "name": "Limiter",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "x42-dpl - Digital Peak Limiter Mono",
+   "params": [
+    {
+     "id": "threshold",
+     "name": "Threshold",
+     "min": -30,
+     "max": 0,
+     "default": -6,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2
+    },
+    {
+     "id": "release",
+     "name": "Release Time",
+     "min": 1,
+     "max": 1000,
+     "default": 50,
+     "unit": "ms",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "x42 DPL (dpl.lv2, deja installe) — brickwall peak limiter. Chantier 2 (algo OSS). Nom Reaper + params A VERIFIER sur le rig.",
+   "short": "Limiter",
+   "color": "#8a94a3",
+   "glyph": "⎍"
+  },
+  {
+   "type": "deesser",
+   "name": "De-esser",
+   "category": "dynamics",
+   "plugin": "golem_deesser",
+   "icon": "ᔕ",
+   "short": "DeEs",
+   "color": "#8a94a3",
+   "roles": [
+    "voice"
+   ],
+   "params": [
+    {
+     "id": "thresh",
+     "name": "Threshold (dB)",
+     "min": -50,
+     "max": 0,
+     "default": -28,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "label": "Threshold"
+    },
+    {
+     "id": "freq",
+     "name": "Frequency (Hz)",
+     "min": 2000,
+     "max": 12000,
+     "default": 6000,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     },
+     "label": "Freq"
+    },
+    {
+     "id": "range",
+     "name": "Max Reduction (dB)",
+     "min": 0,
+     "max": 24,
+     "default": 10,
+     "unit": "dB",
+     "map": {
+      "mode": "raw"
+     },
+     "label": "Range"
+    },
+    {
+     "id": "listen",
+     "name": "Listen (band)",
+     "type": "bool",
+     "default": false,
+     "label": "Listen"
+    }
+   ],
+   "note": "JSFX maison (reaper/Effects/golem_deesser.jsfx) : compression de la bande sibilante (HP à Freq, détection RMS courte, réduction plafonnée Range). Listen = écoute la bande seule pour caler Freq. Voice only (roles)."
+  },
+  {
+   "type": "granular",
+   "name": "Granular Freeze",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "ZamGrains",
+   "params": [
+    {
+     "id": "freeze",
+     "name": "Freeze",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "grains",
+     "name": "Grains",
+     "min": 1,
+     "max": 64,
+     "default": 8,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "pos",
+     "name": "Grain Position",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "ZamGrains (ZamAudio LV2, deja installe) — granular freeze/glitch (drone/pad quand Freeze engage). Chantier 2 (algo OSS). Nom Reaper + params A VERIFIER sur le rig.",
+   "short": "Freeze",
+   "color": "#5ec8e0",
+   "glyph": "❄"
+  },
+  {
+   "type": "octaver",
+   "name": "Octaver",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "Gxoc_2",
+   "params": [
+    {
+     "id": "direct",
+     "name": "DIRECT",
+     "min": 0,
+     "max": 1,
+     "default": 1,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "octave1",
+     "name": "OCTAVE1",
+     "min": 0,
+     "max": 1,
+     "default": 0.6,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "octave2",
+     "name": "OCTAVE2",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "guitarix gx_oc_2 (Boss OC-2, deja installe) — octaver mono. OCTAVE1 = -1 oct, OCTAVE2 = -2 oct (sub). Chantier 2. Nom Reaper + params A VERIFIER sur le rig.",
+   "short": "Octaver",
+   "color": "#b06cf0",
+   "glyph": "⑧"
+  },
+  {
+   "type": "vibrato",
+   "name": "Vibrato",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "GxTubeVibrato",
+   "params": [
+    {
+     "id": "depth",
+     "name": "Depth",
+     "min": 0,
+     "max": 1,
+     "default": 0.4,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "speed",
+     "name": "Speed",
+     "min": 0.1,
+     "max": 14,
+     "default": 3,
+     "unit": "Hz",
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "guitarix gxtubevibrato — vrai vibrato de hauteur. Speed en Hz (port 0,1..14, défaut 3 : gxtubevibrato.ttl, lu le 2026-10-22 ; le catalogue disait 0..1). Sous Windows/macOS : golem_vibrato.jsfx.",
+   "short": "Vibrato",
+   "color": "#2ecc71",
+   "glyph": "∿"
+  },
+  {
+   "type": "pitch-correct",
+   "name": "Pitch Correct",
+   "category": "pitch",
+   "plugin": "x42-Autotune",
+   "icon": "♪",
+   "short": "PCor",
+   "color": "#b06cf0",
+   "roles": [
+    "voice"
+   ],
+   "params": [
+    {
+     "id": "corr",
+     "name": "Correction",
+     "min": 0,
+     "max": 1,
+     "default": 1.0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "size": 2,
+     "label": "Amount"
+    },
+    {
+     "id": "filter",
+     "name": "Filter",
+     "min": 0.02,
+     "max": 0.5,
+     "default": 0.1,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "label": "Speed",
+     "note": "constante de lissage zita-at1 : bas = correction lente/naturelle, haut = rapide"
+    },
+    {
+     "id": "fastmode",
+     "name": "Fast Correction",
+     "type": "bool",
+     "default": false,
+     "label": "Hard"
+    },
+    {
+     "id": "key",
+     "type": "enum",
+     "options": [
+      "C",
+      "C#",
+      "D",
+      "D#",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "G#",
+      "A",
+      "A#",
+      "B"
+     ],
+     "default": "C",
+     "label": "Key",
+     "note": "VIRTUEL : consommé par compile_rig (_expand_pitch_correct) -> masque m00-m11 ; jamais écrit au plugin"
+    },
+    {
+     "id": "scale",
+     "type": "enum",
+     "options": [
+      "Chromatic",
+      "Major",
+      "Minor"
+     ],
+     "default": "Chromatic",
+     "label": "Scale",
+     "note": "VIRTUEL : voir key"
+    },
+    {
+     "id": "offset",
+     "name": "Offset",
+     "min": -2,
+     "max": 2,
+     "default": 0,
+     "unit": "st",
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 1,
+     "label": "Shift"
+    },
+    {
+     "id": "m00",
+     "name": "C",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m01",
+     "name": "C#",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m02",
+     "name": "D",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m03",
+     "name": "D#",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m04",
+     "name": "E",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m05",
+     "name": "F",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m06",
+     "name": "F#",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m07",
+     "name": "G",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m08",
+     "name": "G#",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m09",
+     "name": "A",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m10",
+     "name": "A#",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    },
+    {
+     "id": "m11",
+     "name": "B",
+     "type": "bool",
+     "default": true,
+     "hidden": true
+    }
+   ],
+   "note": "x42-Autotune (fat1.lv2 = zita-at1 de Fons Adriaensen). Autotune temps réel LV2, notes cibles = 12 ports C..B (masqués ici, pilotés par Key+Scale à la compile). Hard = fastmode (effet T-Pain). Voice only (roles)."
+  },
+  {
+   "type": "detune",
+   "name": "Detune",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "GxDetune",
+   "params": [
+    {
+     "id": "detune",
+     "name": "DETUNE",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "wet",
+     "name": "WET",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "dry",
+     "name": "DRY",
+     "min": 0,
+     "max": 1,
+     "default": 0.7,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "guitarix gx_detune (deja installe) — detune / micro-pitch doubler. Chantier 2. Nom Reaper + params A VERIFIER sur le rig.",
+   "short": "Detune",
+   "color": "#b06cf0",
+   "glyph": "♒",
+   "quarantine": "GxDetune corrompt le tas de Reaper : glibc « corrupted size vs. prev_size », abort (signal 6) au premier rebuild qui le pose ou le retire — 8 crashs le 2026-09-07, reproduit avec une lane réduite à ce seul bloc. Retiré du tiroir, du vocabulaire de l'IA et de la compile jusqu'à correctif."
+  },
+  {
+   "type": "ringmod",
+   "name": "Ring Modulator",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "MDA RingMod",
+   "params": [
+    {
+     "id": "freq",
+     "name": "Freq",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "fine",
+     "name": "Fine",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "feedback",
+     "name": "Feedback",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "mda RingMod (mda-lv2) — ring modulator (metallique/cloche). Chantier 2. A VERIFIER sur le rig.",
+   "short": "RingMod",
+   "color": "#b06cf0",
+   "glyph": "⊛"
+  },
+  {
+   "type": "bitcrusher",
+   "name": "Bitcrusher",
+   "category": "utility",
+   "engine": "plugin",
+   "plugin": "MDA Degrade",
+   "params": [
+    {
+     "id": "quant",
+     "name": "Quant",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "rate",
+     "name": "Rate",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     }
+    },
+    {
+     "id": "nonlin",
+     "name": "Non-Lin",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "mda Degrade (mda-lv2) — bitcrusher / sample-rate reducer (lo-fi). Quant=bits, Rate=SR. Chantier 2. A VERIFIER sur le rig.",
+   "short": "Bitcrush",
+   "color": "#8a94a3",
+   "glyph": "▚"
+  },
+  {
+   "type": "rezfilter",
+   "name": "Resonant Filter",
+   "category": "filter",
+   "engine": "plugin",
+   "plugin": "MDA RezFilter",
+   "params": [
+    {
+     "id": "freq",
+     "name": "Freq",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "fmt": 2
+    },
+    {
+     "id": "res",
+     "name": "Res",
+     "min": 0,
+     "max": 1,
+     "default": 0.6,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "env",
+     "name": "Env->VCF",
+     "label": "Env depth",
+     "min": 0,
+     "max": 1,
+     "default": 0.4,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "envelope"
+    },
+    {
+     "id": "attack",
+     "name": "Attack",
+     "min": 0,
+     "max": 1,
+     "default": 0.35,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "envelope"
+    },
+    {
+     "id": "release",
+     "name": "Release",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "envelope"
+    },
+    {
+     "id": "lfodepth",
+     "name": "LFO->VCF",
+     "label": "LFO depth",
+     "min": 0,
+     "max": 1,
+     "default": 0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "lfo"
+    },
+    {
+     "id": "lforate",
+     "name": "LFO Rate",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "lfo"
+    }
+   ],
+   "note": "MDA RezFilter — resonant filter : envelope follower (Env depth/Attack/Release) and/or LFO sweep (LFO depth/Rate). Freq = base cutoff, Res = resonance.",
+   "short": "RezFilter",
+   "color": "#5ec8e0",
+   "glyph": "◇"
+  },
+  {
+   "type": "surge-spring",
+   "name": "Spring Reverb",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "Surge XT Effects",
+   "params": [
+    {
+     "id": "size",
+     "name": "FX Parameter 0",
+     "label": "Size",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "size": 2
+    },
+    {
+     "id": "decay",
+     "name": "FX Parameter 1",
+     "label": "Decay",
+     "min": 0,
+     "max": 1,
+     "default": 0.55,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "refl",
+     "name": "FX Parameter 2",
+     "label": "Reflections",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "damp",
+     "name": "FX Parameter 3",
+     "label": "HF Damping",
+     "min": 0,
+     "max": 1,
+     "default": 0.45,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "spin",
+     "name": "FX Parameter 4",
+     "label": "Spin",
+     "min": 0,
+     "max": 1,
+     "default": 0.35,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "character"
+    },
+    {
+     "id": "chaos",
+     "name": "FX Parameter 5",
+     "label": "Chaos",
+     "min": 0,
+     "max": 1,
+     "default": 0.15,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "character"
+    },
+    {
+     "id": "knock",
+     "name": "FX Parameter 6",
+     "label": "Knock",
+     "min": 0,
+     "max": 1,
+     "default": 0.0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "character"
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "label": "Mix",
+     "min": 0,
+     "max": 1,
+     "default": 0.35,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    }
+   ],
+   "note": "Surge XT Spring Reverb (FX Type 27) — real spring tank model. Knock = kicks the springs (the surf crash!), Spin/Chaos = tank instability. Param indexes verified against Surge source (2026-07-23).",
+   "short": "Spring",
+   "color": "#5a7cff",
+   "glyph": "♨"
+  },
+  {
+   "type": "surge-freqshift",
+   "name": "Frequency Shifter",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "Surge XT Effects",
+   "params": [
+    {
+     "id": "shift",
+     "name": "FX Parameter 0",
+     "label": "Shift L",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "size": 2
+    },
+    {
+     "id": "shift_r",
+     "name": "FX Parameter 1",
+     "label": "Shift R",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "time",
+     "name": "FX Parameter 2",
+     "label": "Time",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "fbk",
+     "name": "FX Parameter 3",
+     "label": "Feedback",
+     "min": 0,
+     "max": 1,
+     "default": 0.0,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "label": "Mix",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    }
+   ],
+   "note": "Surge XT Frequency Shifter (FX Type 7) — NOT a pitch shifter : shifts ALL partials by N Hz (inharmonic). Small shift + feedback = barberpole. 0.5 = no shift. Indexes verified against Surge source.",
+   "short": "FreqShift",
+   "color": "#b06cf0",
+   "glyph": "⇅"
+  },
+  {
+   "type": "surge-treemonster",
+   "name": "Treemonster",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "Surge XT Effects",
+   "params": [
+    {
+     "id": "thr",
+     "name": "FX Parameter 0",
+     "label": "Threshold",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "size": 2
+    },
+    {
+     "id": "speed",
+     "name": "FX Parameter 1",
+     "label": "Speed",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "lowcut",
+     "name": "FX Parameter 2",
+     "label": "Low Cut",
+     "min": 0,
+     "max": 1,
+     "default": 0.3,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "detection"
+    },
+    {
+     "id": "highcut",
+     "name": "FX Parameter 3",
+     "label": "High Cut",
+     "min": 0,
+     "max": 1,
+     "default": 0.7,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2,
+     "group": "detection"
+    },
+    {
+     "id": "pitch",
+     "name": "FX Parameter 4",
+     "label": "Pitch",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "ring",
+     "name": "FX Parameter 5",
+     "label": "Ring Mod",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    },
+    {
+     "id": "mix",
+     "name": "Wet",
+     "label": "Mix",
+     "min": 0,
+     "max": 1,
+     "default": 0.5,
+     "map": {
+      "mode": "raw"
+     },
+     "fmt": 2
+    }
+   ],
+   "note": "Surge XT Treemonster (FX Type 24) — pitch-tracking ring-mod mono-synth. FIX 2026-07-23: the exposed 'Pitch' knob actually drove High Cut (index 3) — Pitch is index 4. Indexes verified against Surge source.",
+   "short": "Tree",
+   "color": "#b06cf0",
+   "glyph": "♫"
+  },
+  {
+   "type": "spectral-comp",
+   "name": "Spectral Comp",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "CLAP: Spectral Compressor (Robbert van der Helm)",
+   "icon": "⩓",
+   "glyph": "⩓",
+   "short": "SpecC",
+   "color": "#8a94a3",
+   "roles": [
+    "voice",
+    "keys",
+    "pads",
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "thresh",
+     "name": "Global Threshold",
+     "label": "Threshold",
+     "min": -60,
+     "max": 0,
+     "default": -24,
+     "unit": "dB",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": -100,
+      "max": 20,
+      "exp": 1
+     },
+     "size": 2,
+     "note": "the level above which every bin is compressed (and below which it is expanded upwards). Start around the level of your quietest note"
+    },
+    {
+     "id": "down",
+     "name": "Downwards Ratio",
+     "label": "Down",
+     "min": 1,
+     "max": 20,
+     "default": 4,
+     "unit": ":1",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "min": 1,
+      "max": 500,
+      "exp": 0.25
+     },
+     "note": "compression of the bins ABOVE the threshold — the tamer. 1:1 = off"
+    },
+    {
+     "id": "up",
+     "name": "Upwards Ratio",
+     "label": "Up",
+     "min": 1,
+     "max": 20,
+     "default": 1,
+     "unit": ":1",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "min": 1,
+      "max": 500,
+      "exp": 0.25
+     },
+     "note": "expansion of the bins BELOW the threshold — brings up what is quiet, bin by bin. High values on a pad = pink noise; 1:1 = off"
+    },
+    {
+     "id": "center",
+     "name": "Threshold Center",
+     "label": "Center",
+     "min": 100,
+     "max": 8000,
+     "default": 420,
+     "unit": "Hz",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 20,
+      "max": 20000,
+      "exp": 0.25
+     },
+     "note": "the pivot of the threshold curve across the spectrum"
+    },
+    {
+     "id": "slope",
+     "name": "Threshold Slope",
+     "label": "Slope",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB/oct",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "sym": true,
+      "center": 0,
+      "min": -36,
+      "max": 36,
+      "exp": 0.25
+     },
+     "note": "tilts the threshold: negative = the highs are compressed sooner (de-harsh), positive = the lows are"
+    },
+    {
+     "id": "attack",
+     "name": "Attack",
+     "label": "Attack",
+     "min": 1,
+     "max": 1000,
+     "default": 150,
+     "unit": "ms",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 10000,
+      "exp": 0.25
+     }
+    },
+    {
+     "id": "release",
+     "name": "Release",
+     "label": "Release",
+     "min": 5,
+     "max": 2000,
+     "default": 300,
+     "unit": "ms",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 10000,
+      "exp": 0.25
+     }
+    },
+    {
+     "id": "window",
+     "name": "Window Size",
+     "label": "Window",
+     "type": "enum",
+     "options": [
+      "1024",
+      "2048",
+      "4096"
+     ],
+     "values": [
+      4,
+      5,
+      6
+     ],
+     "default": "2048",
+     "min": 0,
+     "max": 9,
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "chips",
+     "note": "the FFT window — and the LATENCY: 2048 = 43 ms at 48 kHz. Smaller = tighter but blurrier in the lows (values = the plugin's raw order − 6 : 1024/2048/4096 ; the raw port is 0..9)"
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "label": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     }
+    },
+    {
+     "id": "out",
+     "name": "Output Gain",
+     "label": "Output",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "db": true,
+      "min": -50,
+      "max": 50,
+      "exp": 0.12035
+     }
+    }
+   ],
+   "note": "Spectral Compressor (Robbert van der Helm, GPL-3, nih-plug — built from source by provision/install-spectral.sh, docs/spectral.md): a compressor per FFT bin (thousands of them), downwards AND upwards, with a threshold CURVE across the spectrum instead of one number. What it is for on a rack: even out a voice or a pad without pumping (the threshold follows the spectrum), hold a synth pad, 'pink-noise' a source with Up high. LATENCY = the window (2048 → 43 ms, compensated by Reaper's PDC on the lane): never in the base path of a guitar lane; voice, keys and pads take it. Placement: after gate/EQ, before delay/reverb. Knobs are written in NORMALIZED with the plugin's own tapers (map.mode pow, nih-plug Skewed/SymmetricalSkewed): a read-back in the same call is stale on nih-plug, so no display dichotomy here. `defaults: compile` — the catalog defaults are written at compile time when a preset omits them (the plugin's own defaults would leave Spectral Comp at 1:1 and Stretch with the direct signal cut).",
+   "_validation": "2026-09-25 : VALIDÉ au banc — fxadd sous « CLAP: Spectral Compressor (Robbert van der Helm) », pdc=2048 samples déclaré, check-block-stall : aucun gel (les −41…−47 ms mesurés sont le PDC qui entre, pas un gel), deux reconstructions (seul derrière un gate, puis rappel d'un autre preset et retour), les 10 potards relus à la valeur AFFICHÉE attendue (map.mode pow — la dichotomie d'affichage posait Window 32768 pour 2048, Attack 0,1 ms pour 50 : relecture en retard sur nih-plug), défauts du catalogue écrits à la compile. Pas encore joué à l'oreille.",
+   "defaults": "compile"
+  },
+  {
+   "type": "stretch",
+   "name": "Stretch",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "CLAP: PaulXStretch (Sonosaurus)",
+   "icon": "≈",
+   "glyph": "≈",
+   "short": "Strch",
+   "color": "#a86cf0",
+   "roles": [
+    "voice",
+    "keys",
+    "pads",
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "capture",
+     "name": "Capture",
+     "label": "Capture",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "note": "ON: the input is recorded (up to Max length). OFF: the recording is committed and played back, looped and stretched. A stomp on this = a spectral looper"
+    },
+    {
+     "id": "freeze",
+     "name": "Freeze",
+     "label": "Freeze",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "holds the playback position: the sound stays on one instant of the capture"
+    },
+    {
+     "id": "thru",
+     "name": "Pass input through",
+     "label": "Dry thru",
+     "type": "bool",
+     "default": true,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "lets the direct signal through the block. OFF = only the stretched playback (the plugin's own default — an insert that swallows the direct is a silence you would chase all night, hence ON here)"
+    },
+    {
+     "id": "amount",
+     "name": "Stretch amount",
+     "label": "Stretch",
+     "min": 0.1,
+     "max": 100,
+     "default": 4,
+     "unit": "×",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "min": 0.1,
+      "max": 1024,
+      "exp": 0.25
+     },
+     "note": "how much slower the capture plays: ×1 = real time, ×4 = a pad, ×50+ = a drone. Up to ×1024 inside the plugin"
+    },
+    {
+     "id": "pitch",
+     "name": "Pitch shift",
+     "label": "Pitch",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "st",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "min": -24,
+      "max": 24,
+      "exp": 1
+     }
+    },
+    {
+     "id": "fshift",
+     "name": "Frequency shift",
+     "label": "F-shift",
+     "min": -1000,
+     "max": 1000,
+     "default": 0,
+     "unit": "Hz",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": -1000,
+      "max": 1000,
+      "exp": 1
+     },
+     "note": "linear shift of every partial — inharmonic, bell-like at small values"
+    },
+    {
+     "id": "spread",
+     "name": "Frequency spread",
+     "label": "Spread",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "note": "smears the partials into a wash (enables the spread module in the plugin when > 0)"
+    },
+    {
+     "id": "compress",
+     "name": "Compress",
+     "label": "Compress",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "note": "spectral compression of the stretched sound: evens the partials, louder tail"
+    },
+    {
+     "id": "maxlen",
+     "name": "Max capture length",
+     "label": "Max len",
+     "min": 1,
+     "max": 60,
+     "default": 10,
+     "unit": "s",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 1,
+      "max": 120,
+      "exp": 1
+     }
+    },
+    {
+     "id": "fft",
+     "name": "FFT size",
+     "label": "Grain",
+     "min": 0,
+     "max": 100,
+     "default": 70,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "note": "window size: low = tight and rhythmic, high = smooth and smeared"
+    },
+    {
+     "id": "vol",
+     "name": "Main volume",
+     "label": "Level",
+     "min": -24,
+     "max": 12,
+     "default": -3,
+     "unit": "dB",
+     "fmt": 1,
+     "map": {
+      "mode": "pow",
+      "min": -24,
+      "max": 12,
+      "exp": 1
+     }
+    },
+    {
+     "id": "spread_on",
+     "name": "Enable spread",
+     "label": "Spread on",
+     "type": "bool",
+     "default": true,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "the plugin's spread module switch — on, so the Spread knob does something"
+    },
+    {
+     "id": "comp_on",
+     "name": "Enable compressor",
+     "label": "Comp on",
+     "type": "bool",
+     "default": true,
+     "map": {
+      "mode": "raw"
+     },
+     "note": "the plugin's spectral compressor module switch — on, so the Compress knob does something"
+    }
+   ],
+   "note": "PaulXStretch (Jesse Chappell / Sonosaurus, GPL-3, after Nasca Octavian Paul's Paulstretch — built from source by provision/install-spectral.sh, docs/spectral.md). Not a continuous effect: a CAPTURE-AND-STRETCH instrument. Capture ON records the input, Capture OFF commits it and plays it back looped, stretched through the spectral modules (pitch, frequency shift, spread, compress); Freeze holds one instant. What it is for: the pad of an intro pulled from one chord, a drone under a verse, a voice stretched into the outro. Latency 0 on the direct; the stretched sound is by nature seconds behind. Placement: last in the lane, before or after reverb. Capture and Freeze are the two foot gestures (a stomp on Capture = a spectral looper). Knobs are written in NORMALIZED with the plugin's own tapers (map.mode pow): these plugins apply a parameter on the audio thread, a read-back in the same call is stale, so no display dichotomy here. `defaults: compile` — the catalog defaults are written at compile time when a preset omits them (the plugin's own defaults would leave Spectral Comp at 1:1 and Stretch with the direct signal cut).",
+   "_validation": "2026-09-25 : VALIDÉ au banc — fxadd sous « CLAP: PaulXStretch (Sonosaurus) », pdc=0, check-block-stall : aucun gel (max 2 ms), deux reconstructions, les 13 potards relus à la valeur affichée attendue (map.mode pow ; Stretch amount suit le skew 0,25 de JUCE), interrupteurs de module (spread/compress) posés par la compile, direct laissé passer par défaut. Pas encore joué à l'oreille ; le geste Capture au pied reste à valider.",
+   "defaults": "compile"
+  },
+  {
+   "type": "freeze",
+   "name": "Freeze",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "CLAP: GoleM Freeze (GoleM)",
+   "icon": "❄",
+   "glyph": "❄",
+   "short": "Frz",
+   "color": "#6cc8f0",
+   "roles": [
+    "guitar",
+    "bass",
+    "voice",
+    "keys",
+    "pads"
+   ],
+   "defaults": "compile",
+   "params": [
+    {
+     "id": "freeze",
+     "name": "Freeze",
+     "label": "Freeze",
+     "type": "bool",
+     "default": false,
+     "map": {
+      "mode": "raw"
+     },
+     "size": 2,
+     "note": "the gesture: ON captures the chord and holds it, OFF lets it go in Decay. The block's footswitch drives THIS parameter (never the bypass): the direct always passes, the release tail rings"
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "label": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 80,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "exp": true,
+     "note": "level of the held sound under the direct. On the EXP pedal: bring the pad in with the foot"
+    },
+    {
+     "id": "decay",
+     "name": "Decay",
+     "label": "Decay",
+     "min": 0.05,
+     "max": 10,
+     "default": 0.6,
+     "unit": "s",
+     "fmt": 2,
+     "map": {
+      "mode": "pow",
+      "min": 0.05,
+      "max": 10,
+      "exp": 0.25
+     },
+     "note": "how long the held sound takes to fade once released"
+    },
+    {
+     "id": "smear",
+     "name": "Smear",
+     "label": "Smear",
+     "min": 0,
+     "max": 100,
+     "default": 20,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "note": "phase jitter per frame: 0 = pure and a bit metallic, high = a soft cloud"
+    },
+    {
+     "id": "tone",
+     "name": "Tone",
+     "label": "Tone",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "map": {
+      "mode": "pow",
+      "min": 0,
+      "max": 100,
+      "exp": 1
+     },
+     "note": "tilt of the held spectrum: below 50 darker, above 50 brighter (±6 dB/oct around 1 kHz)"
+    },
+    {
+     "id": "window",
+     "name": "Window",
+     "label": "Window",
+     "type": "enum",
+     "options": [
+      "1024",
+      "2048",
+      "4096"
+     ],
+     "values": [
+      0,
+      1,
+      2
+     ],
+     "default": "2048",
+     "min": 0,
+     "max": 2,
+     "map": {
+      "mode": "raw"
+     },
+     "widget": "chips",
+     "note": "the FFT window — and the LATENCY: 2048 = 43 ms at 48 kHz. 1024 = tighter, 4096 = smoother on low chords"
+    }
+   ],
+   "note": "GoleM Freeze (our own, GPL-3, plugins/golem_freeze on nih-plug — built by provision/install-spectral.sh, docs/spectral.md §3): the EHX Freeze gesture, spectral. Tap the switch: the chord you are holding is captured (4 frames averaged) and HELD — play over it; tap again: it fades in Decay. The direct always passes; the freeze is added under it. Freeze is a PARAMETER driven by the footswitch (golem_rig.fx_set_on), never the bypass. LATENCY = the window (2048 → 43 ms, Reaper's PDC on the lane): never in the base path of a guitar lane — on a branch, or on voice/keys/pads. Placement: after amp/cab, before delay/reverb (the tails stretch naturally).",
+   "_validation": "2026-09-25 : VALIDÉ au banc — fxadd sous « CLAP: GoleM Freeze (GoleM) », pdc=2048 (1024 avec Window 1024) déclaré, check-block-stall : aucun gel (max 3 ms), TENUE MESURÉE au crête-mètre (ton −20 dB en tête de lane, gel enclenché, ton coupé : −20,9 / −20,6 / −21,8 dB à +0,5 / +2 / +4 s ; sans gel −93 dB ; relâché : −41 dB à +0,6 s, −81 dB à +3 s), rig : scène A/B et stomp actionnent le PARAMÈTRE Freeze (FX toujours actif, latence stable), 6 potards relus à la valeur affichée, deux reconstructions. Pas encore joué à l'oreille (le timbre du gel : smear/tone à régler sous les doigts)."
+  },
+  {
+   "type": "guitar-drive",
+   "bench": "pending",
+   "name": "Guitar Drive",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "JS: guitar/distortion",
+   "short": "Drive",
+   "color": "#ff7a3c",
+   "glyph": "◆",
+   "roles": ["guitar", "bass"],
+   "params": [
+    {"id": "gain", "name": "Gain (dB)", "min": 0, "max": 50, "default": 20, "unit": "dB", "map": {"mode": "raw", "idx": 0}},
+    {"id": "hardness", "name": "Hardness", "min": 1, "max": 10, "default": 6, "map": {"mode": "raw", "idx": 1}},
+    {"id": "ceiling", "name": "Max Volume (dB)", "min": -40, "max": 0, "default": -12, "unit": "dB", "map": {"mode": "raw", "idx": 2}},
+    {"id": "channel", "name": "Channel Mode (0=L, 1=R, 2=Stereo)", "min": 0, "max": 2, "default": 2, "map": {"mode": "raw", "idx": 3}}
+   ],
+   "note": "REAPER stock JSFX guitar/distortion. Max Volume shapes soft saturation; it is not a brickwall limiter."
+  },
+  {
+   "type": "capture-module",
+   "name": "Captured plugin",
+   "short": "Capture",
+   "category": "amp",
+   "engine": "plugin",
+   "plugin": "CLAP: golem Capture (golem)",
+   "icon": "◈",
+   "glyph": "◈",
+   "color": "#ffb03a",
+   "params": [],
+   "hidden": true,
+   "bench": "pending"
+  }
+ ],
+ "cabs": [
+  {
+   "id": "marshall-1960",
+   "name": "Marshall 1960 (4x12)",
+   "short": "1960 4x12",
+   "brand": "Marshall",
+   "match": "1960",
+   "aliases": [
+    "g12m",
+    "g12h",
+    "greenback"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "mesa-recto-412",
+   "name": "Mesa Rectifier 4x12",
+   "short": "Recto 4x12",
+   "brand": "Mesa",
+   "match": "rectifier",
+   "aliases": [
+    "recto",
+    "oversized"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "mesa-mark-412",
+   "name": "Mesa Mark 4x12",
+   "short": "Mark 4x12",
+   "brand": "Mesa",
+   "match": "mark ii",
+   "aliases": [
+    "mark iv",
+    "thiele"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "fender-twin-cab",
+   "name": "Fender Twin (2x12)",
+   "short": "Twin 2x12",
+   "brand": "Fender",
+   "match": "twin",
+   "aliases": [],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "vox-ac30-cab",
+   "name": "Vox AC30 (2x12)",
+   "short": "AC30 2x12",
+   "brand": "Vox",
+   "match": "ac30",
+   "aliases": [
+    "alnico"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "orange-ppc",
+   "name": "Orange PPC (4x12)",
+   "short": "PPC 4x12",
+   "brand": "Orange",
+   "match": "ppc",
+   "aliases": [
+    "orange 4x12"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "bogner-412",
+   "name": "Bogner 4x12",
+   "short": "Bogner 4x12",
+   "brand": "Bogner",
+   "match": "bogner",
+   "aliases": [],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "diezel-412",
+   "name": "Diezel 4x12",
+   "short": "Diezel 4x12",
+   "brand": "Diezel",
+   "match": "diezel",
+   "aliases": [
+    "vh4"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "engl-412",
+   "name": "ENGL 4x12",
+   "short": "ENGL 4x12",
+   "brand": "ENGL",
+   "match": "engl",
+   "aliases": [],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "blackstar-412",
+   "name": "Blackstar",
+   "short": "Blackstar",
+   "brand": "Blackstar",
+   "match": "blackstar",
+   "aliases": [
+    "blackbird"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "celestion-vtype",
+   "name": "Celestion V-Type",
+   "short": "V-Type",
+   "brand": "Celestion",
+   "match": "v-type",
+   "aliases": [
+    "v type"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "palmer-212",
+   "name": "Palmer 2x12 Creamback",
+   "short": "Palmer 2x12",
+   "brand": "Palmer",
+   "match": "palmer",
+   "aliases": [
+    "creamback"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0"
+  },
+  {
+   "id": "ampeg-810-cab",
+   "name": "Ampeg SVT 8x10",
+   "short": "SVT 8x10",
+   "brand": "Ampeg",
+   "match": "8x10",
+   "aliases": [
+    "810",
+    "svt cab"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0",
+   "roles": [
+    "bass"
+   ]
+  },
+  {
+   "id": "glockenklang-duo",
+   "name": "Glockenklang DUO",
+   "short": "DUO 2x10",
+   "brand": "Glockenklang",
+   "match": "glockenklang",
+   "aliases": [
+    "duo 2x10"
+   ],
+   "glyph": "◨",
+   "color": "#1ab7b0",
+   "roles": [
+    "bass"
+   ]
+  }
+ ],
+ "_color_note": "Couleurs des blocs de la lane CONFIG (onglet ⚙ du Designer), 2026-09-18 : trois familles, par ce que le service FAIT. JOUE (entre dans le mix) = vert, du plus enregistré (backing #1ab7b0) au plus fabriqué (standard #9ad9be) ; CAPTE (part sur le disque) = rouge (rec #ff4136, riff #ff7a45) ; COMPTE LE TEMPS = ambre (click #e0b23a, arrangement #c98a2e). Une nuance par bloc pour le distinguer, jamais une couleur étrangère : la lane se lit comme un groupe, le bloc comme un individu."
+}

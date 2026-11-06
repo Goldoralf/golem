@@ -1,0 +1,104 @@
+{
+ "id": "factory-guitar",
+ "name": "Factory Guitar",
+ "fcb": true,
+ "rev": 3,
+ "kind": "sounds",
+ "presets": [
+  "patch:factory-guitar-jazz-clean",
+  "patch:factory-guitar-singing-clean",
+  "patch:factory-guitar-funk-clean",
+  "patch:factory-guitar-texas-blues",
+  "patch:factory-guitar-indie-chime",
+  "patch:factory-guitar-british-crunch",
+  "patch:factory-guitar-fuzz-wall",
+  "patch:factory-guitar-brown-lead",
+  "patch:factory-guitar-modern-metal",
+  "patch:factory-guitar-gypsy-lead",
+  "patch:factory-guitar-hero-lead",
+  "patch:factory-guitar-ambient-djent",
+  "patch:factory-guitar-soaring-lead"
+ ],
+ "origin": "factory",
+ "lines": [
+  {
+   "id": "r:factory-guitar:aaf34f6b",
+   "rev": 1,
+   "title": "Jazz Clean",
+   "patch": "factory-guitar-jazz-clean"
+  },
+  {
+   "id": "r:factory-guitar:c6a7f9fc",
+   "rev": 1,
+   "title": "Singing Clean",
+   "patch": "factory-guitar-singing-clean"
+  },
+  {
+   "id": "r:factory-guitar:6f975446",
+   "rev": 1,
+   "title": "Funk Clean",
+   "patch": "factory-guitar-funk-clean"
+  },
+  {
+   "id": "r:factory-guitar:3a6deb63",
+   "rev": 1,
+   "title": "Texas Blues",
+   "patch": "factory-guitar-texas-blues"
+  },
+  {
+   "id": "r:factory-guitar:245c77e7",
+   "rev": 1,
+   "title": "Indie Chime",
+   "patch": "factory-guitar-indie-chime"
+  },
+  {
+   "id": "r:factory-guitar:bc507fc8",
+   "rev": 1,
+   "title": "British Crunch",
+   "patch": "factory-guitar-british-crunch"
+  },
+  {
+   "id": "r:factory-guitar:1f88de6a",
+   "rev": 1,
+   "title": "Fuzz Wall",
+   "patch": "factory-guitar-fuzz-wall"
+  },
+  {
+   "id": "r:factory-guitar:6834551a",
+   "rev": 1,
+   "title": "Brown Lead",
+   "patch": "factory-guitar-brown-lead"
+  },
+  {
+   "id": "r:factory-guitar:817c8307",
+   "rev": 1,
+   "title": "Modern Metal",
+   "patch": "factory-guitar-modern-metal"
+  },
+  {
+   "id": "r:factory-guitar:gypsy01",
+   "rev": 1,
+   "title": "Gypsy Lead",
+   "patch": "factory-guitar-gypsy-lead"
+  },
+  {
+   "id": "r:factory-guitar:herolead",
+   "rev": 1,
+   "title": "Hero Lead",
+   "patch": "factory-guitar-hero-lead"
+  },
+  {
+   "id": "r:factory-guitar:ambient-djent",
+   "rev": 1,
+   "title": "Ambient Djent",
+   "patch": "factory-guitar-ambient-djent"
+  },
+  {
+   "id": "r:factory-guitar:soaring-lead",
+   "rev": 1,
+   "title": "Soaring Lead",
+   "patch": "factory-guitar-soaring-lead"
+  }
+ ],
+ "factory": true
+}

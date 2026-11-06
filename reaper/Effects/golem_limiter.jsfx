@@ -1,0 +1,63 @@
+desc:GoleM Peak Limiter -- the limiter block on Windows and macOS (x42-dpl parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « limiter » joue x42-dpl (Digital Peak Limiter, Robin Gareus) sous Linux ; il n'est pas installe sous
+// Windows ni macOS (docs/platforms.md §5). Ce JSFX reprend ses trois commandes, leurs BORNES et leurs DEFAUTS
+// (README de dpl.lv2, lu le 2026-10-22 : gain d'entree -10..+30 dB, seuil -10..0 dB, retombee 1 ms..1 s) et
+// l'idee publique d'un limiteur a anticipation : le signal est retarde, la crete est vue AVANT d'arriver, le gain
+// descend en rampe a temps et remonte a la vitesse de Release Time. Aucun echantillon ne depasse le seuil. Le CODE est le notre.
+//
+//  - Input Gain   : gain avant detection (dB).
+//  - Threshold    : plafond de sortie (dB) ; le catalogue ecrit -30..0, le slider va de -30 a +30 pour rester
+//                   SYMETRIQUE (un minimum negatif est bipolaire pour REAPER, docs/pitfalls/jsfx.md).
+//  - Release Time : retombee du gain (ms).
+//
+// Pieges respectes : rien avant @init ; variables prefixees li_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel. Latence : 64 echantillons (anticipation), declaree a REAPER (pdc_delay).
+
+slider1:li_gain=0<-30,30,0.1>Input Gain
+slider2:li_thr=-1<-30,30,0.1>Threshold
+slider3:li_rel=50<1,1000,1>Release Time
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+li_LA = 64;                       // anticipation (echantillons)
+li_bufl = 1024; li_bufr = 2048;   // lignes de retard L / R (64 cases utilisees)
+li_pk = 3072;                     // cretes des 64 derniers echantillons (fenetre d'anticipation)
+li_pos = 0;
+li_env = 1;
+li_step = 1 / li_LA;
+pdc_delay = li_LA;
+pdc_bot_ch = 0; pdc_top_ch = 2;
+
+@slider
+li_ing = 10 ^ (li_gain / 20);
+li_ceil = 10 ^ (li_thr / 20);
+
+@block
+li_rc = exp(-1 / (max(1, li_rel) / 1000 * srate));   // retombee exponentielle a Release Time
+
+@sample
+li_x0 = spl0 * li_ing; li_x1 = spl1 * li_ing;
+li_p = max(abs(li_x0), abs(li_x1));
+// la crete la plus haute de la fenetre (65 echantillons : celle qui sort, et les 64 qui attendent) : le gain
+// la couvre AVANT qu'elle sorte de la ligne
+li_m = li_p; li_i = 0;
+loop(li_LA, li_m = max(li_m, li_pk[li_i]); li_i += 1; );
+li_pk[li_pos] = li_p;
+li_need = li_m > li_ceil ? li_ceil / li_m : 1;
+// descente en rampe (au plus 1/64 par echantillon : elle arrive avant la crete), retombee exponentielle
+li_env = li_need < li_env ? max(li_need, li_env - li_step) : li_need + (li_env - li_need) * li_rc;
+li_env > 1 ? li_env = 1;
+li_dl = li_bufl[li_pos]; li_dr = li_bufr[li_pos];
+li_bufl[li_pos] = li_x0; li_bufr[li_pos] = li_x1;
+li_pos += 1; li_pos >= li_LA ? li_pos = 0;
+spl0 = max(-li_ceil, min(li_ceil, li_dl * li_env));   // le plafond est une promesse : jamais un echantillon au-dessus
+spl1 = max(-li_ceil, min(li_ceil, li_dr * li_env));

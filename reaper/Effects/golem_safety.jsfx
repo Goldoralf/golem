@@ -1,0 +1,53 @@
+desc:GoleM Safety limiter (safety) -- zero latency, ceiling -1 dBFS
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le limiteur de SECURITE en dernier FX de chaque piste qui sort vers le hardware (golem_rig
+// ensure_safety_limiter). Il remplace ReaLimit le 2026-10-14 : ReaLimit anticipe de 10 ms
+// (480 echantillons de PDC a 48 kHz, NON reglable) — sur CHAQUE lane, donc 18 ms entre le geste
+// et le son au lieu des 8 de la carte. Le retard s'entendait en jouant sur une boucle.
+//
+// ── PRINCIPE : AUCUNE ANTICIPATION ──
+// Le gain tombe a l'echantillon meme ou la crete depasse le plafond (attaque instantanee), puis
+// remonte en Release ms. Les canaux sont LIES (un seul gain : l'image stereo ne bouge pas). Une
+// derniere borne dure au plafond garantit qu'aucun echantillon ne sort au-dessus, quoi qu'il
+// arrive. Le prix, assume : sur une crete tres breve, la toute premiere onde est ecrasee la ou
+// un limiteur qui voit venir l'aurait arrondie. Il ne touche QUE ce qui depasse -1 dBFS — avec
+// des niveaux bien etages (bug volume 2026-07-23), c'est rare.
+
+slider1:ceil_db=-1<-12,0,0.1>Ceiling (dB)
+slider2:rel_ms=15<1,500,1>Release (ms)
+
+@init
+// tout ici : le code avant la premiere section @ n'est JAMAIS execute (CLAUDE.md)
+pdc_delay = 0;
+pdc_bot_ch = 0;
+pdc_top_ch = 0;
+sf_g = 1;
+
+@slider
+sf_ceil = 10 ^ (ceil_db / 20);
+sf_rel = exp(-1 / (max(1, rel_ms) * 0.001 * srate));
+
+@sample
+sf_pk = 0;
+sf_i = 0;
+loop(num_ch,
+  // un NaN ou un infini venu de l'amont devient du silence (audit 2026-10-15) : sinon le gain tombe a 0,
+  // 0 * inf = NaN, et min/max laissent passer NaN jusqu'au DAC. Un NaN echoue aux DEUX comparaisons.
+  sf_v = spl(sf_i);
+  !(sf_v >= -1000000 && sf_v <= 1000000) ? spl(sf_i) = 0;
+  sf_pk = max(sf_pk, abs(spl(sf_i)));
+  sf_i += 1;
+);
+// la cible : juste ce qu'il faut pour ramener la crete au plafond
+sf_t = sf_pk > sf_ceil ? sf_ceil / sf_pk : 1;
+// attaque instantanee, relachement exponentiel
+sf_g = sf_t < sf_g ? sf_t : sf_t + (sf_g - sf_t) * sf_rel;
+sf_i = 0;
+loop(num_ch,
+  sf_v = spl(sf_i) * sf_g;
+  spl(sf_i) = max(-sf_ceil, min(sf_ceil, sf_v));
+  sf_i += 1;
+);

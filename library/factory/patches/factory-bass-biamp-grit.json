@@ -1,0 +1,407 @@
+{
+ "id": "factory-bass-biamp-grit",
+ "name": "Bi-Amp Grit",
+ "role": "bass",
+ "tags": [
+  "metal",
+  "progressive",
+  "drive"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Bi-Amp Grit",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -50,
+       "attack": 1,
+       "hold": 20,
+       "release": 80
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 10,
+       "release": 120
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379989",
+         "params": {
+          "input": 0,
+          "output": -4
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "b7k",
+         "type": "amp",
+         "label": "Darkglass B7K Ultra",
+         "ref": "27698",
+         "model": "413366",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 35,
+       "bass": 0,
+       "f1": 250,
+       "g1": -2,
+       "f2": 800,
+       "g2": 1,
+       "f3": 2500,
+       "g3": 2,
+       "treble": -1
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Sub Clean",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Grit Blend",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Tight Grit",
+     "blocks": {},
+     "params": {
+      "gate": {
+       "thresh": -44
+      },
+      "comp": {
+       "ratio": 8,
+       "attack": 5
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Growl",
+     "blocks": {},
+     "params": {
+      "svt": {
+       "output": -8
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Sub Clean",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -1
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "B",
+   "name": "Grit Blend",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Tight Grit",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C",
+     "level": 1
+    }
+   },
+   "params": {
+    "gate": {
+     "thresh": -44
+    },
+    "comp": {
+     "ratio": 8,
+     "attack": 5
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Growl",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "svt": {
+     "output": -8
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-breakdown.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -50,
+     "attack": 1,
+     "hold": 20,
+     "release": 80
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 10,
+     "release": 120
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "svt",
+       "type": "amp",
+       "label": "Ampeg SVT 6x10",
+       "ref": "28202",
+       "model": "379989",
+       "params": {
+        "input": 0,
+        "output": -4
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "b7k",
+       "type": "amp",
+       "label": "Darkglass B7K Ultra",
+       "ref": "27698",
+       "model": "413366",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 35,
+     "bass": 0,
+     "f1": 250,
+     "g1": -2,
+     "f2": 800,
+     "g2": 1,
+     "f3": 2500,
+     "g3": 2,
+     "treble": -1
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "28202",
+   "model": "379989"
+  },
+  {
+   "type": "amp",
+   "ref": "27698",
+   "model": "413366"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#9d0208",
+  "B": "#9d0208",
+  "C": "#9d0208",
+  "D": "#9d0208",
+  "9": "#9d0208",
+  "10": "#9d0208"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "fire",
+  "C": "glitch",
+  "D": "lightning",
+  "9": "snow",
+  "10": "heartbeat"
+ },
+ "deps": [
+  {
+   "sha256": "a610c47d19f313f179b642d145468842b41848f0e575813d1a9896b5236e8f72",
+   "uid": "t3k:28202",
+   "kind": "amp-cab",
+   "bytes": 298378,
+   "name": "Ampeg SVT - Ultra Lo MD 421",
+   "source": "t3k",
+   "amp": "Ampeg SVT Classic",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-classic-with-6x10-28202"
+  },
+  {
+   "sha256": "beda818afa2103c519733598cac0e98dc9740d4aeb351d3295f0b3b79eb1f3fd",
+   "uid": "t3k:27698",
+   "kind": "pedal",
+   "bytes": 294802,
+   "name": "Darkglass Drive - Microtubes B7K Ultra",
+   "source": "t3k",
+   "amp": "Darkglass B7K Ultra",
+   "arch": "2",
+   "brand": "Darkglass",
+   "creator": "darkglass",
+   "url": "https://www.tone3000.com/tones/darkglass-b7k-ultra-27698"
+  },
+  {
+   "sha256": "aa2ace1c5685ecc5f806f04e71e1f7ee19a32ca3af52a1e511f60bdbeb8bb9ce",
+   "uid": "local:groove-golem-metal-breakdown",
+   "kind": "groove",
+   "bytes": 252,
+   "name": "Metal breakdown",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"9\": \"snow\", \"A\": \"smoke\", \"B\": \"fire\", \"C\": \"glitch\", \"D\": \"lightning\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 800, \"f3\": 2500, \"g1\": -2, \"g2\": 1, \"g3\": 2, \"lowcut\": 35, \"lowcut_on\": true, \"treble\": -1}, \"type\": \"eq-para\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 20, \"release\": 80, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 4, \"release\": 120, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#9d0208\", \"9\": \"#9d0208\", \"A\": \"#9d0208\", \"B\": \"#9d0208\", \"C\": \"#9d0208\", \"D\": \"#9d0208\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-breakdown.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 800, \"f3\": 2500, \"g1\": -2, \"g2\": 1, \"g3\": 2, \"lowcut\": 35, \"lowcut_on\": true, \"treble\": -1}, \"type\": \"eq-para\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 20, \"release\": 80, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 4, \"release\": 120, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Bi-Amp Grit\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Sub Clean\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Grit Blend\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}, \"gate\": {\"thresh\": -44}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Growl\", \"params\": {\"svt\": {\"output\": -8}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Sub Clean\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Grit Blend\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}, \"gate\": {\"thresh\": -44}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Growl\", \"params\": {\"svt\": {\"output\": -8}}}]}"
+}

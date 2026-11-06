@@ -1,0 +1,418 @@
+{
+ "id": "whammy-dt",
+ "name": "Whammy DT",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "DigiTech",
+  "model": "Whammy DT",
+  "firmware": null,
+  "connection": "din",
+  "note": "DIN muette : pas de SysEx Identity, pas de VID:PID — le modèle est déclaré. ⚠ Whammy IV / Whammy 5 / DT n'ont PAS la même table de PC : la révision fait le mapping."
+ },
+ "device": "DigiTech Whammy DT",
+ "midi_out": "Volt 276 MIDI OUT",
+ "channel": 1,
+ "treadle_cc": 11,
+ "treadle": {
+  "cc": 11,
+  "toe_up": 0,
+  "toe_down": 127
+ },
+ "_source": "100% CALIBRÉ MATÉRIEL (2026-07-07, 3 passes) : fil 0-based ; colonne WHAMMY = ordre du manuel p.6 (montées d'abord) : ↑2Oct ↑1Oct ↑5th ↑4th ↓2nd ↓4th ↓5th ↓1Oct ↓2Oct Dive, Detune DEEP(10)/SHALLOW(11) ; HARMONY 12-20 = manuel p.7 inversé (bas->haut), noms format face (grave↓ aigu↑). Les 39 modes validés à l'oreille.",
+ "pc_ranges": {
+  "whammy": {
+   "active": [
+    0,
+    11
+   ],
+   "bypass": [
+    21,
+    32
+   ]
+  },
+  "harmony": {
+   "active": [
+    12,
+    20
+   ],
+   "bypass": [
+    33,
+    41
+   ]
+  },
+  "raise": {
+   "active": [
+    42,
+    50
+   ],
+   "bypass": [
+    60,
+    68
+   ]
+  },
+  "drop": {
+   "active": [
+    51,
+    59
+   ],
+   "bypass": [
+    69,
+    77
+   ]
+  }
+ },
+ "bypass_rule": "Pas de PC 0 global : bypass = PC bypass DE l'effet (whammy/harmony = actif+21 ; drop/raise = actif+18). Valeurs FIL 0-based.",
+ "pitch_rule": "Whammy/Harmony/Detune = sweep par le treadle (CC11, 0=talon/haut, 127=pointe/bas). Drop/Raise Tune = accordage FIXE, PAS de treadle.",
+ "families": {
+  "whammy": {
+   "label": "Whammy",
+   "treadle": true
+  },
+  "harmony": {
+   "label": "Harmony",
+   "treadle": true
+  },
+  "drop": {
+   "label": "Drop Tune (↓)",
+   "treadle": false
+  },
+  "raise": {
+   "label": "Raise Tune (↑)",
+   "treadle": false
+  }
+ },
+ "modes": [
+  {
+   "name": "↑2 Oct",
+   "family": "whammy",
+   "active_pc": 0,
+   "bypass_pc": 21,
+   "treadle": true
+  },
+  {
+   "name": "↑1 Oct",
+   "family": "whammy",
+   "active_pc": 1,
+   "bypass_pc": 22,
+   "treadle": true
+  },
+  {
+   "name": "↑5th",
+   "family": "whammy",
+   "active_pc": 2,
+   "bypass_pc": 23,
+   "treadle": true
+  },
+  {
+   "name": "↑4th",
+   "family": "whammy",
+   "active_pc": 3,
+   "bypass_pc": 24,
+   "treadle": true
+  },
+  {
+   "name": "↓2nd",
+   "family": "whammy",
+   "active_pc": 4,
+   "bypass_pc": 25,
+   "treadle": true
+  },
+  {
+   "name": "↓4th",
+   "family": "whammy",
+   "active_pc": 5,
+   "bypass_pc": 26,
+   "treadle": true
+  },
+  {
+   "name": "↓5th",
+   "family": "whammy",
+   "active_pc": 6,
+   "bypass_pc": 27,
+   "treadle": true
+  },
+  {
+   "name": "↓1 Oct",
+   "family": "whammy",
+   "active_pc": 7,
+   "bypass_pc": 28,
+   "treadle": true
+  },
+  {
+   "name": "↓2 Oct",
+   "family": "whammy",
+   "active_pc": 8,
+   "bypass_pc": 29,
+   "treadle": true
+  },
+  {
+   "name": "Dive Bomb",
+   "family": "whammy",
+   "active_pc": 9,
+   "bypass_pc": 30,
+   "treadle": true
+  },
+  {
+   "name": "Detune Deep",
+   "family": "whammy",
+   "active_pc": 10,
+   "bypass_pc": 31,
+   "treadle": true
+  },
+  {
+   "name": "Detune Shallow",
+   "family": "whammy",
+   "active_pc": 11,
+   "bypass_pc": 32,
+   "treadle": true
+  },
+  {
+   "name": "↓2nd ↑3rd",
+   "family": "harmony",
+   "active_pc": 12,
+   "bypass_pc": 33,
+   "treadle": true
+  },
+  {
+   "name": "↓3rd min ↑3rd",
+   "family": "harmony",
+   "active_pc": 13,
+   "bypass_pc": 34,
+   "treadle": true
+  },
+  {
+   "name": "↓3rd ↑4th",
+   "family": "harmony",
+   "active_pc": 14,
+   "bypass_pc": 35,
+   "treadle": true
+  },
+  {
+   "name": "↓4th ↑5th",
+   "family": "harmony",
+   "active_pc": 15,
+   "bypass_pc": 36,
+   "treadle": true
+  },
+  {
+   "name": "↓5th ↑6th",
+   "family": "harmony",
+   "active_pc": 16,
+   "bypass_pc": 37,
+   "treadle": true
+  },
+  {
+   "name": "↓5th ↑7th",
+   "family": "harmony",
+   "active_pc": 17,
+   "bypass_pc": 38,
+   "treadle": true
+  },
+  {
+   "name": "↓4th ↓3rd",
+   "family": "harmony",
+   "active_pc": 18,
+   "bypass_pc": 39,
+   "treadle": true
+  },
+  {
+   "name": "↓5th ↓4th",
+   "family": "harmony",
+   "active_pc": 19,
+   "bypass_pc": 40,
+   "treadle": true
+  },
+  {
+   "name": "↓Oct ↑Oct",
+   "family": "harmony",
+   "active_pc": 20,
+   "bypass_pc": 41,
+   "treadle": true
+  },
+  {
+   "name": "Raise +1 semitone (½ step)",
+   "family": "raise",
+   "active_pc": 42,
+   "bypass_pc": 60,
+   "treadle": false
+  },
+  {
+   "name": "Raise +2 semitones (1 step)",
+   "family": "raise",
+   "active_pc": 43,
+   "bypass_pc": 61,
+   "treadle": false
+  },
+  {
+   "name": "Raise +3 semitones",
+   "family": "raise",
+   "active_pc": 44,
+   "bypass_pc": 62,
+   "treadle": false
+  },
+  {
+   "name": "Raise +4 semitones",
+   "family": "raise",
+   "active_pc": 45,
+   "bypass_pc": 63,
+   "treadle": false
+  },
+  {
+   "name": "Raise +5 semitones",
+   "family": "raise",
+   "active_pc": 46,
+   "bypass_pc": 64,
+   "treadle": false
+  },
+  {
+   "name": "Raise +6 semitones",
+   "family": "raise",
+   "active_pc": 47,
+   "bypass_pc": 65,
+   "treadle": false
+  },
+  {
+   "name": "Raise +7 semitones",
+   "family": "raise",
+   "active_pc": 48,
+   "bypass_pc": 66,
+   "treadle": false
+  },
+  {
+   "name": "Raise +1 Octave",
+   "family": "raise",
+   "active_pc": 49,
+   "bypass_pc": 67,
+   "treadle": false
+  },
+  {
+   "name": "Raise +1 Octave (＋dry, 12-string)",
+   "family": "raise",
+   "active_pc": 50,
+   "bypass_pc": 68,
+   "treadle": false
+  },
+  {
+   "name": "Drop −1 semitone (½ step)",
+   "family": "drop",
+   "active_pc": 59,
+   "bypass_pc": 77,
+   "treadle": false
+  },
+  {
+   "name": "Drop −2 semitones (1 step)",
+   "family": "drop",
+   "active_pc": 58,
+   "bypass_pc": 76,
+   "treadle": false
+  },
+  {
+   "name": "Drop −3 semitones",
+   "family": "drop",
+   "active_pc": 57,
+   "bypass_pc": 75,
+   "treadle": false
+  },
+  {
+   "name": "Drop −4 semitones",
+   "family": "drop",
+   "active_pc": 56,
+   "bypass_pc": 74,
+   "treadle": false
+  },
+  {
+   "name": "Drop −5 semitones",
+   "family": "drop",
+   "active_pc": 55,
+   "bypass_pc": 73,
+   "treadle": false
+  },
+  {
+   "name": "Drop −6 semitones",
+   "family": "drop",
+   "active_pc": 54,
+   "bypass_pc": 72,
+   "treadle": false
+  },
+  {
+   "name": "Drop −7 semitones",
+   "family": "drop",
+   "active_pc": 53,
+   "bypass_pc": 71,
+   "treadle": false
+  },
+  {
+   "name": "Drop −1 Octave",
+   "family": "drop",
+   "active_pc": 52,
+   "bypass_pc": 70,
+   "treadle": false
+  },
+  {
+   "name": "Drop −1 Octave (＋dry, 12-string)",
+   "family": "drop",
+   "active_pc": 51,
+   "bypass_pc": 69,
+   "treadle": false
+  }
+ ],
+ "default_mode": "↑1 Oct",
+ "install": {
+  "needs": [
+   "Volt 276 MIDI OUT → Whammy DT MIDI IN"
+  ],
+  "phases": [
+   {
+    "name": "Wire it up",
+    "steps": [
+     {
+      "title": "Cable",
+      "do": "Plug the Volt 276 MIDI OUT into the Whammy DT MIDI IN.",
+      "hint": "The pedal never answers on MIDI — the wire only goes one way."
+     },
+     {
+      "title": "MIDI channel",
+      "do": "The Whammy DT listens on channel 1 out of the box. golem sends on channel 1.",
+      "hint": "If you changed it on the pedal, set the same number in this mapping."
+     },
+     {
+      "title": "Kill the merge on the FCB1010",
+      "do": "If your FCB1010 sits on the same chain, its MIDI MERGE must be OFF.",
+      "hint": "Merge ON loops golem's own Whammy messages back in — page 3 of the FCB global setup."
+     }
+    ]
+   }
+  ]
+ },
+ "verify": {
+  "checks": [
+   {
+    "label": "1 Octave Up",
+    "send": {
+     "pc": 1
+    },
+    "expect": "toe down = one octave above the played note"
+   },
+   {
+    "label": "Bypass",
+    "send": {
+     "pc": 22
+    },
+    "expect": "the pedal is out of the way — dry signal only"
+   },
+   {
+    "label": "Treadle sweeps",
+    "send": {
+     "sweep_cc": 11
+    },
+    "expect": "the pitch glides while the sweep runs"
+   }
+  ]
+ },
+ "provenance": {
+  "source": "measured",
+  "note": "100 % calibré matériel (2026-07-07, 3 passes) — les 39 modes validés à l'oreille ; table de PC recoupée avec le manuel p.6/p.7.",
+  "confidence": "verified"
+ }
+}

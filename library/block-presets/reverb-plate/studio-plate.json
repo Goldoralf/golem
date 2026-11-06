@@ -1,0 +1,13 @@
+{
+ "name": "Studio Plate",
+ "type": "reverb-plate",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "mix": 30,
+  "decay": 1.8,
+  "predelay": 25,
+  "hicut": 9000
+ },
+ "default": true
+}

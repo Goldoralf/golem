@@ -1,0 +1,17 @@
+{
+ "name": "Deep tank",
+ "type": "surge-spring",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "size": 0.85,
+  "decay": 0.8,
+  "refl": 0.6,
+  "damp": 0.55,
+  "spin": 0.4,
+  "chaos": 0.25,
+  "knock": 0,
+  "mix": 0.35
+ },
+ "default": true
+}

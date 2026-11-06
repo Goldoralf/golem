@@ -1,0 +1,16 @@
+{
+ "name": "Sub growl",
+ "type": "surge-treemonster",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "thr": 0.35,
+  "speed": 0.5,
+  "lowcut": 0.2,
+  "highcut": 0.6,
+  "pitch": 0.4,
+  "ring": 0.7,
+  "mix": 0.5
+ },
+ "default": true
+}

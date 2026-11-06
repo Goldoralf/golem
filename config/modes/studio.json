@@ -1,0 +1,37 @@
+{
+ "id": "studio",
+ "name": "Home",
+ "icon": "🏠",
+ "order": 2,
+ "desc": "Everything on — the full rig at home (default)",
+ "services": {
+  "voice": true,
+  "keys": true,
+  "pads": true,
+  "looper": true,
+  "backing": true,
+  "perfrec": true,
+  "sample": true,
+  "arrangement": true,
+  "standard": true,
+  "drummachine": true,
+  "compo": true
+ },
+ "ui": {
+  "pages": [
+   "live",
+   "designer",
+   "songs",
+   "library",
+   "system"
+  ],
+  "boot": "live",
+  "locked": false,
+  "live": "pedalboard"
+ },
+ "perfrec_mode": "manual",
+ "click_mode": "manual",
+ "take_kind": "rehearsal",
+ "foot_list": "factory",
+ "perf_boost": false
+}

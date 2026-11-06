@@ -1,0 +1,160 @@
+desc:GoleM Shimmer -- the reverb-shimmer block on Windows and macOS (GxShimmizita parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « reverb-shimmer » joue GxShimmizita (guitarix) sous Linux ; guitarix n'existe ni sous Windows ni sous
+// macOS (docs/platforms.md §5). Ce JSFX en reprend les NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs
+// (gx_shimmizita.ttl, lu le 2026-10-22), pour que la table de l'OS le nomme sans toucher un preset.
+// L'ARCHITECTURE est la meme idee, publique : une reverbe a reseau de retards (FDN, 8 lignes, matrice de Hadamard)
+// dont chaque ligne de retour passe par un transpositeur — chaque recirculation monte encore de SHIFT demi-tons,
+// d'ou le « scintillement ». Le CODE est le notre (longueurs de lignes, transpositeur, amortissement) : le son est
+// proche, pas identique — les niveaux se verifient a l'oreille.
+//
+//  - DRYWET   : fondu direct -> reverbe (0 = direct seul, 1 = reverbe seule), comme Shimmizita.
+//  - T60M     : decroissance (s) dans le medium ; sous 200 Hz elle vaut 3 s (T60DS natif, non expose).
+//  - PSDRYWET : part transposee dans la boucle (0 = reverbe pure, 1 = tout transpose).
+//  - SHIFT    : demi-tons, -6..+6 (borne du plugin : pas d'octave). Plage SYMETRIQUE : le taper bipolaire de
+//               REAPER (normalise 0,5 = 0) y est la meme droite que la lineaire.
+//  - F2       : au-dessus, la decroissance est deux fois plus courte (amortissement des aigus).
+//  - SHIFT a 0 : la boucle n'est pas transposee (une tete fixe y ferait un filtre en peigne).
+//
+// Pieges respectes (docs/pitfalls/jsfx.md) : rien avant @init ; variables prefixees sh_ ; ext_noinit ; lignes
+// taillees pour 192 kHz une fois pour toutes ; retour de bypass detecte par time_precise() (lignes videes une
+// a une, sans gros effacement sur le fil audio : on remet les ages a zero, une lecture plus vieille rend 0).
+
+slider1:sh_mix=0.5<0,1,0.01>DRYWET
+slider2:sh_t60=2<1,8,0.1>T60M
+slider3:sh_ps=0.5<0,1,0.01>PSDRYWET
+slider4:sh_shift=0<-6,6,0.1>SHIFT
+slider5:sh_f2=6000<1500,23520,1>F2
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+sh_NL = 8;
+// longueurs des 8 lignes en secondes (nombres choisis premiers entre eux a 48 kHz, 110..260 ms)
+sh_len_s = 0;      sh_len_s[0] = 0.1531; sh_len_s[1] = 0.2113; sh_len_s[2] = 0.1279; sh_len_s[3] = 0.2571;
+                   sh_len_s[4] = 0.1747; sh_len_s[5] = 0.1931; sh_len_s[6] = 0.1103; sh_len_s[7] = 0.2311;
+sh_ap_s = 16;      sh_ap_s[0] = 0.0203; sh_ap_s[1] = 0.0247; sh_ap_s[2] = 0.0311; sh_ap_s[3] = 0.0271;
+                   sh_ap_s[4] = 0.0233; sh_ap_s[5] = 0.0293; sh_ap_s[6] = 0.0137; sh_ap_s[7] = 0.0191;
+sh_MAXL = 50000;   // 0,26 s a 192 kHz
+sh_MAXA = 6000;    // 0,031 s a 192 kHz
+sh_PW = 8192;       // fenetre du transpositeur (lignes circulaires dediees)
+sh_len = 32; sh_ap = 48; sh_pos = 64; sh_apos = 80; sh_lp = 96; sh_hp = 112; sh_y = 128; sh_ph = 144; sh_ppos = 160;
+sh_age = 176; sh_x = 192;
+sh_main = 1024;                                    // 8 lignes principales
+sh_apb = sh_main + sh_NL * sh_MAXL;                 // 8 passe-tout
+sh_psb = sh_apb + sh_NL * sh_MAXA;                  // 8 lignes du transpositeur
+sh_sr = 0;
+sh_last = time_precise();
+
+function sh_setup() local(i) (
+  i = 0;
+  loop(sh_NL,
+    sh_len[i] = min(floor(sh_len_s[i] * srate + 0.5), sh_MAXL - 1);
+    sh_ap[i] = min(floor(sh_ap_s[i] * srate + 0.5), sh_MAXA - 1);
+    i += 1;
+  );
+  sh_wlen = min(floor(0.045 * srate), sh_PW - 4);   // fenetre ~45 ms, fondu sur toute la fenetre (deux tetes)
+  sh_c1 = exp(-2 * $pi * 200 / srate);              // separation grave (F1 natif = 200 Hz)
+  sh_sr = srate;
+);
+
+function sh_reset() local(i) (
+  i = 0;
+  loop(sh_NL, sh_age[i] = 0; sh_lp[i] = 0; sh_hp[i] = 0; sh_y[i] = 0; sh_ph[i] = 0; i += 1;);
+);
+
+function sh_gains() local(i, t) (
+  // gain par passage de chaque ligne pour atteindre -60 dB en T60 (medium) et en 3 s (grave)
+  i = 0;
+  loop(sh_NL,
+    t = sh_len[i] / srate;
+    sh_gm[i] = 10 ^ (-3 * t / max(sh_t60, 0.1));
+    sh_gl[i] = 10 ^ (-3 * t / 3);
+    sh_gh[i] = 10 ^ (-3 * t / max(sh_t60 / 2, 0.05));
+    i += 1;
+  );
+  sh_c2 = exp(-2 * $pi * min(sh_f2, 0.45 * srate) / srate);
+  sh_ratio = 2 ^ (sh_shift / 12);
+  sh_pson = abs(sh_shift) >= 0.05;                 // a 0 la tete fixe ferait un filtre en peigne dans la boucle
+);
+sh_gm = 208; sh_gl = 224; sh_gh = 240;
+sh_setup(); sh_reset(); sh_gains();
+
+@slider
+sh_gains();
+
+@block
+srate != sh_sr ? ( sh_setup(); sh_reset(); sh_gains(); );
+sh_now = time_precise();
+sh_now - sh_last > 0.15 ? sh_reset();             // retour de bypass : la queue d'avant ne revient pas
+sh_last = sh_now;
+
+@sample
+sh_inl = spl0; sh_inr = spl1;
+// 1. lecture des 8 lignes, amortissement 2 bandes + aigus, transposition, passe-tout
+sh_i = 0;
+loop(sh_NL,
+  sh_b = sh_main + sh_i * sh_MAXL;
+  sh_r = sh_pos[sh_i] - sh_len[sh_i]; sh_r < 0 ? sh_r += sh_MAXL;
+  sh_v = sh_age[sh_i] > sh_len[sh_i] ? sh_b[sh_r] : 0;
+  // trois bandes, chacune son gain de decroissance : grave sous 200 Hz (3 s, T60DS natif), medium (T60M),
+  // aigu au-dessus de F2 (T60M / 2, le sens de F2 chez Shimmizita) ; gain de boucle <= max des trois < 1
+  sh_lp[sh_i] = sh_v + sh_c1 * (sh_lp[sh_i] - sh_v);
+  sh_hp[sh_i] = sh_v + sh_c2 * (sh_hp[sh_i] - sh_v);
+  sh_v = sh_gl[sh_i] * sh_lp[sh_i] + sh_gm[sh_i] * (sh_hp[sh_i] - sh_lp[sh_i]) + sh_gh[sh_i] * (sh_v - sh_hp[sh_i]);
+  // transpositeur a deux tetes (ligne circulaire propre, fenetre triangulaire), melange PSDRYWET
+  sh_pb = sh_psb + sh_i * sh_PW;
+  sh_wp = sh_ppos[sh_i];
+  sh_pb[sh_wp] = sh_v;
+  sh_ph[sh_i] += 1 - sh_ratio; sh_ph[sh_i] < 0 ? sh_ph[sh_i] += sh_wlen; sh_ph[sh_i] >= sh_wlen ? sh_ph[sh_i] -= sh_wlen;
+  sh_d1 = sh_ph[sh_i]; sh_d2 = sh_d1 + sh_wlen * 0.5; sh_d2 >= sh_wlen ? sh_d2 -= sh_wlen;
+  sh_q = sh_wp - sh_d1 - 1; sh_q < 0 ? sh_q += sh_PW; sh_k = floor(sh_q); sh_f = sh_q - sh_k; sh_k2 = sh_k + 1; sh_k2 >= sh_PW ? sh_k2 = 0;
+  sh_t1 = sh_pb[sh_k] * (1 - sh_f) + sh_pb[sh_k2] * sh_f;
+  sh_q = sh_wp - sh_d2 - 1; sh_q < 0 ? sh_q += sh_PW; sh_k = floor(sh_q); sh_f = sh_q - sh_k; sh_k2 = sh_k + 1; sh_k2 >= sh_PW ? sh_k2 = 0;
+  sh_t2 = sh_pb[sh_k] * (1 - sh_f) + sh_pb[sh_k2] * sh_f;
+  sh_g1 = 1 - abs(2 * sh_d1 / sh_wlen - 1);        // triangle : 0 aux bords de la fenetre, 1 au milieu
+  sh_ppos[sh_i] = sh_wp + 1 >= sh_PW ? 0 : sh_wp + 1;
+  // 6. une tete plus vieille que la ligne (retour de bypass) lit 0 : l'ancienne queue ne revient pas
+  sh_age[sh_i] <= sh_wlen ? ( sh_t1 = 0; sh_t2 = 0; );
+  sh_pson ? sh_v = sh_v * (1 - sh_ps) + (sh_t1 * sh_g1 + sh_t2 * (1 - sh_g1)) * sh_ps;
+  // passe-tout (diffusion), coefficient alterne +-0,6
+  sh_ab = sh_apb + sh_i * sh_MAXA;
+  sh_r = sh_apos[sh_i] - sh_ap[sh_i]; sh_r < 0 ? sh_r += sh_MAXA;
+  sh_d = sh_age[sh_i] > sh_ap[sh_i] ? sh_ab[sh_r] : 0;
+  sh_g = (sh_i & 1) ? -0.6 : 0.6;
+  sh_w = sh_v + sh_g * sh_d;
+  sh_ab[sh_apos[sh_i]] = sh_w;
+  sh_apos[sh_i] = sh_apos[sh_i] + 1 >= sh_MAXA ? 0 : sh_apos[sh_i] + 1;
+  sh_y[sh_i] = sh_d - sh_g * sh_w;
+  sh_i += 1;
+);
+// 2. matrice de Hadamard 8x8 (trois etages papillon, normalisee 1/sqrt(8)) : la recirculation
+sh_a0 = sh_y[0] + sh_y[1]; sh_a1 = sh_y[0] - sh_y[1]; sh_a2 = sh_y[2] + sh_y[3]; sh_a3 = sh_y[2] - sh_y[3];
+sh_a4 = sh_y[4] + sh_y[5]; sh_a5 = sh_y[4] - sh_y[5]; sh_a6 = sh_y[6] + sh_y[7]; sh_a7 = sh_y[6] - sh_y[7];
+sh_b0 = sh_a0 + sh_a2; sh_b2 = sh_a0 - sh_a2; sh_b1 = sh_a1 + sh_a3; sh_b3 = sh_a1 - sh_a3;
+sh_b4 = sh_a4 + sh_a6; sh_b6 = sh_a4 - sh_a6; sh_b5 = sh_a5 + sh_a7; sh_b7 = sh_a5 - sh_a7;
+sh_x[0] = (sh_b0 + sh_b4) * 0.35355339; sh_x[4] = (sh_b0 - sh_b4) * 0.35355339; sh_x[1] = (sh_b1 + sh_b5) * 0.35355339; sh_x[5] = (sh_b1 - sh_b5) * 0.35355339;
+sh_x[2] = (sh_b2 + sh_b6) * 0.35355339; sh_x[6] = (sh_b2 - sh_b6) * 0.35355339; sh_x[3] = (sh_b3 + sh_b7) * 0.35355339; sh_x[7] = (sh_b3 - sh_b7) * 0.35355339;
+// 3. ecriture : l'entree gauche nourrit les lignes paires, la droite les impaires
+sh_i = 0;
+loop(sh_NL,
+  sh_b = sh_main + sh_i * sh_MAXL;
+  sh_v = sh_x[sh_i] + 0.5 * ((sh_i & 1) ? sh_inr : sh_inl);
+  abs(sh_v) < 0.000000000000001 ? sh_v = 0;
+  sh_b[sh_pos[sh_i]] = sh_v;
+  sh_pos[sh_i] = sh_pos[sh_i] + 1 >= sh_MAXL ? 0 : sh_pos[sh_i] + 1;
+  sh_age[sh_i] < sh_MAXL ? sh_age[sh_i] += 1;
+  sh_i += 1;
+);
+// 4. sortie : gauche = lignes paires, droite = impaires ; fondu direct -> reverbe
+sh_wl = (sh_y[0] + sh_y[2] + sh_y[4] + sh_y[6]) * 0.35;
+sh_wr = (sh_y[1] + sh_y[3] + sh_y[5] + sh_y[7]) * 0.35;
+spl0 = sh_inl * (1 - sh_mix) + sh_wl * sh_mix;
+spl1 = sh_inr * (1 - sh_mix) + sh_wr * sh_mix;

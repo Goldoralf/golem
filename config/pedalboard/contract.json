@@ -1,0 +1,36 @@
+{
+ "_": "L'INTENTION — ce que GoleM veut d'un pédalier, quel qu'il soit. Contrat docs/pedalboards.md. Aucun nom de puce, aucun canal, aucun octet : ces choses-là vivent dans config/pedalboard/devices/<id>.json, et une même intention se compile différemment pour chacun.",
+
+ "slots": 19,
+ "slots_comment": "Les 19 emplacements d'une setlist. Chaque bank du pédalier vaut un slot et l'annonce en Program Change.",
+
+ "scenes": [
+  {"switch": 1, "name": "A", "cc": 20},
+  {"switch": 2, "name": "B", "cc": 21},
+  {"switch": 3, "name": "C", "cc": 22},
+  {"switch": 4, "name": "D", "cc": 23},
+  {"switch": 5, "name": "E", "cc": 24}
+ ],
+ "scenes_comment": "Rangée basse. Chaque switch émet le slot courant en Program Change, son CC de scène, et sa Note d'identité — n'importe quel switch pressé sélectionne donc d'abord le bon preset, PUIS fait sa scène.",
+
+ "stomps": [
+  {"switch": 6,  "cc": 30, "gestures": false},
+  {"switch": 7,  "cc": 31, "gestures": false},
+  {"switch": 8,  "cc": 32, "gestures": false},
+  {"switch": 9,  "cc": 33, "gestures": false},
+  {"switch": 10, "cc": 34, "gestures": true}
+ ],
+ "stomps_comment": "Rangée haute. `gestures` est une EXIGENCE, pas un réglage de puce : « ce switch doit porter les fronts d'appui et de relâchement », donc les durées, donc l'appui long. Chaque appareil la satisfait à sa façon — ou déclare qu'il ne sait pas. Ce que le switch DÉCLENCHE n'est pas ici : les blocs sont assignés par preset (block.foot).",
+
+ "looper_bank": {"gestures": []},
+ "looper_bank_comment": "AMENDEMENT 2026-10-14 (docs/looper.md) : les boucles sont sur SW 1-4, la rangée des scènes — compilée en `preset`, dont la face off est un vrai NoteOff : elle donne DÉJÀ les deux fronts. La bank looper n'a plus de switch à passer en `trigger` (liste vide) et se compile comme les autres : SW 6-8 retrouvent leur LED de stomp. Historique : Un slot dont le preset porte un bloc looper compile SA bank différemment : ces switches y passent en `trigger` (les deux fronts), au prix de leur LED d'état. Sans ça, tap/overdub/hold sont impossibles — et pire : la minuterie d'appui long armée au press n'étant jamais annulée sur un `effect`, elle finit par partir et EFFACE la loop (mesuré au pied le 2026-08-08 : SW6 et SW7 rendent 0 relâchement). L'espèce est par BANK sur la UnO2 — « Any mix of presets, stompboxes, momentary effects for each bank », manuel §Bank layout. Quels slots sont concernés n'est PAS ici : ça se déduit de la setlist au moment de compiler.",
+
+ "expression": [
+  {"pedal": 1, "role": "volume", "cc": 7,  "min": 0, "max": 127},
+  {"pedal": 2, "role": "block",  "cc": 11, "min": 0, "max": 127}
+ ],
+ "expression_comment": "Les CC sont figés ici parce que bridge/app.py et bridge/foot.py les lisent. Le RÔLE de chaque pédale (volume / bloc d'effet) se permute côté GoleM sans reflash — config/pedals.json.",
+
+ "select": {"switch": 1, "long_press_s": 1.5, "timeout_s": 8.0},
+ "select_comment": "Appui long sur ce switch -> saisie de deux chiffres (switches 1-10 = 1..9 puis 0) -> recall du slot. 8 s entre deux chiffres : 4 s s'est révélé trop court au pied le 2026-07-24."
+}

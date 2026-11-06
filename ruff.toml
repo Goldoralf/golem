@@ -1,0 +1,8 @@
+# Analyse statique (audit 2026-10-15, lot 3). Volontairement ÉTROITE : les erreurs qui cassent à l'exécution
+# (syntaxe, nom indéfini, comparaison absurde) — la première passe en a trouvé sept, dont une qui coupait la
+# Whammy DT au rappel. Le style n'est pas jugé ici.
+target-version = "py312"
+extend-exclude = [".venv", "plugins", "vendor"]
+
+[lint]
+select = ["E9", "F63", "F7", "F82"]

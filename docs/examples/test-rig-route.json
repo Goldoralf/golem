@@ -1,0 +1,33 @@
+{
+  "id": "test-rig-route",
+  "name": "Test Routage (sans amp/cab)",
+  "_note": "Valide la topologie paths/splits/folder/sorties SANS chargement de fichier NAM/IR. Blocs = plugins purs.",
+  "paths": [
+    {
+      "id": "guitar",
+      "name": "Guitare",
+      "input": 1,
+      "chain": [
+        { "type": "gate" },
+        { "type": "eq" },
+        { "split": {
+            "branches": [
+              { "blocks": [ { "type": "reverb" } ] },
+              { "blocks": [ { "type": "delay" } ] }
+            ],
+            "merge": { "gain": -3 }
+        } },
+        { "type": "comp" }
+      ],
+      "out": 1
+    },
+    {
+      "id": "voice",
+      "name": "Voix",
+      "input": 2,
+      "chain": [ { "type": "gate" }, { "type": "comp" } ],
+      "out": 2
+    }
+  ],
+  "scenes": [ { "id": "A", "name": "base", "blocks": {} } ]
+}

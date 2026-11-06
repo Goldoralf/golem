@@ -1,0 +1,86 @@
+{
+ "_comment": "Ce que GoleM installe sous macOS, à versions ÉPINGLÉES — le pendant de provision/windows/pins.json (docs/platforms.md). Lu par bridge/reaper_update.py (Licenses ▸ Reaper), installer/platform_macos.py et provision/macos/install-system.sh (avec plutil). Empreintes calculées le 2026-10-04 sur les fichiers officiels (sha256). Bumper une version = recalculer son sha256 dans le même commit. `manual` : ce que l'utilisateur pose lui-même — affiché sur la dernière page de l'installateur.",
+ "reaper": {
+  "version": "7.79",
+  "url": "https://www.reaper.fm/files/7.x/reaper779_universal.dmg",
+  "sha256": "2493cea3cd6105d84bbf02710280d73ea8a119f06370152773483767fade8602"
+ },
+ "nam_golem": {
+  "_comment": "NeuralAmpModeler 0.7.15 bâti par golem depuis le tag amont (MIT, source inchangée) : les versions officielles 0.7.14/0.7.15 ne publient aucun binaire, et 0.7.13 ne lit pas les captures A2. Posé PAR-DESSUS le 0.7.13 officiel (dont l'installeur reste le propriétaire, désinstallation comprise). Run : https://github.com/Goldoralf/NeuralAmpModelerPlugin/actions/runs/39812387332. Mesuré le 2026-10-22 : A2.nam transforme le son (0.7.13 le laissait passer à sec), A1 identique.",
+  "version": "0.7.15",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/nam-0.7.15-golem/NeuralAmpModeler-v0.7.15-mac.zip",
+  "sha256": "eca5223d2c3a5f6f4c6359ee570a597d24e98cf15cd5c20ddb9bd568d2cf680b"
+ },
+ "nam_vst3": {
+  "version": "0.7.13",
+  "url": "https://github.com/sdatkinson/NeuralAmpModelerPlugin/releases/download/v0.7.13/NeuralAmpModeler-v0.7.13-mac.dmg",
+  "sha256": "e9cea7a409fd167e05314d423a298ecb3b2c915eba2f8a514ee0c48a70f39173"
+ },
+ "avldrums": {
+  "_comment": "Le moteur du bloc drumkit (x42 AVL Drumkits, GPL, LV2). Paquet SIGNÉ, arm64 + x86_64, macOS 11+ (dossier mac/ de x42-plugins.com, pas osx/ qui est l'ancien Intel/PPC).",
+  "version": "0.7.6",
+  "url": "https://x42-plugins.com/x42/mac/x42-avldrums-v0.7.6.pkg",
+  "sha256": "d10051a56a5f1681a594105019d061f7e3cba1c5e68ba7632b1710de6b5986ed"
+ },
+ "sfizz": {
+  "_comment": "sfizz (SFZTools, BSD-2) : le moteur des kits SFZ — le seul format de batterie importable sur les trois OS (docs/drums-kit.md §6). Paquet macOS de sfizz-ui (AU + VST3 + LV2). NON VÉRIFIÉ sur Mac : l'empreinte est prise le 2026-10-11 depuis Windows.",
+  "version": "1.2.3",
+  "url": "https://github.com/sfztools/sfizz-ui/releases/download/1.2.3/sfizz-1.2.3-macos.pkg",
+  "sha256": "62c76af58bfec05ca6ef199befca7c2508e15a5e63bca076198d94f085c14da7"
+ },
+ "pawpaw": {
+  "_comment": "Vitalium (version libre de Vital, GPL, LV2) pour le bloc vital, plus les LV2 mda (ringmod, bitcrusher, rezfilter). Binaires UNIVERSELS, mais le paquet (non signé, 2021) déclare hostArchitectures=x86_64 : install-system.sh pose Rosetta avant.",
+  "version": "1.1",
+  "url": "https://github.com/DISTRHO/PawPaw/releases/download/v1.1/PawPaw-macOS-universal-v1.1.0.pkg",
+  "sha256": "97a1187b2afdf5b7b59f041256dd0b4de22f4c041fed25a7f8e536a7822b39fe"
+ },
+ "dragonfly": {
+  "_comment": "Dragonfly Reverb (Michael Willis, GPL-3) : les blocs reverb (Hall), reverb-plate et reverb-room. effects-macos.json les nommait, rien ne les installait : mesuré sur un MacBook Air le 2026-11-04, la réverbe se taisait sur ~45 presets d'usine. Image universelle (arm64 + x86_64) ; son paquet n'est PAS signé, l'empreinte épinglée est le seul contrôle. Il pose VST3, VST2, LV2 et CLAP dans /Library/Audio/Plug-Ins.",
+  "version": "3.2.10",
+  "url": "https://github.com/michaelwillis/dragonfly-reverb/releases/download/3.2.10/dragonfly-reverb-3.2.10-macos-universal.dmg",
+  "sha256": "e0b854b92a4e51ce5851320fb1a9f91ab1a4309f997de070e175b3e5cab4adaf"
+ },
+ "proteus": {
+  "_comment": "Proteus (GuitarML, GPL-3) : le bloc boost — même manque que Dragonfly (2026-11-04). Paquet signé (Developer ID), binaires universels ; pose AU, VST3 et AAX.",
+  "version": "1.2",
+  "url": "https://github.com/GuitarML/Proteus/releases/download/v1.2/Install-Proteus-v1.2-Mac.dmg",
+  "sha256": "7194c26d4b04f40811295ad4ebe1ef3d1bb033a9976f6789ebf3ec021430e7d0"
+ },
+ "manual": [
+  {
+   "name": "Surge XT",
+   "why": "the Spring Reverb, Frequency Shifter and Treemonster blocks (Surge XT Effects, free, VST3, Apple silicon).",
+   "url": "https://github.com/surge-synthesizer/releases-xt/releases/tag/1.3.4"
+  },
+  {
+   "name": "x42 Limiter, Autotune and EQ",
+   "why": "the Limiter, Pitch Correct and Parametric EQ blocks (LV2, Apple silicon) — take the « mac » packages. Limiter and Autotune are free; the EQ is a demo whose window fades without a $29 licence, the sound is not affected.",
+   "url": "https://x42-plugins.com/x42/"
+  },
+  {
+   "name": "ZamAudio plugins",
+   "why": "the Granular block (ZamGrains, free).",
+   "url": "https://github.com/zamaudio/zam-plugins/releases/tag/4.5"
+  },
+  {
+   "name": "Spectral Shift",
+   "why": "the Spectral Pitch block (free).",
+   "url": "https://github.com/trencrumb/SpectralShift/releases/tag/v0.1.1"
+  },
+  {
+   "name": "Spectral Compressor",
+   "why": "the Spectral Comp block (free, nih-plug builds) — copy the VST3 to /Library/Audio/Plug-Ins/VST3.",
+   "url": "https://github.com/robbert-vdh/nih-plug/releases/tag/latest-builds"
+  },
+  {
+   "name": "PaulXStretch",
+   "why": "the Stretch block (free).",
+   "url": "https://github.com/essej/paulxstretch/releases/tag/v1.6.0"
+  },
+  {
+   "name": "Airwindows TapeDelay2",
+   "why": "the Tape Delay (Airwindows) block — the signed Mac VSTs, TapeDelay2.vst into /Library/Audio/Plug-Ins/VST.",
+   "url": "https://www.airwindows.com/tapedelay2/"
+  }
+ ]
+}

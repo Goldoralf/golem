@@ -1,0 +1,481 @@
+{
+ "id": "factory-guitar-fuzz-wall",
+ "name": "Fuzz Wall",
+ "role": "guitar",
+ "tags": [
+  "rock",
+  "alternative",
+  "fuzz",
+  "90s"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Fuzz Wall",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Intro",
+     "blocks": {
+      "b3": false,
+      "b5": false,
+      "b6": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Big Muff Wall",
+     "blocks": {
+      "b2": false,
+      "b3": false,
+      "b4": false,
+      "cab-t2wy": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Solo",
+     "blocks": {
+      "b4": false,
+      "cab-t2wy": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Verse Crunch",
+     "blocks": {
+      "b2": false,
+      "b3": false,
+      "b5": false,
+      "b4": false,
+      "cab-t2wy": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Wide Wall",
+     "blocks": {
+      "b2": false,
+      "b3": true,
+      "b5": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "b1",
+      "type": "gate"
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "b4",
+         "type": "amp-nam",
+         "label": "Fender Twin Reverb",
+         "ref": "246",
+         "model": "418200"
+        },
+        {
+         "id": "cab-t2wy",
+         "type": "cab",
+         "label": "Palmer 2x12 G12M-65 Creamback",
+         "ref": "5004",
+         "model": "67597"
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "b5",
+         "type": "pedal-nam",
+         "variant": "big-muff",
+         "foot": 6,
+         "label": "Electro-Harmonix Op-Amp Big Muff",
+         "ref": "37818",
+         "model": "413521"
+        },
+        {
+         "id": "b6",
+         "type": "amp",
+         "label": "Marshall JCM800 2203 Modified",
+         "ref": "44209",
+         "model": "567082"
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "b2",
+      "type": "phaser",
+      "foot": 7
+     },
+     {
+      "id": "b3",
+      "type": "delay-tape",
+      "foot": 8
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Intro",
+   "blocks": {
+    "b3": false,
+    "b5": false,
+    "b6": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Big Muff Wall",
+   "blocks": {
+    "b2": false,
+    "b3": false,
+    "b4": false,
+    "cab-t2wy": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Solo",
+   "blocks": {
+    "b4": false,
+    "cab-t2wy": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Verse Crunch",
+   "blocks": {
+    "b2": false,
+    "b3": false,
+    "b5": false,
+    "b4": false,
+    "cab-t2wy": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "E",
+   "name": "Wide Wall",
+   "blocks": {
+    "b2": false,
+    "b3": true,
+    "b5": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 1,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "b1",
+    "type": "gate"
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "b4",
+       "type": "amp-nam",
+       "label": "Fender Twin Reverb",
+       "ref": "246",
+       "model": "418200"
+      },
+      {
+       "id": "cab-t2wy",
+       "type": "cab",
+       "label": "Palmer 2x12 G12M-65 Creamback",
+       "ref": "5004",
+       "model": "67597"
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "b5",
+       "type": "pedal-nam",
+       "variant": "big-muff",
+       "foot": 6,
+       "label": "Electro-Harmonix Op-Amp Big Muff",
+       "ref": "37818",
+       "model": "413521"
+      },
+      {
+       "id": "b6",
+       "type": "amp",
+       "label": "Marshall JCM800 2203 Modified",
+       "ref": "44209",
+       "model": "567082"
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "b2",
+    "type": "phaser",
+    "foot": 7
+   },
+   {
+    "id": "b3",
+    "type": "delay-tape",
+    "foot": 8
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "246",
+   "model": "418200"
+  },
+  {
+   "type": "cab",
+   "ref": "5004",
+   "model": "67597"
+  },
+  {
+   "type": "pedal-nam",
+   "ref": "37818",
+   "model": "413521"
+  },
+  {
+   "type": "amp",
+   "ref": "44209",
+   "model": "567082"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "ac65d121f9b04bdd64a2646b6441cbf8687fd6f2f3fdaa5e9ccf6a6a8546d254",
+   "uid": "t3k:246",
+   "kind": "amp",
+   "bytes": 301645,
+   "name": "Tim R Fender TwinVerb Vibrato Bright",
+   "source": "t3k",
+   "amp": "Fender Twin Reverb",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "timr",
+   "url": "https://www.tone3000.com/tones/fender-twin-pack-246"
+  },
+  {
+   "sha256": "57111f8044147c002495c1bc1af96102da96a6e9b72384cf373c86e1388a5526",
+   "uid": "t3k:5004",
+   "kind": "cab",
+   "bytes": 235418,
+   "name": "16 - PALMER G12M65 SM57 MID 15cm 45°",
+   "source": "t3k",
+   "amp": "Palmer 2X12 G12M-65 Creamback - Shure SM57",
+   "brand": "Cabs / IR",
+   "creator": "elgringoloco",
+   "url": "https://www.tone3000.com/tones/palmer-2x12-g12m-65-creamback-shure-sm57-5004"
+  },
+  {
+   "sha256": "2942c5841fd7ae1b7da06a83b8bdfd90e7cd8cddbc5ab037beb9ab61f26ea2dd",
+   "uid": "t3k:37818",
+   "kind": "pedal",
+   "bytes": 293747,
+   "name": "EHX IC Big Muff V-6 T-7 S-2",
+   "source": "t3k",
+   "amp": "Electro-Harmonix Op-Amp Big Muff",
+   "arch": "2",
+   "brand": "Custom / Other",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/electro-harmonix-op-amp-big-muff-37818"
+  },
+  {
+   "sha256": "92d4033a3f2c4abb555969dadeea377381df1036def4446c7dbf9080ee4b4816",
+   "uid": "t3k:44209",
+   "kind": "amp-cab",
+   "bytes": 294688,
+   "name": "[AMP] JCM800-2203-MODIFIED-HI Bad Boys 2 - BLEND #1",
+   "source": "t3k",
+   "amp": "Marshall JCM800 2203",
+   "arch": "2",
+   "brand": "Marshall",
+   "creator": "2dor",
+   "url": "https://www.tone3000.com/tones/marshall-jcm800-2203-modified-el34-community-pack-44209"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"sheen\", \"7\": \"ember\", \"8\": \"wave\", \"A\": \"lightning\", \"B\": \"snow\", \"C\": \"ripple\", \"D\": \"pulse\", \"E\": \"scanner\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 7, \"id\": \"b2\", \"type\": \"phaser\"}, {\"foot\": 8, \"id\": \"b3\", \"type\": \"delay-tape\"}], \"pre\": [{\"id\": \"b1\", \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"b4\", \"label\": \"Fender Twin Reverb\", \"model\": \"418200\", \"ref\": \"246\", \"type\": \"amp-nam\"}, {\"id\": \"cab-t2wy\", \"label\": \"Palmer 2x12 G12M-65 Creamback\", \"model\": \"67597\", \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"foot\": 6, \"id\": \"b5\", \"label\": \"Electro-Harmonix Op-Amp Big Muff\", \"model\": \"413521\", \"ref\": \"37818\", \"type\": \"pedal-nam\", \"variant\": \"big-muff\"}, {\"id\": \"b6\", \"label\": \"Marshall JCM800 2203 Modified\", \"model\": \"567082\", \"ref\": \"44209\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"6\": \"#9b5de5\", \"7\": \"#9b5de5\", \"8\": \"#9b5de5\", \"A\": \"#9b5de5\", \"B\": \"#9b5de5\", \"C\": \"#9b5de5\", \"D\": \"#9b5de5\", \"E\": \"#9b5de5\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 7, \"id\": \"b2\", \"type\": \"phaser\"}, {\"foot\": 8, \"id\": \"b3\", \"type\": \"delay-tape\"}], \"pre\": [{\"id\": \"b1\", \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"b4\", \"label\": \"Fender Twin Reverb\", \"model\": \"418200\", \"ref\": \"246\", \"type\": \"amp-nam\"}, {\"id\": \"cab-t2wy\", \"label\": \"Palmer 2x12 G12M-65 Creamback\", \"model\": \"67597\", \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"foot\": 6, \"id\": \"b5\", \"label\": \"Electro-Harmonix Op-Amp Big Muff\", \"model\": \"413521\", \"ref\": \"37818\", \"type\": \"pedal-nam\", \"variant\": \"big-muff\"}, {\"id\": \"b6\", \"label\": \"Marshall JCM800 2203 Modified\", \"model\": \"567082\", \"ref\": \"44209\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Fuzz Wall\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"b3\": false, \"b5\": false, \"b6\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Intro\", \"params\": {}}, {\"blocks\": {\"b2\": false, \"b3\": false, \"b4\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Big Muff Wall\", \"params\": {}}, {\"blocks\": {\"b4\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Solo\", \"params\": {}}, {\"blocks\": {\"b2\": false, \"b3\": false, \"b4\": false, \"b5\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Verse Crunch\", \"params\": {}}, {\"blocks\": {\"b2\": false, \"b3\": true, \"b5\": true}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Wide Wall\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"b3\": false, \"b5\": false, \"b6\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Intro\"}, {\"blocks\": {\"b2\": false, \"b3\": false, \"b4\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Big Muff Wall\"}, {\"blocks\": {\"b4\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Solo\"}, {\"blocks\": {\"b2\": false, \"b3\": false, \"b4\": false, \"b5\": false, \"cab-t2wy\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-D\"}}, \"level\": -1, \"name\": \"Verse Crunch\"}, {\"blocks\": {\"b2\": false, \"b3\": true, \"b5\": true}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-E\"}}, \"level\": 1, \"name\": \"Wide Wall\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#9b5de5",
+  "B": "#9b5de5",
+  "C": "#9b5de5",
+  "D": "#9b5de5",
+  "E": "#9b5de5",
+  "6": "#9b5de5",
+  "7": "#9b5de5",
+  "8": "#9b5de5",
+  "9": "#9b5de5",
+  "10": "#9b5de5"
+ },
+ "anims": {
+  "A": "lightning",
+  "B": "snow",
+  "C": "ripple",
+  "D": "pulse",
+  "E": "scanner",
+  "6": "sheen",
+  "7": "ember",
+  "8": "wave",
+  "9": "aurora",
+  "10": "heartbeat"
+ }
+}

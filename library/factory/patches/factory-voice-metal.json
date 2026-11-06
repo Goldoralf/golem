@@ -1,0 +1,442 @@
+{
+ "id": "factory-voice-metal",
+ "name": "Metal Vocal",
+ "role": "voice",
+ "tags": [
+  "metal"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Metal Vocal",
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Clean",
+     "blocks": {
+      "scream": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 18,
+       "decay": 1.6
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Scream",
+     "blocks": {
+      "scream": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Breakdown",
+     "blocks": {
+      "scream": true,
+      "dly": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -40
+      },
+      "comp": {
+       "ratio": 8
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Wide Clean",
+     "blocks": {
+      "scream": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 2.2
+      },
+      "dly": {
+       "time": "1/4",
+       "feedback": 30,
+       "mix": 16
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -45,
+       "attack": 1,
+       "release": 90
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -26,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "scream",
+      "type": "grit",
+      "foot": 6,
+      "params": {
+       "lo_m1": "Off",
+       "lo_m2": "Off",
+       "lm_m1": "Off",
+       "lm_m2": "Off",
+       "hm_m1": "Sample divide",
+       "hm_m2": "Gain",
+       "hi_m1": "Off",
+       "hi_m2": "Off",
+       "lo_v1": 0,
+       "lo_v2": 0,
+       "lm_v1": 0,
+       "lm_v2": 0,
+       "hm_v1": 24,
+       "hm_v2": 53,
+       "hi_v1": 0,
+       "hi_v2": 0,
+       "lo_gain": 50,
+       "lm_gain": 50,
+       "hm_gain": 50,
+       "hi_gain": 50,
+       "x1": 25,
+       "x2": 63,
+       "x3": 70,
+       "wet": 100,
+       "quality": false
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 5,
+       "makeup": 4,
+       "attack": 5,
+       "release": 100
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 120,
+       "bass": 0,
+       "f1": 300,
+       "g1": -3,
+       "f2": 1500,
+       "g2": 1,
+       "f3": 3500,
+       "g3": 2,
+       "treble": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/8",
+       "feedback": 20,
+       "mix": 12
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 1,
+       "predelay": 10,
+       "hicut": 7000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean",
+   "blocks": {
+    "scream": false,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 18,
+     "decay": 1.6
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Scream",
+   "blocks": {
+    "scream": true,
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 1,
+     "state": "st-voice-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Breakdown",
+   "blocks": {
+    "scream": true,
+    "dly": false
+   },
+   "params": {
+    "gate": {
+     "thresh": -40
+    },
+    "comp": {
+     "ratio": 8
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 2,
+     "state": "st-voice-1-C"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Wide Clean",
+   "blocks": {
+    "scream": false,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "dly": {
+     "time": "1/4",
+     "feedback": 30,
+     "mix": 16
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -45,
+     "attack": 1,
+     "release": 90
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -26,
+     "freq": 6500,
+     "range": 10
+    }
+   },
+   {
+    "id": "scream",
+    "type": "grit",
+    "foot": 6,
+    "params": {
+     "lo_m1": "Off",
+     "lo_m2": "Off",
+     "lm_m1": "Off",
+     "lm_m2": "Off",
+     "hm_m1": "Sample divide",
+     "hm_m2": "Gain",
+     "hi_m1": "Off",
+     "hi_m2": "Off",
+     "lo_v1": 0,
+     "lo_v2": 0,
+     "lm_v1": 0,
+     "lm_v2": 0,
+     "hm_v1": 24,
+     "hm_v2": 53,
+     "hi_v1": 0,
+     "hi_v2": 0,
+     "lo_gain": 50,
+     "lm_gain": 50,
+     "hm_gain": 50,
+     "hi_gain": 50,
+     "x1": 25,
+     "x2": 63,
+     "x3": 70,
+     "wet": 100,
+     "quality": false
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 5,
+     "makeup": 4,
+     "attack": 5,
+     "release": 100
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 120,
+     "bass": 0,
+     "f1": 300,
+     "g1": -3,
+     "f2": 1500,
+     "g2": 1,
+     "f3": 3500,
+     "g3": 2,
+     "treble": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/8",
+     "feedback": 20,
+     "mix": 12
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 12,
+     "decay": 1,
+     "predelay": 10,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"pulse\", \"7\": \"glitch\", \"A\": \"ember\", \"B\": \"heartbeat\", \"C\": \"sheen\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 90, \"thresh\": -45}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -26}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"hi_gain\": 50, \"hi_m1\": \"Off\", \"hi_m2\": \"Off\", \"hi_v1\": 0, \"hi_v2\": 0, \"hm_gain\": 50, \"hm_m1\": \"Sample divide\", \"hm_m2\": \"Gain\", \"hm_v1\": 24, \"hm_v2\": 53, \"lm_gain\": 50, \"lm_m1\": \"Off\", \"lm_m2\": \"Off\", \"lm_v1\": 0, \"lm_v2\": 0, \"lo_gain\": 50, \"lo_m1\": \"Off\", \"lo_m2\": \"Off\", \"lo_v1\": 0, \"lo_v2\": 0, \"quality\": false, \"wet\": 100, \"x1\": 25, \"x2\": 63, \"x3\": 70}, \"type\": \"grit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"makeup\": 4, \"ratio\": 5, \"release\": 100, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 300, \"f2\": 1500, \"f3\": 3500, \"g1\": -3, \"g2\": 1, \"g3\": 2, \"lowcut\": 120, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 20, \"mix\": 12, \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 12, \"predelay\": 10}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#6a040f\", \"7\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 90, \"thresh\": -45}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -26}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"hi_gain\": 50, \"hi_m1\": \"Off\", \"hi_m2\": \"Off\", \"hi_v1\": 0, \"hi_v2\": 0, \"hm_gain\": 50, \"hm_m1\": \"Sample divide\", \"hm_m2\": \"Gain\", \"hm_v1\": 24, \"hm_v2\": 53, \"lm_gain\": 50, \"lm_m1\": \"Off\", \"lm_m2\": \"Off\", \"lm_v1\": 0, \"lm_v2\": 0, \"lo_gain\": 50, \"lo_m1\": \"Off\", \"lo_m2\": \"Off\", \"lo_v1\": 0, \"lo_v2\": 0, \"quality\": false, \"wet\": 100, \"x1\": 25, \"x2\": 63, \"x3\": 70}, \"type\": \"grit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"makeup\": 4, \"ratio\": 5, \"release\": 100, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 300, \"f2\": 1500, \"f3\": 3500, \"g1\": -3, \"g2\": 1, \"g3\": 2, \"lowcut\": 120, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 20, \"mix\": 12, \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 12, \"predelay\": 10}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Metal Vocal\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Clean\", \"params\": {\"verb\": {\"decay\": 1.6, \"mix\": 18}}}, {\"blocks\": {\"dly\": false, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Scream\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"gate\": {\"thresh\": -40}}}, {\"blocks\": {\"dly\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Wide Clean\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 16, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.2, \"mix\": 26}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": true, \"scream\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Clean\", \"params\": {\"verb\": {\"decay\": 1.6, \"mix\": 18}}}, {\"blocks\": {\"dly\": false, \"scream\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-B\"}}, \"level\": 1, \"name\": \"Scream\"}, {\"blocks\": {\"dly\": false, \"scream\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 2, \"state\": \"st-voice-1-C\"}}, \"level\": 2, \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"gate\": {\"thresh\": -40}}}, {\"blocks\": {\"dly\": true, \"scream\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Wide Clean\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 16, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.2, \"mix\": 26}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "9": "#6a040f",
+  "10": "#6a040f"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "heartbeat",
+  "C": "sheen",
+  "D": "scanner",
+  "9": "stars",
+  "10": "fire"
+ }
+}

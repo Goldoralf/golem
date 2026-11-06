@@ -1,0 +1,11 @@
+{
+ "name": "Triplet trip",
+ "type": "delay",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "time": "1/8T",
+  "feedback": 45,
+  "mix": 30
+ }
+}

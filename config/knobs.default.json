@@ -1,0 +1,7 @@
+{
+ "_comment": "GRAINE (suivie) : banques de CC et plage du clavier par défaut (AKAI MPK Mini Mk II d'usine). La CALIBRATION écrit config/knobs.json (LOCAL, hors dépôt depuis le 2026-10-03, CLAUDE.md règle 2) ; tout lecteur retombe ici quand ce fichier manque.",
+ "bankA": [1, 2, 3, 4, 5, 6, 7, 8],
+ "bankB": [13, 14, 15, 16, 17, 18, 19, 20],
+ "kb_range": [48, 72],
+ "kb_name": "MPK Mini Mk II"
+}

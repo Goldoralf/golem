@@ -1,0 +1,102 @@
+{
+ "id": "test-drums-kit",
+ "name": "Test — Drums kit",
+ "role": "drums",
+ "tags": [
+  "test"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "bpm": 120,
+ "origin": "test",
+ "lanes": [
+  {
+   "id": "drums-1",
+   "role": "drums",
+   "name": "Test drums",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "comp",
+      "type": "comp"
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Groove",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Tight",
+     "blocks": {},
+     "params": {
+      "comp": {
+       "attack": 10
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Groove",
+   "blocks": {},
+   "branches": {},
+   "lanes": {
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Tight",
+   "blocks": {},
+   "branches": {},
+   "lanes": {
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid",
+       "library/grooves/golem-four-on-the-floor.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ }
+}

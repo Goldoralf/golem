@@ -1,0 +1,9 @@
+{
+  "_doc": "Les fonctions de GoleM qu'un moteur sait faire ou non — l'ordre est celui de la page System ▸ Audio Engine. Contrat : docs/audio-engine-choice.md §5. Libellés = UI, donc en anglais.",
+  "features": [
+    ["lanes", "Lanes & scenes"], ["nam_ir", "NAM & IR"], ["recording", "Recording"], ["backing", "Backing"],
+    ["click", "Click"], ["midi_clock", "MIDI clock"], ["looper", "Looper"], ["drum_machine", "Drum machine"],
+    ["samples", "Samples"], ["standards", "Standards"], ["riff", "Riff"], ["kill_switch", "Kill switch"],
+    ["previews", "Previews"], ["reamp", "Reamp"]
+  ]
+}

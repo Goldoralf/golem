@@ -1,0 +1,10 @@
+{
+ "name": "As captured",
+ "type": "pedal-nam",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "input": 0,
+  "output": 0
+ }
+}

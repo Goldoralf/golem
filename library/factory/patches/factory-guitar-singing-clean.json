@@ -1,0 +1,623 @@
+{
+ "id": "factory-guitar-singing-clean",
+ "name": "Singing Clean",
+ "role": "guitar",
+ "tags": [
+  "blues",
+  "clean",
+  "lead"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Singing Clean",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Clean",
+     "blocks": {
+      "ts": false,
+      "dly1": false,
+      "dly2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Singing",
+     "blocks": {
+      "ts": true,
+      "dly1": true,
+      "dly2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Lead",
+     "blocks": {
+      "ts": true,
+      "dly1": true,
+      "dly2": false
+     },
+     "params": {
+      "deluxe": {
+       "input": 4
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Ballad",
+     "blocks": {
+      "ts": true,
+      "dly1": true,
+      "dly2": true
+     },
+     "params": {
+      "dly1": {
+       "feedback": 35,
+       "mix": 18
+      },
+      "dly2": {
+       "feedback": 40,
+       "mix": 16
+      },
+      "verb": {
+       "mix": 30,
+       "decay": 3.0
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Chords",
+     "blocks": {
+      "ts": false,
+      "dly1": false,
+      "dly2": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -65,
+       "attack": 3,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 25,
+       "release": 200
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "ts",
+         "type": "pedal-nam",
+         "variant": "tube-screamer",
+         "foot": 6,
+         "label": "Ibanez TS9 Tube Screamer",
+         "ref": "36827",
+         "model": "381617",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "deluxe",
+         "type": "amp-nam",
+         "label": "Fender Deluxe Reverb 1965",
+         "ref": "6289",
+         "model": "413038",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "dxcab",
+         "type": "cab",
+         "label": "Fender Deluxe Reverb",
+         "ref": "27465",
+         "model": "220917",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "dumble",
+         "type": "amp-nam",
+         "label": "Dumble Overdrive Special",
+         "ref": "30435",
+         "model": "493806",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "dcab",
+         "type": "cab",
+         "label": "Palmer 2x12 Creamback",
+         "ref": "5004",
+         "model": "67597",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "dly1",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/8•",
+       "feedback": 25,
+       "mix": 14
+      }
+     },
+     {
+      "id": "dly2",
+      "type": "delay-tape",
+      "foot": 8,
+      "params": {
+       "time": "16th",
+       "feedback": 30,
+       "mix": 12,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 18,
+       "decay": 1.8,
+       "predelay": 20,
+       "hicut": 6500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean",
+   "blocks": {
+    "ts": false,
+    "dly1": false,
+    "dly2": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Singing",
+   "blocks": {
+    "ts": true,
+    "dly1": true,
+    "dly2": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "C",
+   "name": "Lead",
+   "blocks": {
+    "ts": true,
+    "dly1": true,
+    "dly2": false
+   },
+   "params": {
+    "deluxe": {
+     "input": 4
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Ballad",
+   "blocks": {
+    "ts": true,
+    "dly1": true,
+    "dly2": true
+   },
+   "params": {
+    "dly1": {
+     "feedback": 35,
+     "mix": 18
+    },
+    "dly2": {
+     "feedback": 40,
+     "mix": 16
+    },
+    "verb": {
+     "mix": 30,
+     "decay": 3.0
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "E",
+   "name": "Chords",
+   "blocks": {
+    "ts": false,
+    "dly1": false,
+    "dly2": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -65,
+     "attack": 3,
+     "release": 200
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -22,
+     "ratio": 2.5,
+     "makeup": 2,
+     "attack": 25,
+     "release": 200
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "ts",
+       "type": "pedal-nam",
+       "variant": "tube-screamer",
+       "foot": 6,
+       "label": "Ibanez TS9 Tube Screamer",
+       "ref": "36827",
+       "model": "381617",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "deluxe",
+       "type": "amp-nam",
+       "label": "Fender Deluxe Reverb 1965",
+       "ref": "6289",
+       "model": "413038",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "dxcab",
+       "type": "cab",
+       "label": "Fender Deluxe Reverb",
+       "ref": "27465",
+       "model": "220917",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "dumble",
+       "type": "amp-nam",
+       "label": "Dumble Overdrive Special",
+       "ref": "30435",
+       "model": "493806",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      },
+      {
+       "id": "dcab",
+       "type": "cab",
+       "label": "Palmer 2x12 Creamback",
+       "ref": "5004",
+       "model": "67597",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "dly1",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/8•",
+     "feedback": 25,
+     "mix": 14
+    }
+   },
+   {
+    "id": "dly2",
+    "type": "delay-tape",
+    "foot": 8,
+    "params": {
+     "time": "16th",
+     "feedback": 30,
+     "mix": 12,
+     "medium": "Tape"
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 18,
+     "decay": 1.8,
+     "predelay": 20,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "36827",
+   "model": "381617"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "6289",
+   "model": "413038"
+  },
+  {
+   "type": "cab",
+   "ref": "27465",
+   "model": "220917"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "30435",
+   "model": "493806"
+  },
+  {
+   "type": "cab",
+   "ref": "5004",
+   "model": "67597"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "c08f924499ae385a9f754da811e0a7a2b9bbadda337ed76e9d28fb3f3d19e242",
+   "uid": "t3k:36827",
+   "kind": "pedal",
+   "bytes": 299229,
+   "name": "Ibanez TS9 Tube Screamer Drive 2 Tone 7 Level 10",
+   "source": "t3k",
+   "amp": "Ibanez TS9 Tube Screamer",
+   "arch": "2",
+   "brand": "Ibanez",
+   "creator": "studioampcaptures",
+   "url": "https://www.tone3000.com/tones/ibanez-ts9-tube-screamer-36827"
+  },
+  {
+   "sha256": "a446c32276ae4a1e6fa3f6084589f5e7239ef61f04d557577a440e51a70a9181",
+   "uid": "t3k:6289",
+   "kind": "amp",
+   "bytes": 295996,
+   "name": "CLEAN - Fender Deluxe Reverb 1965 [Hyper Accuracy]",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb 1965",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "augctor",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-1965-hyper-accuracy-6289"
+  },
+  {
+   "sha256": "498889978243891d1990dfd5ceeecc53aeed43089c34de4e218e2249bad9b6cf",
+   "uid": "t3k:27465",
+   "kind": "cab",
+   "bytes": 105430,
+   "name": "DELUXE REVERB OXFORD - LEAN - 48 24",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb",
+   "brand": "Fender",
+   "creator": "vulturized",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-mix-ready-27465"
+  },
+  {
+   "sha256": "a7318c9b5cd1e6e4d16452aa07c01c8d379d1c500aa1be490a22590c6aa91901",
+   "uid": "t3k:30435",
+   "kind": "amp",
+   "bytes": 296071,
+   "name": "SLAMMIN_DUMBLE_FORD_CLN_CARLTONISH_2_S",
+   "source": "t3k",
+   "amp": "Dumble Overdrive Special 102 Ford",
+   "arch": "2",
+   "brand": "Dumble",
+   "creator": "slamminmofo",
+   "url": "https://www.tone3000.com/tones/dumble-ods-102-ford-hyper-accuracy-30435"
+  },
+  {
+   "sha256": "57111f8044147c002495c1bc1af96102da96a6e9b72384cf373c86e1388a5526",
+   "uid": "t3k:5004",
+   "kind": "cab",
+   "bytes": 235418,
+   "name": "16 - PALMER G12M65 SM57 MID 15cm 45°",
+   "source": "t3k",
+   "amp": "Palmer 2X12 G12M-65 Creamback - Shure SM57",
+   "brand": "Cabs / IR",
+   "creator": "elgringoloco",
+   "url": "https://www.tone3000.com/tones/palmer-2x12-g12m-65-creamback-shure-sm57-5004"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"wave\", \"7\": \"vu\", \"8\": \"snow\", \"9\": \"pulse\", \"A\": \"rain\", \"B\": \"vortex\", \"C\": \"ripple\", \"D\": \"scanner\", \"E\": \"heartbeat\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 7, \"id\": \"dly1\", \"params\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"foot\": 8, \"id\": \"dly2\", \"params\": {\"feedback\": 30, \"medium\": \"Tape\", \"mix\": 12, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 6500, \"mix\": 18, \"predelay\": 20}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}, {\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb 1965\", \"model\": \"413038\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6289\", \"type\": \"amp-nam\"}, {\"id\": \"dxcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"dumble\", \"label\": \"Dumble Overdrive Special\", \"model\": \"493806\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"30435\", \"type\": \"amp-nam\"}, {\"id\": \"dcab\", \"label\": \"Palmer 2x12 Creamback\", \"model\": \"67597\", \"params\": {\"level\": 0}, \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"6\": \"#80ffdb\", \"7\": \"#80ffdb\", \"8\": \"#80ffdb\", \"A\": \"#80ffdb\", \"B\": \"#80ffdb\", \"C\": \"#80ffdb\", \"D\": \"#80ffdb\", \"E\": \"#80ffdb\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"black-pearl\", \"motion\": \"comp\", \"standard\": \"rented-room-blues\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 7, \"id\": \"dly1\", \"params\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"foot\": 8, \"id\": \"dly2\", \"params\": {\"feedback\": 30, \"medium\": \"Tape\", \"mix\": 12, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 6500, \"mix\": 18, \"predelay\": 20}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}, {\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb 1965\", \"model\": \"413038\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6289\", \"type\": \"amp-nam\"}, {\"id\": \"dxcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"dumble\", \"label\": \"Dumble Overdrive Special\", \"model\": \"493806\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"30435\", \"type\": \"amp-nam\"}, {\"id\": \"dcab\", \"label\": \"Palmer 2x12 Creamback\", \"model\": \"67597\", \"params\": {\"level\": 0}, \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Singing Clean\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly1\": false, \"dly2\": false, \"ts\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean\", \"params\": {}}, {\"blocks\": {\"dly1\": true, \"dly2\": true, \"ts\": true}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Singing\", \"params\": {}}, {\"blocks\": {\"dly1\": true, \"dly2\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Lead\", \"params\": {\"deluxe\": {\"input\": 4}}}, {\"blocks\": {\"dly1\": true, \"dly2\": true, \"ts\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Ballad\", \"params\": {\"dly1\": {\"feedback\": 35, \"mix\": 18}, \"dly2\": {\"feedback\": 40, \"mix\": 16}, \"verb\": {\"decay\": 3.0, \"mix\": 30}}}, {\"blocks\": {\"dly1\": false, \"dly2\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Chords\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly1\": false, \"dly2\": false, \"ts\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Clean\"}, {\"blocks\": {\"dly1\": true, \"dly2\": true, \"ts\": true}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-B\"}}, \"level\": 2, \"name\": \"Singing\"}, {\"blocks\": {\"dly1\": true, \"dly2\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Lead\", \"params\": {\"deluxe\": {\"input\": 4}}}, {\"blocks\": {\"dly1\": true, \"dly2\": true, \"ts\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-D\"}}, \"level\": 2, \"name\": \"Ballad\", \"params\": {\"dly1\": {\"feedback\": 35, \"mix\": 18}, \"dly2\": {\"feedback\": 40, \"mix\": 16}, \"verb\": {\"decay\": 3.0, \"mix\": 30}}}, {\"blocks\": {\"dly1\": false, \"dly2\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-E\"}}, \"level\": -1, \"name\": \"Chords\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#80ffdb",
+  "B": "#80ffdb",
+  "C": "#80ffdb",
+  "D": "#80ffdb",
+  "E": "#80ffdb",
+  "6": "#80ffdb",
+  "7": "#80ffdb",
+  "8": "#80ffdb",
+  "9": "#80ffdb",
+  "10": "#80ffdb"
+ },
+ "anims": {
+  "A": "rain",
+  "B": "vortex",
+  "C": "ripple",
+  "D": "scanner",
+  "E": "heartbeat",
+  "6": "wave",
+  "7": "vu",
+  "8": "snow",
+  "9": "pulse",
+  "10": "monster"
+ }
+}

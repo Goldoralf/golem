@@ -1,0 +1,14 @@
+{
+  "_comment": "io.json CLEAN (brouillon étape 1) : device + canaux physiques + fallback mono global. PLUS de profils home/live. Le routage logique (quel path -> quelle sortie) vit dans chaque preset. 'mono_fallback.on' replie tout sur OUT1 (somme + pad) au routage.",
+  "device": "hw:V276",
+  "samplerate": 48000,
+  "inputs": [
+    { "ch": 1, "label": "Guitare" },
+    { "ch": 2, "label": "Micro" }
+  ],
+  "outputs": [
+    { "ch": 1, "label": "FOH L" },
+    { "ch": 2, "label": "FOH R" }
+  ],
+  "mono_fallback": { "on": false, "gain": -3 }
+}

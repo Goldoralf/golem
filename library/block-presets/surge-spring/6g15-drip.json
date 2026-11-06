@@ -1,0 +1,17 @@
+{
+ "name": "6G15 Drip",
+ "type": "surge-spring",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "size": 0.55,
+  "decay": 0.6,
+  "refl": 0.75,
+  "damp": 0.45,
+  "spin": 0.35,
+  "chaos": 0.15,
+  "knock": 0,
+  "mix": 0.4
+ },
+ "default": true
+}

@@ -1,0 +1,64 @@
+desc:GoleM DX7 control (dx7-ctl) -- Dexed cartridge loader + patch select
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM ep block, control layer (patron b3-ctl). Se place DEVANT le VST3i Dexed sur la
+//! piste Keys. Dexed n'expose PAS de "programme courant" automatisable : banque (32 voix) et
+//! patch arrivent en MIDI, comme sur un vrai DX7. Ce JSFX :
+//!   - passe TOUT le MIDI entrant vers l'aval (notes/pedales -> Dexed) ;
+//!   - lit a l'@init dx7-cart.txt (octets de la banque .syx en ints, ecrits par golem_rig) et
+//!     emet la cartouche en UN SysEx via midisend_buf. PREUVE RIG : le one-shot au 1er @block
+//!     etait PERDU (Dexed pas pret) -> on RENVOIE quelques fois sur les ~150 premiers blocks
+//!     puis on ARRETE (chaque load cartouche remet le Program a 0 : renvoyer en continu
+//!     ecraserait la selection de patch) ;
+//!   - slider "patch" (param Reaper raw -> scene-first) -> Program Change (0xC0). Dexed remet le
+//!     Program a 0 en chargeant la cartouche -> on RE-ASSERTE le PC une fois la cartouche stable
+//!     (block 200) puis a chaque changement. => PATCH PAR SCENE SANS REBUILD.
+//! Un changement de BANQUE passe par un rebuild golem (JSFX re-instancie -> @init relit le .txt).
+
+filename:0,dx7-cart.txt
+
+slider1:patch=0<0,31,1>Patch
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+CART = 1000000;           // buffer octets de la cartouche
+cartlen = 0;
+lastpatch = -1;
+need_cart = 1;
+blkcount = 0;
+sentcount = 0;
+pc_settled = 0;
+h = file_open(0);         // dx7-cart.txt : tokens ints delimites virgule/newline (file_var .txt)
+h >= 0 ? (
+  n = 0;
+  while (file_avail(h) > 0 && n < 8192) (
+    file_var(h, v);
+    CART[n] = max(0, min(255, v|0));
+    n += 1;
+  );
+  cartlen = n;
+);                        // handle referme automatiquement en fin de @init
+
+@block
+// 1) passthrough MIDI integral -> Dexed
+while (midirecv(mp, s1, s2, s3)) ( midisend(mp, s1, s2, s3); );
+blkcount += 1;
+
+// 2) cartouche : renvoi tot pour battre le timing d'init de Dexed, PUIS STOP (< 150 blocks)
+(need_cart || (sentcount < 6 && blkcount < 150 && (blkcount % 24) == 0)) ? (
+  cartlen > 0 ? ( midisend_buf(0, CART, cartlen); sentcount += 1; );
+  need_cart = 0;
+);
+
+// 3) Program Change : re-asserte UNE fois la cartouche stable (le load cartouche remet Program a 0),
+//    puis a chaque changement du slider (scene-first).
+(blkcount >= 200 && !pc_settled) ? ( lastpatch = -1; pc_settled = 1; );
+(patch|0) != lastpatch ? (
+  midisend(0, 0xC0, patch|0);
+  lastpatch = patch|0;
+);

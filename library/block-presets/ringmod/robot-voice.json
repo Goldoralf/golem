@@ -1,0 +1,11 @@
+{
+ "name": "Robot Voice",
+ "type": "ringmod",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "freq": 0.12,
+  "fine": 0.3,
+  "feedback": 0.35
+ }
+}

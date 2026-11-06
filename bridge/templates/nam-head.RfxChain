@@ -1,0 +1,15 @@
+BYPASS 0 0
+<LV2 "LV2: Neural Amp Modeler (Mike Oliphant) (Mono)" http://github.com/mikeoliphant/neural-amp-modeler-lv2 ""
+  CFG 0 0 0 ""
+  <IN_PINS
+  >
+  <OUT_PINS
+    PIN 0 0 1
+  >
+  P input_level 0 output_level 0 quality_scale 1
+  <STATE
+    P http://github.com/mikeoliphant/neural-amp-modeler-lv2#model %MODEL% 3
+  >
+>
+FXID {B43FDC6B-1DC5-9ACE-633B-9EB8BF0C5A1F}
+WAK 0 0

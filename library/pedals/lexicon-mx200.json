@@ -1,0 +1,1012 @@
+{
+ "id": "lexicon-mx200",
+ "name": "MX200",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Lexicon",
+  "model": "MX200",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "1 Big Pop Vocal",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Pop Vocals",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 RetroVerb",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Chorus + Plate",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Vocal Hall+Plate",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Extra Roomy",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Tuned Room",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 EchoVerb",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Quickie",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Acoustic Chamber",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Ambient Chamber",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Acoustic Bliss",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Guitar World",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Springtime",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Giant Snare",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 SmoothDrmPlate",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "17 Rich Drum Hall",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "18 Big Time",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "19 Voice Of Evil",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "20 Wayback Machine",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "21 BigVocalVerb",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "22 TwoRooms",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "23 The Big Easy",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "24 Nashville",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "25 LA-LA Land",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "26 Smooth Vocals",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "27 CompressedVox",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "28 No S Vocals",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "29 De-Esser+Compr",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "30 Compressor",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "31 De-Esser",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "32 Studio Delay",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "33 60s Delay",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "34 Slapback Delay",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "35 Delay + Verb",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "36 Vocal Chorus",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "37 Choral Hall",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "38 Tape Chorus",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "39 Core Us",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "40 Double Tracks",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "41 Shifted Room",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "42 Like That!",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "43 Plate + Hall",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "44 Vocal + Inst 1",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "45 Vocal + Inst 2",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "46 Vocal + Inst 3",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "47 Get Small",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "48 Alive N Kicking",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "49 Muy Grande",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "50 Bigger Band",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "51 Taps",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "52 Tap Chamber",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "53 Spaced Out",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "54 Dual Halls",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "55 Tried And True",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "56 More And More",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "57 Spring Studio",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "58 Hit Me",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "59 Precision Delay",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "60 Modulated Delay",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "61 Rock Lead",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "62 Pong Verb",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "63 Mod U Verb",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "64 Roto Verb",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "65 Rotary",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "66 Ham N Eggs",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "67 Vibrolux",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "68 Side By Side",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "69 Wobblers",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "70 Rhodes Panner",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "71 Brewed Awakening",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "72 Jet Flange",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "73 Phase Gate",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "74 Phased Plate",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "75 Phame",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "76 Phaser Taser",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "77 Dualing Guitars",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "78 The Low Down",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "79 And Then Some",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "80 Squished Kick",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "81 Gated Snare",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "82 Snare Delay",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "83 Drum Delay",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "84 Drum Echo",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "85 Tempo Gate",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "86 Flange Drums",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "87 Tom Tom",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "88 Snare + Toms",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "89 Drum Plate+Hall",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "90 Vibrato",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "91 Vibraslap",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "92 Spin Cycle",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "93 Role Reversal",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "94 Get Some",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "95 Rewind",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "96 Back At Ya",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "97 Delay Wars",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "98 Pitch Out",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "99 Huh?",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "1u  Big Pop Vocal",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2u  Pop Vocals",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3u  RetroVerb",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4u  Chorus + Plate",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5u  Vocal Hall+Plate",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6u  Extra Roomy",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7u  Tuned Room",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8u  EchoVerb",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9u  Quickie",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10u Acoustic Chamber",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11u Ambient Chamber",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12u Acoustic Bliss",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13u Guitar World",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14u Springtime",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15u Giant Snare",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16u SmoothDrmPlate",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "17u Rich Drum Hall",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "18u Big Time",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "19u Voice Of Evil",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "20u Wayback Machine",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "21u BigVocalVerb",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "22u TwoRooms",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "23u The Big Easy",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "24u Nashville",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "25u LA-LA Land",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "26u Smooth Vocals",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "27u CompressedVox",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "28u No S Vocals",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "29u De-Esser+Compr",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "30u Compressor",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "31u De-Esser",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "32u Studio Delay",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "33u 60s Delay",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "34u Slapback Delay",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "35u Delay + Verb",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "36u Vocal Chorus",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "37u Choral Hall",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "38u Tape Chorus",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "39u Core Us",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "40u Double Tracks",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "41u Shifted Room",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "42u Like That!",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "43u Plate + Hall",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "44u Vocal + Inst 1",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "45u Vocal + Inst 2",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "46u Vocal + Inst 3",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "47u Get Small",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "48u Alive N Kicking",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "49u Muy Grande",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "50u Bigger Band",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "51u Taps",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "52u Tap Chamber",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "53u Spaced Out",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "54u Dual Halls",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "55u Tried And True",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "56u More And More",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "57u Spring Studio",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "58u Hit Me",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "59u Precision Delay",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "60u Modulated Delay",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "61u Rock Lead",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "62u Pong Verb",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "63u Mod U Verb",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "64u Roto Verb",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "65u Rotary",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "66u Ham N Eggs",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "67u Vibrolux",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "68u Side By Side",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "69u Wobblers",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "70u Rhodes Panner",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "71u Brewed Awakening",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "72u Jet Flange",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "73u Phase Gate",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "74u Phased Plate",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "75u Phame",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "76u Phaser Taser",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "77u Dualing Guitars",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "78u The Low Down",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "79u And Then Some",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "80u Squished Kick",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "81u Gated Snare",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "82u Snare Delay",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "83u Drum Delay",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "84u Drum Echo",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "85u Tempo Gate",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "86u Flange Drums",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "87u Tom  Tom",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "88u Snare + Toms",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "89u Drum Plate+Hall",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "90u Vibrato",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "91u Vibraslap",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "92u Spin Cycle",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "93u Role Reversal",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "94u Get Some",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "95u Rewind",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "96u Back At Ya",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "97u Delay Wars",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "98u Pitch Out",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "99u Huh?",
+   "family": "custom",
+   "active_pc": 98
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Lexicon_MX200.midnam du dépôt Ardour (GPL-2), auteur : at0m. reverb/delay, l'une des plus répandues",
+  "upstream": "Ardour/share/patchfiles/Lexicon_MX200.midnam"
+ }
+}

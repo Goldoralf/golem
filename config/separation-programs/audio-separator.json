@@ -1,0 +1,52 @@
+{
+  "id": "audio-separator",
+  "name": "audio-separator",
+  "licence": "MIT (the program). The model you choose has its own licence — check it.",
+  "url": "https://github.com/nomadkaraoke/python-audio-separator",
+  "find": {
+    "names": [
+      "audio-separator"
+    ],
+    "paths": [
+      "~/opt/*/bin/audio-separator",
+      "~/.local/bin/audio-separator",
+      "~/*/bin/audio-separator",
+      "~/.venv*/bin/audio-separator",
+      "~/*/Scripts/audio-separator.exe"
+    ]
+  },
+  "args": [
+    "{input}",
+    "--model_filename",
+    "{model}",
+    "--model_file_dir",
+    "{models_dir}",
+    "--output_dir",
+    "{outdir}",
+    "--output_format",
+    "WAV"
+  ],
+  "fields": [
+    {
+      "token": "{model}",
+      "label": "Model",
+      "required": true,
+      "placeholder": "<your model file name>",
+      "help": "The file name of the model you chose and installed. golem does not choose a model for you.",
+      "browse": "file",
+      "value": "name",
+      "fills": "{models_dir}"
+    },
+    {
+      "token": "{models_dir}",
+      "label": "Models folder",
+      "required": false,
+      "drop": [
+        "--model_file_dir"
+      ],
+      "placeholder": "/path/to/your/models",
+      "help": "Where your model files are. Leave it empty to use the program's own default folder.",
+      "browse": "dir"
+    }
+  ]
+}

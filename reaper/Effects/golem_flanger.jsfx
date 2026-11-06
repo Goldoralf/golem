@@ -1,0 +1,65 @@
+desc:GoleM Flanger -- the flanger block on Windows and macOS (Calf Flanger parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « flanger » joue Calf Flanger sous Linux ; Calf n'existe ni sous Windows ni sous macOS (docs/platforms.md
+// §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs (src/metadata.cpp de Calf, lu le
+// 2026-10-22) et l'ARCHITECTURE publique de Calf simple_flanger : une ligne a retard lue a Min delay + Mod depth x
+// (1 + sin) / 2, avec le retour (Feedback) re-injecte DANS la ligne, le canal droit decale de Stereo phase. Le CODE
+// est le notre.
+//
+//  - Min delay / Mod depth (ms), Mod rate (Hz), Feedback (-0.99..0.99, SYMETRIQUE : le taper bipolaire de REAPER
+//    y est la meme droite que la lineaire), Stereo phase (degres), Amount / Dry Amount (defauts Calf 0,5 / 1,0).
+//
+// Pieges respectes : rien avant @init ; variables prefixees fl_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel ; ligne taillee pour 192 kHz.
+
+slider1:fl_mindel=0.5<0.1,10,0.01>Min delay
+slider2:fl_depth=2<0.1,10,0.01>Mod depth
+slider3:fl_rate=0.1<0.01,20,0.01>Mod rate
+slider4:fl_fb=0.8<-0.99,0.99,0.01>Feedback
+slider5:fl_stereo=90<0,360,1>Stereo phase
+slider6:fl_amount=0.5<0,4,0.01>Amount
+slider7:fl_dry=1<0,4,0.01>Dry Amount
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+fl_MAXD = 4096;
+fl_bufl = 1024; fl_bufr = 8192;
+fl_pos = 0; fl_phase = 0; fl_sr = 0;
+
+function fl_read(buf, d) local(p, i, fr) (
+  p = fl_pos - d; p < 0 ? p += fl_MAXD;
+  i = floor(p); fr = p - i;
+  buf[i] * (1 - fr) + buf[(i + 1) >= fl_MAXD ? 0 : i + 1] * fr;
+);
+function fl_setup() (
+  fl_dmin = min(fl_mindel / 1000 * srate, fl_MAXD - 64);
+  fl_dhalf = min(fl_depth / 1000 * srate / 2, (fl_MAXD - 8 - fl_dmin) / 2);
+);
+
+@slider
+fl_setup();
+fl_roff = fl_stereo / 360;
+
+@block
+fl_dph = fl_rate / srate;
+fl_sr != srate ? ( fl_sr = srate; fl_setup(); );
+
+@sample
+fl_dl = fl_read(fl_bufl, fl_dmin + fl_dhalf * (1 + sin(2 * $pi * fl_phase)) + 2);
+fl_dr = fl_read(fl_bufr, fl_dmin + fl_dhalf * (1 + sin(2 * $pi * (fl_phase + fl_roff))) + 2);
+abs(fl_dl) < 0.000000000000001 ? fl_dl = 0;
+abs(fl_dr) < 0.000000000000001 ? fl_dr = 0;
+fl_bufl[fl_pos] = spl0 + fl_fb * fl_dl;                 // Calf : delay.put(in + fb * fd)
+fl_bufr[fl_pos] = spl1 + fl_fb * fl_dr;
+spl0 = fl_dry * spl0 + fl_amount * fl_dl;
+spl1 = fl_dry * spl1 + fl_amount * fl_dr;
+fl_pos += 1; fl_pos >= fl_MAXD ? fl_pos = 0;
+fl_phase += fl_dph; fl_phase >= 1 ? fl_phase -= 1;

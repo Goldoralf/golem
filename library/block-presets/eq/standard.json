@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "eq",
+ "factory": true,
+ "params": {
+  "midgain": 0,
+  "midfreq": 800,
+  "lowcut": 80,
+  "highs": 0
+ },
+ "default": true,
+ "inst": "any"
+}

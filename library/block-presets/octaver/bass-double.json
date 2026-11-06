@@ -1,0 +1,12 @@
+{
+ "name": "Bass double",
+ "type": "octaver",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "direct": 1,
+  "octave1": 0.5,
+  "octave2": 0
+ },
+ "default": true
+}

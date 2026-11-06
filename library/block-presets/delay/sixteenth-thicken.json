@@ -1,0 +1,11 @@
+{
+ "name": "Thicken",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "time": "1/16",
+  "feedback": 10,
+  "mix": 20
+ }
+}

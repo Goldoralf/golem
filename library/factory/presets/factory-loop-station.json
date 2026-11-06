@@ -1,0 +1,572 @@
+{
+ "id": "factory-loop-station",
+ "name": "Loop Station",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-pads-1",
+   "key": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Keys-Pads",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "type": "piano",
+      "id": "piano-o15d"
+     },
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-house"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 10,
+       "release": 120
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "patch_from": {
+    "id": "factory-keys-loop-bass-beat",
+    "name": "Loop Bass & Beat"
+   },
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Bass & Beat",
+     "blocks": {},
+     "params": {
+      "pads": {
+       "kit": "pads-house"
+      },
+      "piano-o15d": {
+       "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPianoRetuned-V3+20200602.sfz"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-B",
+     "name": "Bass Only",
+     "blocks": {
+      "pads": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-C",
+     "name": "Beat Only",
+     "blocks": {
+      "vital": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-D",
+     "name": "Filtered",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.3
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar 1",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 3,
+       "release": 150
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 20,
+       "release": 160
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "tb",
+         "type": "amp",
+         "label": "VOX AC30 Top Boost",
+         "ref": "2696",
+         "model": "413061",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "fawn",
+         "type": "amp",
+         "label": "VOX AC30/4 1961 Fawn",
+         "ref": "53601",
+         "model": "383682",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "foot": 6,
+      "params": {
+       "length": 16,
+       "voices": 2,
+       "rate": 0.6,
+       "wet": -9,
+       "dry": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/8•",
+       "feedback": 35,
+       "mix": 30
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "foot": 8,
+      "params": {
+       "mix": 35,
+       "decay": 5,
+       "shimmer": 50,
+       "pitch": 5,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 16,
+       "decay": 1.4,
+       "predelay": 15,
+       "hicut": 7000
+      }
+     },
+     {
+      "type": "volume",
+      "id": "volume-sys"
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-guitar-indie-chime",
+    "name": "Indie Chime"
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Arpeggio",
+     "blocks": {
+      "chorus": true,
+      "dly": false,
+      "shim": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Dotted Echo",
+     "blocks": {
+      "chorus": false,
+      "dly": true,
+      "shim": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Crunch Chorus",
+     "blocks": {
+      "chorus": true,
+      "dly": false,
+      "shim": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Big Chorus",
+     "blocks": {
+      "chorus": true,
+      "dly": true,
+      "shim": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Swell",
+     "blocks": {
+      "chorus": false,
+      "dly": true,
+      "shim": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice 1",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "attack": 2,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 10,
+       "release": 150
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 100,
+       "bass": 0,
+       "f1": 250,
+       "g1": -2,
+       "f2": 1000,
+       "g2": 0,
+       "f3": 3500,
+       "g3": 2,
+       "treble": 1
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 8
+      }
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "foot": 6,
+      "params": {
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 14
+      }
+     },
+     {
+      "id": "verb-2",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 18,
+       "decay": 1.6,
+       "predelay": 30,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-voice-clean",
+    "name": "Clean Vocal"
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Verse",
+     "blocks": {
+      "dly-2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Chorus",
+     "blocks": {
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "dly-2": true
+     },
+     "params": {
+      "verb-2": {
+       "mix": 28,
+       "decay": 2.6
+      },
+      "dly-2": {
+       "time": "1/4•",
+       "feedback": 35
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Dry",
+     "blocks": {
+      "dly-2": false
+     },
+     "params": {
+      "verb-2": {
+       "mix": 6
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Loop",
+   "blocks": {
+    "chorus": true,
+    "dly": false,
+    "shim": false,
+    "dly-2": false
+   },
+   "params": {
+    "verb-2": {
+     "mix": 6
+    },
+    "pads": {
+     "kit": "pads-house"
+    },
+    "piano-o15d": {
+     "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPianoRetuned-V3+20200602.sfz"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    },
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "voice-1": {
+     "state": "st-voice-1-D"
+    }
+   }
+  }
+ ],
+ "bpm": 127,
+ "style": null,
+ "factory": true,
+ "config": {
+  "gen": {
+   "blocks": [
+    {
+     "type": "looper",
+     "id": "looper",
+     "params": {
+      "loops": [
+       {
+        "sw": 1,
+        "src": "keys-pads-1",
+        "label": "Pads"
+       },
+       {
+        "sw": 2,
+        "src": "guitar-1",
+        "label": "Guitar",
+        "level": -20.5
+       },
+       {
+        "sw": 3,
+        "src": "voice-1",
+        "label": "Voice"
+       },
+       {
+        "sw": 4,
+        "src": "voice-1",
+        "label": "Voice 2"
+       }
+      ],
+      "length": "free"
+     }
+    }
+   ],
+   "out": "1-2"
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ],
+   "click_out": "1-2"
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "styles": [],
+ "colors": {
+  "A": "#7c4dff",
+  "6": "#7c4dff",
+  "7": "#7c4dff",
+  "8": "#7c4dff",
+  "9": "#7c4dff"
+ },
+ "anims": {
+  "A": "smoke",
+  "6": "fire",
+  "7": "strobe",
+  "8": "stars",
+  "9": "heartbeat"
+ }
+}

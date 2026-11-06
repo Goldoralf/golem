@@ -1,0 +1,15 @@
+{
+ "name": "Standard",
+ "type": "delay-tape",
+ "factory": true,
+ "params": {
+  "time": "16th",
+  "time_r": "8th",
+  "tempo": 120,
+  "feedback": 40,
+  "mix": 30,
+  "medium": "Tape"
+ },
+ "default": true,
+ "inst": "any"
+}

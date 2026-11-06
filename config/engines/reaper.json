@@ -1,0 +1,22 @@
+{
+  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5). Le code ne connaît pas Reaper : il lit ce fichier.",
+  "id": "reaper",
+  "name": "REAPER",
+  "by": "Cockos",
+  "license": "commercial",
+  "buy_url": "https://www.reaper.fm/purchase.php",
+  "order": 1,
+  "default": true,
+  "selectable": true,
+  "platforms": {
+    "linux": {"available": true},
+    "win32": {"available": true},
+    "darwin": {"available": true}
+  },
+  "summary": "Every golem feature. golem drives it as its audio engine.",
+  "capabilities": {
+    "lanes": "yes", "nam_ir": "yes", "recording": "yes", "backing": "yes", "click": "yes", "midi_clock": "yes",
+    "looper": "yes", "drum_machine": "yes", "samples": "yes", "standards": "yes", "riff": "yes",
+    "kill_switch": "yes", "previews": "yes", "reamp": "yes"
+  }
+}

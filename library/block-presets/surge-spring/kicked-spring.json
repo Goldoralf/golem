@@ -1,0 +1,16 @@
+{
+ "name": "Kicked spring",
+ "type": "surge-spring",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "size": 0.6,
+  "decay": 0.65,
+  "refl": 0.7,
+  "damp": 0.4,
+  "spin": 0.5,
+  "chaos": 0.6,
+  "knock": 0.8,
+  "mix": 0.45
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "name": "Bass Chop",
+ "type": "killswitch",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 60,
+  "sync": "1/8",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 2
+ }
+}

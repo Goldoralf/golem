@@ -1,0 +1,28 @@
+{
+  "_comment": [
+    "TABLE D'OR de la durée de mesure. UNE seule source, trois implémentations la vérifient :",
+    "  · bridge/arrangement.py  (le moteur qui planifie les cues)",
+    "  · app/designer-arrangement.js (les largeurs de la timeline et les durées affichées)",
+    "  · reaper/Effects/golem_click.jsfx (le métronome que les musiciens entendent)",
+    "Elles ne peuvent PAS partager de code — EEL2, JS et Python, dont l'une tourne dans le thread",
+    "audio. Elles peuvent partager une TABLE. Le jour où l'une dérive, tools/check-meter.py le dit",
+    "avant le concert plutôt qu'après.",
+    "",
+    "La convention : LE BPM DÉSIGNE LA NOIRE (Reaper).",
+    "  duree_pulsation = (4/den) * 60/bpm      duree_mesure = num * duree_pulsation"
+  ],
+  "cases": [
+    { "name": "4/4 @120 — le cas de référence",      "num": 4, "den": 4,  "bpm": 120, "bars": 1, "seconds": 2.0 },
+    { "name": "4/4 @120 sur 8 mesures",              "num": 4, "den": 4,  "bpm": 120, "bars": 8, "seconds": 16.0 },
+    { "name": "7/8 @120 — le pont qui a tout motivé","num": 7, "den": 8,  "bpm": 120, "bars": 1, "seconds": 1.75 },
+    { "name": "7/8 @120 sur 8 mesures",              "num": 7, "den": 8,  "bpm": 120, "bars": 8, "seconds": 14.0 },
+    { "name": "9/4 @120",                            "num": 9, "den": 4,  "bpm": 120, "bars": 1, "seconds": 4.5 },
+    { "name": "5/4 @100",                            "num": 5, "den": 4,  "bpm": 100, "bars": 1, "seconds": 3.0 },
+    { "name": "6/8 @90",                             "num": 6, "den": 8,  "bpm": 90,  "bars": 1, "seconds": 2.0 },
+    { "name": "3/4 @180 — valse rapide",             "num": 3, "den": 4,  "bpm": 180, "bars": 1, "seconds": 1.0 },
+    { "name": "13/16 @140 — impair et serré",        "num": 13, "den": 16,"bpm": 140, "bars": 1, "seconds": 1.3928571428571428 },
+    { "name": "2/2 @60 — la blanche vaut le temps",  "num": 2, "den": 2,  "bpm": 60,  "bars": 1, "seconds": 4.0 },
+    { "name": "1/1 @120 — une ronde par mesure",     "num": 1, "den": 1,  "bpm": 120, "bars": 1, "seconds": 2.0 },
+    { "name": "32/16 @240 — les bornes du contrat",  "num": 32, "den": 16,"bpm": 240, "bars": 1, "seconds": 2.0 }
+  ]
+}

@@ -1,0 +1,87 @@
+desc:GoleM B3 control (b3-ctl) -- setBfree CC injector
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM organ block, control layer (docs/archive/keys-rig-plan.md P1, docs/blocks-doctrine.md).
+//! Sits DEVANT le LV2 b_synth (setBfree) sur la piste Keys. b_synth n'a AUCUN port de
+//! controle : tout passe en MIDI CC (map par defaut src/midi.c upstream). Ce JSFX :
+//!   - passe TOUT le MIDI entrant vers l'aval (notes/pedales/mod -> b_synth) ;
+//!   - traduit ses sliders (= vrais params Reaper -> pipeline scene-first) en CC setBfree ;
+//!   - pousse TOUS les CC a l'init et au 1er process (un recall de scene = registration complete).
+//! Les CC sont emis sur le canal MIDI 1 (0xB0) = manuel SUPERIEUR (celui qu'on joue).
+//!
+//! SENS VERIFIE (upstream src/tonegen.c setMIDIDrawBar) : tirettes INVERSEES ->
+//!   position 8 (tirette tiree, fort) = CC 0 ; position 0 (rentree, muet) = CC 127.
+//!   d'ou cc = 127 - round(pos*127/8).
+//! Leslie CC1 (b_whirl revControl, u/43) : 0-42 SLOW, 43-85 STOP, 86-127 FAST.
+//! Vibrato CC92 (u/23) 6 crans V1/C1/V2/C2/V3/C3 ; le "off" passe par CC95 routing (0=off).
+//! Perc CC80/decay CC82/harm CC83 : seuil 64 (>=64 = on / fast / 3rd). Drive CC65 seuil 64.
+//! Drive character CC93 : 0..100% -> 0..127.
+
+slider1:db16=8<0,8,1>1: Drawbar 16
+slider2:db513=8<0,8,1>2: Drawbar 5 1/3
+slider3:db8=8<0,8,1>3: Drawbar 8
+slider4:db4=0<0,8,1>4: Drawbar 4
+slider5:db223=0<0,8,1>5: Drawbar 2 2/3
+slider6:db2=0<0,8,1>6: Drawbar 2
+slider7:db135=0<0,8,1>7: Drawbar 1 3/5
+slider8:db113=0<0,8,1>8: Drawbar 1 1/3
+slider9:db1=0<0,8,1>9: Drawbar 1
+slider10:leslie=1<0,2,1{stop,slow,fast}>10: Leslie
+slider11:vibrato=0<0,6,1{off,V1,C1,V2,C2,V3,C3}>11: Vibrato
+slider12:perc=0<0,1,1{off,on}>12: Percussion
+slider13:perc_harm=1<0,1,1{2nd,3rd}>13: Perc Harmonic
+slider14:perc_decay=1<0,1,1{slow,fast}>14: Perc Decay
+slider15:drive=0<0,1,1{off,on}>15: Drive
+slider16:character=30<0,100,1>16: Drive Character
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+CH = 0xB0;                 // Control Change, canal MIDI 1 (manuel superieur)
+LASTCC = 0;                // memory[0..127] : derniere valeur envoyee par CC (-1 = jamais)
+i = 0; loop(128, LASTCC[i] = -1; i += 1;);
+need_all = 1;              // registration COMPLETE au 1er @block (et apres chaque (re)init)
+dirty = 1;
+
+function emit(cc, val) (
+  val = max(0, min(127, val|0));
+  (need_all || LASTCC[cc] != val) ? (
+    midisend(0, CH, cc, val);
+    LASTCC[cc] = val;
+  );
+);
+
+@slider
+dirty = 1;                 // recalcul demande (midisend interdit ici -> fait en @block)
+
+@block
+// 1) passthrough MIDI integral -> b_synth en aval
+while (midirecv(mp, s1, s2, s3)) ( midisend(mp, s1, s2, s3); );
+
+// 2) emission des CC mappes (sur changement, ou push complet a l'init / apres recall)
+(dirty || need_all) ? (
+  // tirettes : INVERSEES (cf. entete) -> cc = 127 - round(pos*127/8)
+  emit(70, 127 - floor(db16 *127/8 + 0.5));
+  emit(71, 127 - floor(db513*127/8 + 0.5));
+  emit(72, 127 - floor(db8  *127/8 + 0.5));
+  emit(73, 127 - floor(db4  *127/8 + 0.5));
+  emit(74, 127 - floor(db223*127/8 + 0.5));
+  emit(75, 127 - floor(db2  *127/8 + 0.5));
+  emit(76, 127 - floor(db135*127/8 + 0.5));
+  emit(77, 127 - floor(db113*127/8 + 0.5));
+  emit(78, 127 - floor(db1  *127/8 + 0.5));
+  // Leslie CC1 : slider 0=stop -> 64 (zone 43-85), 1=slow -> 21 (0-42), 2=fast -> 110 (86-127)
+  emit(1, leslie < 0.5 ? 64 : leslie < 1.5 ? 21 : 110);
+  // Vibrato : off => routing CC95=0 ; sinon routing upper (CC95=80) + cran CC92 (zone u/23)
+  vibrato < 0.5 ? ( emit(95, 0); ) : ( emit(95, 80); emit(92, (vibrato-1)*23 + 11); );
+  emit(80, perc       < 0.5 ? 0 : 127);   // percussion enable (>=64 = on)
+  emit(83, perc_harm  < 0.5 ? 0 : 127);   // harmonic : >=64 = 3rd
+  emit(82, perc_decay < 0.5 ? 0 : 127);   // decay : >=64 = fast
+  emit(65, drive      < 0.5 ? 0 : 127);   // overdrive enable
+  emit(93, floor(character*127/100 + 0.5));
+  dirty = 0; need_all = 0;
+);

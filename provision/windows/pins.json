@@ -1,0 +1,55 @@
+{
+ "_comment": "Ce que l'installeur Windows télécharge, à versions ÉPINGLÉES (docs/installer.md §8). Lu par installer/platform_windows.py et provision/windows/install-system.ps1 ; provision/bootstrap.ps1 en porte une COPIE pour Python (il tourne avant que Python existe) — tests/test_installer_windows.py vérifie que les deux disent la même chose. Bumper une version = recalculer son sha256 (sha256sum du fichier officiel) dans le même commit.",
+ "python": {
+  "version": "3.12.10",
+  "url": "https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe",
+  "sha256": "67b5635e80ea51072b87941312d00ec8927c4db9ba18938f7ad2d27b328b95fb"
+ },
+ "reaper": {
+  "version": "7.79",
+  "url": "https://www.reaper.fm/files/7.x/reaper779_x64-install.exe",
+  "sha256": "f07714d894a073df40e88568f8aa524a74230f574b0688df681f9b7c0877f9df",
+  "signer": "Cockos Incorporated"
+ },
+ "nam_golem": {
+  "_comment": "NeuralAmpModeler 0.7.15 bâti par golem depuis le tag amont (MIT, source inchangée) : les versions officielles 0.7.14/0.7.15 ne publient aucun binaire, et 0.7.13 ne lit pas les captures A2. Posé PAR-DESSUS le 0.7.13 officiel (dont l'installeur reste le propriétaire, désinstallation comprise). Run : https://github.com/Goldoralf/NeuralAmpModelerPlugin/actions/runs/39812387332. Mesuré le 2026-10-22 : A2.nam transforme le son (0.7.13 le laissait passer à sec), A1 identique.",
+  "version": "0.7.15",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/nam-0.7.15-golem/NeuralAmpModeler-v0.7.15-win.zip",
+  "sha256": "ee0f22b7a4a93df770d2cd1c48216bc2fc58a9d64dc4736655114492afbb426d",
+  "replaces_sha256": "8fc0ae87a7637e768af1da16c861ce73a2e5c8780591c7fd3e5c1cd02f01f7f8"
+ },
+ "nam_vst3": {
+  "version": "0.7.13",
+  "url": "https://github.com/sdatkinson/NeuralAmpModelerPlugin/releases/download/v0.7.13/NeuralAmpModeler-v0.7.13-win.zip",
+  "sha256": "8da37afde1f0797c773d6b8709da89bdda40c0e45f67cf3e4d87291e9b5e9da5"
+ },
+ "avldrums": {
+  "_comment": "Le moteur du bloc drumkit (x42 AVL Drumkits, GPL, LV2). Installeur NSIS NON signé : l'empreinte est le seul contrôle.",
+  "version": "0.7.6",
+  "url": "https://x42-plugins.com/x42/win/x42-avldrums-v0.7.6-w64-Setup.exe",
+  "sha256": "157352df8a9026a085988dad3ec45aed824d7d161e4a5384c44de63d23a245ec"
+ },
+ "sfizz": {
+  "_comment": "sfizz (SFZTools, BSD-2, LV2 + VST3) : le moteur des kits SFZ — le seul format de batterie importable sur les trois OS (docs/drums-kit.md §6). Installeur Inno Setup NON signé : l'empreinte est le seul contrôle. Mesuré le 2026-10-11 : pose sfizz.lv2 dans Common Files\\LV2 (à côté d'avldrums.lv2) et sfizz.vst3.",
+  "version": "1.2.3",
+  "url": "https://github.com/sfztools/sfizz-ui/releases/download/1.2.3/sfizz-1.2.3-win64.exe",
+  "sha256": "56f57dfe443018e947b82b8e2bf4c9d824a9c961ff2b8eb6c5e929030b71b937"
+ },
+ "pawpaw": {
+  "_comment": "Vitalium (version libre de Vital, GPL, LV2) pour le bloc vital — la seule distribution Windows publiée par DISTRHO. Installeur Inno Setup NON signé : l'empreinte est le seul contrôle.",
+  "version": "1.1",
+  "url": "https://github.com/DISTRHO/PawPaw/releases/download/v1.1/PawPaw-win64-v1.1.0.exe",
+  "sha256": "ad1ec07d6265441904db831f8260f80a4a0c10c5d87fca50684757e3e2155c9a"
+ },
+ "proteus": {
+  "_comment": "GuitarML Proteus (GPL-3, VST3) : le bloc boost — effects-windows.json le nommait sans que rien l'installe (2026-10-22). Installeur Inno Setup NON signé : l'empreinte est le seul contrôle. Pose Proteus.vst3 dans Common Files/VST3.",
+  "version": "1.2.0",
+  "url": "https://github.com/GuitarML/Proteus/releases/download/v1.2/Proteus-Win-1.2.0.exe",
+  "sha256": "f63f39d4f38113c6efb93e4440fb3de84c1397c1cc52294c4922a14f393309c6"
+ },
+ "vcredist": {
+  "_comment": "Microsoft ne publie pas d'adresse figée : on télécharge la dernière et on vérifie sa SIGNATURE (Authenticode, éditeur Microsoft Corporation) au lieu d'une empreinte.",
+  "url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+  "signer": "Microsoft Corporation"
+ }
+}

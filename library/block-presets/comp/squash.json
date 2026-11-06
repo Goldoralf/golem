@@ -1,0 +1,13 @@
+{
+ "name": "Squash",
+ "type": "comp",
+ "factory": true,
+ "params": {
+  "thresh": -28,
+  "ratio": 8,
+  "makeup": 6,
+  "attack": 3,
+  "release": 80
+ },
+ "inst": "guitar"
+}

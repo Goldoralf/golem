@@ -1,0 +1,383 @@
+{
+ "id": "factory-keys-rock-organ",
+ "name": "Rock Organ",
+ "role": "keys",
+ "tags": [
+  "rock",
+  "blues",
+  "gospel",
+  "organ"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Rock Organ",
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Gospel",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 8,
+       "leslie": "slow"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Rock Drive",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "leslie": "fast"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 0,
+       "db8": 6,
+       "db4": 0,
+       "leslie": "slow"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Perc Lead",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "perc": true,
+       "leslie": "stop"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-E",
+     "name": "Full Stops",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 8,
+       "db223": 8,
+       "db2": 8,
+       "db135": 8,
+       "db113": 8,
+       "db1": 8,
+       "leslie": "fast"
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "organ",
+      "type": "organ",
+      "params": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "db223": 0,
+       "db2": 0,
+       "db135": 0,
+       "db113": 0,
+       "db1": 0,
+       "leslie": "slow",
+       "vibrato": "off",
+       "perc": false
+      }
+     },
+     {
+      "id": "drive",
+      "type": "boost",
+      "foot": 6,
+      "params": {
+       "drive": 40,
+       "level": 50,
+       "treble": 0,
+       "bass": 1,
+       "mid": 2
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 6500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Gospel",
+   "blocks": {
+    "drive": false
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 8,
+     "leslie": "slow"
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Rock Drive",
+   "blocks": {
+    "drive": true
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 0,
+     "leslie": "fast"
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 2,
+     "state": "st-keys-1-B"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "C",
+   "name": "Ballad",
+   "blocks": {
+    "drive": false
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 0,
+     "db8": 6,
+     "db4": 0,
+     "leslie": "slow"
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": -2,
+     "state": "st-keys-1-C"
+    }
+   },
+   "level": -2
+  },
+  {
+   "id": "D",
+   "name": "Perc Lead",
+   "blocks": {
+    "drive": true
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 0,
+     "perc": true,
+     "leslie": "stop"
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 2,
+     "state": "st-keys-1-D"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "E",
+   "name": "Full Stops",
+   "blocks": {
+    "drive": true
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 8,
+     "db223": 8,
+     "db2": 8,
+     "db135": 8,
+     "db113": 8,
+     "db1": 8,
+     "leslie": "fast"
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 1,
+     "state": "st-keys-1-E"
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": false,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "organ",
+    "type": "organ",
+    "params": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 0,
+     "db223": 0,
+     "db2": 0,
+     "db135": 0,
+     "db113": 0,
+     "db1": 0,
+     "leslie": "slow",
+     "vibrato": "off",
+     "perc": false
+    }
+   },
+   {
+    "id": "drive",
+    "type": "boost",
+    "foot": 6,
+    "params": {
+     "drive": 40,
+     "level": 50,
+     "treble": 0,
+     "bass": 1,
+     "mid": 2
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "params": {
+     "mix": 14,
+     "decay": 0.9,
+     "size": 14,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [],
+ "deps_sig": "{\"anims\": {\"10\": \"strobe\", \"6\": \"rain\", \"A\": \"scanner\", \"B\": \"vortex\", \"C\": \"glitch\", \"D\": \"heartbeat\", \"E\": \"fire\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"organ\", \"params\": {\"db1\": 0, \"db113\": 0, \"db135\": 0, \"db16\": 8, \"db2\": 0, \"db223\": 0, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"slow\", \"perc\": false, \"vibrato\": \"off\"}, \"type\": \"organ\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"bass\": 1, \"drive\": 40, \"level\": 50, \"mid\": 2, \"treble\": 0}, \"type\": \"boost\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.9, \"hicut\": 6500, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#e76f51\", \"A\": \"#e76f51\", \"B\": \"#e76f51\", \"C\": \"#e76f51\", \"D\": \"#e76f51\", \"E\": \"#e76f51\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": false, \"kit\": \"black-pearl\", \"motion\": \"comp\", \"standard\": \"rented-room-blues\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"organ\", \"params\": {\"db1\": 0, \"db113\": 0, \"db135\": 0, \"db16\": 8, \"db2\": 0, \"db223\": 0, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"slow\", \"perc\": false, \"vibrato\": \"off\"}, \"type\": \"organ\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"bass\": 1, \"drive\": 40, \"level\": 50, \"mid\": 2, \"treble\": 0}, \"type\": \"boost\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.9, \"hicut\": 6500, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Rock Organ\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"drive\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Gospel\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 8, \"db513\": 8, \"db8\": 8, \"leslie\": \"slow\"}}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Rock Drive\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"fast\"}}}, {\"blocks\": {\"drive\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Ballad\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 0, \"db8\": 6, \"leslie\": \"slow\"}}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Perc Lead\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"stop\", \"perc\": true}}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-keys-1-E\", \"name\": \"Full Stops\", \"params\": {\"organ\": {\"db1\": 8, \"db113\": 8, \"db135\": 8, \"db16\": 8, \"db2\": 8, \"db223\": 8, \"db4\": 8, \"db513\": 8, \"db8\": 8, \"leslie\": \"fast\"}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"drive\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Gospel\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 8, \"db513\": 8, \"db8\": 8, \"leslie\": \"slow\"}}}, {\"blocks\": {\"drive\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-B\"}}, \"level\": 2, \"name\": \"Rock Drive\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"fast\"}}}, {\"blocks\": {\"drive\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -2, \"state\": \"st-keys-1-C\"}}, \"level\": -2, \"name\": \"Ballad\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 0, \"db8\": 6, \"leslie\": \"slow\"}}}, {\"blocks\": {\"drive\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-D\"}}, \"level\": 2, \"name\": \"Perc Lead\", \"params\": {\"organ\": {\"db16\": 8, \"db4\": 0, \"db513\": 8, \"db8\": 8, \"leslie\": \"stop\", \"perc\": true}}}, {\"blocks\": {\"drive\": true}, \"id\": \"E\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-E\"}}, \"level\": 1, \"name\": \"Full Stops\", \"params\": {\"organ\": {\"db1\": 8, \"db113\": 8, \"db135\": 8, \"db16\": 8, \"db2\": 8, \"db223\": 8, \"db4\": 8, \"db513\": 8, \"db8\": 8, \"leslie\": \"fast\"}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#e76f51",
+  "B": "#e76f51",
+  "C": "#e76f51",
+  "D": "#e76f51",
+  "E": "#e76f51",
+  "9": "#e76f51",
+  "10": "#e76f51"
+ },
+ "anims": {
+  "A": "scanner",
+  "B": "vortex",
+  "C": "glitch",
+  "D": "heartbeat",
+  "E": "fire",
+  "9": "aurora",
+  "10": "strobe"
+ }
+}

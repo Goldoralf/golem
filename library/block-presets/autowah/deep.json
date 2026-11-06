@@ -1,0 +1,9 @@
+{
+ "name": "Deep",
+ "type": "autowah",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "wah": 0.7
+ }
+}

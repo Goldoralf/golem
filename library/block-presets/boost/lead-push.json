@@ -1,0 +1,13 @@
+{
+ "name": "Lead push",
+ "type": "boost",
+ "factory": true,
+ "params": {
+  "drive": 45,
+  "level": 65,
+  "treble": 1,
+  "bass": -1,
+  "mid": 2
+ },
+ "inst": "guitar"
+}

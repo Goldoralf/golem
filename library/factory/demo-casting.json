@@ -1,0 +1,18 @@
+{
+ "_comment": "LA DISTRIBUTION DES DÉMOS D'USINE (docs/preset-preview.md §1, 2026-11-03) : pour chaque patch d'usine, la phrase de référence que joue CHAQUE scène — un son clair joue la DI clean, un riff joue la DI de son gain (crunch, high-gain = la 7 cordes, djent = la 8 cordes), seule une vraie scène de solo prend une DI lead (lead-clean derrière un ampli clair, lead derrière un ampli saturé). Écoutée et décidée par le mainteneur, scène par scène ; une référence pas encore enregistrée retombe sur le choix automatique. Les patchs qui ne sont pas ici suivent la règle automatique (preview._scene_refs).",
+ "patches": {
+  "factory-guitar-jazz-clean": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/clean", "D": "guitar/lead-clean", "E": "guitar/clean"},
+  "factory-guitar-singing-clean": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/lead-clean", "D": "guitar/clean", "E": "guitar/clean"},
+  "factory-guitar-funk-clean": {"A": "guitar/funk", "B": "guitar/funk", "C": "guitar/funk", "D": "guitar/lead-clean", "E": "guitar/clean"},
+  "factory-guitar-texas-blues": {"A": "guitar/crunch", "B": "guitar/lead", "C": "guitar/clean", "D": "guitar/clean", "E": "guitar/crunch"},
+  "factory-guitar-indie-chime": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/crunch", "D": "guitar/crunch", "E": "guitar/clean"},
+  "factory-guitar-british-crunch": {"A": "guitar/crunch", "B": "guitar/lead", "C": "guitar/crunch", "D": "guitar/clean"},
+  "factory-guitar-fuzz-wall": {"A": "guitar/clean", "B": "guitar/crunch", "C": "guitar/lead", "D": "guitar/crunch", "E": "guitar/crunch"},
+  "factory-guitar-brown-lead": {"A": "guitar/crunch", "B": "guitar/lead", "C": "guitar/lead", "D": "guitar/crunch", "E": "guitar/clean"},
+  "factory-guitar-modern-metal": {"A": "guitar/clean", "B": "guitar/high-gain", "C": "guitar/lead", "D": "guitar/high-gain", "E": "guitar/high-gain"},
+  "factory-guitar-gypsy-lead": {"A": "guitar/lead-clean", "B": "guitar/lead-clean", "C": "guitar/clean", "D": "guitar/clean", "E": "guitar/lead-clean"},
+  "factory-guitar-hero-lead": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/lead", "D": "guitar/lead"},
+  "factory-guitar-ambient-djent": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/djent", "D": "guitar/djent", "E": "guitar/lead"},
+  "factory-guitar-soaring-lead": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/high-gain", "D": "guitar/lead", "E": "guitar/lead"}
+ }
+}

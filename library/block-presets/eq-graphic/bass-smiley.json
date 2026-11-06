@@ -1,0 +1,19 @@
+{
+ "name": "Bass smiley",
+ "type": "eq-graphic",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "g1": 2,
+  "g2": 4,
+  "g3": 2,
+  "g4": 0,
+  "g5": -2,
+  "g6": -1,
+  "g7": 2,
+  "g8": 2,
+  "g9": 0,
+  "g10": -2,
+  "g11": -4
+ }
+}

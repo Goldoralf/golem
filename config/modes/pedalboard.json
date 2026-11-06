@@ -1,0 +1,36 @@
+{
+  "id": "pedalboard",
+  "name": "Pedalboard",
+  "icon": "🎸",
+  "order": 1,
+  "desc": "One-instrument rig — the mode where nothing can go wrong",
+  "services": {
+    "voice": false,
+    "keys": false,
+    "pads": false,
+    "looper": false,
+    "backing": false,
+    "perfrec": false,
+    "sample": false,
+    "arrangement": false,
+    "standard": false,
+    "drummachine": false,
+    "compo": false,
+    "drums": false
+  },
+  "ui": {
+    "pages": [
+      "live",
+      "designer",
+      "songs",
+      "library",
+      "system"
+    ],
+    "boot": "live",
+    "locked": false
+  },
+  "click_mode": "off",
+  "take_kind": "rehearsal",
+  "foot_list": "@instrument",
+  "perf_boost": false
+}

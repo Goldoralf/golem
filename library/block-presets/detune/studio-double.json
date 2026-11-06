@@ -1,0 +1,12 @@
+{
+ "name": "Studio double",
+ "type": "detune",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "detune": 0.25,
+  "wet": 0.5,
+  "dry": 0.7
+ },
+ "default": true
+}

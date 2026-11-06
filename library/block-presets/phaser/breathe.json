@@ -1,0 +1,12 @@
+{
+ "name": "Breathe",
+ "type": "phaser",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "rate": 0.1,
+  "depth": 6500,
+  "stages": "6",
+  "feedback": 0.3
+ }
+}

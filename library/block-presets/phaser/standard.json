@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "phaser",
+ "factory": true,
+ "params": {
+  "rate": 0.4,
+  "depth": 4000,
+  "stages": "6",
+  "feedback": 0.3
+ },
+ "default": true,
+ "inst": "any"
+}

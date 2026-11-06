@@ -1,0 +1,236 @@
+{
+ "golem-funk-16": {
+  "name": "Funk 16",
+  "genre": "funk",
+  "tempo": 100,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-8": {
+  "name": "Rock 8",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-shuffle": {
+  "name": "Shuffle",
+  "genre": "texas-blues",
+  "tempo": 92,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-half-time": {
+  "name": "Half-time",
+  "genre": "hard-rock",
+  "tempo": 140,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-four-on-the-floor": {
+  "name": "Four on the floor",
+  "genre": "disco",
+  "tempo": 118,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-boom-bap": {
+  "name": "Boom bap",
+  "genre": "boom-bap",
+  "tempo": 90,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-one-drop": {
+  "name": "One drop",
+  "genre": "roots-reggae",
+  "tempo": 76,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-bossa": {
+  "name": "Bossa",
+  "genre": "bossa-nova",
+  "tempo": 130,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-swing": {
+  "name": "Swing",
+  "genre": "swing",
+  "tempo": 140,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-six-eight": {
+  "name": "6/8 ballad",
+  "genre": "ballad",
+  "tempo": 60,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-house": {
+  "name": "House",
+  "genre": "house",
+  "tempo": 124,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "pads-house",
+  "factory": true
+ },
+ "golem-lofi": {
+  "name": "Lo-fi",
+  "genre": "lo-fi-hip-hop",
+  "tempo": 80,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "pads-lofi",
+  "factory": true
+ },
+ "golem-trap": {
+  "name": "Trap",
+  "genre": "trap",
+  "tempo": 140,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "pads-trap",
+  "factory": true
+ },
+ "golem-rock-intro": {
+  "name": "Rock intro",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-verse": {
+  "name": "Rock verse",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-chorus": {
+  "name": "Rock chorus",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-solo": {
+  "name": "Rock solo",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-fill": {
+  "name": "Rock fill",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-rock-end": {
+  "name": "Rock ending",
+  "genre": "classic-rock",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-intro": {
+  "name": "Metal intro",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-verse": {
+  "name": "Metal verse",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-chorus": {
+  "name": "Metal chorus",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-breakdown": {
+  "name": "Metal breakdown",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-solo": {
+  "name": "Metal solo",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-fill": {
+  "name": "Metal fill",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ },
+ "golem-metal-end": {
+  "name": "Metal ending",
+  "genre": "progressive-metal",
+  "tempo": 120,
+  "bars": 2,
+  "pack": "golem",
+  "kit": "drums-black-pearl",
+  "factory": true
+ }
+}

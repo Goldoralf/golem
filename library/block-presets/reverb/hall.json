@@ -1,0 +1,12 @@
+{
+ "name": "Hall",
+ "type": "reverb",
+ "factory": true,
+ "params": {
+  "mix": 35,
+  "decay": 2.6,
+  "size": 40,
+  "hicut": 5000
+ },
+ "inst": "any"
+}

@@ -1,0 +1,244 @@
+{
+ "id": "fcb1010-uno2",
+ "name": "FCB1010 — UnO2 chip",
+ "kind": "pedalboard",
+ "schema": 2,
+
+ "identity": {
+  "brand": "Behringer",
+  "model": "FCB1010",
+  "firmware": "UnO2",
+  "connection": "din",
+  "probe": {
+   "request": [240, 126, 126, 48, 247],
+   "reply_len": 9,
+   "reply_prefix": [240, 126, 126, 56],
+   "device_byte": 4,
+   "device_id": 8,
+   "version_byte": 5,
+   "serial_bytes": [6, 7],
+   "note": "Demande d'identité SysEx universelle. La UnO2 RÉPOND — mesuré le 2026-08-06 : type 8, firmware 2.0, série 2-211. C'est le seul pédalier du parc qui s'identifie, et c'est ce qui rend la détection possible."
+  }
+ },
+
+ "channel": 2,
+ "channel_comment": "⚠ PAS le canal 1, et c'est délibéré. La puce renvoie tout son MIDI IN vers son OUT (« MIDI THRU behavior », non désactivable, contrairement au MIDI MERGE de la 1.0.4). Le câble Volt OUT -> FCB IN étant nécessaire au flash, chaque ordre Whammy nous revenait déguisé en appui de pied. Parade : le Whammy garde le canal 1, le pédalier parle sur le 2, le lecteur n'écoute que le canal du contrat.",
+
+ "quirks": {
+  "note_edges": "clean",
+  "note_base": 0,
+  "thru_echo": true,
+  "display_base": 1
+ },
+ "quirks_comment": "note_edges=clean : la puce émet un vrai NoteOn à l'appui et un NoteOff au relâchement — SURTOUT ne pas lui appliquer l'appariement de la 1.0.4, qui inverserait les gestes. note_base=0 : la Note du switch 1 vaut 0 sur le fil. display_base=1 : l'écran affiche 01-19 là où le slot vaut 0-18, l'écart est réel et non tranché.",
+
+ "transport": {"kind": "din-soundcard"},
+ "transport_comment": "Par où le pédalier ARRIVE : le DIN de la carte son active (comportement historique). Un pédalier USB déclarerait {\"kind\": \"usb\", \"port_match\": \"<nom ALSA>\"} et serait écouté sur SON port — docs/pedalboards.md §10.",
+
+ "capabilities": {
+  "identifies": true,
+  "gestures": true,
+  "goto_bank": {"supported": true, "channel": 16, "controller": 0, "index_base": 1},
+  "remote_press": {"supported": true, "channel": 16, "pc_base": 0},
+  "load": "wire"
+ },
+ "capabilities_comment": "gestures=true : la puce sait donner les fronts francs — mais PAR SWITCH et de façon EXCLUSIVE (voir la recette). load=wire : tout se programme par le câble, aucun réglage au pied. goto_bank : CC 0 sur le canal de télécommande déplace la bank. ⚠ index_base=1 MESURÉ AU PIED le 2026-08-06 : la puce numérote ses banks DEPUIS 1, comme son afficheur — envoyer la valeur 3 l'amène sur sa bank 3, qui affiche 03 et qui est le SLOT 2, d'où un PC 2 en retour. Le rack compte ses slots depuis 0 ; il faut donc envoyer slot+1. Non deviné, non déduit du manuel : mesuré (valeur 3 envoyée -> afficheur 03 -> PC 2). remote_press : ProgramChange (switch-1) sur le canal de télécommande = un appui sur ce switch (manuel UnO2 §4.3, firmware >= 1.3) — MESURÉ AU PIED le 2026-10-08 : PC 7 canal 16 -> SW8 bascule et renvoie CC32 + Note 7, exactement comme le pied. Sert à aligner les diodes des stomps sur la scène (bridge/foot_leds.py).",
+
+ "load": {
+  "recipe": "uno2",
+  "label": "Compile & flash",
+  "hint": "Compiles the contract into the chip's memory image and sends it over MIDI. Nothing to set on the pedal itself."
+ },
+
+ "install": {
+  "needs": [
+   "Volt 276 MIDI OUT → FCB1010 MIDI IN (required — this is how the chip is programmed)",
+   "FCB1010 MIDI OUT → Volt 276 MIDI IN (playing cable)"
+  ],
+  "phases": [
+   {
+    "name": "Load the golem contract",
+    "steps": [
+     {
+      "title": "Check the cabling",
+      "do": "Both cables must be connected: Volt MIDI OUT → FCB MIDI IN, and FCB MIDI OUT → Volt MIDI IN.",
+      "hint": "Unlike the 1.0.4, the UnO2 needs the incoming cable permanently — it is also how the rack will drive the pedalboard later."
+     },
+     {
+      "title": "Power the pedalboard on",
+      "do": "Just switch it on, normally. No key combination, no setup mode.",
+      "hint": "The UnO2 is programmed over the wire while it runs."
+     },
+     {
+      "title": "Load",
+      "do": "Press the button below. The rack identifies the chip, compiles the contract and sends it; the chip confirms.",
+      "action": "pedalboard-load"
+     },
+     {
+      "title": "Check the display",
+      "do": "The display should read 01. That is bank 1 of 19 — the chip counts from 1 while the setlist slot counts from 0.",
+      "hint": "This one-off offset is known and declared; it is not a fault."
+     }
+    ]
+   },
+   {
+    "name": "Verify",
+    "steps": [
+     {
+      "title": "Checklist",
+      "do": "Press SW1: its LED stays lit (scene A) · press SW6 twice: its LED latches ON then OFF · press and HOLD SW10: it must react on press AND on release · sweep both expression pedals.",
+      "hint": "SW10 carries gestures, so its LED does NOT stay lit — that is the trade, not a fault."
+     }
+    ]
+   }
+  ]
+ },
+
+ "editor": {
+
+   "name": "FCB UnO Control Center",
+
+   "by": "FCB1010 UnO (fcb1010.uno), the chip's maker",
+
+   "windows": "https://www.fcb1010.uno/downloads/FCBUnO_Setup-64.exe",
+
+   "macos": "https://www.fcb1010.uno/downloads/FCBUnOControlCenter-64.dmg"
+
+ },
+
+ "install_desktop": {
+
+   "needs": [
+
+     "Your interface's MIDI OUT → FCB1010 MIDI IN, and FCB1010 MIDI OUT → its MIDI IN",
+
+     "Your interface's own driver exposing its MIDI ports (a Universal Audio Volt needs the UA driver)"
+
+   ],
+
+   "phases": [
+
+     {
+
+       "name": "Load the golem contract",
+
+       "steps": [
+
+         {
+
+           "title": "Install the official editor",
+
+           "do": "The chip can also be programmed by its maker's editor, FCB UnO Control Center. Download it, install it, and open it once.",
+
+           "hint": "On Linux and Windows golem sends the chip's memory itself, with one button — this editor is the fallback (and the way on macOS).",
+
+           "action": "pedalboard-editor"
+
+         },
+
+         {
+
+           "title": "Check the cabling",
+
+           "do": "Both MIDI cables connected, the pedalboard switched on, normally — no key combination, no setup mode."
+
+         },
+
+         {
+
+           "title": "Release the pedalboard",
+
+           "do": "Windows lets only one program use a MIDI port. golem lets go of the pedalboard while you flash, so the editor can reach the chip.",
+
+           "hint": "golem takes the port back by itself after 15 minutes, or when you tap Take it back.",
+
+           "action": "pedalboard-hold"
+
+         },
+
+         {
+
+           "title": "Copy the setup",
+
+           "do": "Copy the golem setup. It is written from the same contract the Linux rack would flash, and checked before it is shown.",
+
+           "action": "pedalboard-copy"
+
+         },
+
+         {
+
+           "title": "Paste, compile, send",
+
+           "do": "In Control Center: replace the whole setup with what you copied, compile it, then send it to the FCB1010. Its memory gauge should read the size shown here.",
+
+           "hint": "Do not edit the setup in Control Center: golem writes it again from its own contract next time."
+
+         },
+
+         {
+
+           "title": "Tell golem it is done",
+
+           "do": "Once Control Center has sent the setup, tap the button below. golem records what the chip now holds and takes the pedalboard back.",
+
+           "hint": "This is your word, not the chip's: the next step checks it under your foot.",
+
+           "action": "pedalboard-flashed"
+
+         },
+
+         {
+
+           "title": "Check the display",
+
+           "do": "The display should read 01. That is bank 1 of 19 — the chip counts from 1 while the setlist slot counts from 0.",
+
+           "hint": "This one-off offset is known and declared; it is not a fault."
+
+         }
+
+       ]
+
+     },
+
+     {
+
+       "name": "Verify",
+
+       "steps": [
+
+         {
+
+           "title": "Checklist",
+
+           "do": "Press SW1: its LED stays lit (scene A) · press SW6 twice: its LED latches ON then OFF · press and HOLD SW10: it must react on press AND on release · sweep both expression pedals.",
+
+           "hint": "SW10 carries gestures, so its LED does NOT stay lit — that is the trade, not a fault."
+
+         }
+
+       ]
+
+     }
+
+   ]
+
+ },
+
+ "verify": {
+  "checks": [
+   {"label": "Display shows 01", "expect": "the two-digit display reads 01 after loading"},
+   {"label": "Scene LED latches", "expect": "press SW1 — its LED stays lit"},
+   {"label": "Stomp LED toggles", "expect": "press SW6 twice — its LED latches ON then OFF"},
+   {"label": "SW10 reacts on release", "expect": "hold SW10 — the rack sees a press AND a release; its LED does not stay lit"},
+   {"label": "Expression pedals sweep", "expect": "both pedals sweep 0→127 without a gap"}
+  ]
+ },
+
+ "provenance": {
+  "source": "hardware",
+  "note": "Format binaire établi par mesure et vérifié octet pour octet sur 13 variantes (docs/fcb/uno2/README.md). Puce flashée et confirmée le 2026-08-06 : firmware 2.0, série 2-211.",
+  "confidence": "verified"
+ }
+}

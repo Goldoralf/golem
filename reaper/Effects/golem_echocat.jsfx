@@ -1,0 +1,91 @@
+desc:GoleM Tape Echo -- the delay-echo block on Windows and macOS (GxEchoCat parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « delay-echo » joue GxEchoCat (guitarix, echo a bande facon WEM Copicat) sous Linux — ou plutot le
+// jouait : GxEchoCat FIGE le moteur de REAPER ~520 ms a chaque allumage (mesure le 2026-09-21), il est en
+// quarantaine. Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs (gxechocat.dsp, lu le
+// 2026-10-22) et l'ARCHITECTURE publique du Copicat : trois tetes de lecture a 30, 60 et 90 / BPM secondes (250,
+// 500, 750 ms a 120), chacune commutable ; une boucle de retour (Sustain) filtree 150 Hz - 7,5 kHz ; la bande
+// elle-meme coupe sous 40 Hz et au-dessus de 6,5 kHz ; une pointe de pleurage a 4 Hz ; des etages a lampes
+// (entree et relecture) remplaces ici par une saturation douce. Le CODE est le notre, et il ne fige rien :
+// c'est la raison d'etre de ce clone (mesure au banc de gel avant livraison).
+//
+//  - BPM     : le tempo des tetes (24..360 ; le catalogue ecrit 60..240).
+//  - Sustain : retour (0..1). Swell : niveau de l'echo (0..1). Input : niveau vers la bande (0..1, drive).
+//  - Head 1 / 2 / 3 : les tetes (guitarix : toutes eteintes par defaut, le bloc allume la 3 — par le catalogue).
+//
+// Pieges respectes : rien avant @init ; variables prefixees ec_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel ; ligne taillee pour 192 kHz (3,75 s a 24 BPM sur la tete 3).
+
+slider1:ec_bpm=120<24,360,0.1>BPM
+slider2:ec_sustain=0<0,1,0.01>Sustain
+slider3:ec_swell=0<0,1,0.01>Swell
+slider4:ec_input=0.5<0,1,0.01>Input
+slider5:ec_h1=0<0,1,1{off,on}>Head 1
+slider6:ec_h2=0<0,1,1{off,on}>Head 2
+slider7:ec_h3=0<0,1,1{off,on}>Head 3
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+ec_MAXD = 786432;                 // 4,1 s a 192 kHz : la tete 3 a 24 BPM (3,75 s) tient
+ec_buf = 65536;                   // ligne mono 65536..851967
+ec_pos = 0;
+ec_ph = 0;                        // pleurage
+ec_fb = 0;                        // ce qui revient dans la bande
+ec_E1 = exp(1) - 1;
+// filtres d'ordre 1 : passe-haut 40 Hz et passe-bas 6,5 kHz (la bande), passe-haut 150 Hz et passe-bas 7,5 kHz (le retour)
+ec_c40 = 0; ec_c65 = 0; ec_c150 = 0; ec_c75 = 0;
+ec_s = 0;                         // etats a 0..7 : hp40 (x1,y1), lp65 (y1), hp150 (x1,y1), lp75 (y1)
+
+function ec_logpot(x) ( (exp(x) - 1) / ec_E1; );                  // LogPot(1) de guitarix
+function ec_th(x) local(e) ( e = exp(2 * max(-20, min(20, x))); (e - 1) / (e + 1); );
+function ec_hp(x, c, st) local(y) ( y = x - ec_s[st] + c * ec_s[st + 1]; abs(y) < 0.000000000000001 ? y = 0; ec_s[st] = x; ec_s[st + 1] = y; y; );
+function ec_lp(x, c, st) local(y) ( y = ec_s[st] + c * (x - ec_s[st]); abs(y) < 0.000000000000001 ? y = 0; ec_s[st] = y; y; );
+function ec_read(d) local(p, i, fr) (
+  d = max(1, min(ec_MAXD - 3, d));
+  p = ec_pos - d; p < 0 ? p += ec_MAXD;
+  i = floor(p); fr = p - i;
+  ec_buf[i] * (1 - fr) + ec_buf[(i + 1) >= ec_MAXD ? 0 : i + 1] * fr;
+);
+
+@slider
+ec_echo = ec_logpot(ec_swell);                                     // guitarix : LogPot(1) puis x 0,25 — ici le niveau brut
+// le retour : les tetes allumees s'additionnent AVANT la boucle, le gain de boucle est donc partage entre elles
+// (revue : a trois tetes, 0,85 x 3 oscillait sans fin des Sustain 0,52)
+ec_nh = max(1, (ec_h1 >= 0.5 ? 1 : 0) + (ec_h2 >= 0.5 ? 1 : 0) + (ec_h3 >= 0.5 ? 1 : 0));
+ec_ret = ec_logpot(ec_sustain) * 0.85 / ec_nh;
+ec_drive = 1 + 4 * ec_input;                                       // Input : niveau vers la bande (saturation douce)
+ec_ing = ec_input * 2;
+
+@block
+ec_c40 = exp(-2 * $pi * 40 / srate); ec_c150 = exp(-2 * $pi * 150 / srate);
+ec_c65 = 1 - exp(-2 * $pi * 6500 / srate); ec_c75 = 1 - exp(-2 * $pi * 7500 / srate);
+ec_dph = 4 / srate;                                                // pleurage 4 Hz
+ec_base = 30 / ec_bpm * srate;                                     // la tete 1 ; 2 et 3 = x2, x3 (guitarix : 30/60/90 / BPM)
+
+@sample
+ec_in = (spl0 + spl1) * 0.5;
+// le pleurage : 0,5 % de VITESSE de bande (guitarix), soit un retard qui ondule de 0,005 / (2 pi 4) s — le meme
+// pour toutes les tetes (applique a la longueur, il valait 80 cents sur la tete 3 : revue)
+ec_wow = 0.005 / (2 * $pi * 4) * srate * sin(2 * $pi * ec_ph);
+ec_ph += ec_dph; ec_ph >= 1 ? ec_ph -= 1;
+// ce qui s'enregistre : l'entree (niveau Input, saturee) + le retour, borne sous 40 Hz
+ec_rec = ec_th((ec_in * ec_ing + ec_fb) * ec_drive) / ec_drive;
+ec_rec = ec_hp(ec_rec, ec_c40, 0);
+ec_buf[ec_pos] = ec_rec + 0.000000000000000001;
+// les tetes
+ec_tape = (ec_h1 >= 0.5 ? ec_read(ec_base + ec_wow) : 0) + (ec_h2 >= 0.5 ? ec_read(2 * ec_base + ec_wow) : 0) + (ec_h3 >= 0.5 ? ec_read(3 * ec_base + ec_wow) : 0);
+ec_tape = ec_lp(ec_tape, ec_c65, 2);                               // la bande : rien au-dessus de 6,5 kHz
+ec_tape = ec_th(ec_tape * 1.5) / 1.5;                              // la relecture a lampes
+// le retour vers la bande : passe-bas 7,5 kHz, Sustain, passe-haut 150 Hz
+ec_fb = ec_hp(ec_lp(ec_tape, ec_c75, 3) * ec_ret, ec_c150, 4);
+spl0 += ec_echo * ec_tape;                                         // le direct reste stereo ; seule la bande est mono
+spl1 += ec_echo * ec_tape;
+ec_pos += 1; ec_pos >= ec_MAXD ? ec_pos = 0;

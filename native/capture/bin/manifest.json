@@ -1,0 +1,26 @@
+{
+  "windows-x86_64": {
+    "file": "windows-x86_64.zip",
+    "sha256": "c01c0f5cb623b5db34a29bfaf4ceef3e1a49f15b3c58989027face90451cf738",
+    "binary_sha256": "19c8005cf2a33d195ec80b04e9f41b04dc1f806aa930981c642233af51539f35",
+    "sources": {
+      "engine.cpp": "ba62517484b98dc58b0877ee2ebb475812daa7772e977e7e64493b02504cbbfe",
+      "plugin.cpp": "1b1d4d76033354dd2b1e88991355a5faaf7349e06324cf1a2837991e999fa954",
+      "render.cpp": "e69882b518bbf449a28663d51819a587bb0a98e3dc51e7f90d2b76b869734eed",
+      "engine.h": "8e6dadb0495dea3a03035a8828b53faf438c9e08338f39babc22f6ebd02b6f9b",
+      "CMakeLists.txt": "0abf5f9d48b173e3ef3c3ee87c554354c1913881491c2090f582557a93759a86"
+    }
+  },
+  "linux-x86_64": {
+    "file": "linux-x86_64.zip",
+    "sha256": "4b8052a895360c4afdea17b99d2aa8203906e22dba5c1bd478562d10c6233265",
+    "binary_sha256": "a913c0f7fe59943ed0b77341feab1d36e4ad4daa0757f4684bee339c983f53cf",
+    "sources": {
+      "engine.cpp": "ba62517484b98dc58b0877ee2ebb475812daa7772e977e7e64493b02504cbbfe",
+      "plugin.cpp": "1b1d4d76033354dd2b1e88991355a5faaf7349e06324cf1a2837991e999fa954",
+      "render.cpp": "e69882b518bbf449a28663d51819a587bb0a98e3dc51e7f90d2b76b869734eed",
+      "engine.h": "8e6dadb0495dea3a03035a8828b53faf438c9e08338f39babc22f6ebd02b6f9b",
+      "CMakeLists.txt": "0abf5f9d48b173e3ef3c3ee87c554354c1913881491c2090f582557a93759a86"
+    }
+  }
+}

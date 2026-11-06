@@ -1,0 +1,12 @@
+{
+ "name": "Room",
+ "type": "reverb",
+ "factory": true,
+ "params": {
+  "mix": 20,
+  "decay": 0.8,
+  "size": 14,
+  "hicut": 6000
+ },
+ "inst": "any"
+}

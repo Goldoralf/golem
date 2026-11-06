@@ -1,0 +1,199 @@
+{
+ "id": "test-guitar-bench",
+ "name": "Test — Guitar bench",
+ "role": "guitar",
+ "tags": [
+  "test",
+  "bench"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "bpm": 120,
+ "origin": "test",
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Test guitar",
+   "midi": false,
+   "stereo": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "boost",
+         "type": "clean-boost",
+         "params": {
+          "gain": 3
+         }
+        },
+        {
+         "id": "eq",
+         "type": "eq"
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "phaser",
+         "type": "phaser-js",
+         "foot": 6
+        },
+        {
+         "id": "comp",
+         "type": "comp"
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "foot": 7
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 8,
+      "params": {
+       "mix": 20
+      }
+     },
+     {
+      "id": "kill",
+      "type": "killswitch",
+      "foot": 9
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Both branches",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Branch A, chorus and delay",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {
+      "dly": {
+       "mix": 35
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Branch B only",
+     "blocks": {
+      "phaser": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Both branches",
+   "blocks": {
+    "chorus": false
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Branch A",
+   "blocks": {
+    "chorus": true,
+    "dly": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "C",
+   "name": "Branch B",
+   "blocks": {
+    "phaser": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  }
+ },
+ "colors": {
+  "A": "#4f8cff",
+  "B": "#ff7a1a",
+  "C": "#2fbf71"
+ },
+ "anims": {
+  "A": "aurora",
+  "B": "vortex",
+  "C": "sheen"
+ }
+}

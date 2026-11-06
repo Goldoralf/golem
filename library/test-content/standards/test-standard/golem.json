@@ -1,0 +1,15 @@
+{
+ "type": "song",
+ "title": "Test Standard",
+ "artist": "golem test",
+ "kind": "original",
+ "rights": {
+  "work": "public-domain"
+ },
+ "genres": [
+  {
+   "family": "jazz",
+   "subgenre": null
+  }
+ ]
+}

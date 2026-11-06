@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "chorus",
+ "factory": true,
+ "params": {
+  "rate": 0.6,
+  "depth": 4,
+  "mix": 0.4
+ },
+ "default": true,
+ "inst": "any"
+}

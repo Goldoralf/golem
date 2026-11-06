@@ -1,0 +1,11 @@
+{
+ "name": "Sub synth",
+ "type": "octaver",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "direct": 0.4,
+  "octave1": 1,
+  "octave2": 0.6
+ }
+}

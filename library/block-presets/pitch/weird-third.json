@@ -1,0 +1,10 @@
+{
+ "name": "Haunted third",
+ "type": "pitch",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "shift": 3,
+  "mix": 30
+ }
+}

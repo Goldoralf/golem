@@ -1,0 +1,206 @@
+desc:GoleM drum sequencer (drumseq) -- free-running tempo-synced MIDI drum pattern player
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+
+//! GoleM bloc "drums" (boite a rythmes au pied, modele BeatBuddy). Se place en FX0 de la piste
+//! PERMANENTE "Drums", DEVANT les ReaSamplOmatic5000 du kit (golem_drums.lua). Raison d'etre :
+//! ReaScript ne peut PAS injecter de MIDI dans une instance FX precise (StuffMIDIMessage -> bus
+//! virtuel GLOBAL) -> patron b3-ctl / midi-clock / golem_sample_trig : Lua remplit une banque de
+//! patterns en gmem, ce JSFX joue la boucle et emet les note-on vers les RS5k en aval.
+//!
+//! ── MECANISME TEMPO-SYNC (choix "en connaissance de l'API") ──
+//! MEME probleme que midi-clock : le rig est monitore TRANSPORT A L'ARRET, or un item MIDI en
+//! boucle (ou l'horloge/loop native de Reaper) n'avance QU'EN LECTURE et se battrait avec le
+//! backing (qui, lui, possede le transport). On fabrique donc une horloge PPQ FREE-RUNNING : le
+//! @block tourne en permanence (FX temps-reel independant du transport) et fait avancer une tete de
+//! lecture en ticks au TEMPO PROJET (`tempo` = BPM du preset, pose au recall par golem_rig). On emet
+//! chaque note a son offset-echantillon EXACT dans le bloc -> aucun jitter de taille de bloc, aucune
+//! dependance a un item sur le curseur global.
+//!
+//! ── RESOLUTION INTERNE ──
+//! Tous les patterns sont normalises par golem_drums.lua a gmem[CTL_PPQRES] ticks/noire (defaut 960).
+//! ticks/sample = tempo * ppqres / (60 * srate). La longueur d'un pattern (cur_len) et la mesure
+//! (cur_barppq) sont en ticks de cette resolution ; golem_drums arrondit la longueur a un nombre
+//! ENTIER de mesures -> le point de bouclage EST une barre.
+//!
+//! ── QUANTIFICATION A LA MESURE ──
+//! play  : demarre immediatement (rien ne joue) au tick 0 du pattern.
+//! variation : latch, applique a la PROCHAINE barre (pending_op=2).
+//! fill  : latch, applique a la prochaine barre (pending_op=3) ; joue UNE fois puis revient au groove.
+//! stop  : immediat (on cesse d'emettre ; les samples one-shot RS5k finissent de sonner naturellement).
+//! song  : mode SEQUENCE (op=4) — joue la playlist gmem [slot,times]xN, avance AUTO a la fin de
+//!         chaque pattern (times=0 -> boucle infinie sur l'etape). Fin de liste : seq_mode 0 (loop)
+//!         -> repart a l'etape 0 ; 1 (once) -> silence net. fill marche PENDANT une sequence
+//!         (retour a l'etape en cours) ; play/variation/stop SORTENT du mode sequence.
+//!
+//! ── gmem "golem_drums" (miroir golem_drums.lua) ──
+//!  CTL (Lua -> JSFX) : [0]nonce [1]op(0 stop/1 play/2 var/3 fill/4 song) [2]slot [3]ppqres [4]chan [5]bankgen
+//!  ST  (JSFX -> Lua) : [8]playing [9]cur_slot [10]mode(0 groove/1 fill) [11]heartbeat [12]tempo
+//!                      [13]seq_idx (etape courante, -1 hors sequence) [14]seq_on
+//!  SEQ (Lua -> JSFX) : [16]len [17]mode(0 loop/1 once) ; etapes des [18] par pas de 2 :
+//!                      [slot, times] (times=0 -> infini). MAX 64 etapes (18..145 < SLOT_BASE).
+//!  Banque : SLOT_BASE=256, stride 8192. Slot s @ 256+s*8192 : [+0]nev [+1]len_ppq [+2]bar_ppq [+3]loaded ;
+//!           evenements des [+8] par pas de 4 : [ppq, note, vel, (reserve)]. Max ~2046 note-on / slot.
+//!
+//! ⚠ NON validable hors-rig : que le @block d'une piste SANS entree tourne bien transport a l'arret
+//!   (meme hypothese que midi-clock.jsfx), reception effective des note-on par les RS5k en aval,
+//!   coherence gmem Lua<->JSFX pendant un rechargement de banque en pleine lecture.
+
+options:gmem=golem_drums
+
+slider1:sl_playing=0<0,1,1>playing (temoin)
+slider2:sl_slot=-1<-1,64,1>cur slot (temoin)
+slider3:sl_tempo=0<0,400,0.01>tempo seen (temoin)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+CTL_NONCE=0; CTL_OP=1; CTL_SLOT=2; CTL_PPQRES=3; CTL_CHAN=4; CTL_BANKGEN=5;
+ST_PLAYING=8; ST_SLOT=9; ST_MODE=10; ST_HB=11; ST_TEMPO=12; ST_SEQIDX=13; ST_SEQON=14;
+SEQ_LEN=16; SEQ_MODE=17; SEQ_STEPS=18; SEQ_MAX=64;
+SLOT_BASE=256; SLOT_STRIDE=8192; EV_OFF=8; EV_STRIDE=4;
+EPS=0.0000001;
+
+playing=0; cur_slot=-1; cur_len=0; cur_barppq=1; cur_nev=0;
+ppq=0; ev_cur=0; mode_fill=0; return_slot=-1;
+pending_op=0; pending_slot=-1;
+seq_on=0; seq_idx=0; seq_rep=0;   // seq_rep = passages restants de l'etape (-1 = infini)
+last_nonce=-1; hb=0;
+
+function slot_addr(s) ( SLOT_BASE + s*SLOT_STRIDE; );
+
+// (re)cale la tete de lecture au tick 0 du slot s
+function load_slot(s) local(ba) (
+  cur_slot = s;
+  ba = slot_addr(s);
+  cur_nev    = gmem[ba+0];
+  cur_len    = gmem[ba+1];
+  cur_barppq = gmem[ba+2];
+  cur_barppq < 1 ? cur_barppq = 1;
+  cur_len < cur_barppq ? cur_len = cur_barppq;
+  ppq = 0; ev_cur = 0;
+);
+
+// charge l'etape seq_idx de la playlist (slot + compteur de passages)
+function seq_load_step() local(sa, t) (
+  sa = SEQ_STEPS + seq_idx*2;
+  t = gmem[sa+1]|0;
+  seq_rep = t < 1 ? -1 : t;
+  load_slot(gmem[sa]|0);
+);
+
+@block
+hb += 1; gmem[ST_HB] = hb;
+gmem[ST_TEMPO] = tempo;
+ppqres = gmem[CTL_PPQRES]; ppqres < 1 ? ppqres = 960;
+chan = gmem[CTL_CHAN] & 0x0F;
+
+// passthrough MIDI (neutre : la piste Drums n'en recoit pas, mais coherent)
+while (midirecv(mp, s1, s2, s3)) ( midisend(mp, s1, s2, s3); );
+
+// latch d'une commande sur front de nonce (Lua bump le nonce EN DERNIER)
+gmem[CTL_NONCE] != last_nonce ? (
+  last_nonce = gmem[CTL_NONCE];
+  op = gmem[CTL_OP]|0;
+  slot = gmem[CTL_SLOT]|0;
+  op == 0 ? (
+    playing = 0; mode_fill = 0; pending_op = 0; return_slot = -1; seq_on = 0;
+  ) : op == 1 ? (
+    playing = 1; mode_fill = 0; pending_op = 0; return_slot = -1; seq_on = 0;
+    load_slot(slot);
+  ) : op == 2 ? (
+    seq_on = 0;                                  // variation = sortie du mode sequence
+    playing ? ( pending_op = 2; pending_slot = slot; )
+            : ( playing = 1; mode_fill = 0; return_slot = -1; load_slot(slot); );
+  ) : op == 3 ? (
+    playing ? ( pending_op = 3; pending_slot = slot; );
+  ) : op == 4 ? (
+    // song : joue la playlist depuis l'etape 0
+    (gmem[SEQ_LEN]|0) > 0 ? (
+      playing = 1; mode_fill = 0; pending_op = 0; return_slot = -1;
+      seq_on = 1; seq_idx = 0; seq_load_step();
+    ) : ( playing = 0; seq_on = 0; );
+  );
+);
+
+playing ? (
+  t = tempo; t < 1 ? t = 1;
+  ppq_ps = t * ppqres / (60 * srate);        // ticks par echantillon
+  remaining = ppq_ps * samplesblock;         // ticks a couvrir dans ce bloc
+  blk_off = 0;                               // offset-echantillon accumule
+  guard = 0;
+  while (remaining > EPS && playing && guard < 4096) (
+    guard += 1;
+    ba = slot_addr(cur_slot);
+    // prochaine frontiere = prochaine barre OU fin de pattern
+    next_bar = (floor(ppq / cur_barppq) + 1) * cur_barppq;
+    boundary = min(next_bar, cur_len);
+    seg = boundary - ppq;
+    seg > remaining ? seg = remaining;
+    lim = ppq + seg;
+    // emet les note-on dont le tick tombe dans [ppq, lim)
+    cont = 1;
+    while (cont && ev_cur < cur_nev) (
+      ea = ba + EV_OFF + ev_cur*EV_STRIDE;
+      ev_ppq = gmem[ea];
+      ev_ppq < lim ? (
+        ev_ppq >= ppq ? (
+          off = blk_off + (ev_ppq - ppq)/ppq_ps;
+          midisend(floor(off + 0.5), 0x90 + chan, gmem[ea+1]|0, gmem[ea+2]|0);
+        );
+        ev_cur += 1;
+      ) : ( cont = 0; );
+    );
+    ppq += seg;
+    blk_off += seg / ppq_ps;
+    remaining -= seg;
+    // frontiere atteinte ?
+    ppq >= boundary - EPS ? (
+      ppq >= cur_len - EPS ? (
+        // fin de pattern
+        mode_fill && return_slot >= 0 ? (
+          mode_fill = 0; load_slot(return_slot); return_slot = -1;   // fin du fill -> retour groove/etape
+        ) : pending_op == 2 ? (
+          load_slot(pending_slot); pending_op = 0;                    // variation prend a la barre
+        ) : pending_op == 3 ? (
+          return_slot = cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
+        ) : seq_on ? (
+          // mode sequence : passage consomme -> reboucle l'etape ou avance
+          seq_rep > 0 ? seq_rep -= 1;
+          seq_rep != 0 ? (
+            ppq = 0; ev_cur = 0;                                      // encore des passages (ou infini)
+          ) : (
+            seq_idx += 1;
+            seq_idx >= (gmem[SEQ_LEN]|0) ? (
+              (gmem[SEQ_MODE]|0) == 0 ? (
+                seq_idx = 0; seq_load_step();                         // loop : la sequence reboucle
+              ) : (
+                playing = 0; seq_on = 0;                              // once : silence net
+              );
+            ) : ( seq_load_step(); );
+          );
+        ) : (
+          ppq = 0; ev_cur = 0;                                        // reboucle le meme groove
+        );
+      ) : (
+        // barre interieure : applique un switch en attente, sinon on continue le meme pattern
+        pending_op == 2 ? (
+          load_slot(pending_slot); pending_op = 0;
+        ) : pending_op == 3 ? (
+          return_slot = cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
+        );
+      );
+    );
+  );
+);
+
+gmem[ST_PLAYING] = playing;
+gmem[ST_SLOT] = cur_slot;
+gmem[ST_MODE] = mode_fill;
+gmem[ST_SEQIDX] = seq_on ? seq_idx : -1;
+gmem[ST_SEQON] = seq_on;
+sl_playing = playing; sl_slot = cur_slot; sl_tempo = tempo;

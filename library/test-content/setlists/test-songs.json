@@ -1,0 +1,29 @@
+{
+ "id": "test-songs",
+ "name": "Test — Songs",
+ "fcb": true,
+ "rev": 1,
+ "kind": "songs",
+ "origin": "test",
+ "presets": [
+  "test-band-session",
+  "test-standard-trio"
+ ],
+ "lines": [
+  {
+   "id": "r:test-songs:00",
+   "rev": 1,
+   "preset": "test-band-session",
+   "title": "Test Song",
+   "bpm": 120,
+   "band_song": "@TEST_SONG_ID@"
+  },
+  {
+   "id": "r:test-songs:01",
+   "rev": 1,
+   "preset": "test-standard-trio",
+   "title": "Test Standard",
+   "bpm": 160
+  }
+ ]
+}

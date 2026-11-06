@@ -1,0 +1,440 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>/desktop</title>
+<!-- Pas d'icône : la barre de fenêtre porte le seul LABEL. Un `href` vide suffit — sans cette
+     ligne, le navigateur irait chercher /app/favicon.ico tout seul et l'afficherait quand même. -->
+<link rel="icon" href="data:," id="favicon">
+<!-- SAUF sous Windows : la fenêtre `--app` y a sa propre entrée dans la BARRE DES TÂCHES, et l'icône
+     de la page est la seule qu'elle montre — sans elle, un globe gris à côté des autres applications,
+     là où l'utilisateur vient de cliquer sur l'icône golem (provision/desktop.py, 2026-10-02). -->
+<script>if (/Windows/.test(navigator.userAgent)) document.getElementById('favicon').href = '/app/favicon.ico?v=2';</script>
+<style>
+/* GoleM — coquille « appareil » pour le poste de travail.
+   Pourquoi ça existe : sur le rack, l'app tourne en kiosk sur un panneau 7-10" de 1024×600 et
+   la règle est « ça tient dans l'écran, pas de scroll ». Sur un 27" en fenêtre libre, on ne
+   voit JAMAIS ce que voit l'utilisateur — on dessine des pages qui débordent sans le savoir.
+   Cette page reproduit l'appareil À SA TAILLE DE RÉFÉRENCE : l'iframe fait 1024×600 (ou
+   390×844 en téléphone) par CSS, ce qu'une fenêtre de navigateur ne garantit pas.
+
+   L'ÉCHELLE ne change rien à ce qui tient dedans : la mise en page reste calculée sur le
+   gabarit de référence, on agrandit le rendu entier — polices comprises. Zoomer est donc sûr,
+   c'est une loupe, pas un autre écran. (29/07 : « en agrandissant le cadre, agrandir
+   l'UI ».) */
+:root{ --accent:#ff5a3c; }
+*{box-sizing:border-box}
+html,body{height:100%; margin:0; overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 0%, #16181d 0%, #0a0b0d 60%, #07080a 100%);
+  font:13px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:#8a94a3}
+.stage{height:calc(100% - var(--hud, 40px)); display:flex; align-items:center; justify-content:center}
+
+.device{position:relative; border-radius:22px; transform-origin:center center;
+  background:linear-gradient(160deg,#26292f 0%, #15171b 45%, #0e1013 100%);
+  box-shadow:0 0 0 1px #34383f, 0 1px 0 0 rgba(255,255,255,.06) inset,
+             0 40px 80px -20px rgba(0,0,0,.9), 0 8px 24px rgba(0,0,0,.6)}
+.device.phone{border-radius:44px}
+.screen{position:relative; border-radius:7px; overflow:hidden; background:#0d0f12;
+  box-shadow:0 0 0 1px #000, 0 0 0 3px #1b1e23}
+.device.phone .screen{border-radius:30px}
+.screen iframe{width:100%; height:100%; border:0; display:block}
+/* reflet de verre : discret, coupé au survol pour ne jamais gêner la lecture */
+.glass{position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(115deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,0) 42%);
+  transition:opacity .2s}
+.device:hover .glass{opacity:0}
+/* caméra + LED : la LED dit si le BRIDGE répond (verte) ou non (rouge). Sur le vrai rack cette
+   info se lit sur le boîtier ; ici elle évite de croire que l'app est figée alors que c'est le
+   bridge qui est tombé. */
+.cam{position:absolute; width:6px; height:6px; border-radius:50%; background:#0a0c0f;
+  box-shadow:0 0 0 1px #2c3037, 0 0 3px rgba(120,180,255,.25) inset}
+.led{position:absolute; width:6px; height:6px; border-radius:50%; background:#3a3f47;
+  transition:background .3s, box-shadow .3s}
+.led.up{background:#2ecc71; box-shadow:0 0 8px #2ecc71}
+.led.down{background:#ff4136; box-shadow:0 0 8px #ff4136}
+.mark{position:absolute; font-family:"Ubuntu Sans Mono","DejaVu Sans Mono",ui-monospace,monospace;
+  font-size:11px; font-weight:700; letter-spacing:.04em; color:#3d434c; user-select:none;
+  /* line-height:1 : la ligne par défaut (~16px) faisait flotter les glyphes au-dessus du centre
+     de la lunette — on centre la BOÎTE DES GLYPHES, pas la boîte de ligne (retour 2026-07-31) */
+  line-height:1}
+.mark s{color:#4a3129; text-decoration:none}
+/* Fente de haut-parleur, sur la LUNETTE et pas sur l'écran : une encoche dessinée par-dessus
+   l'app masquerait son en-tête (constaté au rendu) — or le but de cette page est de voir l'app
+   TELLE QU'ELLE EST. L'illusion ne doit jamais coûter un pixel de contenu. */
+.slit{position:absolute; top:5px; left:50%; transform:translateX(-50%); width:52px; height:4px;
+  border-radius:3px; background:#0a0c0f; box-shadow:0 0 0 1px #2c3037 inset; pointer-events:none}
+
+/* barre d'état : taille de référence + échelle réelle. Elle ne ment jamais sur le zoom. */
+.hud{position:fixed; left:0; right:0; bottom:0; z-index:10; display:flex; justify-content:center;
+  align-items:center; gap:10px; padding:7px 0 9px; font-size:11px; color:#4a5058;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(to top, rgba(7,8,10,.92) 55%, rgba(7,8,10,0))}
+.hud b{color:#6b7280; font-weight:600}
+.hud button{width:22px; height:22px; border-radius:6px; background:#15171b; border:1px solid #2a2e35;
+  color:#8a94a3; cursor:pointer; font-size:13px; line-height:1; padding:0}
+.hud button:hover{border-color:var(--accent); color:#e7ecf2}
+.hud .auto{color:#4a5058}
+.hud .sep{opacity:.35}
+/* Barre de DÉBOGAGE du téléphone : le Companion choisit sa vue Stage selon le RÔLE de
+   l'appareil appairé (Guitar/Bass/Voice/Drums/Keys…). Sur le poste de travail il n'y a pas
+   d'appareil, donc pas de rôle — mobile.js prévoit déjà `?role=&tab=` « pour voir chaque vue
+   depuis un desktop ». On expose l'interrupteur, on n'ajoute aucune logique côté app. */
+.hud select{height:22px; border-radius:6px; background:#15171b; border:1px solid #2a2e35;
+  color:#8a94a3; font-size:11px; padding:0 4px}
+.hud select:hover{border-color:var(--accent); color:#e7ecf2}
+#cond{width:auto; padding:0 6px; opacity:.45}
+#cond.on{border-color:var(--accent); color:#e7ecf2; opacity:1}
+/* fenêtre étroite (celle du téléphone) : la barre passait sur deux lignes et mangeait la
+   hauteur de l'appareil. On sacrifie le libellé, pas les commandes. */
+@media (max-width: 740px){
+  .hud .lbl{display:none}          /* le libellé cède, jamais les commandes */
+  .hud{gap:6px 7px; flex-wrap:wrap; padding-bottom:7px}
+}
+/* la croix vit DANS la barre du bas, avec les autres commandes : flottante en haut à droite,
+   elle était seule de son côté et se cherchait. */
+/* ⏻ ARRÊT COMPLET — distinct du ✕ à dessein : fermer une fenêtre et couper le moteur audio
+   sont deux intentions différentes. Discret au repos, franchement rouge une fois armé. */
+/* « Continue on tablet » (docs/installer.md §4) : son panneau et son style vivent dans tablet-sheet.js — le même
+   s'ouvre depuis System ▸ Dashboard (l'app appelle window.golemTabletSheet de cette coquille). */
+.hud .halt:hover{border-color:#ffb020; color:#ffb020}
+.hud .halt.arm{width:auto; padding:0 8px; border-color:#ff4136; color:#ff4136; background:#2a1416}
+/* LE ZOOM, SEUL, DANS LE COIN BAS-DROIT DE LA LUNETTE (2026-10-17) — la barre du bas a disparu de la tablette :
+   ↻ (bannière « New version » / F5), 📱 et ⏻ (System ▸ Dashboard) vivent dans l'app. Comme les boutons d'une vraie
+   tablette : discret au repos. Posé PAR-DESSUS la scène, pas dans la lunette : la tablette est mise à l'échelle d'un
+   bloc, et des boutons dedans seraient minuscules à 60 % et énormes à 200 % — justement quand on règle le zoom.
+   Le pourcentage ne s'affiche qu'au survol et juste après un réglage ; « auto » seulement si le zoom est manuel. */
+.zoomctl{position:fixed; z-index:11; display:flex; align-items:center; gap:4px; transform:translateY(-50%)}
+.zoomctl[hidden]{display:none}
+/* la taille SUIT la lunette (--zb, posé par apply()) : en dur à 18 px, les boutons débordaient de la bande basse dès que
+   la tablette passait sous l'échelle 1 — une fenêtre plus petite que 1076×652 (Windows, 2026-10-24) */
+.zoomctl button{width:var(--zb, 18px); height:var(--zb, 18px); border-radius:5px; background:transparent;
+  border:1px solid #2a2e35; color:#4a5058; cursor:pointer; font-size:calc(var(--zb, 18px) * .66); line-height:1; padding:0}
+.zoomctl button:hover{border-color:var(--accent); color:#e7ecf2}
+.zoomctl .zauto{width:auto; padding:0 5px; font-size:calc(var(--zb, 18px) * .56)}
+.zpct{font-size:10.5px; color:#6b7280; font-variant-numeric:tabular-nums; opacity:0; transition:opacity .2s}
+.zoomctl:hover .zpct, .zoomctl.show .zpct{opacity:1}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device" id="dev">
+    <span class="cam" id="cam"></span>
+    <span class="led" id="led" title="bridge"></span>
+    <div class="screen" id="screen">
+      <iframe id="app" title="golem"></iframe>
+      <div class="glass"></div>
+    </div>
+    <!-- la marque est « /golem_ » partout (barre de l'app, Companion, appairage) : le « _ » manquait ici (2026-10-01) -->
+    <span class="mark" id="mark"><s>/</s>golem<s>_</s></span>
+  </div>
+</div>
+<div class="zoomctl" id="zoomctl" hidden>
+  <span class="zpct" id="zpct"></span>
+  <button class="zauto" id="zauto" title="back to auto: the tablet fills the window">auto</button>
+  <button id="zminus" title="zoom out (Ctrl+wheel)">−</button>
+  <button id="zplus" title="zoom in (Ctrl+wheel)">+</button>
+</div>
+<div class="hud">
+  <span id="ref"></span><span class="sep">·</span>
+  <button id="minus" title="zoom out (Ctrl+wheel)">−</button>
+  <span id="zoom"></span>
+  <button id="plus" title="zoom in (Ctrl+wheel)">+</button>
+  <button id="reset" title="fit the window" style="width:auto; padding:0 7px">auto</button>
+  <span class="sep">·</span>
+  <button id="reload" title="reload the app (zoom and role are kept)">↻</button>
+  <button id="tablet" title="continue on a tablet — closes this window, golem keeps running">📱</button>
+  <button class="halt" id="halt" title="stop golem — closes the window AND stops Reaper + the bridge (Esc: close without stopping)">⏻</button>
+  <span class="sep" id="dbgsep" hidden>·</span>
+  <span id="dbg" hidden>
+    <select id="who" title="who holds this phone — someone in the band, or a role alone"></select>
+    <button id="cond" title="conductor right: load, start and stop a song from this phone">🎼</button>
+  </span>
+</div>
+
+<script>
+// Gabarits de référence. `bezel` est la lunette, `radius` vient du CSS.
+const DEVICES = {
+  panel: { w: 1024, h: 600, bezel: 26, src: '/app/',      label: 'tablet' },
+  phone: { w: 390,  h: 844, bezel: 14, src: '/app/m.html', label: 'phone (Companion)' },
+};
+const params = new URLSearchParams(location.search);
+const D = DEVICES[params.get('d')] || DEVICES.panel;
+const isPhone = D === DEVICES.phone;
+
+const dev = document.getElementById('dev');
+const screen = document.getElementById('screen');
+const frame = document.getElementById('app');
+// Le titre EST la marque ici : même grammaire que le wordmark (« /golem »), un mot par
+// coquille. Il apparaît dans la barre de fenêtre, seul, sans icône.
+document.title = isPhone ? '/phone' : '/desktop';
+dev.classList.toggle('phone', isPhone);
+dev.style.padding = D.bezel + 'px';
+screen.style.width = D.w + 'px';
+screen.style.height = D.h + 'px';
+document.getElementById('ref').innerHTML = '<b>' + D.w + ' × ' + D.h + '</b><span class="lbl"> — ' + D.label + '</span>';
+
+// caméra / LED / marque : placées selon l'orientation de l'appareil
+const cam = document.getElementById('cam'), led = document.getElementById('led'), mark = document.getElementById('mark');
+if (isPhone) {
+  dev.insertAdjacentHTML('beforeend', '<span class="slit"></span>');
+  cam.style.display = 'none';
+  led.style.cssText = 'top:5px; left:calc(50% + 40px); width:5px; height:5px';
+  mark.style.display = 'none';
+} else {
+  cam.style.cssText = 'top:calc(' + D.bezel + 'px / 2 - 3px); left:50%; transform:translateX(-50%)';
+  led.style.cssText = 'left:calc(' + D.bezel + 'px / 2 - 3px); top:50%; transform:translateY(-50%)';
+  // Position du wordmark sur la bordure basse. Deux choses, et la seconde est un CHOIX.
+  //
+  // 1. La lunette VISIBLE n'est pas `bezel` : `.screen` porte un anneau de 3 px en box-shadow,
+  //    dessiné PAR-DESSUS la lunette. Sous l'écran il ne reste donc que bezel − 3 px, et la
+  //    formule d'origine centrait dans une bande qui n'existe pas.
+  // 2. Dans cette bande RÉELLE, le mot était déjà centré à 0,3 px près — mesuré aux pixels
+  //    PEINTS (capture x8, profil de densité ligne à ligne, corps du mot isolé de la haste du
+  //    « l » et de la queue du « g »), pas au calcul. Mais l'œil le voit haut : l'ombre portée
+  //    sous la tablette allonge le boîtier vers le bas et déplace le centre perçu. on l'a
+  //    signalé en regardant l'écran, ce que la géométrie ne sait pas faire.
+  //
+  // Cumuler les deux (recentrage + supplément optique) descend le mot de 3 px et colle la queue
+  // du « g » au bord — essayé, mesuré, abandonné. On garde donc UNIQUEMENT la correction qui
+  // répare une vraie erreur, et elle va déjà de 1,5 px dans le sens demandé. `OPTICAL` reste
+  // nommé : si l'œil en veut plus, c'est ce nombre-là qu'on touche, et lui seul.
+  const RING = 3, OPTICAL = 0;
+  mark.style.cssText = 'bottom:calc((' + (D.bezel - RING) + 'px - 11px) / 2 - ' + OPTICAL
+    + 'px); left:50%; transform:translateX(-50%)';
+}
+
+// L'URL de la coquille porte l'état de l'app : #/live pour le panneau, ?person=|role=&tab=&conductor=
+// pour le téléphone. Un rechargement revient donc au même endroit — et le lien se partage tel quel.
+//
+// Le Companion est PERSONNEL depuis docs/devices-people.md (lot F, 2026-09-15) : il montre « mes
+// lignes » (Alex = Guitar 1 + Voice 1), plus un rôle seul. Le sélecteur propose donc d'abord les
+// personnes du roster, puis les rôles pour un appareil sans personne (le batteur sans entrée, un
+// invité). Le droit conductor est un interrupteur : sans lui la page Song se lit, sans Load/Start.
+// Les onglets ne sont plus doublés ici : la barre du Companion est dans l'iframe, et l'app renvoie
+// son onglet courant (message `golem-tab`) pour qu'un ↻ revienne au même endroit.
+const ROLES = ['Guitar', 'Bass', 'Voice', 'Drums', 'Keys'];
+function phoneQuery() {
+  const q = new URLSearchParams();
+  if (params.get('person')) q.set('person', params.get('person'));
+  else q.set('role', params.get('role') || 'Guitar');
+  if (params.get('tab')) q.set('tab', params.get('tab'));
+  q.set('conductor', params.get('conductor') === '0' ? '0' : '1');
+  return '?' + q;
+}
+function srcFor() { return isPhone ? D.src + phoneQuery() : D.src + (location.hash || ''); }
+frame.src = srcFor();
+
+if (isPhone) document.getElementById('tablet').remove();   // la coquille téléphone = le dev, pas un usage
+// LA TABLETTE n'a plus de barre du bas (2026-10-17) : le zoom passe dans le coin de la lunette. Le téléphone
+// (`golem phone`, un outil de dev) garde la sienne : le sélecteur Who et le conductor y vivent.
+if (!isPhone) { document.querySelector('.hud').remove(); document.getElementById('zoomctl').hidden = false; }
+if (isPhone) {
+  // On recharge l'iframe plutôt que de piloter l'app : aucune API de débogage à maintenir,
+  // et on voit EXACTEMENT ce que verra le musicien qui ouvrira cette URL.
+  document.getElementById('dbg').hidden = false;
+  document.getElementById('dbgsep').hidden = false;
+  const sel = document.getElementById('who');
+  const cond = document.getElementById('cond');
+  const cur = () => params.get('person') ? 'p:' + params.get('person') : 'r:' + (params.get('role') || 'Guitar');
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const fill = people => {
+    sel.innerHTML = (people.length ? '<optgroup label="band">' + people.map(p =>
+        `<option value="p:${esc(p.id)}">${esc(p.name || p.id)}</option>`).join('') + '</optgroup>' : '')
+      + '<optgroup label="role only">' + ROLES.map(r => `<option value="r:${r}">${r}</option>`).join('') + '</optgroup>';
+    sel.value = cur();
+  };
+  fill([]);
+  // le roster : la coquille tourne sur la machine du rack (locale), la liste des appareils lui est ouverte
+  // sans choix dans l'URL, la coquille ouvre sur la PREMIÈRE personne du groupe : c'est la vue normale
+  // d'un téléphone appairé ; un rôle seul reste l'exception (batteur sans entrée, invité)
+  fetch('/api/auth/devices').then(r => r.json()).then(d => {
+    const people = d.people || [];
+    fill(people);
+    if (people.length && !params.get('person') && !params.get('role')) { go({ person: people[0].id }); sel.value = cur(); }
+  }).catch(() => {});
+  const paint = () => cond.classList.toggle('on', params.get('conductor') !== '0');
+  const go = patch => {
+    Object.entries(patch).forEach(([k, v]) => v == null ? params.delete(k) : params.set(k, v));
+    history.replaceState(null, '', '?' + params);
+    frame.src = srcFor();
+    paint();
+  };
+  sel.onchange = () => {
+    const [k, v] = [sel.value.slice(0, 1), sel.value.slice(2)];
+    go(k === 'p' ? { person: v, role: null } : { role: v, person: null });
+  };
+  cond.onclick = () => go({ conductor: params.get('conductor') === '0' ? '1' : '0' });
+  addEventListener('message', e => {
+    if (e.origin !== location.origin || !e.data || e.data.type !== 'golem-tab') return;
+    params.set('tab', e.data.tab);
+    history.replaceState(null, '', '?' + params);
+  });
+  paint();
+}
+frame.addEventListener('load', () => {
+  if (isPhone) return;                    // le Companion se pilote par query, pas par hash
+  const win = frame.contentWindow;
+  const sync = () => {
+    const h = win.location.hash || '';
+    if (h && h !== location.hash) history.replaceState(null, '', location.search + h);
+  };
+  sync();
+  win.addEventListener('hashchange', sync);
+});
+
+// ── échelle ──────────────────────────────────────────────────────────────────
+// `auto` = l'appareil remplit la fenêtre (au-dessus comme en dessous de 1:1 : agrandir la
+// fenêtre agrandit l'UI, polices comprises — c'est la demande). Un réglage manuel (boutons ou
+// Ctrl+molette) prend le pas et se retient d'une session à l'autre.
+// la coquille retrouve elle aussi sa taille (docs/ui-architecture.md). Son ZOOM, lui, était
+// déjà retenu : le réglage manuel ci-dessous vit dans localStorage, donc dans le profil de
+// navigateur dédié du lanceur, donc d'un lancement à l'autre.
+import('./shell-geom.js').then(m => m.trackShellGeometry()).catch(() => {});
+
+const KEY = 'golem.device.zoom.' + (isPhone ? 'phone' : 'panel');
+let manual = parseFloat(localStorage.getItem(KEY)) || 0;   // 0 = auto
+const clamp = k => Math.max(0.35, Math.min(3, k));
+
+// La place réservée à la barre du bas est MESURÉE, pas devinée : elle a grandi le jour où le
+// téléphone a gagné son sélecteur de rôle, et l'appareil est passé dessous (29/07). Une
+// constante en dur aurait re-menti au prochain bouton ajouté.
+const hudEl = document.querySelector('.hud');            // null sur la tablette : plus de barre
+const stageEl = document.querySelector('.stage');
+function autoScale() {
+  const w = D.w + D.bezel * 2, h = D.h + D.bezel * 2;
+  // on mesure la scène RÉELLE (déjà amputée de la barre par le CSS) : une seule vérité de
+  // hauteur pour le centrage ET pour l'échelle, sinon les deux divergent.
+  return clamp(Math.min((innerWidth - 24) / w, (stageEl.clientHeight - 12) / h));
+}
+const ctl = document.getElementById('zoomctl');
+const NUDGE = 3;                  // px vers le bas, à l'œil (2026-10-17) : centré pile, le groupe paraissait haut
+function apply() {
+  document.documentElement.style.setProperty('--hud', (hudEl && hudEl.isConnected ? hudEl.offsetHeight : 0) + 'px');
+  const k = manual || autoScale();
+  dev.style.transform = 'scale(' + k + ')';
+  const z = document.getElementById('zoom');
+  if (z) z.innerHTML = '<b>' + Math.round(k * 100) + ' %</b>' + (manual ? '' : ' <span class="auto">auto</span>');
+  if (!ctl.hidden) {
+    // dans la bande basse de la lunette, aligné sur le bord droit de l'écran — mesuré sur la tablette DÉJÀ à l'échelle
+    const r = dev.getBoundingClientRect(), bez = D.bezel * k;
+    ctl.style.right = Math.max(4, innerWidth - (r.right - bez)) + 'px';
+    // centré dans la bande VISIBLE (lunette moins l'anneau de 3 px) ; le petit décalage à l'œil de l'échelle 1 (même place
+    // qu'avant, en grand) s'efface entre 1,2 et 0,9 — en petit, il collait les boutons au bord bas (Windows, 2026-10-24)
+    const fade = Math.max(0, Math.min(1, (k - 0.9) / 0.3));
+    ctl.style.top = (r.bottom - (bez - 3 * k) / 2 + (NUDGE - 1.5) * fade) + 'px';
+    // la bande VISIBLE sous l'écran : la lunette moins l'anneau de 3 px de .screen, à l'échelle ; les boutons en prennent
+    // 70 %, entre 11 px (encore cliquables) et 18 px (la taille d'avant, à l'échelle 1 et au-delà)
+    ctl.style.setProperty('--zb', Math.max(11, Math.min(18, Math.round((D.bezel - 3) * k * 0.7))) + 'px');
+    document.getElementById('zpct').textContent = Math.round(k * 100) + ' %';
+    document.getElementById('zauto').hidden = !manual;          // « auto » seulement quand le zoom est manuel
+  }
+}
+// après un réglage, le pourcentage reste visible un instant : on voit ce qu'on vient de faire
+function flash() { ctl.classList.add('show'); clearTimeout(flash._t); flash._t = setTimeout(() => ctl.classList.remove('show'), 1500); }
+function setManual(k) { manual = clamp(k); localStorage.setItem(KEY, manual); apply(); flash(); }
+
+addEventListener('resize', apply);
+const toAuto = () => { manual = 0; localStorage.removeItem(KEY); apply(); flash(); };
+for (const [id, f] of [['plus', 0.1], ['zplus', 0.1], ['minus', -0.1], ['zminus', -0.1]]) {
+  const b = document.getElementById(id);
+  if (b) b.onclick = () => setManual((manual || autoScale()) + f);
+}
+for (const id of ['reset', 'zauto']) { const b = document.getElementById(id); if (b) b.onclick = toAuto; }
+addEventListener('wheel', e => {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
+  setManual((manual || autoScale()) + (e.deltaY < 0 ? 0.08 : -0.08));
+}, { passive: false });
+apply();
+requestAnimationFrame(apply);      // la barre a sa taille définitive après la 1re peinture
+
+// ── fermeture ────────────────────────────────────────────────────────────────
+// `window.close()` est REFUSÉ par Chrome pour une fenêtre qu'un script n'a pas ouverte : la
+// croix ne faisait donc RIEN (constaté le 2026-07-29). On tente quand même — c'est
+// gratuit et ça marche dans certains contextes — puis on demande au bridge de fermer la
+// fenêtre du profil dédié du lanceur. En dernier recours seulement, on dit quoi presser.
+//
+// ⚠ PLUS DE BOUTON ✕ (retiré le 2026-08-03) : il faisait doublon avec la croix système de la
+// fenêtre. Sa fonction — fermer SANS arrêter le rig — vit toujours sur **Échap** (plus bas),
+// et le titre du ⏻ le dit. On ne supprime pas une sortie, on lui retire son bouton.
+async function quit() {
+  window.close();
+  try {
+    const r = await fetch('/api/ui/quit', { method: 'POST' });
+    if (r.ok) return;                      // le process s'en va, la page part avec
+  } catch { /* bridge muet : on tombe sur l'indice */ }
+  hint('Cannot close from here — <b>Ctrl+W</b> closes, <b>F11</b> leaves full screen.');
+}
+// ⏻ arrêt complet : ferme la fenêtre ET coupe Reaper + le bridge (= `golem stop`).
+// DEUX TAPS : le premier arme, le second exécute. Couper le son d'un rig qui joue ne doit
+// jamais tenir à un clic distrait — même idiome que les suppressions de l'app (« sure ? »).
+let haltArmed = 0;
+async function halt() {
+  const b = document.getElementById('halt');
+  if (!haltArmed) {
+    haltArmed = 1;
+    b.classList.add('arm'); b.textContent = 'stop ?';
+    clearTimeout(halt._t);
+    halt._t = setTimeout(() => { haltArmed = 0; b.classList.remove('arm'); b.textContent = '⏻'; }, 3000);
+    return;
+  }
+  clearTimeout(halt._t); haltArmed = 0;
+  b.textContent = '…';
+  try {
+    await fetch('/api/ui/quit', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ stop: true }) });
+  } catch { /* le bridge meurt en répondant : une erreur réseau ici est NORMALE */ }
+  hint('golem stopped — Reaper and the bridge are off. Start golem again to come back.');
+}
+
+// ── « Continue on tablet » : desktop -> server, SANS couper le son (docs/installer.md §4) ─────
+// Le panneau est app/tablet-sheet.js — UN SEUL, que System ▸ Dashboard ouvre aussi par window.golemTabletSheet
+// (l'app est dans l'iframe, même origine). Fermer la fenêtre = quit(), le chemin d'Échap : golem continue.
+window.golemTabletSheet = () => import('./tablet-sheet.js').then(m => m.openTabletSheet({ onClose: quit }));
+const tabletBtn = document.getElementById('tablet');     // absent de la coquille téléphone
+if (tabletBtn) tabletBtn.onclick = () => window.golemTabletSheet();
+if (isPhone) delete window.golemTabletSheet;
+
+function hint(html) {
+  let el = document.getElementById('hint');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'hint';
+    el.style.cssText = 'position:fixed; z-index:20; left:50%; top:14px; transform:translateX(-50%);' +
+      'background:#15171b; border:1px solid #2a2e35; color:#e7ecf2; font-size:12px;' +
+      'padding:8px 14px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.5)';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = html;
+  clearTimeout(hint._t); hint._t = setTimeout(() => el.remove(), 6000);
+}
+const haltBtn = document.getElementById('halt');         // la barre du téléphone seulement ; ⏻ de la tablette = Dashboard
+if (haltBtn) haltBtn.onclick = halt;
+// Recharge l'APP, pas la coquille : on veut revoir son code sans perdre le zoom, le rôle ni
+// l'onglet. Même origine, donc pilotable directement.
+const reloadBtn = document.getElementById('reload');
+if (reloadBtn) reloadBtn.onclick = () => {
+  try { frame.contentWindow.location.reload(); }
+  catch { frame.src = srcFor(); }                 // repli si le contexte a été remplacé
+};
+// Échap = sortir, mais en plein écran NAVIGATEUR (F11) le JS ne peut pas le défaire : on le dit
+// au lieu de laisser croire à une touche morte.
+addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (window.innerHeight >= screen.height - 2) hint('Full screen: <b>F11</b> back to a window · <b>Ctrl+W</b> closes.');
+  else quit();
+});
+
+// ── LED = santé du BRIDGE, pas de la page ────────────────────────────────────
+async function ping() {
+  try {
+    const r = await fetch('/api/modes', { cache: 'no-store' });
+    led.className = 'led ' + (r.ok ? 'up' : 'down');
+    led.title = r.ok ? 'bridge up' : 'bridge error ' + r.status;
+  } catch { led.className = 'led down'; led.title = 'bridge unreachable'; }
+}
+ping(); setInterval(ping, 5000);
+</script>
+</body>
+</html>

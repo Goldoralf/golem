@@ -1,0 +1,1240 @@
+{
+ "id": "factory-blues-night",
+ "name": "Blues Night",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 3,
+       "release": 150
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "klon",
+         "type": "pedal-nam",
+         "variant": "klon",
+         "foot": 6,
+         "label": "Klon Centaur",
+         "ref": "2599",
+         "model": "419209",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "ts",
+         "type": "pedal-nam",
+         "variant": "tube-screamer",
+         "foot": 7,
+         "label": "Ibanez TS9 Tube Screamer",
+         "ref": "36827",
+         "model": "381612",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "super",
+         "type": "amp",
+         "label": "Fender Super Reverb",
+         "ref": "19",
+         "model": "379727",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "dumble",
+         "type": "amp-nam",
+         "label": "Dumble Overdrive Special",
+         "ref": "30435",
+         "model": "138210",
+         "params": {
+          "input": -4,
+          "output": -3
+         }
+        },
+        {
+         "id": "dcab",
+         "type": "cab",
+         "label": "Palmer 2x12 Creamback",
+         "ref": "5004",
+         "model": "67597",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "leslie",
+      "type": "rotary",
+      "foot": 8,
+      "params": {
+       "speed": "slow",
+       "mic": 70,
+       "spacing": 50,
+       "depth": 60
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay-tape",
+      "foot": 9,
+      "params": {
+       "time": "16th",
+       "feedback": 25,
+       "mix": 16,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "surge-spring",
+      "params": {
+       "mix": 0.22,
+       "decay": 0.5,
+       "size": 0.5
+      }
+     },
+     {
+      "type": "volume",
+      "id": "volume-sys"
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-guitar-texas-blues",
+    "name": "Texas Blues"
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Texas Rhythm",
+     "blocks": {
+      "klon": true,
+      "ts": false,
+      "leslie": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Lead",
+     "blocks": {
+      "klon": false,
+      "ts": true,
+      "leslie": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Vibratone",
+     "blocks": {
+      "klon": false,
+      "ts": false,
+      "leslie": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Clean",
+     "blocks": {
+      "klon": false,
+      "ts": false,
+      "leslie": false,
+      "dly": false
+     },
+     "params": {
+      "super": {
+       "input": -6,
+       "output": 4
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Big Ending",
+     "blocks": {
+      "klon": true,
+      "ts": true,
+      "leslie": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 0.4,
+       "decay": 0.7
+      },
+      "dly": {
+       "mix": 24,
+       "feedback": 38
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "guitar-2",
+   "key": "guitar-2",
+   "role": "guitar",
+   "name": "Rhythm Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "attack": 2,
+       "release": 130
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-2",
+       "blocks": [
+        {
+         "id": "plexi",
+         "type": "amp",
+         "label": "Marshall JMP-50 Plexi",
+         "ref": "65578",
+         "model": "418470",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-2",
+       "blocks": [
+        {
+         "id": "treble",
+         "type": "boost",
+         "foot": 6,
+         "params": {
+          "drive": 10,
+          "level": 70,
+          "treble": 6,
+          "bass": -5,
+          "mid": 3
+         }
+        },
+        {
+         "id": "ac30",
+         "type": "amp",
+         "label": "VOX AC30 Top Boost",
+         "ref": "2696",
+         "model": "413050",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "dly-2",
+      "type": "delay-tape",
+      "foot": 7,
+      "params": {
+       "time": "16th",
+       "feedback": 35,
+       "mix": 22,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb-2",
+      "type": "reverb-room",
+      "foot": 8,
+      "params": {
+       "mix": 14,
+       "decay": 0.7,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 2,
+   "patch_from": {
+    "id": "factory-guitar-british-crunch",
+    "name": "British Crunch"
+   },
+   "states": [
+    {
+     "id": "st-guitar-2-A",
+     "name": "Power Chords",
+     "blocks": {
+      "treble": false,
+      "dly-2": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-B",
+     "name": "Treble Lead",
+     "blocks": {
+      "treble": true,
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-C",
+     "name": "Wall of Chords",
+     "blocks": {
+      "treble": false,
+      "dly-2": false
+     },
+     "params": {
+      "verb-2": {
+       "mix": 22,
+       "decay": 1.1
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-2-D",
+     "name": "Clean-ish",
+     "blocks": {
+      "treble": false,
+      "dly-2": false
+     },
+     "params": {
+      "plexi": {
+       "input": -12,
+       "output": 6
+      }
+     },
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -65,
+       "attack": 3,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15,
+       "release": 180
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-3",
+       "blocks": [
+        {
+         "id": "b15",
+         "type": "amp",
+         "label": "Ampeg B-15 Fliptop",
+         "ref": "26828",
+         "model": "379842",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-3",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379985",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "foot": 6,
+      "params": {
+       "lowcut": 35,
+       "midgain": 3,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "verb-3",
+      "type": "reverb-room",
+      "params": {
+       "mix": 6,
+       "decay": 0.5,
+       "size": 10,
+       "hicut": 5000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-bass-vintage-round",
+    "name": "Vintage Round"
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Round",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b-3": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Punch",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a-3": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Both",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Pick",
+     "blocks": {
+      "eq": true
+     },
+     "params": {
+      "comp": {
+       "attack": 5,
+       "ratio": 5
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Keys",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "organ",
+      "type": "organ",
+      "params": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "db223": 0,
+       "db2": 0,
+       "db135": 0,
+       "db113": 0,
+       "db1": 0,
+       "leslie": "slow",
+       "vibrato": "off",
+       "perc": false
+      }
+     },
+     {
+      "id": "drive",
+      "type": "boost",
+      "foot": 6,
+      "params": {
+       "drive": 40,
+       "level": 50,
+       "treble": 0,
+       "bass": 1,
+       "mid": 2
+      }
+     },
+     {
+      "id": "verb-4",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 6500
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "patch_from": {
+    "id": "factory-keys-rock-organ",
+    "name": "Rock Organ"
+   },
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Gospel",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 8,
+       "leslie": "slow"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Rock Drive",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "leslie": "fast"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 0,
+       "db8": 6,
+       "db4": 0,
+       "leslie": "slow"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Perc Lead",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 0,
+       "perc": true,
+       "leslie": "stop"
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-E",
+     "name": "Full Stops",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "organ": {
+       "db16": 8,
+       "db513": 8,
+       "db8": 8,
+       "db4": 8,
+       "db223": 8,
+       "db2": 8,
+       "db135": 8,
+       "db113": 8,
+       "db1": 8,
+       "leslie": "fast"
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "drums-1",
+   "key": "drums-1",
+   "role": "drums",
+   "name": "Drums",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-red-zeppelin"
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 20,
+       "release": 150
+      }
+     },
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 1,
+       "midfreq": 600,
+       "highs": 1
+      }
+     },
+     {
+      "id": "verb-5",
+      "type": "reverb-room",
+      "foot": 6,
+      "params": {
+       "mix": 20,
+       "decay": 1.2,
+       "size": 20,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "patch_from": {
+    "id": "factory-drums-classic-rock",
+    "name": "Classic Rock"
+   },
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Groove",
+     "blocks": {
+      "eq": false,
+      "verb-5": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Big Room",
+     "blocks": {
+      "eq": false,
+      "verb-5": true
+     },
+     "params": {
+      "comp-2": {
+       "ratio": 6
+      },
+      "verb-5": {
+       "decay": 1.8,
+       "mix": 32,
+       "size": 24
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Tight",
+     "blocks": {
+      "eq": true,
+      "verb-5": false
+     },
+     "params": {
+      "comp-2": {
+       "attack": 10
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Ballad",
+     "blocks": {
+      "verb-5": true
+     },
+     "params": {
+      "eq-2": {
+       "highs": -2
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Theme",
+   "blocks": {
+    "klon": true,
+    "ts": false,
+    "leslie": false,
+    "dly": false,
+    "treble": false,
+    "dly-2": false,
+    "eq": false,
+    "drive": false,
+    "verb-5": true
+   },
+   "params": {
+    "plexi": {
+     "input": -12,
+     "output": 6
+    },
+    "organ": {
+     "db16": 8,
+     "db513": 0,
+     "db8": 6,
+     "db4": 0,
+     "leslie": "slow"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-b-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-D",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-A"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -2
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Guitar Solo",
+   "blocks": {
+    "klon": false,
+    "ts": true,
+    "leslie": false,
+    "dly": true,
+    "treble": false,
+    "dly-2": false,
+    "eq": false,
+    "drive": false,
+    "verb-5": true
+   },
+   "params": {
+    "organ": {
+     "db16": 8,
+     "db513": 0,
+     "db8": 6,
+     "db4": 0,
+     "leslie": "slow"
+    },
+    "verb-5": {
+     "mix": 32,
+     "decay": 1.8,
+     "size": 24
+    },
+    "comp-2": {
+     "ratio": 6
+    }
+   },
+   "branches": {
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-a-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B",
+     "level": 3
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-A"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B",
+     "level": 1
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -2
+    },
+    "drums-1": {
+     "state": "st-drums-1-B",
+     "level": 1
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Organ Solo",
+   "blocks": {
+    "klon": false,
+    "ts": false,
+    "leslie": false,
+    "dly": false,
+    "treble": false,
+    "dly-2": false,
+    "eq": false,
+    "drive": true,
+    "verb-5": true
+   },
+   "params": {
+    "super": {
+     "input": -6,
+     "output": 4
+    },
+    "plexi": {
+     "input": -12,
+     "output": 6
+    },
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 0,
+     "leslie": "fast"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-a-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": -1
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-D",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-B",
+     "level": 1
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": 2
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Stop-Time",
+   "blocks": {
+    "klon": false,
+    "ts": false,
+    "leslie": true,
+    "dly": false,
+    "treble": false,
+    "dly-2": false,
+    "eq": true,
+    "drive": false,
+    "verb-5": false
+   },
+   "params": {
+    "plexi": {
+     "input": -12,
+     "output": 6
+    },
+    "comp": {
+     "attack": 5,
+     "ratio": 5
+    },
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 8,
+     "leslie": "slow"
+    },
+    "comp-2": {
+     "attack": 10
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-D",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 1
+    },
+    "keys-1": {
+     "state": "st-keys-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Ending",
+   "blocks": {
+    "klon": true,
+    "ts": true,
+    "leslie": false,
+    "dly": true,
+    "treble": false,
+    "dly-2": false,
+    "eq": false,
+    "drive": true,
+    "verb-5": true
+   },
+   "params": {
+    "verb": {
+     "mix": 0.4,
+     "decay": 0.7
+    },
+    "dly": {
+     "mix": 24,
+     "feedback": 38
+    },
+    "verb-2": {
+     "mix": 22,
+     "decay": 1.1
+    },
+    "organ": {
+     "db16": 8,
+     "db513": 8,
+     "db8": 8,
+     "db4": 8,
+     "db223": 8,
+     "db2": 8,
+     "db135": 8,
+     "db113": 8,
+     "db1": 8,
+     "leslie": "fast"
+    },
+    "verb-5": {
+     "mix": 32,
+     "decay": 1.8,
+     "size": 24
+    },
+    "comp-2": {
+     "ratio": 6
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 2
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-C",
+     "level": 1
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-E",
+     "level": 1
+    },
+    "drums-1": {
+     "state": "st-drums-1-B",
+     "level": 1
+    }
+   }
+  }
+ ],
+ "bpm": 96,
+ "style": "blues",
+ "factory": true,
+ "config": {
+  "gen": {
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "swing",
+      "motion": "comp",
+      "voicing": "full",
+      "arp": "Off",
+      "keys": false,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "red-zeppelin",
+      "choruses": 9
+     }
+    }
+   ],
+   "out": "1-2"
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     }
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ],
+   "click_out": "1-2"
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "styles": [
+  "blues"
+ ],
+ "colors": {
+  "A": "#2f6bff",
+  "B": "#2f6bff",
+  "C": "#2f6bff",
+  "D": "#2f6bff",
+  "E": "#2f6bff",
+  "6": "#2f6bff",
+  "7": "#2f6bff",
+  "8": "#2f6bff",
+  "9": "#2f6bff",
+  "10": "#2f6bff"
+ },
+ "anims": {
+  "A": "ripple",
+  "B": "ember",
+  "C": "strobe",
+  "D": "stars",
+  "E": "pulse",
+  "6": "vu",
+  "7": "wave",
+  "8": "snow",
+  "9": "rain",
+  "10": "vortex"
+ }
+}

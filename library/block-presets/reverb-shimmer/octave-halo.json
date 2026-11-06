@@ -1,0 +1,13 @@
+{
+ "name": "Octave halo",
+ "type": "reverb-shimmer",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "mix": 45,
+  "decay": 5,
+  "shimmer": 55,
+  "pitch": 6,
+  "hicut": 6500
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "name": "LFO sweep",
+ "type": "rezfilter",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "freq": 0.4,
+  "res": 0.7,
+  "env": 0,
+  "attack": 0.35,
+  "release": 0.5,
+  "lfodepth": 0.5,
+  "lforate": 0.4
+ }
+}

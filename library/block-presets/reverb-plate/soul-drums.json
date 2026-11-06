@@ -1,0 +1,13 @@
+{
+ "name": "Soul Drums",
+ "type": "reverb-plate",
+ "inst": "drums",
+ "factory": true,
+ "params": {
+  "mix": 25,
+  "decay": 1.2,
+  "predelay": 10,
+  "hicut": 7000
+ },
+ "default": true
+}

@@ -1,0 +1,6002 @@
+{
+ "#/designer": {
+  "a | Designer": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | # # # # # A # # # #": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A base": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | B": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | C": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | D": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | E": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Guitar # IN #": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | OUT ▶ #·#": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Sandbox ▾": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Unassigned IN #": {
+   "api": [],
+   "at": "#/designer/in2",
+   "covered": true,
+   "errors": [],
+   "hash": "#/designer/in2",
+   "opens": false
+  },
+  "button | ⋯": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⓘ": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▲": {
+   "api": [
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "button | ▶ IN #": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▼": {
+   "api": [
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◀": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "button | ♪ No song — Load a song ▾": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚙": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": "#/designer/config",
+   "opens": false
+  },
+  "button | ⛓ Load a patch": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ＋": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🎹 + add Factory Golem": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/designer/config": {
+  "a | Designer": {
+   "api": [],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | # # # # # A # # # #": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A base": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | B": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | C": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | D": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | E": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Guitar # IN #": {
+   "api": [],
+   "at": "#/designer",
+   "covered": true,
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | OUT ▶ #·#": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Sandbox ▾": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Unassigned IN #": {
+   "api": [],
+   "at": "#/designer/in2",
+   "covered": true,
+   "errors": [],
+   "hash": "#/designer/in2",
+   "opens": false
+  },
+  "button | ⋯": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⓘ": {
+   "api": [],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▤ Arrangement": {
+   "api": [
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer/config",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": true
+  },
+  "button | ▲": {
+   "api": [
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▼": {
+   "api": [
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◀": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ♪ No song — Load a song ▾": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚙": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ＋": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": true
+  },
+  "button | ＋ Add « New preset » to « Factory Golem »": {
+   "api": [
+    "POST setlists/factory/line"
+   ],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🎹 + add Factory Golem": {
+   "api": [],
+   "at": "#/designer/config",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/drums/drums": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/drums/drums",
+   "errors": [],
+   "hash": null,
+   "opens": true
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Grooves": {
+   "api": [],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": "#/library/drums/grooves",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Kits": {
+   "api": [],
+   "at": "#/library/drums/kits",
+   "errors": [],
+   "hash": "#/library/drums/kits",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/drums/drums",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/drums/grooves": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "a | ⬇": {
+   "api": [
+    "POST system/save-local-url"
+   ],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Grooves": {
+   "api": [],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Kits": {
+   "api": [],
+   "at": "#/library/drums/kits",
+   "errors": [],
+   "hash": "#/library/drums/kits",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/drums/kits": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/drums/kits",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Grooves": {
+   "api": [],
+   "at": "#/library/drums/grooves",
+   "errors": [],
+   "hash": "#/library/drums/grooves",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Kits": {
+   "api": [],
+   "at": "#/library/drums/kits",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/drums/kits",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/keys/instruments": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Instruments": {
+   "api": [],
+   "at": "#/library/keys/instruments",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Synths": {
+   "api": [],
+   "at": "#/library/keys/synth",
+   "errors": [],
+   "hash": "#/library/keys/synth",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/keys/instruments",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/keys/synth": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/keys/synth",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Instruments": {
+   "api": [],
+   "at": "#/library/keys/instruments",
+   "errors": [],
+   "hash": "#/library/keys/instruments",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Synths": {
+   "api": [],
+   "at": "#/library/keys/synth",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/keys/synth",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⟳": {
+   "api": [
+    "POST vital/rescan"
+   ],
+   "at": "#/library/keys/synth",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/samples/short": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "a | ⬇": {
+   "api": [
+    "POST system/save-local-url"
+   ],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A–Z": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Kit": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Short": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": "#/library/samples/songs",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Type": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | → Songs": {
+   "api": [
+    "POST sample/kind"
+   ],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Clap # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Cowbell # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Crash # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Crash# # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Hat Closed # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Hat Open # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Hat Pedal # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Kick # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Kick Sub # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Ride # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Ride Bell # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Rim # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Snare # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Tom High # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Tom Low # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ Tom Mid # s · # kB": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🗑": {
+   "api": [],
+   "asks": [
+    "sure?"
+   ],
+   "at": "#/library/samples/short",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/samples/songs": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A–Z": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Length": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Short": {
+   "api": [],
+   "at": "#/library/samples/short",
+   "errors": [],
+   "hash": "#/library/samples/short",
+   "opens": false
+  },
+  "button | Size": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/samples/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tones/amps": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | +Cab": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Amps": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Bass": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Cabs": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "covered": true,
+   "errors": [],
+   "hash": "#/library/tones/cabs",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Guitar": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Heads": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Outboard": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": "#/library/tones/outboard",
+   "opens": false
+  },
+  "button | Pedals": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": "#/library/tones/pedals",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Voice": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tones/cabs": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Amps": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "errors": [],
+   "hash": "#/library/tones/amps",
+   "opens": false
+  },
+  "button | Bass": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Cabs": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Guitar": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Outboard": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": "#/library/tones/outboard",
+   "opens": false
+  },
+  "button | Pedals": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": "#/library/tones/pedals",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Voice": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tones/outboard": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Amps": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "covered": true,
+   "errors": [],
+   "hash": "#/library/tones/amps",
+   "opens": false
+  },
+  "button | Bass": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Cabs": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": "#/library/tones/cabs",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Guitar": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Outboard": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Pedals": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": "#/library/tones/pedals",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Voice": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tones/pedals": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Amps": {
+   "api": [],
+   "at": "#/library/tones/amps",
+   "covered": true,
+   "errors": [],
+   "hash": "#/library/tones/amps",
+   "opens": false
+  },
+  "button | Bass": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Cabs": {
+   "api": [],
+   "at": "#/library/tones/cabs",
+   "errors": [],
+   "hash": "#/library/tones/cabs",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Guitar": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Outboard": {
+   "api": [],
+   "at": "#/library/tones/outboard",
+   "errors": [],
+   "hash": "#/library/tones/outboard",
+   "opens": false
+  },
+  "button | Pedals": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Voice": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tones/pedals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tracks/backing": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | Backings": {
+   "api": [],
+   "at": "#/library/tracks/backing",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Recordings": {
+   "api": [],
+   "at": "#/library/tracks/recordings",
+   "errors": [],
+   "hash": "#/library/tracks/recordings",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Standards": {
+   "api": [],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": "#/library/tracks/standards",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Vocals": {
+   "api": [],
+   "at": "#/library/tracks/vocals",
+   "errors": [],
+   "hash": "#/library/tracks/vocals",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tracks/backing",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tracks/recordings": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | Backings": {
+   "api": [],
+   "at": "#/library/tracks/backing",
+   "errors": [],
+   "hash": "#/library/tracks/backing",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Recordings": {
+   "api": [],
+   "at": "#/library/tracks/recordings",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Standards": {
+   "api": [],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": "#/library/tracks/standards",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Vocals": {
+   "api": [],
+   "at": "#/library/tracks/vocals",
+   "errors": [],
+   "hash": "#/library/tracks/vocals",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tracks/recordings",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tracks/standards": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | Backings": {
+   "api": [],
+   "at": "#/library/tracks/backing",
+   "errors": [],
+   "hash": "#/library/tracks/backing",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Recordings": {
+   "api": [],
+   "at": "#/library/tracks/recordings",
+   "errors": [],
+   "hash": "#/library/tracks/recordings",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Standards": {
+   "api": [],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Vocals": {
+   "api": [],
+   "at": "#/library/tracks/vocals",
+   "errors": [],
+   "hash": "#/library/tracks/vocals",
+   "opens": false
+  },
+  "button | ↻ Sync": {
+   "api": [
+    "POST standards/sync"
+   ],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶": {
+   "api": [
+    "POST standards/play"
+   ],
+   "at": "#/library/tracks/standards",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/library/tracks/vocals": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | Backings": {
+   "api": [],
+   "at": "#/library/tracks/backing",
+   "errors": [],
+   "hash": "#/library/tracks/backing",
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/library/drums",
+   "errors": [],
+   "hash": "#/library/drums",
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/library/keys",
+   "errors": [],
+   "hash": "#/library/keys",
+   "opens": false
+  },
+  "button | Recordings": {
+   "api": [],
+   "at": "#/library/tracks/recordings",
+   "errors": [],
+   "hash": "#/library/tracks/recordings",
+   "opens": false
+  },
+  "button | Samples": {
+   "api": [],
+   "at": "#/library/samples",
+   "errors": [],
+   "hash": "#/library/samples",
+   "opens": false
+  },
+  "button | Standards": {
+   "api": [],
+   "at": "#/library/tracks/standards",
+   "errors": [],
+   "hash": "#/library/tracks/standards",
+   "opens": false
+  },
+  "button | Tones": {
+   "api": [],
+   "at": "#/library/tones",
+   "errors": [],
+   "hash": "#/library/tones",
+   "opens": false
+  },
+  "button | Tracks": {
+   "api": [],
+   "at": "#/library/tracks",
+   "errors": [],
+   "hash": "#/library/tracks",
+   "opens": false
+  },
+  "button | Vocals": {
+   "api": [],
+   "at": "#/library/tracks/vocals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/library/tracks/vocals",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶": {
+   "api": [
+    "POST backing/listen"
+   ],
+   "at": "#/library/tracks/vocals",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/live": {
+  "button | Keep waiting": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Open the app anyway →": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Restart REAPER": {
+   "missing": true
+  },
+  "button | Set up": {
+   "missing": true
+  }
+ },
+ "#/songs": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | All": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Banks & Setlists": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": "#/songs/setlists",
+   "opens": false
+  },
+  "button | Covers": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Folders": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Golem": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Originals": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Patches": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": "#/songs/patches",
+   "opens": false
+  },
+  "button | Presets": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": "#/songs/presets",
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/songs/songs",
+   "errors": [],
+   "hash": "#/songs/songs",
+   "opens": false
+  },
+  "button | Stage-ready": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | To finish": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ☁ Pull from golem.fm": {
+   "api": [],
+   "at": "#/songs/songs/+import",
+   "covered": true,
+   "errors": [],
+   "hash": "#/songs/songs/+import",
+   "opens": false
+  },
+  "button | ⤓ Drop a file": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ＋ New song": {
+   "api": [],
+   "at": "#/songs/songs/+new",
+   "covered": true,
+   "errors": [],
+   "hash": "#/songs/songs/+new",
+   "opens": false
+  }
+ },
+ "#/songs/patches": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | ##": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | + tag": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | A": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | B": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Banks & Setlists": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": "#/songs/setlists",
+   "opens": false
+  },
+  "button | C": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | D": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | E": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Edit « #s E-Piano » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « British Crunch » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Brown Lead » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Classic Rock » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Clean Vocal » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/factory-voice-clean",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Crooner » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Electric Piano » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Funk Clean » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Funk Slap » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Fuzz Wall » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Gypsy Lead » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/factory-guitar-gypsy-lead",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Indie Chime » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Jazz Brushes » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Jazz Clean » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Jazz Piano » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Jazz Warm » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Loop Bass & Beat » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Metal Bass » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Metal Vocal » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Metal » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Modern Metal » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/factory-guitar-modern-metal",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Pop Tuned » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Rock Grind » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Rock Organ » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Rock Vocal » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Singing Clean » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Studio Rock » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/factory-drums-studio-rock",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Synth Bass » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Synth Lead » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/factory-keys-synth-lead",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Test — Bass fan-out » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Test — Drums kit » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST patches/test-drums-kit",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Test — Guitar bench » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Test — Keys pads » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Test — Voice plain » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Texas Blues » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Vintage Round » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Edit « Warm Pad » in the Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status",
+    "POST sandbox_apply"
+   ],
+   "at": "#/designer",
+   "errors": [],
+   "hash": "#/designer",
+   "opens": false
+  },
+  "button | Patches": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « #s E-Piano »": {
+   "api": [
+    "POST patches/factory-keys-80s-epiano/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « British Crunch »": {
+   "api": [
+    "POST patches/factory-guitar-british-crunch/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Brown Lead »": {
+   "api": [
+    "POST patches/factory-guitar-brown-lead/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Classic Rock »": {
+   "api": [
+    "POST patches/factory-drums-classic-rock/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Clean Vocal »": {
+   "api": [
+    "POST patches/factory-voice-clean/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Crooner »": {
+   "api": [
+    "POST patches/factory-voice-crooner/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Electric Piano »": {
+   "api": [
+    "POST patches/factory-keys-electric-piano/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Funk Clean »": {
+   "api": [
+    "POST patches/factory-guitar-funk-clean/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Funk Slap »": {
+   "api": [
+    "POST patches/factory-bass-funk-slap/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Fuzz Wall »": {
+   "api": [
+    "POST patches/factory-guitar-fuzz-wall/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Gypsy Lead »": {
+   "api": [
+    "POST patches/factory-guitar-gypsy-lead/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Indie Chime »": {
+   "api": [
+    "POST patches/factory-guitar-indie-chime/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Jazz Brushes »": {
+   "api": [
+    "POST patches/factory-drums-jazz-brushes/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Jazz Clean »": {
+   "api": [
+    "POST patches/factory-guitar-jazz-clean/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Jazz Piano »": {
+   "api": [
+    "POST patches/factory-keys-jazz-piano/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Jazz Warm »": {
+   "api": [
+    "POST patches/factory-bass-jazz-warm/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Loop Bass & Beat »": {
+   "api": [
+    "POST patches/factory-keys-loop-bass-beat/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Metal Bass »": {
+   "api": [
+    "POST patches/factory-bass-metal/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Metal Vocal »": {
+   "api": [
+    "POST patches/factory-voice-metal/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Metal »": {
+   "api": [
+    "POST patches/factory-drums-metal/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Modern Metal »": {
+   "api": [
+    "POST patches/factory-guitar-modern-metal/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Pop Tuned »": {
+   "api": [
+    "POST patches/factory-voice-pop-tuned/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Rock Grind »": {
+   "api": [
+    "POST patches/factory-bass-rock-grind/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Rock Organ »": {
+   "api": [
+    "POST patches/factory-keys-rock-organ/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Rock Vocal »": {
+   "api": [
+    "POST patches/factory-voice-rock/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Singing Clean »": {
+   "api": [
+    "POST patches/factory-guitar-singing-clean/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Studio Rock »": {
+   "api": [
+    "POST patches/factory-drums-studio-rock/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Synth Bass »": {
+   "api": [
+    "POST patches/factory-bass-synth/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Synth Lead »": {
+   "api": [
+    "POST patches/factory-keys-synth-lead/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Test — Bass fan-out »": {
+   "api": [
+    "POST patches/test-bass-fanout/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Test — Drums kit »": {
+   "api": [
+    "POST patches/test-drums-kit/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Test — Guitar bench »": {
+   "api": [
+    "POST patches/test-guitar-bench/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Test — Keys pads »": {
+   "api": [
+    "POST patches/test-keys-pads/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Test — Voice plain »": {
+   "api": [
+    "POST patches/test-voice-plain/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Texas Blues »": {
+   "api": [
+    "POST patches/factory-guitar-texas-blues/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Vintage Round »": {
+   "api": [
+    "POST patches/factory-bass-vintage-round/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Play « Warm Pad »": {
+   "api": [
+    "POST patches/factory-keys-warm-pad/play"
+   ],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Presets": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": "#/songs/presets",
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/songs/songs",
+   "errors": [],
+   "hash": "#/songs/songs",
+   "opens": false
+  },
+  "button | ۞": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | —": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ↕": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ↕ Bank #": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇉": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ∿": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ≈": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⊘": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⋈": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⋯": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⌂": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⌕": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⑧": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▚": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▢": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | △": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◇": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◍": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◑": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◠": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ◩": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ♪": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚙": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚲ Filters": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ✧": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⟲": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⬢": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🎧 Listen — soon": {
+   "api": [],
+   "at": "#/songs/patches",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/songs/presets": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | ##": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "covered": true,
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "button | + tag": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Banks & Setlists": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": "#/songs/setlists",
+   "opens": false
+  },
+  "button | Bass": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Guitar": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Guitar #": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Keys-Pads": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Patches": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": "#/songs/patches",
+   "opens": false
+  },
+  "button | Presets": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Rhythm Guitar": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Clean Intro": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Head": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Intro": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Loop": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Theme": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene A — Verse": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene B — Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene B — Guitar Solo": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene B — Lush Head": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene B — Solo": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene B — Verse": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene C — Bridge": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene C — Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene C — Organ Solo": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene C — Piano Solo": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene D — Breakdown": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene D — Bridge": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene D — Guitar Solo": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene D — Solo": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene D — Stop-Time": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene E — Ballad": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene E — Ending": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene E — Outro": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Scene E — Solo": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/songs/songs",
+   "errors": [],
+   "hash": "#/songs/songs",
+   "opens": false
+  },
+  "button | Switch # — Auto-Wah + Auto-Wah + Tremolo + Plate": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Boost + Boost + Pedal + Shim + Grit +": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Boost + Pedal + Boost + Tape + Room": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Boost + Pedal + Chorus + Room": {
+   "api": [
+    "POST stomp"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Chorus + EQ + Chorus + Tempo Delay + ": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Chorus + Tape": {
+   "api": [
+    "POST stomp"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Chorus + Tempo Delay": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Colorsound + Octaver + Chorus + Bitcr": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Drum Machine": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Kill + Kill": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Pedal + Boost + EQ + Boost + Room": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Pedal + Pedal + Tremolo + Tape + Room": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Pedal + Tape": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Phaser + Boost": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Phaser + Chorus + Chorus + Grit": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Rec": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Riff": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Room + Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Rotary + Room": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Shim": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Shim + Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Standard": {
+   "api": [
+    "POST stomp"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tape": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tape + Boost + Chorus": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tape + Chorus + Grit": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tempo Delay": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tempo Delay + Tempo Delay": {
+   "api": [
+    "POST stomp"
+   ],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tempo Delay + Tempo Delay + PCor + Bi": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Tempo Delay + Tempo Delay + Tempo Del": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Switch # — Whammy": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Voice": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Voice #": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | —": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ↕ Setlist #": {
+   "api": [],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⋯": {
+   "api": [],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⌕": {
+   "api": [],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶": {
+   "api": [
+    "POST recall"
+   ],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚙": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚲ Filters": {
+   "api": [],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🎧 Listen — Guitar": {
+   "api": [
+    "POST preview/factory-chill-jazz"
+   ],
+   "at": "#/songs/presets",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/songs/setlists": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | All #": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Banks #": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Banks & Setlists": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Factory #": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Mine #": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Open": {
+   "api": [],
+   "at": "#/songs/setlists/test-sounds",
+   "covered": true,
+   "errors": [],
+   "hash": "#/songs/setlists/test-sounds",
+   "opens": false
+  },
+  "button | Patches": {
+   "api": [],
+   "at": "#/songs/patches",
+   "errors": [],
+   "hash": "#/songs/patches",
+   "opens": false
+  },
+  "button | Presets": {
+   "api": [],
+   "at": "#/songs/presets",
+   "errors": [],
+   "hash": "#/songs/presets",
+   "opens": false
+  },
+  "button | Setlists #": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Songs": {
+   "api": [],
+   "at": "#/songs/songs",
+   "errors": [],
+   "hash": "#/songs/songs",
+   "opens": false
+  },
+  "button | ⇅ I/O": {
+   "api": [],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⌂": {
+   "api": [
+    "POST startup/home"
+   ],
+   "at": "#/songs/setlists",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ▶ On the foot": {
+   "api": [],
+   "asks": [
+    "change the foot?"
+   ],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⧉": {
+   "api": [
+    "POST setlists/test-songs/duplicate"
+   ],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 🗑": {
+   "api": [],
+   "asks": [
+    "sure?"
+   ],
+   "at": "#/songs/setlists",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/api": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Separation": {
+   "api": [],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | Tone#": {
+   "api": [],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | golem.fm": {
+   "api": [],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⬇ Download the factory captures (#)": {
+   "missing": true
+  },
+  "button | 💾": {
+   "api": [
+    "POST integrations"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 📱 Connect": {
+   "api": [
+    "POST t3k/auth/start"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/lic": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Libraries": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": "#/system/lic/libs",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Reaper": {
+   "api": [],
+   "at": "#/system/lic/reaper",
+   "errors": [],
+   "hash": "#/system/lic/reaper",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Golem": {
+   "api": [],
+   "at": "#/system/lic/golem",
+   "errors": [],
+   "hash": "#/system/lic/golem",
+   "opens": false
+  },
+  "button | Libraries": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": "#/system/lic/libs",
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Reaper": {
+   "api": [],
+   "at": "#/system/lic/reaper",
+   "errors": [],
+   "hash": "#/system/lic/reaper",
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ⟳ Check For Releases": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/lic/libs": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | All": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Commercial #": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Creative Commons #": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | GPL / LGPL #": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Golem": {
+   "api": [],
+   "at": "#/system/lic/golem",
+   "errors": [],
+   "hash": "#/system/lic/golem",
+   "opens": false
+  },
+  "button | Libraries": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Missing Only": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Permissive #": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Reaper": {
+   "api": [],
+   "at": "#/system/lic/reaper",
+   "errors": [],
+   "hash": "#/system/lic/reaper",
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ↻": {
+   "api": [],
+   "at": "#/system/lic/libs",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/net": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Connect": {
+   "api": [],
+   "at": "#/system/net/connect",
+   "errors": [],
+   "hash": "#/system/net/connect",
+   "opens": false
+  },
+  "button | Devices": {
+   "api": [],
+   "at": "#/system/net/devices",
+   "errors": [],
+   "hash": "#/system/net/devices",
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ×": {
+   "api": [
+    "POST network/forget"
+   ],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⟳ Scan": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | 👁": {
+   "api": [],
+   "at": "#/system/net",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "switch | OFF": {
+   "api": [
+    "POST network/ap"
+   ],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/pedal": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Calibrate": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Controllers": {
+   "api": [],
+   "at": "#/system/pedal",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Drums": {
+   "api": [],
+   "at": "#/system/pedal",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Pedalboard": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Pedals": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  }
+ },
+ "#/system/sound": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Home": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": "#/system/sys/mode",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | (stereo pair) OUT R": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Configure ASIO…": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Guitar INPUT #": {
+   "api": [],
+   "at": "#/system/sound",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | INPUT #": {
+   "api": [],
+   "at": "#/system/sound",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "covered": true,
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Monitors OUT L": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Pedalboard (FCB#) MIDI IN": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | Whammy DT MIDI OUT": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | link #+# as one stereo instrument": {
+   "api": [
+    "POST inputmap/pair"
+   ],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/sys": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | # # ms": {
+   "api": [
+    "POST audio-buffer"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Audio Engine": {
+   "api": [],
+   "at": "#/system/sys/audio-engine",
+   "errors": [],
+   "hash": "#/system/sys/audio-engine",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Dashboard": {
+   "api": [],
+   "at": "#/system/sys/dash",
+   "errors": [],
+   "hash": "#/system/sys/dash",
+   "opens": false
+  },
+  "button | Factory": {
+   "api": [],
+   "at": "#/system/sys/factory",
+   "errors": [],
+   "hash": "#/system/sys/factory",
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Mode": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": "#/system/sys/mode",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Separation Engine": {
+   "api": [],
+   "at": "#/system/sys/separation",
+   "errors": [],
+   "hash": "#/system/sys/separation",
+   "opens": false
+  },
+  "button | Show on this computer": {
+   "api": [
+    "POST ui/show"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | Start golem with this computer": {
+   "api": [
+    "POST system/autostart"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Storage": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": "#/system/sys/storage",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ↻ restart": {
+   "api": [],
+   "asks": [
+    "restart — sure?"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ↻ resync": {
+   "api": [
+    "POST system/osc-refresh"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⏻ Stop golem": {
+   "api": [],
+   "asks": [
+    "Stop golem — sure?"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | ⚡ boost": {
+   "api": [
+    "POST perf-mode"
+   ],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/sys/factory": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Audio Engine": {
+   "api": [],
+   "at": "#/system/sys/audio-engine",
+   "errors": [],
+   "hash": "#/system/sys/audio-engine",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Dashboard": {
+   "api": [],
+   "at": "#/system/sys/dash",
+   "errors": [],
+   "hash": "#/system/sys/dash",
+   "opens": false
+  },
+  "button | Factory": {
+   "api": [],
+   "at": "#/system/sys/factory",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Mode": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": "#/system/sys/mode",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Separation Engine": {
+   "api": [],
+   "at": "#/system/sys/separation",
+   "errors": [],
+   "hash": "#/system/sys/separation",
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | Storage": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": "#/system/sys/storage",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ⬇ Download the factory captures (#)": {
+   "api": [
+    "POST factory/captures/download"
+   ],
+   "at": "#/system/sys/factory",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "switch | Shown": {
+   "api": [
+    "POST factory/visibility"
+   ],
+   "at": "#/system/sys/factory",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/sys/mode": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "a | ✎ Patch inputs on Soundcard →": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Any": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Audio Engine": {
+   "api": [],
+   "at": "#/system/sys/audio-engine",
+   "errors": [],
+   "hash": "#/system/sys/audio-engine",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Concert": {
+   "api": [
+    "POST mode/update"
+   ],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Dashboard": {
+   "api": [],
+   "at": "#/system/sys/dash",
+   "errors": [],
+   "hash": "#/system/sys/dash",
+   "opens": false
+  },
+  "button | Factory": {
+   "api": [],
+   "at": "#/system/sys/factory",
+   "errors": [],
+   "hash": "#/system/sys/factory",
+   "opens": false
+  },
+  "button | Gig": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Home": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Jam": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Manual": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Mode": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Off": {
+   "api": [
+    "POST mode/update"
+   ],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | On": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Pedalboard": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Per preset": {
+   "api": [
+    "POST mode/update"
+   ],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Rehearsal": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Separation Engine": {
+   "api": [],
+   "at": "#/system/sys/separation",
+   "errors": [],
+   "hash": "#/system/sys/separation",
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | Storage": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": "#/system/sys/storage",
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ▤ Factory Golem ▾": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ },
+ "#/system/sys/storage": {
+  "a | Designer": {
+   "api": [
+    "POST backing/drawer",
+    "POST blocks/status"
+   ],
+   "at": "#/designer/guitar-1",
+   "errors": [],
+   "hash": "#/designer/guitar-1",
+   "opens": false
+  },
+  "a | Library": {
+   "api": [],
+   "at": "#/library",
+   "errors": [],
+   "hash": "#/library",
+   "opens": false
+  },
+  "a | Live": {
+   "api": [],
+   "at": "#/live",
+   "errors": [],
+   "hash": "#/live",
+   "opens": false
+  },
+  "a | Settings": {
+   "api": [],
+   "at": "#/system",
+   "errors": [],
+   "hash": "#/system",
+   "opens": false
+  },
+  "a | Songs": {
+   "api": [],
+   "at": "#/songs",
+   "errors": [],
+   "hash": "#/songs",
+   "opens": false
+  },
+  "button | + Add folders": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | API": {
+   "api": [
+    "POST services/check"
+   ],
+   "at": "#/system/api",
+   "covered": true,
+   "errors": [],
+   "hash": "#/system/api",
+   "opens": false
+  },
+  "button | Audio Engine": {
+   "api": [],
+   "at": "#/system/sys/audio-engine",
+   "errors": [],
+   "hash": "#/system/sys/audio-engine",
+   "opens": false
+  },
+  "button | Calibration": {
+   "api": [],
+   "at": "#/system/pedal",
+   "errors": [],
+   "hash": "#/system/pedal",
+   "opens": false
+  },
+  "button | Change…": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Clear": {
+   "api": [],
+   "asks": [
+    "sure?"
+   ],
+   "at": "#/system/sys/storage",
+   "covered": true,
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | Dashboard": {
+   "api": [],
+   "at": "#/system/sys/dash",
+   "errors": [],
+   "hash": "#/system/sys/dash",
+   "opens": false
+  },
+  "button | Factory": {
+   "api": [],
+   "at": "#/system/sys/factory",
+   "errors": [],
+   "hash": "#/system/sys/factory",
+   "opens": false
+  },
+  "button | Licenses": {
+   "api": [],
+   "at": "#/system/lic",
+   "errors": [],
+   "hash": "#/system/lic",
+   "opens": false
+  },
+  "button | Mode": {
+   "api": [],
+   "at": "#/system/sys/mode",
+   "errors": [],
+   "hash": "#/system/sys/mode",
+   "opens": false
+  },
+  "button | Network": {
+   "api": [],
+   "at": "#/system/net",
+   "errors": [],
+   "hash": "#/system/net",
+   "opens": false
+  },
+  "button | Separation Engine": {
+   "api": [],
+   "at": "#/system/sys/separation",
+   "errors": [],
+   "hash": "#/system/sys/separation",
+   "opens": false
+  },
+  "button | Soundcard": {
+   "api": [],
+   "at": "#/system/sound",
+   "errors": [],
+   "hash": "#/system/sound",
+   "opens": false
+  },
+  "button | Storage": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  },
+  "button | System": {
+   "api": [],
+   "at": "#/system/sys",
+   "errors": [],
+   "hash": "#/system/sys",
+   "opens": false
+  },
+  "button | ⇅ Back up…": {
+   "api": [],
+   "at": "#/system/sys/storage",
+   "errors": [],
+   "hash": null,
+   "opens": false
+  }
+ }
+}

@@ -1,0 +1,481 @@
+{
+ "id": "factory-bass-rock-grind",
+ "name": "Rock Grind",
+ "role": "bass",
+ "tags": [
+  "rock",
+  "drive"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Rock Grind",
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Clean",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Grind",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {
+      "svtcl": {
+       "output": -4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Pick Drive",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {
+      "comp": {
+       "attack": 3,
+       "ratio": 6
+      },
+      "svtcl": {
+       "output": -4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Big Chorus",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {
+      "svtcl": {
+       "output": -4
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "attack": 2,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 10,
+       "release": 150
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "svtcl",
+         "type": "amp-nam",
+         "label": "Ampeg SVT-CL",
+         "ref": "45809",
+         "model": "382790",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "glock",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580768",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "b7k",
+         "type": "amp",
+         "label": "Darkglass B7K Ultra",
+         "ref": "27698",
+         "model": "413366",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "foot": 7,
+      "params": {
+       "rate": 0.4,
+       "depth": 3,
+       "mix": 0.25
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean",
+   "blocks": {
+    "chorus": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Grind",
+   "blocks": {
+    "chorus": false
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-B"
+    }
+   },
+   "level": 1,
+   "params": {
+    "svtcl": {
+     "output": -4
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Pick Drive",
+   "blocks": {
+    "chorus": false
+   },
+   "params": {
+    "comp": {
+     "attack": 3,
+     "ratio": 6
+    },
+    "svtcl": {
+     "output": -4
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 2,
+     "state": "st-bass-1-C"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Big Chorus",
+   "blocks": {
+    "chorus": true
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-D"
+    }
+   },
+   "level": 1,
+   "params": {
+    "svtcl": {
+     "output": -4
+    }
+   }
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -58,
+     "attack": 2,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 10,
+     "release": 150
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "svtcl",
+       "type": "amp-nam",
+       "label": "Ampeg SVT-CL",
+       "ref": "45809",
+       "model": "382790",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "glock",
+       "type": "cab",
+       "label": "Glockenklang DUO 2x10",
+       "ref": "70612",
+       "model": "580768",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "b7k",
+       "type": "amp",
+       "label": "Darkglass B7K Ultra",
+       "ref": "27698",
+       "model": "413366",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "foot": 7,
+    "params": {
+     "rate": 0.4,
+     "depth": 3,
+     "mix": 0.25
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "45809",
+   "model": "382790"
+  },
+  {
+   "type": "cab",
+   "ref": "70612",
+   "model": "580768"
+  },
+  {
+   "type": "amp",
+   "ref": "27698",
+   "model": "413366"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "367faf46f93e80dc2f02381c6e7b581870edae57bf9509e12d594adeb3a96ace",
+   "uid": "t3k:45809",
+   "kind": "amp",
+   "bytes": 296327,
+   "name": "SVT CLEAN",
+   "source": "t3k",
+   "amp": "AMPEG SVT-CL",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-cl-bass-head-45809"
+  },
+  {
+   "sha256": "93e898275ca5abfd27e0816a584b522c330d843e0b1e5d17143db21e49fa9be8",
+   "uid": "t3k:70612",
+   "kind": "cab",
+   "bytes": 145120,
+   "name": "Glockenklang DUO 2x10 d6x bal w horn",
+   "source": "t3k",
+   "amp": "Glockenklang DUO 2x10",
+   "brand": "Glockenklang",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/glockenklang-duo-2x10-70612"
+  },
+  {
+   "sha256": "beda818afa2103c519733598cac0e98dc9740d4aeb351d3295f0b3b79eb1f3fd",
+   "uid": "t3k:27698",
+   "kind": "pedal",
+   "bytes": 294802,
+   "name": "Darkglass Drive - Microtubes B7K Ultra",
+   "source": "t3k",
+   "amp": "Darkglass B7K Ultra",
+   "arch": "2",
+   "brand": "Darkglass",
+   "creator": "darkglass",
+   "url": "https://www.tone3000.com/tones/darkglass-b7k-ultra-27698"
+  },
+  {
+   "sha256": "e59b09a7f2cd36e130ae49187771342d1ef9b85c671e537e37ad24070d728255",
+   "uid": "t3k:2694",
+   "kind": "amp",
+   "bytes": 296167,
+   "name": "GALLIEN KRUEGER - RB800 - G2.5",
+   "source": "t3k",
+   "amp": "Gallien Krueger - RB800",
+   "arch": "2",
+   "brand": "Gallien-Krueger",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/gallien-krueger-rb800-070-2694"
+  },
+  {
+   "sha256": "a1409f62eb14346660f0fd4be37d7aa57cde1ad2164a69d1feda3576a937da24",
+   "uid": "t3k:64815",
+   "kind": "cab",
+   "bytes": 183404,
+   "name": "Mid Contour_dc",
+   "source": "t3k",
+   "amp": "Gallien Krueger - RB800",
+   "brand": "Gallien-Krueger",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/gallien-krueger-rb800-070-irs-64815"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"smoke\", \"6\": \"ripple\", \"7\": \"scanner\", \"9\": \"stars\", \"A\": \"pulse\", \"B\": \"vu\", \"C\": \"sheen\", \"D\": \"glitch\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 3, \"mix\": 0.25, \"rate\": 0.4}, \"type\": \"chorus\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 4, \"release\": 150, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#c2541b\", \"6\": \"#c2541b\", \"7\": \"#c2541b\", \"9\": \"#c2541b\", \"A\": \"#c2541b\", \"B\": \"#c2541b\", \"C\": \"#c2541b\", \"D\": \"#c2541b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 3, \"mix\": 0.25, \"rate\": 0.4}, \"type\": \"chorus\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 4, \"release\": 150, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Rock Grind\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Clean\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Grind\", \"params\": {\"svtcl\": {\"output\": -4}}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Pick Drive\", \"params\": {\"comp\": {\"attack\": 3, \"ratio\": 6}, \"svtcl\": {\"output\": -4}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Big Chorus\", \"params\": {\"svtcl\": {\"output\": -4}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Clean\"}, {\"blocks\": {\"chorus\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-B\"}}, \"level\": 1, \"name\": \"Grind\", \"params\": {\"svtcl\": {\"output\": -4}}}, {\"blocks\": {\"chorus\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 2, \"state\": \"st-bass-1-C\"}}, \"level\": 2, \"name\": \"Pick Drive\", \"params\": {\"comp\": {\"attack\": 3, \"ratio\": 6}, \"svtcl\": {\"output\": -4}}}, {\"blocks\": {\"chorus\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Big Chorus\", \"params\": {\"svtcl\": {\"output\": -4}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#c2541b",
+  "B": "#c2541b",
+  "C": "#c2541b",
+  "D": "#c2541b",
+  "7": "#c2541b",
+  "9": "#c2541b",
+  "10": "#c2541b"
+ },
+ "anims": {
+  "A": "pulse",
+  "B": "vu",
+  "C": "sheen",
+  "D": "glitch",
+  "7": "scanner",
+  "9": "stars",
+  "10": "smoke"
+ }
+}

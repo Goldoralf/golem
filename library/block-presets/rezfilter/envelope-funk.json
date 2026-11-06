@@ -1,0 +1,16 @@
+{
+ "name": "Envelope funk",
+ "type": "rezfilter",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "freq": 0.35,
+  "res": 0.7,
+  "env": 0.6,
+  "attack": 0.3,
+  "release": 0.5,
+  "lfodepth": 0,
+  "lforate": 0.3
+ },
+ "default": true
+}

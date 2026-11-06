@@ -1,0 +1,16 @@
+{
+ "name": "Vocal gate",
+ "type": "gate",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -48,
+  "attack": 2,
+  "hold": 100,
+  "release": 300,
+  "hpf": 100,
+  "lpf": 12000,
+  "hyst": -6
+ },
+ "default": true
+}

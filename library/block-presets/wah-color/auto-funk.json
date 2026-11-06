@@ -1,0 +1,13 @@
+{
+ "name": "Auto funk",
+ "type": "wah-color",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "model": "Foxx",
+  "mode": "auto",
+  "wah": 0.4,
+  "freq": 60,
+  "mix": 100
+ }
+}

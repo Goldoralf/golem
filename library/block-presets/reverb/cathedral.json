@@ -1,0 +1,12 @@
+{
+ "name": "Cathedral",
+ "type": "reverb",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 40,
+  "decay": 4,
+  "size": 50,
+  "hicut": 5500
+ }
+}

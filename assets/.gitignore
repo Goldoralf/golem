@@ -1,0 +1,19 @@
+# assets/ — modèles NAM, IR de baffles, presets tiers
+#
+# RÈGLE LICENCES : on ne redistribue JAMAIS les captures/IR d'autrui.
+# Le repo les RÉFÉRENCE par id/source (library/components.json) ;
+# provision/fetch-assets.sh les télécharge depuis leur source.
+#
+# → On ignore tout le contenu binaire ici, on garde juste l'arbo.
+
+models/*
+irs/*
+presets/*
+
+# Garder les dossiers dans Git (sentinelles)
+!models/.gitkeep
+!irs/.gitkeep
+!presets/.gitkeep
+
+# Si un jour tu versionnes TES PROPRES captures : git-lfs + une exception explicite,
+# ex.  !models/mine/**

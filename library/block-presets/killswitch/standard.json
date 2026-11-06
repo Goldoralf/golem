@@ -1,0 +1,16 @@
+{
+ "name": "Standard",
+ "type": "killswitch",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 50,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 1
+ },
+ "default": true
+}

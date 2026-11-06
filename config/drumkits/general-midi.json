@@ -1,0 +1,53 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "general-midi",
+ "name": "General MIDI (fallback)",
+ "identity": {
+  "brand": "—",
+  "model": "GM percussion map",
+  "connection": "usb",
+  "usb_names": []
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "48": "tom1",
+  "45": "tom2",
+  "43": "tom3",
+  "41": "tom4",
+  "42": "hh-closed",
+  "46": "hh-open",
+  "44": "hh-pedal",
+  "49": "crash1",
+  "57": "crash2",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "55": "splash",
+  "52": "china"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "none",
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "url": "https://www.midi.org/specifications-old/item/gm-level-1-sound-set",
+  "note": "La norme GM Level 1 (percussion key map, canal 10). Repli pour tout module inconnu : l'écran dit « GM fallback — measure this kit »."
+ },
+ "note": "Repli. Un module inconnu y atterrit ; le mesurer en fait un vrai descripteur."
+}

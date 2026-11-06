@@ -1,0 +1,11 @@
+{
+ "name": "Lush",
+ "type": "chorus",
+ "factory": true,
+ "params": {
+  "rate": 0.7,
+  "depth": 6,
+  "mix": 0.6
+ },
+ "inst": "any"
+}

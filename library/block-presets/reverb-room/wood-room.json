@@ -1,0 +1,13 @@
+{
+ "name": "Wood room",
+ "type": "reverb-room",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "mix": 18,
+  "decay": 0.5,
+  "size": 9,
+  "hicut": 6500
+ },
+ "default": true
+}

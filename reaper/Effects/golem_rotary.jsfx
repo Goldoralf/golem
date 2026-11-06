@@ -1,0 +1,149 @@
+desc:GoleM Rotary Speaker -- the rotary block on Windows and macOS (Calf Rotary Speaker parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « rotary » joue Calf Rotary Speaker sous Linux ; Calf n'existe ni sous Windows ni sous macOS
+// (docs/platforms.md §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs
+// (src/metadata.cpp de Calf, lu le 2026-10-22) et l'ARCHITECTURE publique de Calf : le signal mono (atan) entre
+// dans une ligne a retard ; le rotor aigu lit trois prises modulees (Doppler = FM Depth, reflexions = Reflection,
+// ecart des prises = Tap Spacing, decalage = Tap Offset), passe par un amortisseur et une modulation d'amplitude
+// (AM Depth) puis un passe-bande a 2 kHz ; le rotor grave lit une prise moins modulee, module en amplitude, puis un
+// passe-bas a 800 Hz ; les deux canaux sont en quadrature sur chaque rotor ; Mic Distance rapproche les deux
+// micros. Les vitesses de Calf : aigu 48 -> 400 tr/min, grave 40 -> 342, avec ses rampes (aigu : +0,5/s et -1/s ;
+// grave : +0,14/s et -0,2/s). Le CODE est le notre.
+//
+//  - Speed Mode : 0 = Off (les rotors s'arretent), 1 = Chorale (lent), 2 = Tremolo (rapide), 3 / 4 = comme lent
+//                 (Hold / ModWheel sans MIDI ici), 5 = Manual (Treble Motor / Bass Motor en tr/min).
+//  - Tap Spacing, Tap Offset, FM Depth, Mic Distance, Reflection, AM Depth : 0..1 comme Calf.
+//  - Input Gain / Output Gain : defauts Calf 1 et 2 (le Rotary de Calf sort a +6 dB).
+//
+// Pieges respectes : rien avant @init ; variables prefixees ro_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel.
+
+slider1:ro_mode=5<0,5,1>Speed Mode
+slider2:ro_spacing=0.5<0,1,0.01>Tap Spacing
+slider3:ro_shift=0.5<0,1,0.01>Tap Offset
+slider4:ro_depth=0.6<0,1,0.01>FM Depth
+slider5:ro_tspeed=36<10,600,0.1>Treble Motor
+slider6:ro_bspeed=30<10,600,0.1>Bass Motor
+slider7:ro_mic=0.7<0,1,0.01>Mic Distance
+slider8:ro_refl=0.3<0,1,0.01>Reflection
+slider9:ro_am=0.6<0,1,0.01>AM Depth
+slider10:ro_lin=1<0.015625,64,0.001>Input Gain
+slider11:ro_lout=2<0.015625,64,0.001>Output Gain
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+ro_MAXD = 1024;
+ro_buf = 4096;                   // ligne mono 4096..5119
+ro_pos = 0;
+ro_c = 0;                        // coefficients : 6 biquads x 8 cases a 0..47
+ro_s = 0;                        // etats : les decalages passes a ro_biq sont ABSOLUS, 6 biquads x 4 cases a 128..151
+ro_ph_l = 0; ro_ph_h = 0;
+ro_asl = 1; ro_ash = 1;          // vitesses courantes (0 = lent, 1 = rapide, -1 = arret) : Calf demarre a 1 (rapide), puis rampe
+ro_msl = 0; ro_msh = 0;          // vitesses manuelles (tr/min)
+ro_sr = 0;
+
+function ro_rbj(base, kind, f, q) local(w, al, a0, c) (
+  w = 2 * $pi * min(f, 0.45 * srate) / srate; al = sin(w) / (2 * q); c = cos(w); a0 = 1 + al;
+  kind == 0 ? (                                    // passe-bas
+    ro_c[base] = (1 - c) / 2 / a0; ro_c[base + 1] = (1 - c) / a0; ro_c[base + 2] = (1 - c) / 2 / a0;
+  ) : (                                            // passe-bande (0 dB au centre)
+    ro_c[base] = al / a0; ro_c[base + 1] = 0; ro_c[base + 2] = -al / a0;
+  );
+  ro_c[base + 3] = -2 * c / a0; ro_c[base + 4] = (1 - al) / a0;
+);
+function ro_biq(x, base, st) local(y) (
+  y = ro_c[base] * x + ro_c[base + 1] * ro_s[st] + ro_c[base + 2] * ro_s[st + 1] - ro_c[base + 3] * ro_s[st + 2] - ro_c[base + 4] * ro_s[st + 3];
+  abs(y) < 0.000000000000001 ? y = 0;              // denormaux : un passe-bande rejette l'epsilon de la ligne
+  ro_s[st + 1] = ro_s[st]; ro_s[st] = x; ro_s[st + 3] = ro_s[st + 2]; ro_s[st + 2] = y;
+  y;
+);
+// lecture interpolee a `d` echantillons derriere l'ecriture
+function ro_read(d) local(p, i, fr) (
+  d = max(1, min(ro_MAXD - 3, d));
+  p = ro_pos - d; p < 0 ? p += ro_MAXD;
+  i = floor(p); fr = p - i;
+  ro_buf[i] * (1 - fr) + ro_buf[(i + 1) >= ro_MAXD ? 0 : i + 1] * fr;
+);
+// le pseudo-sinus de Calf : rampe -1..1 -> (v - v^3) / 0.3849, dans [0, 1]
+function ro_psin(ph) local(v) (
+  v = 2 * (ph - floor(ph)) - 1;
+  0.5 + 0.5 * (v - v * v * v) / 0.3849;
+);
+function ro_target() (
+  ro_m == 0 ? -1 : ro_m == 2 ? 1 : 0;
+);
+function ro_speeds() (
+  ro_m == 5 ? (
+    ro_rpm_h = ro_msh; ro_rpm_l = ro_msl;
+  ) : (
+    ro_rpm_h = ro_ash >= 0 ? 48 + (400 - 48) * ro_ash : 48 * (1 + ro_ash);
+    ro_rpm_l = ro_asl >= 0 ? 40 + (342 - 40) * ro_asl : 40 * (1 + ro_asl);
+  );
+  ro_dph_h = ro_rpm_h / 60 / srate;
+  ro_dph_l = ro_rpm_l / 60 / srate;
+);
+function ro_towards(cur, want, dec, acc) (
+  cur < want ? min(want, cur + acc) : cur > want ? max(want, cur - dec) : cur;
+);
+ro_m = 5; ro_first = 1;
+
+@slider
+ro_m = max(0, min(5, floor(ro_mode + 0.5)));
+ro_first ? (                                        // au chargement, les moteurs manuels sont deja a leur vitesse
+  ro_msl = ro_bspeed; ro_msh = ro_tspeed; ro_first = 0;
+);
+ro_shiftS = 300000 / 65536 * ro_shift;              // prises en echantillons, comme Calf (16.16)
+ro_pdelta = 300000 / 65536 * ro_spacing;
+ro_md = 100 * ro_depth;
+ro_mix = 0.5 * (1 - ro_mic);
+ro_mix2 = ro_refl; ro_mix3 = ro_refl * ro_refl;
+
+@block
+ro_sr != srate ? (
+  ro_sr = srate;
+  ro_rbj(0, 0, 800, 0.7); ro_rbj(8, 0, 800, 0.7);       // grave : passe-bas 800 Hz, L et R
+  ro_rbj(16, 1, 2000, 0.7); ro_rbj(24, 1, 2000, 0.7);   // aigu : passe-bande 2 kHz
+  ro_rbj(32, 1, 1000, 0.7); ro_rbj(40, 1, 1000, 0.7);   // amortisseur du rotor aigu
+);
+// les rampes de Calf, par bloc : delta = samplesblock / srate
+ro_delta = samplesblock / srate;
+ro_m == 5 ? (
+  ro_msh = ro_towards(ro_msh, ro_tspeed, ro_delta * 200, ro_delta * 200);
+  ro_msl = ro_towards(ro_msl, ro_bspeed, ro_delta * 200, ro_delta * 200);
+) : (
+  ro_asl = ro_towards(ro_asl, ro_target(), ro_delta * 0.2, ro_delta * 0.14);
+  ro_ash = ro_towards(ro_ash, ro_target(), ro_delta, ro_delta * 0.5);
+);
+ro_speeds();
+
+@sample
+ro_in = atan(0.5 * (spl0 + spl1) * ro_lin);
+ro_xl = ro_psin(ro_ph_l); ro_yl = ro_psin(ro_ph_l + 0.25);
+ro_xh = ro_psin(ro_ph_h); ro_yh = ro_psin(ro_ph_h + 0.25);
+// rotor aigu : trois prises (directe, reflexion, seconde reflexion), comme Calf
+ro_fhl = ro_read(ro_shiftS + ro_md * ro_xh) - ro_mix2 * ro_read(ro_shiftS + ro_md + ro_pdelta - ro_md * ro_yh) + ro_mix3 * ro_read(ro_shiftS + ro_md + 2 * ro_pdelta - ro_md * ro_xh);
+ro_fhr = ro_read(ro_shiftS + ro_md - ro_md * ro_yh) - ro_mix2 * ro_read(ro_shiftS + ro_pdelta + ro_md * ro_xh) + ro_mix3 * ro_read(ro_shiftS + 2 * ro_pdelta + ro_md * ro_yh);
+ro_ahl = 0.5 + (ro_xh - 0.5) * ro_am; ro_ahr = 0.5 + (ro_yh - 0.5) * ro_am;
+ro_hl = ro_in + (ro_biq(ro_fhl, 32, 144) - ro_in) * ro_ahl;
+ro_hr = ro_in + (ro_biq(ro_fhr, 40, 148) - ro_in) * ro_ahr;
+// rotor grave : une prise moins modulee, amplitude en quadrature
+ro_all = 0.5 + (ro_yl - 0.5) * ro_am; ro_alr = 0.5 + (ro_xl - 0.5) * ro_am;
+ro_ll = ro_in + (ro_read(ro_shiftS + ro_md * ro_xl / 4) - ro_in) * ro_all;
+ro_lr = ro_in + (ro_read(ro_shiftS + ro_md * ro_yl / 4) - ro_in) * ro_alr;
+ro_hl = ro_biq(ro_hl, 16, 136); ro_hr = ro_biq(ro_hr, 24, 140);
+ro_ll = ro_biq(ro_ll, 0, 128); ro_lr = ro_biq(ro_lr, 8, 132);
+ro_ol = ro_hl + ro_ll; ro_or = ro_hr + ro_lr;
+spl0 = (ro_ol + ro_mix * (ro_or - ro_ol)) * ro_lout;
+spl1 = (ro_or + ro_mix * (ro_ol - ro_or)) * ro_lout;
+ro_buf[ro_pos] = ro_in + 0.000000000000000001;
+ro_pos += 1; ro_pos >= ro_MAXD ? ro_pos = 0;
+ro_ph_l += ro_dph_l; ro_ph_l >= 1 ? ro_ph_l -= 1;
+ro_ph_h += ro_dph_h; ro_ph_h >= 1 ? ro_ph_h -= 1;

@@ -1,0 +1,15 @@
+{
+ "name": "Half Chop",
+ "type": "killswitch",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "depth": 70,
+  "length": 60,
+  "sync": "1/8",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 3
+ }
+}

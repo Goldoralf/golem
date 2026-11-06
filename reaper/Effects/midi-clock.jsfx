@@ -1,0 +1,55 @@
+desc:GoleM MIDI clock (midi-clock) -- free-running 24 PPQN clock @ project tempo
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM clock block (patron b3-ctl/dx7-ctl : emetteur MIDI). Posee en FX0 de la piste utilitaire
+//! permanente "Sandbox #Clock" (cf golem_clock.lua) dont la SORTIE MIDI HARDWARE (I_MIDIHWOUT) va
+//! vers le clavier AKAI, pour synchroniser son arpegiateur au TEMPO PROJET (= BPM du preset, pose au
+//! recall par golem_rig via SetCurrentBPM).
+//!
+//! Pourquoi un JSFX et PAS le "send clock" natif de Reaper : le rig est monitore TRANSPORT A
+//! L'ARRET, or l'horloge native de Reaper n'emet QU'EN LECTURE. Ici le @block tourne en permanence
+//! (le traitement FX temps-reel est independant du transport) -> horloge FREE-RUNNING.
+//!
+//! 24 PPQN : 24 ticks (0xF8) par noire. Intervalle entre ticks = 60/(tempo*24) s = 2.5/tempo s
+//! = srate*2.5/tempo echantillons. On emet chaque tick a son offset-echantillon EXACT dans le bloc
+//! (accumulateur d'echantillons) -> horloge stable, sans jitter de taille de bloc. `tempo` = tempo
+//! projet courant (variable JSFX), valide MEME transport a l'arret (pas de tempo-map ici -> constant).
+//!
+//! Start (0xFA) : emis UNE fois a l'activation SI slider1=1. L'arp du MPK n'a besoin QUE du tick
+//! (defaut = clock only). Les temoins ticks/seen_tempo (sliders) sont relus au fxdump = PREUVE d'emission.
+
+slider1:send_start=0<0,1,1{clock only,Start+clock}>Send Start (0xFA) once
+slider2:ticks=0<0,1000000000,1>Ticks emitted (temoin)
+slider3:seen_tempo=0<0,400,0.01>Tempo seen (temoin)
+
+// pas d'audio : passthrough transparent (la piste ne porte aucun signal)
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+CLK = 0;  CLK[0] = 0xF8;   // buffer 1 octet : MIDI Clock (system realtime, 1 octet)
+STA = 8;  STA[0] = 0xFA;   // buffer 1 octet : MIDI Start (system realtime, 1 octet)
+acc = 0;                   // echantillons restant avant le prochain tick (fractionnaire, [0, spt))
+started = 0;               // Start deja emis ?
+tickcount = 0;
+
+@block
+t = tempo; t < 1 ? t = 1;                 // garde-fou (tempo=0 transitoire pendant un settle projet)
+spt = srate * 2.5 / t;                    // echantillons par tick a 24 PPQN
+seen_tempo = tempo;
+
+// Start (0xFA) une seule fois a l'activation, si demande (defaut off : l'arp MPK se cale sur le tick)
+(send_start >= 0.5 && started == 0) ? ( midisend_buf(0, STA, 1); started = 1; );
+
+// emet tous les ticks dont l'offset tombe dans ce bloc, a l'echantillon pres
+n = samplesblock;
+while (acc < n) (
+  midisend_buf(max(0, floor(acc)), CLK, 1);
+  acc += spt;
+  tickcount += 1;
+);
+acc -= n;
+ticks = tickcount % 1000000000;           // temoin relu au fxdump (TrackFX_GetParam slider2)

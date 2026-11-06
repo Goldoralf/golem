@@ -1,0 +1,13 @@
+{
+  "name": "golem",
+  "short_name": "golem",
+  "description": "The rack's screen",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0c0e12",
+  "theme_color": "#0c0e12",
+  "icons": [{ "src": "icons/favicon-180.png?v=2", "sizes": "180x180", "type": "image/png" },
+            { "src": "icons/icon-512.png?v=2", "sizes": "512x512", "type": "image/png" }]
+}

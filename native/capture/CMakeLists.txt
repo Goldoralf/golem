@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.22)
+project(golem_capture VERSION 1.0.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(FetchContent)
+# Révisions immuables ; les surcharges servent seulement aux builds hors ligne.
+set(GOLEM_NAM_SOURCE "" CACHE PATH "Existing NeuralAmpModelerCoreParametric checkout")
+set(GOLEM_CLAP_SOURCE "" CACHE PATH "Existing CLAP headers checkout")
+if(NOT GOLEM_NAM_SOURCE)
+  FetchContent_Declare(nam GIT_REPOSITORY https://github.com/phillipmself/NeuralAmpModelerCoreParametric.git
+    GIT_TAG fddcbc91e74ba79066a43c3b73cc690073529232 GIT_SUBMODULES Dependencies/eigen Dependencies/AudioDSPTools)
+  FetchContent_GetProperties(nam)
+  if(NOT nam_POPULATED)
+    FetchContent_Populate(nam)
+  endif()
+  set(GOLEM_NAM_SOURCE "${nam_SOURCE_DIR}")
+endif()
+if(NOT GOLEM_CLAP_SOURCE)
+  FetchContent_Declare(clap GIT_REPOSITORY https://github.com/free-audio/clap.git
+    GIT_TAG a47f6badb49d948fd009998f28309cdab78979c9)
+  FetchContent_GetProperties(clap)
+  if(NOT clap_POPULATED)
+    FetchContent_Populate(clap)
+  endif()
+  set(GOLEM_CLAP_SOURCE "${clap_SOURCE_DIR}")
+endif()
+file(GLOB NAM_SOURCES CONFIGURE_DEPENDS "${GOLEM_NAM_SOURCE}/NAM/*.cpp" "${GOLEM_NAM_SOURCE}/NAM/*/*.cpp")
+add_library(capture_core OBJECT ${NAM_SOURCES} engine.cpp)
+set_target_properties(capture_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(capture_core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${GOLEM_NAM_SOURCE}/NAM" "${GOLEM_NAM_SOURCE}/Dependencies/eigen"
+  "${GOLEM_NAM_SOURCE}/Dependencies/nlohmann" "${GOLEM_NAM_SOURCE}/Dependencies/AudioDSPTools")
+target_compile_definitions(capture_core PUBLIC NAM_SAMPLE_FLOAT=1 EIGEN_MPL2_ONLY=1 EIGEN_NO_DEBUG=1 NOMINMAX)
+# x86-64-v3 (AVX2/FMA) comme le NAM que golem pose déjà : Eigen y calcule le WaveNet deux fois plus vite qu'en SSE2
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64)$" AND NOT APPLE)
+  target_compile_options(capture_core PUBLIC -march=x86-64-v3)
+endif()
+add_library(golem_capture MODULE plugin.cpp)
+target_link_libraries(golem_capture PRIVATE capture_core)
+target_include_directories(golem_capture PRIVATE "${GOLEM_CLAP_SOURCE}/include")
+set_target_properties(golem_capture PROPERTIES PREFIX "" SUFFIX ".clap" OUTPUT_NAME "golem-capture")
+if(APPLE)
+  set_target_properties(golem_capture PROPERTIES BUNDLE TRUE BUNDLE_EXTENSION "clap" SUFFIX ""
+    MACOSX_BUNDLE_GUI_IDENTIFIER "fm.golem.capture")
+endif()
+add_executable(capture_render render.cpp)
+target_link_libraries(capture_render PRIVATE capture_core)
+if(UNIX AND NOT APPLE)
+  # Le cœur NAM reste privé au lecteur : exporté, son registre (symbole GNU unique) est partagé avec celui du
+  # plugin NAM chargé dans le même REAPER, et la seconde inscription de SlimmableContainer tue REAPER.
+  set_target_properties(capture_core golem_capture capture_render PROPERTIES
+    CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
+  # les gabarits de la libstdc++ gardent leur visibilité : seul clap_entry sort du lecteur
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/golem-capture.map" "{ global: clap_entry; local: *; };\n")
+  target_link_options(golem_capture PRIVATE "-Wl,--version-script=${CMAKE_CURRENT_BINARY_DIR}/golem-capture.map")
+endif()
+if(MINGW)
+  target_link_options(golem_capture PRIVATE -static -static-libgcc -static-libstdc++)
+  target_link_options(capture_render PRIVATE -static -static-libgcc -static-libstdc++)
+endif()
+install(TARGETS golem_capture LIBRARY DESTINATION . RUNTIME DESTINATION .)

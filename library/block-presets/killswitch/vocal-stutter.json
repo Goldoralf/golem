@@ -1,0 +1,15 @@
+{
+ "name": "Vocal Stutter",
+ "type": "killswitch",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 45,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Pick",
+  "sens": 40,
+  "smooth": 2
+ }
+}

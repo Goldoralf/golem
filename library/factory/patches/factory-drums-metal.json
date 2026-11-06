@@ -1,0 +1,269 @@
+{
+ "id": "factory-drums-metal",
+ "name": "Metal",
+ "role": "drums",
+ "tags": [
+  "metal"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "drums-1",
+   "role": "drums",
+   "name": "Metal",
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Blast",
+     "blocks": {
+      "verb": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Breakdown",
+     "blocks": {
+      "verb": true
+     },
+     "params": {
+      "comp": {
+       "ratio": 8
+      },
+      "verb": {
+       "mix": 16,
+       "decay": 1.2
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Tight",
+     "blocks": {
+      "verb": false
+     },
+     "params": {
+      "comp": {
+       "attack": 5
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Clean Intro",
+     "blocks": {
+      "verb": true
+     },
+     "params": {
+      "verb": {
+       "mix": 22,
+       "decay": 1.6
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-aasimonster"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 10,
+       "release": 100
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": -2,
+       "midfreq": 400,
+       "highs": 3
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "foot": 6,
+      "params": {
+       "mix": 10,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 8000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Blast",
+   "blocks": {
+    "verb": true
+   },
+   "lanes": {
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Breakdown",
+   "blocks": {
+    "verb": true
+   },
+   "params": {
+    "comp": {
+     "ratio": 8
+    },
+    "verb": {
+     "mix": 16,
+     "decay": 1.2
+    }
+   },
+   "lanes": {
+    "drums-1": {
+     "level": 1,
+     "state": "st-drums-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Tight",
+   "blocks": {
+    "verb": false
+   },
+   "params": {
+    "comp": {
+     "attack": 5
+    }
+   },
+   "lanes": {
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Clean Intro",
+   "blocks": {
+    "verb": true
+   },
+   "params": {
+    "verb": {
+     "mix": 22,
+     "decay": 1.6
+    }
+   },
+   "lanes": {
+    "drums-1": {
+     "level": -2,
+     "state": "st-drums-1-D"
+    }
+   },
+   "level": -2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "kit",
+    "type": "drumkit",
+    "params": {
+     "kit": "drums-aasimonster"
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -22,
+     "ratio": 5,
+     "makeup": 3,
+     "attack": 10,
+     "release": 100
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 35,
+     "midgain": -2,
+     "midfreq": 400,
+     "highs": 3
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "foot": 6,
+    "params": {
+     "mix": 10,
+     "decay": 0.8,
+     "size": 14,
+     "hicut": 8000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [],
+ "deps_sig": "{\"anims\": {\"6\": \"aurora\", \"A\": \"sheen\", \"B\": \"strobe\", \"C\": \"wave\", \"D\": \"ripple\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-aasimonster\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 5, \"release\": 100, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"midfreq\": 400, \"midgain\": -2}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"verb\", \"params\": {\"decay\": 0.8, \"hicut\": 8000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#d00000\", \"A\": \"#d00000\", \"B\": \"#d00000\", \"C\": \"#d00000\", \"D\": \"#d00000\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-aasimonster\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 5, \"release\": 100, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"midfreq\": 400, \"midgain\": -2}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"verb\", \"params\": {\"decay\": 0.8, \"hicut\": 8000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Metal\", \"role\": \"drums\", \"states\": [{\"blocks\": {\"verb\": true}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Blast\", \"params\": {}}, {\"blocks\": {\"verb\": true}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"verb\": {\"decay\": 1.2, \"mix\": 16}}}, {\"blocks\": {\"verb\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Tight\", \"params\": {\"comp\": {\"attack\": 5}}}, {\"blocks\": {\"verb\": true}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Clean Intro\", \"params\": {\"verb\": {\"decay\": 1.6, \"mix\": 22}}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {\"verb\": true}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Blast\"}, {\"blocks\": {\"verb\": true}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"level\": 1, \"state\": \"st-drums-1-B\"}}, \"level\": 1, \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"verb\": {\"decay\": 1.2, \"mix\": 16}}}, {\"blocks\": {\"verb\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Tight\", \"params\": {\"comp\": {\"attack\": 5}}}, {\"blocks\": {\"verb\": true}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -2, \"state\": \"st-drums-1-D\"}}, \"level\": -2, \"name\": \"Clean Intro\", \"params\": {\"verb\": {\"decay\": 1.6, \"mix\": 22}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#d00000",
+  "B": "#d00000",
+  "C": "#d00000",
+  "D": "#d00000",
+  "9": "#d00000"
+ },
+ "anims": {
+  "A": "sheen",
+  "B": "strobe",
+  "C": "wave",
+  "D": "ripple",
+  "9": "heartbeat"
+ }
+}

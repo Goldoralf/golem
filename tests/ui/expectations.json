@@ -1,0 +1,172 @@
+{
+ "_doc": "What pressing a control MUST do (docs/quality-automation.md §8). Keys: page hash ('*' = every rack page) -> inventory key ('role | name') -> {navigates_to: hash prefix the app lands on; navigates: true (anywhere); opens: true (a dialog or drawer appears); api: exact list of 'METHOD path' calls (intercepted, never executed); writes_nothing: true}. Checked by tools/check-ui.py --press declared on every push; the observed effects of every control live in effects-<platform>.json.",
+ "_hubs": "the five hub links are checked on three pages (one per hub family), not on all 32: each navigation costs a fresh page load",
+ "#/songs/presets": {
+  "a | Live": {
+   "navigates_to": "#/live"
+  },
+  "a | Songs": {
+   "navigates_to": "#/songs"
+  },
+  "a | Library": {
+   "navigates_to": "#/library"
+  },
+  "a | Settings": {
+   "navigates_to": "#/system"
+  },
+  "a | Designer": {
+   "navigates_to": "#/designer"
+  },
+  "button | Patches": {
+   "navigates_to": "#/songs/patches",
+   "writes_nothing": true
+  },
+  "button | Songs": {
+   "navigates_to": "#/songs/songs",
+   "writes_nothing": true
+  },
+  "button | Banks & Setlists": {
+   "navigates_to": "#/songs/setlists",
+   "writes_nothing": true
+  },
+  "button | + Add": {
+   "navigates_to": "#/designer"
+  },
+  "button | Scene B — Chorus": {
+   "writes_nothing": true
+  },
+  "button | Switch # — Chorus": {
+   "writes_nothing": true
+  }
+ },
+ "#/songs/patches": {
+  "button | Play « Test — Guitar bench »": {
+   "api": [
+    "POST patches/test-guitar-bench/play"
+   ]
+  },
+  "button | Play « Test — Bass fan-out »": {
+   "api": [
+    "POST patches/test-bass-fanout/play"
+   ]
+  },
+  "button | Edit « Test — Guitar bench » in the Designer": {
+   "navigates_to": "#/designer"
+  },
+  "button | Presets": {
+   "navigates_to": "#/songs/presets",
+   "writes_nothing": true
+  }
+ },
+ "#/songs": {
+  "button | Presets": {
+   "navigates_to": "#/songs/presets",
+   "writes_nothing": true
+  },
+  "button | Patches": {
+   "navigates_to": "#/songs/patches",
+   "writes_nothing": true
+  },
+  "button | Banks & Setlists": {
+   "navigates_to": "#/songs/setlists",
+   "writes_nothing": true
+  }
+ },
+ "#/library/tones/amps": {
+  "a | Live": {
+   "navigates_to": "#/live"
+  },
+  "a | Songs": {
+   "navigates_to": "#/songs"
+  },
+  "a | Settings": {
+   "navigates_to": "#/system"
+  },
+  "button | Pedals": {
+   "navigates_to": "#/library/tones/pedals",
+   "writes_nothing": true
+  },
+  "button | Cabs": {
+   "navigates_to": "#/library/tones/cabs",
+   "writes_nothing": true
+  },
+  "button | Keys": {
+   "navigates_to": "#/library/keys",
+   "writes_nothing": true
+  },
+  "button | Drums": {
+   "navigates_to": "#/library/drums",
+   "writes_nothing": true
+  },
+  "button | Samples": {
+   "navigates_to": "#/library/samples",
+   "writes_nothing": true
+  },
+  "button | Tracks": {
+   "navigates_to": "#/library/tracks",
+   "writes_nothing": true
+  }
+ },
+ "#/system/sys": {
+  "a | Designer": {
+   "navigates_to": "#/designer"
+  },
+  "a | Library": {
+   "navigates_to": "#/library"
+  },
+  "button | Mode": {
+   "navigates_to": "#/system/mode",
+   "writes_nothing": true
+  },
+  "button | Gear": {
+   "navigates_to": "#/system/gear",
+   "writes_nothing": true
+  },
+  "button | Engines": {
+   "navigates_to": "#/system/engines",
+   "writes_nothing": true
+  },
+  "button | Content": {
+   "navigates_to": "#/system/content",
+   "writes_nothing": true
+  },
+  "button | Connect": {
+   "navigates_to": "#/system/connect",
+   "writes_nothing": true
+  },
+  "button | About": {
+   "navigates_to": "#/system/about",
+   "writes_nothing": true
+  },
+  "button | Start golem with this computer": {
+   "api": [
+    "POST system/autostart"
+   ]
+  },
+  "button | ⏻ Stop golem": {
+   "asks": true,
+   "writes_nothing": true
+  },
+  "button | Health": {
+   "navigates_to": "#/system/sys/health",
+   "writes_nothing": true
+  }
+ },
+ "_restart": "« ↻ restart » (REAPER) asks too, but its label depends on the engine's state (« ▶ start » on a runner without REAPER): it is held by the nightly effects file, not here",
+ "#/songs/setlists": {
+  "button | 🗑": {
+   "asks": true,
+   "writes_nothing": true
+  },
+  "button | ▶ On the foot": {
+   "asks": true,
+   "writes_nothing": true
+  }
+ },
+ "#/system/sys/health": {
+  "button | Dashboard": {
+   "navigates_to": "#/system/sys/dash",
+   "writes_nothing": true
+  }
+ }
+}

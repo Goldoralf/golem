@@ -1,0 +1,16 @@
+{
+ "name": "Bass envelope",
+ "type": "rezfilter",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "freq": 0.3,
+  "res": 0.6,
+  "env": 0.7,
+  "attack": 0.45,
+  "release": 0.6,
+  "lfodepth": 0,
+  "lforate": 0.3
+ },
+ "default": true
+}

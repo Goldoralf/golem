@@ -1,0 +1,38 @@
+# Empreintes des binaires que le provisioning télécharge (provision/lib-fetch.sh, audit 2026-10-15, lot 5).
+# « <sha256>  <url> » — une URL absente d'ici est REFUSÉE. Calculées le 2026-10-15 sur les fichiers officiels.
+# Monter une version : changer l'URL dans le script, `curl -fsSL <url> | sha256sum`, remplacer la ligne.
+# REAPER a la sienne dans provision/install-reaper.sh (REAPER_SHA256) ; les compilations depuis les sources
+# (install-nam, install-zconvo, install-spectral, install-prisma) sont épinglées par COMMIT.
+3339ef1a87b265b3a10dbd6eb3e3a55a289bc207b0379e58f177c087f9d4008a  https://github.com/mikeoliphant/neural-amp-modeler-lv2/releases/download/v0.2.2/neural_amp_modeler_lv2_linux_x64v3.tgz
+292b94f635e8adec95f23280fc94f1b6dd954b8a9440f3e51b7e9faa8bdbe543  https://github.com/AidaDSP/AIDA-X/releases/download/1.1.0/AIDA-X-1.1.0-linux-x86_64.tar.xz
+1a16f9accd43f87ad06be8caae1474cd9869a0470e7a9bf89a64e3203fadb03f  https://github.com/brummer10/Ratatouille.lv2/releases/download/v0.9.11/Ratatouille.lv2-v0.9.11-linux-x86_64.tar.xz
+01d196a1b611062b3219ea3a994b54c70b379bbf6e5b15e2197c863907434dd6  https://github.com/Dougal-s/Aether/releases/download/v1.2.1/Aether-v1.2.1-Linux.tar.xz
+2bac3d0c4237e8c22c4274b6d5b59fe6329fcae72864f81b5830393eff354fc1  https://github.com/asb2m10/dexed/releases/download/v1.0.1/Dexed-1.0.1-lnx.zip
+a6e55064487f624147d515b9ae5fc79a568b69746675b2083abde628ca7bb151  https://github.com/surge-synthesizer/releases-xt/releases/download/1.3.4/surge-xt-linux-x64-1.3.4.deb
+4cf0629aeeff346c1ed9a355ce826febfacf9775bd6f49f09b1b4f9f053b8644  https://github.com/reaper-oss/sws/releases/download/v2.14.0.7/reaper_sws-x86_64.so
+d3bf5a11127da6cf53af183390dc20350c15543617a8743b166c73f6a1a08e90  https://github.com/GuitarML/Proteus/releases/download/v1.2/Proteus-Linux-x64-1.2.deb
+c1803ae57b717bab04ef2072c10284bcb7d44fbe352d42645075b0c6875c9aeb  https://github.com/Chowdhury-DSP/BYOD/releases/download/v1.3.0/BYOD-Linux-x64-1.3.0.deb
+b7760e168494cf095344e217b0af013fc449ad033abbbdf1c65211cf11dc038b  https://freepats.zenvoid.org/Piano/SalamanderGrandPiano/SalamanderGrandPiano-SFZ+FLAC-V3+20200602.tar.gz
+e98e59728b0d7541087b948579c8739f06f63b2cdc594bb1a1687965e0c2e5b1  https://github.com/sfzinstruments/karoryfer.shinyguitar/releases/download/v1.001/Karoryfer.Shinyguitar.v1.001.zip
+7de46ddc85d6ec710b7e660f484d81b6edd39d104e3367f7ce6a70f1fc16e7f4  https://download.opensuse.org/repositories/home:/sfztools:/sfizz/xUbuntu_24.04/amd64/libsfizz1_1.2.3-0_amd64.deb
+4424135807cb4210fe2c332faf7cdfbb70605bba3f8a81fc1857360a59af04bd  https://download.opensuse.org/repositories/home:/sfztools:/sfizz/xUbuntu_24.04/amd64/sfizz_1.2.3-0_amd64.deb
+# les mêmes .deb ailleurs (2026-10-23 : le dépôt OBS est retiré) — notre release, puis un miroir openSUSE
+7de46ddc85d6ec710b7e660f484d81b6edd39d104e3367f7ce6a70f1fc16e7f4  https://github.com/Goldoralf/golem-binaries/releases/download/sfizz-1.2.3-golem/libsfizz1_1.2.3-0_amd64.deb
+7de46ddc85d6ec710b7e660f484d81b6edd39d104e3367f7ce6a70f1fc16e7f4  https://ftp.gwdg.de/pub/opensuse/repositories/home:/sfztools:/sfizz/xUbuntu_24.04/amd64/libsfizz1_1.2.3-0_amd64.deb
+4424135807cb4210fe2c332faf7cdfbb70605bba3f8a81fc1857360a59af04bd  https://github.com/Goldoralf/golem-binaries/releases/download/sfizz-1.2.3-golem/sfizz_1.2.3-0_amd64.deb
+4424135807cb4210fe2c332faf7cdfbb70605bba3f8a81fc1857360a59af04bd  https://ftp.gwdg.de/pub/opensuse/repositories/home:/sfztools:/sfizz/xUbuntu_24.04/amd64/sfizz_1.2.3-0_amd64.deb
+e0eb6337dae3602c8a4f735e6b5245cf35e1e4909242cfaf5517eb2d725207df  https://drumgizmo.org/kits/Aasimonster/aasimonster2_1.zip
+# Plugins Linux PRÉCOMPILÉS (provision/fetch-prebuilt.sh) — dépôt public Goldoralf/golem-binaries, release linux-plugins-v2 (2026-11-03 : convolveur au correctif amont 05405cb),
+# compilés par sa GitHub Action (Ubuntu 24.04, mêmes commits + correctifs que install-*.sh), 2026-10-23
+5d8446264da37b7edd02317ac49f56aa884051878c1756160a0354a2004b5869  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/GoleM-Freeze.clap.tar.gz
+ce37aff1ec8d2df6d0660d3c1779c5b27acd7282166a6362205c8da01ecc4d29  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/GoleM-Freeze.vst3.tar.gz
+8ebc7fae67409c34cacbb8f5ad78e1fcfd002625bcb80ef3cde03cceced59900  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/PaulXStretch.clap.tar.gz
+1f8c4029e1633982096349754f19a69635e0b8d85b64ce2f7abf659c593226cc  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/PaulXStretch.vst3.tar.gz
+f67aeb1b8dc056f836df61a5994c977299d02b25b22a2abf663f5b8bc77137ed  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/Prisma.vst3.tar.gz
+da72b3b265d92402879f2f69ad1f8055fae89cfe868e2c36a3bfc2515aca548a  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/Spectral-Compressor.clap.tar.gz
+a314fdb9e70626a273b5e6661ed0f63a57226c277c05b460e8656655359b0237  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/Spectral-Compressor.vst3.tar.gz
+82ad84b972ba75708f0ea85dc3fc3f1778954abaf406e6054d5d3808bb95d27d  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/neural_amp_modeler.lv2.tar.gz
+372e8a144aff2e273680c04e86bf3c6e4aa96bc49889b2216f3af2ff1b5792b3  https://github.com/Goldoralf/golem-binaries/releases/download/linux-plugins-v2/zeroconvo.lv2.tar.gz
+# rustup (provision/install-spectral.sh, audit 2026-11-04 M8) : l'installateur versionné, plus de curl | sh non vérifié
+20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c  https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-gnu/rustup-init
+e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c  https://static.rust-lang.org/rustup/archive/1.28.2/aarch64-unknown-linux-gnu/rustup-init

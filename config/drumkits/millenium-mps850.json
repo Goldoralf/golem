@@ -1,0 +1,61 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "millenium-mps850",
+ "name": "Millenium MPS-850",
+ "identity": {
+  "brand": "Millenium (Medeli)",
+  "model": "MPS-850",
+  "connection": "usb+din",
+  "usb_names": [
+   "MPS-850",
+   "MPS850"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "36": "kick",
+  "48": "tom1",
+  "50": "tom1-rim",
+  "45": "tom2",
+  "47": "tom2-rim",
+  "43": "tom3",
+  "58": "tom3-rim",
+  "49": "crash1",
+  "55": "crash1-edge",
+  "57": "crash2",
+  "52": "crash2-edge",
+  "46": "hh-open",
+  "42": "hh-closed",
+  "23": "hh-half",
+  "44": "hh-pedal",
+  "21": "hh-splash",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "41": "ext",
+  "39": "ext-rim"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "poly-aftertouch",
+ "provenance": {
+  "source": "imported",
+  "confidence": "reported",
+  "url": "https://images.thomann.de/pics/atg/atgdata/document/manual/428224_c_428224_modul_v3_en_online.pdf",
+  "note": "Le chart du manuel Thomann dit « pas de CC, pas d'aftertouch » — un journal MIDI tiers (Toontrack) montre CC4 CONTINU (0 ouvert → 127 fermé), chick 44, et de l'aftertouch sur 42 et 22. Notes = table du MPS-1000, même fabricant (Medeli), PRÉSUMÉE."
+ }
+}

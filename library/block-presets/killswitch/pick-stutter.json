@@ -1,0 +1,15 @@
+{
+ "name": "Pick Stutter",
+ "type": "killswitch",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 50,
+  "sync": "1/16T",
+  "rate": 8,
+  "trigger": "Pick",
+  "sens": 50,
+  "smooth": 0.5
+ }
+}

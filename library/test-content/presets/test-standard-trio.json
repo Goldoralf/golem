@@ -1,0 +1,129 @@
+{
+ "id": "test-standard-trio",
+ "name": "Test — Standard trio",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "chain": {
+    "pre": [
+     {
+      "id": "g-comp",
+      "type": "comp"
+     }
+    ],
+    "post": [
+     {
+      "id": "g-dly",
+      "type": "delay",
+      "foot": 6
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Head",
+     "blocks": {
+      "g-dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Solo",
+     "blocks": {
+      "g-dly": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Head",
+   "blocks": {
+    "g-dly": false
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Solo",
+   "blocks": {
+    "g-dly": true
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  }
+ ],
+ "bpm": 160,
+ "origin": "test",
+ "styles": [
+  "jazz"
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "test-standard",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 2
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "params": {
+      "level": -12,
+      "beats": 4
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "name": "Tight pop",
+ "type": "pitch-correct",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "corr": 1.0,
+  "filter": 0.25,
+  "fastmode": false,
+  "key": "C",
+  "scale": "Major",
+  "offset": 0
+ }
+}

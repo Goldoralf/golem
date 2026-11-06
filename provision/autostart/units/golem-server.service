@@ -1,0 +1,17 @@
+# GoleM server au boot — la BOÎTE DÉDIÉE (docs/installer.md §4, 2026-10-06).
+# Posé par provision/autostart/install-autostart.sh, qui remplace @ROOT@ par le dossier installé.
+# Service UTILISATEUR + linger : il démarre au boot SANS session ouverte ; Reaper part sur son écran
+# virtuel (Xvfb, provision/start.sh) — aucun écran, aucun login. On s'y connecte par la tablette.
+[Unit]
+Description=GoleM server (bridge + Reaper, no window)
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=@ROOT@
+ExecStart=@ROOT@/provision/golem server
+ExecStop=@ROOT@/provision/golem stop
+TimeoutStartSec=180
+
+[Install]
+WantedBy=default.target

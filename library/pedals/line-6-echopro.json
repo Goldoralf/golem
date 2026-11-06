@@ -1,0 +1,517 @@
+{
+ "id": "line-6-echopro",
+ "name": "EchoPro",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Line 6",
+  "model": "EchoPro",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "Tube Echoplex 1",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Tape Echoplex 1",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Space Echo 1",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Sweep Echo 1",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Boss DM2 1",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "ElectroHarmonix 1",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Lo Res 1",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Digital Delay 1",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Digital Delay Mod 1",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Binson Echorec 1",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Stereo Delays 1",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Ping Pong 1",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Reverse 1",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "TC Electronics 1",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Auto Volume Echo 1",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Loop Sampler 1",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "Tube Echoplex 2",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Tube Echoplex 3",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "Tube Echoplex 4",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Tube Echoplex 5",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Tube Echoplex 6",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Tube Echoplex 7",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Tube Echoplex 8",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Tape Echoplex 9",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Tape Echoplex 10",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Tape Echoplex 11",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Tape Echoplex 12",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "Space Echo 2",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Space Echo 3",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Space Echo 4",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Space Echo 5",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Space Echo 6",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "Sweep Echo 2",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Sweep Echo 3",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Sweep Echo 4",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Sweep Echo 5",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Sweep Echo 6",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Sweep Echo 7",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Sweep Echo 8",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Sweep Echo 9",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Sweep Echo 10",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Sweep Echo 11",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Boss DM2 2",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Boss DM2 3",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Boss DM2 4",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "Boss DM2 5",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Boss DM2 6",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "ElectroHarmonix 2",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "ElectroHarmonix 3",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "ElectroHarmonix 4",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "ElectroHarmonix 5",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "ElectroHarmonix 6",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Lo Res 2",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "Lo Res 3",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "Lo Res 4",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "Lo Res 5",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "Lo Res 6",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Digital Delay 2",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Digital Delay 3",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Digital Delay 4",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Digital Delay 5",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Digital Delay Mod 2",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Digital Delay Mod 3",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Digital Delay Mod 4",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Digital Delay Mod 5",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Digital Delay Mod 6",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Digital Delay Mod 7",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Binson Echorec 2",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Binson Echorec 3",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Binson Echorec 4",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Binson Echorec 5",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Stereo Delays 2",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Stereo Delays 3",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Stereo Delays 4",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Stereo Delays 5",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Stereo Delays 6",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Ping Pong 2",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Ping Pong 3",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Ping Pong 4",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Ping Pong 5",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Ping Pong 6",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Ping Pong 7",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Ping Pong 8",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Reverse 2",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Reverse 3",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "TC Electronics 2",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "TC Electronics 3",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "TC Electronics 4",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "TC Electronics 5",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Auto Volume Echo 2",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Auto Volume Echo 3",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Auto Volume Echo 4",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Auto Volume Echo 5",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Auto Volume Echo 6",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Auto Volume Echo 7",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Auto Volume Echo 8",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "Loop Sampler 2",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Loop Sampler 3",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Loop Sampler 4",
+   "family": "custom",
+   "active_pc": 99
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Line_6_EchoPro.midnam du dépôt Ardour (GPL-2), auteur : Rob Martin. delay dédié (rack Pro), 99 programmes nommés — un maillon de chaîne",
+  "upstream": "Ardour/share/patchfiles/Line_6_EchoPro.midnam"
+ }
+}

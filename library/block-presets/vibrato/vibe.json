@@ -1,0 +1,10 @@
+{
+ "name": "Vibe",
+ "type": "vibrato",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "depth": 0.45,
+  "speed": 0.4
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "name": "Bass anchor",
+ "type": "comp",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "thresh": -22,
+  "ratio": 6,
+  "makeup": 4,
+  "attack": 35,
+  "release": 200
+ },
+ "default": true
+}

@@ -1,0 +1,12 @@
+{
+ "name": "Vocal clarity",
+ "type": "eq",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "lowcut": 120,
+  "midfreq": 400,
+  "midgain": -2.5,
+  "highs": 2.5
+ }
+}

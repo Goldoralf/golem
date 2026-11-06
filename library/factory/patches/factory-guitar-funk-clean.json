@@ -1,0 +1,526 @@
+{
+ "id": "factory-guitar-funk-clean",
+ "name": "Funk Clean",
+ "role": "guitar",
+ "tags": [
+  "funk",
+  "clean"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Funk Clean",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Chop",
+     "blocks": {
+      "mwah": false,
+      "env": false,
+      "phaser": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Envelope",
+     "blocks": {
+      "mwah": false,
+      "env": true,
+      "phaser": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Wah",
+     "blocks": {
+      "mwah": true,
+      "env": false,
+      "phaser": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Phase Solo",
+     "blocks": {
+      "mwah": false,
+      "env": false,
+      "phaser": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Clean Pad",
+     "blocks": {
+      "mwah": false,
+      "env": false,
+      "phaser": false
+     },
+     "params": {
+      "verb": {
+       "mix": 28,
+       "decay": 1.8
+      },
+      "comp": {
+       "ratio": 3
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 2,
+       "release": 100
+      }
+     },
+     {
+      "id": "mwah",
+      "type": "wah-color",
+      "foot": 7,
+      "params": {
+       "model": "Vox V847",
+       "wah": 0.4,
+       "mix": 100,
+       "mode": "manual"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -30,
+       "ratio": 6,
+       "makeup": 6,
+       "attack": 4,
+       "release": 110
+      }
+     },
+     {
+      "id": "env",
+      "type": "autowah",
+      "foot": 6,
+      "params": {
+       "wah": 0.45
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "deluxe",
+         "type": "amp",
+         "label": "Fender Deluxe Reverb '65 Reissue",
+         "ref": "51649",
+         "model": "383469",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "ac30",
+         "type": "amp",
+         "label": "VOX AC30",
+         "ref": "26584",
+         "model": "379838",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "phaser",
+      "type": "phaser-js",
+      "foot": 8,
+      "params": {
+       "rate": 0.35,
+       "low": 350,
+       "high": 2000,
+       "feedback": -8,
+       "wet": -4
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 0.6,
+       "predelay": 5,
+       "hicut": 7500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Chop",
+   "blocks": {
+    "mwah": false,
+    "env": false,
+    "phaser": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Envelope",
+   "blocks": {
+    "mwah": false,
+    "env": true,
+    "phaser": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Wah",
+   "blocks": {
+    "mwah": true,
+    "env": false,
+    "phaser": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Phase Solo",
+   "blocks": {
+    "mwah": false,
+    "env": false,
+    "phaser": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "E",
+   "name": "Clean Pad",
+   "blocks": {
+    "mwah": false,
+    "env": false,
+    "phaser": false
+   },
+   "params": {
+    "verb": {
+     "mix": 28,
+     "decay": 1.8
+    },
+    "comp": {
+     "ratio": 3
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-funk-16.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 100,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "attack": 2,
+     "release": 100
+    }
+   },
+   {
+    "id": "mwah",
+    "type": "wah-color",
+    "foot": 7,
+    "params": {
+     "model": "Vox V847",
+     "wah": 0.4,
+     "mix": 100,
+     "mode": "manual"
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -30,
+     "ratio": 6,
+     "makeup": 6,
+     "attack": 4,
+     "release": 110
+    }
+   },
+   {
+    "id": "env",
+    "type": "autowah",
+    "foot": 6,
+    "params": {
+     "wah": 0.45
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "deluxe",
+       "type": "amp",
+       "label": "Fender Deluxe Reverb '65 Reissue",
+       "ref": "51649",
+       "model": "383469",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "ac30",
+       "type": "amp",
+       "label": "VOX AC30",
+       "ref": "26584",
+       "model": "379838",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "phaser",
+    "type": "phaser-js",
+    "foot": 8,
+    "params": {
+     "rate": 0.35,
+     "low": 350,
+     "high": 2000,
+     "feedback": -8,
+     "wet": -4
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 12,
+     "decay": 0.6,
+     "predelay": 5,
+     "hicut": 7500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "51649",
+   "model": "383469"
+  },
+  {
+   "type": "amp",
+   "ref": "26584",
+   "model": "379838"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "e710cbec88b07e239e45c38c1cae90178d3d65c6ca4336185893209dfb84b5b1",
+   "uid": "t3k:51649",
+   "kind": "amp-cab",
+   "bytes": 295155,
+   "name": "NEW VERSION | Fender DRRI | Clean | SM57 + Royer R-121 (No Room) | Full Rig",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb 65 Reissue",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "gindabestari",
+   "url": "https://www.tone3000.com/tones/deluxe-reverb-65-reissue-clean-51649"
+  },
+  {
+   "sha256": "e42b6e2c283f793412b12ee32216e29350db362c1debb2b187080062b848fc54",
+   "uid": "t3k:26584",
+   "kind": "amp-cab",
+   "bytes": 299010,
+   "name": "[NST] A clean VOX AC30 + 65Prince 906 1-2",
+   "source": "t3k",
+   "amp": "VOX AC30",
+   "arch": "2",
+   "brand": "Vox",
+   "creator": "nst",
+   "url": "https://www.tone3000.com/tones/vox-ac30--26584"
+  },
+  {
+   "sha256": "aa8dac161664bc666606874b2b7894b08d24885cfea0c1cef0c58621abe57a80",
+   "uid": "local:groove-golem-funk-16",
+   "kind": "groove",
+   "bytes": 441,
+   "name": "Funk 16",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"smoke\", \"6\": \"fire\", \"7\": \"sheen\", \"8\": \"aurora\", \"A\": \"vu\", \"B\": \"heartbeat\", \"C\": \"glitch\", \"D\": \"pulse\", \"E\": \"snow\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"foot\": 8, \"id\": \"phaser\", \"params\": {\"feedback\": -8, \"high\": 2000, \"low\": 350, \"rate\": 0.35, \"wet\": -4}, \"type\": \"phaser-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.6, \"hicut\": 7500, \"mix\": 12, \"predelay\": 5}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"mwah\", \"params\": {\"mix\": 100, \"mode\": \"manual\", \"model\": \"Vox V847\", \"wah\": 0.4}, \"type\": \"wah-color\"}, {\"id\": \"comp\", \"params\": {\"attack\": 4, \"makeup\": 6, \"ratio\": 6, \"release\": 110, \"thresh\": -30}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.45}, \"type\": \"autowah\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb '65 Reissue\", \"model\": \"383469\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"51649\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ac30\", \"label\": \"VOX AC30\", \"model\": \"379838\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"26584\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#ff2fa8\", \"6\": \"#ff2fa8\", \"7\": \"#ff2fa8\", \"8\": \"#ff2fa8\", \"A\": \"#ff2fa8\", \"B\": \"#ff2fa8\", \"C\": \"#ff2fa8\", \"D\": \"#ff2fa8\", \"E\": \"#ff2fa8\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 8, \"id\": \"phaser\", \"params\": {\"feedback\": -8, \"high\": 2000, \"low\": 350, \"rate\": 0.35, \"wet\": -4}, \"type\": \"phaser-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.6, \"hicut\": 7500, \"mix\": 12, \"predelay\": 5}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"mwah\", \"params\": {\"mix\": 100, \"mode\": \"manual\", \"model\": \"Vox V847\", \"wah\": 0.4}, \"type\": \"wah-color\"}, {\"id\": \"comp\", \"params\": {\"attack\": 4, \"makeup\": 6, \"ratio\": 6, \"release\": 110, \"thresh\": -30}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.45}, \"type\": \"autowah\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb '65 Reissue\", \"model\": \"383469\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"51649\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ac30\", \"label\": \"VOX AC30\", \"model\": \"379838\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"26584\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Funk Clean\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Chop\", \"params\": {}}, {\"blocks\": {\"env\": true, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": true, \"phaser\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Wah\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Phase Solo\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Clean Pad\", \"params\": {\"comp\": {\"ratio\": 3}, \"verb\": {\"decay\": 1.8, \"mix\": 28}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Chop\"}, {\"blocks\": {\"env\": true, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"env\": false, \"mwah\": true, \"phaser\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Wah\"}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Phase Solo\"}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-E\"}}, \"level\": -1, \"name\": \"Clean Pad\", \"params\": {\"comp\": {\"ratio\": 3}, \"verb\": {\"decay\": 1.8, \"mix\": 28}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#ff2fa8",
+  "B": "#ff2fa8",
+  "C": "#ff2fa8",
+  "D": "#ff2fa8",
+  "E": "#ff2fa8",
+  "6": "#ff2fa8",
+  "7": "#ff2fa8",
+  "8": "#ff2fa8",
+  "9": "#ff2fa8",
+  "10": "#ff2fa8"
+ },
+ "anims": {
+  "A": "vu",
+  "B": "heartbeat",
+  "C": "glitch",
+  "D": "pulse",
+  "E": "snow",
+  "6": "fire",
+  "7": "sheen",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "smoke"
+ }
+}

@@ -1,0 +1,15 @@
+name: Idea or request
+description: Something golem should do
+labels: [idea]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What you would like
+      description: The situation (home, rehearsal, gig…) and what golem should do in it.
+    validations:
+      required: true
+  - type: textarea
+    id: now
+    attributes:
+      label: How you do it today

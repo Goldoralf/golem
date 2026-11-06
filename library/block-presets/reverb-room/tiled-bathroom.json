@@ -1,0 +1,12 @@
+{
+ "name": "Tiled bathroom",
+ "type": "reverb-room",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 28,
+  "decay": 1.3,
+  "size": 8,
+  "hicut": 11500
+ }
+}

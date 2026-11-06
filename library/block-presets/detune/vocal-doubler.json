@@ -1,0 +1,12 @@
+{
+ "name": "Vocal doubler",
+ "type": "detune",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "detune": 0.25,
+  "wet": 0.5,
+  "dry": 0.8
+ },
+ "default": true
+}

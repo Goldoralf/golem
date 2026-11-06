@@ -1,0 +1,1075 @@
+{
+  "_doc": "Manifeste des composants libres (et du seul commercial : Reaper) embarqués par GoleM — docs/installer.md §5. Servi par GET /api/system/libraries (System ▸ Licences ▸ Libraries) avec l'état RÉELLEMENT installé, et lu par l'installateur pour la taille. `check` : dpkg (un des noms de paquet), glob (chemins, ~ et $ROOT acceptés), pip (module dans le venv), always (vendu avec le dépôt). `pack` : di (requis) | piano | drums — décision 2026-09-09 : AUCUNE capture livrée, le rack neuf est vide ; il garde la liste EXHAUSTIVE du matériel (library/catalog/effects.json : amplis, pédales, baffles) et les presets de blocs, les captures viennent de golem.fm / Tone3000. Obligation GPL : dire ce qu'on embarque et d'où ça vient. `check_mac` (2026-10-04) : le même sous macOS (/Applications, /Library/Audio/Plug-Ins et ~/Library/Audio/Plug-Ins, ou which) — docs/platforms.md M3. `check_win` (2026-10-03) : le contrôle sous Windows (glob avec %ProgramFiles% / %CommonProgramFiles%, ou which) ; sans lui, un composant qui n'est ni python, ni asset, ni js n'est pas utilisé par GoleM sous Windows et s'affiche « Linux only » (bridge/libraries.py).",
+  "components": [
+    {
+      "id": "reaper",
+      "name": "REAPER",
+      "by": "Cockos",
+      "what": "the audio engine golem drives — commercial, evaluation runs in full, license $60",
+      "license": "Commercial",
+      "url": "https://www.reaper.fm",
+      "kind": "engine",
+      "check_mac": {
+        "glob": [
+          "/Applications/REAPER.app",
+          "~/Applications/REAPER.app"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%ProgramFiles%/REAPER (x64)/reaper.exe"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/opt/REAPER/reaper"
+        ]
+      },
+      "mb": 40
+    },
+    {
+      "id": "nam-core",
+      "name": "Neural Amp Modeler",
+      "by": "Steven Atkinson",
+      "what": "the neural capture engine — amps & pedals",
+      "license": "MIT",
+      "url": "https://github.com/sdatkinson/NeuralAmpModelerCore",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/NeuralAmpModeler.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/NeuralAmpModeler.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/NeuralAmpModeler.vst3"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.lv2/neural_amp_modeler.lv2"
+        ]
+      }
+    },
+    {
+      "id": "nam-lv2",
+      "name": "neural-amp-modeler-lv2 (patched)",
+      "by": "Mike Oliphant — patched by golem",
+      "what": "NAM as an LV2 plugin (our amp blocks) — built from source: fixes a crash on fast patch changes",
+      "license": "GPL-3.0",
+      "url": "https://github.com/mikeoliphant/neural-amp-modeler-lv2",
+      "kind": "plugin",
+      "version": "v0.2.2 + patch",
+      "check": {
+        "glob": [
+          "~/.lv2/neural_amp_modeler.lv2"
+        ]
+      },
+      "mb": 5
+    },
+    {
+      "id": "aida-x",
+      "name": "AIDA-X",
+      "by": "AidaDSP",
+      "what": "neural amp models, the second capture format",
+      "license": "GPL-3.0",
+      "url": "https://github.com/AidaDSP/AIDA-X",
+      "kind": "plugin",
+      "version": "1.1.0",
+      "check": {
+        "glob": [
+          "~/.lv2/AIDA-X.lv2"
+        ]
+      },
+      "mb": 10
+    },
+    {
+      "id": "ratatouille",
+      "name": "Ratatouille.lv2",
+      "by": "brummer10",
+      "what": "2 NAM + 2 IR in one block",
+      "license": "BSD-0-Clause",
+      "url": "https://github.com/brummer10/Ratatouille.lv2",
+      "kind": "plugin",
+      "version": "v0.9.11",
+      "check": {
+        "glob": [
+          "~/.lv2/Ratatouille.lv2"
+        ]
+      },
+      "mb": 5
+    },
+    {
+      "id": "aether",
+      "name": "Aether",
+      "by": "Dougal-s",
+      "what": "modern algorithmic reverb",
+      "license": "GPL-3.0",
+      "url": "https://github.com/Dougal-s/Aether",
+      "kind": "plugin",
+      "version": "v1.2.1",
+      "check": {
+        "glob": [
+          "~/.lv2/Aether.lv2",
+          "~/.lv2/aether.lv2"
+        ]
+      },
+      "mb": 3
+    },
+    {
+      "id": "proteus",
+      "name": "Proteus",
+      "by": "GuitarML",
+      "what": "neural pedal/amp captures (knob-controllable)",
+      "license": "GPL-3.0",
+      "url": "https://github.com/GuitarML/Proteus",
+      "kind": "plugin",
+      "version": "1.2",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Proteus.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Proteus.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Proteus.vst3"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "proteus"
+        ],
+        "glob": [
+          "/usr/lib/vst3/Proteus.vst3",
+          "/usr/local/lib/vst3/Proteus.vst3",
+          "~/.vst3/Proteus.vst3"
+        ]
+      },
+      "mb": 20
+    },
+    {
+      "id": "byod",
+      "name": "BYOD",
+      "by": "Chowdhury DSP",
+      "what": "modular distortion pedalboard",
+      "license": "GPL-3.0",
+      "url": "https://github.com/Chowdhury-DSP/BYOD",
+      "kind": "plugin",
+      "version": "1.3.0",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/BYOD.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/BYOD.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/BYOD.vst3"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "byod"
+        ],
+        "glob": [
+          "/usr/lib/vst3/BYOD.vst3",
+          "/usr/local/lib/vst3/BYOD.vst3",
+          "~/.vst3/BYOD.vst3"
+        ]
+      },
+      "mb": 30
+    },
+    {
+      "id": "x42",
+      "name": "x42-plugins",
+      "by": "Robin Gareus",
+      "what": "fil4 parametric EQ, dpl limiter, tuner (its IR convolver is replaced by our patched build)",
+      "license": "GPL-2.0",
+      "url": "https://x42-plugins.com",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "x42-plugins"
+        ]
+      }
+    },
+    {
+      "id": "zconvo",
+      "name": "zeroconvo.lv2 (fixed build)",
+      "by": "Robin Gareus",
+      "what": "IR convolver — the cab block (upstream commit that fixes a crash on fast preset changes, ahead of the packaged release)",
+      "license": "GPL-2.0-or-later",
+      "url": "https://github.com/x42/zconvo.lv2",
+      "kind": "plugin",
+      "version": "v0.7.2 + 05405cb",
+      "check": {
+        "glob": [
+          "~/.lv2/zeroconvo.lv2/zeroconvolv.so"
+        ]
+      }
+    },
+    {
+      "id": "fat1",
+      "name": "fat1.lv2 (x42 Auto-Tune)",
+      "by": "Robin Gareus / Fons Adriaensen",
+      "what": "vocal pitch correction (zita-at1)",
+      "license": "GPL-2.0",
+      "url": "https://github.com/x42/fat1.lv2",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "x42-plugins"
+        ],
+        "glob": [
+          "/usr/lib/lv2/fat1.lv2",
+          "~/.lv2/fat1.lv2"
+        ]
+      }
+    },
+    {
+      "id": "setbfree",
+      "name": "setBfree",
+      "by": "Robin Gareus & al.",
+      "what": "the B3 tonewheel organ — drawbars, Leslie",
+      "license": "GPL-2.0",
+      "url": "https://github.com/pantherb/setBfree",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "setbfree"
+        ]
+      }
+    },
+    {
+      "id": "sfizz",
+      "name": "sfizz",
+      "by": "SFZTools",
+      "what": "SFZ sampler — the grand piano block",
+      "license": "BSD-2-Clause",
+      "url": "https://github.com/sfztools/sfizz",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "sfizz",
+          "sfizz-lv2",
+          "libsfizz1"
+        ],
+        "glob": [
+          "/usr/lib/lv2/sfizz.lv2",
+          "/usr/lib/x86_64-linux-gnu/lv2/sfizz.lv2"
+        ]
+      }
+    },
+    {
+      "id": "dexed",
+      "name": "Dexed",
+      "by": "Digital Suburban",
+      "what": "DX7 FM synth — the e-piano block",
+      "license": "GPL-3.0",
+      "url": "https://github.com/asb2m10/dexed",
+      "kind": "plugin",
+      "version": "1.0.1",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Dexed.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Dexed.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Dexed.vst3"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.vst3/Dexed.vst3"
+        ]
+      },
+      "mb": 10
+    },
+    {
+      "id": "vital",
+      "name": "Vital",
+      "by": "Matt Tytel",
+      "what": "wavetable synth — the Keys lead/pad block (install it yourself: vital.audio, free account)",
+      "license": "GPL-3.0 (source) · binary EULA",
+      "url": "https://github.com/mtytel/vital",
+      "kind": "plugin",
+      "manual": true,
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Vital.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Vital.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Vital.vst3"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.vst3/Vital.vst3",
+          "~/.vst3/Vitalium.vst3",
+          "/usr/lib/vst3/Vital.vst3"
+        ]
+      }
+    },
+    {
+      "id": "vitalium",
+      "name": "Vitalium",
+      "by": "DISTRHO (from Vital by Matt Tytel)",
+      "what": "the free build of Vital — plays the Keys Vital block when the official Vital is not installed (installed with golem on Windows, from PawPaw)",
+      "license": "GPL-3.0",
+      "url": "https://github.com/DISTRHO/PawPaw",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/LV2/vitalium.lv2",
+          "~/Library/Audio/Plug-Ins/LV2/vitalium.lv2"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/LV2/vitalium.lv2"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.lv2/vitalium.lv2",
+          "/usr/lib/lv2/vitalium.lv2",
+          "~/.vst3/Vitalium.vst3"
+        ]
+      }
+    },
+    {
+      "id": "surge-xt",
+      "name": "Surge XT",
+      "by": "Surge Synth Team",
+      "what": "spring reverb, frequency shifter, Treemonster",
+      "license": "GPL-3.0",
+      "url": "https://surge-synthesizer.github.io",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Surge XT*.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Surge XT*.vst3",
+          "/Library/Audio/Plug-Ins/CLAP/Surge XT*.clap",
+          "~/Library/Audio/Plug-Ins/CLAP/Surge XT*.clap"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Surge XT*.vst3",
+          "%CommonProgramFiles%/CLAP/Surge XT*.clap"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "surge-xt",
+          "surge-xt-lv2"
+        ],
+        "glob": [
+          "~/.vst3/Surge XT Effects.vst3",
+          "/usr/lib/vst3/Surge XT Effects.vst3",
+          "~/.lv2/Surge XT Effects.lv2",
+          "/usr/lib/lv2/Surge XT Effects.lv2"
+        ]
+      }
+    },
+    {
+      "id": "prisma",
+      "name": "Prisma",
+      "by": "UnplugRed",
+      "what": "modular multiband distortion — the Grit block (built from source, free variant)",
+      "license": "AGPL-3.0-or-later",
+      "url": "https://github.com/unplugred/vsts",
+      "kind": "plugin",
+      "check": {
+        "glob": [
+          "~/.vst3/Prisma.vst3"
+        ]
+      }
+    },
+    {
+      "id": "fftw3",
+      "name": "FFTW 3",
+      "by": "Matteo Frigo & Steven G. Johnson (MIT)",
+      "what": "fast Fourier transforms — the spectral blocks (PaulXStretch)",
+      "license": "GPL-2.0-or-later",
+      "url": "https://www.fftw.org",
+      "kind": "system",
+      "check": {
+        "dpkg": [
+          "libfftw3-single3",
+          "libfftw3-3",
+          "libfftw3-dev"
+        ]
+      }
+    },
+    {
+      "id": "paulxstretch",
+      "name": "PaulXStretch",
+      "by": "Jesse Chappell (Sonosaurus), after Nasca Octavian Paul",
+      "what": "extreme time-stretch + spectral modules — the Stretch block (built from source)",
+      "license": "GPL-3.0",
+      "url": "https://github.com/essej/paulxstretch",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/PaulXStretch.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/PaulXStretch.vst3",
+          "/Library/Audio/Plug-Ins/CLAP/PaulXStretch.clap",
+          "~/Library/Audio/Plug-Ins/CLAP/PaulXStretch.clap"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/PaulXStretch.vst3",
+          "%CommonProgramFiles%/CLAP/PaulXStretch.clap"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.vst3/PaulXStretch.vst3",
+          "~/.clap/PaulXStretch.clap"
+        ]
+      }
+    },
+    {
+      "id": "nih-plug",
+      "name": "nih-plug",
+      "by": "Robbert van der Helm",
+      "what": "Rust plugin framework — Spectral Compressor and golem's own spectral blocks (built from source)",
+      "license": "ISC",
+      "url": "https://github.com/robbert-vdh/nih-plug",
+      "kind": "engine",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
+          "/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap",
+          "~/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Spectral Compressor.vst3",
+          "%CommonProgramFiles%/CLAP/Spectral Compressor.clap"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.clap/Spectral Compressor.clap",
+          "~/.vst3/Spectral Compressor.vst3"
+        ]
+      }
+    },
+    {
+      "id": "golem-freeze",
+      "name": "GoleM Freeze",
+      "by": "golem",
+      "what": "our spectral freeze block (plugins/golem_freeze, nih-plug — built from source)",
+      "license": "GPL-3.0-or-later",
+      "url": "https://golem.fm",
+      "kind": "plugin",
+      "check": {
+        "glob": [
+          "~/.clap/GoleM Freeze.clap",
+          "~/.vst3/GoleM Freeze.vst3"
+        ]
+      }
+    },
+    {
+      "id": "spectral-compressor",
+      "name": "Spectral Compressor",
+      "by": "Robbert van der Helm",
+      "what": "per-bin spectral compander — the Spectral Comp block (built from source)",
+      "license": "GPL-3.0-or-later",
+      "url": "https://github.com/robbert-vdh/nih-plug/tree/master/plugins/spectral_compressor",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
+          "/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap",
+          "~/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Spectral Compressor.vst3",
+          "%CommonProgramFiles%/CLAP/Spectral Compressor.clap"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.clap/Spectral Compressor.clap",
+          "~/.vst3/Spectral Compressor.vst3"
+        ]
+      }
+    },
+    {
+      "id": "guitarix",
+      "name": "Guitarix",
+      "by": "Guitarix team",
+      "what": "wahs, detune (vocal doubler), shimmer, tuner",
+      "license": "GPL-3.0",
+      "url": "https://guitarix.org",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "guitarix-lv2",
+          "guitarix"
+        ]
+      }
+    },
+    {
+      "id": "lsp",
+      "name": "LSP Plugins",
+      "by": "Linux Studio Plugins",
+      "what": "gates, compressors, dynamics of the FX pack",
+      "license": "LGPL-3.0",
+      "url": "https://lsp-plug.in",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "lsp-plugins-lv2",
+          "lsp-plugins"
+        ]
+      }
+    },
+    {
+      "id": "airwindows",
+      "name": "Airwindows TapeDelay2",
+      "by": "Chris Johnson (Airwindows)",
+      "what": "tape echo — the Tape Delay (Airwindows) block, the same on Linux and Windows",
+      "license": "MIT",
+      "url": "https://www.airwindows.com/tapedelay2/",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "~/Library/Audio/Plug-Ins/VST/TapeDelay2.vst",
+          "/Library/Audio/Plug-Ins/VST/TapeDelay2.vst"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%LOCALAPPDATA%/Programs/Common/VST3/GoleM/TapeDelay264.dll"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.vst/airwindows/TapeDelay2.so"
+        ]
+      }
+    },
+    {
+      "id": "calf",
+      "name": "Calf Studio Gear",
+      "by": "Calf team",
+      "what": "Multi Chorus and friends",
+      "license": "LGPL-2.1",
+      "url": "https://calf-studio-gear.org",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "calf-plugins"
+        ]
+      }
+    },
+    {
+      "id": "dragonfly",
+      "name": "Dragonfly Reverb",
+      "by": "Michael Willis",
+      "what": "plate / room / hall reverbs",
+      "license": "GPL-3.0",
+      "url": "https://github.com/michaelwillis/dragonfly-reverb",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Dragonfly*.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Dragonfly*.vst3",
+          "/Library/Audio/Plug-Ins/VST3/DragonflyReverb*.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/DragonflyReverb*.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Dragonfly*.vst3",
+          "%CommonProgramFiles%/VST3/DragonflyReverb*.vst3"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "dragonfly-reverb",
+          "dragonfly-reverb-lv2"
+        ]
+      }
+    },
+    {
+      "id": "zam",
+      "name": "ZamAudio plugins",
+      "by": "Damien Zammit",
+      "what": "granular freeze, graphic EQ, maximizer",
+      "license": "GPL-2.0",
+      "url": "https://www.zamaudio.com",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/VST3/Zam*.vst3",
+          "~/Library/Audio/Plug-Ins/VST3/Zam*.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/VST3/Zam*.vst3"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "zam-plugins"
+        ]
+      }
+    },
+    {
+      "id": "mda",
+      "name": "mda-lv2",
+      "by": "David Robillard (port)",
+      "what": "Degrade bitcrusher & lo-fi",
+      "license": "GPL-3.0",
+      "url": "https://gitlab.com/drobilla/mda-lv2",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/LV2/mda*.lv2",
+          "~/Library/Audio/Plug-Ins/LV2/mda*.lv2"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/LV2/mda*.lv2"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "mda-lv2"
+        ]
+      }
+    },
+    {
+      "id": "avldrums",
+      "name": "AVL Drumkits",
+      "by": "Glen MacArthur / x42",
+      "what": "acoustic drum kits (Black Pearl…)",
+      "license": "GPL-2.0 · CC-BY-SA samples",
+      "url": "https://github.com/x42/avldrums.lv2",
+      "kind": "plugin",
+      "check_mac": {
+        "glob": [
+          "/Library/Audio/Plug-Ins/LV2/avldrums.lv2",
+          "~/Library/Audio/Plug-Ins/LV2/avldrums.lv2"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%CommonProgramFiles%/LV2/avldrums.lv2"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "avldrums.lv2",
+          "avldrums-lv2"
+        ]
+      }
+    },
+    {
+      "id": "drumgizmo",
+      "name": "DrumGizmo",
+      "by": "Bent Bisballe Nyeng & the DrumGizmo team",
+      "what": "multi-mic drum sampler — one output per microphone",
+      "license": "GPL-3.0",
+      "url": "https://drumgizmo.org",
+      "kind": "plugin",
+      "check": {
+        "dpkg": [
+          "drumgizmo"
+        ]
+      }
+    },
+    {
+      "id": "pipewire",
+      "name": "PipeWire",
+      "by": "Wim Taymans & the PipeWire community",
+      "what": "the audio server under Reaper on the desktop profile",
+      "license": "MIT",
+      "url": "https://pipewire.org",
+      "kind": "system",
+      "check": {
+        "dpkg": [
+          "pipewire-audio",
+          "pipewire"
+        ]
+      }
+    },
+    {
+      "id": "ffmpeg",
+      "name": "FFmpeg",
+      "by": "FFmpeg team",
+      "what": "renders & encodes the preset sound guides (opus)",
+      "license": "LGPL-2.1 / GPL-2.0",
+      "url": "https://ffmpeg.org",
+      "kind": "system",
+      "check_mac": {
+        "which": [
+          "ffmpeg"
+        ]
+      },
+      "check_win": {
+        "which": [
+          "ffmpeg"
+        ]
+      },
+      "check": {
+        "dpkg": [
+          "ffmpeg"
+        ]
+      }
+    },
+    {
+      "id": "xvfb",
+      "name": "Xvfb",
+      "by": "X.Org",
+      "what": "the virtual screen that hides Reaper behind the golem window",
+      "license": "MIT",
+      "url": "https://www.x.org",
+      "kind": "system",
+      "check": {
+        "dpkg": [
+          "xvfb"
+        ]
+      }
+    },
+    {
+      "id": "salamander",
+      "name": "Salamander Grand Piano",
+      "by": "Alexander Holm",
+      "what": "Yamaha C5 sample set — the piano block",
+      "license": "CC-BY-3.0",
+      "url": "https://github.com/sfzinstruments/SalamanderGrandPiano",
+      "kind": "asset",
+      "pack": "piano",
+      "check": {
+        "glob": [
+          "$ROOT/library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602"
+        ]
+      },
+      "mb": 714
+    },
+    {
+      "id": "shinyguitar",
+      "name": "Shinyguitar",
+      "by": "D. Smolken — Karoryfer Samples",
+      "what": "Archtop guitar sample set — the gypsy rhythm guitar (pompe) of the Standard block",
+      "license": "CC0-1.0",
+      "url": "https://github.com/sfzinstruments/karoryfer.shinyguitar",
+      "kind": "asset",
+      "pack": "guitar",
+      "check": {
+        "glob": [
+          "$ROOT/library/sfz/Shinyguitar"
+        ]
+      },
+      "mb": 442
+    },
+    {
+      "id": "synprezfm",
+      "name": "SynprezFM DX7 cartridges",
+      "by": "Jean-Marc Desprez — via Dexed (Pascal Gauthier)",
+      "what": "DX7 voices of the EP block — bank 02 (E.-PIANO, FmRhodes18) in the factory presets",
+      "license": "GPL-3.0",
+      "url": "http://www.synprez.com/SynprezFM",
+      "kind": "asset",
+      "check": {
+        "glob": [
+          "$ROOT/library/dx7/synprezfm-02.syx"
+        ]
+      }
+    },
+    {
+      "id": "aasimonster",
+      "name": "The Aasimonster",
+      "by": "Deva, Chaot4 & Henry Järvinen",
+      "what": "14-mic death metal kit, recorded for DIE — attribution required (library/drumkits/CREDITS.md)",
+      "license": "CC-BY-4.0",
+      "url": "https://drumgizmo.org/wiki/doku.php?id=kits:aasimonster",
+      "kind": "asset",
+      "pack": "drums",
+      "check": {
+        "glob": [
+          "$ROOT/library/drumkits/aasimonster2",
+          "$ROOT/library/drumkits/aasimonster*"
+        ]
+      },
+      "mb": 2300
+    },
+    {
+      "id": "unfa-vital",
+      "name": "unfa Vital presets",
+      "by": "unfa",
+      "what": "CC0 synth preset pack shipped with Keys",
+      "license": "CC0-1.0",
+      "url": "https://unfa.xyz",
+      "kind": "asset",
+      "check": {
+        "glob": [
+          "$ROOT/library/synth/vital"
+        ]
+      }
+    },
+    {
+      "id": "di-refs",
+      "name": "golem reference DIs (guitar, bass)",
+      "by": "golem",
+      "what": "the dry takes every preset preview is re-amped from — the only sound a new rack ships with (docs/preset-preview.md)",
+      "license": "CC-BY-4.0",
+      "url": "https://github.com/Goldoralf/golem/releases",
+      "kind": "asset",
+      "pack": "di",
+      "required": true,
+      "check": {
+        "glob": [
+          "$ROOT/library/di/*.wav",
+          "$ROOT/library/di/*.flac"
+        ]
+      },
+      "mb": 30
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI + uvicorn",
+      "by": "Sebastián Ramírez · encode",
+      "what": "the bridge: HTTP API and WebSocket of the rack",
+      "license": "MIT · BSD-3-Clause",
+      "url": "https://fastapi.tiangolo.com",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "fastapi",
+          "uvicorn"
+        ]
+      }
+    },
+    {
+      "id": "python-osc",
+      "name": "python-osc",
+      "by": "attwad",
+      "what": "OSC link bridge ↔ Reaper",
+      "license": "Unlicense",
+      "url": "https://github.com/attwad/python-osc",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "pythonosc"
+        ]
+      }
+    },
+    {
+      "id": "python-rtmidi",
+      "name": "python-rtmidi",
+      "by": "Christopher Arndt (RtMidi by Gary Scavone)",
+      "what": "the pedalboard and the Whammy talk MIDI through it",
+      "license": "MIT",
+      "url": "https://github.com/SpotlightKid/python-rtmidi",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "rtmidi"
+        ]
+      }
+    },
+    {
+      "id": "qrcode",
+      "name": "qrcode",
+      "by": "Lincoln Loop",
+      "what": "the pairing QR codes (phone, golem.fm, Tone3000)",
+      "license": "BSD-3-Clause",
+      "url": "https://github.com/lincolnloop/python-qrcode",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "qrcode"
+        ]
+      }
+    },
+    {
+      "id": "basic-pitch",
+      "name": "Basic Pitch",
+      "by": "Spotify",
+      "what": "audio → MIDI: hears the notes in your raw DI",
+      "license": "Apache-2.0",
+      "url": "https://github.com/spotify/basic-pitch",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "basic_pitch"
+        ]
+      }
+    },
+    {
+      "id": "onnxruntime",
+      "name": "ONNX Runtime",
+      "by": "Microsoft & contributors",
+      "what": "runs the Basic Pitch model on CPU",
+      "license": "MIT",
+      "url": "https://onnxruntime.ai",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "onnxruntime"
+        ]
+      }
+    },
+    {
+      "id": "partitura",
+      "name": "partitura",
+      "by": "CPJKU",
+      "what": "quantisation, note spelling, MusicXML",
+      "license": "Apache-2.0",
+      "url": "https://github.com/CPJKU/partitura",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "partitura"
+        ]
+      }
+    },
+    {
+      "id": "tuttut",
+      "name": "TabTranscriber (tuttut)",
+      "by": "Nicolas Vion",
+      "what": "fretboard as a graph + Viterbi — the tablature path",
+      "license": "MIT",
+      "url": "https://github.com/HugoBaby/tuttut",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "tuttut"
+        ]
+      }
+    },
+    {
+      "id": "music21",
+      "name": "music21",
+      "by": "MIT / Michael Cuthbert",
+      "what": "score model & MusicXML export",
+      "license": "BSD-3-Clause",
+      "url": "https://www.music21.org",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "music21"
+        ]
+      }
+    },
+    {
+      "id": "librosa",
+      "name": "librosa",
+      "by": "librosa team",
+      "what": "onset detection — where each attack really lands",
+      "license": "ISC",
+      "url": "https://librosa.org",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "librosa"
+        ]
+      }
+    },
+    {
+      "id": "pretty-midi",
+      "name": "pretty_midi",
+      "by": "Colin Raffel",
+      "what": "writes the MIDI of a transcribed take",
+      "license": "MIT",
+      "url": "https://github.com/craffel/pretty-midi",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "pretty_midi"
+        ]
+      }
+    },
+    {
+      "id": "mido",
+      "name": "Mido",
+      "by": "Ole Martin Bjørndalen",
+      "what": "MIDI file plumbing",
+      "license": "MIT",
+      "url": "https://mido.readthedocs.io",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "mido"
+        ]
+      }
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy · SciPy · scikit-learn",
+      "by": "their respective teams",
+      "what": "the numerical floor everything above stands on",
+      "license": "BSD-3-Clause",
+      "url": "https://numpy.org",
+      "kind": "python",
+      "check": {
+        "pip": [
+          "numpy",
+          "scipy",
+          "sklearn"
+        ]
+      }
+    },
+    {
+      "id": "lupa",
+      "name": "Lupa (LuaJIT/Lua)",
+      "by": "Stefan Behnel & al.",
+      "what": "a real Lua interpreter to check our ReaScript before it ships (dev only)",
+      "license": "MIT",
+      "url": "https://github.com/scoder/lupa",
+      "kind": "python",
+      "dev": true,
+      "check": {
+        "pip": [
+          "lupa"
+        ]
+      }
+    },
+    {
+      "id": "preact",
+      "name": "Preact + htm",
+      "by": "Jason Miller & contributors",
+      "what": "the whole app, without a build step (vendored)",
+      "license": "MIT · Apache-2.0",
+      "url": "https://preactjs.com",
+      "kind": "js",
+      "check": {
+        "always": true
+      }
+    },
+    {
+      "id": "jsfx",
+      "name": "golem JSFX (click, drums, sample, super8…)",
+      "by": "golem",
+      "what": "our own audio-thread code inside Reaper — super8 is a fork of a Cockos JSFX",
+      "license": "MIT · LGPL (super8)",
+      "url": "https://github.com/Goldoralf/golem",
+      "kind": "js",
+      "check": {
+        "always": true
+      }
+    }
+  ]
+}

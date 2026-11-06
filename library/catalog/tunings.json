@@ -1,0 +1,449 @@
+{
+ "_source": "COPIE de golem.fm — ~/code/maestrium/frontend/src/lib/harmony/tunings.ts (TUNING_PRESETS, fdb7cbd, lu le 2026-10-08). Mêmes id, mêmes libellés, MIDI de la corde grave à l'aiguë. Ne pas diverger : un id nouveau naît là-bas.",
+ "defaults": {
+  "guitar": "6-std",
+  "bass": "bass-4-std"
+ },
+ "tunings": [
+  {
+   "id": "6-std",
+   "label": "6-string — standard",
+   "short": "EADGBE",
+   "family": "6-string",
+   "midi": [
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "eb-std",
+   "label": "6-string — Eb (half step down)",
+   "short": "Eb Ab Db Gb Bb Eb",
+   "family": "6-string",
+   "midi": [
+    39,
+    44,
+    49,
+    54,
+    58,
+    63
+   ],
+   "notes": [
+    "Eb2",
+    "Ab2",
+    "Db3",
+    "Gb3",
+    "Bb3",
+    "Eb4"
+   ]
+  },
+  {
+   "id": "d-std",
+   "label": "6-string — D standard (whole step down)",
+   "short": "DGCFAD",
+   "family": "6-string",
+   "midi": [
+    38,
+    43,
+    48,
+    53,
+    57,
+    62
+   ],
+   "notes": [
+    "D2",
+    "G2",
+    "C3",
+    "F3",
+    "A3",
+    "D4"
+   ]
+  },
+  {
+   "id": "drop-d",
+   "label": "6-string — Drop D",
+   "short": "DADGBE",
+   "family": "6-string",
+   "midi": [
+    38,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "D2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "dadgad",
+   "label": "6-string — DADGAD",
+   "short": "DADGAD",
+   "family": "6-string",
+   "midi": [
+    38,
+    45,
+    50,
+    55,
+    57,
+    62
+   ],
+   "notes": [
+    "D2",
+    "A2",
+    "D3",
+    "G3",
+    "A3",
+    "D4"
+   ]
+  },
+  {
+   "id": "drop-c",
+   "label": "6-string — Drop C",
+   "short": "CGCFAD",
+   "family": "6-string",
+   "midi": [
+    36,
+    43,
+    48,
+    53,
+    57,
+    62
+   ],
+   "notes": [
+    "C2",
+    "G2",
+    "C3",
+    "F3",
+    "A3",
+    "D4"
+   ]
+  },
+  {
+   "id": "7-std",
+   "label": "7-string — BEADGBE",
+   "short": "BEADGBE",
+   "family": "7-string",
+   "midi": [
+    35,
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "B1",
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "7-drop-a",
+   "label": "7-string — Drop A (AEADGBE)",
+   "short": "AEADGBE",
+   "family": "7-string",
+   "midi": [
+    33,
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "A1",
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "7-gdgcfad",
+   "label": "7-string — Drop A, whole step down (GDGCFAD)",
+   "short": "GDGCFAD",
+   "family": "7-string",
+   "midi": [
+    31,
+    38,
+    43,
+    48,
+    53,
+    57,
+    62
+   ],
+   "notes": [
+    "G1",
+    "D2",
+    "G2",
+    "C3",
+    "F3",
+    "A3",
+    "D4"
+   ]
+  },
+  {
+   "id": "8-std",
+   "label": "8-string — F#BEADGBE",
+   "short": "F#BEADGBE",
+   "family": "8-string",
+   "midi": [
+    30,
+    35,
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "F#1",
+    "B1",
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "8-e",
+   "label": "8-string — EBEADGBE (low E)",
+   "short": "EBEADGBE",
+   "family": "8-string",
+   "midi": [
+    28,
+    35,
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "E1",
+    "B1",
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "8-drop-e",
+   "label": "8-string — EAEADGBE",
+   "short": "EAEADGBE",
+   "family": "8-string",
+   "midi": [
+    28,
+    33,
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "E1",
+    "A1",
+    "E2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "8-dbdadgbe",
+   "label": "8-string — DBDADGBE",
+   "short": "DBDADGBE",
+   "family": "8-string",
+   "midi": [
+    26,
+    35,
+    38,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes": [
+    "D1",
+    "B1",
+    "D2",
+    "A2",
+    "D3",
+    "G3",
+    "B3",
+    "E4"
+   ]
+  },
+  {
+   "id": "bass-4-std",
+   "label": "4-string bass — standard",
+   "short": "EADG",
+   "family": "bass-4",
+   "midi": [
+    28,
+    33,
+    38,
+    43
+   ],
+   "notes": [
+    "E1",
+    "A1",
+    "D2",
+    "G2"
+   ]
+  },
+  {
+   "id": "bass-4-eb",
+   "label": "4-string bass — Eb (half step)",
+   "short": "Eb Ab Db Gb",
+   "family": "bass-4",
+   "midi": [
+    27,
+    32,
+    37,
+    42
+   ],
+   "notes": [
+    "Eb1",
+    "Ab1",
+    "Db2",
+    "Gb2"
+   ]
+  },
+  {
+   "id": "bass-4-d-std",
+   "label": "4-string bass — D standard (whole step)",
+   "short": "DGCF",
+   "family": "bass-4",
+   "midi": [
+    26,
+    31,
+    36,
+    41
+   ],
+   "notes": [
+    "D1",
+    "G1",
+    "C2",
+    "F2"
+   ]
+  },
+  {
+   "id": "bass-4-drop-d",
+   "label": "4-string bass — Drop D",
+   "short": "DADG",
+   "family": "bass-4",
+   "midi": [
+    26,
+    33,
+    38,
+    43
+   ],
+   "notes": [
+    "D1",
+    "A1",
+    "D2",
+    "G2"
+   ]
+  },
+  {
+   "id": "bass-5-std",
+   "label": "5-string bass — standard (low B)",
+   "short": "BEADG",
+   "family": "bass-5",
+   "midi": [
+    23,
+    28,
+    33,
+    38,
+    43
+   ],
+   "notes": [
+    "B0",
+    "E1",
+    "A1",
+    "D2",
+    "G2"
+   ]
+  },
+  {
+   "id": "bass-5-high-c",
+   "label": "5-string bass — high C (jazz)",
+   "short": "EADGC",
+   "family": "bass-5",
+   "midi": [
+    28,
+    33,
+    38,
+    43,
+    48
+   ],
+   "notes": [
+    "E1",
+    "A1",
+    "D2",
+    "G2",
+    "C3"
+   ]
+  },
+  {
+   "id": "bass-5-drop-a",
+   "label": "5-string bass — Drop A",
+   "short": "AEADG",
+   "family": "bass-5",
+   "midi": [
+    21,
+    28,
+    33,
+    38,
+    43
+   ],
+   "notes": [
+    "A0",
+    "E1",
+    "A1",
+    "D2",
+    "G2"
+   ]
+  }
+ ]
+}

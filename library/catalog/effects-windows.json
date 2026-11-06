@@ -1,0 +1,337 @@
+{
+ "_comment": "REAPER Windows x64: exact scanned plugin names. Only loaded by golem_rig.lua on Windows. Unsupported entries prevent a Linux alias or numeric parameter fallback from selecting the wrong DSP.",
+ "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on Windows (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on Windows (`note` says which, and what is still missing); untested = never tried on Windows (`why`).",
+ "revision": 7,
+ "effects": {
+  "boost": {
+   "plugin": "VST3: Proteus (GuitarML)",
+   "param_modes": {
+    "bass": "norm",
+    "mid": "norm",
+    "treble": "norm"
+   }
+  },
+  "piano": {
+   "plugin": "VST3i: sfizz (SFZTools)",
+   "note": "2026-10-22 : sfizz 1.2.3 est posé par install-system.ps1 -Sfizz ; REAPER ne lit que son VST3 sous Windows et golem_rig charge le .sfz par l'état VST3 (sfizz_vst3_set_file, mesuré au rendu le 2026-10-11, docs/drums-kit.md §8). Le pack piano (Salamander, 450 Mo) est posé par l'installeur (desktop_steps._sound_piano)."
+  },
+  "pedal-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "preamp-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "comp-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "reverb": {
+   "plugin": "VST3: Dragonfly Hall Reverb (Michael Willis and Rob vd Berg)",
+   "param_mode": "norm"
+  },
+  "reverb-plate": {
+   "plugin": "VST3: Dragonfly Plate Reverb (Michael Willis)",
+   "param_mode": "norm"
+  },
+  "reverb-room": {
+   "plugin": "VST3: Dragonfly Room Reverb (Michael Willis)",
+   "param_mode": "norm"
+  },
+  "granular": {
+   "plugin": "VST3: ZamGrains (Damien Zammit) (mono)",
+   "param_mode": "norm"
+  },
+  "pitch-spectral": {
+   "plugin": "VST3: Spectral Shift (trencrumb)"
+  },
+  "surge-spring": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "size": "Reverb Size",
+    "decay": "Reverb Decay",
+    "refl": "Reverb Reflections",
+    "damp": "Reverb HF Damping",
+    "spin": "Modulation Spin",
+    "chaos": "Modulation Chaos",
+    "knock": "Modulation Knock"
+   },
+   "fx_init": {
+    "FX Type": 0.928571
+   },
+   "late_params": true,
+   "note": "2026-10-22 : le VST3 Surge XT Effects expose « FX Type » normalisé (Spring Reverb = 26/28 des 29 types) et renomme ses 17 fentes selon le type ; le plugin réinitialise ses paramètres au bloc audio suivant — d'où late_params. Noms lus au banc."
+  },
+  "surge-freqshift": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "shift": "Shift Left",
+    "shift_r": "Shift Right",
+    "time": "Delay Time",
+    "fbk": "Delay Feedback"
+   },
+   "fx_init": {
+    "FX Type": 0.214286
+   },
+   "late_params": true,
+   "note": "2026-10-22 : Surge XT Effects VST3, Frequency Shifter = 6/28 (voir surge-spring)."
+  },
+  "surge-treemonster": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "thr": "Pitch Detection Threshold",
+    "speed": "Pitch Detection Speed",
+    "lowcut": "Pitch Detection Low Cut",
+    "highcut": "Pitch Detection High Cut",
+    "pitch": "Oscillator Pitch",
+    "ring": "Oscillator Ring Modulation"
+   },
+   "fx_init": {
+    "FX Type": 0.821429
+   },
+   "late_params": true,
+   "note": "2026-10-22 : Surge XT Effects VST3, Treemonster = 23/28 (voir surge-spring)."
+  },
+  "spectral-comp": {
+   "plugin": "VST3: Spectral Compressor (Robbert van der Helm)"
+  },
+  "stretch": {
+   "plugin": "VST3: PaulXStretch (Sonosaurus) (18ch)"
+  },
+  "ringmod": {
+   "plugin": "LV2: MDA RingMod"
+  },
+  "bitcrusher": {
+   "plugin": "LV2: MDA Degrade"
+  },
+  "rezfilter": {
+   "plugin": "LV2: MDA RezFilter"
+  },
+  "limiter": {
+   "plugin": "JS:golem/golem_limiter",
+   "note": "2026-10-22 : x42-dpl n'est pas installé ici ; golem_limiter.jsfx (maison, MIT) reprend ses trois commandes (Input Gain, Threshold, Release Time) et l'idée d'un limiteur à anticipation (64 échantillons, déclarés) — code à nous."
+  },
+  "chorus": {
+   "plugin": "JS:golem/golem_chorus",
+   "note": "2026-10-22 : Calf Multi Chorus n'existe pas ici ; golem_chorus.jsfx (maison, MIT) reprend ses 12 paramètres (noms, bornes, défauts) et son architecture publique (N voix sur une ligne à retard, Overlap, Stereo Phase, deux passe-bande en sortie) — code à nous, son proche, pas identique."
+  },
+  "flanger": {
+   "plugin": "JS:golem/golem_flanger",
+   "note": "2026-10-22 : Calf Flanger n'existe pas ici ; golem_flanger.jsfx (maison, MIT) reprend ses paramètres (noms, bornes, défauts) et son architecture (ligne à retard modulée, retour dans la ligne, phase stéréo) — code à nous."
+  },
+  "phaser": {
+   "plugin": "JS:golem/golem_phaser",
+   "note": "2026-10-22 : Calf Phaser n'existe pas ici ; golem_phaser.jsfx (maison, MIT) reprend ses paramètres (Center Freq, Mod depth en cents, Mod rate, Feedback, # Stages, Stereo phase, Amount, Dry Amount) et son architecture publique (passe-tout d'ordre 1 en cascade, LFO triangle, retour) — code à nous."
+  },
+  "tremolo": {
+   "plugin": "JS:golem/golem_tremolo",
+   "note": "2026-10-22 : Calf Pulsator n'existe pas ici ; golem_tremolo.jsfx (maison, MIT) reprend ses paramètres (Timing/BPM/ms/Frequency, Mode, Modulation, Offset L/R, Pulse Width), ses formes de LFO et sa loi de niveau — code à nous."
+  },
+  "wah": {
+   "plugin": "JS:golem/golem_wah",
+   "note": "2026-10-22 : Gxgcb_95 (guitarix) n'existe pas ici ; golem_wah.jsfx (maison, MIT) reprend ses noms, bornes et défauts, et sa réponse (filtre d'ordre 4 du GCB-95 évaluée à 48 kHz, rejouée par un SVF) — son proche, pas identique."
+  },
+  "wah-color": {
+   "plugin": "JS:golem/golem_colwah",
+   "note": "2026-10-22 : GxWahwah (guitarix colwah) n'existe pas ici ; golem_colwah.jsfx (maison, MIT) reprend ses 7 modèles, 3 modes, noms, bornes et défauts ; la réponse de chaque modèle évaluée à 48 kHz pilote un SVF — son proche, pas identique."
+  },
+  "autowah": {
+   "plugin": "JS:golem/golem_autowah",
+   "note": "2026-10-22 : GxAutoWah (guitarix) n'existe pas ici ; golem_autowah.jsfx (maison, MIT) : le suiveur d'enveloppe de dunwahauto et le filtre du GCB-95 ; Wah = sensibilité (le plugin Linux n'a aucun paramètre)."
+  },
+  "delay-tape": {
+   "plugin": "JS:golem/golem_tapedelay",
+   "note": "2026-10-22 : Calf Vintage Delay n'existe pas sous Windows ; golem_tapedelay.jsfx (maison, MIT) en reprend les noms, bornes et sens de paramètres — les presets ne changent pas. Pas le DSP de Calf."
+  },
+  "delay-echo": {
+   "plugin": "JS:golem/golem_echocat",
+   "note": "2026-10-22 : GxEchoCat (guitarix) est en quarantaine (il fige le moteur ~520 ms) ; golem_echocat.jsfx (maison, MIT) reprend ses paramètres (BPM, Sustain, Swell, Input, Head 1-3) et l'architecture du Copicat — code à nous, ne fige rien (banc de gel)."
+  },
+  "reverb-shimmer": {
+   "plugin": "JS:golem/golem_shimmer",
+   "note": "2026-10-22 : GxShimmizita (guitarix) n'existe pas ici ; golem_shimmer.jsfx (maison, MIT) en reprend les noms, bornes et défauts de paramètres et l'idée (FDN 8 lignes, transposition dans la boucle) — notre code, son proche, niveaux à vérifier à l'oreille."
+  },
+  "rotary": {
+   "plugin": "JS:golem/golem_rotary",
+   "note": "2026-10-22 : Calf Rotary Speaker n'existe pas ici ; golem_rotary.jsfx (maison, MIT) reprend ses paramètres (Speed Mode 0..5, Tap Spacing/Offset, FM/AM Depth, Mic Distance, Reflection, moteurs) et son architecture (deux rotors sur une ligne à retard, Doppler + AM, croisement 800 Hz / 2 kHz, rampes de vitesse de Calf) — code à nous."
+  },
+  "eq-para": {
+   "plugin": "JS:golem/golem_eq",
+   "note": "2026-10-22 : x42-eq n'est pas installé sous Windows ; golem_eq.jsfx (maison, MIT) en reprend les noms de paramètres et leurs unités (Hz, dB) — biquads RBJ, pas le DSP de fil4."
+  },
+  "eq-graphic": {
+   "plugin": "JS:golem/golem_geq",
+   "note": "2026-10-22 : GxGraphicEQ (guitarix) n'existe pas ici ; golem_geq.jsfx (maison, MIT) reprend G1..G11 et les bandes du banc de filtres de guitarix (cloches d'une octave en cascade, plateaux aux extrêmes) — code à nous."
+  },
+  "octaver": {
+   "plugin": "JS:golem/golem_octaver",
+   "note": "2026-10-22 : Gxoc_2 (guitarix, Boss OC-2) n'existe pas ici ; golem_octaver.jsfx (maison, MIT) reprend ses paramètres et l'architecture de la pédale (filtre d'entrée, diviseur par bascules, commutation, passe-bas par octave ; corners évalués dans oc_2.lib) — code à nous."
+  },
+  "vibrato": {
+   "plugin": "JS:golem/golem_vibrato",
+   "note": "2026-10-22 : GxTubeVibrato (guitarix) n'existe pas ici ; golem_vibrato.jsfx (maison, MIT) reprend ses paramètres (SineWave, Depth, Speed en Hz, Drive, Output) et sa courbe de retard — code à nous."
+  },
+  "pitch-correct": {
+   "unsupported": "x42-Autotune absent du scan REAPER Windows ; ReaTune (livré avec REAPER) n'expose AUCUN paramètre automatisable (mesuré le 2026-10-22 : Bypass, Wet, Delta seulement — clé, gamme, correction vivent dans son état), donc pas de correspondance possible ; un correcteur de hauteur maison est un chantier à part"
+  },
+  "detune": {
+   "unsupported": "GxDetune absent du scan REAPER Windows"
+  },
+  "freeze": {
+   "unsupported": "GoleM Freeze absent du scan REAPER Windows"
+  },
+  "grit": {
+   "plugin": "JS:golem/golem_grit",
+   "note": "2026-10-22 : pas de Prisma à installer ici ; golem_grit.jsfx (maison, MIT) en reprend l'interface (noms, 23 modules, crossovers, gains) — le DSP de chaque module est le nôtre (Prisma est AGPL), son de la même famille, pas identique."
+  },
+  "delay-tape-aw": {
+   "plugin": "VST: TapeDelay2 (airwindows)"
+  },
+  "capture-module": {
+   "plugin": "CLAP: golem Capture (golem)"
+  }
+ },
+ "unmapped": {
+  "amp": {
+   "family": "core"
+  },
+  "amp-nam": {
+   "family": "core"
+  },
+  "arrangement": {
+   "family": "no-plugin"
+  },
+  "backing-track": {
+   "family": "no-plugin"
+  },
+  "cab": {
+   "family": "core"
+  },
+  "chorus-js": {
+   "family": "reaper-jsfx"
+  },
+  "clean-boost": {
+   "family": "reaper-jsfx"
+  },
+  "click": {
+   "family": "no-plugin"
+  },
+  "comp": {
+   "family": "reaper-plugin"
+  },
+  "compo": {
+   "family": "no-plugin"
+  },
+  "deesser": {
+   "family": "golem-jsfx"
+  },
+  "delay": {
+   "family": "reaper-plugin"
+  },
+  "drumkit": {
+   "family": "installed-plugin",
+   "note": "AVL Drumkits (x42, installed by install-system.ps1 -Avldrums) plays Black Pearl, Red Zeppelin and Blonde Bop — measured 2026-10-03 with an Alesis Nitro. DrumGizmo (the Aasimonster kit) is not installed on Windows: that kit is shown unavailable."
+  },
+  "drums": {
+   "family": "no-plugin"
+  },
+  "ep": {
+   "family": "untested",
+   "why": "its engine (Dexed) exists for Windows but GoleM neither installs nor maps it yet"
+  },
+  "eq": {
+   "family": "reaper-plugin"
+  },
+  "flanger-js": {
+   "family": "reaper-jsfx"
+  },
+  "gate": {
+   "family": "reaper-plugin"
+  },
+  "guitar-drive": {
+   "family": "reaper-jsfx"
+  },
+  "killswitch": {
+   "family": "golem-jsfx"
+  },
+  "looper": {
+   "family": "no-plugin"
+  },
+  "midi-pedal": {
+   "family": "no-plugin"
+  },
+  "organ": {
+   "family": "untested",
+   "why": "its engine (setBfree) is not installed or mapped on Windows"
+  },
+  "pads": {
+   "family": "untested",
+   "why": "its engine (ReaSamplomatic5000) ships with REAPER, but the block was never tried on Windows"
+  },
+  "phaser-js": {
+   "family": "reaper-jsfx"
+  },
+  "pitch": {
+   "family": "reaper-plugin"
+  },
+  "pitch-shift-js": {
+   "family": "reaper-jsfx"
+  },
+  "rec": {
+   "family": "no-plugin"
+  },
+  "sample": {
+   "family": "no-plugin"
+  },
+  "standard": {
+   "family": "no-plugin"
+  },
+  "tuner": {
+   "family": "no-plugin"
+  },
+  "vital": {
+   "family": "installed-plugin",
+   "note": "Official Vital (VST3, free account on vital.audio — the installer points to it) is tried first; otherwise Vitalium (DISTRHO, LV2, installed by install-system.ps1 -Vitalium). On Vitalium a .vital preset goes through the track chunk: port values + JUCE state — measured 2026-10-03, every parameter, wavetable and modulation identical to the file."
+  },
+  "volume": {
+   "family": "reaper-plugin"
+  },
+  "whammy-dt": {
+   "family": "no-plugin"
+  }
+ }
+}

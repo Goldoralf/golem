@@ -1,0 +1,11 @@
+{
+ "name": "Standard",
+ "type": "wah",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "wah": 0.5,
+  "volume": 0
+ },
+ "default": true
+}

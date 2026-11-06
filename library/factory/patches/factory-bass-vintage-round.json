@@ -1,0 +1,426 @@
+{
+ "id": "factory-bass-vintage-round",
+ "name": "Vintage Round",
+ "role": "bass",
+ "tags": [
+  "pop",
+  "soul",
+  "rock",
+  "vintage"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Vintage Round",
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Round",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Punch",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Both",
+     "blocks": {
+      "eq": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Pick",
+     "blocks": {
+      "eq": true
+     },
+     "params": {
+      "comp": {
+       "attack": 5,
+       "ratio": 5
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -65,
+       "attack": 3,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15,
+       "release": 180
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "b15",
+         "type": "amp",
+         "label": "Ampeg B-15 Fliptop",
+         "ref": "26828",
+         "model": "379842",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379985",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "foot": 6,
+      "params": {
+       "lowcut": 35,
+       "midgain": 3,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "params": {
+       "mix": 6,
+       "decay": 0.5,
+       "size": 10,
+       "hicut": 5000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Round",
+   "blocks": {
+    "eq": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Punch",
+   "blocks": {
+    "eq": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Both",
+   "blocks": {
+    "eq": false
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Pick",
+   "blocks": {
+    "eq": true
+   },
+   "params": {
+    "comp": {
+     "attack": 5,
+     "ratio": 5
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-D"
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-one-drop.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 76,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -65,
+     "attack": 3,
+     "release": 200
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -22,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 15,
+     "release": 180
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "b15",
+       "type": "amp",
+       "label": "Ampeg B-15 Fliptop",
+       "ref": "26828",
+       "model": "379842",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "svt",
+       "type": "amp",
+       "label": "Ampeg SVT 6x10",
+       "ref": "28202",
+       "model": "379985",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq",
+    "foot": 6,
+    "params": {
+     "lowcut": 35,
+     "midgain": 3,
+     "midfreq": 800,
+     "highs": 2
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "params": {
+     "mix": 6,
+     "decay": 0.5,
+     "size": 10,
+     "hicut": 5000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "26828",
+   "model": "379842"
+  },
+  {
+   "type": "amp",
+   "ref": "28202",
+   "model": "379985"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "f5fca452dbaa7ad325390de45416cdd69ba2c7b8b62f9a39c9243f555d426e29",
+   "uid": "t3k:26828",
+   "kind": "amp-cab",
+   "bytes": 294149,
+   "name": "Ampeg B15  U47",
+   "source": "t3k",
+   "amp": "Ampeg B-15",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-b-15-fliptop-26828"
+  },
+  {
+   "sha256": "552bcb206848aebd4a69e63bb4c89df289342c5ce105e6a306343132d976b716",
+   "uid": "t3k:28202",
+   "kind": "amp-cab",
+   "bytes": 297396,
+   "name": "Ampeg SVT - MD 421",
+   "source": "t3k",
+   "amp": "Ampeg SVT Classic",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-classic-with-6x10-28202"
+  },
+  {
+   "sha256": "e9f7c952471867b583a05e027d76ff8a5960b456bf3c2f86c88966c879b87792",
+   "uid": "local:groove-golem-one-drop",
+   "kind": "groove",
+   "bytes": 217,
+   "name": "One drop",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"wave\", \"6\": \"heartbeat\", \"A\": \"snow\", \"B\": \"vu\", \"C\": \"aurora\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 3}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"hicut\": 5000, \"mix\": 6, \"size\": 10}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"makeup\": 3, \"ratio\": 4, \"release\": 180, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15 Fliptop\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379985\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#e9c46a\", \"6\": \"#e9c46a\", \"A\": \"#e9c46a\", \"B\": \"#e9c46a\", \"C\": \"#e9c46a\", \"D\": \"#e9c46a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-one-drop.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 3}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"hicut\": 5000, \"mix\": 6, \"size\": 10}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"makeup\": 3, \"ratio\": 4, \"release\": 180, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15 Fliptop\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379985\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Vintage Round\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"eq\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Round\", \"params\": {}}, {\"blocks\": {\"eq\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-B\", \"name\": \"Punch\", \"params\": {}}, {\"blocks\": {\"eq\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Both\", \"params\": {}}, {\"blocks\": {\"eq\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Pick\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 5}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"eq\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Round\"}, {\"blocks\": {\"eq\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-B\"}}, \"level\": 1, \"name\": \"Punch\"}, {\"blocks\": {\"eq\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Both\"}, {\"blocks\": {\"eq\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Pick\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 5}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#e9c46a",
+  "B": "#e9c46a",
+  "C": "#e9c46a",
+  "D": "#e9c46a",
+  "6": "#e9c46a",
+  "9": "#e9c46a",
+  "10": "#e9c46a"
+ },
+ "anims": {
+  "A": "snow",
+  "B": "vu",
+  "C": "aurora",
+  "D": "stars",
+  "6": "heartbeat",
+  "9": "ripple",
+  "10": "wave"
+ }
+}

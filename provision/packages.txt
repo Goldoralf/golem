@@ -1,0 +1,61 @@
+# Paquets apt pour GoleM (Ubuntu 24.04).
+# Installés par install.sh.  Une ligne = un paquet ; # = commentaire.
+# Un « ? » collé au nom = OPTIONNEL : absent de la distribution, il est écarté et dit (lib-packages.sh) ;
+# sans « ? », un paquet absent ARRÊTE l'install. Optionnels : ce dont un bloc ou un outil se passe.
+
+# --- Outils audio / MIDI ---
+pipewire-audio
+pipewire-jack
+wireplumber
+pulseaudio-utils
+alsa-utils
+qpwgraph?
+
+# --- Plugins packagés dans les dépôts Ubuntu (universe) ---
+lsp-plugins?
+lsp-plugins-lv2?
+calf-plugins?
+guitarix?
+zam-plugins?
+x42-plugins?
+
+# --- Reverb (algorithmique + convolution) — TOUT EN LV2 (Reaper ne lit pas LADSPA) ---
+dragonfly-reverb?         # Hall / Room / Plate / Early Reflections (LV2)
+ir.lv2?                   # reverb par convolution (charge des IR de vraies salles)
+
+# --- Delay + suites mixtes (delay/reverb/dynamique) — LV2 ---
+ardour-lv2-plugins?       # a-Delay, a-Reverb (propres, modernes)
+# NB: invada-studio-plugins-lv2 retiré (2026-11-03) : aucun bloc ne s'en servait, et Ubuntu 26.04 ne l'a plus.
+# NB: tap-plugins / rev-plugins existent mais sont LADSPA → invisibles dans Reaper (écartés).
+
+# --- Build / fetch (pour les plugins tirés de GitHub via plugins.sh) ---
+git
+curl
+wget
+unzip
+build-essential
+jq
+
+# --- Bridge Python (venv — ABSENT d'un Ubuntu vierge, trouvé en test VM) ---
+python3-venv
+python3-pip
+# python-rtmidi (MIDI du bridge) n'a de wheel que jusqu'à Python 3.13 : sous Ubuntu 26.04 (Python 3.14), pip le
+# COMPILE, et meson exige pkg-config + les en-têtes ALSA — l'étape « Bridge Python » mourait là (2026-11-03).
+# JACK est facultatif pour rtmidi (meson s'en passe) : pas de -dev JACK, qui tirerait libjack-jackd2 sous pipewire-jack.
+pkg-config
+libasound2-dev
+setbfree?                 # orgue B3 tonewheel + Leslie (bloc organ, lane Keys — P1 claviers)
+
+# --- Écran X virtuel : Reaper MASQUÉ au lancement (docs/ui-architecture.md §9) ---
+# `golem desktop` n'ouvre qu'UNE fenêtre — celle de GoleM. Reaper part sur Xvfb :99 ; sans ce
+# paquet le lanceur retombe sur l'écran réel EN LE DISANT, mais l'utilisateur voit alors deux
+# fenêtres s'ouvrir, ce qu'on cherche précisément à éviter.
+# Mesuré : c'est la SEULE voie — `wnd_state` de reaper.ini n'a aucun effet sous Linux, et
+# Wayland interdit par conception de manipuler la fenêtre d'un autre programme.
+xvfb
+x11-utils                 # xdpyinfo : savoir si :99 tourne déjà (relance idempotente)
+
+# audio hors temps réel : découpe des prises, mesure de loudness, encodage des démos
+# (docs/private/repete-vers-demo.md). Il était présent sur le poste de travail PAR HASARD — une VM
+# nue l'a révélé absent le 2026-08-02, alors que tout le jalon J0 repose dessus.
+ffmpeg

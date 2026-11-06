@@ -1,0 +1,14 @@
+{
+ "name": "Standard",
+ "type": "boost",
+ "factory": true,
+ "params": {
+  "drive": 30,
+  "level": 50,
+  "treble": 0,
+  "bass": 0,
+  "mid": 0
+ },
+ "default": true,
+ "inst": "guitar"
+}

@@ -1,0 +1,481 @@
+{
+ "id": "factory-keys-synth-lead",
+ "name": "Synth Lead",
+ "role": "keys",
+ "tags": [
+  "synthwave",
+  "electro",
+  "lead"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Synth Lead",
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Stab",
+     "blocks": {
+      "crush": false,
+      "chorus": true,
+      "phaser": false,
+      "flanger": false,
+      "dly": false,
+      "shim": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Neon Echo",
+     "blocks": {
+      "crush": false,
+      "chorus": true,
+      "phaser": false,
+      "flanger": false,
+      "dly": true,
+      "shim": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Phase Drive",
+     "blocks": {
+      "crush": false,
+      "chorus": false,
+      "phaser": true,
+      "flanger": false,
+      "dly": true,
+      "shim": false
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.7
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Lo-Fi Tape",
+     "blocks": {
+      "crush": true,
+      "chorus": true,
+      "phaser": false,
+      "flanger": false,
+      "dly": true,
+      "shim": false
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.4
+      },
+      "dly": {
+       "time": "1/4",
+       "feedback": 45
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-E",
+     "name": "Solo",
+     "blocks": {
+      "crush": false,
+      "chorus": true,
+      "phaser": false,
+      "flanger": false,
+      "dly": true,
+      "shim": true
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.85
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Hard_Synthwave",
+       "fcut": 0.6,
+       "rmix": 0.15,
+       "dmix": 0.1,
+       "vol": 0.6
+      }
+     },
+     {
+      "id": "crush",
+      "type": "bitcrusher",
+      "params": {
+       "quant": 0.55,
+       "rate": 0.45,
+       "nonlin": 0.1
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "params": {
+       "length": 16,
+       "voices": 3,
+       "rate": 0.5,
+       "wet": -8,
+       "dry": 0
+      }
+     },
+     {
+      "id": "phaser",
+      "type": "phaser-js",
+      "foot": 7,
+      "params": {
+       "rate": 0.3,
+       "low": 300,
+       "high": 2500,
+       "feedback": -6,
+       "wet": -3
+      }
+     },
+     {
+      "id": "flanger",
+      "type": "flanger-js",
+      "params": {
+       "length": 6,
+       "feedback": -10,
+       "wet": -8,
+       "dry": 0,
+       "rate": 0.12
+      },
+      "foot": 9
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 6,
+      "params": {
+       "time": "1/8•",
+       "feedback": 38,
+       "mix": 24
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "foot": 8,
+      "params": {
+       "mix": 30,
+       "decay": 5,
+       "shimmer": 45,
+       "pitch": 5,
+       "hicut": 6500
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 14,
+       "decay": 1.3,
+       "predelay": 15,
+       "hicut": 7500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Stab",
+   "blocks": {
+    "crush": false,
+    "chorus": true,
+    "phaser": false,
+    "flanger": false,
+    "dly": false,
+    "shim": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Neon Echo",
+   "blocks": {
+    "crush": false,
+    "chorus": true,
+    "phaser": false,
+    "flanger": false,
+    "dly": true,
+    "shim": false
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 1,
+     "state": "st-keys-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Phase Drive",
+   "blocks": {
+    "crush": false,
+    "chorus": false,
+    "phaser": true,
+    "flanger": false,
+    "dly": true,
+    "shim": false
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.7
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 1,
+     "state": "st-keys-1-C"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Lo-Fi Tape",
+   "blocks": {
+    "crush": true,
+    "chorus": true,
+    "phaser": false,
+    "flanger": false,
+    "dly": true,
+    "shim": false
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.4
+    },
+    "dly": {
+     "time": "1/4",
+     "feedback": 45
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": -1,
+     "state": "st-keys-1-D"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "E",
+   "name": "Solo",
+   "blocks": {
+    "crush": false,
+    "chorus": true,
+    "phaser": false,
+    "flanger": false,
+    "dly": true,
+    "shim": true
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.85
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 3,
+     "state": "st-keys-1-E"
+    }
+   },
+   "level": 3
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-four-on-the-floor.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 124,
+ "chain": {
+  "chain": [
+   {
+    "id": "vital",
+    "type": "vital",
+    "params": {
+     "preset": "Hard_Synthwave",
+     "fcut": 0.6,
+     "rmix": 0.15,
+     "dmix": 0.1,
+     "vol": 0.6
+    }
+   },
+   {
+    "id": "crush",
+    "type": "bitcrusher",
+    "params": {
+     "quant": 0.55,
+     "rate": 0.45,
+     "nonlin": 0.1
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus-js",
+    "params": {
+     "length": 16,
+     "voices": 3,
+     "rate": 0.5,
+     "wet": -8,
+     "dry": 0
+    }
+   },
+   {
+    "id": "phaser",
+    "type": "phaser-js",
+    "foot": 7,
+    "params": {
+     "rate": 0.3,
+     "low": 300,
+     "high": 2500,
+     "feedback": -6,
+     "wet": -3
+    }
+   },
+   {
+    "id": "flanger",
+    "type": "flanger-js",
+    "params": {
+     "length": 6,
+     "feedback": -10,
+     "wet": -8,
+     "dry": 0,
+     "rate": 0.12
+    },
+    "foot": 9
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 6,
+    "params": {
+     "time": "1/8•",
+     "feedback": 38,
+     "mix": 24
+    }
+   },
+   {
+    "id": "shim",
+    "type": "reverb-shimmer",
+    "foot": 8,
+    "params": {
+     "mix": 30,
+     "decay": 5,
+     "shimmer": 45,
+     "pitch": 5,
+     "hicut": 6500
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 14,
+     "decay": 1.3,
+     "predelay": 15,
+     "hicut": 7500
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "9d8d4116027540b5f09745d1d5ec796c0053a7b64a654f5b039d002369b06958",
+   "uid": "local:synth-vital-factory",
+   "kind": "synth",
+   "bytes": 522922,
+   "name": "Hard Synthwave",
+   "source": "golemfm",
+   "amp": "Vital presets (factory)",
+   "brand": "Vital",
+   "creator": "user"
+  },
+  {
+   "sha256": "165f2cf0f259a1812ed50146696a922c422e379f044f520a6eebf02a52bcd588",
+   "uid": "local:groove-golem-four-on-the-floor",
+   "kind": "groove",
+   "bytes": 281,
+   "name": "Four on the floor",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"sheen\", \"7\": \"glitch\", \"8\": \"scanner\", \"9\": \"vortex\", \"A\": \"ember\", \"B\": \"stars\", \"C\": \"wave\", \"D\": \"rain\", \"E\": \"ripple\"}, \"backing\": null, \"bpm\": 124, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.1, \"fcut\": 0.6, \"preset\": \"Hard_Synthwave\", \"rmix\": 0.15, \"vol\": 0.6}, \"type\": \"vital\"}, {\"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 16, \"rate\": 0.5, \"voices\": 3, \"wet\": -8}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"phaser\", \"params\": {\"feedback\": -6, \"high\": 2500, \"low\": 300, \"rate\": 0.3, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 9, \"id\": \"flanger\", \"params\": {\"dry\": 0, \"feedback\": -10, \"length\": 6, \"rate\": 0.12, \"wet\": -8}, \"type\": \"flanger-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 24, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"foot\": 8, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6500, \"mix\": 30, \"pitch\": 5, \"shimmer\": 45}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.3, \"hicut\": 7500, \"mix\": 14, \"predelay\": 15}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#3a86ff\", \"7\": \"#3a86ff\", \"8\": \"#3a86ff\", \"9\": \"#3a86ff\", \"A\": \"#3a86ff\", \"B\": \"#3a86ff\", \"C\": \"#3a86ff\", \"D\": \"#3a86ff\", \"E\": \"#3a86ff\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-four-on-the-floor.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.1, \"fcut\": 0.6, \"preset\": \"Hard_Synthwave\", \"rmix\": 0.15, \"vol\": 0.6}, \"type\": \"vital\"}, {\"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 16, \"rate\": 0.5, \"voices\": 3, \"wet\": -8}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"phaser\", \"params\": {\"feedback\": -6, \"high\": 2500, \"low\": 300, \"rate\": 0.3, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 9, \"id\": \"flanger\", \"params\": {\"dry\": 0, \"feedback\": -10, \"length\": 6, \"rate\": 0.12, \"wet\": -8}, \"type\": \"flanger-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 24, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"foot\": 8, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6500, \"mix\": 30, \"pitch\": 5, \"shimmer\": 45}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.3, \"hicut\": 7500, \"mix\": 14, \"predelay\": 15}, \"type\": \"reverb-plate\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Synth Lead\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": false, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Stab\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Neon Echo\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": true, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Phase Drive\", \"params\": {\"vital\": {\"fcut\": 0.7}}}, {\"blocks\": {\"chorus\": true, \"crush\": true, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Lo-Fi Tape\", \"params\": {\"dly\": {\"feedback\": 45, \"time\": \"1/4\"}, \"vital\": {\"fcut\": 0.4}}}, {\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-E\", \"name\": \"Solo\", \"params\": {\"vital\": {\"fcut\": 0.85}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": false, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Stab\"}, {\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-B\"}}, \"level\": 1, \"name\": \"Neon Echo\"}, {\"blocks\": {\"chorus\": false, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": true, \"shim\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-C\"}}, \"level\": 1, \"name\": \"Phase Drive\", \"params\": {\"vital\": {\"fcut\": 0.7}}}, {\"blocks\": {\"chorus\": true, \"crush\": true, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": -1, \"state\": \"st-keys-1-D\"}}, \"level\": -1, \"name\": \"Lo-Fi Tape\", \"params\": {\"dly\": {\"feedback\": 45, \"time\": \"1/4\"}, \"vital\": {\"fcut\": 0.4}}}, {\"blocks\": {\"chorus\": true, \"crush\": false, \"dly\": true, \"flanger\": false, \"phaser\": false, \"shim\": true}, \"id\": \"E\", \"lanes\": {\"keys-1\": {\"level\": 3, \"state\": \"st-keys-1-E\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"vital\": {\"fcut\": 0.85}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#3a86ff",
+  "B": "#3a86ff",
+  "C": "#3a86ff",
+  "D": "#3a86ff",
+  "E": "#3a86ff",
+  "10": "#3a86ff"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "stars",
+  "C": "wave",
+  "D": "rain",
+  "E": "ripple",
+  "10": "sheen"
+ }
+}

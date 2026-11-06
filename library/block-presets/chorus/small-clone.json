@@ -1,0 +1,11 @@
+{
+ "name": "Small Clone",
+ "type": "chorus",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.9,
+  "depth": 6.5,
+  "mix": 1.0
+ }
+}

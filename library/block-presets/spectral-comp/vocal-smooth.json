@@ -1,0 +1,19 @@
+{
+ "name": "Vocal smooth",
+ "type": "spectral-comp",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -26,
+  "down": 3,
+  "up": 1.5,
+  "center": 1000,
+  "slope": -3,
+  "attack": 60,
+  "release": 200,
+  "window": "2048",
+  "mix": 100,
+  "out": 0
+ },
+ "default": true
+}

@@ -1,0 +1,12 @@
+{
+ "name": "Bright plate",
+ "type": "reverb-plate",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "mix": 20,
+  "decay": 0.9,
+  "predelay": 0,
+  "hicut": 11000
+ }
+}

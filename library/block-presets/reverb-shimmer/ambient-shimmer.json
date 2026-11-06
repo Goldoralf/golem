@@ -1,0 +1,13 @@
+{
+ "name": "Ambient Shimmer",
+ "type": "reverb-shimmer",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 55,
+  "decay": 7,
+  "shimmer": 70,
+  "pitch": 6,
+  "hicut": 7000
+ }
+}

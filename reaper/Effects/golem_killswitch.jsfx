@@ -1,0 +1,133 @@
+desc:GoleM Kill Switch (killswitch) -- tempo-synced stutter
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Bloc « killswitch » (guitare, basse, voix — 2026-09-22). Le geste du kill switch : un micro a
+// volume zero, le selecteur bascule en rythme, le son est COUPE puis rendu — pas attenue en
+// douceur comme un tremolo : tranche. Ici le basculement est fait par une horloge.
+//
+// ── PRINCIPE ──
+// Une phase 0..1 avance d'un PAS par subdivision (Sync) ou au rythme libre de Rate (Hz). Dans
+// chaque pas, le son PASSE pendant Length % du pas, puis il est coupe (Depth = combien on coupe :
+// 100 % = le vrai kill switch, silence ; moins = un hachage qui laisse du signal). Le gain suit
+// une RAMPE LINEAIRE de Smooth ms : 0 = le clac sec d'un vrai selecteur, quelques ms = une coupe
+// sans clic. Le pas commence toujours OUVERT : la note tombe sur le temps, le trou vient apres.
+//
+// ── QUAND LE CYCLE REPART (Trigger) ──
+//   Engage : quand le bloc s'ALLUME (scene, stomp). Un JSFX bypasse ne voit ni @block ni @sample
+//            et aucun @init ne le previent de son retour : on le DEDUIT d'un trou dans
+//            time_precise() entre deux @block (> 150 ms, soit des dizaines de blocs audio).
+//   Pick   : a chaque ATTAQUE detectee a l'entree du bloc — le hachage suit la main. Detecteur :
+//            crete maintenue 35 ms (sans ondulation jusqu'a la corde de si grave d'une basse,
+//            31 Hz) puis relachee en 30 ms, comparee a sa propre moyenne lente (80 ms). Une
+//            montee de plus de `ratio` au-dessus d'un plancher = une attaque ; 50 ms de
+//            refractaire. Sensitivity 0..100 % = 12 dB..2 dB de montee, plancher -30..-60 dBFS.
+//            Place AVANT l'ampli, il entend des attaques propres (apres, la saturation les ecrase).
+//   Beat   : transport en LECTURE (backing, arrangement) et Sync sur une subdivision -> la phase
+//            est lue dans beat_position a chaque @block : le hachage tombe sur la grille du
+//            morceau, pas sur le pied (~100 ms de latence de scene, audit 2026-09-21). Transport
+//            arrete -> repli sur Engage.
+//
+// ── TEMPO ──
+// `tempo` = BPM du preset, pose au recall par golem_rig (SetCurrentBPM), valable transport a
+// l'arret (meme hypothese que golem_click). Le BPM designe la NOIRE : pas/noire = 1 (1/4),
+// 2 (1/8), 3 (1/8T), 4 (1/16), 6 (1/16T), 8 (1/32).
+//
+// ── PIEGES DU DEPOT, RESPECTES ICI (CLAUDE.md) ──
+// * Aucun slider a minimum NEGATIF : un tel slider est BIPOLAIRE pour Reaper, et la pedale EXP
+//   (OSC normalise, lineaire) ecrirait n'importe quoi. Tous les minimums sont >= 0.
+// * EEL2 est INSENSIBLE A LA CASSE : tout est prefixe `ks_`.
+// * Le code avant la premiere section @ n'est JAMAIS execute : tout est dans @init.
+// * Budget du thread audio : quelques operations par echantillon, aucun calcul lourd. Tout ce qui
+//   depend de srate/tempo/sliders est recalcule en @block (une fois par bloc), jamais par echantillon.
+//
+// ── TEMOINS ── (relus par la sonde `fxparams`, preuve que le thread audio tourne)
+// Steps = pas joues depuis le chargement · Picks = attaques detectees (Trigger = Pick).
+
+slider1:ks_depth=100<0,100,1>Depth (%)
+slider2:ks_sync=4<0,6,1{Free,1/4,1/8,1/8T,1/16,1/16T,1/32}>Sync
+slider3:ks_rate=8<1,30,0.1>Rate (Hz)
+slider4:ks_len=50<5,95,1>Length (%)
+slider5:ks_smooth=1<0,20,0.1>Smooth (ms)
+slider6:ks_trig=0<0,2,1{Engage,Pick,Beat}>Trigger
+slider7:ks_sens=50<0,100,1>Pick sensitivity (%)
+// ⚠ AJOUTER A LA SUITE, jamais intercaler : golem_rig resout par NOM, mais une sonde qui lit par
+// index (fxparams) et les instances vivantes d'un Set gardent l'ordre.
+slider8:ks_wsteps=0<0,1000000000,1>Steps (witness)
+slider9:ks_wpicks=0<0,1000000000,1>Picks (witness)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;          // pas de re-@init au depart du transport : la phase ne saute pas
+ks_ph = 0;               // phase dans le pas courant, 0..1 (0 = debut, son ouvert)
+ks_g = 1;                // gain courant (rampe)
+ks_last = 0;             // time_precise() du @block precedent (detection d'engagement)
+ks_ef = 0; ks_hc = 0;    // detecteur d'attaque : crete maintenue + compteur de maintien
+ks_es = 0;               // moyenne lente de la crete
+ks_hold = 0;             // refractaire restant (echantillons)
+ks_nsteps = 0; ks_npicks = 0;
+ks_sr = 0;               // srate vu au dernier calcul des constantes du detecteur
+ks_inc = 0; ks_step = 1; ks_d = 1; ks_l = 0.5; ks_tr = 0;
+
+@block
+// ── engagement : un trou de plus de 150 ms entre deux @block = le bloc etait eteint ──
+ks_now = time_precise();
+(ks_now - ks_last) > 0.15 ? ( ks_ph = 0; ks_g = 1; ks_hold = 0; ks_ef = 0; ks_es = 0; );
+ks_last = ks_now;
+
+// constantes du detecteur (srate peut changer sans @init : ext_noinit)
+srate != ks_sr ? (
+  ks_sr = srate;
+  ks_holdn = floor(0.035 * srate);                 // maintien de crete 35 ms
+  ks_rf = exp(-1 / (0.030 * srate));               // relache 30 ms
+  ks_cs = 1 - exp(-1 / (0.080 * srate));           // moyenne lente 80 ms
+  ks_refr = floor(0.050 * srate);                  // refractaire 50 ms
+);
+
+ks_d = min(1, max(0, ks_depth / 100));
+ks_l = min(0.95, max(0.05, ks_len / 100));
+ks_step = 1 / max(1, ks_smooth * 0.001 * srate); // pente de la rampe : pleine echelle en Smooth ms
+ks_ratio = 10 ^ ((12 - 0.10 * ks_sens) / 20);    // 12 dB (0 %) .. 2 dB (100 %)
+ks_floor = 10 ^ ((-30 - 0.30 * ks_sens) / 20);   // -30 dBFS (0 %) .. -60 dBFS (100 %)
+ks_tr = floor(ks_trig + 0.5);
+
+ks_t = tempo; ks_t < 1 ? ks_t = 1;               // garde-fou (tempo transitoire a 0)
+ks_sy = floor(ks_sync + 0.5);
+ks_spq = ks_sy == 1 ? 1 : (ks_sy == 2 ? 2 : (ks_sy == 3 ? 3 : (ks_sy == 4 ? 4 : (ks_sy == 5 ? 6 : 8))));
+ks_inc = ks_sy < 1 ? max(0.1, ks_rate) / srate : ks_t * ks_spq / (60 * srate);
+
+// ── Beat : transport en lecture -> la phase vient de la position du morceau ──
+(ks_tr == 2 && ks_sy >= 1 && (play_state & 1)) ? (
+  ks_bp = beat_position * ks_spq;
+  ks_ph = ks_bp - floor(ks_bp);
+);
+
+ks_wsteps = ks_nsteps % 1000000000;
+ks_wpicks = ks_npicks % 1000000000;
+
+@sample
+// ── Pick : une attaque a l'entree fait repartir le pas, OUVERT ──
+ks_tr == 1 ? (
+  ks_x = max(abs(spl0), abs(spl1));
+  ks_x > ks_ef ? ( ks_ef = ks_x; ks_hc = ks_holdn; ) : ( ks_hc > 0 ? (ks_hc -= 1) : (ks_ef *= ks_rf); );
+  ks_es += (ks_ef - ks_es) * ks_cs;
+  ks_hold > 0 ? (ks_hold -= 1) : (
+    (ks_ef > ks_floor && ks_ef > ks_es * ks_ratio) ? (
+      ks_ph = 0; ks_hold = ks_refr; ks_npicks += 1;
+    );
+  );
+);
+
+// ── la coupe : ouvert pendant Length % du pas, coupe de Depth ensuite, rampe de Smooth ms ──
+ks_tg = ks_ph < ks_l ? 1 : 1 - ks_d;
+ks_g += max(-ks_step, min(ks_step, ks_tg - ks_g));
+spl0 *= ks_g;
+spl1 *= ks_g;
+
+ks_ph += ks_inc;
+ks_ph >= 1 ? ( ks_ph -= 1; ks_nsteps += 1; );

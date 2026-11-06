@@ -1,0 +1,14 @@
+{
+ "name": "Standard",
+ "type": "reverb-shimmer",
+ "factory": true,
+ "params": {
+  "mix": 40,
+  "decay": 4,
+  "shimmer": 50,
+  "pitch": 5,
+  "hicut": 6000
+ },
+ "default": true,
+ "inst": "any"
+}

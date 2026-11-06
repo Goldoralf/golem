@@ -1,0 +1,14 @@
+{
+ "name": "Keys glue",
+ "type": "comp",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "thresh": -16,
+  "ratio": 2.5,
+  "makeup": 2,
+  "attack": 30,
+  "release": 250
+ },
+ "default": true
+}

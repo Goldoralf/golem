@@ -1,0 +1,6 @@
+*.sh text eol=lf
+provision/golem text eol=lf
+*.command text eol=lf
+.githooks/* text eol=lf
+native/capture/** text eol=lf
+native/capture/**/*.zip binary

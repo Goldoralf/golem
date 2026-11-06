@@ -1,0 +1,544 @@
+{
+ "id": "factory-bass-metal",
+ "name": "Metal Bass",
+ "role": "bass",
+ "tags": [
+  "metal",
+  "drive"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Metal Bass",
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Clean Intro",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Chug",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Breakdown",
+     "blocks": {},
+     "params": {
+      "gate": {
+       "thresh": -42
+      },
+      "comp": {
+       "ratio": 8
+      }
+     },
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Fuzz",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": false
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -50,
+       "attack": 1,
+       "release": 80
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 8,
+       "release": 120
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "svtcl",
+         "type": "amp-nam",
+         "label": "Ampeg SVT-CL",
+         "ref": "45809",
+         "model": "382790",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "glock",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580768",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "xultra",
+         "type": "amp-nam",
+         "label": "Darkglass X Ultra",
+         "ref": "71220",
+         "model": "588114",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "glockb",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580149",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c",
+       "blocks": [
+        {
+         "id": "omega",
+         "type": "amp",
+         "label": "Darkglass Alpha Omega",
+         "ref": "27697",
+         "model": "418277",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 2,
+       "midfreq": 1200,
+       "highs": 1
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean Intro",
+   "blocks": {},
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": -1,
+     "state": "st-bass-1-A"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "B",
+   "name": "Chug",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   },
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Breakdown",
+   "blocks": {},
+   "params": {
+    "gate": {
+     "thresh": -42
+    },
+    "comp": {
+     "ratio": 8
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-C"
+    }
+   },
+   "level": 1,
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Fuzz",
+   "blocks": {},
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": false
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 1,
+     "state": "st-bass-1-D"
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -50,
+     "attack": 1,
+     "release": 80
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 5,
+     "makeup": 3,
+     "attack": 8,
+     "release": 120
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "svtcl",
+       "type": "amp-nam",
+       "label": "Ampeg SVT-CL",
+       "ref": "45809",
+       "model": "382790",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "glock",
+       "type": "cab",
+       "label": "Glockenklang DUO 2x10",
+       "ref": "70612",
+       "model": "580768",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "xultra",
+       "type": "amp-nam",
+       "label": "Darkglass X Ultra",
+       "ref": "71220",
+       "model": "588114",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      },
+      {
+       "id": "glockb",
+       "type": "cab",
+       "label": "Glockenklang DUO 2x10",
+       "ref": "70612",
+       "model": "580149",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-c",
+     "blocks": [
+      {
+       "id": "omega",
+       "type": "amp",
+       "label": "Darkglass Alpha Omega",
+       "ref": "27697",
+       "model": "418277",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 35,
+     "midgain": 2,
+     "midfreq": 1200,
+     "highs": 1
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "45809",
+   "model": "382790"
+  },
+  {
+   "type": "cab",
+   "ref": "70612",
+   "model": "580768"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "71220",
+   "model": "588114"
+  },
+  {
+   "type": "cab",
+   "ref": "70612",
+   "model": "580149"
+  },
+  {
+   "type": "amp",
+   "ref": "27697",
+   "model": "418277"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "477da41ea5ea871879939c0672b7a793ae87ea8edfc453c873a321b58383de0d",
+   "uid": "t3k:27697",
+   "kind": "pedal",
+   "bytes": 295539,
+   "name": "Darkglass Fuzz - OMEGA",
+   "source": "t3k",
+   "amp": "Darkglass Alpha Omega",
+   "arch": "2",
+   "brand": "Darkglass",
+   "creator": "darkglass",
+   "url": "https://www.tone3000.com/tones/darkglass-alpha-omega-27697"
+  },
+  {
+   "sha256": "367faf46f93e80dc2f02381c6e7b581870edae57bf9509e12d594adeb3a96ace",
+   "uid": "t3k:45809",
+   "kind": "amp",
+   "bytes": 296327,
+   "name": "SVT CLEAN",
+   "source": "t3k",
+   "amp": "AMPEG SVT-CL",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-cl-bass-head-45809"
+  },
+  {
+   "sha256": "93e898275ca5abfd27e0816a584b522c330d843e0b1e5d17143db21e49fa9be8",
+   "uid": "t3k:70612",
+   "kind": "cab",
+   "bytes": 145120,
+   "name": "Glockenklang DUO 2x10 d6x bal w horn",
+   "source": "t3k",
+   "amp": "Glockenklang DUO 2x10",
+   "brand": "Glockenklang",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/glockenklang-duo-2x10-70612"
+  },
+  {
+   "sha256": "5973554db39b483905e89abdc8d81916aa42988a8b27126f4c39a0065a434d95",
+   "uid": "t3k:71220",
+   "kind": "amp",
+   "bytes": 294919,
+   "name": "DarkglassXUltra",
+   "source": "t3k",
+   "amp": "Darkglass Harmonic Booster",
+   "arch": "2",
+   "brand": "Darkglass",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/darkglass-x-ultra-71220"
+  },
+  {
+   "sha256": "b3f7b1149fe09d03b552c6422f86a2608a59725586192c19a6d5e1268c01652a",
+   "uid": "t3k:70612",
+   "kind": "cab",
+   "bytes": 145120,
+   "name": "Glockenklang DUO 2x10 cap-edge d6x bal",
+   "source": "t3k",
+   "amp": "Glockenklang DUO 2x10",
+   "brand": "Glockenklang",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/glockenklang-duo-2x10-70612"
+  },
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"rain\", \"9\": \"snow\", \"A\": \"fire\", \"B\": \"pulse\", \"C\": \"glitch\", \"D\": \"lightning\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 1200, \"midgain\": 2}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 80, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"makeup\": 3, \"ratio\": 5, \"release\": 120, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"xultra\", \"label\": \"Darkglass X Ultra\", \"model\": \"588114\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"71220\", \"type\": \"amp-nam\"}, {\"id\": \"glockb\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580149\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"omega\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418277\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-c\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#9d0208\", \"6\": \"#9d0208\", \"9\": \"#9d0208\", \"A\": \"#9d0208\", \"B\": \"#9d0208\", \"C\": \"#9d0208\", \"D\": \"#9d0208\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 1200, \"midgain\": 2}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 80, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"makeup\": 3, \"ratio\": 5, \"release\": 120, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"xultra\", \"label\": \"Darkglass X Ultra\", \"model\": \"588114\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"71220\", \"type\": \"amp-nam\"}, {\"id\": \"glockb\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580149\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"omega\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418277\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-c\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Metal Bass\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Clean Intro\", \"params\": {}}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-B\", \"name\": \"Chug\", \"params\": {}}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"gate\": {\"thresh\": -42}}}, {\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": false}}, \"id\": \"st-bass-1-D\", \"name\": \"Fuzz\", \"params\": {}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Clean Intro\"}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Chug\"}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Breakdown\", \"params\": {\"comp\": {\"ratio\": 8}, \"gate\": {\"thresh\": -42}}}, {\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": false}}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Fuzz\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#9d0208",
+  "B": "#9d0208",
+  "C": "#9d0208",
+  "D": "#9d0208",
+  "9": "#9d0208",
+  "10": "#9d0208"
+ },
+ "anims": {
+  "A": "fire",
+  "B": "pulse",
+  "C": "glitch",
+  "D": "lightning",
+  "9": "snow",
+  "10": "heartbeat"
+ }
+}

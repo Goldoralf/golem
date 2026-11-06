@@ -1,0 +1,15 @@
+{
+ "name": "Stutter 1/16",
+ "type": "killswitch",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 45,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 0.3
+ }
+}

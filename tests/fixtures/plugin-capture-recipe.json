@@ -1,0 +1,261 @@
+{
+  "plugins": {
+    "VST3: Example Amp Suite (Example Vendor)": {
+      "vendor": "Example Vendor",
+      "verified": "fixture — parameter names of a real amp-suite plugin, read in REAPER on 2026-10-05",
+      "full": {
+        "label": "Full rig (pedals, amp, EQ, cab)",
+        "gear": "amp-cab",
+        "off": {
+          "FX Section Active": "Inactive",
+          "Gate Amount": "min"
+        },
+        "keeps": [
+          "pedals",
+          "amp",
+          "EQ",
+          "cab"
+        ],
+        "drops": [
+          "gate",
+          "delay",
+          "reverb"
+        ],
+        "refuse": [
+          {
+            "label": "Whammy",
+            "kind": "pitch",
+            "where": "Pitch section, before the amp",
+            "when": {
+              "Pitch Section Active": "Active",
+              "WOW Active": "Active"
+            },
+            "detail": {
+              "from": "WOW Type",
+              "as": "text"
+            }
+          },
+          {
+            "label": "Octaver",
+            "kind": "pitch",
+            "where": "Pitch section, before the amp",
+            "when": {
+              "Pitch Section Active": "Active",
+              "OCT Active": "Active"
+            }
+          },
+          {
+            "label": "Phaser",
+            "kind": "modulation",
+            "where": "Pedal section, before the amp",
+            "when": {
+              "Pedal Section Active": "Active",
+              "PHSR Active": "Active"
+            },
+            "detail": {
+              "from": "PHSR Rate",
+              "label": "rate",
+              "as": "text"
+            }
+          },
+          {
+            "label": "Chorus",
+            "kind": "modulation",
+            "where": "Pedal section, before the amp",
+            "when": {
+              "Pedal Section Active": "Active",
+              "CHR Active": "Active"
+            },
+            "detail": {
+              "from": "CHR Mix",
+              "label": "mix",
+              "scale": 100,
+              "unit": "%"
+            }
+          }
+        ],
+        "refuse_why": "A capture is a fixed snapshot of the sound. These effects move over time or change the pitch, so they can't be in it.",
+        "captured": [
+          {
+            "label": "Overdrive",
+            "when": {
+              "Pedal Section Active": "Active",
+              "OD Active": "Active"
+            }
+          },
+          {
+            "label": "Distortion",
+            "when": {
+              "Pedal Section Active": "Active",
+              "DRT Active": "Active"
+            }
+          },
+          {
+            "label": "Amp",
+            "when": {
+              "Amp Section Active": "Active"
+            },
+            "detail": {
+              "from": "Amp Type",
+              "as": "text"
+            }
+          },
+          {
+            "label": "EQ",
+            "when": {
+              "EQ Section Active": "Active"
+            }
+          },
+          {
+            "label": "Cab",
+            "when": {
+              "Cab Section Active": "Active"
+            },
+            "detail": {
+              "from": "Cab 1 Mic IR",
+              "as": "text"
+            }
+          }
+        ]
+      },
+      "split": {
+        "label": "One capture per effect",
+        "parts": [
+          {
+            "id": "pedal",
+            "label": "Pedal",
+            "gear": "pedal",
+            "block": "pedal-nam",
+            "when": {
+              "Pedal Section Active": "Active"
+            },
+            "when_any": {
+              "OD Active": "Active",
+              "DRT Active": "Active"
+            },
+            "off": {
+              "Pitch Section Active": "Inactive",
+              "Amp Section Active": "Inactive",
+              "EQ Section Active": "Inactive",
+              "Cab Section Active": "Inactive",
+              "FX Section Active": "Inactive",
+              "Gate Amount": "min"
+            }
+          },
+          {
+            "id": "head",
+            "label": "Amp",
+            "gear": "amp",
+            "block": "amp-nam",
+            "when": {
+              "Amp Section Active": "Active"
+            },
+            "off": {
+              "Pitch Section Active": "Inactive",
+              "Pedal Section Active": "Inactive",
+              "Cab Section Active": "Inactive",
+              "FX Section Active": "Inactive",
+              "Gate Amount": "min"
+            }
+          },
+          {
+            "id": "cab",
+            "label": "Cab",
+            "gear": "cab",
+            "block": "cab",
+            "ir": true,
+            "when": {
+              "Cab Section Active": "Active"
+            },
+            "off": {
+              "Pitch Section Active": "Inactive",
+              "Pedal Section Active": "Inactive",
+              "Amp Section Active": "Inactive",
+              "EQ Section Active": "Inactive",
+              "FX Section Active": "Inactive",
+              "Gate Amount": "min"
+            }
+          }
+        ]
+      },
+      "translate": [
+        {
+          "block": "gate",
+          "at": "before",
+          "label": "Gate (from Archetype)",
+          "show": "Gate",
+          "detail": {
+            "from": "Gate Amount",
+            "as": "text",
+            "unit": "dB"
+          },
+          "unless": {
+            "Gate Amount": "-96.0"
+          },
+          "params": {
+            "thresh": {
+              "from": "Gate Amount"
+            }
+          }
+        },
+        {
+          "block": "delay",
+          "at": "after",
+          "label": "Delay (from Archetype)",
+          "show": "Delay",
+          "detail": {
+            "from": "DLY Sync Note",
+            "as": "text"
+          },
+          "loss_if": {
+            "DLY Mod Active": "Active"
+          },
+          "loss": "its modulation is not kept",
+          "when": {
+            "FX Section Active": "Active",
+            "DLY Active": "Active"
+          },
+          "params": {
+            "time": {
+              "from": "DLY Sync Note",
+              "as": "text"
+            },
+            "feedback": {
+              "from": "DLY Feedback",
+              "scale": 100
+            },
+            "mix": {
+              "from": "DLY Dry/Wet",
+              "scale": 100
+            }
+          },
+          "approx": "tape saturation, modulation and tone are not translated"
+        },
+        {
+          "block": "reverb",
+          "at": "after",
+          "label": "Reverb (from Archetype)",
+          "show": "Reverb",
+          "when": {
+            "FX Section Active": "Active",
+            "REV Active": "Active"
+          },
+          "params": {
+            "mix": {
+              "from": "REV Dry/Wet",
+              "scale": 100
+            },
+            "decay": {
+              "from": "REV Time",
+              "scale": 0.001
+            },
+            "hicut": {
+              "from": "REV High Cut"
+            }
+          },
+          "approx": "a different reverb engine; the low cut is not translated"
+        }
+      ]
+    }
+  }
+}

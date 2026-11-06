@@ -1,0 +1,116 @@
+desc:GoleM Multi Chorus -- the chorus block on Windows and macOS (Calf Multi Chorus parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « chorus » joue Calf Multi Chorus sous Linux ; Calf n'existe ni sous Windows ni sous macOS
+// (docs/platforms.md §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs
+// (src/metadata.cpp de Calf, lu le 2026-10-22). L'ARCHITECTURE est celle, publique, du multichorus de Calf :
+// N voix lisent la meme ligne a retard a des positions modulees par un sinus commun, chaque voix decalee
+// d'une fraction de cycle (Inter-Voice Phase) et confinee a une tranche de la profondeur (Overlap) ; le canal
+// droit est decale de Stereo Phase ; la somme (ponderee 1/sqrt(N)) traverse deux passe-bande RBJ additionnes
+// (Center Frq 1 / 2, Q) avant le melange. Le CODE est le notre (ligne a retard, interpolation, filtres).
+//
+//  - Min Delay / Mod Depth : le retard vaut Min Delay + Mod Depth x (1 + lfo) / 2, en ms (comme Calf).
+//  - Mod Rate : vitesse du LFO (Hz). Voices : 1..8. Inter-Voice Phase, Stereo Phase : degres.
+//  - Amount / Dry Amount : niveaux de l'effet et du direct. Defaut Calf du direct : 0,5 — golem_rig le pose a
+//    1,0 a l'insertion (FX_INIT, le bloc est un insert serie) : c'est le slider « Dry Amount », par son nom.
+//  - Center Frq 1 / 2, Q, Overlap : le filtre de sortie et le partage de la profondeur entre les voix.
+//
+// Pieges respectes : rien avant @init ; variables prefixees ch_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel ; ligne taillee pour 192 kHz une fois pour toutes.
+
+slider1:ch_mindel=5<0.1,10,0.01>Min Delay
+slider2:ch_depth=6<0.1,10,0.01>Mod Depth
+slider3:ch_rate=0.1<0.01,20,0.01>Mod Rate
+slider4:ch_stereo=180<0,360,1>Stereo Phase
+slider5:ch_voices=4<1,8,1>Voices
+slider6:ch_vphase=64<0,360,1>Inter-Voice Phase
+slider7:ch_amount=0.5<0,4,0.01>Amount
+slider8:ch_dry=0.5<0,4,0.01>Dry Amount
+slider9:ch_f1=100<10,20000,1>Center Frq 1
+slider10:ch_f2=5000<10,20000,1>Center Frq 2
+slider11:ch_q=0.125<0.125,8,0.001>Q
+slider12:ch_overlap=0.75<0,1,0.01>Overlap
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+ch_MAXD = 4096;                 // 20 ms a 192 kHz (Calf : 4096 echantillons)
+ch_bufl = 1024;                 // ligne gauche 1024..5119, droite 8192..12287
+ch_bufr = 8192;
+ch_pos = 0;
+ch_phase = 0;
+ch_nv = 4;
+// etats des 4 biquads (2 par canal) : les decalages passes a ch_biq sont ABSOLUS (64..79), la base vaut 0
+ch_bq = 0;
+ch_sr = 0;
+
+// un passe-bande RBJ (gain 0 dB au centre) : b0, b1, b2, a1, a2 dans ch_c[base..base+4]
+function ch_bp(base, f, q) local(w, al, a0) (
+  w = 2 * $pi * min(f, 0.45 * srate) / srate;
+  al = sin(w) / (2 * q);
+  a0 = 1 + al;
+  ch_c[base] = al / a0; ch_c[base + 1] = 0; ch_c[base + 2] = -al / a0;
+  ch_c[base + 3] = -2 * cos(w) / a0; ch_c[base + 4] = (1 - al) / a0;
+);
+// y = b0 x + b1 x1 + b2 x2 - a1 y1 - a2 y2 ; etat x1,x2,y1,y2 dans ch_bq[st..st+3]
+function ch_biq(x, base, st) local(y) (
+  y = ch_c[base] * x + ch_c[base + 1] * ch_bq[st] + ch_c[base + 2] * ch_bq[st + 1] - ch_c[base + 3] * ch_bq[st + 2] - ch_c[base + 4] * ch_bq[st + 3];
+  ch_bq[st + 1] = ch_bq[st]; ch_bq[st] = x;
+  ch_bq[st + 3] = ch_bq[st + 2]; ch_bq[st + 2] = y;
+  y;
+);
+ch_c = 0;                       // coefficients : decalages ABSOLUS passes a ch_bp / ch_biq, f1 a 128..132, f2 a 136..140
+
+// une voix : lecture interpolee de la ligne `buf` a `d` echantillons derriere ch_pos
+function ch_read(buf, d) local(p, i, fr) (
+  p = ch_pos - d; p < 0 ? p += ch_MAXD;
+  i = floor(p); fr = p - i;
+  buf[i] * (1 - fr) + buf[(i + 1) >= ch_MAXD ? 0 : i + 1] * fr;
+);
+
+// la somme des voix d'un canal pour une phase de LFO (0..1)
+function ch_voicesum(buf, ph) local(v, acc, lfo, vp) (
+  acc = 0; v = 0;
+  loop(ch_nv,
+    vp = ph + v * ch_vstep;
+    // Calf : -1 + v x (1 - overlap) x 2 / range + (1 + sin) / range, dans [-1, 1]
+    lfo = -1 + v * (1 - ch_overlap) * 2 / ch_range + (1 + sin(2 * $pi * vp)) / ch_range;
+    acc += ch_read(buf, ch_dmin + ch_dhalf * (1 + lfo) + 2);
+    v += 1;
+  );
+  acc * ch_scale;
+);
+
+@slider
+ch_nv = max(1, min(8, floor(ch_voices + 0.5)));
+ch_range = 1 + (1 - ch_overlap) * (ch_nv - 1);
+ch_scale = sqrt(1 / ch_nv);
+ch_vstep = (ch_vphase / 360) / max(ch_nv - 1, 1);
+ch_roff = ch_stereo / 360;
+ch_dmin = min(ch_mindel / 1000 * srate, ch_MAXD - 64);
+ch_dhalf = min(ch_depth / 1000 * srate / 2, (ch_MAXD - 8 - ch_dmin) / 2);
+ch_bp(128, ch_f1, ch_q);
+ch_bp(136, ch_f2, ch_q);
+
+@block
+ch_dph = ch_rate / srate;
+ch_sr != srate ? ( ch_sr = srate; ch_dmin = min(ch_mindel / 1000 * srate, ch_MAXD - 64); ch_dhalf = min(ch_depth / 1000 * srate / 2, (ch_MAXD - 8 - ch_dmin) / 2); ch_bp(128, ch_f1, ch_q); ch_bp(136, ch_f2, ch_q); );
+
+@sample
+ch_bufl[ch_pos] = spl0 + 0.000000000000000001;
+ch_bufr[ch_pos] = spl1 + 0.000000000000000001;
+ch_wl = ch_voicesum(ch_bufl, ch_phase);
+ch_wr = ch_voicesum(ch_bufr, ch_phase + ch_roff);
+// le filtre de sortie de Calf : BP(f1) + BP(f2), par canal
+ch_wl = ch_biq(ch_wl, 128, 64) + ch_biq(ch_wl, 136, 68);
+ch_wr = ch_biq(ch_wr, 128, 72) + ch_biq(ch_wr, 136, 76);
+spl0 = ch_dry * spl0 + ch_amount * ch_wl;
+spl1 = ch_dry * spl1 + ch_amount * ch_wr;
+ch_pos += 1; ch_pos >= ch_MAXD ? ch_pos = 0;
+ch_phase += ch_dph; ch_phase >= 1 ? ch_phase -= 1;

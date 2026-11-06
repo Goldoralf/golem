@@ -1,0 +1,96 @@
+desc:GoleM Auto-Wah -- the autowah block on Windows and macOS (GxAutoWah parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « autowah » joue GxAutoWah (guitarix) sous Linux : un Cry Baby dont la pedale est POUSSEE PAR LE NIVEAU
+// du jeu (suiveur d'enveloppe, attaque immediate, retombee ~100 ms — dunwahauto.cc, lu le 2026-10-22). Ce JSFX
+// reprend le parametre du catalogue (Wah = sensibilite, 0..1) et la meme idee ; le filtre est celui de
+// golem_wah.jsfx (la reponse du GCB-95 de guitarix evaluee a 48 kHz, rejouee par un filtre d'etat). Son proche,
+// pas identique. Fait lu dans la source : le GxAutoWah de Linux n'a AUCUN parametre — son port « Wah » n'existe
+// que sur le GxWah manuel du meme bundle ; ici Wah REGLE la sensibilite, c'est ce que le catalogue promet.
+//
+//  - Wah : sensibilite — position = niveau x 20 x Wah, bornee a 1 (la loi du « auto » de guitarix) ;
+//          plus fort = plus aigu. 0 = la pedale reste au talon.
+//
+// Pieges respectes : rien avant @init ; variables prefixees aw_ ; ext_noinit ; pas de nom qui ne differe que
+// par la casse ; coefficients recalcules a chaque echantillon.
+
+slider1:aw_wah=0.3<0,1,0.01>Wah
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+// la reponse de guitarix (GCB-95) pour W = 0.02 .. 0.98 (voir golem_wah.jsfx)
+aw_NP = 7;
+aw_w = 0;     aw_w[0] = 0.02; aw_w[1] = 0.1;  aw_w[2] = 0.25; aw_w[3] = 0.5;  aw_w[4] = 0.75; aw_w[5] = 0.9;  aw_w[6] = 0.98;
+aw_f = 8;     aw_f[0] = 1736; aw_f[1] = 1050; aw_f[2] = 736;  aw_f[3] = 548;  aw_f[4] = 459;  aw_f[5] = 420;  aw_f[6] = 408;
+aw_qt = 16;    aw_qt[0] = 3.1;  aw_qt[1] = 4.8;  aw_qt[2] = 5.6;  aw_qt[3] = 8.5;  aw_qt[4] = 8.5;  aw_qt[5] = 8.5;  aw_qt[6] = 8.5;
+aw_g = 24;    aw_g[0] = 18.9; aw_g[1] = 19.0; aw_g[2] = 19.3; aw_g[3] = 19.5; aw_g[4] = 19.6; aw_g[5] = 19.7; aw_g[6] = 19.7;
+aw_fl = 32;   aw_fl[0] = -3.2; aw_fl[1] = -3.1; aw_fl[2] = -2.9; aw_fl[3] = -2.7; aw_fl[4] = -2.5; aw_fl[5] = -2.4; aw_fl[6] = -2.4;
+aw_DC = 228;
+aw_E5 = exp(5) - 1;
+
+function aw_logpot(x) ( (exp(5 * x) - 1) / aw_E5; );
+
+function aw_lookup(w) local(i, t) (
+  w = max(aw_w[0], min(aw_w[aw_NP - 1], w));
+  i = 0;
+  while (i < aw_NP - 2 && w > aw_w[i + 1]) ( i += 1; );
+  t = (w - aw_w[i]) / (aw_w[i + 1] - aw_w[i]);
+  aw_fc = exp(log(aw_f[i]) + t * (log(aw_f[i + 1]) - log(aw_f[i])));
+  aw_qv = aw_qt[i] + t * (aw_qt[i + 1] - aw_qt[i]);
+  aw_gpk = aw_g[i] + t * (aw_g[i + 1] - aw_g[i]);
+  aw_floor = aw_fl[i] + t * (aw_fl[i + 1] - aw_fl[i]);
+);
+
+function aw_coefs() local(g, k) (
+  g = tan($pi * min(aw_fc, 0.45 * srate) / srate);
+  k = 1 / aw_qv;
+  aw_a1 = 1 / (1 + g * (g + k));
+  aw_a2 = g * aw_a1;
+  aw_a3 = g * aw_a2;
+  aw_k = k;
+  aw_lpg = 10 ^ (aw_floor / 20);
+  aw_bpg = sqrt(max(0, sqr(10 ^ (aw_gpk / 20)) - sqr(aw_lpg * aw_qv)));   // en quadrature avec le passe-bas
+);
+
+function aw_svf(x, ch) local(v1, v2, v3) (
+  v3 = x - aw_ic2[ch];
+  v1 = aw_a1 * aw_ic1[ch] + aw_a2 * v3;
+  v2 = aw_ic2[ch] + aw_a2 * aw_ic1[ch] + aw_a3 * v3;
+  aw_ic1[ch] = 2 * v1 - aw_ic1[ch];
+  aw_ic2[ch] = 2 * v2 - aw_ic2[ch];
+  aw_lpg * v2 + aw_bpg * (aw_k * v1);
+);
+
+aw_last = -1;
+aw_ic1 = 40; aw_ic2 = 42; aw_dcx = 44; aw_dcy = 46;
+aw_env = 0;
+aw_pos = aw_logpot(1);                                           // talon
+
+@block
+aw_s = 0.993 ^ (48000 / srate);                                  // lissage de la position (si.smooth de guitarix)
+aw_rel = exp(-10 / srate);                                       // retombee du suiveur : exp(-10/fs) chez guitarix
+aw_dcc = exp(-2 * $pi * aw_DC / srate);
+
+@sample
+// suiveur d'enveloppe de dunwahauto : attaque immediate, retombee exponentielle
+aw_x = min(1, max(abs(spl0), abs(spl1)));
+aw_env = (1 - aw_rel) * aw_x + aw_rel * max(aw_x, aw_env);
+// position = niveau x 20 x Wah, bornee ; puis la loi du potentiometre (plus fort = plus aigu), lissee
+aw_target = aw_logpot(1 - min(1, aw_env * 20 * aw_wah));
+aw_pos = aw_s * aw_pos + (1 - aw_s) * aw_target;
+abs(aw_pos - aw_last) > 0.000001 ? (                              // table et coefficients : seulement quand ca bouge
+  aw_lookup(aw_pos);
+  aw_coefs();
+  aw_last = aw_pos;
+);
+aw_y0 = spl0 + 0.000000000000000001 - aw_dcx[0] + aw_dcc * aw_dcy[0]; aw_dcx[0] = spl0; aw_dcy[0] = aw_y0;
+aw_y1 = spl1 + 0.000000000000000001 - aw_dcx[1] + aw_dcc * aw_dcy[1]; aw_dcx[1] = spl1; aw_dcy[1] = aw_y1;
+spl0 = aw_svf(aw_y0, 0);
+spl1 = aw_svf(aw_y1, 1);

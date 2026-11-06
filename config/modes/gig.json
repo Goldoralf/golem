@@ -1,0 +1,34 @@
+{
+ "id": "gig",
+ "name": "Gig",
+ "icon": "🎤",
+ "order": 5,
+ "desc": "On stage — locked UI, nothing touchable can break the set · the take covers the whole set · recordings tagged Gig",
+ "services": {
+  "voice": true,
+  "keys": true,
+  "pads": true,
+  "looper": true,
+  "backing": true,
+  "perfrec": true,
+  "sample": true,
+  "arrangement": true,
+  "standard": true,
+  "drummachine": true,
+  "compo": false
+ },
+ "ui": {
+  "pages": [
+   "live"
+  ],
+  "boot": "live",
+  "locked": true,
+  "live": "timeline"
+ },
+ "perfrec_mode": "manual",
+ "rec_scope": "set",
+ "click_mode": "preset",
+ "take_kind": "gig",
+ "foot_list": "factory",
+ "perf_boost": true
+}

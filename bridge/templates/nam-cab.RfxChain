@@ -1,0 +1,40 @@
+BYPASS 0 0
+<LV2 "LV2: Neural Amp Modeler (Mike Oliphant) (Mono)" http://github.com/mikeoliphant/neural-amp-modeler-lv2 ""
+  CFG 0 0 0 ""
+  <IN_PINS
+  >
+  <OUT_PINS
+    PIN 0 0 1
+  >
+  P input_level 0 output_level 0 quality_scale 1
+  <STATE
+    P http://github.com/mikeoliphant/neural-amp-modeler-lv2#model %MODEL% 3
+  >
+>
+FXID {B43FDC6B-1DC5-9ACE-633B-9EB8BF0C5A1F}
+WAK 0 0
+BYPASS 0 0 0
+<LV2 "LV2: x42 - IR Convolver Mono" http://gareus.org/oss/lv2/zeroconvolv#CfgMono ""
+  CFG 0 0 0 ""
+  <IN_PINS
+  >
+  <OUT_PINS
+    PIN 0 0 1
+  >
+  P buffered 1 dry -60 wet 0 enable 1
+  <STATE
+    P http://gareus.org/oss/lv2/zeroconvolv#ir %IR% 3
+    F http://gareus.org/oss/lv2/zeroconvolv#gain 1 3
+    I http://gareus.org/oss/lv2/zeroconvolv#predelay 0 3
+    I http://gareus.org/oss/lv2/zeroconvolv#artificial_latency 0 3
+    B http://gareus.org/oss/lv2/zeroconvolv#sum_inputs 0 3
+    <V http://gareus.org/oss/lv2/zeroconvolv#channel_gain 4 http://lv2plug.in/ns/ext/atom#Float 3
+      1 1 1 1
+    >
+    <V http://gareus.org/oss/lv2/zeroconvolv#channel_predelay 4 http://lv2plug.in/ns/ext/atom#Int 3
+      0 0 0 0
+    >
+  >
+>
+FXID {8E05E4D0-7E1E-FA44-24F0-9705819AC6FF}
+WAK 0 0

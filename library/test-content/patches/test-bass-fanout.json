@@ -1,0 +1,137 @@
+{
+ "id": "test-bass-fanout",
+ "name": "Test — Bass fan-out",
+ "role": "bass",
+ "tags": [
+  "test"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "bpm": 120,
+ "origin": "test",
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Test bass",
+   "midi": false,
+   "stereo": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate"
+     }
+    ],
+    "split": {
+     "mode": "fanout",
+     "gain": 0,
+     "branches": [
+      {
+       "id": "clean",
+       "blocks": [
+        {
+         "id": "comp",
+         "type": "comp"
+        },
+        {
+         "id": "eq",
+         "type": "eq"
+        }
+       ]
+      },
+      {
+       "id": "dirty",
+       "blocks": [
+        {
+         "id": "drive",
+         "type": "guitar-drive",
+         "foot": 6
+        },
+        {
+         "id": "flanger",
+         "type": "flanger-js",
+         "foot": 7
+        }
+       ]
+      }
+     ]
+    },
+    "post": []
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Clean",
+     "blocks": {
+      "flanger": false
+     },
+     "params": {},
+     "branches": {
+      "dirty": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Dirty",
+     "blocks": {
+      "drive": true,
+      "flanger": true
+     },
+     "params": {},
+     "branches": {
+      "clean": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean",
+   "blocks": {
+    "flanger": false
+   },
+   "branches": {
+    "dirty": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Dirty",
+   "blocks": {
+    "drive": true,
+    "flanger": true
+   },
+   "branches": {
+    "clean": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  }
+ }
+}

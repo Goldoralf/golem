@@ -1,0 +1,66 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "millenium-mps1000",
+ "name": "Millenium MPS-1000",
+ "identity": {
+  "brand": "Millenium (Medeli)",
+  "model": "MPS-1000",
+  "connection": "usb",
+  "usb_names": [
+   "MPS-1000",
+   "MPS1000"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "36": "kick",
+  "48": "tom1",
+  "50": "tom1-rim",
+  "45": "tom2",
+  "47": "tom2-rim",
+  "43": "tom3",
+  "58": "tom3-rim",
+  "49": "crash1",
+  "55": "crash1-edge",
+  "57": "crash2",
+  "52": "crash2-edge",
+  "46": "hh-open",
+  "42": "hh-closed",
+  "23": "hh-half",
+  "44": "hh-pedal",
+  "21": "hh-splash",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "41": "ext",
+  "39": "ext-rim"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "unknown",
+ "provenance": {
+  "source": "manual",
+  "confidence": "reported",
+  "url": "https://images.thomann.de/pics/atg/atgdata/document/manual/c_511732_v2_r1_en_online.pdf",
+  "note": "§11.4 « MIDI note list » du manuel Thomann. Points OPEN/CLOSE de la charleston réglables sur le module (bande mi-ouverte). CC et étouffement non documentés ; le sens 0=ouvert→127=fermé vient du MPS-850 (même fabricant)."
+ },
+ "audio_outs": {
+  "master": "stereo",
+  "direct": 8,
+  "assignable": true
+ }
+}

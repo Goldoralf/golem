@@ -1,0 +1,10 @@
+{
+ "name": "Pushed",
+ "type": "pedal-nam",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "input": 4,
+  "output": 0
+ }
+}

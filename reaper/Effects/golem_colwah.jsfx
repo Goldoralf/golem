@@ -1,0 +1,172 @@
+desc:GoleM Multi Wah -- the wah-color block on Windows and macOS (GxWahwah parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « wah-color » joue GxWahwah (guitarix gx_colwah : sept modeles lineaires de pedales, Colorsound,
+// Dallas Arbiter, Foxx, Jen, Maestro Boomerang, Selmer, Vox V847) sous Linux ; guitarix n'existe ni sous Windows
+// ni sous macOS (docs/platforms.md §5). Ce JSFX en reprend les NOMS de parametres, leurs BORNES, leurs DEFAUTS
+// natifs et leurs choix (gx_colwah.ttl, lu le 2026-10-22). Le CODE est le notre : la reponse du filtre d'ordre 4
+// de CHAQUE modele a ete EVALUEE a 48 kHz pour sept positions (frequence et gain du pic, largeur a -3 dB, gain
+// sous le pic), et ces faits pilotent un filtre d'etat (passe-bas resonant + passe-bande) derriere le bloqueur
+// de continu propre au modele. Les lois de commande des trois modes sont celles des sources Faust de guitarix
+// (colwah.dsp et freres) : bornes et inversions par modele. Son proche, pas identique.
+//
+//  - MODEL   : la pedale (0..6).
+//  - WAH     : position en mode manual (0..1) — a piloter par la pedale EXP du pedalier.
+//  - FREQ    : en mode alien, la vitesse de l'oscillateur en battements par minute (24..360), comme guitarix.
+//  - WET_DRY : part d'effet en % (0 = direct seul, 100 = effet seul), defaut natif 50.
+//  - MODE    : manual = la position WAH ; auto = suiveur d'enveloppe (attaque 10 ms, retombee 100 ms) ;
+//              alien = l'oscillateur a FREQ.
+//
+// Pieges respectes : rien avant @init ; variables prefixees cw_ ; ext_noinit ; pas de nom qui ne differe que
+// par la casse ; coefficients recalcules a chaque echantillon.
+
+slider1:cw_model=0<0,6,1{Colorsound,Dallas,Foxx,Jen,Maestro,Selmer,Vox V847}>MODEL
+slider2:cw_wah=0<0,1,0.01>WAH
+slider3:cw_freq=24<24,360,1>FREQ
+slider4:cw_mix=50<0,100,1>WET_DRY
+slider5:cw_mode=0<0,2,1{manual,auto,alien}>MODE
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+cw_NP = 7; cw_NM = 7;
+cw_w = 0; cw_w[0] = 0.02; cw_w[1] = 0.1; cw_w[2] = 0.25; cw_w[3] = 0.5; cw_w[4] = 0.75; cw_w[5] = 0.9; cw_w[6] = 0.98;
+// tables par modele (7 points chacune) : frequence du pic (Hz), Q, gain du pic (dB), gain a 100 Hz (dB)
+cw_f = 16; cw_qt = 80; cw_g = 144; cw_fl = 208;
+// 0 = Colorsound
+cw_f[0] = 933; cw_f[1] = 532; cw_f[2] = 362; cw_f[3] = 262; cw_f[4] = 219; cw_f[5] = 201; cw_f[6] = 195;
+cw_qt[0] = 6.7; cw_qt[1] = 8.5; cw_qt[2] = 11.4; cw_qt[3] = 11.1; cw_qt[4] = 8.5; cw_qt[5] = 8.5; cw_qt[6] = 8.5;
+cw_g[0] = 24.8; cw_g[1] = 25.1; cw_g[2] = 24.7; cw_g[3] = 24.2; cw_g[4] = 24.1; cw_g[5] = 23.9; cw_g[6] = 24.1;
+cw_fl[0] = 0.5; cw_fl[1] = 0.8; cw_fl[2] = 1.3; cw_fl[3] = 2.0; cw_fl[4] = 2.7; cw_fl[5] = 3.1; cw_fl[6] = 3.4;
+// 1 = Dallas Arbiter
+cw_f[7] = 1453; cw_f[8] = 1254; cw_f[9] = 1050; cw_f[10] = 879; cw_f[11] = 759; cw_f[12] = 715; cw_f[13] = 674;
+cw_qt[7] = 5.6; cw_qt[8] = 6.7; cw_qt[9] = 6.7; cw_qt[10] = 8.5; cw_qt[11] = 8.5; cw_qt[12] = 11.4; cw_qt[13] = 11.1;
+cw_g[7] = 23.7; cw_g[8] = 23.4; cw_g[9] = 23.3; cw_g[10] = 23.3; cw_g[11] = 23.4; cw_g[12] = 23.2; cw_g[13] = 22.8;
+cw_fl[7] = -4.0; cw_fl[8] = -3.9; cw_fl[9] = -3.9; cw_fl[10] = -3.8; cw_fl[11] = -3.7; cw_fl[12] = -3.7; cw_fl[13] = -3.7;
+// 2 = Foxx
+cw_f[14] = 313; cw_f[15] = 322; cw_f[16] = 352; cw_f[17] = 408; cw_f[18] = 517; cw_f[19] = 654; cw_f[20] = 805;
+cw_qt[14] = 16.9; cw_qt[15] = 11.1; cw_qt[16] = 11.4; cw_qt[17] = 8.5; cw_qt[18] = 8.5; cw_qt[19] = 6.9; cw_qt[20] = 5.6;
+cw_g[14] = 28.3; cw_g[15] = 27.3; cw_g[16] = 27.2; cw_g[17] = 26.1; cw_g[18] = 24.9; cw_g[19] = 24.1; cw_g[20] = 23.5;
+cw_fl[14] = 2.0; cw_fl[15] = 1.9; cw_fl[16] = 1.8; cw_fl[17] = 1.6; cw_fl[18] = 1.3; cw_fl[19] = 1.1; cw_fl[20] = 1.0;
+// 3 = Jen
+cw_f[21] = 1736; cw_f[22] = 1082; cw_f[23] = 759; cw_f[24] = 564; cw_f[25] = 473; cw_f[26] = 433; cw_f[27] = 420;
+cw_qt[21] = 3.1; cw_qt[22] = 4.2; cw_qt[23] = 5.6; cw_qt[24] = 6.7; cw_qt[25] = 6.7; cw_qt[26] = 6.7; cw_qt[27] = 8.5;
+cw_g[21] = 17.6; cw_g[22] = 17.7; cw_g[23] = 18.0; cw_g[24] = 18.4; cw_g[25] = 18.8; cw_g[26] = 18.8; cw_g[27] = 19.3;
+cw_fl[21] = -4.1; cw_fl[22] = -4.0; cw_fl[23] = -3.8; cw_fl[24] = -3.6; cw_fl[25] = -3.5; cw_fl[26] = -3.4; cw_fl[27] = -3.4;
+// 4 = Maestro Boomerang (tres resonant chez guitarix : +43 dB au talon, +10 dB sous le pic — tel quel)
+cw_f[28] = 1217; cw_f[29] = 933; cw_f[30] = 715; cw_f[31] = 548; cw_f[32] = 459; cw_f[33] = 420; cw_f[34] = 408;
+cw_qt[28] = 3.8; cw_qt[29] = 5.6; cw_qt[30] = 6.9; cw_qt[31] = 11.4; cw_qt[32] = 16.9; cw_qt[33] = 16.9; cw_qt[34] = 16.9;
+cw_g[28] = 24.2; cw_g[29] = 26.5; cw_g[30] = 29.7; cw_g[31] = 33.9; cw_g[32] = 38.8; cw_g[33] = 43.2; cw_g[34] = 43.3;
+cw_fl[28] = 9.7; cw_fl[29] = 9.8; cw_fl[30] = 9.8; cw_fl[31] = 9.9; cw_fl[32] = 10.0; cw_fl[33] = 10.0; cw_fl[34] = 10.0;
+// 5 = Selmer
+cw_f[35] = 396; cw_f[36] = 420; cw_f[37] = 459; cw_f[38] = 548; cw_f[39] = 736; cw_f[40] = 1050; cw_f[41] = 1685;
+cw_qt[35] = 6.7; cw_qt[36] = 6.9; cw_qt[37] = 6.9; cw_qt[38] = 6.9; cw_qt[39] = 4.9; cw_qt[40] = 3.8; cw_qt[41] = 2.4;
+cw_g[35] = 29.0; cw_g[36] = 28.9; cw_g[37] = 28.6; cw_g[38] = 28.3; cw_g[39] = 27.8; cw_g[40] = 27.4; cw_g[41] = 27.2;
+cw_fl[35] = 8.7; cw_fl[36] = 8.7; cw_fl[37] = 8.6; cw_fl[38] = 8.4; cw_fl[39] = 8.1; cw_fl[40] = 8.0; cw_fl[41] = 7.9;
+// 6 = Vox V847
+cw_f[42] = 1050; cw_f[43] = 906; cw_f[44] = 715; cw_f[45] = 581; cw_f[46] = 502; cw_f[47] = 473; cw_f[48] = 459;
+cw_qt[42] = 4.8; cw_qt[43] = 4.9; cw_qt[44] = 6.7; cw_qt[45] = 6.7; cw_qt[46] = 8.5; cw_qt[47] = 8.5; cw_qt[48] = 6.9;
+cw_g[42] = 17.9; cw_g[43] = 17.9; cw_g[44] = 18.0; cw_g[45] = 18.3; cw_g[46] = 18.4; cw_g[47] = 18.5; cw_g[48] = 18.4;
+cw_fl[42] = -4.2; cw_fl[43] = -4.2; cw_fl[44] = -4.0; cw_fl[45] = -3.9; cw_fl[46] = -3.7; cw_fl[47] = -3.7; cw_fl[48] = -3.6;
+// bloqueur de continu par modele (dcblockerat de guitarix, Hz)
+cw_dc = 272; cw_dc[0] = 157; cw_dc[1] = 584; cw_dc[2] = 228; cw_dc[3] = 228; cw_dc[4] = 65; cw_dc[5] = 697; cw_dc[6] = 228;
+// lois de commande (sources Faust) : manual = WAH, borne basse, inversee ? ; auto = enveloppe bornee [lo, hi], inversee ?
+cw_mclamp = 280; cw_minv = 288; cw_alo = 296; cw_ahi = 304; cw_ainv = 312;
+function cw_law(m, mc, mi, alo, ahi, ai) ( cw_mclamp[m] = mc; cw_minv[m] = mi; cw_alo[m] = alo; cw_ahi[m] = ahi; cw_ainv[m] = ai; );
+cw_law(0, 0.01, 1, 0.02, 1.00, 0);    // Colorsound : max(0.01) inversee ; auto min(1) max(0.02)
+cw_law(1, 0.01, 1, 0.02, 1.00, 0);    // Dallas : comme Colorsound
+cw_law(2, 0.01, 0, 0.02, 0.98, 1);    // Foxx : non inversee ; auto bornee puis inversee
+cw_law(3, 0.00, 1, 0.10, 0.99, 0);    // Jen : inversee ; auto [0.1, 0.99]
+cw_law(4, 0.00, 1, 0.09, 0.75, 0);    // Maestro : inversee ; auto [0.09, 0.75]
+cw_law(5, 0.00, 0, 0.10, 0.99, 1);    // Selmer : non inversee ; auto bornee puis inversee
+cw_law(6, 0.03, 0, 0.03, 0.98, 1);    // Vox : max(0.03), non inversee ; auto bornee puis inversee
+cw_E5 = exp(5) - 1;
+
+function cw_logpot(x) ( (exp(5 * x) - 1) / cw_E5; );
+
+function cw_lookup(m, w) local(i, t, b) (
+  w = max(cw_w[0], min(cw_w[cw_NP - 1], w));
+  i = 0;
+  while (i < cw_NP - 2 && w > cw_w[i + 1]) ( i += 1; );
+  t = (w - cw_w[i]) / (cw_w[i + 1] - cw_w[i]);
+  b = m * cw_NP + i;
+  cw_fc = exp(log(cw_f[b]) + t * (log(cw_f[b + 1]) - log(cw_f[b])));
+  cw_qv = cw_qt[b] + t * (cw_qt[b + 1] - cw_qt[b]);
+  cw_gpk = cw_g[b] + t * (cw_g[b + 1] - cw_g[b]);
+  cw_floor = cw_fl[b] + t * (cw_fl[b + 1] - cw_fl[b]);
+);
+
+function cw_coefs() local(g, k) (
+  g = tan($pi * min(cw_fc, 0.45 * srate) / srate);
+  k = 1 / cw_qv;
+  cw_a1 = 1 / (1 + g * (g + k));
+  cw_a2 = g * cw_a1;
+  cw_a3 = g * cw_a2;
+  cw_k = k;
+  cw_lpg = 10 ^ (cw_floor / 20);
+  cw_bpg = sqrt(max(0, sqr(10 ^ (cw_gpk / 20)) - sqr(cw_lpg * cw_qv)));   // en quadrature avec le passe-bas
+);
+
+function cw_svf(x, ch) local(v1, v2, v3) (
+  v3 = x - cw_ic2[ch];
+  v1 = cw_a1 * cw_ic1[ch] + cw_a2 * v3;
+  v2 = cw_ic2[ch] + cw_a2 * cw_ic1[ch] + cw_a3 * v3;
+  cw_ic1[ch] = 2 * v1 - cw_ic1[ch];
+  cw_ic2[ch] = 2 * v2 - cw_ic2[ch];
+  cw_lpg * v2 + cw_bpg * (cw_k * v1);
+);
+
+cw_last = -1;
+cw_ic1 = 320; cw_ic2 = 322; cw_dcx = 324; cw_dcy = 326;
+cw_env = 0; cw_ph = 0;
+cw_pos = 0.5;
+cw_m = 0;
+
+@slider
+cw_m = max(0, min(cw_NM - 1, floor(cw_model + 0.5)));
+cw_last = -1;                                                     // le modele a pu changer : table a relire
+cw_wet = cw_mix / 100;
+cw_dry = 1 - cw_wet;
+cw_lfo = cw_freq / 60;                                           // battements par minute -> Hz, comme guitarix
+// manual : WAH, borne basse, inversee ou non, puis la loi log du potentiometre
+cw_man = cw_wah;
+cw_mclamp[cw_m] > 0 ? cw_man = max(cw_mclamp[cw_m], cw_man);
+cw_minv[cw_m] ? cw_man = 1 - cw_man;
+cw_man = cw_logpot(cw_man);
+
+@block
+cw_s = 0.993 ^ (48000 / srate);                                  // si.smooth(0.993) de guitarix
+cw_att = 1 - exp(-1 / (0.01 * srate));                           // suiveur : attaque 10 ms, retombee 100 ms
+cw_rel = 1 - exp(-1 / (0.1 * srate));
+cw_dcc = exp(-2 * $pi * cw_dc[cw_m] / srate);
+cw_dph = cw_lfo / srate;
+
+@sample
+// la position selon le mode
+cw_x = max(abs(spl0), abs(spl1));
+cw_env += (cw_x > cw_env ? cw_att : cw_rel) * (cw_x - cw_env);
+cw_mode == 0 ? (
+  cw_target = cw_man;
+) : cw_mode == 1 ? (
+  cw_target = max(cw_alo[cw_m], min(cw_ahi[cw_m], cw_env));
+  cw_ainv[cw_m] ? cw_target = 1 - cw_target;
+) : (
+  cw_ph += cw_dph; cw_ph >= 1 ? cw_ph -= 1;
+  cw_target = 1 - max(0.02, min(0.98, (sin(2 * $pi * cw_ph) + 1) / 2));
+);
+cw_pos = cw_s * cw_pos + (1 - cw_s) * cw_target;
+abs(cw_pos - cw_last) > 0.000001 ? (                              // table et coefficients : seulement quand ca bouge
+  cw_lookup(cw_m, cw_pos);
+  cw_coefs();
+  cw_last = cw_pos;
+);
+cw_y0 = spl0 + 0.000000000000000001 - cw_dcx[0] + cw_dcc * cw_dcy[0]; cw_dcx[0] = spl0; cw_dcy[0] = cw_y0;
+cw_y1 = spl1 + 0.000000000000000001 - cw_dcx[1] + cw_dcc * cw_dcy[1]; cw_dcx[1] = spl1; cw_dcy[1] = cw_y1;
+spl0 = cw_dry * spl0 + cw_wet * cw_svf(cw_y0, 0);
+spl1 = cw_dry * spl1 + cw_wet * cw_svf(cw_y1, 1);

@@ -1,0 +1,56 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "alesis-crimson2",
+ "name": "Alesis Crimson II",
+ "identity": {
+  "brand": "Alesis",
+  "model": "Crimson II",
+  "connection": "usb+din",
+  "usb_names": [
+   "Crimson"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "40": "snare-rim",
+  "50": "tom1",
+  "82": "tom1-rim",
+  "47": "tom2",
+  "80": "tom2-rim",
+  "43": "tom3",
+  "75": "tom3-rim",
+  "41": "tom4",
+  "73": "tom4-rim",
+  "51": "ride",
+  "59": "ride-edge",
+  "53": "ride-bell",
+  "49": "crash1",
+  "57": "crash2",
+  "8": "hh-open",
+  "22": "hh-pedal",
+  "23": "hh-splash"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "single"
+ },
+ "choke": "unknown",
+ "provenance": {
+  "source": "manual",
+  "confidence": "reported",
+  "url": "https://www.alesis.com/rscdn/1811/documents/CrimsonIIDrumModule-UserGuide-v1.3.pdf",
+  "note": "Table « Default Trigger MIDI Note Assignments » du manuel Alesis v1.3. Charleston : ouverte ET fermée sur la même note 8, l'ouverture passe par le CC ; Alesis conseille de remapper l'ouverte sur 9 si un VST veut deux notes. Étouffement non documenté."
+ },
+ "note": "Toms 50/47/43/41 (pas 48/45) et charleston mono-note : la table la plus éloignée de GM."
+}

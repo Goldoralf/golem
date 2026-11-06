@@ -1,0 +1,224 @@
+desc:GoleM chord sequencer (chordseq) -- free-running tempo-synced MIDI chord/bass player
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+
+//! GoleM bloc "standard" (docs/standards.md). Se place en FX0 des pistes de la section
+//! rythmique, DEVANT l'instrument (piano/EP/orgue, ou basse). Raison d'etre : ReaScript ne peut
+//! PAS injecter du MIDI dans une instance FX precise (StuffMIDIMessage -> bus virtuel GLOBAL)
+//! -> patron b3-ctl / midi-clock / golem_sample_trig / golem_drumseq : Lua remplit une banque
+//! en gmem, ce JSFX joue la sequence et emet les note-on/note-off vers l'instrument en aval.
+//!
+//! ── CE QUI CHANGE PAR RAPPORT A golem_drumseq ──
+//!  1. Des ACCORDS, donc des NOTE-OFF. Ils sont produits par bridge/standards.py DANS la meme
+//!     liste triee (velocite 0) : ce JSFX reste bete, il joue une liste. Les fins sont ramenees
+//!     avant le point de bouclage cote Python -- une note tenue par-dessus la boucle ne se
+//!     relacherait jamais.
+//!  2. Une seule sequence longue (la grille entiere), pas une banque de patterns : ni variation
+//!     ni fill. La FORME appartient a l'arrangement (docs/standards.md §3).
+//!  3. Un slider `lane` : la MEME banque alimente plusieurs instances. lane 0 = accords
+//!     (clavier), lane 1 = basse, 2 batterie, 3 clic, 4 la pompe manouche. Les deux instances latchent le meme nonce dans le meme cycle
+//!     audio et avancent du meme ppq_ps*samplesblock -> elles ne peuvent pas deriver.
+//!
+//! ── HORLOGE (identique a drumseq, et pour la meme raison) ──
+//! Le rig est monitore TRANSPORT A L'ARRET : un item MIDI en boucle n'avancerait qu'en lecture
+//! et se battrait avec le backing (qui possede le transport). On fabrique donc une horloge PPQ
+//! FREE-RUNNING : le @block tourne en permanence et fait avancer une tete de lecture en ticks au
+//! TEMPO PROJET (BPM du preset, pose au recall par golem_rig). Chaque note part a son
+//! offset-echantillon EXACT dans le bloc -- la gigue du chemin de commande est de 30 ms (le tick
+//! defer, mesure) et un accord "a peu pres sur le temps" s'entend immediatement.
+//!
+//! ── STOP : LE POINT QUI NE PARDONNE PAS ──
+//! A l'arret on envoie les note-off EXPLICITES des notes qu'on sait allumees (table active[]),
+//! PUIS CC123 (all-notes-off). Les deux : CC123 seul est ignore par certains instruments, et un
+//! accord colle en plein concert ne se rattrape qu'en coupant la piste.
+//!
+//! ── gmem "golem_chordseq" (miroir golem_chordseq.lua) ──
+//!  CTL (Lua -> JSFX) : [0]nonce [1]op(0 stop/1 play/2 arme sur le transport) [2]loop(0/1) [3]ppqres
+//!                      [4]chan_keys [5]chan_bass [6]bankgen
+//!  [7]armed (JSFX -> Lua) : 1 tant qu'une grille armee attend le transport
+//!  [21]t0 [22]first (JSFX -> Lua, temoins) : la position du transport au depart arme, et l'index du premier
+//!                      evenement joue (mesure 2026-10-26 : 0,0 s et 0 -- la grille part bien de la position 0)
+//!  SEQ (Lua -> JSFX) : [16]nev [17]len_ppq [18]bar_ppq [19]loaded [20]count_in_ppq
+//!  ST  (JSFX -> Lua) : [8]playing [9]bar (mesure courante, -1 a l'arret) [10]beat [11]heartbeat
+//!                      [12]tempo [13]ppq (tete de lecture) [14]latchs [15]samplesblock
+//!                      -- 13-15 sont des TEMOINS DE DIAGNOSTIC : c'est en tracant [13] qu'on a
+//!                      trouve le piege de casse EEL2 (la tete repartait a 0 chaque mesure).
+//!  Evenements des [64] par pas de 5 : [ppq, note, vel(0 = note-off), lane, reserve].
+//!  MAX_EV 16384 (~2000 mesures de comping) -- au-dela, golem_chordseq.lua tronque et le dit.
+//!
+//! ── LE DEPART ARME (op 2, prise de standard, docs/compo.md §11) ──
+//! L'horloge libre part a la commande : ~30 ms de gigue, et rien ne relie le « 1 » entendu au
+//! premier echantillon de la prise. Armee, la grille attend le premier bloc ou le transport
+//! tourne (lecture ou enregistrement), et pose sa tete de lecture sur la TIMELINE :
+//! ppq = play_position x tempo. La prise part a 0, donc le tick 0 de la grille tombe sur
+//! l'echantillon 0 du fichier enregistre -- exactement comme le clic-fichier du Riff.
+//! Partie du transport, elle s'arrete avec lui, et reboucle sur la fin du DECOMPTE (pas sur 0) :
+//! un tour suivant ne redecompte pas, et chaque tour dure exactement la grille.
+//!
+//! ⚠ NON validable hors-rig : que le @block d'une piste SANS entree tourne bien transport a
+//!   l'arret (meme hypothese que midi-clock.jsfx), la reception effective par l'instrument en
+//!   aval, et la coherence gmem Lua<->JSFX pendant un rechargement en pleine lecture.
+
+options:gmem=golem_chordseq
+
+slider1:sl_lane=0<0,4,1>lane (0 accords / 1 basse / 2 batterie / 3 clic / 4 pompe)
+slider2:sl_playing=0<0,1,1>playing (temoin)
+slider3:sl_bar=-1<-1,2048,1>bar (temoin)
+slider4:sl_tempo=0<0,400,0.01>tempo seen (temoin)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+// ⚠ SANS CECI, @init REPART A CHAQUE DEMARRAGE DU TRANSPORT (regle des JSFX) : la grille oubliait son etat, relisait
+// sa derniere commande et coupait tout (CC123) dans le bloc meme ou elle partait -- le tick 0 d'une prise de standard
+// sonnait coupe net (mesure 2026-10-26, le clic-fichier du Riff sonnait). L'etat d'ici ne vit que par les commandes.
+ext_noinit = 1;
+CTL_NONCE=0; CTL_OP=1; CTL_LOOP=2; CTL_PPQRES=3; CTL_CHANK=4; CTL_CHANB=5; CTL_BANKGEN=6;
+ST_PLAYING=8; ST_BAR=9; ST_BEAT=10; ST_HB=11; ST_TEMPO=12;
+ST_PPQ=13; ST_LATCH=14; ST_REM=15;   // diagnostic
+ST_ARMED=7; ST_T0=21; ST_FIRST=22;   // temoins du depart arme : position du transport (s), premier evenement
+SEQ_NEV=16; SEQ_LEN=17; SEQ_BAR=18; SEQ_LOADED=19; SEQ_CIN=20;
+// ⚠ Le click LIT [8] playing et [19] loaded pour savoir s'il doit se taire : c'est la GRILLE qui
+// porte ses ticks (lane 3) quand elle joue. Rien d'autre ne sort d'ici — une tentative de
+// publier la tete de lecture pour l'y asservir a existe une demi-journee, puis a ete retiree :
+// une seule horloge vaut mieux que deux mises d'accord (docs/standards.md).
+EV_BASE=64; EV_STRIDE=5; MAX_EV=16384;
+EPS=0.0000001;
+
+// ⚠ EEL2 EST INSENSIBLE A LA CASSE : `seq_len` et `SEQ_LEN` sont LA MEME VARIABLE. Ecrire
+// `seq_len = gmem[SEQ_LEN]` ECRASE donc la constante d'index (17 -> 92160), et au bloc suivant
+// on lit gmem[92160] = 0 -> la grille rebouclait a chaque MESURE au lieu de 24 (mesure : la tete
+// de lecture repartait a 0 tous les 3840 ticks). D'ou les prefixes `cur_` sur les copies locales.
+
+// table des notes allumees : active[chan*128 + note]. 2 canaux suffisent, on en prend 16.
+ACTIVE=0;                                   // memoire locale du JSFX (pas gmem)
+freembuf(ACTIVE + 16*128);
+memset(ACTIVE, 0, 16*128);
+
+playing=0; ppq=0; ev_cur=0; last_nonce=-1; hb=0; nact=0; nlatch=0;
+armed=0; tbound=0;                          // tbound : partie du transport, elle le suit
+
+function my_chan() (
+  sl_lane < 1 ? (gmem[CTL_CHANK]|0) & 0x0F : (gmem[CTL_CHANB]|0) & 0x0F;
+);
+
+// coupe TOUT ce qu'on a allume, puis ceinture-bretelles CC123
+function panic() local(c, n, i) (
+  c = my_chan();
+  nact > 0 ? (
+    i = 0;
+    while (i < 128) (
+      ACTIVE[c*128 + i] > 0 ? ( midisend(0, 0x80 + c, i, 0); ACTIVE[c*128 + i] = 0; );
+      i += 1;
+    );
+  );
+  nact = 0;
+  midisend(0, 0xB0 + c, 123, 0);
+);
+
+function rewind() ( ppq = 0; ev_cur = 0; );
+
+// une note de la grille vers l'instrument, a l'offset `off` du bloc (vel 0 = note-off), et la table des notes allumees
+function emit(off, nt, vl) (
+  vl > 0 ? (
+    midisend(off, 0x90 + chan, nt, vl);
+    ACTIVE[chan*128 + nt] < 1 ? nact += 1;
+    ACTIVE[chan*128 + nt] = 1;
+  ) : (
+    midisend(off, 0x80 + chan, nt, 0);
+    ACTIVE[chan*128 + nt] > 0 ? ( nact -= 1; ACTIVE[chan*128 + nt] = 0; );
+  );
+);
+
+// place la tete a `at` ticks : le premier evenement a jouer est le premier a `at` ou apres
+function seek_to(at) local(n) (
+  ppq = at; ev_cur = 0; n = gmem[SEQ_NEV]|0;
+  while (ev_cur < n && gmem[EV_BASE + ev_cur*EV_STRIDE] < at - EPS) ( ev_cur += 1; );
+);
+
+@block
+hb += 1; gmem[ST_HB] = hb;
+gmem[ST_TEMPO] = tempo;
+ppqres = gmem[CTL_PPQRES]; ppqres < 1 ? ppqres = 960;
+chan = my_chan();
+
+// passthrough MIDI (la piste peut recevoir un clavier physique par-dessus la grille)
+while (midirecv(mp, s1, s2, s3)) ( midisend(mp, s1, s2, s3); );
+
+// latch d'une commande sur front de nonce (Lua bump le nonce EN DERNIER, apres la banque)
+gmem[CTL_NONCE] != last_nonce ? (
+  last_nonce = gmem[CTL_NONCE];
+  nlatch += 1;
+  op = gmem[CTL_OP]|0;
+  armed = 0; tbound = 0;
+  op == 1 ? (
+    (gmem[SEQ_LOADED]|0) > 0 && (gmem[SEQ_NEV]|0) > 0 ? ( playing = 1; rewind(); )
+                                                      : ( playing = 0; panic(); );
+  ) : (
+    playing = 0; panic(); rewind();
+    op == 2 && (gmem[SEQ_LOADED]|0) > 0 && (gmem[SEQ_NEV]|0) > 0 ? armed = 1;
+  );
+);
+
+// LE DEPART ARME : 1 = lecture, 5 = enregistrement (5 & 1 = 1). La tete se pose sur la timeline,
+// au debut de CE bloc -- les evenements partent ensuite a leur offset exact, comme d'habitude.
+armed && (play_state & 1) ? (
+  armed = 0; tbound = 1; playing = 1;
+  seek_to(max(0, play_position) * (tempo < 1 ? 1 : tempo) * ppqres / 60);
+  gmem[ST_T0] = play_position; gmem[ST_FIRST] = ev_cur;
+);
+// le transport s'arrete (fin de prise, stop, pause) : la grille qu'il avait lancee s'arrete avec lui
+tbound && !(play_state & 1) ? ( tbound = 0; playing = 0; panic(); );
+
+playing ? (
+  cur_nev = gmem[SEQ_NEV]|0;
+  cur_len = gmem[SEQ_LEN];
+  bar_ppq = gmem[SEQ_BAR]; bar_ppq < 1 ? bar_ppq = ppqres*4;
+  cur_len < 1 ? cur_len = bar_ppq;
+
+  t = tempo; t < 1 ? t = 1;
+  ppq_ps = t * ppqres / (60 * srate);          // ticks par echantillon
+  remaining = ppq_ps * samplesblock;
+  blk_off = 0;
+  guard = 0;
+  while (remaining > EPS && playing && guard < 4096) (
+    guard += 1;
+    seg = cur_len - ppq;                        // prochaine frontiere = fin de sequence
+    seg > remaining ? seg = remaining;
+    lim = ppq + seg;
+    cont = 1;
+    while (cont && ev_cur < cur_nev) (
+      ea = EV_BASE + ev_cur*EV_STRIDE;
+      ev_ppq = gmem[ea];
+      ev_ppq < lim ? (
+        ev_ppq >= ppq && (gmem[ea+3]|0) == (sl_lane|0) ? (
+          off = blk_off + (ev_ppq - ppq)/ppq_ps;
+          emit(floor(off + 0.5), gmem[ea+1]|0, gmem[ea+2]|0);
+        );
+        ev_cur += 1;
+      ) : ( cont = 0; );
+    );
+    ppq += seg;
+    blk_off += seg / ppq_ps;
+    remaining -= seg;
+    ppq >= cur_len - EPS ? (
+      // fin de grille : on reboucle (chorus suivant) ou on s'arrete net
+      // partie du transport : le tour suivant reprend APRES le decompte (seek_to gmem[SEQ_CIN])
+      (gmem[CTL_LOOP]|0) > 0 ? ( panic(); tbound ? seek_to(gmem[SEQ_CIN]) : rewind(); )
+                             : ( playing = 0; panic(); );
+    );
+  );
+);
+
+// armee, la grille tient deja le clic : sans ca, golem_click compterait seul jusqu'au depart
+gmem[ST_PLAYING] = playing || armed;
+gmem[ST_ARMED] = armed;
+gmem[ST_PPQ] = ppq; gmem[ST_LATCH] = nlatch; gmem[ST_REM] = samplesblock;
+cur_bar = playing ? floor(ppq / (gmem[SEQ_BAR] < 1 ? ppqres*4 : gmem[SEQ_BAR])) : -1;
+gmem[ST_BAR] = cur_bar;
+gmem[ST_BEAT] = playing ? floor(ppq / ppqres) : -1;
+sl_playing = playing; sl_bar = cur_bar; sl_tempo = tempo;

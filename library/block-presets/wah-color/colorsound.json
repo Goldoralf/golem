@@ -1,0 +1,14 @@
+{
+ "name": "Colorsound",
+ "type": "wah-color",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "model": "Colorsound",
+  "mode": "manual",
+  "wah": 0.3,
+  "freq": 24,
+  "mix": 100
+ },
+ "default": true
+}

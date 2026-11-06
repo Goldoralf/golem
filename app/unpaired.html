@@ -1,0 +1,56 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0e12">
+  <title>golem — not paired</title>
+  <link rel="icon" href="icons/favicon-180.png?v=2">
+  <!-- docs/devices-people.md, lot B : le rack refuse le jeton de cet appareil. Page AUTONOME (aucun import
+       de lib.js, qui redirigerait ici en boucle) : elle dit quoi faire, et rien d'autre. -->
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0c0e12;color:#e8ecf1;
+      font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px;box-sizing:border-box}
+    main{max-width:420px;width:100%;display:flex;flex-direction:column;gap:16px}
+    .mk{font:700 18px ui-monospace,monospace}.mk span{color:#ff5a3c}
+    .ic{font-size:52px;line-height:1}
+    h1{margin:0;font-size:24px;line-height:1.2}
+    p{margin:0;color:#9aa4b1}
+    ol{margin:0;padding-left:20px;color:#9aa4b1}ol b{color:#e8ecf1}
+    .acts{display:flex;gap:10px;flex-wrap:wrap}
+    a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:12px;
+      background:#1a2029;color:#e8ecf1;text-decoration:none;font-weight:700}
+    a.primary{background:#ff5a3c;color:#fff}
+    small{color:#6b7684}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mk"><span>/</span>golem_</div>
+    <div class="ic">🔗</div>
+    <h1 id="h">This device is no longer paired with the rack</h1>
+    <p id="why">The rack refused its key: it was revoked, a guest pass expired, or the rack was reset. Nothing on stage depends on this device.</p>
+    <ol>
+      <li>On the rack, open <b>Settings ▸ Connect ▸ Devices</b></li>
+      <li>Add a device for a band member, or <b>Add a guest</b> (a day, a week, a month or no end)</li>
+      <li>Scan the QR with this device</li>
+    </ol>
+    <div class="acts">
+      <a class="primary" href="/app/">Try again</a>
+      <a href="/app/pair.html">I have a pairing code</a>
+    </div>
+    <small>A rack without a screen shows its pairing code with <code>golem pair</code>.</small>
+  </main>
+  <script>
+    // ?new=1 : un appareil JAMAIS appairé à CETTE adresse (lib.js) — pas un jeton refusé. Une clé vaut pour
+    // une adresse : appairé sur une IP, un téléphone ne l'est pas encore sur golem.local.
+    if (new URLSearchParams(location.search).get('new') === '1') {
+      document.getElementById('h').textContent = 'Pair this device with golem';
+      document.getElementById('why').textContent = 'golem opens to the devices it knows, at this address (' + location.host +
+        '). Pair once here: the device stays paired at home and on stage, without internet.';
+    }
+  </script>
+</body>
+</html>

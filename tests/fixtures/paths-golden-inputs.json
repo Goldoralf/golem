@@ -1,0 +1,121 @@
+{
+ "synth": {
+  "id": "synth",
+  "name": "S",
+  "guitar": {
+   "pre": [
+    {
+     "id": "g1",
+     "type": "gate"
+    }
+   ],
+   "split": null,
+   "post": [
+    {
+     "id": "d1",
+     "type": "delay"
+    }
+   ]
+  },
+  "voice": {
+   "chain": [
+    "comp",
+    {
+     "id": "v1",
+     "type": "reverb",
+     "foot": 7
+    }
+   ]
+  },
+  "keys": {
+   "chain": [
+    {
+     "id": "k1",
+     "type": "vital",
+     "params": {
+      "preset": "X"
+     }
+    }
+   ]
+  },
+  "in": {
+   "2": "NONE"
+  },
+  "out": {
+   "1": "1",
+   "k": "2"
+  },
+  "names": {
+   "1": "Gtr",
+   "k": "Synth"
+  },
+  "scenes": [
+   {
+    "id": "A",
+    "blocks": {
+     "d1": false
+    },
+    "params": {
+     "k1": {
+      "preset": "Y"
+     }
+    },
+    "levels": {
+     "guitar": -3,
+     "keys": -2
+    }
+   }
+  ]
+ },
+ "fan": {
+  "id": "fan",
+  "guitar": {
+   "pre": [],
+   "split": {
+    "mode": "fanout",
+    "branches": [
+     {
+      "id": "a",
+      "blocks": [
+       {
+        "id": "x",
+        "type": "amp"
+       }
+      ],
+      "out": "1"
+     },
+     {
+      "id": "b",
+      "blocks": [
+       {
+        "id": "y",
+        "type": "amp"
+       }
+      ],
+      "out": "2"
+     }
+    ]
+   },
+   "post": []
+  },
+  "voice": {
+   "chain": []
+  },
+  "keys": {
+   "chain": []
+  },
+  "scenes": [
+   {
+    "id": "A",
+    "branches": {
+     "b": {
+      "mute": true
+     }
+    },
+    "levels": {
+     "guitar": 0
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,298 @@
+{
+ "id": "factory-keys-warm-pad",
+ "name": "Warm Pad",
+ "role": "keys",
+ "tags": [
+  "ambient",
+  "pop",
+  "pad"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Warm Pad",
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Pad",
+     "blocks": {
+      "shim": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Dark",
+     "blocks": {
+      "shim": false,
+      "dly": false
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Shimmer",
+     "blocks": {
+      "shim": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Wide",
+     "blocks": {
+      "shim": true,
+      "dly": true
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.75
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Sparkly_Dreamy_Pad",
+       "fcut": 0.6,
+       "rmix": 0.3,
+       "dmix": 0.2,
+       "vol": 0.6
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "foot": 6,
+      "params": {
+       "mix": 30,
+       "decay": 5,
+       "shimmer": 40,
+       "pitch": 5,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4•",
+       "feedback": 35,
+       "mix": 18
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Pad",
+   "blocks": {
+    "shim": false,
+    "dly": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Dark",
+   "blocks": {
+    "shim": false,
+    "dly": false
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.3
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": -1,
+     "state": "st-keys-1-B"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "C",
+   "name": "Shimmer",
+   "blocks": {
+    "shim": true,
+    "dly": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Wide",
+   "blocks": {
+    "shim": true,
+    "dly": true
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.75
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 1,
+     "state": "st-keys-1-D"
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-lofi.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 80,
+ "chain": {
+  "chain": [
+   {
+    "id": "vital",
+    "type": "vital",
+    "params": {
+     "preset": "Sparkly_Dreamy_Pad",
+     "fcut": 0.6,
+     "rmix": 0.3,
+     "dmix": 0.2,
+     "vol": 0.6
+    }
+   },
+   {
+    "id": "shim",
+    "type": "reverb-shimmer",
+    "foot": 6,
+    "params": {
+     "mix": 30,
+     "decay": 5,
+     "shimmer": 40,
+     "pitch": 5,
+     "hicut": 6000
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/4•",
+     "feedback": 35,
+     "mix": 18
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "5308aa910500b210cdb0c632e3fba7e7aef278819f446b89aa05d8c1b7d589fa",
+   "uid": "local:synth-vital-factory",
+   "kind": "synth",
+   "bytes": 240832,
+   "name": "Sparkly Dreamy Pad",
+   "source": "golemfm",
+   "amp": "Vital presets (factory)",
+   "brand": "Vital",
+   "creator": "user"
+  },
+  {
+   "sha256": "55fe071ed2c418a5a20e16e231df1155f767bbf4e766e679e2298080a670e843",
+   "uid": "local:groove-golem-lofi",
+   "kind": "groove",
+   "bytes": 262,
+   "name": "Lo-fi",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"snow\", \"7\": \"sheen\", \"A\": \"scanner\", \"B\": \"vu\", \"C\": \"glitch\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 80, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.6, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 30, \"pitch\": 5, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 18, \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"colors\": {\"6\": \"#8ecae6\", \"7\": \"#8ecae6\", \"A\": \"#8ecae6\", \"B\": \"#8ecae6\", \"C\": \"#8ecae6\", \"D\": \"#8ecae6\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.6, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 30, \"pitch\": 5, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 18, \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Warm Pad\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Pad\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Dark\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {\"dly\": false, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Shimmer\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Wide\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Pad\"}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"level\": -1, \"state\": \"st-keys-1-B\"}}, \"level\": -1, \"name\": \"Dark\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {\"dly\": false, \"shim\": true}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Shimmer\"}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Wide\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#8ecae6",
+  "B": "#8ecae6",
+  "C": "#8ecae6",
+  "D": "#8ecae6",
+  "9": "#8ecae6",
+  "10": "#8ecae6"
+ },
+ "anims": {
+  "A": "scanner",
+  "B": "vu",
+  "C": "glitch",
+  "D": "stars",
+  "9": "vortex",
+  "10": "wave"
+ }
+}

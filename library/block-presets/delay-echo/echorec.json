@@ -1,0 +1,14 @@
+{
+ "name": "Echorec Time",
+ "type": "delay-echo",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "repeats": 35,
+  "mix": 38,
+  "input": 25,
+  "head1": false,
+  "head2": true,
+  "head3": true
+ }
+}

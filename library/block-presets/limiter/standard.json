@@ -1,0 +1,11 @@
+{
+ "name": "Standard",
+ "type": "limiter",
+ "factory": true,
+ "params": {
+  "threshold": -6,
+  "release": 50
+ },
+ "default": true,
+ "inst": "any"
+}

@@ -1,0 +1,68 @@
+desc: GoleM gap meter (golem_gapmeter) - diag
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+//tags: analysis diagnostic
+//author: GoleM
+// DÉTECTEUR DE TROUS, précis à l'échantillon (tools/check-scene-gap.py, 2026-09-21).
+// Né du blanc A→B de Paper Kite : une journée de mesures au crête-mètre à 30 Hz, qui LISSE un
+// trou (la décroissance du mètre le remplit) et dépend d'un musicien qui joue. Ici le signal est
+// un ton continu posé par la commande `gapmeter`, et chaque silence plus long que `Min gap` est
+// daté et mesuré DANS le thread audio — rien ne dépend du tick `defer` (~30 ms) pour le voir.
+// Le son traverse sans modification.
+//
+// gmem « golem_gapmeter », un slot de 64 par instance :
+//   +0 horloge (s, échantillons/srate depuis l'instanciation) — témoin que le @block tourne
+//   +1 enveloppe courante (dB)      +2 nombre de trous      +3 plus long trou (ms)
+//   +4 silence EN COURS (ms)        +8..+31 durées (ms), anneau de 24
+//   +32..+55 fin de chaque trou (s, même horloge que +0)
+// ⚠ EEL2 est insensible à la casse, et le code avant la première section n'est jamais exécuté
+// (CLAUDE.md) : tout est dans @init, et les noms locaux sont préfixés `gp_`.
+
+options:gmem=golem_gapmeter
+
+slider1:gp_slot=0<0,7,1>Slot
+slider2:gp_thr=-45<-90,0,1>Silence threshold (dB)
+slider3:gp_min=10<1,500,1>Min gap (ms)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+gp_stride = 64;
+gp_ring = 24;
+gp_env = 0;
+// constante de temps de 3 ms : un ton de 100 Hz ne passe pas sous le seuil entre deux crêtes,
+// et le début d'un trou n'est retardé que de ~15 ms (chute de -10 à -45 dB)
+gp_rel = exp(-1 / (0.003 * srate));
+gp_run = 0;
+gp_clk = 0;
+
+@slider
+gp_thr_lin = 10 ^ (gp_thr / 20);
+gp_min_smp = gp_min * 0.001 * srate;
+gp_base = gp_slot * gp_stride;
+
+@block
+gmem[gp_base + 0] = gp_clk / srate;
+gmem[gp_base + 1] = gp_env > 0.0000001 ? 20 * log10(gp_env) : -150;
+gmem[gp_base + 4] = gp_run * 1000 / srate;
+
+@sample
+gp_a = max(abs(spl0), abs(spl1));
+gp_env = max(gp_a, gp_env * gp_rel);
+gp_env < gp_thr_lin ? (
+  gp_run += 1;
+) : (
+  gp_run >= gp_min_smp ? (
+    gp_n = gmem[gp_base + 2];
+    gp_k = gp_n % gp_ring;
+    gmem[gp_base + 8 + gp_k] = gp_run * 1000 / srate;
+    gmem[gp_base + 32 + gp_k] = gp_clk / srate;
+    gmem[gp_base + 2] = gp_n + 1;
+    gmem[gp_base + 3] = max(gmem[gp_base + 3], gp_run * 1000 / srate);
+  );
+  gp_run = 0;
+);
+gp_clk += 1;

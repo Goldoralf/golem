@@ -1,0 +1,12 @@
+{
+ "name": "Small Stone",
+ "type": "phaser",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.35,
+  "depth": 5500,
+  "stages": "4",
+  "feedback": 0.55
+ }
+}

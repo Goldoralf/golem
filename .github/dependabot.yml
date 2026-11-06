@@ -1,0 +1,13 @@
+# Mises à jour des dépendances (audit 2026-11-04, M8) : les actions sont épinglées par SHA — Dependabot propose
+# le SHA suivant avec son tag en commentaire ; les paquets Python du bridge suivent bridge/requirements.lock.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /bridge
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

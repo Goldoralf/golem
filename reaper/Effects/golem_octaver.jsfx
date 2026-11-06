@@ -1,0 +1,77 @@
+desc:GoleM Octaver -- the octaver block on Windows and macOS (Gxoc_2 parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « octaver » joue Gxoc_2 (guitarix, emulation partielle du Boss OC-2) sous Linux ; guitarix n'existe ni
+// sous Windows ni sous macOS (docs/platforms.md §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs
+// DEFAUTS natifs (oc_2.dsp, lu le 2026-10-22) et l'ARCHITECTURE publique de la pedale : un filtre d'entree qui ne
+// garde que la fondamentale, un diviseur de frequence (bascules sur les passages a zero : une onde carree a la
+// moitie, une autre au quart), qui COMMUTE le signal filtre (le « switch » CMOS de l'OC-2 : le signal change de
+// signe a chaque demi-periode de la carree), puis un passe-bas par octave ; la double octave commute la premiere
+// octave deja filtree (mesure : commuter l'entree donnait 3f/4 dominant, pas f/4). Les trois passe-bas de guitarix ont ete
+// EVALUES (oc_2.lib a 44,1 kHz) : -3 dB a 830 Hz (entree), 470 Hz (octave 1), 210 Hz (octave 2), ordre 3 ; le
+// pre-gain vaut 1 + 10/2,7 = 4,7, applique au direct aussi, comme guitarix. Le CODE est le notre (filtres
+// Butterworth, detecteur a hysteresis a la place des polynomes du switch).
+//
+//  - DIRECT   : niveau du signal direct (x 4,7, comme guitarix).
+//  - OCTAVE1  : niveau de l'octave inferieure.  OCTAVE2 : niveau de la double octave inferieure.
+//
+// Pieges respectes : rien avant @init ; variables prefixees oc_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel.
+
+slider1:oc_direct=0.5<0,1,0.01>DIRECT
+slider2:oc_oct1=0.5<0,1,0.01>OCTAVE1
+slider3:oc_oct2=0.5<0,1,0.01>OCTAVE2
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+oc_PRE = 1 + 10 / 2.7;
+// filtres : 3 passe-bas d'ordre 3 (biquad Butterworth Q 1 + un pole), coefficients a oc_c[base..base+6], etats a oc_s[st..st+5]
+oc_c = 0;
+oc_s = 64;                      // etats a 64..69, 72..77, 80..85 (6 par filtre, pas de 8)
+function oc_lp3(base, f) local(w, al, a0, k) (
+  w = 2 * $pi * min(f, 0.45 * srate) / srate;
+  al = sin(w) / 2;                                   // Q = 1 : la section d'ordre 2 d'un Butterworth d'ordre 3
+  a0 = 1 + al;
+  oc_c[base] = (1 - cos(w)) / 2 / a0; oc_c[base + 1] = (1 - cos(w)) / a0; oc_c[base + 2] = (1 - cos(w)) / 2 / a0;
+  oc_c[base + 3] = -2 * cos(w) / a0; oc_c[base + 4] = (1 - al) / a0;
+  k = tan(w / 2);                                    // le pole : y = k/(1+k) (x + x1) + (1-k)/(1+k) y1
+  oc_c[base + 5] = k / (1 + k); oc_c[base + 6] = (1 - k) / (1 + k);
+);
+function oc_run3(x, base, st) local(y, z) (
+  y = oc_c[base] * x + oc_c[base + 1] * oc_s[st] + oc_c[base + 2] * oc_s[st + 1] - oc_c[base + 3] * oc_s[st + 2] - oc_c[base + 4] * oc_s[st + 3];
+  abs(y) < 0.000000000000001 ? y = 0;              // denormaux (trois filtres en cascade qui s'eteignent)
+  oc_s[st + 1] = oc_s[st]; oc_s[st] = x; oc_s[st + 3] = oc_s[st + 2]; oc_s[st + 2] = y;
+  z = oc_c[base + 5] * (y + oc_s[st + 4]) + oc_c[base + 6] * oc_s[st + 5];
+  abs(z) < 0.000000000000001 ? z = 0;
+  oc_s[st + 4] = y; oc_s[st + 5] = z;
+  z;
+);
+oc_sq1 = 1; oc_sq2 = 1; oc_above = 0; oc_above2 = 0;
+oc_THR = 0.003;
+oc_sr = 0;
+
+@block
+oc_sr != srate ? (
+  oc_sr = srate;
+  oc_lp3(0, 830); oc_lp3(8, 470); oc_lp3(16, 210);   // entree, octave 1, octave 2 (guitarix oc_2.lib, evalue)
+);
+
+@sample
+oc_in = (spl0 + spl1) * 0.5 * oc_PRE;                  // mono, comme la pedale
+oc_xf = oc_run3(oc_in, 0, 0);
+// le diviseur : une bascule par passage a zero montant (hysteresis), la seconde une fois sur deux
+oc_xf > oc_THR && !oc_above ? ( oc_above = 1; oc_sq1 = -oc_sq1; ) : oc_xf < -oc_THR ? oc_above = 0;
+oc_w1 = oc_run3(oc_xf * oc_sq1, 8, 8);
+// la double octave commute l'OCTAVE 1 filtree (guitarix), et sa bascule suit les passages a zero de CE signal :
+// cadencee sur l'entree, elle tombait entre ses zeros et 3f/4 dominait (mesure) ; calee sur ses zeros, f/4 domine
+oc_w1 > oc_THR && !oc_above2 ? ( oc_above2 = 1; oc_sq2 = -oc_sq2; ) : oc_w1 < -oc_THR ? oc_above2 = 0;
+oc_w2 = oc_run3(oc_w1 * oc_sq2, 16, 16);
+oc_out = oc_direct * oc_in + oc_oct1 * oc_w1 + oc_oct2 * oc_w2;
+spl0 = oc_out; spl1 = oc_out;

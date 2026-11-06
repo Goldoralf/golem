@@ -1,0 +1,12 @@
+{
+ "name": "Vocal plate",
+ "type": "reverb-plate",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "mix": 22,
+  "decay": 1.4,
+  "predelay": 20
+ },
+ "default": true
+}

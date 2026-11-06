@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# CLÉS AUTORISÉES À SIGNER UNE RELEASE de golem (docs/release-signing.md). Format « allowed signers » de git/ssh :
+#     <nom> namespaces="git" ssh-ed25519 AAAA…
+# VIDE = aucune vérification (le comportement d'avant le 2026-10-15). Dès qu'une clé est ici, la mise à jour intégrée
+# REFUSE un tag qu'elle n'a pas signé — et c'est la liste de la version DÉJÀ INSTALLÉE qui fait foi : une release ne
+# peut pas apporter sa propre clé. Changer de clé = publier d'abord une release, signée par l'ancienne, qui ajoute la
+# nouvelle.

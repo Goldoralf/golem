@@ -1,0 +1,270 @@
+{
+ "id": "factory-keys-jazz-piano",
+ "name": "Jazz Piano",
+ "role": "keys",
+ "tags": [
+  "jazz",
+  "piano"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Jazz Piano",
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Trio",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Ballad",
+     "blocks": {},
+     "params": {
+      "verb": {
+       "mix": 30,
+       "decay": 2
+      },
+      "eq": {
+       "highs": -4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Solo",
+     "blocks": {},
+     "params": {
+      "eq": {
+       "highs": 1,
+       "midgain": 1
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Dry",
+     "blocks": {
+      "verb": false
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "piano",
+      "type": "piano",
+      "params": {
+       "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz",
+       "volume": 0
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 2,
+       "makeup": 2,
+       "attack": 20,
+       "release": 200
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 40,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": -2
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "foot": 6,
+      "params": {
+       "mix": 18,
+       "decay": 1.1,
+       "size": 16,
+       "hicut": 7000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Trio",
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Ballad",
+   "params": {
+    "verb": {
+     "mix": 30,
+     "decay": 2
+    },
+    "eq": {
+     "highs": -4
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": -1,
+     "state": "st-keys-1-B"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "C",
+   "name": "Solo",
+   "params": {
+    "eq": {
+     "highs": 1,
+     "midgain": 1
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 2,
+     "state": "st-keys-1-C"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Dry",
+   "blocks": {
+    "verb": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-D"
+    }
+   }
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rooftop-prowl",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": false,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "blonde-bop",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "piano",
+    "type": "piano",
+    "params": {
+     "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz",
+     "volume": 0
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -20,
+     "ratio": 2,
+     "makeup": 2,
+     "attack": 20,
+     "release": 200
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 40,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": -2
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "foot": 6,
+    "params": {
+     "mix": 18,
+     "decay": 1.1,
+     "size": 16,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [],
+ "deps_sig": "{\"anims\": {\"6\": \"scanner\", \"9\": \"heartbeat\", \"A\": \"wave\", \"B\": \"ember\", \"C\": \"snow\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 2, \"ratio\": 2, \"release\": 200, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 40, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"verb\", \"params\": {\"decay\": 1.1, \"hicut\": 7000, \"mix\": 18, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#bc9a6c\", \"A\": \"#bc9a6c\", \"B\": \"#bc9a6c\", \"C\": \"#bc9a6c\", \"D\": \"#bc9a6c\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": false, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 2, \"ratio\": 2, \"release\": 200, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 40, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"verb\", \"params\": {\"decay\": 1.1, \"hicut\": 7000, \"mix\": 18, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Jazz Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Trio\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"verb\": {\"decay\": 2, \"mix\": 30}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": 1, \"midgain\": 1}}}, {\"blocks\": {\"verb\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Dry\", \"params\": {}}]}], \"role\": \"keys\", \"scenes\": [{\"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Trio\"}, {\"id\": \"B\", \"lanes\": {\"keys-1\": {\"level\": -1, \"state\": \"st-keys-1-B\"}}, \"level\": -1, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"verb\": {\"decay\": 2, \"mix\": 30}}}, {\"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-C\"}}, \"level\": 2, \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": 1, \"midgain\": 1}}}, {\"blocks\": {\"verb\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Dry\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#bc9a6c",
+  "B": "#bc9a6c",
+  "C": "#bc9a6c",
+  "D": "#bc9a6c",
+  "9": "#bc9a6c",
+  "10": "#bc9a6c"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "ember",
+  "C": "snow",
+  "D": "vortex",
+  "9": "heartbeat",
+  "10": "sheen"
+ }
+}

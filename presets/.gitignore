@@ -1,0 +1,7 @@
+.command.json
+*.tmp
+.fxprobe.log
+.vstchunk.b64
+.chunk.log
+.fxdump.json
+.golem-rig.log

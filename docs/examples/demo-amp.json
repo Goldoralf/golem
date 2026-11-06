@@ -1,0 +1,27 @@
+{
+  "id": "demo-amp",
+  "name": "Demo Amp (Ratatouille bundle)",
+  "_note": "Approche A : ampli = un Ratatouille qui charge NAM (ref) + IR (cab) via le chunk prouvé.",
+  "paths": [
+    {
+      "id": "guitar",
+      "name": "Guitare",
+      "input": 1,
+      "chain": [
+        { "type": "gate" },
+        { "type": "amp", "ref": "5150-block-letter", "cab": "mesa-4x12-recto-ksm313", "label": "5150" },
+        { "type": "eq" },
+        { "type": "reverb" }
+      ],
+      "out": 1
+    },
+    {
+      "id": "voice",
+      "name": "Voix",
+      "input": 2,
+      "chain": [ { "type": "gate" }, { "type": "comp" } ],
+      "out": 2
+    }
+  ],
+  "scenes": [ { "id": "A", "name": "base", "blocks": {} } ]
+}

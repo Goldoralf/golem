@@ -1,0 +1,485 @@
+{
+ "id": "factory-bass-jazz-warm",
+ "name": "Jazz Warm",
+ "role": "bass",
+ "tags": [
+  "jazz",
+  "clean"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Jazz Warm",
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Walking",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Warm",
+     "blocks": {
+      "chorus": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Fretless Chorus",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {
+      "eq": {
+       "highs": 0,
+       "midgain": 3
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Solo",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {
+      "eq": {
+       "highs": 1,
+       "midgain": 4
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -68,
+       "attack": 3,
+       "release": 250
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 25,
+       "release": 200
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 40,
+       "midgain": 2,
+       "midfreq": 500,
+       "highs": -4
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "poly",
+         "type": "amp",
+         "label": "Polytone Mini Brute III",
+         "ref": "56824",
+         "model": "384022",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "bassman",
+         "type": "amp-nam",
+         "label": "Fender Bassman 50",
+         "ref": "1882",
+         "model": "413113",
+         "params": {
+          "input": 0,
+          "output": -8
+         }
+        },
+        {
+         "id": "glock",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580768",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "foot": 6,
+      "params": {
+       "length": 20,
+       "voices": 2,
+       "rate": 0.5,
+       "wet": -10,
+       "dry": 0
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "params": {
+       "mix": 8,
+       "decay": 0.7,
+       "size": 12,
+       "hicut": 5000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Walking",
+   "blocks": {
+    "chorus": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Warm",
+   "blocks": {
+    "chorus": false
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Fretless Chorus",
+   "blocks": {
+    "chorus": true
+   },
+   "params": {
+    "eq": {
+     "highs": 0,
+     "midgain": 3
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Solo",
+   "blocks": {
+    "chorus": true
+   },
+   "params": {
+    "eq": {
+     "highs": 1,
+     "midgain": 4
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 3,
+     "state": "st-bass-1-D"
+    }
+   },
+   "level": 3
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rooftop-prowl",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": false,
+      "drums": true,
+      "groove": "auto",
+      "kit": "blonde-bop",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -68,
+     "attack": 3,
+     "release": 250
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -20,
+     "ratio": 2.5,
+     "makeup": 2,
+     "attack": 25,
+     "release": 200
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 40,
+     "midgain": 2,
+     "midfreq": 500,
+     "highs": -4
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "poly",
+       "type": "amp",
+       "label": "Polytone Mini Brute III",
+       "ref": "56824",
+       "model": "384022",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "bassman",
+       "type": "amp-nam",
+       "label": "Fender Bassman 50",
+       "ref": "1882",
+       "model": "413113",
+       "params": {
+        "input": 0,
+        "output": -8
+       }
+      },
+      {
+       "id": "glock",
+       "type": "cab",
+       "label": "Glockenklang DUO 2x10",
+       "ref": "70612",
+       "model": "580768",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "chorus",
+    "type": "chorus-js",
+    "foot": 6,
+    "params": {
+     "length": 20,
+     "voices": 2,
+     "rate": 0.5,
+     "wet": -10,
+     "dry": 0
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "params": {
+     "mix": 8,
+     "decay": 0.7,
+     "size": 12,
+     "hicut": 5000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "56824",
+   "model": "384022"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "1882",
+   "model": "413113"
+  },
+  {
+   "type": "cab",
+   "ref": "70612",
+   "model": "580768"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "63ac6e5be351670b3524ff33ac9f9a16d70fc685eb6988b44167f24428b50917",
+   "uid": "t3k:56824",
+   "kind": "amp-cab",
+   "bytes": 302695,
+   "name": "Polytone Mini Brute III - 15\"",
+   "source": "t3k",
+   "amp": "Polytone",
+   "arch": "2",
+   "brand": "Polytone",
+   "creator": "matz",
+   "url": "https://www.tone3000.com/tones/polytone-mini-brute-iii-15-jazz-only-56824"
+  },
+  {
+   "sha256": "b409301557f16d814e8fe9418fbd9a9cdf45f6746097d57c3bff66bc8aa3a3df",
+   "uid": "t3k:1882",
+   "kind": "amp",
+   "bytes": 294880,
+   "name": "Fender Bassman 50 - Bass Channel - Deep On - G4.5",
+   "source": "t3k",
+   "amp": "Fender Bassman 50",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/fender-bassman-50-052-1882"
+  },
+  {
+   "sha256": "93e898275ca5abfd27e0816a584b522c330d843e0b1e5d17143db21e49fa9be8",
+   "uid": "t3k:70612",
+   "kind": "cab",
+   "bytes": 145120,
+   "name": "Glockenklang DUO 2x10 d6x bal w horn",
+   "source": "t3k",
+   "amp": "Glockenklang DUO 2x10",
+   "brand": "Glockenklang",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/glockenklang-duo-2x10-70612"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"scanner\", \"9\": \"vortex\", \"A\": \"ripple\", \"B\": \"glitch\", \"C\": \"stars\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.5, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.7, \"hicut\": 5000, \"mix\": 8, \"size\": 12}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 250, \"thresh\": -68}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -4, \"lowcut\": 40, \"midfreq\": 500, \"midgain\": 2}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"poly\", \"label\": \"Polytone Mini Brute III\", \"model\": \"384022\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"56824\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"bassman\", \"label\": \"Fender Bassman 50\", \"model\": \"413113\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"1882\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"6\": \"#a68a64\", \"A\": \"#a68a64\", \"B\": \"#a68a64\", \"C\": \"#a68a64\", \"D\": \"#a68a64\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": false, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.5, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.7, \"hicut\": 5000, \"mix\": 8, \"size\": 12}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 250, \"thresh\": -68}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -4, \"lowcut\": 40, \"midfreq\": 500, \"midgain\": 2}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"poly\", \"label\": \"Polytone Mini Brute III\", \"model\": \"384022\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"56824\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"bassman\", \"label\": \"Fender Bassman 50\", \"model\": \"413113\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"1882\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Jazz Warm\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Walking\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Warm\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Fretless Chorus\", \"params\": {\"eq\": {\"highs\": 0, \"midgain\": 3}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-D\", \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": 1, \"midgain\": 4}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Walking\"}, {\"blocks\": {\"chorus\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Warm\"}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Fretless Chorus\", \"params\": {\"eq\": {\"highs\": 0, \"midgain\": 3}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-D\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": 1, \"midgain\": 4}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#a68a64",
+  "B": "#a68a64",
+  "C": "#a68a64",
+  "D": "#a68a64",
+  "6": "#a68a64",
+  "9": "#a68a64",
+  "10": "#a68a64"
+ },
+ "anims": {
+  "A": "ripple",
+  "B": "glitch",
+  "C": "stars",
+  "D": "pulse",
+  "6": "scanner",
+  "9": "vortex",
+  "10": "monster"
+ }
+}

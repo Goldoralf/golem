@@ -1,0 +1,301 @@
+# GoleM — .gitignore racine
+# Principe : le repo = configs/scripts/recettes. PAS de binaires lourds ni de captures tierces.
+
+# --- Binaires installés par script (jamais commités) ---
+# Reaper, plugins LV2/VST3, etc. → provision/install.sh les pose
+
+# --- Reaper : scripts d'usine Cockos (réinstallés avec Reaper, jamais versionnés) ---
+# Filet : même si un symlink mal placé les ramène, ils restent hors de Git.
+reaper/Scripts/Cockos/
+reaper/Scripts/**/*.png
+
+# --- Reaper : bruit local (config machine-spécifique) ---
+reaper/**/reaper.ini
+reaper/**/*.log
+reaper/**/reaper-*.ini
+reaper/**/ClapPlugins64.ini
+reaper/**/reaper-vstplugins*.ini
+reaper/**/reaper-fxtags.ini
+
+# --- Secrets / machine ---
+*.key
+*.secret
+# licence Reaper (nominative) — importée à la main, jamais commitée. ⚠ le commentaire était EN FIN de ligne :
+# `.gitignore` le lisait comme une partie du motif, qui ne masquait donc rien (audit 2026-10-15).
+*.rk
+.env
+.env.*
+# ⚠ SAUF le gabarit : il est SUIVI par git, mais le motif ci-dessus le matche quand même. Git
+# n'en tient pas compte (un fichier déjà suivi le reste) — rsync, un contexte de build ou tout
+# autre outil qui LIT ce fichier, si. Résultat : une install à blanc n'avait pas .env.example et
+# ne pouvait pas créer .env (trouvé le 2026-08-02, VM nue). Un .gitignore doit dire ce qu'il veut
+# dire, pas compter sur l'indulgence de git.
+!.env.example
+!.env.example
+# clés API (Tone3000 + IA) saisies dans l'onglet API
+config/integrations.json
+config/inbox.json
+config/song-folders.json
+config/auth.token
+config/network.json
+config/.mode.json
+config/engine.json
+config/genres.remote.json
+config/.desktop.json
+config/.band.json
+config/.card-setups.json
+config/.boot.json
+config/.env-snapshot.json
+config/.first-check.json
+config/.incidents.json
+config/.assistant.json
+config/.startup.json
+# l'instrument choisi à l'installation (bridge/first_run.py) : le fichier de l'installateur, puis ce qu'il en reste
+config/first-run.json
+config/instrument.json
+config/.pedalboard.json
+# l'inharmonicité à vide de chaque corde de LA guitare de ce rack (bridge/inharm.py) : mesurée sur elle, pas une recette
+config/string-calib.json
+# sa carte du manche, case par case (bridge/neckmap.py) : mesurée sur elle aussi
+config/neckmap/
+config/modes.local/
+# recettes de capture validées sur CE rack (docs/plugin-recipes.md §6.3) : état local, partagé via golem.fm
+config/plugin-recipes/
+config/soundcard.json
+config/soundcard.json.migrated
+config/devices.json
+config/mixer.json
+
+# presets Vital : seul le pack factory/ (seed) est versionné ; les packs uploadés
+# par l'utilisateur (store vital.audio…) sont du contenu lourd, hors git (cf. NAM/IR).
+library/synth/vital/*
+!library/synth/vital/factory/
+library/catalog/.vital-index.json
+
+# --- OS / éditeur ---
+.DS_Store
+*~
+*.swp
+.idea/
+.vscode/
+
+# --- Cache de travail (régénérable) ---
+library/catalog/.picks-cache.json
+# état du push tone-library vers golem.fm (cache sha256 + docs poussés)
+library/catalog/.tones-sync.json
+# empreinte du dernier preset publié sur golem.fm (publication au fil de l'eau)
+library/catalog/.published.json
+# rendu du manuel QC + probes images (régénérable, lourd)
+scratch_qc/
+
+# --- Assets : voir assets/.gitignore (captures NAM / IR tierces exclues) ---
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# ── état RUNTIME de presets/ : commandes, dumps, logs, feedback des boucles Lua ──
+# TOUT dotfile de presets/ est volatil (.command/.fxdump/.tuner/.looper/.backing/.sandbox/
+# .perf/.click/.drums/.sample/.peaks/.preview/.perfsrc/.livemap/.knobmap/*.log…) : une seule
+# règle, plus de liste à re-compléter à chaque nouveau service. Les PRESETS sont des
+# `nom.json` sans point de tête -> jamais touchés. (+ .tmp des écritures atomiques)
+presets/.*
+!presets/.gitignore
+presets/*.tmp
+sets/Backups/
+
+# cache assets assainis (chemins NAM/IR sans espace/# pour le loader LV2)
+assets/.cache/
+
+# cache des stems golem.fm (backing tracks) — re-téléchargeables, jusqu'à ~60 Mo/chanson
+assets/backing/
+assets/separation/
+
+# rigs jetables générés par les tests/sandbox (pas des presets démo à versionner)
+reaper/FXChains/*sandbox*
+reaper/FXChains/nouveau-preset*
+docs/debug/
+
+# photos d'amplis (listings Reverb / téléchargées) — pas à versionner
+library/images/
+
+# corbeille des amplis supprimés (restaurable, purge manuelle)
+assets/.trash/
+# build output de compile_rig (régénéré à chaque audition) — ne pas versionner
+reaper/FXChains/*.rig.json
+reaper/FXChains/*.plan.json
+reaper/FXChains/*.RfxChain
+reaper/FXChains/*.b64
+
+# sauvegardes .zip locales (Système ▸ Content)
+backups/
+
+# prises perf-rec (données perso, mirrorées vers golem.fm)
+recordings/
+
+# instruments SFZ (gros samples — fetch-assets)
+library/sfz/
+# kits téléchargés par « + Add » (URL), extraits avant lecture — un kit installé en est une COPIE
+library/.import/
+
+# kits DrumGizmo (multi-micros, 2,3 Go le kit — fetch-assets les rapatrie) ; leurs CRÉDITS, eux, sont livrés
+# (CC BY 4.0 : l'attribution doit voyager avec le dépôt — inventaire des contenus, 2026-10-31)
+library/drumkits/*
+!library/drumkits/CREDITS.md
+
+# ── CONTENU : hors git pour l'instant (2026-07-28) ──────────────
+# Le repo versionne les RECETTES et les seeds d'usine (library/di-refs/index.json,
+# library/grooves/rock-basic.mid, assets/samples/*.wav…), jamais le contenu joué ni
+# ce qui s'en déduit. « Pour l'instant » : le jour où le store/vault dira OÙ ce
+# contenu vit et sous quelle licence, on rouvrira la question.
+# (pas de commentaire en bout de ligne : git le lirait comme une partie du motif)
+# DI de référence enregistrées (7 Mo d'audio) — l'index reste versionné
+library/di-refs/*/
+# previews rendues par preset (régénérables)
+library/previews/
+# index dérivé du contenu du dossier
+library/grooves/index.json
+# grilles de standards : CACHE de golem.fm (917 Ko) + les corrections locales. Le rack
+# les REFERENCE, il ne les écrit pas — c'est du contenu importé, pas une recette.
+library/standards/
+# formes d'onde précalculées (dérivé)
+assets/samples/peaks/
+# overlay des photos d'amplis (tone id -> fichier) : état LOCAL, réécrit par le bridge,
+# et il pointe vers library/images/ qui est déjà hors git — l'index n'a pas de sens sans
+# ses cibles. Le fichier reste sur le rack, il sort juste du dépôt.
+library/catalog/images.json
+
+# captures d'UI tierces (Quad Cortex, plugins…) servant de référence de design :
+# même règle que assets/ — on ne redistribue pas les visuels des autres.
+docs/QC UI/
+# le manuel du Quad Cortex (Neural DSP) : référence LOCALE, jamais redistribuée (droits d'auteur)
+docs/QuadCortex_man_v.4.pdf
+
+# pédales INSTALLÉES sur CE rack — état local, pas produit (docs/pedal-registry.md §7 bis) :
+# horodatage d'installation, verdict de vérification « verified_here »… Les commiter ferait
+# qu'un clone neuf se prétendrait vérifié sur une machine qui n'a jamais rien vérifié.
+# Le CATALOGUE, lui, reste versionné : library/pedals/*.json.
+# Exception : le layout du FCB1010, encore seed (il porte le contrat MIDI du pédalier et sa
+# procédure de flash) — à déplacer vers le catalogue quand un « controller » s'y installera.
+mappings/*.json
+!mappings/fcb1010-banka.json
+
+# quelle setlist est AU PIED en ce moment : état de la machine, pas du produit — même règle
+# que config/.mode.json (le mode courant), qui sort déjà du dépôt.
+config/setlist.json
+# les setlists sont du CONTENU (les tiennes, celles reçues d'un autre musicien). Seule la
+# setlist d'usine reste versionnée : c'est elle qu'un rack neuf trouve à son premier boot.
+setlists/*.json
+!setlists/fcb-banks.json
+
+# le RÉPERTOIRE du groupe (docs/songs.md) : ses chansons, leurs arrangements. Même raison que
+# les setlists — c'est du contenu, pas une recette. Il vient de golem.fm et y retourne.
+# Depuis le 2026-10-08 une chanson est un `songs/<id>.golem` (+ `.work/` = cache de travail, `.json-migrated/` =
+# les anciens JSON gardés) : TOUT le dossier est du contenu. Ancré à la racine : library/factory/songs/ (les chansons
+# d'usine, docs/factory.md) EST une recette versionnée.
+/songs/
+
+# runtime : cartouche DX7 courante écrite par golem_rig (build_ep_block)
+reaper/Effects/dx7-cart.txt
+reaper/Effects/dx7-cart.txt.tmp
+config/auth-devices.json
+.venv-transcribe/
+
+# ── LA BIBLIOTHÈQUE N'EST PAS DANS LE DÉPÔT (2026-08-02) ────────────────────
+# Elle appartient à l'utilisateur : ses morceaux, ses sons, ses kits, ses captures. Le dépôt
+# versionne des RECETTES et des GRAINES (règle 2 du CLAUDE.md), pas ce qui se passe sur la
+# machine — et 19 presets personnels étaient partis dans l'install à blanc en VM, donc dans
+# tout `git clone`. Les graines de démonstration vivent dans docs/examples/.
+presets/*.json
+mappings/*.json
+mappings/*.csv
+mappings/*.syx
+sets/*.rpp
+# library/synth/ : contenu de l'utilisateur, SAUF le pack Vital `factory/` — l'usine est versionnée (même règle et
+# même accident que library/block-presets/ : la ligne `library/synth/` d'e752875 avait aussi sorti les presets Vital
+# d'usine, et les patches claviers d'usine ne jouaient sur aucun golem neuf ; trouvé le 2026-10-13). Un dossier
+# exclu ne se ré-inclut pas : on exclut son CONTENU, puis on rouvre vital/ et factory/.
+library/synth/*
+!library/synth/vital/
+library/synth/vital/*
+!library/synth/vital/factory/
+library/tones/*.json
+library/kits/
+library/dx7/
+library/grooves/
+library/sample-sets/
+library/di-refs/index.json
+library/patches/
+# ⚠ library/block-presets/ N'EST PLUS ignoré (2026-09-07). Ces 158 fichiers sont du contenu
+# d'USINE (`factory: true`, 55 sont les défauts à l'insertion d'un bloc), fabriqués par les
+# commits keys/voice — le chore e752875 « la bibliothèque sort du dépôt » les a détachés par
+# erreur avec le reste. Résultat mesuré au reset du 2026-09-07 : un GoleM neuf n'avait AUCUN
+# preset de bloc. Même règle que library/synth/vital/factory/ : l'usine est versionnée.
+# Un preset sauvé par l'utilisateur atterrit dans le même dossier SANS `factory` : il
+# apparaîtra en non-suivi — ne pas le commiter, c'est de l'état local.
+# ⚠ library/pedals/ N'EST PLUS ignoré (2026-10-03), même erreur que block-presets : le CATALOGUE des
+# pédales connues (Whammy DT calibrée au matériel + 7 modèles importés de MIDNAM libres) est une
+# graine — docs/pedal-registry.md et la ligne « Le CATALOGUE, lui, reste versionné » plus haut le
+# disaient. Un GoleM neuf (un Windows neuf) n'avait AUCUNE pédale à installer. L'état local de
+# l'installation, lui, vit dans mappings/ (ignoré).
+library/catalog/brands.json
+library/catalog/legendary-amps.json
+library/README.md
+library/sets/
+
+# ⚠ CES DEUX-LÀ RESTENT, et ce n'est pas un oubli : le bridge les LIT AU DÉMARRAGE.
+#   library/catalog/effects.json  -> config.EFFECTS : le vocabulaire des blocs. Sans lui, aucun
+#                                    bloc n'existe — ni tiroir, ni compilation, ni digest IA.
+#   library/components.json       -> resolver : la résolution des composants.
+# Les retirer ne « nettoie » pas le dépôt, ça le casse.
+# index des captures INSTALLÉES : il change à chaque téléchargement, c'est de l'inventaire local
+library/catalog/tones-index.json
+assets/.quarantine/
+# lot 8 : session, chronologie et paquets de diagnostic du rack (état local, docs/diagnostics.md)
+diag/
+config/diag.json
+
+# verdict « pack à écho » des IR : calculé au démarrage, état local (docs/blocks-doctrine.md)
+library/catalog/.ir-quality.json
+config/serial.json
+config/serial.conflict.json
+config/serial.provisional.json
+library/catalog/.lent.json
+config/midi-ports.json
+config/avatars/
+config/.power.json
+
+# CALIBRATIONS de CE rack (2026-10-03, CLAUDE.md règle 2) : profils de contrôleurs, banques de potards
+# calibrées, kits de batterie MESURÉS. Les graines restent suivies : config/knobs.default.json et
+# config/drumkits/ (descripteurs de modèles). Une mesure locale prend le pas sur la graine du même id.
+config/controllers/
+config/knobs.json
+config/drumkits.local/
+
+# l'instantané de la coquille golem.fm (tools/shell_snapshot.py, docs/shell.md) : une sortie, jamais commitée
+shell-snapshot/
+config/separation.json
+
+# ── ÉTAT LOCAL DU RACK (audit 2026-10-15, lot 4) : écrit par le bridge en tournant, propre à une machine.
+# Le dépôt versionne des recettes et des graines ; ces fichiers ont leurs défauts DANS LE CODE
+# (store.CLICK_DEFAULTS/REC_DEFAULTS/COMPO_DEFAULTS, inputmap._seed) ou naissent à la première rencontre.
+config/click.json
+config/compo.json
+config/recorder.json
+# la carte son ACTIVE de cette machine (écrite à l'adoption, page Soundcard)
+config/io.json
+# registre des cartes RENCONTRÉES sur cette machine (bridge/cards.py)
+config/cards/
+# l'usage de chaque carte (rôles, personnes) — reconstruit par inputmap._seed quand il manque
+config/inputmaps/
+# l'identité de CE rack (id tiré au premier démarrage) et son profil (rôle, options choisies à l'installation)
+config/.rack-id
+config/profile.json
+# les setlists de l'utilisateur ; celles d'usine vivent dans library/factory/setlists
+setlists/*.json
+# états Vital compilés par preset (compile_rig) et métadonnées des samples (kits.KINDS_FILE)
+reaper/FXChains/*.vitalium.txt
+assets/samples/.kinds.json
+# packs d'animation INSTALLÉS depuis golem.fm (le pack par défaut est livré avec l'app)
+library/anim-packs/

@@ -1,0 +1,30 @@
+MIT License — Specific Components and Format Specifications
+
+This MIT License applies EXCLUSIVELY to the following files and directories of the golem repository, which also
+carry the `SPDX-License-Identifier: MIT` header where their format allows one (the exact list, with what each file
+is, is in docs/licence.md §2):
+
+- `reaper/Effects/` — the in-house JSFX (excluding `reaper/Effects/golem_super8`, which carries an LGPL header);
+- the open exchange formats: `docs/preset-format.md`, `docs/standards-format.md` (`.gsx` chord grids),
+  `docs/golem-format.md` (the `.golem` archive format) and the example files in `docs/examples/`;
+- `bridge/golemfile.py` — the `.golem` archive format parser module.
+
+All other files in this repository are licensed under the GNU General Public License v3.0 or later (see
+`LICENSE`), except where a file states otherwise.
+
+---
+
+Copyright (c) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

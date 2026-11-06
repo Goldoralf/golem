@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "deesser",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -28,
+  "freq": 6000,
+  "range": 10,
+  "listen": false
+ },
+ "default": true
+}

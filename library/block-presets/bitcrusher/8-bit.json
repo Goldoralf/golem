@@ -1,0 +1,11 @@
+{
+ "name": "8-bit",
+ "type": "bitcrusher",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "quant": 0.65,
+  "rate": 0.45,
+  "nonlin": 0.1
+ }
+}

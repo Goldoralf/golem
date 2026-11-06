@@ -1,0 +1,13 @@
+# GoleM — gouverneur CPU « performance » permanent (unité SYSTEM).
+# Remplace le perf-mode.sh manuel sur le rack : appliqué à chaque boot.
+# Sans cpufreq (VM) : no-op silencieux.
+[Unit]
+Description=GoleM CPU governor performance
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for f in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do [ -e "$f" ] || continue; echo performance > "$f"; done'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

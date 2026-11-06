@@ -1,0 +1,13 @@
+{
+ "name": "Drum room",
+ "type": "reverb-room",
+ "inst": "drums",
+ "factory": true,
+ "params": {
+  "mix": 30,
+  "decay": 0.9,
+  "size": 16,
+  "hicut": 8000
+ },
+ "default": true
+}

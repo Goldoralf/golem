@@ -1,0 +1,828 @@
+{
+ "id": "factory-guitar-soaring-lead",
+ "name": "Soaring Lead",
+ "role": "guitar",
+ "tags": [
+  "metal",
+  "progressive",
+  "lead",
+  "ambient"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Soaring Lead",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -52,
+       "attack": 1,
+       "hold": 20,
+       "release": 120,
+       "hyst": -3
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -28,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 30,
+       "release": 220
+      }
+     },
+     {
+      "id": "ts",
+      "type": "pedal-nam",
+      "variant": "tube-screamer",
+      "foot": 8,
+      "label": "Ibanez TS9 Tube Screamer",
+      "ref": "36827",
+      "model": "381617",
+      "params": {
+       "input": 0,
+       "output": -2
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "evh",
+         "type": "amp",
+         "label": "EVH 5150",
+         "ref": "6440",
+         "model": "418076",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "twin",
+         "type": "amp",
+         "label": "Fender Twin Reverb",
+         "ref": "43620",
+         "model": "382265",
+         "params": {
+          "input": -3,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 100,
+       "bass": 0,
+       "f1": 400,
+       "g1": -1.5,
+       "f2": 900,
+       "g2": 2,
+       "f3": 6500,
+       "g3": -2.5,
+       "treble": 0
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "params": {
+       "length": 20,
+       "voices": 3,
+       "rate": 0.3,
+       "wet": -10,
+       "dry": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/8•",
+       "feedback": 30,
+       "mix": 16
+      }
+     },
+     {
+      "id": "echo",
+      "type": "delay",
+      "params": {
+       "time": "1/4",
+       "feedback": 35,
+       "mix": 12
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "foot": 6,
+      "params": {
+       "mix": 30,
+       "decay": 6,
+       "shimmer": 35,
+       "pitch": 5,
+       "hicut": 5500
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "mix": 20,
+       "decay": 2.8,
+       "size": 40,
+       "hicut": 6500
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Shimmer Pad",
+     "blocks": {
+      "comp": true,
+      "ts": false,
+      "chorus": true,
+      "dly": false,
+      "echo": true,
+      "shim": true
+     },
+     "params": {
+      "gate": {
+       "thresh": -68
+      },
+      "eq": {
+       "lowcut": 120,
+       "g1": -2,
+       "g2": 0,
+       "g3": -1
+      },
+      "echo": {
+       "feedback": 45,
+       "mix": 18
+      },
+      "shim": {
+       "mix": 40,
+       "decay": 7
+      },
+      "verb": {
+       "mix": 30,
+       "decay": 3.8,
+       "size": 48
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Clean Echo",
+     "blocks": {
+      "comp": true,
+      "ts": false,
+      "chorus": true,
+      "dly": true,
+      "echo": false,
+      "shim": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -66
+      },
+      "eq": {
+       "lowcut": 90,
+       "g1": -1,
+       "g2": 0,
+       "g3": -1
+      },
+      "dly": {
+       "mix": 14,
+       "feedback": 28
+      },
+      "verb": {
+       "mix": 22,
+       "decay": 3.0
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Riff Double",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": false,
+      "echo": false,
+      "shim": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -48,
+       "release": 60
+      },
+      "eq": {
+       "lowcut": 90,
+       "f1": 450,
+       "g1": -3,
+       "f2": 1500,
+       "g2": 1
+      },
+      "verb": {
+       "mix": 8,
+       "decay": 1.4,
+       "size": 24
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Soaring Lead",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": true,
+      "echo": true,
+      "shim": false
+     },
+     "params": {
+      "dly": {
+       "mix": 16,
+       "feedback": 30
+      },
+      "echo": {
+       "mix": 10,
+       "feedback": 30
+      },
+      "verb": {
+       "mix": 20,
+       "decay": 2.8
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Halo Lead",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": true,
+      "echo": true,
+      "shim": true
+     },
+     "params": {
+      "shim": {
+       "mix": 18,
+       "decay": 5,
+       "shimmer": 25
+      },
+      "verb": {
+       "mix": 24,
+       "decay": 3.4
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Shimmer Pad",
+   "blocks": {
+    "comp": true,
+    "ts": false,
+    "chorus": true,
+    "dly": false,
+    "echo": true,
+    "shim": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "params": {
+    "gate": {
+     "thresh": -68
+    },
+    "eq": {
+     "lowcut": 120,
+     "g1": -2,
+     "g2": 0,
+     "g3": -1
+    },
+    "echo": {
+     "feedback": 45,
+     "mix": 18
+    },
+    "shim": {
+     "mix": 40,
+     "decay": 7
+    },
+    "verb": {
+     "mix": 30,
+     "decay": 3.8,
+     "size": 48
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Clean Echo",
+   "blocks": {
+    "comp": true,
+    "ts": false,
+    "chorus": true,
+    "dly": true,
+    "echo": false,
+    "shim": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "params": {
+    "gate": {
+     "thresh": -66
+    },
+    "eq": {
+     "lowcut": 90,
+     "g1": -1,
+     "g2": 0,
+     "g3": -1
+    },
+    "dly": {
+     "mix": 14,
+     "feedback": 28
+    },
+    "verb": {
+     "mix": 22,
+     "decay": 3.0
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Riff Double",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": false,
+    "echo": false,
+    "shim": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "params": {
+    "gate": {
+     "thresh": -48,
+     "release": 60
+    },
+    "eq": {
+     "lowcut": 90,
+     "f1": 450,
+     "g1": -3,
+     "f2": 1500,
+     "g2": 1
+    },
+    "verb": {
+     "mix": 8,
+     "decay": 1.4,
+     "size": 24
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Soaring Lead",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "shim": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": 3
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 16,
+     "feedback": 30
+    },
+    "echo": {
+     "mix": 10,
+     "feedback": 30
+    },
+    "verb": {
+     "mix": 20,
+     "decay": 2.8
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "E",
+   "name": "Halo Lead",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "shim": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 2
+    }
+   },
+   "params": {
+    "shim": {
+     "mix": 18,
+     "decay": 5,
+     "shimmer": 25
+    },
+    "verb": {
+     "mix": 24,
+     "decay": 3.4
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-solo.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -52,
+     "attack": 1,
+     "hold": 20,
+     "release": 120,
+     "hyst": -3
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -28,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 30,
+     "release": 220
+    }
+   },
+   {
+    "id": "ts",
+    "type": "pedal-nam",
+    "variant": "tube-screamer",
+    "foot": 8,
+    "label": "Ibanez TS9 Tube Screamer",
+    "ref": "36827",
+    "model": "381617",
+    "params": {
+     "input": 0,
+     "output": -2
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "evh",
+       "type": "amp",
+       "label": "EVH 5150",
+       "ref": "6440",
+       "model": "418076",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "twin",
+       "type": "amp",
+       "label": "Fender Twin Reverb",
+       "ref": "43620",
+       "model": "382265",
+       "params": {
+        "input": -3,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 100,
+     "bass": 0,
+     "f1": 400,
+     "g1": -1.5,
+     "f2": 900,
+     "g2": 2,
+     "f3": 6500,
+     "g3": -2.5,
+     "treble": 0
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus-js",
+    "params": {
+     "length": 20,
+     "voices": 3,
+     "rate": 0.3,
+     "wet": -10,
+     "dry": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/8•",
+     "feedback": 30,
+     "mix": 16
+    }
+   },
+   {
+    "id": "echo",
+    "type": "delay",
+    "params": {
+     "time": "1/4",
+     "feedback": 35,
+     "mix": 12
+    }
+   },
+   {
+    "id": "shim",
+    "type": "reverb-shimmer",
+    "foot": 6,
+    "params": {
+     "mix": 30,
+     "decay": 6,
+     "shimmer": 35,
+     "pitch": 5,
+     "hicut": 5500
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "mix": 20,
+     "decay": 2.8,
+     "size": 40,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "36827",
+   "model": "381617"
+  },
+  {
+   "type": "amp",
+   "ref": "6440",
+   "model": "418076"
+  },
+  {
+   "type": "amp",
+   "ref": "43620",
+   "model": "382265"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#c9a227",
+  "B": "#c9a227",
+  "C": "#c9a227",
+  "D": "#c9a227",
+  "E": "#c9a227",
+  "6": "#c9a227",
+  "7": "#c9a227",
+  "8": "#c9a227",
+  "9": "#c9a227",
+  "10": "#c9a227"
+ },
+ "anims": {
+  "A": "aurora",
+  "B": "ripple",
+  "C": "pulse",
+  "D": "sheen",
+  "E": "vortex",
+  "6": "stars",
+  "7": "rain",
+  "8": "fire",
+  "9": "snow",
+  "10": "heartbeat"
+ },
+ "deps": [
+  {
+   "sha256": "c08f924499ae385a9f754da811e0a7a2b9bbadda337ed76e9d28fb3f3d19e242",
+   "uid": "t3k:36827",
+   "kind": "pedal",
+   "bytes": 299229,
+   "name": "Ibanez TS9 Tube Screamer Drive 2 Tone 7 Level 10",
+   "source": "t3k",
+   "amp": "Ibanez TS9 Tube Screamer",
+   "arch": "2",
+   "brand": "Ibanez",
+   "creator": "studioampcaptures",
+   "url": "https://www.tone3000.com/tones/ibanez-ts9-tube-screamer-36827"
+  },
+  {
+   "sha256": "de421439307fb81dc787ccbf7c8194c5c76e94053b1afd25ffd1bdeb82815047",
+   "uid": "t3k:6440",
+   "kind": "amp-cab",
+   "bytes": 295368,
+   "name": "EVH 5150 ",
+   "source": "t3k",
+   "amp": "EVH 5150",
+   "arch": "2",
+   "brand": "EVH",
+   "creator": "rusen",
+   "url": "https://www.tone3000.com/tones/evh-5150-6440"
+  },
+  {
+   "sha256": "d5480b918e4f2e66db82e7372617044704291eff828665d20e1f3438c99634c2",
+   "uid": "t3k:43620",
+   "kind": "amp-cab",
+   "bytes": 296894,
+   "name": "Fender Twin Reverb Full Rig 212 Green 57",
+   "source": "t3k",
+   "amp": "Fender Twin Reverb",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "henriquemarcosaugusto03",
+   "url": "https://www.tone3000.com/tones/fender-twin-reverb-43620"
+  },
+  {
+   "sha256": "650717904d3c1eaa411f26a192b3fcf30335e023b60bd04b4701dd4630beb70c",
+   "uid": "local:groove-golem-metal-solo",
+   "kind": "groove",
+   "bytes": 457,
+   "name": "Metal solo",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"stars\", \"7\": \"rain\", \"8\": \"fire\", \"9\": \"snow\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"pulse\", \"D\": \"sheen\", \"E\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 400, \"f2\": 900, \"f3\": 6500, \"g1\": -1.5, \"g2\": 2, \"g3\": -2.5, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.3, \"voices\": 3, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 16, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"echo\", \"params\": {\"feedback\": 35, \"mix\": 12, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 5500, \"mix\": 30, \"pitch\": 5, \"shimmer\": 35}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.8, \"hicut\": 6500, \"mix\": 20, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 20, \"hyst\": -3, \"release\": 120, \"thresh\": -52}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 30, \"makeup\": 3, \"ratio\": 3, \"release\": 220, \"thresh\": -28}, \"type\": \"comp\"}, {\"foot\": 8, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"evh\", \"label\": \"EVH 5150\", \"model\": \"418076\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6440\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#c9a227\", \"6\": \"#c9a227\", \"7\": \"#c9a227\", \"8\": \"#c9a227\", \"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\", \"E\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-solo.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 400, \"f2\": 900, \"f3\": 6500, \"g1\": -1.5, \"g2\": 2, \"g3\": -2.5, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.3, \"voices\": 3, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 16, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"echo\", \"params\": {\"feedback\": 35, \"mix\": 12, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 5500, \"mix\": 30, \"pitch\": 5, \"shimmer\": 35}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.8, \"hicut\": 6500, \"mix\": 20, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 20, \"hyst\": -3, \"release\": 120, \"thresh\": -52}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 30, \"makeup\": 3, \"ratio\": 3, \"release\": 220, \"thresh\": -28}, \"type\": \"comp\"}, {\"foot\": 8, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"evh\", \"label\": \"EVH 5150\", \"model\": \"418076\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6440\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Soaring Lead\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": false, \"echo\": true, \"shim\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Shimmer Pad\", \"params\": {\"echo\": {\"feedback\": 45, \"mix\": 18}, \"eq\": {\"g1\": -2, \"g2\": 0, \"g3\": -1, \"lowcut\": 120}, \"gate\": {\"thresh\": -68}, \"shim\": {\"decay\": 7, \"mix\": 40}, \"verb\": {\"decay\": 3.8, \"mix\": 30, \"size\": 48}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"echo\": false, \"shim\": false, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Clean Echo\", \"params\": {\"dly\": {\"feedback\": 28, \"mix\": 14}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 90}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 3.0, \"mix\": 22}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"echo\": false, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Riff Double\", \"params\": {\"eq\": {\"f1\": 450, \"f2\": 1500, \"g1\": -3, \"g2\": 1, \"lowcut\": 90}, \"gate\": {\"release\": 60, \"thresh\": -48}, \"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"echo\": true, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Soaring Lead\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 16}, \"echo\": {\"feedback\": 30, \"mix\": 10}, \"verb\": {\"decay\": 2.8, \"mix\": 20}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"echo\": true, \"shim\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Halo Lead\", \"params\": {\"shim\": {\"decay\": 5, \"mix\": 18, \"shimmer\": 25}, \"verb\": {\"decay\": 3.4, \"mix\": 24}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": false, \"echo\": true, \"shim\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Shimmer Pad\", \"params\": {\"echo\": {\"feedback\": 45, \"mix\": 18}, \"eq\": {\"g1\": -2, \"g2\": 0, \"g3\": -1, \"lowcut\": 120}, \"gate\": {\"thresh\": -68}, \"shim\": {\"decay\": 7, \"mix\": 40}, \"verb\": {\"decay\": 3.8, \"mix\": 30, \"size\": 48}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"echo\": false, \"shim\": false, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Clean Echo\", \"params\": {\"dly\": {\"feedback\": 28, \"mix\": 14}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 90}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 3.0, \"mix\": 22}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"echo\": false, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Riff Double\", \"params\": {\"eq\": {\"f1\": 450, \"f2\": 1500, \"g1\": -3, \"g2\": 1, \"lowcut\": 90}, \"gate\": {\"release\": 60, \"thresh\": -48}, \"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"echo\": true, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Soaring Lead\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 16}, \"echo\": {\"feedback\": 30, \"mix\": 10}, \"verb\": {\"decay\": 2.8, \"mix\": 20}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"echo\": true, \"shim\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Halo Lead\", \"params\": {\"shim\": {\"decay\": 5, \"mix\": 18, \"shimmer\": 25}, \"verb\": {\"decay\": 3.4, \"mix\": 24}}}]}"
+}

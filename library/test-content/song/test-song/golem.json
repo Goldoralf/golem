@@ -1,0 +1,18 @@
+{
+ "type": "song",
+ "title": "Test Song",
+ "artist": "golem test",
+ "kind": "original",
+ "rights": {
+  "work": "public-domain"
+ },
+ "genres": [
+  {
+   "family": "rock",
+   "subgenre": null
+  }
+ ],
+ "bpm": 120,
+ "key": "A",
+ "meter": "4/4"
+}

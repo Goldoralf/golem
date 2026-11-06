@@ -1,0 +1,685 @@
+{
+ "id": "factory-guitar-hero-lead",
+ "name": "Hero Lead",
+ "role": "guitar",
+ "tags": [
+  "rock",
+  "lead",
+  "solo"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Hero Lead",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 2,
+       "release": 180
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 30,
+       "release": 200
+      }
+     },
+     {
+      "id": "ts",
+      "type": "pedal-nam",
+      "variant": "tube-screamer",
+      "foot": 7,
+      "label": "Ibanez TS9 Tube Screamer",
+      "ref": "36827",
+      "model": "381617",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "deluxe",
+         "type": "amp-nam",
+         "label": "Fender Deluxe Reverb 1965",
+         "ref": "6289",
+         "model": "413038",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "dxcab",
+         "type": "cab",
+         "label": "Fender Deluxe Reverb",
+         "ref": "27465",
+         "model": "220917",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "twin",
+         "type": "amp-nam",
+         "label": "Fender Twin Reverb",
+         "ref": "246",
+         "model": "418200",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "twcab",
+         "type": "cab",
+         "label": "Fender Deluxe Reverb",
+         "ref": "27465",
+         "model": "220917",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 8,
+      "params": {
+       "time": "1/8•",
+       "feedback": 22,
+       "mix": 12
+      }
+     },
+     {
+      "id": "echo",
+      "type": "delay-tape",
+      "params": {
+       "time": "16th",
+       "time_r": "8th",
+       "tempo": 120,
+       "feedback": 15,
+       "mix": 8,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 16,
+       "decay": 2.0,
+       "predelay": 30,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Clean Arp",
+     "blocks": {
+      "comp": true,
+      "ts": false,
+      "dly": true,
+      "echo": true
+     },
+     "params": {
+      "dly": {
+       "mix": 12,
+       "feedback": 22
+      },
+      "echo": {
+       "mix": 8
+      },
+      "verb": {
+       "mix": 18,
+       "decay": 2.0
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Rhythm Drive",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "dly": false,
+      "echo": false
+     },
+     "params": {
+      "deluxe": {
+       "input": -2
+      },
+      "verb": {
+       "mix": 12,
+       "decay": 1.4
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Hero Lead",
+     "blocks": {
+      "comp": true,
+      "ts": true,
+      "dly": true,
+      "echo": true
+     },
+     "params": {
+      "deluxe": {
+       "input": 0
+      },
+      "dly": {
+       "mix": 14,
+       "feedback": 25
+      },
+      "echo": {
+       "mix": 10,
+       "feedback": 18
+      },
+      "verb": {
+       "mix": 16,
+       "decay": 2.0,
+       "predelay": 30
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Big Lead",
+     "blocks": {
+      "comp": true,
+      "ts": true,
+      "dly": true,
+      "echo": true
+     },
+     "params": {
+      "dly": {
+       "mix": 18,
+       "feedback": 32
+      },
+      "echo": {
+       "mix": 14,
+       "feedback": 25
+      },
+      "verb": {
+       "mix": 24,
+       "decay": 2.6
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean Arp",
+   "blocks": {
+    "comp": true,
+    "ts": false,
+    "dly": true,
+    "echo": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 12,
+     "feedback": 22
+    },
+    "echo": {
+     "mix": 8
+    },
+    "verb": {
+     "mix": 18,
+     "decay": 2.0
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Rhythm Drive",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "dly": false,
+    "echo": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "params": {
+    "deluxe": {
+     "input": -2
+    },
+    "verb": {
+     "mix": 12,
+     "decay": 1.4
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Hero Lead",
+   "blocks": {
+    "comp": true,
+    "ts": true,
+    "dly": true,
+    "echo": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 2
+    }
+   },
+   "params": {
+    "deluxe": {
+     "input": 0
+    },
+    "dly": {
+     "mix": 14,
+     "feedback": 25
+    },
+    "echo": {
+     "mix": 10,
+     "feedback": 18
+    },
+    "verb": {
+     "mix": 16,
+     "decay": 2.0,
+     "predelay": 30
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Big Lead",
+   "blocks": {
+    "comp": true,
+    "ts": true,
+    "dly": true,
+    "echo": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 18,
+     "feedback": 32
+    },
+    "echo": {
+     "mix": 14,
+     "feedback": 25
+    },
+    "verb": {
+     "mix": 24,
+     "decay": 2.6
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "attack": 2,
+     "release": 180
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 2.5,
+     "makeup": 2,
+     "attack": 30,
+     "release": 200
+    }
+   },
+   {
+    "id": "ts",
+    "type": "pedal-nam",
+    "variant": "tube-screamer",
+    "foot": 7,
+    "label": "Ibanez TS9 Tube Screamer",
+    "ref": "36827",
+    "model": "381617",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "deluxe",
+       "type": "amp-nam",
+       "label": "Fender Deluxe Reverb 1965",
+       "ref": "6289",
+       "model": "413038",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "dxcab",
+       "type": "cab",
+       "label": "Fender Deluxe Reverb",
+       "ref": "27465",
+       "model": "220917",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "twin",
+       "type": "amp-nam",
+       "label": "Fender Twin Reverb",
+       "ref": "246",
+       "model": "418200",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "twcab",
+       "type": "cab",
+       "label": "Fender Deluxe Reverb",
+       "ref": "27465",
+       "model": "220917",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 8,
+    "params": {
+     "time": "1/8•",
+     "feedback": 22,
+     "mix": 12
+    }
+   },
+   {
+    "id": "echo",
+    "type": "delay-tape",
+    "params": {
+     "time": "16th",
+     "time_r": "8th",
+     "tempo": 120,
+     "feedback": 15,
+     "mix": 8,
+     "medium": "Tape"
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 16,
+     "decay": 2.0,
+     "predelay": 30,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "36827",
+   "model": "381617"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "6289",
+   "model": "413038"
+  },
+  {
+   "type": "cab",
+   "ref": "27465",
+   "model": "220917"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "246",
+   "model": "418200"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#d9a520",
+  "B": "#d9a520",
+  "C": "#d9a520",
+  "D": "#d9a520",
+  "7": "#d9a520",
+  "8": "#d9a520",
+  "9": "#d9a520",
+  "10": "#d9a520"
+ },
+ "anims": {
+  "A": "ripple",
+  "B": "ember",
+  "C": "sheen",
+  "D": "vortex",
+  "7": "pulse",
+  "8": "rain",
+  "9": "heartbeat",
+  "10": "stars"
+ },
+ "deps": [
+  {
+   "sha256": "c08f924499ae385a9f754da811e0a7a2b9bbadda337ed76e9d28fb3f3d19e242",
+   "uid": "t3k:36827",
+   "kind": "pedal",
+   "bytes": 299229,
+   "name": "Ibanez TS9 Tube Screamer Drive 2 Tone 7 Level 10",
+   "source": "t3k",
+   "amp": "Ibanez TS9 Tube Screamer",
+   "arch": "2",
+   "brand": "Ibanez",
+   "creator": "studioampcaptures",
+   "url": "https://www.tone3000.com/tones/ibanez-ts9-tube-screamer-36827"
+  },
+  {
+   "sha256": "a446c32276ae4a1e6fa3f6084589f5e7239ef61f04d557577a440e51a70a9181",
+   "uid": "t3k:6289",
+   "kind": "amp",
+   "bytes": 295996,
+   "name": "CLEAN - Fender Deluxe Reverb 1965 [Hyper Accuracy]",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb 1965",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "augctor",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-1965-hyper-accuracy-6289"
+  },
+  {
+   "sha256": "498889978243891d1990dfd5ceeecc53aeed43089c34de4e218e2249bad9b6cf",
+   "uid": "t3k:27465",
+   "kind": "cab",
+   "bytes": 105430,
+   "name": "DELUXE REVERB OXFORD - LEAN - 48 24",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb",
+   "brand": "Fender",
+   "creator": "vulturized",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-mix-ready-27465"
+  },
+  {
+   "sha256": "ac65d121f9b04bdd64a2646b6441cbf8687fd6f2f3fdaa5e9ccf6a6a8546d254",
+   "uid": "t3k:246",
+   "kind": "amp",
+   "bytes": 301645,
+   "name": "Tim R Fender TwinVerb Vibrato Bright",
+   "source": "t3k",
+   "amp": "Fender Twin Reverb",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "timr",
+   "url": "https://www.tone3000.com/tones/fender-twin-pack-246"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"stars\", \"7\": \"pulse\", \"8\": \"rain\", \"9\": \"heartbeat\", \"A\": \"ripple\", \"B\": \"ember\", \"C\": \"sheen\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"echo\", \"params\": {\"feedback\": 15, \"medium\": \"Tape\", \"mix\": 8, \"tempo\": 120, \"time\": \"1/4\", \"time_r\": \"1/2\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.0, \"hicut\": 7000, \"mix\": 16, \"predelay\": 30}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 180, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 30, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 7, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb 1965\", \"model\": \"413038\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6289\", \"type\": \"amp-nam\"}, {\"id\": \"dxcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"418200\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"246\", \"type\": \"amp-nam\"}, {\"id\": \"twcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#d9a520\", \"7\": \"#d9a520\", \"8\": \"#d9a520\", \"9\": \"#d9a520\", \"A\": \"#d9a520\", \"B\": \"#d9a520\", \"C\": \"#d9a520\", \"D\": \"#d9a520\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"echo\", \"params\": {\"feedback\": 15, \"medium\": \"Tape\", \"mix\": 8, \"tempo\": 120, \"time\": \"1/4\", \"time_r\": \"1/2\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.0, \"hicut\": 7000, \"mix\": 16, \"predelay\": 30}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 180, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 30, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 7, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb 1965\", \"model\": \"413038\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6289\", \"type\": \"amp-nam\"}, {\"id\": \"dxcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"418200\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"246\", \"type\": \"amp-nam\"}, {\"id\": \"twcab\", \"label\": \"Fender Deluxe Reverb\", \"model\": \"220917\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Hero Lead\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean Arp\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 12}, \"echo\": {\"mix\": 8}, \"verb\": {\"decay\": 2.0, \"mix\": 18}}}, {\"blocks\": {\"comp\": false, \"dly\": false, \"echo\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Rhythm Drive\", \"params\": {\"deluxe\": {\"input\": -2}, \"verb\": {\"decay\": 1.4, \"mix\": 12}}}, {\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Hero Lead\", \"params\": {\"deluxe\": {\"input\": 0}, \"dly\": {\"feedback\": 25, \"mix\": 14}, \"echo\": {\"feedback\": 18, \"mix\": 10}, \"verb\": {\"decay\": 2.0, \"mix\": 16, \"predelay\": 30}}}, {\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Big Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18}, \"echo\": {\"feedback\": 25, \"mix\": 14}, \"verb\": {\"decay\": 2.6, \"mix\": 24}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Clean Arp\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 12}, \"echo\": {\"mix\": 8}, \"verb\": {\"decay\": 2.0, \"mix\": 18}}}, {\"blocks\": {\"comp\": false, \"dly\": false, \"echo\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Rhythm Drive\", \"params\": {\"deluxe\": {\"input\": -2}, \"verb\": {\"decay\": 1.4, \"mix\": 12}}}, {\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-C\"}}, \"level\": 2, \"name\": \"Hero Lead\", \"params\": {\"deluxe\": {\"input\": 0}, \"dly\": {\"feedback\": 25, \"mix\": 14}, \"echo\": {\"feedback\": 18, \"mix\": 10}, \"verb\": {\"decay\": 2.0, \"mix\": 16, \"predelay\": 30}}}, {\"blocks\": {\"comp\": true, \"dly\": true, \"echo\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-D\"}}, \"level\": 1, \"name\": \"Big Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18}, \"echo\": {\"feedback\": 25, \"mix\": 14}, \"verb\": {\"decay\": 2.6, \"mix\": 24}}}]}"
+}

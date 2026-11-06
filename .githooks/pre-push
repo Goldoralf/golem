@@ -1,0 +1,36 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Garde-fou local avant un push (docs/quality-automation.md, lot 1). Le dépôt est privé sur un plan GitHub
+# gratuit : aucune protection de branche ne refuse un push rouge, c'est ici que ça se joue. Volontairement
+# RAPIDE (~30 s) : ruff, syntaxe JS/Lua, tests node — les trois premières étapes de ci.yml. pytest reste à la CI.
+#   installer : git config core.hooksPath .githooks
+#   GOLEM_PUSH_FULL=1 git push   → ajoute pytest (4 à 5 min)
+#   GOLEM_SKIP_HOOKS=1 git push  → passe une fois (dit pourquoi dans le message de commit)
+set -u
+[ "${GOLEM_SKIP_HOOKS:-}" = "1" ] && exit 0
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if [ -x .venv/bin/python ]; then PY=.venv/bin/python
+elif [ -x .venv/Scripts/python.exe ]; then PY=.venv/Scripts/python.exe
+else PY=python3; fi
+export PYTHONUTF8=1
+
+fail=0
+step() {  # step <libellé> <commande…>
+  label=$1; shift
+  if "$@" >/tmp/golem-pre-push.log 2>&1; then printf '  ok   %s\n' "$label"
+  else printf '  FAIL %s\n' "$label"; sed 's/^/       /' /tmp/golem-pre-push.log | tail -30; fail=1; fi
+}
+
+echo "golem pre-push:"
+step "ruff"                 "$PY" -m ruff check .
+step "syntax JS + Lua"      "$PY" tools/check-syntax.py
+step "node tests"           node --test app/*.test.mjs
+if [ "${GOLEM_PUSH_FULL:-}" = "1" ]; then
+  step "pytest"             "$PY" -m pytest -q tests -p no:cacheprovider
+fi
+
+if [ $fail -ne 0 ]; then
+  echo "push refusé : corrige, ou GOLEM_SKIP_HOOKS=1 pour passer une fois." >&2
+  exit 1
+fi

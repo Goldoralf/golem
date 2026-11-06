@@ -1,0 +1,11 @@
+{
+ "name": "Swamp",
+ "type": "tremolo",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 3,
+  "depth": 0.5,
+  "wave": "Triangle"
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "name": "Organ stack",
+ "type": "octaver",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "direct": 0.8,
+  "octave1": 0.8,
+  "octave2": 0.5
+ }
+}

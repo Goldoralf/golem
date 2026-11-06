@@ -1,0 +1,12 @@
+{
+ "name": "Harsh sss",
+ "type": "deesser",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -34,
+  "freq": 5500,
+  "range": 16,
+  "listen": false
+ }
+}

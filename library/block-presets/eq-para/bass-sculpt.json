@@ -1,0 +1,18 @@
+{
+ "name": "Bass sculpt",
+ "type": "eq-para",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "lowcut_on": true,
+  "lowcut": 30,
+  "bass": 2,
+  "f1": 120,
+  "g1": 1.5,
+  "f2": 500,
+  "g2": -2.5,
+  "f3": 2500,
+  "g3": 2,
+  "treble": 0
+ }
+}

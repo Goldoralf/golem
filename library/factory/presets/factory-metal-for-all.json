@@ -1,0 +1,1491 @@
+{
+ "id": "factory-metal-for-all",
+ "name": "Metal for all",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "foot": 9,
+      "id": "whammy",
+      "type": "whammy-dt",
+      "params": {
+       "won": true,
+       "mode": "↑1 Oct",
+       "don": false,
+       "drop": "Drop −2 semitones (1 step)"
+      }
+     },
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -48,
+       "attack": 1,
+       "release": 80
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 1,
+       "midfreq": 900,
+       "highs": 0
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "stealth",
+         "type": "amp-nam",
+         "label": "EVH 5150 III Stealth",
+         "ref": "28245",
+         "model": "379997",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239394",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "clean",
+         "type": "amp-nam",
+         "label": "Peavey 5150 II",
+         "ref": "2282",
+         "model": "419322",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30b",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239438",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "boost",
+      "type": "clean-boost",
+      "foot": 6,
+      "params": {
+       "gain": 3
+      }
+     },
+     {
+      "id": "kill",
+      "type": "killswitch",
+      "foot": 8,
+      "params": {
+       "depth": 100,
+       "length": 50,
+       "sync": "1/16",
+       "trigger": "Engage"
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 1.2,
+       "predelay": 10,
+       "hicut": 6500
+      }
+     },
+     {
+      "type": "volume",
+      "id": "volume-sys"
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-guitar-modern-metal",
+    "name": "Modern Metal"
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Clean Intro",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 2.2
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Chug",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Lead",
+     "blocks": {
+      "boost": true,
+      "kill": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Breakdown",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -40
+      },
+      "eq": {
+       "lowcut": 80,
+       "midgain": -2
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Stutter",
+     "blocks": {
+      "boost": false,
+      "kill": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "guitar-2",
+   "key": "guitar-2",
+   "role": "guitar",
+   "name": "Rhythm Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -48,
+       "attack": 1,
+       "release": 80
+      }
+     },
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 1,
+       "midfreq": 900,
+       "highs": 0
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-2",
+       "blocks": [
+        {
+         "id": "stealth-2",
+         "type": "amp-nam",
+         "label": "EVH 5150 III Stealth",
+         "ref": "28245",
+         "model": "379997",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30-2",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239394",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-2",
+       "blocks": [
+        {
+         "id": "clean-2",
+         "type": "amp-nam",
+         "label": "Peavey 5150 II",
+         "ref": "2282",
+         "model": "419322",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30b-2",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239438",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "boost-2",
+      "type": "clean-boost",
+      "foot": 6,
+      "params": {
+       "gain": 3
+      }
+     },
+     {
+      "id": "kill-2",
+      "type": "killswitch",
+      "foot": 8,
+      "params": {
+       "depth": 100,
+       "length": 50,
+       "sync": "1/16",
+       "trigger": "Engage"
+      }
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb-2",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 1.2,
+       "predelay": 10,
+       "hicut": 6500
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 2,
+   "patch_from": {
+    "id": "factory-guitar-modern-metal",
+    "name": "Modern Metal"
+   },
+   "states": [
+    {
+     "id": "st-guitar-2-A",
+     "name": "Clean Intro",
+     "blocks": {
+      "boost-2": false,
+      "kill-2": false,
+      "dly-2": true
+     },
+     "params": {
+      "verb-2": {
+       "mix": 26,
+       "decay": 2.2
+      }
+     },
+     "branches": {
+      "lane-a-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-B",
+     "name": "Chug",
+     "blocks": {
+      "boost-2": false,
+      "kill-2": false,
+      "dly-2": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-C",
+     "name": "Lead",
+     "blocks": {
+      "boost-2": true,
+      "kill-2": false,
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-D",
+     "name": "Breakdown",
+     "blocks": {
+      "boost-2": false,
+      "kill-2": false,
+      "dly-2": false
+     },
+     "params": {
+      "gate-2": {
+       "thresh": -40
+      },
+      "eq-2": {
+       "lowcut": 80,
+       "midgain": -2
+      }
+     },
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-2-E",
+     "name": "Stutter",
+     "blocks": {
+      "boost-2": false,
+      "kill-2": true,
+      "dly-2": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -50,
+       "attack": 1,
+       "release": 80
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 8,
+       "release": 120
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-3",
+       "blocks": [
+        {
+         "id": "svtcl",
+         "type": "amp-nam",
+         "label": "Ampeg SVT-CL",
+         "ref": "45809",
+         "model": "382790",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "glock",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580768",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-3",
+       "blocks": [
+        {
+         "id": "xultra",
+         "type": "amp-nam",
+         "label": "Darkglass X Ultra",
+         "ref": "71220",
+         "model": "588114",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "glockb",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580149",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c-3",
+       "blocks": [
+        {
+         "id": "omega",
+         "type": "amp",
+         "label": "Darkglass Alpha Omega",
+         "ref": "27697",
+         "model": "418277",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 2,
+       "midfreq": 1200,
+       "highs": 1
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-bass-metal",
+    "name": "Metal Bass"
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Clean Intro",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b-3": {
+       "mute": true
+      },
+      "lane-c-3": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Chug",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-c-3": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Breakdown",
+     "blocks": {},
+     "params": {
+      "gate-3": {
+       "thresh": -42
+      },
+      "comp": {
+       "ratio": 8
+      }
+     },
+     "branches": {
+      "lane-c-3": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Fuzz",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b-3": {
+       "mute": true
+      },
+      "lane-c-3": {
+       "mute": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Keys",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Sparkly_Dreamy_Pad",
+       "fcut": 0.6,
+       "rmix": 0.3,
+       "dmix": 0.2,
+       "vol": 0.6
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "foot": 6,
+      "params": {
+       "mix": 30,
+       "decay": 5,
+       "shimmer": 40,
+       "pitch": 5,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "dly-3",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4•",
+       "feedback": 35,
+       "mix": 18
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "patch_from": {
+    "id": "factory-keys-warm-pad",
+    "name": "Warm Pad"
+   },
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Pad",
+     "blocks": {
+      "shim": false,
+      "dly-3": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Dark",
+     "blocks": {
+      "shim": false,
+      "dly-3": false
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Shimmer",
+     "blocks": {
+      "shim": true,
+      "dly-3": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Wide",
+     "blocks": {
+      "shim": true,
+      "dly-3": true
+     },
+     "params": {
+      "vital": {
+       "fcut": 0.75
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-4",
+      "type": "gate",
+      "params": {
+       "thresh": -45,
+       "attack": 1,
+       "release": 90
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -26,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "scream",
+      "type": "grit",
+      "foot": 6,
+      "params": {
+       "lo_m1": "Off",
+       "lo_m2": "Off",
+       "lm_m1": "Off",
+       "lm_m2": "Off",
+       "hm_m1": "Sample divide",
+       "hm_m2": "Gain",
+       "hi_m1": "Off",
+       "hi_m2": "Off",
+       "lo_v1": 0,
+       "lo_v2": 0,
+       "lm_v1": 0,
+       "lm_v2": 0,
+       "hm_v1": 24,
+       "hm_v2": 53,
+       "hi_v1": 0,
+       "hi_v2": 0,
+       "lo_gain": 50,
+       "lm_gain": 50,
+       "hm_gain": 50,
+       "hi_gain": 50,
+       "x1": 25,
+       "x2": 63,
+       "x3": 70,
+       "wet": 100,
+       "quality": false
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 5,
+       "makeup": 4,
+       "attack": 5,
+       "release": 100
+      }
+     },
+     {
+      "id": "eq-4",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 120,
+       "bass": 0,
+       "f1": 300,
+       "g1": -3,
+       "f2": 1500,
+       "g2": 1,
+       "f3": 3500,
+       "g3": 2,
+       "treble": 0
+      }
+     },
+     {
+      "id": "dly-4",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/8",
+       "feedback": 20,
+       "mix": 12
+      }
+     },
+     {
+      "id": "verb-3",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 1,
+       "predelay": 10,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "patch_from": {
+    "id": "factory-voice-metal",
+    "name": "Metal Vocal"
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Clean",
+     "blocks": {
+      "scream": false,
+      "dly-4": true
+     },
+     "params": {
+      "verb-3": {
+       "mix": 18,
+       "decay": 1.6
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Scream",
+     "blocks": {
+      "scream": true,
+      "dly-4": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Breakdown",
+     "blocks": {
+      "scream": true,
+      "dly-4": false
+     },
+     "params": {
+      "gate-4": {
+       "thresh": -40
+      },
+      "comp-2": {
+       "ratio": 8
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Wide Clean",
+     "blocks": {
+      "scream": false,
+      "dly-4": true
+     },
+     "params": {
+      "verb-3": {
+       "mix": 26,
+       "decay": 2.2
+      },
+      "dly-4": {
+       "time": "1/4",
+       "feedback": 30,
+       "mix": 16
+      }
+     },
+     "branches": {}
+    }
+   ]
+  },
+  {
+   "id": "drums-1",
+   "key": "drums-1",
+   "role": "drums",
+   "name": "Drums",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-aasimonster"
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 10,
+       "release": 100
+      }
+     },
+     {
+      "id": "eq-5",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": -2,
+       "midfreq": 400,
+       "highs": 3
+      }
+     },
+     {
+      "id": "verb-4",
+      "type": "reverb-room",
+      "foot": 6,
+      "params": {
+       "mix": 10,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "patch_from": {
+    "id": "factory-drums-metal",
+    "name": "Metal"
+   },
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Blast",
+     "blocks": {
+      "verb-4": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Breakdown",
+     "blocks": {
+      "verb-4": true
+     },
+     "params": {
+      "comp-3": {
+       "ratio": 8
+      },
+      "verb-4": {
+       "mix": 16,
+       "decay": 1.2
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Tight",
+     "blocks": {
+      "verb-4": false
+     },
+     "params": {
+      "comp-3": {
+       "attack": 5
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Clean Intro",
+     "blocks": {
+      "verb-4": true
+     },
+     "params": {
+      "verb-4": {
+       "mix": 22,
+       "decay": 1.6
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean Intro",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": true,
+    "boost-2": false,
+    "kill-2": false,
+    "dly-2": true,
+    "shim": false,
+    "dly-3": false,
+    "scream": false,
+    "dly-4": true,
+    "verb-4": true
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "verb-2": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "verb-3": {
+     "mix": 18,
+     "decay": 1.6
+    },
+    "verb-4": {
+     "mix": 22,
+     "decay": 1.6
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-a-2": {
+     "mute": true
+    },
+    "lane-b-3": {
+     "mute": true
+    },
+    "lane-c-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A",
+     "level": -1
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-A",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -1
+    },
+    "keys-1": {
+     "state": "st-keys-1-A"
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-D",
+     "level": -2
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Verse",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": false,
+    "boost-2": false,
+    "kill-2": false,
+    "dly-2": false,
+    "shim": false,
+    "dly-3": false,
+    "scream": true,
+    "dly-4": false,
+    "verb-4": true
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.3
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-c-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-B"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": -1
+    },
+    "voice-1": {
+     "state": "st-voice-1-B",
+     "level": 1
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Chorus",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": false,
+    "boost-2": false,
+    "kill-2": false,
+    "dly-2": false,
+    "shim": true,
+    "dly-3": true,
+    "scream": false,
+    "dly-4": true,
+    "verb-4": false
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.75
+    },
+    "verb-3": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "dly-4": {
+     "time": "1/4",
+     "feedback": 30,
+     "mix": 16
+    },
+    "comp-3": {
+     "attack": 5
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-c-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-B"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": 1
+    },
+    "voice-1": {
+     "state": "st-voice-1-D"
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Breakdown",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": false,
+    "boost-2": false,
+    "kill-2": false,
+    "dly-2": false,
+    "shim": false,
+    "dly-3": false,
+    "scream": true,
+    "dly-4": false,
+    "verb-4": true
+   },
+   "params": {
+    "gate": {
+     "thresh": -40
+    },
+    "eq": {
+     "lowcut": 80,
+     "midgain": -2
+    },
+    "gate-2": {
+     "thresh": -40
+    },
+    "eq-2": {
+     "lowcut": 80,
+     "midgain": -2
+    },
+    "gate-3": {
+     "thresh": -42
+    },
+    "comp": {
+     "ratio": 8
+    },
+    "vital": {
+     "fcut": 0.3
+    },
+    "gate-4": {
+     "thresh": -40
+    },
+    "comp-2": {
+     "ratio": 8
+    },
+    "comp-3": {
+     "ratio": 8
+    },
+    "verb-4": {
+     "mix": 16,
+     "decay": 1.2
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-c-3": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-D"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C",
+     "level": 1
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": -1
+    },
+    "voice-1": {
+     "state": "st-voice-1-C",
+     "level": 2
+    },
+    "drums-1": {
+     "state": "st-drums-1-B",
+     "level": 1
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Solo",
+   "blocks": {
+    "boost": true,
+    "kill": false,
+    "dly": true,
+    "boost-2": false,
+    "kill-2": false,
+    "dly-2": false,
+    "shim": true,
+    "dly-3": false,
+    "scream": false,
+    "dly-4": true,
+    "verb-4": true
+   },
+   "params": {
+    "verb-3": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "dly-4": {
+     "time": "1/4",
+     "feedback": 30,
+     "mix": 16
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    },
+    "lane-b-3": {
+     "mute": true
+    },
+    "lane-c-3": {
+     "mute": false
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 3
+    },
+    "guitar-2": {
+     "state": "st-guitar-2-B"
+    },
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 1
+    },
+    "keys-1": {
+     "state": "st-keys-1-C"
+    },
+    "voice-1": {
+     "state": "st-voice-1-D"
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  }
+ ],
+ "bpm": 140,
+ "style": "metal",
+ "factory": true,
+ "styles": [
+  "metal"
+ ],
+ "config": {
+  "gen": {
+   "blocks": [],
+   "out": "1-2"
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 10
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ],
+   "click_out": "1-2"
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#e01e37",
+  "B": "#e01e37",
+  "C": "#e01e37",
+  "D": "#e01e37",
+  "E": "#e01e37",
+  "6": "#e01e37",
+  "7": "#e01e37",
+  "8": "#e01e37",
+  "9": "#e01e37",
+  "10": "#e01e37"
+ },
+ "anims": {
+  "A": "snow",
+  "B": "smoke",
+  "C": "stars",
+  "D": "heartbeat",
+  "E": "fire",
+  "6": "aurora",
+  "7": "vu",
+  "8": "vortex",
+  "9": "sheen",
+  "10": "ripple"
+ }
+}

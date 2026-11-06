@@ -1,0 +1,13 @@
+{
+ "name": "Dark descent",
+ "type": "reverb-shimmer",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 40,
+  "decay": 6,
+  "shimmer": 60,
+  "pitch": -6,
+  "hicut": 4500
+ }
+}

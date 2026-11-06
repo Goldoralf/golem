@@ -1,0 +1,1302 @@
+{
+ "id": "lexicon-mpx100",
+ "name": "MPX100",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Lexicon",
+  "model": "MPX100",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "1 Small Plate",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Medium Plate",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Large Plate",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Larger Plate",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Tape Slap Plate",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Rich Plate Decay",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Large Bright Plate",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Vocal Plate",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Straight Gate",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Drum Gate",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Slope Down",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 140 ms Gate",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 240 ms Gate",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 340 ms Gate",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 440 ms Gate",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 540 ms Gate",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Recital Hall",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Small Church",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Jazz Hall",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Dance Hall",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Synth Hall",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Medium Hall",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Large Hall",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Large Church",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Brick Wall",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Basement",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Live Concert",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Percussion 1",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Percussion 2",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Live Chamber",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Vocal 1",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Vocal 2",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Voice Over",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Very Small Ambience",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Small Ambience",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Medium Ambience",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Studio D",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Bright Ambience",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Dark Ambience",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Marble Foyer",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Bedroom Wall",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Tiled Room",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Studio C",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Small Room",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Studio B",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Rehearsal",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Studio A",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Large Room",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Rectified Sine Wave",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Square Wave",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Sawtooth Wave",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Rectified Sine Wave",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Square Wave",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Sawtooth Wave",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Triangle Wave",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Sine Wave",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Rotary Slow/Fast",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Rotary Slow/Fast, Width",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Rotary Slow/Fast, Balance",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Slow Rotary",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Varispeed Rotary",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Tap Rotary Balance",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Tap Rotary Width",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Tap Rotary",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Rich Chorus Adj Reso",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Rich Chorus Adj Depth",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Rich Chorus Adj Rate",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Rich Chorus Adj Hi-Cut",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Diffuse Chorus",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Slap Chorus",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Slap Chorus",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Slap Chorus",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Light Flange: in phase sweep",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Light Flange: out of phase sweep",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Light Flange: in phase sweep Rate",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Light Flange: out of phase sweep Rate",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Deep Flange: in phase sweep",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Deep Flange: out of phase sweep",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Light Flange Sweep: 0, 90, 180, 270",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Deep Flange",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Semi-tone Shift -2",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Glide Shifter",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 +/-100 cents",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Minor 3rd to 4th Harmony",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 4th/5th Harmony",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 5th/6th Harmony",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 2nd Inversion Triad",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Power Chords",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Mild Detuning",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Moderate Detuning",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Heavy Detuning",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 FullRange Detuning",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Warm and Mild Detuning",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Warm and Moderate Detuning",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Warm and Heavy Detuning",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Slap Detuner",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Mono Quarter-Note",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Stereo Quarter-Note",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Triplet Shuffle Delay/Echo",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Dotted Eighth-Note",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Eighth-Note and Triplet",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Ping Pong Quarter-Note",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Triplet Rhythm 1 Delay/Echo",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Triplet Rhythm 2 Delay/Echo",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Mono Delay/Echo",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Stereo Delay/Echo",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Tape Slap Delay/Echo",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Multi Bounce Delay/Echo",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Multi Linear Delay/Echo",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Multi Inverse Delay/Echo",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Multi Repeat Delay/Echo",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Multi Pong",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Rich Chorus 1 - Small Space",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Rich Chorus 1 - Medium Space",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Rich Chorus 1 - Large Space",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Rich Chorus 2 - Small Space",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Rich Chorus 2 - Medium Space",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Rich Chorus 2 - Large Space",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Rich Chorus 1 > Room",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Rich Chorus 2 > Room",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Rich Chorus 3 > Room",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Rich Chorus 1 > Small",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Rich Chorus 1 + Small",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Rich Chorus 2 + Medium",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Rich Chorus 2 + Large",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Rich Chorus 1 + Large",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Rich Chorus 1 / Room",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Rich Chorus 4 / Room",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Infinite Reverb",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 The Abyss",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Jet Flange",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Chorus Verb",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Rotary Delay",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Fader Verb Input Volume Echo",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 PCM 60 - LgSize",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 LowRumble",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Ducking Reverb Decay",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Ducking Chorus>Delay",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Ducking Triplets Delay",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Subdividing Delay Beat",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Panning Delays",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Dream Sequence",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Infinite Repeat",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Diffusor",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Rich Chorus 1 - Stereo 1/4 Note",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Rich Chorus 1 - Dotted 1/8 Note",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Rich Chorus 1 - 1/8 Note and Triplet",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Rich Chorus 1 - Ping Pong 1/4 Note",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Rich Chorus 1 - Multi Repeat Delay/Echo",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Rich Chorus 1 - Multi Pong Delay/Echo",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Rich Chorus 1 - Stereo 1/4 Note",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Rich Chorus 2 - Multi Repeat Delay/Echo",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Rich Chorus 2 - Ping Pong 1/4 Note",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Rich Chorus 3 - Multi Pong Delay/Echo",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Rich Chorus 1 - Stereo 1/4 Note",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Rich Chorus 1 - Ping Pong 1/4 Note",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Rich Chorus 1 - Crossfeed Delay/Echo",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Rich Chorus 1 - Multi Pong Delay/Echo",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Rich Chorus 4 - Mono 1/4 Note",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Rich Chorus 4 - Dotted 1/8 Note",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Minor 3rd to 4th - Room",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 4th to 5th - Room",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 5th to 6th - Room",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 +/- 1 Octave - Medium Space",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Power Chords - Medium Space",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Manual Detune - Room",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 +/-100 > Small Space",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Power Chords - Large Space",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 4ths > Medium Space",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Octaves > Medium Space",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 4th to 5th + Room",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 5th to 6th + Room",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 4ths + Large Space",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Octaves + Medium Space",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Octaves / Medium Space",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 4ths / Large Space",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "User Preset 1",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "User Preset 2",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "User Preset 3",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "User Preset 4",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "User Preset 5",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "User Preset 6",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "User Preset 7",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "User Preset 8",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "User Preset 9",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "User Preset 10",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "User Preset 11",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "User Preset 12",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "User Preset 13",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "User Preset 14",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "User Preset 15",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "User Preset 16",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Flange-Delay 1",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Flange-Delay 2 als",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Flange-Delay 3 rb",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Flange-Delay 4 + Plate",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Flange-Delay 5 all+Plate",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Flange-Delay 6 oomy",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Flange-Delay 7 oom",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Flange-Delay 8 b",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Flange-Delay 9",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Flange-Delay 10",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Flange-Delay 11t Chamber",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Flange-Delay 12 Acoustic Bliss",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Flange-Delay 13 Guitar World",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Flange-Delay 14 Springtime",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Flange-Delay 15 Giant Snare",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Flange-Delay 16 SmoothDrmPlate",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Light Flange - Small Space",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Light Flange - Medium Space",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Light Flange - Large Space",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Deep Flange - Small Space",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Deep Flange - Medium Space",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Deep Flange - Large Space",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Light Flange > Large Space",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 Deep Flange > Large Space",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Light Flange > Room",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Deep Flange > Room",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Light Flange + Medium Space",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Light Flange + Room",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Deep Flange + Medium Space",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Deep Flange + Room",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Light Flange / Large Space",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Light Flange / Large Space",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 Stereo 1/4 Note - Small Space",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Triplet Shuffle - Medium Space",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 1/8 Note and Triplet - Large Space",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 Ping Pong 1/4 Note - Small Space",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 Triplet Rhythm 1 - Medium Space",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 Triplet Rhythm 2 - Large Space",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Stereo 1/4 Note > Room",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 1/8 Note and Triplet > Large Space",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Triplet Rhythm 1 > Room",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Triplet Rhythm 2 > Large Space",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 Stereo 1/4 Note + Medium Space",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Ping Pong 1/4 Note + Large Space",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 Triplet Rhythm 1 + Medium Space",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 Triplet Rhythm 2 + Small Space",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Mono 1/4 Note / Room",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Triplet Rhythm 2 / Large Space",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "1 5th Up/Down - Stereo Quarter-Note",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "2 Octave Up/Down - Triplet Shuffle",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "3 Octave Up/Down - Eighth and Triplet",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "4 3rd Up/4th Up - Ping Pong Quarter-Note",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "5 4th Up/5th Up - Triplet Rhythm 1",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "6 5th Up/6th Up - Triplet Rhythm 2",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "7 Octave Up/Down > Triplet Rhythm 1",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "8 5th Up/Down > Triplet Rhythm 2",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "9 Major/Minor Minor/Major 3rd w/Feedback",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "10 Intervals Up Ascending Intervals w/Feedback",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "11 5th Up/Down + Stereo Quarter-Note",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "12 Octave Up/Down + Triplet Shuffle",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "13 4th Up/5th Up + Triplet Rhythm 1",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "14 5th Up/6th Up + Triplet Rhythm 2",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "15 Octave Up/Down / Mono Quarter-Note",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "16 Octave Up/Down / Triplet Shuffle",
+   "family": "custom",
+   "active_pc": 15
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Lexicon_MPX100.midnam du dépôt Ardour (GPL-2), auteur : Schmitty2005. reverb de référence, encore très présente en boucle d'effets",
+  "upstream": "Ardour/share/patchfiles/Lexicon_MPX100.midnam"
+ }
+}

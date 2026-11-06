@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GoleM — installation SANS CLIC de la VM Windows de test (provision/vm/win.sh).
+
+  Windows Setup cherche ce fichier à la racine de tout média amovible : win.sh le grave sur une
+  petite ISO montée à côté de celle de Windows. Trois passes :
+    windowsPE   disque GPT (EFI + MSR + Windows), image n°1 de l'ISO d'évaluation, licence acceptée
+    specialize  nom de machine, fuseau
+    oobeSystem  compte local (admin), ouverture de session automatique, puis firstlogon.ps1
+
+  GABARIT : win.sh create remplace les jetons @GOLEM_VM_…@ (utilisateur, mot de passe : variables
+  d'environnement, ou mot de passe généré et affiché) avant de graver l'ISO de réponse.
+
+  ⚠ VM DE TEST UNIQUEMENT : le mot de passe est en clair dans l'ISO de réponse et la machine ne
+  vit que sur le réseau NAT de libvirt. Ne jamais réutiliser ce fichier pour un poste réel.
+
+  Le disque est en SATA et la carte réseau en e1000e (pilotes fournis par Windows) : aucun pilote
+  virtio à injecter, donc rien qui puisse manquer au milieu d'une installation qu'on ne voit pas.
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <SetupUILanguage><UILanguage>en-US</UILanguage></SetupUILanguage>
+      <InputLocale>040c:0000040c</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>fr-FR</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <!-- ceinture ET bretelles : la VM a un TPM émulé et Secure Boot, mais si l'un des deux
+           manque (swtpm absent sur un autre hôte), Setup ne doit pas s'arrêter sur un écran. -->
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+      <DiskConfiguration>
+        <WillShowUI>OnError</WillShowUI>
+        <Disk wcm:action="add">
+          <DiskID>0</DiskID>
+          <WillWipeDisk>true</WillWipeDisk>
+          <CreatePartitions>
+            <CreatePartition wcm:action="add">
+              <Order>1</Order><Type>EFI</Type><Size>300</Size>
+            </CreatePartition>
+            <CreatePartition wcm:action="add">
+              <Order>2</Order><Type>MSR</Type><Size>16</Size>
+            </CreatePartition>
+            <CreatePartition wcm:action="add">
+              <Order>3</Order><Type>Primary</Type><Extend>true</Extend>
+            </CreatePartition>
+          </CreatePartitions>
+          <ModifyPartitions>
+            <ModifyPartition wcm:action="add">
+              <Order>1</Order><PartitionID>1</PartitionID><Format>FAT32</Format><Label>System</Label>
+            </ModifyPartition>
+            <ModifyPartition wcm:action="add">
+              <Order>2</Order><PartitionID>2</PartitionID>
+            </ModifyPartition>
+            <ModifyPartition wcm:action="add">
+              <Order>3</Order><PartitionID>3</PartitionID><Format>NTFS</Format><Label>Windows</Label><Letter>C</Letter>
+            </ModifyPartition>
+          </ModifyPartitions>
+        </Disk>
+      </DiskConfiguration>
+      <ImageInstall>
+        <OSImage>
+          <InstallTo><DiskID>0</DiskID><PartitionID>3</PartitionID></InstallTo>
+          <InstallFrom>
+            <MetaData wcm:action="add"><Key>/IMAGE/INDEX</Key><Value>1</Value></MetaData>
+          </InstallFrom>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+      <!-- ISO d'évaluation : pas de clé à fournir -->
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName>golem</FullName>
+        <Organization>golem</Organization>
+      </UserData>
+    </component>
+  </settings>
+
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <ComputerName>GOLEM-WIN</ComputerName>
+      <TimeZone>Romance Standard Time</TimeZone>
+    </component>
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <RunSynchronous>
+        <!-- l'accueil de Windows 11 exige un réseau et un compte Microsoft : pas ici -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <!-- pas de chiffrement automatique du disque (24H2 l'active seul avec un TPM) : une VM
+             archivée doit pouvoir redémarrer ailleurs avec un TPM neuf (vm-archive.sh) -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v PreventDeviceEncryption /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <InputLocale>040c:0000040c</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>fr-FR</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>@GOLEM_VM_USER@</Name>
+            <DisplayName>@GOLEM_VM_USER@</DisplayName>
+            <Group>Administrators</Group>
+            <Password><Value>@GOLEM_VM_PASSWORD@</Value><PlainText>true</PlainText></Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+      <!-- la session graphique reste OUVERTE : Reaper a besoin d'un bureau, et une session SSH
+           n'en a pas (win.sh gui lance ses commandes dans celle-ci) -->
+      <AutoLogon>
+        <Enabled>true</Enabled>
+        <Username>@GOLEM_VM_USER@</Username>
+        <Password><Value>@GOLEM_VM_PASSWORD@</Value><PlainText>true</PlainText></Password>
+        <LogonCount>9999</LogonCount>
+      </AutoLogon>
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>GoleM : SSH, alimentation, mises a jour figees</Description>
+          <!-- la lettre du lecteur n'est pas connue d'avance : on cherche le script -->
+          <CommandLine>cmd.exe /c "for %d in (D E F G H I) do if exist %d:\golem\firstlogon.ps1 powershell.exe -NoProfile -ExecutionPolicy Bypass -File %d:\golem\firstlogon.ps1"</CommandLine>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+    </component>
+  </settings>
+</unattend>

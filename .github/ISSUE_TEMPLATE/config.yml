@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and "show your rig"
+    url: https://github.com/Goldoralf/golem/discussions
+    about: Questions, setups, sounds — the Discussions.
+  - name: A security problem
+    url: https://github.com/Goldoralf/golem/blob/main/SECURITY.md
+    about: Please report it privately, as described in SECURITY.md.

@@ -1,0 +1,12 @@
+{
+ "name": "Mid scoop",
+ "type": "eq",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "lowcut": 80,
+  "midfreq": 550,
+  "midgain": -5,
+  "highs": 2
+ }
+}

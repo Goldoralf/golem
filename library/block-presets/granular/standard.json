@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "granular",
+ "factory": true,
+ "params": {
+  "freeze": 0,
+  "grains": 8,
+  "pos": 0.5
+ },
+ "default": true,
+ "inst": "any"
+}

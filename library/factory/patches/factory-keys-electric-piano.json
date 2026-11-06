@@ -1,0 +1,360 @@
+{
+ "id": "factory-keys-electric-piano",
+ "name": "Electric Piano",
+ "role": "keys",
+ "tags": [
+  "soul",
+  "funk",
+  "jazz",
+  "rhodes"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Electric Piano",
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Clean",
+     "blocks": {
+      "bark": false,
+      "trem": false,
+      "chorus": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Suitcase",
+     "blocks": {
+      "bark": false,
+      "trem": true,
+      "chorus": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Chorus",
+     "blocks": {
+      "bark": false,
+      "trem": false,
+      "chorus": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Bark",
+     "blocks": {
+      "bark": true,
+      "trem": false,
+      "chorus": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-E",
+     "name": "Lush",
+     "blocks": {
+      "bark": false,
+      "trem": true,
+      "chorus": true
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 2
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "ep",
+      "type": "ep",
+      "params": {
+       "bank": "library/dx7/synprezfm-02.syx",
+       "patch": 15,
+       "fcut": 1,
+       "res": 0,
+       "out": 0.8
+      }
+     },
+     {
+      "id": "bark",
+      "type": "boost",
+      "foot": 8,
+      "params": {
+       "drive": 25,
+       "level": 55,
+       "treble": 1,
+       "bass": 0,
+       "mid": 2
+      }
+     },
+     {
+      "id": "trem",
+      "type": "tremolo",
+      "foot": 6,
+      "params": {
+       "rate": 4.5,
+       "depth": 0.5,
+       "wave": "Sine"
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus-js",
+      "foot": 7,
+      "params": {
+       "length": 14,
+       "voices": 2,
+       "rate": 0.5,
+       "wet": -10,
+       "dry": 0
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 16,
+       "decay": 1.2,
+       "predelay": 10,
+       "hicut": 7000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean",
+   "blocks": {
+    "bark": false,
+    "trem": false,
+    "chorus": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Suitcase",
+   "blocks": {
+    "bark": false,
+    "trem": true,
+    "chorus": false
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Chorus",
+   "blocks": {
+    "bark": false,
+    "trem": false,
+    "chorus": true
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Bark",
+   "blocks": {
+    "bark": true,
+    "trem": false,
+    "chorus": false
+   },
+   "lanes": {
+    "keys-1": {
+     "level": 2,
+     "state": "st-keys-1-D"
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "E",
+   "name": "Lush",
+   "blocks": {
+    "bark": false,
+    "trem": true,
+    "chorus": true
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 2
+    }
+   },
+   "lanes": {
+    "keys-1": {
+     "level": -1,
+     "state": "st-keys-1-E"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-boom-bap.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 90,
+ "chain": {
+  "chain": [
+   {
+    "id": "ep",
+    "type": "ep",
+    "params": {
+     "bank": "library/dx7/synprezfm-02.syx",
+     "patch": 15,
+     "fcut": 1,
+     "res": 0,
+     "out": 0.8
+    }
+   },
+   {
+    "id": "bark",
+    "type": "boost",
+    "foot": 8,
+    "params": {
+     "drive": 25,
+     "level": 55,
+     "treble": 1,
+     "bass": 0,
+     "mid": 2
+    }
+   },
+   {
+    "id": "trem",
+    "type": "tremolo",
+    "foot": 6,
+    "params": {
+     "rate": 4.5,
+     "depth": 0.5,
+     "wave": "Sine"
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus-js",
+    "foot": 7,
+    "params": {
+     "length": 14,
+     "voices": 2,
+     "rate": 0.5,
+     "wet": -10,
+     "dry": 0
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 16,
+     "decay": 1.2,
+     "predelay": 10,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "17c2a53fc6db33cf9b270df60d187dec4a74945776cb1e534e293c290626975b",
+   "uid": "local:groove-golem-boom-bap",
+   "kind": "groove",
+   "bytes": 271,
+   "name": "Boom bap",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": null, \"backing\": null, \"bpm\": 90, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 8, \"id\": \"bark\", \"params\": {\"bass\": 0, \"drive\": 25, \"level\": 55, \"mid\": 2, \"treble\": 1}, \"type\": \"boost\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 14, \"rate\": 0.5, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 16, \"predelay\": 10}, \"type\": \"reverb-plate\"}]}, \"colors\": null, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-boom-bap.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 8, \"id\": \"bark\", \"params\": {\"bass\": 0, \"drive\": 25, \"level\": 55, \"mid\": 2, \"treble\": 1}, \"type\": \"boost\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 14, \"rate\": 0.5, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 16, \"predelay\": 10}, \"type\": \"reverb-plate\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Electric Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"bark\": false, \"chorus\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Clean\", \"params\": {}}, {\"blocks\": {\"bark\": false, \"chorus\": false, \"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Suitcase\", \"params\": {}}, {\"blocks\": {\"bark\": false, \"chorus\": true, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Chorus\", \"params\": {}}, {\"blocks\": {\"bark\": true, \"chorus\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Bark\", \"params\": {}}, {\"blocks\": {\"bark\": false, \"chorus\": true, \"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-E\", \"name\": \"Lush\", \"params\": {\"verb\": {\"decay\": 2, \"mix\": 26}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"bark\": false, \"chorus\": false, \"trem\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Clean\"}, {\"blocks\": {\"bark\": false, \"chorus\": false, \"trem\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Suitcase\"}, {\"blocks\": {\"bark\": false, \"chorus\": true, \"trem\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Chorus\"}, {\"blocks\": {\"bark\": true, \"chorus\": false, \"trem\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-D\"}}, \"level\": 2, \"name\": \"Bark\"}, {\"blocks\": {\"bark\": false, \"chorus\": true, \"trem\": true}, \"id\": \"E\", \"lanes\": {\"keys-1\": {\"level\": -1, \"state\": \"st-keys-1-E\"}}, \"level\": -1, \"name\": \"Lush\", \"params\": {\"verb\": {\"decay\": 2, \"mix\": 26}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#9b5de5",
+  "B": "#9b5de5",
+  "C": "#9b5de5",
+  "D": "#9b5de5",
+  "E": "#9b5de5",
+  "9": "#9b5de5",
+  "10": "#9b5de5"
+ },
+ "anims": {
+  "A": "aurora",
+  "B": "heartbeat",
+  "C": "pulse",
+  "D": "fire",
+  "E": "lightning",
+  "9": "smoke",
+  "10": "rain"
+ }
+}

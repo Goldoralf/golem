@@ -1,0 +1,6 @@
+{
+ "min_free_gb": 6.0,
+ "min_minutes": 20.0,
+ "floor_minutes": 3.0,
+ "warn_minutes": 15.0
+}

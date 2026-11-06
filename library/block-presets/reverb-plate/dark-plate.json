@@ -1,0 +1,12 @@
+{
+ "name": "Dark plate",
+ "type": "reverb-plate",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 25,
+  "decay": 2.4,
+  "predelay": 15,
+  "hicut": 4500
+ }
+}

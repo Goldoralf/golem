@@ -1,0 +1,11 @@
+{
+ "name": "Dotted Eighths",
+ "type": "delay",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "time": "1/8•",
+  "feedback": 55,
+  "mix": 40
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "name": "Lo-fi radio",
+ "type": "eq-graphic",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "g1": -8,
+  "g2": -6,
+  "g3": -2,
+  "g4": 1,
+  "g5": 3,
+  "g6": 3,
+  "g7": 2,
+  "g8": -2,
+  "g9": -8,
+  "g10": -12,
+  "g11": -12
+ }
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>golem</title>
+  <link rel="icon" href="favicon.ico?v=2" sizes="any">
+  <link rel="icon" type="image/png" href="icons/favicon-32.png?v=2" sizes="32x32">
+  <link rel="apple-touch-icon" href="icons/favicon-180.png?v=2">
+  <!-- docs/devices-people.md, lot E : « Add to home screen » sur la tablette qui sert d'écran au rack -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0c0e12">
+  <!-- LA COQUILLE LECTURE SEULE de golem.fm (docs/shell.md, 2026-10-09) : ?shell=ro pose data-shell="ro" AVANT tout
+       rendu, et la feuille cache les contrôles d'édition — un bouton visible qui ne fait rien serait un écran malhonnête -->
+  <script>try { if (new URLSearchParams(location.search).get('shell') === 'ro') document.documentElement.dataset.shell = 'ro'; } catch (e) {}</script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="capture-module.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "reverb-plate",
+ "factory": true,
+ "params": {
+  "mix": 25,
+  "decay": 0.8,
+  "predelay": 0,
+  "hicut": 8000
+ },
+ "default": true,
+ "inst": "any"
+}

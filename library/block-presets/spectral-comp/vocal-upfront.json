@@ -1,0 +1,18 @@
+{
+ "name": "Vocal upfront",
+ "type": "spectral-comp",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -32,
+  "down": 2,
+  "up": 3,
+  "center": 800,
+  "slope": 0,
+  "attack": 80,
+  "release": 300,
+  "window": "2048",
+  "mix": 70,
+  "out": -2
+ }
+}

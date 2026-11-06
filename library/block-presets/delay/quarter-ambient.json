@@ -1,0 +1,11 @@
+{
+ "name": "Quarter ambient",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "time": "1/4",
+  "feedback": 60,
+  "mix": 30
+ }
+}

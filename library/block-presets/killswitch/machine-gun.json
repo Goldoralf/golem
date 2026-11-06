@@ -1,0 +1,15 @@
+{
+ "name": "Machine Gun",
+ "type": "killswitch",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "depth": 100,
+  "length": 40,
+  "sync": "Free",
+  "rate": 14,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 0.5
+ }
+}

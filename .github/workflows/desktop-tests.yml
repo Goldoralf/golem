@@ -1,0 +1,191 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Desktop tests
+
+# CHAQUE NUIT et à la demande (docs/quality-automation.md, lot 1 ; avant le 2026-10-19 : à la demande
+# seulement, et jamais lancé). Dépôt privé sur un plan gratuit : la minute Windows compte double, la
+# minute macOS dix fois. Donc : la nuit joue Linux + Windows, macOS ne vient que sur un lancement manuel
+# (onglet Actions ▸ Run workflow) ; et la nuit est sautée quand main n'a pas bougé depuis 25 h. Les
+# téléchargements de REAPER et de NAM sont mis en cache. docs/archive/integration-windows.md.
+on:
+  workflow_dispatch:
+    inputs:
+      macos:
+        description: "Also run the macOS jobs (ten-times minutes)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '17 2 * * *'          # 02:17 UTC, chaque nuit
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Did main move since last night?
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - id: decide
+        run: |
+          age=$(( $(date +%s) - $(git log -1 --format=%ct) ))
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "$age" -lt 90000 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; echo "last commit ${age}s ago: running"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "last commit ${age}s ago: nothing new, skipping the night"
+          fi
+
+  pytest:
+    name: Python tests (${{ matrix.os }})
+    needs: preflight
+    if: needs.preflight.outputs.run == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # la nuit : Linux + Windows ; macOS (×10 minutes) seulement à la demande, et en le cochant
+        os: ${{ fromJSON((github.event_name == 'schedule' || github.event.inputs.macos != 'true') && '["ubuntu-24.04", "windows-2025"]' || '["ubuntu-24.04", "windows-2025", "macos-26"]') }}
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            bridge/requirements.txt
+            requirements-dev.lock
+      - name: Install dependencies
+        run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Install ffmpeg (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install ffmpeg (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --yes --no-progress --limit-output
+      - name: Install ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+      - name: Verify ffmpeg
+        run: ffmpeg -version
+      - name: First launch (factory content)
+        # comme ci.yml : des tests supposent le contenu d'usine posé (test_factory, 2 échecs sans lui — 2026-10-19)
+        run: python -c "from bridge import factory; factory.seed()"
+      - name: Run full test suite
+        run: python -m pytest -q tests
+      - name: Provision desktop resources
+        if: runner.os != 'Linux'
+        env:
+          GOLEM_REAPER_RESOURCE_DIR: ${{ runner.temp }}/golem-reaper
+        run: python -m provision.desktop setup
+      - name: Verify desktop resources
+        if: runner.os != 'Linux'
+        env:
+          GOLEM_REAPER_RESOURCE_DIR: ${{ runner.temp }}/golem-reaper
+        run: python -c "from provision import desktop; p = desktop.resource_dir(); assert desktop.venv_python().is_file(); assert (p / 'reaper.ini').is_file(); assert (p / 'Scripts' / 'golem' / '__startup.lua').is_file(); assert (p / 'Effects' / 'golem').is_dir(); print('Desktop resources OK')"
+      - name: Smoke local bridge
+        run: python tools/check-desktop-bridge.py
+
+  native-audio:
+    name: NAM audio render (${{ matrix.os }})
+    needs: preflight
+    if: needs.preflight.outputs.run == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON((github.event_name == 'schedule' || github.event.inputs.macos != 'true') && '["windows-2025"]' || '["windows-2025", "macos-26"]') }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Cached REAPER and NAM downloads
+        # les installeurs ne changent pas d'une nuit à l'autre : la clé porte leurs versions
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
+        with:
+          path: ${{ runner.temp }}/downloads
+          key: reaper780-nam0.7.13-${{ runner.os }}
+      - name: Install REAPER and NAM (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dl = Join-Path $env:RUNNER_TEMP 'downloads'; New-Item -ItemType Directory -Force $dl | Out-Null
+          $reaper = Join-Path $dl 'reaper780_x64-install.exe'
+          $nam = Join-Path $dl 'NeuralAmpModeler-v0.7.13-win.zip'
+          $portable = Join-Path $env:RUNNER_TEMP 'REAPER-portable'
+          if (-not (Test-Path $reaper)) { Invoke-WebRequest 'https://www.reaper.fm/files/7.x/reaper780_x64-install.exe' -OutFile $reaper }
+          if (-not (Test-Path $nam)) { Invoke-WebRequest 'https://github.com/sdatkinson/NeuralAmpModelerPlugin/releases/download/v0.7.13/NeuralAmpModeler-v0.7.13-win.zip' -OutFile $nam }
+          if ((Get-FileHash $nam -Algorithm SHA256).Hash -ne '8DA37AFDE1F0797C773D6B8709DA89BDDA40C0E45F67CF3E4D87291E9B5E9DA5') { throw 'NAM archive checksum mismatch' }
+          # audit 2026-11-04 (M8) : l'installateur REAPER aussi, empreinte calculée le 2026-11-05 sur le fichier officiel
+          if ((Get-FileHash $reaper -Algorithm SHA256).Hash -ne 'AECB15FC1B08ABDC5520740D1E128A02BD02A3EB4746DA857EB0B9818731DA28') { throw 'REAPER installer checksum mismatch' }
+          $p = Start-Process $reaper -ArgumentList '/S', '/PORTABLE', "/D=$portable" -Wait -PassThru
+          if ($p.ExitCode -ne 0 -or -not (Test-Path (Join-Path $portable 'reaper.exe'))) { throw "REAPER installation failed: $($p.ExitCode)" }
+          Expand-Archive $nam -DestinationPath (Join-Path $env:RUNNER_TEMP 'NAM-installer')
+          $installer = Join-Path $env:RUNNER_TEMP 'NAM-installer/NeuralAmpModeler Installer.exe'
+          $p = Start-Process $installer -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/COMPONENTS=vst3_64' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "NAM installation failed: $($p.ExitCode)" }
+          if (-not (Test-Path 'C:\Program Files\Common Files\VST3\NeuralAmpModeler.vst3')) { throw 'NAM VST3 missing' }
+          "REAPER_EXE=$portable\reaper.exe" >> $env:GITHUB_ENV
+      - name: Install REAPER and NAM (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          dl="$RUNNER_TEMP/downloads"; mkdir -p "$dl"
+          [ -f "$dl/reaper.dmg" ] || curl -fL --retry 3 'https://www.reaper.fm/files/7.x/reaper780_universal.dmg' -o "$dl/reaper.dmg"
+          [ -f "$dl/nam.dmg" ] || curl -fL --retry 3 'https://github.com/sdatkinson/NeuralAmpModelerPlugin/releases/download/v0.7.13/NeuralAmpModeler-v0.7.13-mac.dmg' -o "$dl/nam.dmg"
+          # audit 2026-11-04 (M8) : empreintes calculées le 2026-11-05 sur les fichiers officiels
+          echo "8d041123ff344ec6248548fa1b554f29bff4b0e26e10de00087df0134171d985  $dl/reaper.dmg" | shasum -a 256 -c -
+          echo "e9cea7a409fd167e05314d423a298ecb3b2c915eba2f8a514ee0c48a70f39173  $dl/nam.dmg" | shasum -a 256 -c -
+          mkdir -p "$RUNNER_TEMP/reaper-volume" "$RUNNER_TEMP/nam-volume"
+          printf 'Y\n' | hdiutil attach "$dl/reaper.dmg" -nobrowse -mountpoint "$RUNNER_TEMP/reaper-volume"
+          ditto "$RUNNER_TEMP/reaper-volume/REAPER.app" "$RUNNER_TEMP/REAPER.app"
+          hdiutil detach "$RUNNER_TEMP/reaper-volume"
+          hdiutil attach "$dl/nam.dmg" -nobrowse -mountpoint "$RUNNER_TEMP/nam-volume"
+          sudo installer -pkg "$RUNNER_TEMP/nam-volume/NeuralAmpModeler Installer.pkg" -target /
+          hdiutil detach "$RUNNER_TEMP/nam-volume"
+          test -d /Library/Audio/Plug-Ins/VST3/NeuralAmpModeler.vst3
+          echo "REAPER_EXE=$RUNNER_TEMP/REAPER.app/Contents/MacOS/REAPER" >> "$GITHUB_ENV"
+      - name: Render native NAM audio
+        env:
+          PYTHONUTF8: '1'
+        run: python tools/check-native-nam.py --reaper "${{ env.REAPER_EXE }}" --work-dir "${{ runner.temp }}/native-nam-check"
+      - name: Upload render diagnostics
+        if: failure()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        with:
+          name: native-nam-${{ matrix.os }}
+          path: ${{ runner.temp }}/native-nam-check/
+      - name: Python dependencies (bridge)
+        if: runner.os == 'Windows'
+        run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Install ffmpeg (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --yes --no-progress --limit-output
+      - name: Materialize the patches in REAPER
+        # docs/quality-automation.md lot 3a : bridge jetable + ce REAPER portable, chaque patch d'usine rappelé et
+        # vérifié (rig-check, carte vivante, plugins, scène). Sans modèles sur un runner, les patches d'usine sont
+        # SAUTÉS et le disent ; le patch de banc (--fixture : effets intégrés et JSFX) exerce le moteur quand même.
+        if: runner.os == 'Windows'
+        env:
+          PYTHONUTF8: '1'
+        run: python tools/check-rig-materialize.py --fixture --cold --render --reaper "${{ env.REAPER_EXE }}" --keep --work "${{ runner.temp }}/rig-check" --json "${{ runner.temp }}/rig-check/report.json"
+      - name: Upload materialization logs
+        if: always() && runner.os == 'Windows'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        with:
+          name: rig-check-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/rig-check/*.json
+            ${{ runner.temp }}/rig-check/*.log
+          if-no-files-found: ignore

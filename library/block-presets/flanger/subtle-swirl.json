@@ -1,0 +1,11 @@
+{
+ "name": "Subtle swirl",
+ "type": "flanger",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "rate": 0.4,
+  "depth": 1.5,
+  "feedback": 0.25
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "id": "accompaniment",
+ "name": "Jam",
+ "icon": "🔁",
+ "order": 3,
+ "desc": "Play along — backing tracks, standards, the drum machine and the looper drive the session · recordings tagged Rehearsal",
+ "services": {
+  "voice": true,
+  "keys": true,
+  "pads": true,
+  "looper": false,
+  "backing": true,
+  "perfrec": true,
+  "sample": true,
+  "arrangement": true,
+  "standard": true,
+  "drummachine": true,
+  "compo": true
+ },
+ "ui": {
+  "pages": [
+   "live",
+   "designer",
+   "songs",
+   "library",
+   "system"
+  ],
+  "boot": "live",
+  "locked": false,
+  "live": "timeline"
+ },
+ "perfrec_mode": "manual",
+ "click_mode": "preset",
+ "take_kind": "rehearsal",
+ "foot_list": "factory",
+ "perf_boost": false
+}

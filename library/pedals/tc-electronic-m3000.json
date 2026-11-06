@@ -1,0 +1,2517 @@
+{
+ "id": "tc-electronic-m3000",
+ "name": "M3000",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "TC Electronic",
+  "model": "M3000",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "Hall Large Warm",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Studio 40x40ft",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Queens Arena",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Warm Cathedral",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Singing In The Abby",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Stage and Hall",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "251 And Up",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Vocal Bright",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Space Hall",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Overhead Mics",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Bright Space",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Small Wood Room",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Band Rehearsal",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "RMX Snare Room",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Bright Plate",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Piano Plate",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Gated Reverb",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "Empty Arena",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Warehouse",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "The Mens Room",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Small Dense Hall",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Puk Drum Ambience",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Ambient Hall",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Nice 4 Strings",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Smokey Sax",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Acoustic Gtr Space",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Full Gymnasium",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Drews Small Hall",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "Coffee House",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Big Dense Studio",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Bright Theatre",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Really True Hall",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Queens Arena Full",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "The Club",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Venue Clear",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Venue Warm 1",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Nice Hall 1",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Venue Warm 2",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Concert Arena",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Vocal Hall 1",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Spacey Clear Hall",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Concert Piano",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Piano Hall 1st Row",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Hall Medium Warm",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Echo Hall",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Ballad Vocal Hall",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "Vocal Hall 2",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Vocal Deep male",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Modulated Hall",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "Grand Vocal Hall",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "Empty Gymnasium",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "Lively Hall",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "Church",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Hall large Warm Wide",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "hall large ClearWide",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "Bright Hall",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "Nice Hall 2",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "Big Modulated Hall",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Church Clear",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Church Warm",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Cathedral Strings",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Cathedral",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Cathedral Clear",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Club Carib",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Kooky Chinks",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Bassed On what",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Snare Room Bright",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Slap Back Sax",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "1 Bar Snare Tap",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Drum Tile Space",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Dickey Dickey",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Smooth Garage",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Space Chamber",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Drums Big",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "wide Space",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Leader Of The Band",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Medium Guitar Hall",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Medium Vocal Hall",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Big Empty Club",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Dance Snare",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Lonely Organ",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Slap Back Vox 1",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Bright Strings",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Bass Fishing",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Big Empty Space",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Medium Bright Hall",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Bright Guitar Hall",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Bright Slap Reverb",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Lounge Lizard",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Slap Back Vox 2",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Clear hall",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Blind BG Vocals",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Perc modulation",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Perc Straight Tail",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Perc 1978",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Perc Straight",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Vocal Ballad",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "The 799A1 Sound",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Damped Hall",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "251 Long Pre Dly",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "Ballad Drums",
+   "family": "custom",
+   "active_pc": 100
+  },
+  {
+   "name": "Vocal For Thin Voice",
+   "family": "custom",
+   "active_pc": 101
+  },
+  {
+   "name": "Bright Male Vox",
+   "family": "custom",
+   "active_pc": 103
+  },
+  {
+   "name": "Vocal Female",
+   "family": "custom",
+   "active_pc": 104
+  },
+  {
+   "name": "Fiddle Heaven",
+   "family": "custom",
+   "active_pc": 105
+  },
+  {
+   "name": "Gospel verb 1",
+   "family": "custom",
+   "active_pc": 106
+  },
+  {
+   "name": "Slap Back Reverb",
+   "family": "custom",
+   "active_pc": 107
+  },
+  {
+   "name": "Shimmer Mod Lite",
+   "family": "custom",
+   "active_pc": 108
+  },
+  {
+   "name": "Bright Large Gym",
+   "family": "custom",
+   "active_pc": 109
+  },
+  {
+   "name": "Hall Large",
+   "family": "custom",
+   "active_pc": 110
+  },
+  {
+   "name": "Nose Bleed Seats",
+   "family": "custom",
+   "active_pc": 111
+  },
+  {
+   "name": "Big Ballad Vocal 2",
+   "family": "custom",
+   "active_pc": 112
+  },
+  {
+   "name": "Sweet Basil Vocal",
+   "family": "custom",
+   "active_pc": 113
+  },
+  {
+   "name": "Blackface Amp",
+   "family": "custom",
+   "active_pc": 114
+  },
+  {
+   "name": "Large Hall Clear",
+   "family": "custom",
+   "active_pc": 115
+  },
+  {
+   "name": "Soupy Ballad Verb",
+   "family": "custom",
+   "active_pc": 116
+  },
+  {
+   "name": "Ringy Wash",
+   "family": "custom",
+   "active_pc": 117
+  },
+  {
+   "name": "Modulated Backwall",
+   "family": "custom",
+   "active_pc": 118
+  },
+  {
+   "name": "Big Vocal 2",
+   "family": "custom",
+   "active_pc": 119
+  },
+  {
+   "name": "Crystal Clear XXL",
+   "family": "custom",
+   "active_pc": 120
+  },
+  {
+   "name": "12 String Reverb",
+   "family": "custom",
+   "active_pc": 121
+  },
+  {
+   "name": "Big Guitar Verb",
+   "family": "custom",
+   "active_pc": 122
+  },
+  {
+   "name": "Windamish",
+   "family": "custom",
+   "active_pc": 123
+  },
+  {
+   "name": "Over Yander Hill",
+   "family": "custom",
+   "active_pc": 124
+  },
+  {
+   "name": "Wild Modulation",
+   "family": "custom",
+   "active_pc": 125
+  },
+  {
+   "name": "Church Piano",
+   "family": "custom",
+   "active_pc": 126
+  },
+  {
+   "name": "String Atoll",
+   "family": "custom",
+   "active_pc": 127
+  },
+  {
+   "name": "In The Clouds",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Perc 1980",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Perc 1984",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Freak Modulation 1",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Vox Canyon",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Warped Space",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Long And Smooth",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Sweeping Weirdverb",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Vocal Doubler",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Small Booth",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Minimum Booth",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Rhodes Thicken",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Lively Small Room",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "12 String Doubler",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Studio 10x10ft",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Small Natural Room",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Small Perc Room",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "Studio 20x20ft",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Soft medium Room",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "Small Clear Room",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Nice Perc Ambience",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Live Wooden Room",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Puk Drum Ambience S",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Acc Guitar Ambience",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Wide Ambient Chamber",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Tight N Clear",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Real Room",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Lucho 2016 Good Room",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "Close Small Room",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Recital Room",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "A Real Room",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Soft Guitar Ambience",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Big Soft Room",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "The Studio",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Drum Stuff",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Tight Vocal 1",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Kick Bass Ambience",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Amb Rock Lead Gtr",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "RMX Ambience",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Snare Room Long",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Drum Trash Stuff",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Drummin Up Business",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Vocal BG Fat",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Thick Space",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Crazy Phasey",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Filtered Vocal Dbl 1",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "Freak Modulation 2",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Dance Snare",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Drum Room Xpander",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "3 Car Garage",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "In A Cylinder",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "RMX Ambience Wide",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "Small Guitar Room",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Clear Guitar Room",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "Dark Snare Hall",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "Dark Snare 2",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "Slap Back Guitar",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "Tom Tom Reverb",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Clear Room",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Slap Back Piano",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Bossa Nova Perc Room",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Delayed Hall",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Drum Booth",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Drum Plate Stuff",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Drum Wood Plate",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Stairway Plate",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "piano Plate",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Slap Back Plate",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Mac Perc",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Ambient Plate",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Silky Gold Plate",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Bright Plate",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Drums Perc Soft 1",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Drum Perc Soft 2",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Oil Drum",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Drum Perc Soft 3",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Thick Drum Gate",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Short Perc Gate",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Microuzi Gate",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Backing Vocal Gate",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Snare Gate",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Get With It",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Medium Band Room",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Real Drum Booth",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Small Wood Chamber",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Vintage Snare Room 1",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Vintage Snare Room 2",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Studio Drum Ambience",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Acoustic Space",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Snare Booth Bright",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Hard Drum Space",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Dance Snare",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Modulated Perc",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Dark Snare Chamber",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Tiny Booth",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Small Space",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Clear Space",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "Slap Back Delay",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Tap Delay",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Detune Pitch",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "Up N Down",
+   "family": "custom",
+   "active_pc": 100
+  },
+  {
+   "name": "EQ Flat",
+   "family": "custom",
+   "active_pc": 101
+  },
+  {
+   "name": "Expander",
+   "family": "custom",
+   "active_pc": 102
+  },
+  {
+   "name": "Fast gate",
+   "family": "custom",
+   "active_pc": 103
+  },
+  {
+   "name": "Vox Comp",
+   "family": "custom",
+   "active_pc": 104
+  },
+  {
+   "name": "Allround Comp",
+   "family": "custom",
+   "active_pc": 105
+  },
+  {
+   "name": "Chorus",
+   "family": "custom",
+   "active_pc": 106
+  },
+  {
+   "name": "Wide Chorus",
+   "family": "custom",
+   "active_pc": 107
+  },
+  {
+   "name": "SRV Chorus",
+   "family": "custom",
+   "active_pc": 108
+  },
+  {
+   "name": "Flanger",
+   "family": "custom",
+   "active_pc": 109
+  },
+  {
+   "name": "Wild Flanger",
+   "family": "custom",
+   "active_pc": 110
+  },
+  {
+   "name": "Slow Temolo",
+   "family": "custom",
+   "active_pc": 111
+  },
+  {
+   "name": "Wild Tremolo",
+   "family": "custom",
+   "active_pc": 112
+  },
+  {
+   "name": "Slow Panner",
+   "family": "custom",
+   "active_pc": 113
+  },
+  {
+   "name": "Fast Panner Wide",
+   "family": "custom",
+   "active_pc": 114
+  },
+  {
+   "name": "Old Phaser",
+   "family": "custom",
+   "active_pc": 115
+  },
+  {
+   "name": "Standard Phaser",
+   "family": "custom",
+   "active_pc": 116
+  },
+  {
+   "name": "Wierd Phaser",
+   "family": "custom",
+   "active_pc": 117
+  },
+  {
+   "name": "Vocal De-esser",
+   "family": "custom",
+   "active_pc": 118
+  },
+  {
+   "name": "Dynamic Hi Cut",
+   "family": "custom",
+   "active_pc": 119
+  },
+  {
+   "name": "Dynamic Low Cut",
+   "family": "custom",
+   "active_pc": 120
+  },
+  {
+   "name": "Muted Engine",
+   "family": "custom",
+   "active_pc": 121
+  },
+  {
+   "name": "Closet With Clothes",
+   "family": "custom",
+   "active_pc": 122
+  },
+  {
+   "name": "Walk In Closet",
+   "family": "custom",
+   "active_pc": 123
+  },
+  {
+   "name": "Too Small Mens Room",
+   "family": "custom",
+   "active_pc": 124
+  },
+  {
+   "name": "Phonebooth Tight",
+   "family": "custom",
+   "active_pc": 125
+  },
+  {
+   "name": "Phonebooth",
+   "family": "custom",
+   "active_pc": 126
+  },
+  {
+   "name": "Claustrophobia",
+   "family": "custom",
+   "active_pc": 127
+  },
+  {
+   "name": "Under A Blanket",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Near The Wall",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Meat Locker",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "A Small Room",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "The 2nd Bedroom",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Drapes And Curtains",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Dense Centered Room",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Room Conversation",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Chamber",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Furnished Room",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Living Room",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Real Living Room",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Dining Room",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Corridor",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Small Bathroom",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Bathroom Blue",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "In The Kitchen",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "interior Kitchen",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Kitchen",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "ConfRoom Damped",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Shrinks Office",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Reception Area",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Wooden Office",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Store Room",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Live VO Booth",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Recording Booth",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Studio Small",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Standard Dialogue",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "Dialog 1",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Open Mics",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Close Breathing",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Semifurnished Qntec",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Small Foley Blue",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "Furnished Room",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Unfurnished Room",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Locker Room",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Livingroom Blue",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Wood Floor",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Natural Wood Room",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Livingroom",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Room With A View",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Hallway",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Basement 1",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Furnished Basement",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Wine Cellar",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Toilet Stall",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "in The Shower",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Bathroom Stall",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Wide Garage",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "right Side Garage",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "Conference room",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "Glass Office",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "Large Office",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Office",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "Empty Classroom",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "Classroom",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "Back Of the Glass",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "Watch-Tower Inside",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Dialog 2",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Dialog 3",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Dialog 4",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "in The Air Vent",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Kellars Cell Blue",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Big Room",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Empty Corridor",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Plasterwalls",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Centered Hallway",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "What A Basement",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Basement 2",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Basement large",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "empty Basement",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Epty Stairwell",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Small Stairway",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Big Stairway",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Home Garage",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Modern Kitchen",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Big Toilet",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "What A Toilet",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Public Mens Room",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Empty Store",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Empty nightclub",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Storage Room",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Recital Room",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Hotel Lobby",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Band Practice Room",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Down The Hall",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Factory",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Dance Studio",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Empty Restaurant",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Tijuana Cantina",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Store Room",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Louvre Pyramid Hall",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Pentagon Corridor",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Airport PA",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Grand Ballroom",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Parking Garage Small",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Garage",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "mine Corridor",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Mine Chamber",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Tight+Natural",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "Tight+Smooth",
+   "family": "custom",
+   "active_pc": 100
+  },
+  {
+   "name": "Scoring Stage 1",
+   "family": "custom",
+   "active_pc": 101
+  },
+  {
+   "name": "Scoring Stage 2",
+   "family": "custom",
+   "active_pc": 102
+  },
+  {
+   "name": "Scoring Stage 3",
+   "family": "custom",
+   "active_pc": 103
+  },
+  {
+   "name": "Dialog 5",
+   "family": "custom",
+   "active_pc": 104
+  },
+  {
+   "name": "Dialog 6",
+   "family": "custom",
+   "active_pc": 105
+  },
+  {
+   "name": "Dialog 7",
+   "family": "custom",
+   "active_pc": 106
+  },
+  {
+   "name": "Party Chit Chat",
+   "family": "custom",
+   "active_pc": 107
+  },
+  {
+   "name": "Large+Stage Blue",
+   "family": "custom",
+   "active_pc": 108
+  },
+  {
+   "name": "Down The Hatch",
+   "family": "custom",
+   "active_pc": 109
+  },
+  {
+   "name": "In The Sewer",
+   "family": "custom",
+   "active_pc": 110
+  },
+  {
+   "name": "Scissorhands Parlor",
+   "family": "custom",
+   "active_pc": 111
+  },
+  {
+   "name": "In The Room",
+   "family": "custom",
+   "active_pc": 112
+  },
+  {
+   "name": "Elevator Shaft",
+   "family": "custom",
+   "active_pc": 113
+  },
+  {
+   "name": "Big Stairwell",
+   "family": "custom",
+   "active_pc": 114
+  },
+  {
+   "name": "Large Lockerroom",
+   "family": "custom",
+   "active_pc": 115
+  },
+  {
+   "name": "Empty Auditorium",
+   "family": "custom",
+   "active_pc": 116
+  },
+  {
+   "name": "AES Show Lobby",
+   "family": "custom",
+   "active_pc": 117
+  },
+  {
+   "name": "Brill Building Lobby",
+   "family": "custom",
+   "active_pc": 118
+  },
+  {
+   "name": "Boston Garden Hall",
+   "family": "custom",
+   "active_pc": 119
+  },
+  {
+   "name": "Warehouse Blue",
+   "family": "custom",
+   "active_pc": 120
+  },
+  {
+   "name": "soft Warehouse",
+   "family": "custom",
+   "active_pc": 121
+  },
+  {
+   "name": "Long Swimming Pool",
+   "family": "custom",
+   "active_pc": 122
+  },
+  {
+   "name": "Swim Distant",
+   "family": "custom",
+   "active_pc": 123
+  },
+  {
+   "name": "Empty indoor Pool",
+   "family": "custom",
+   "active_pc": 124
+  },
+  {
+   "name": "Frankfurt Hbf",
+   "family": "custom",
+   "active_pc": 125
+  },
+  {
+   "name": "Budapest WestRailwSt",
+   "family": "custom",
+   "active_pc": 126
+  },
+  {
+   "name": "LaGuardia Terminal",
+   "family": "custom",
+   "active_pc": 127
+  },
+  {
+   "name": "Subway Platform 1",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Subway Platform 2",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Subway Tunnel",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Parking Distant",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Parking Garage Talk",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Parking Garage Ugly",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Parking Garage",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Indoor Parking lot",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Public Toilet",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "The Abbey",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Medium Church",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Concrete Maze",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Dark Tunnel",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Back There",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Really Smooth hall",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Beetle interior",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Limo interior",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "BMW Limo",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Car Fronseat Dialog",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "Car Fron 2 Backseat",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Van interior",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "A Van",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Inside truck",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Car interior Blue",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Cardoor At midnight",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Courtyard",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Market",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Alley",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "HarlemStreetAtNight",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Stone Garden",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Boat Trip In Venice",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Backyard",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Backyard Qntec Wide",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "On The Street",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Street",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Dog In The Alley",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Alleyway",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Between Skyscrapers",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Between Buildings 1",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Between Buildings 2",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Under The Bridge",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Dock",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Long Cave",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Backyard Qntc",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Racetrack PA",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Slap Alley",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "City Foot Chase",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Empty Arena XXL",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Racquetball Court",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "Wide Jail court",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "Across The Plaza",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "Large Citypark",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "Big City",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Down The Tunnel",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "Jump Off The Bridge",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "Green Forest",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "Forest In Winter",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "Forest In Autumn",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Forest On The Hill",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Forest Reverb 1",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Forest Reverb 2",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Forest",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "In The Valley",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Valley in Winter",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Deep Valley",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Back Canyon",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Distance In Jungle",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Jungle",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Alpine Atmosphere",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Stoneriver In Vitosa",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Stone-Quarry",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Cave Corridor",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Cave-Dwelling",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Rocks At See",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Mountains",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Speaker In A Room",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Stinger 1",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Stinger 2",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Stinger 3",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "What Dreams May Go",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Clausto-Phonebooth",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Enhancer Verb 2",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "dialog+Music Slap",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Enhancer Stereo",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Watch Them Scatter",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Dining Room SR",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Real Living Room SR",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Kitchen SR",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Unfurnished Room SR",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Room With A View SR",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Hallway SR",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Basement SR",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Claustrophobia SR",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Meat Locker SR",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Live VO Booth SR",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Large Office SR",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "LuvrePyramidHall SR",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "Museum SR",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Railwaystation 1 SR",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Railwaystation 2 SR",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "LaGuardiaTerminal SR",
+   "family": "custom",
+   "active_pc": 100
+  },
+  {
+   "name": "Empty Arena XXL SR",
+   "family": "custom",
+   "active_pc": 101
+  },
+  {
+   "name": "Swimmingpool SR",
+   "family": "custom",
+   "active_pc": 102
+  },
+  {
+   "name": "Between Building SR",
+   "family": "custom",
+   "active_pc": 103
+  },
+  {
+   "name": "Cemetery SR",
+   "family": "custom",
+   "active_pc": 104
+  },
+  {
+   "name": "Street SR",
+   "family": "custom",
+   "active_pc": 105
+  },
+  {
+   "name": "Stadium Rear SR",
+   "family": "custom",
+   "active_pc": 106
+  },
+  {
+   "name": "Alpine Atmosph SR",
+   "family": "custom",
+   "active_pc": 107
+  },
+  {
+   "name": "Rocks At The Sea SR",
+   "family": "custom",
+   "active_pc": 108
+  },
+  {
+   "name": "Jungle SR",
+   "family": "custom",
+   "active_pc": 109
+  },
+  {
+   "name": "Forest SR",
+   "family": "custom",
+   "active_pc": 110
+  },
+  {
+   "name": "Canyon SR",
+   "family": "custom",
+   "active_pc": 111
+  },
+  {
+   "name": "Arboretum SR",
+   "family": "custom",
+   "active_pc": 112
+  },
+  {
+   "name": "Mine Corridor SR",
+   "family": "custom",
+   "active_pc": 113
+  },
+  {
+   "name": "Mine Chamber SR",
+   "family": "custom",
+   "active_pc": 114
+  },
+  {
+   "name": "Cave Long SR",
+   "family": "custom",
+   "active_pc": 115
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM TC_Electronic_M3000.midnam du dépôt Ardour (GPL-2), auteur : Rob Martin, 1 slot(s) utilisateur sans nom écartés. reverb de référence",
+  "upstream": "Ardour/share/patchfiles/TC_Electronic_M3000.midnam"
+ }
+}

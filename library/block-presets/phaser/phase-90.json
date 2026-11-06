@@ -1,0 +1,12 @@
+{
+ "name": "Phase 90",
+ "type": "phaser",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.55,
+  "depth": 5000,
+  "stages": "4",
+  "feedback": 0.1
+ }
+}

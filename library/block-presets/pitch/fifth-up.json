@@ -1,0 +1,10 @@
+{
+ "name": "Power fifth",
+ "type": "pitch",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "shift": 7,
+  "mix": 40
+ }
+}

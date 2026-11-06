@@ -1,0 +1,392 @@
+{
+ "id": "factory-voice-crooner",
+ "name": "Crooner",
+ "role": "voice",
+ "tags": [
+  "jazz",
+  "vintage"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Crooner",
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Close",
+     "blocks": {
+      "slap": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Lounge",
+     "blocks": {
+      "slap": false
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 1.5,
+       "size": 20
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Slapback",
+     "blocks": {
+      "slap": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Ballad",
+     "blocks": {
+      "slap": false
+     },
+     "params": {
+      "verb": {
+       "mix": 32,
+       "decay": 2.2,
+       "size": 22
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "attack": 3,
+       "release": 250
+      }
+     },
+     {
+      "id": "pre",
+      "type": "preamp-nam",
+      "label": "BAE 1073MP Preamp",
+      "ref": "26483",
+      "model": "379831",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "c1176",
+      "type": "comp-nam",
+      "label": "UREI 1176",
+      "ref": "1148",
+      "model": "420079",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 90,
+       "bass": 1,
+       "f1": 200,
+       "g1": 1,
+       "f2": 1200,
+       "g2": 0,
+       "f3": 4000,
+       "g3": 1,
+       "treble": -1
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -30,
+       "freq": 6000,
+       "range": 8
+      }
+     },
+     {
+      "id": "slap",
+      "type": "delay",
+      "foot": 6,
+      "params": {
+       "time": "1/16",
+       "feedback": 10,
+       "mix": 14
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "params": {
+       "mix": 18,
+       "decay": 1.0,
+       "size": 16,
+       "hicut": 6500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Close",
+   "blocks": {
+    "slap": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Lounge",
+   "blocks": {
+    "slap": false
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 1.5,
+     "size": 20
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Slapback",
+   "blocks": {
+    "slap": true
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 1,
+     "state": "st-voice-1-C"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Ballad",
+   "blocks": {
+    "slap": false
+   },
+   "params": {
+    "verb": {
+     "mix": 32,
+     "decay": 2.2,
+     "size": 22
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "level": -1,
+     "state": "st-voice-1-D"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rooftop-prowl",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "blonde-bop",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -58,
+     "attack": 3,
+     "release": 250
+    }
+   },
+   {
+    "id": "pre",
+    "type": "preamp-nam",
+    "label": "BAE 1073MP Preamp",
+    "ref": "26483",
+    "model": "379831",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "c1176",
+    "type": "comp-nam",
+    "label": "UREI 1176",
+    "ref": "1148",
+    "model": "420079",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 90,
+     "bass": 1,
+     "f1": 200,
+     "g1": 1,
+     "f2": 1200,
+     "g2": 0,
+     "f3": 4000,
+     "g3": 1,
+     "treble": -1
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -30,
+     "freq": 6000,
+     "range": 8
+    }
+   },
+   {
+    "id": "slap",
+    "type": "delay",
+    "foot": 6,
+    "params": {
+     "time": "1/16",
+     "feedback": 10,
+     "mix": 14
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "params": {
+     "mix": 18,
+     "decay": 1.0,
+     "size": 16,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "preamp-nam",
+   "ref": "26483",
+   "model": "379831"
+  },
+  {
+   "type": "comp-nam",
+   "ref": "1148",
+   "model": "420079"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "02217c3cced2333a10b52c05579d1810b5d3252e805be5b4964fe31176ab06e7",
+   "uid": "t3k:26483",
+   "kind": "outboard",
+   "bytes": 300441,
+   "name": "1073MP - 50 dB - B",
+   "source": "t3k",
+   "amp": "BAE 1073",
+   "arch": "2",
+   "brand": "BAE",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/bae-1073mp-preamp-26483"
+  },
+  {
+   "sha256": "5557307b670db31a86aa45b4cc801f7501538a4339cb8e3653fa5320c42ec44d",
+   "uid": "t3k:1148",
+   "kind": "outboard",
+   "bytes": 297026,
+   "name": "1176 L",
+   "source": "t3k",
+   "amp": "UREI/Universal Audio 1176",
+   "brand": "UREI 1176 Rev A",
+   "creator": "yulokchan",
+   "url": "https://www.tone3000.com/tones/1148"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"pulse\", \"9\": \"sheen\", \"A\": \"wave\", \"B\": \"aurora\", \"C\": \"ember\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 250, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"pre\", \"label\": \"BAE 1073MP Preamp\", \"model\": \"379831\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26483\", \"type\": \"preamp-nam\"}, {\"id\": \"c1176\", \"label\": \"UREI 1176\", \"model\": \"420079\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1148\", \"type\": \"comp-nam\"}, {\"id\": \"eq\", \"params\": {\"bass\": 1, \"f1\": 200, \"f2\": 1200, \"f3\": 4000, \"g1\": 1, \"g2\": 0, \"g3\": 1, \"lowcut\": 90, \"lowcut_on\": true, \"treble\": -1}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6000, \"range\": 8, \"thresh\": -30}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"slap\", \"params\": {\"feedback\": 10, \"mix\": 14, \"time\": \"1/16\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.0, \"hicut\": 6500, \"mix\": 18, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#ffb4a2\", \"9\": \"#ffb4a2\", \"A\": \"#ffb4a2\", \"B\": \"#ffb4a2\", \"C\": \"#ffb4a2\", \"D\": \"#ffb4a2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 250, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"pre\", \"label\": \"BAE 1073MP Preamp\", \"model\": \"379831\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26483\", \"type\": \"preamp-nam\"}, {\"id\": \"c1176\", \"label\": \"UREI 1176\", \"model\": \"420079\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1148\", \"type\": \"comp-nam\"}, {\"id\": \"eq\", \"params\": {\"bass\": 1, \"f1\": 200, \"f2\": 1200, \"f3\": 4000, \"g1\": 1, \"g2\": 0, \"g3\": 1, \"lowcut\": 90, \"lowcut_on\": true, \"treble\": -1}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6000, \"range\": 8, \"thresh\": -30}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"slap\", \"params\": {\"feedback\": 10, \"mix\": 14, \"time\": \"1/16\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.0, \"hicut\": 6500, \"mix\": 18, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Crooner\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"slap\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Close\", \"params\": {}}, {\"blocks\": {\"slap\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Lounge\", \"params\": {\"verb\": {\"decay\": 1.5, \"mix\": 26, \"size\": 20}}}, {\"blocks\": {\"slap\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Slapback\", \"params\": {}}, {\"blocks\": {\"slap\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Ballad\", \"params\": {\"verb\": {\"decay\": 2.2, \"mix\": 32, \"size\": 22}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"slap\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Close\"}, {\"blocks\": {\"slap\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Lounge\", \"params\": {\"verb\": {\"decay\": 1.5, \"mix\": 26, \"size\": 20}}}, {\"blocks\": {\"slap\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Slapback\"}, {\"blocks\": {\"slap\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": -1, \"state\": \"st-voice-1-D\"}}, \"level\": -1, \"name\": \"Ballad\", \"params\": {\"verb\": {\"decay\": 2.2, \"mix\": 32, \"size\": 22}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#ffb4a2",
+  "B": "#ffb4a2",
+  "C": "#ffb4a2",
+  "D": "#ffb4a2",
+  "9": "#ffb4a2",
+  "10": "#ffb4a2"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "aurora",
+  "C": "ember",
+  "D": "stars",
+  "9": "sheen",
+  "10": "pulse"
+ }
+}

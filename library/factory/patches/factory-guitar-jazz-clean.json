@@ -1,0 +1,566 @@
+{
+ "id": "factory-guitar-jazz-clean",
+ "name": "Jazz Clean",
+ "role": "guitar",
+ "tags": [
+  "jazz",
+  "clean"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Jazz Clean",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Thumb",
+     "blocks": {
+      "boost": false,
+      "dly": false
+     },
+     "params": {
+      "eq": {
+       "highs": -6,
+       "midgain": 2.5
+      },
+      "verb": {
+       "mix": 12,
+       "decay": 1.0
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Lush",
+     "blocks": {
+      "boost": false,
+      "chorus": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Comping",
+     "blocks": {
+      "boost": false,
+      "dly": false
+     },
+     "params": {
+      "comp": {
+       "thresh": -30,
+       "ratio": 4
+      },
+      "eq": {
+       "highs": -7
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Solo",
+     "blocks": {
+      "boost": false,
+      "chorus": false,
+      "dly": true
+     },
+     "params": {
+      "dly": {
+       "time": "1/8•",
+       "feedback": 32,
+       "mix": 18
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Ballad",
+     "blocks": {
+      "boost": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 34,
+       "decay": 3.0,
+       "predelay": 30
+      },
+      "dly": {
+       "mix": 22,
+       "feedback": 40
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -65,
+       "attack": 3,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -24,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 20,
+       "release": 180
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 70,
+       "midgain": 1.5,
+       "midfreq": 600,
+       "highs": -3
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "twin",
+         "type": "amp",
+         "label": "Fender Twin Reverb",
+         "ref": "43620",
+         "model": "382265",
+         "params": {
+          "input": -3,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "jc",
+         "type": "amp",
+         "label": "Roland JC-120",
+         "ref": "10912",
+         "model": "379739",
+         "params": {
+          "input": -3,
+          "output": -2
+         }
+        },
+        {
+         "id": "chorus",
+         "type": "chorus-js",
+         "foot": 8,
+         "params": {
+          "length": 18,
+          "voices": 2,
+          "rate": 0.4,
+          "wet": -10,
+          "dry": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "boost",
+      "type": "clean-boost",
+      "foot": 6,
+      "params": {
+       "gain": 3
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 20,
+       "decay": 1.6,
+       "predelay": 20,
+       "hicut": 6500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Thumb",
+   "blocks": {
+    "boost": false,
+    "dly": false
+   },
+   "params": {
+    "eq": {
+     "highs": -6,
+     "midgain": 2.5
+    },
+    "verb": {
+     "mix": 12,
+     "decay": 1.0
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Lush",
+   "blocks": {
+    "boost": false,
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Comping",
+   "blocks": {
+    "boost": false,
+    "dly": false
+   },
+   "params": {
+    "comp": {
+     "thresh": -30,
+     "ratio": 4
+    },
+    "eq": {
+     "highs": -7
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -2,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": -2
+  },
+  {
+   "id": "D",
+   "name": "Solo",
+   "blocks": {
+    "boost": false,
+    "chorus": false,
+    "dly": true
+   },
+   "params": {
+    "dly": {
+     "time": "1/8•",
+     "feedback": 32,
+     "mix": 18
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "E",
+   "name": "Ballad",
+   "blocks": {
+    "boost": false,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 34,
+     "decay": 3.0,
+     "predelay": 30
+    },
+    "dly": {
+     "mix": 22,
+     "feedback": 40
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rooftop-prowl",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "blonde-bop",
+      "choruses": 4
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -65,
+     "attack": 3,
+     "release": 200
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -24,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 20,
+     "release": 180
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 70,
+     "midgain": 1.5,
+     "midfreq": 600,
+     "highs": -3
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "twin",
+       "type": "amp",
+       "label": "Fender Twin Reverb",
+       "ref": "43620",
+       "model": "382265",
+       "params": {
+        "input": -3,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "jc",
+       "type": "amp",
+       "label": "Roland JC-120",
+       "ref": "10912",
+       "model": "379739",
+       "params": {
+        "input": -3,
+        "output": -2
+       }
+      },
+      {
+       "id": "chorus",
+       "type": "chorus-js",
+       "foot": 8,
+       "params": {
+        "length": 18,
+        "voices": 2,
+        "rate": 0.4,
+        "wet": -10,
+        "dry": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "boost",
+    "type": "clean-boost",
+    "foot": 6,
+    "params": {
+     "gain": 3
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/4",
+     "feedback": 28,
+     "mix": 16
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 20,
+     "decay": 1.6,
+     "predelay": 20,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "43620",
+   "model": "382265"
+  },
+  {
+   "type": "amp",
+   "ref": "10912",
+   "model": "379739"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "d5480b918e4f2e66db82e7372617044704291eff828665d20e1f3438c99634c2",
+   "uid": "t3k:43620",
+   "kind": "amp-cab",
+   "bytes": 296894,
+   "name": "Fender Twin Reverb Full Rig 212 Green 57",
+   "source": "t3k",
+   "amp": "Fender Twin Reverb",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "henriquemarcosaugusto03",
+   "url": "https://www.tone3000.com/tones/fender-twin-reverb-43620"
+  },
+  {
+   "sha256": "cf3b8c5bb67bc6f3b5a75558a2a33e8377149b68a97942a04c0696574951b1b4",
+   "uid": "t3k:10912",
+   "kind": "amp-cab",
+   "bytes": 297482,
+   "name": "Roland JC 120B Jazz Chorus: Bright On, Royer R-101",
+   "source": "t3k",
+   "amp": "Roland 120B Jazz Chorus",
+   "arch": "2",
+   "brand": "Roland",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/roland-jc-120b-jazz-chorus-10912"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"rain\", \"6\": \"sheen\", \"7\": \"snow\", \"8\": \"aurora\", \"A\": \"vu\", \"B\": \"ember\", \"C\": \"wave\", \"D\": \"scanner\", \"E\": \"smoke\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"boost\", \"params\": {\"gain\": 3}, \"type\": \"clean-boost\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.6, \"hicut\": 6500, \"mix\": 20, \"predelay\": 20}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 3, \"ratio\": 3, \"release\": 180, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -3, \"lowcut\": 70, \"midfreq\": 600, \"midgain\": 1.5}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"379739\", \"params\": {\"input\": -3, \"output\": -2}, \"ref\": \"10912\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 18, \"rate\": 0.4, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#b08968\", \"6\": \"#b08968\", \"7\": \"#b08968\", \"8\": \"#b08968\", \"A\": \"#b08968\", \"B\": \"#b08968\", \"C\": \"#b08968\", \"D\": \"#b08968\", \"E\": \"#b08968\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"boost\", \"params\": {\"gain\": 3}, \"type\": \"clean-boost\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.6, \"hicut\": 6500, \"mix\": 20, \"predelay\": 20}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 200, \"thresh\": -65}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 3, \"ratio\": 3, \"release\": 180, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -3, \"lowcut\": 70, \"midfreq\": 600, \"midgain\": 1.5}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"379739\", \"params\": {\"input\": -3, \"output\": -2}, \"ref\": \"10912\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 18, \"rate\": 0.4, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Jazz Clean\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"boost\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Thumb\", \"params\": {\"eq\": {\"highs\": -6, \"midgain\": 2.5}, \"verb\": {\"decay\": 1.0, \"mix\": 12}}}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Lush\", \"params\": {}}, {\"blocks\": {\"boost\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Comping\", \"params\": {\"comp\": {\"ratio\": 4, \"thresh\": -30}, \"eq\": {\"highs\": -7}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Solo\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}}}, {\"blocks\": {\"boost\": false, \"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Ballad\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 22}, \"verb\": {\"decay\": 3.0, \"mix\": 34, \"predelay\": 30}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"boost\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Thumb\", \"params\": {\"eq\": {\"highs\": -6, \"midgain\": 2.5}, \"verb\": {\"decay\": 1.0, \"mix\": 12}}}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Lush\"}, {\"blocks\": {\"boost\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": -2, \"state\": \"st-guitar-1-C\"}}, \"level\": -2, \"name\": \"Comping\", \"params\": {\"comp\": {\"ratio\": 4, \"thresh\": -30}, \"eq\": {\"highs\": -7}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}}}, {\"blocks\": {\"boost\": false, \"dly\": true}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Ballad\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 22}, \"verb\": {\"decay\": 3.0, \"mix\": 34, \"predelay\": 30}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#b08968",
+  "B": "#b08968",
+  "C": "#b08968",
+  "D": "#b08968",
+  "E": "#b08968",
+  "6": "#b08968",
+  "7": "#b08968",
+  "8": "#b08968",
+  "9": "#b08968",
+  "10": "#b08968"
+ },
+ "anims": {
+  "A": "vu",
+  "B": "ember",
+  "C": "wave",
+  "D": "scanner",
+  "E": "smoke",
+  "6": "sheen",
+  "7": "snow",
+  "8": "aurora",
+  "9": "lightning",
+  "10": "rain"
+ }
+}

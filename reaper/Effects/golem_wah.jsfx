@@ -1,0 +1,105 @@
+desc:GoleM Wah -- the wah block on Windows and macOS (Gxgcb_95 parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « wah » joue Gxgcb_95 (guitarix, modele lineaire du circuit Dunlop Cry Baby GCB-95) sous Linux ;
+// guitarix n'existe ni sous Windows ni sous macOS (docs/platforms.md §5). Ce JSFX en reprend les NOMS de
+// parametres, leurs BORNES et leurs DEFAUTS natifs (gx_gcb_95.ttl, lu le 2026-10-22) pour que la table de l'OS
+// le nomme sans toucher un preset. Le CODE est le notre : la reponse du filtre d'ordre 4 de guitarix a ete
+// EVALUEE a 48 kHz pour sept positions de pedale (frequence et gain du pic, largeur a -3 dB, gain sous le pic —
+// tools de la session du 2026-10-22), et ces faits pilotent ici un filtre d'etat (SVF) : passe-bas resonant
+// + passe-bande, derriere le meme bloqueur de continu (228 Hz). Son proche, pas identique.
+//
+//  - Wah    : position de la pedale, 0 = talon (grave, ~410 Hz) .. 1 = pointe (aigu, ~1,7 kHz) ; meme loi de
+//             potentiometre que guitarix (log, inversee) ; a piloter par la pedale EXP du pedalier.
+//  - Volume : niveau de sortie en dB (-20..+4 chez guitarix ; le slider va a +20 pour rester SYMETRIQUE :
+//             un minimum negatif est bipolaire pour REAPER, docs/pitfalls/jsfx.md).
+//
+// Pieges respectes : rien avant @init ; variables prefixees wh_ ; ext_noinit ; pas de nom qui ne differe que
+// par la casse ; coefficients recalcules a chaque echantillon (une pedale bouge, un escalier s'entend).
+
+slider1:wh_wah=0.5<0,1,0.01>Wah
+slider2:wh_vol=0<-20,20,0.1>Volume
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+// la reponse de guitarix (GCB-95) pour W = 0.02, 0.1, 0.25, 0.5, 0.75, 0.9, 0.98 — W = position apres la loi du
+// potentiometre (0 = pointe, 1 = talon) : frequence du pic (Hz), Q (largeur a -3 dB), gain du pic (dB), gain a
+// 100 Hz (dB, hors bloqueur de continu)
+wh_NP = 7;
+wh_w = 0;     wh_w[0] = 0.02; wh_w[1] = 0.1;  wh_w[2] = 0.25; wh_w[3] = 0.5;  wh_w[4] = 0.75; wh_w[5] = 0.9;  wh_w[6] = 0.98;
+wh_f = 8;     wh_f[0] = 1736; wh_f[1] = 1050; wh_f[2] = 736;  wh_f[3] = 548;  wh_f[4] = 459;  wh_f[5] = 420;  wh_f[6] = 408;
+wh_qt = 16;    wh_qt[0] = 3.1;  wh_qt[1] = 4.8;  wh_qt[2] = 5.6;  wh_qt[3] = 8.5;  wh_qt[4] = 8.5;  wh_qt[5] = 8.5;  wh_qt[6] = 8.5;
+wh_g = 24;    wh_g[0] = 18.9; wh_g[1] = 19.0; wh_g[2] = 19.3; wh_g[3] = 19.5; wh_g[4] = 19.6; wh_g[5] = 19.7; wh_g[6] = 19.7;
+wh_fl = 32;   wh_fl[0] = -3.2; wh_fl[1] = -3.1; wh_fl[2] = -2.9; wh_fl[3] = -2.7; wh_fl[4] = -2.5; wh_fl[5] = -2.4; wh_fl[6] = -2.4;
+wh_DC = 228;                                        // bloqueur de continu de guitarix (dcblockerat), Hz
+wh_E5 = exp(5) - 1;
+
+function wh_logpot(x) ( (exp(5 * x) - 1) / wh_E5; );       // la loi « LogPot(5) » du potentiometre
+
+// la position W -> fc, Q, gain du pic, gain sous le pic (interpolation sur la table, log pour la frequence)
+function wh_lookup(w) local(i, t) (
+  w = max(wh_w[0], min(wh_w[wh_NP - 1], w));
+  i = 0;
+  while (i < wh_NP - 2 && w > wh_w[i + 1]) ( i += 1; );
+  t = (w - wh_w[i]) / (wh_w[i + 1] - wh_w[i]);
+  wh_fc = exp(log(wh_f[i]) + t * (log(wh_f[i + 1]) - log(wh_f[i])));
+  wh_qv = wh_qt[i] + t * (wh_qt[i + 1] - wh_qt[i]);
+  wh_gpk = wh_g[i] + t * (wh_g[i + 1] - wh_g[i]);
+  wh_floor = wh_fl[i] + t * (wh_fl[i + 1] - wh_fl[i]);
+);
+
+function wh_coefs() local(g, k) (
+  g = tan($pi * min(wh_fc, 0.45 * srate) / srate);
+  k = 1 / wh_qv;
+  wh_a1 = 1 / (1 + g * (g + k));
+  wh_a2 = g * wh_a1;
+  wh_a3 = g * wh_a2;
+  wh_k = k;
+  wh_lpg = 10 ^ (wh_floor / 20);                                 // le passe-bas porte le niveau sous le pic
+  wh_bpg = sqrt(max(0, sqr(10 ^ (wh_gpk / 20)) - sqr(wh_lpg * wh_qv)));   // en quadrature avec le passe-bas           // le passe-bande complete le pic
+);
+
+// SVF (forme trapezoidale) : etats ic1/ic2 par canal
+function wh_svf(x, ch) local(v1, v2, v3) (
+  v3 = x - wh_ic2[ch];
+  v1 = wh_a1 * wh_ic1[ch] + wh_a2 * v3;
+  v2 = wh_ic2[ch] + wh_a2 * wh_ic1[ch] + wh_a3 * v3;
+  wh_ic1[ch] = 2 * v1 - wh_ic1[ch];
+  wh_ic2[ch] = 2 * v2 - wh_ic2[ch];
+  wh_lpg * v2 + wh_bpg * (wh_k * v1);
+);
+
+wh_last = -1;
+wh_ic1 = 40; wh_ic2 = 42; wh_dcx = 44; wh_dcy = 46;
+wh_smooth = 0;
+wh_pos = wh_logpot(1 - wh_wah);
+wh_gain = 10 ^ (wh_vol / 20);
+
+@slider
+wh_target = wh_logpot(1 - wh_wah);                               // inversee puis log, comme guitarix
+wh_gtarget = 10 ^ (wh_vol / 20);
+
+@block
+wh_s = 0.993 ^ (48000 / srate);                                  // le lissage si.smooth(0.993) de guitarix, a 48 kHz
+wh_dcc = exp(-2 * $pi * wh_DC / srate);
+
+@sample
+wh_pos = wh_s * wh_pos + (1 - wh_s) * wh_target;
+wh_gain = wh_s * wh_gain + (1 - wh_s) * wh_gtarget;
+abs(wh_pos - wh_last) > 0.000001 ? (                              // table et coefficients : seulement quand ca bouge
+  wh_lookup(wh_pos);
+  wh_coefs();
+  wh_last = wh_pos;
+);
+// bloqueur de continu (passe-haut d'ordre 1) puis le filtre, par canal
+wh_y0 = spl0 + 0.000000000000000001 - wh_dcx[0] + wh_dcc * wh_dcy[0]; wh_dcx[0] = spl0; wh_dcy[0] = wh_y0;
+wh_y1 = spl1 + 0.000000000000000001 - wh_dcx[1] + wh_dcc * wh_dcy[1]; wh_dcx[1] = spl1; wh_dcy[1] = wh_y1;
+spl0 = wh_gain * wh_svf(wh_y0, 0);
+spl1 = wh_gain * wh_svf(wh_y1, 1);

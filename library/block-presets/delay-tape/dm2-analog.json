@@ -1,0 +1,13 @@
+{
+ "name": "DM-2 analog",
+ "type": "delay-tape",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "time": "16th",
+  "time_r": "16th",
+  "feedback": 35,
+  "mix": 28,
+  "medium": "Tape"
+ }
+}

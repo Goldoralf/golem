@@ -1,0 +1,11 @@
+{
+ "name": "Bell tone",
+ "type": "ringmod",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "freq": 0.55,
+  "fine": 0.62,
+  "feedback": 0
+ }
+}

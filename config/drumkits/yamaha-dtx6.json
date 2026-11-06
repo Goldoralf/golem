@@ -1,0 +1,53 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "yamaha-dtx6",
+ "name": "Yamaha DTX6 (module DTX-PRO)",
+ "identity": {
+  "brand": "Yamaha",
+  "model": "DTX-PRO",
+  "connection": "usb",
+  "usb_names": [
+   "DTX-PRO",
+   "DTX6",
+   "DTXPRO"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "38": "snare",
+  "40": "snare-rim",
+  "37": "snare-xstick",
+  "48": "tom1",
+  "47": "tom2",
+  "43": "tom3",
+  "51": "ride",
+  "49": "crash1",
+  "46": "hh-open",
+  "42": "hh-closed",
+  "44": "hh-pedal",
+  "83": "hh-splash",
+  "36": "kick",
+  "57": "crash2"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "poly-aftertouch",
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "url": "https://usa.yamaha.com/files/download/other_assets/1/2325611/DTX-PRO_Data_List_En_v200_C0.pdf",
+  "note": "Data List v2 : CC4 charleston, CC16/CC17 = position de frappe snare/ride, aftertouch polyphonique. Table de notes NON imprimée : famille DTX402 PRÉSUMÉE."
+ },
+ "note": "Numéros présumés (famille DTX402) — mesurer."
+}

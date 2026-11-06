@@ -1,0 +1,14 @@
+{
+ "name": "Rhythm heads",
+ "type": "delay-echo",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "repeats": 55,
+  "mix": 42,
+  "input": 30,
+  "head1": true,
+  "head2": true,
+  "head3": true
+ }
+}

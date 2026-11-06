@@ -1,0 +1,11 @@
+{
+ "name": "Broken speaker",
+ "type": "bitcrusher",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "quant": 0.4,
+  "rate": 0.3,
+  "nonlin": 0.6
+ }
+}

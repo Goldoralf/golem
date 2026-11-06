@@ -1,0 +1,13 @@
+{
+ "name": "Metal smear",
+ "type": "surge-freqshift",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "shift": 0.7,
+  "shift_r": 0.7,
+  "time": 0.15,
+  "fbk": 0.5,
+  "mix": 0.4
+ }
+}

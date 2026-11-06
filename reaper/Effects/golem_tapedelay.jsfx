@@ -1,0 +1,119 @@
+desc:GoleM Tape Delay -- the delay-tape block on Windows and macOS (Calf Vintage Delay parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « delay-tape » joue Calf Vintage Delay sous Linux ; Calf n'existe ni sous Windows ni sous macOS
+// (docs/platforms.md §5). Ce JSFX en reprend les NOMS, BORNES, DEFAUTS et la boucle (mode Ping-Pong, celui que
+// le rack laisse a Calf), lus dans le source de Calf le 2026-10-22 (src/modules_delay.cpp, src/metadata.cpp) :
+// golem_rig resout chaque potard par le nom du slider et l'ecrit en BRUT, les presets ne changent pas.
+//
+//  - Temps : un tick = 60 / (BPM x Subdivide) s, Subdivide = 4 (defaut de Calf, le rack n'y touche pas) : un tick
+//    est une DOUBLE CROCHE a son propre BPM. Calf ne suit pas le tempo du projet ; ce JSFX non plus.
+//  - Ping-pong de Calf : chaque cote lit la ligne de l'AUTRE cote (gauche apres Time L, droite apres Time R) et
+//    ecrit sa propre entree + Feedback x ce qu'il lit. Sortie = direct + Wet x lecture.
+//  - Medium : Plain = rien ; Tape = passe-bande RBJ 4,5 kHz Q 0,25 (crete 0 dB) sur ce qui est ecrit dans la
+//    ligne ; Old Tape = ce passe-bande puis un passe-bas RBJ 6 kHz Q 0,707. Pas de saturation (Calf non plus).
+//  - Defauts de Calf : Time L 3, Time R 5, Feedback 0,5, Wet 0,25, BPM 120, Medium Tape — le rack n'ecrit que ce
+//    qu'un preset nomme, le reste joue ces defauts des deux cotes.
+//
+// Ecarts VOULUS avec Calf : un changement de temps fond l'ancienne et la nouvelle lecture en 20 ms (Calf saute,
+// et claque) ; la lecture est entiere comme chez Calf.
+//
+// Pieges respectes (docs/pitfalls/jsfx.md) : rien avant @init ; variables prefixees td_ (EEL2 insensible a la
+// casse) ; aucun slider a minimum negatif ; ext_noinit (le transport n'efface pas les echos) ; lignes taillees une
+// fois pour le pire cas (4 s a 192 kHz), donc un changement de srate ne les raccourcit pas. Un bloc BYPASSE ne
+// recoit plus de @block : au retour (trou de time_precise() > 150 ms) on remet l'AGE a zero, comme Calf apres
+// activate() : une lecture plus vieille que l'age rend 0. Aucun effacement de memoire sur le fil audio.
+
+slider1:td_tl=3<1,16,1>Time L
+slider2:td_tr=5<1,16,1>Time R
+slider3:td_bpm=120<60,300,0.1>BPM
+slider4:td_fb=0.5<0,1,0.01>Feedback
+slider5:td_wet=0.25<0,4,0.01>Wet
+slider6:td_med=1<0,2,1{Plain,Tape,Old Tape}>Medium
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+td_maxlen = 800000;                              // 16 ticks a 60 BPM = 4 s ; 4 s a 192 kHz = 768 000
+td_bufl = 0;
+td_bufr = td_bufl + td_maxlen;
+td_pos = 0;
+td_age = 0;                                      // echantillons ecrits depuis le dernier (re)depart
+td_last = time_precise();
+td_sr = srate;
+td_cl = td_ol = td_cr = td_or = 0;               // lectures courante / ancienne (en echantillons), par cote
+td_xf = 0;                                       // reste du fondu ancienne -> nouvelle lecture (1 -> 0)
+td_s1l = td_s2l = td_t1l = td_t2l = td_s1r = td_s2r = td_t1r = td_t2r = 0;
+
+function td_coefs() local(w, al, c, a0) (
+  // passe-bande RBJ a crete 0 dB : b0 = al, b1 = 0, b2 = -al
+  w = 2 * $pi * min(4500, 0.45 * srate) / srate; al = sin(w) / (2 * 0.25); c = cos(w); a0 = 1 + al;
+  td_pb0 = al / a0; td_pb2 = -al / a0; td_pa1 = -2 * c / a0; td_pa2 = (1 - al) / a0;
+  // passe-bas RBJ Q 0,707
+  w = 2 * $pi * min(6000, 0.45 * srate) / srate; al = sin(w) / (2 * 0.707); c = cos(w); a0 = 1 + al;
+  td_lb0 = (1 - c) / 2 / a0; td_lb1 = (1 - c) / a0; td_lb2 = td_lb0; td_la1 = -2 * c / a0; td_la2 = (1 - al) / a0;
+  td_xfstep = 1 / (0.02 * srate);
+);
+td_coefs();
+
+@slider
+td_med = floor(td_med + 0.5);
+
+@block
+srate != td_sr ? ( td_sr = srate; td_coefs(); td_age = 0; td_xf = 0; td_cl = td_cr = 0; );
+td_now = time_precise();
+td_now - td_last > 0.15 ? (                       // retour de bypass : les vieux echos ne reviennent pas
+  td_age = 0; td_xf = 0;
+  td_s1l = td_s2l = td_t1l = td_t2l = td_s1r = td_s2r = td_t1r = td_t2r = 0;
+);
+td_last = td_now;
+td_unit = 60 * srate / (max(td_bpm, 1) * 4);
+td_nl = min(max(floor(td_unit * max(td_tl, 1) + 0.5), 1), td_maxlen - 1);
+td_nr = min(max(floor(td_unit * max(td_tr, 1) + 0.5), 1), td_maxlen - 1);
+td_cl == 0 ? ( td_cl = td_ol = td_nl; td_cr = td_or = td_nr; );
+(td_nl != td_cl || td_nr != td_cr) ? (
+  // nouveau temps : on fond depuis la lecture ENTENDUE (si un fondu courait, sa cible l'est presque)
+  td_xf > 0.5 ? ( td_cl = td_ol; td_cr = td_or; );
+  td_ol = td_cl; td_or = td_cr; td_cl = td_nl; td_cr = td_nr; td_xf = 1;
+);
+
+@sample
+// lecture : la gauche lit la ligne DROITE, la droite lit la ligne GAUCHE (ping-pong de Calf)
+td_i = td_pos - td_cl; td_i < 0 ? td_i += td_maxlen;
+td_yl = td_age > td_cl ? td_bufr[td_i] : 0;
+td_i = td_pos - td_cr; td_i < 0 ? td_i += td_maxlen;
+td_yr = td_age > td_cr ? td_bufl[td_i] : 0;
+td_xf > 0 ? (
+  td_i = td_pos - td_ol; td_i < 0 ? td_i += td_maxlen;
+  td_zl = td_age > td_ol ? td_bufr[td_i] : 0;
+  td_i = td_pos - td_or; td_i < 0 ? td_i += td_maxlen;
+  td_zr = td_age > td_or ? td_bufl[td_i] : 0;
+  td_yl = td_yl * (1 - td_xf) + td_zl * td_xf;
+  td_yr = td_yr * (1 - td_xf) + td_zr * td_xf;
+  td_xf = max(0, td_xf - td_xfstep);
+);
+td_dl = spl0 + td_fb * td_yl;
+td_dr = spl1 + td_fb * td_yr;
+td_med >= 1 ? (
+  // passe-bande (forme directe II transposee), puis passe-bas pour Old Tape — sur ce qui entre dans la ligne
+  td_o = td_pb0 * td_dl + td_s1l; td_s1l = -td_pa1 * td_o + td_s2l; td_s2l = td_pb2 * td_dl - td_pa2 * td_o; td_dl = td_o;
+  td_o = td_pb0 * td_dr + td_s1r; td_s1r = -td_pa1 * td_o + td_s2r; td_s2r = td_pb2 * td_dr - td_pa2 * td_o; td_dr = td_o;
+  td_med >= 2 ? (
+    td_o = td_lb0 * td_dl + td_t1l; td_t1l = td_lb1 * td_dl - td_la1 * td_o + td_t2l; td_t2l = td_lb2 * td_dl - td_la2 * td_o; td_dl = td_o;
+    td_o = td_lb0 * td_dr + td_t1r; td_t1r = td_lb1 * td_dr - td_la1 * td_o + td_t2r; td_t2r = td_lb2 * td_dr - td_la2 * td_o; td_dr = td_o;
+  );
+);
+abs(td_dl) < 0.000000000000001 ? td_dl = 0;                    // pas de denormaux dans une boucle qui s'eteint
+abs(td_dr) < 0.000000000000001 ? td_dr = 0;
+td_bufl[td_pos] = td_dl;
+td_bufr[td_pos] = td_dr;
+td_pos += 1; td_pos >= td_maxlen ? td_pos = 0;
+td_age < td_maxlen ? td_age += 1;
+spl0 += td_wet * td_yl;
+spl1 += td_wet * td_yr;

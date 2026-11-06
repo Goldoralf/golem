@@ -1,0 +1,11 @@
+{
+ "name": "Subtle",
+ "type": "chorus",
+ "factory": true,
+ "params": {
+  "rate": 0.4,
+  "depth": 2.5,
+  "mix": 0.3
+ },
+ "inst": "any"
+}

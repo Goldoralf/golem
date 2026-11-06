@@ -1,0 +1,14 @@
+{
+ "name": "Parallel smash",
+ "type": "comp",
+ "inst": "drums",
+ "factory": true,
+ "params": {
+  "thresh": -30,
+  "ratio": 8,
+  "makeup": 6,
+  "attack": 3,
+  "release": 80
+ },
+ "default": true
+}

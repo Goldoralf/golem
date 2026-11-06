@@ -1,0 +1,117 @@
+desc:GoleM drum mixer (drummix) -- 16 mic channels down to the stereo bus
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+
+//! GoleM bloc "drums", moteur `drumgizmo`. Se place APRES drumgizmo.lv2 sur la piste
+//! permanente "Drums" (golem_drums.lua), qui passe alors a 16 canaux.
+//!
+//! POURQUOI CE PLUGIN EXISTE. drumgizmo.lv2 sort UN MICRO PAR CANAL -- pour l'Aasimonster :
+//! 1 OHL, 2 OHR, 3 Snare_top, 4 Snare_bottom, 5 Snare_trigger, 6 Trigger, 7 KdrumR,
+//! 8 KdrumL, 9 Hihat, 10 Ride, 11..14 Tom1..4, 15 AmbL, 16 AmbR. Il n'a AUCUN mixeur
+//! interne. Prendre bêtement les canaux 1/2 ne donne donc pas "la batterie" : ça donne
+//! LES OVERHEADS SEULS. Il faut sommer, et c'est ce que fait ce JSFX.
+//!
+//! DEUX CANAUX NE SONT PAS DE L'AUDIO : 5 (Snare_trigger) et 6 (Trigger) sont des sorties
+//! de declenchement (pics destines a un module externe). Les sommer met un clic sur chaque
+//! frappe. Le kit les coupe via sa table `mix` (-60 = bas de course = ZERO strict) --
+//! ce plugin, lui, ne connait aucun kit.
+//!
+//! DEFAUTS NEUTRES, ASSUMES : tous les micros a 0 dB au centre, master a -6 dB (sommer
+//! quatorze micros demande de la marge). C'est volontairement PAS un bon mix --
+//! le mix vit dans le kit (library/kits/<id>.json, cle `mix`), que golem_drums.lua pose
+//! slider par slider. Le moteur reste generique, le contenu reste dans la lib
+//! (docs/blocks-doctrine.md).
+//!
+//! BUDGET THREAD AUDIO : 16 mul-add par echantillon, aucune allocation, aucune branche.
+//! C'est l'oppose du piege documente dans CLAUDE.md (un calcul lourd dans un @block hache
+//! le son) -- ici il n'y a rien a etaler.
+
+slider1:0<-60,12,0.1>Ch1 Gain (dB)
+slider2:0<-1,1,0.01>Ch1 Pan
+slider3:0<-60,12,0.1>Ch2 Gain (dB)
+slider4:0<-1,1,0.01>Ch2 Pan
+slider5:0<-60,12,0.1>Ch3 Gain (dB)
+slider6:0<-1,1,0.01>Ch3 Pan
+slider7:0<-60,12,0.1>Ch4 Gain (dB)
+slider8:0<-1,1,0.01>Ch4 Pan
+slider9:0<-60,12,0.1>Ch5 Gain (dB)
+slider10:0<-1,1,0.01>Ch5 Pan
+slider11:0<-60,12,0.1>Ch6 Gain (dB)
+slider12:0<-1,1,0.01>Ch6 Pan
+slider13:0<-60,12,0.1>Ch7 Gain (dB)
+slider14:0<-1,1,0.01>Ch7 Pan
+slider15:0<-60,12,0.1>Ch8 Gain (dB)
+slider16:0<-1,1,0.01>Ch8 Pan
+slider17:0<-60,12,0.1>Ch9 Gain (dB)
+slider18:0<-1,1,0.01>Ch9 Pan
+slider19:0<-60,12,0.1>Ch10 Gain (dB)
+slider20:0<-1,1,0.01>Ch10 Pan
+slider21:0<-60,12,0.1>Ch11 Gain (dB)
+slider22:0<-1,1,0.01>Ch11 Pan
+slider23:0<-60,12,0.1>Ch12 Gain (dB)
+slider24:0<-1,1,0.01>Ch12 Pan
+slider25:0<-60,12,0.1>Ch13 Gain (dB)
+slider26:0<-1,1,0.01>Ch13 Pan
+slider27:0<-60,12,0.1>Ch14 Gain (dB)
+slider28:0<-1,1,0.01>Ch14 Pan
+slider29:0<-60,12,0.1>Ch15 Gain (dB)
+slider30:0<-1,1,0.01>Ch15 Pan
+slider31:0<-60,12,0.1>Ch16 Gain (dB)
+slider32:0<-1,1,0.01>Ch16 Pan
+slider33:-6<-24,12,0.1>Master (dB)
+
+in_pin:mic 1
+in_pin:mic 2
+in_pin:mic 3
+in_pin:mic 4
+in_pin:mic 5
+in_pin:mic 6
+in_pin:mic 7
+in_pin:mic 8
+in_pin:mic 9
+in_pin:mic 10
+in_pin:mic 11
+in_pin:mic 12
+in_pin:mic 13
+in_pin:mic 14
+in_pin:mic 15
+in_pin:mic 16
+out_pin:left
+out_pin:right
+
+@init
+ext_tail_size = -2;
+NCH = 16;
+gL = 0;          // gL[0..15] : gain vers la gauche, gR[0..15] vers la droite
+gR = 64;
+
+@slider
+// -60 dB = coupe FRANCHE (0.0), pas un gain de 1e-3 : un canal de trigger doit
+// disparaitre, pas devenir un clic tres discret.
+// Pan par puissance constante (cos/sin) : un micro centre ne saute pas de 3 dB
+// quand on le deplace, contrairement au pan lineaire.
+master = 2 ^ (slider33 / 6);
+i = 0;
+while (i < NCH) (
+  db  = slider(1 + i * 2);
+  pan = slider(2 + i * 2);
+  g = db <= -60 ? 0 : 2 ^ (db / 6);
+  g *= master;
+  a = ($pi / 4) * (pan + 1);          // pan -1..1 -> angle 0..pi/2
+  gL[i] = g * cos(a);
+  gR[i] = g * sin(a);
+  i += 1;
+);
+
+@sample
+l = 0; r = 0;
+i = 0;
+while (i < NCH) (
+  s = spl(i);
+  l += s * gL[i];
+  r += s * gR[i];
+  i += 1;
+);
+spl0 = l;
+spl1 = r;

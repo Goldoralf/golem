@@ -1,0 +1,636 @@
+{
+ "id": "factory-guitar-modern-metal",
+ "name": "Modern Metal",
+ "role": "guitar",
+ "tags": [
+  "metal",
+  "high-gain"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Modern Metal",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Clean Intro",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 2.2
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Chug",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Lead",
+     "blocks": {
+      "boost": true,
+      "kill": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Breakdown",
+     "blocks": {
+      "boost": false,
+      "kill": false,
+      "dly": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -40
+      },
+      "eq": {
+       "lowcut": 80,
+       "midgain": -2
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Stutter",
+     "blocks": {
+      "boost": false,
+      "kill": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "foot": 9,
+      "id": "whammy",
+      "type": "whammy-dt",
+      "params": {
+       "won": true,
+       "mode": "↑1 Oct",
+       "don": false,
+       "drop": "Drop −2 semitones (1 step)"
+      }
+     },
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -48,
+       "attack": 1,
+       "release": 80
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 1,
+       "midfreq": 900,
+       "highs": 0
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "stealth",
+         "type": "amp-nam",
+         "label": "EVH 5150 III Stealth",
+         "ref": "28245",
+         "model": "379997",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239394",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "clean",
+         "type": "amp-nam",
+         "label": "Peavey 5150 II",
+         "ref": "2282",
+         "model": "419322",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30b",
+         "type": "cab",
+         "label": "Mesa 4x12 Celestion V30",
+         "ref": "45023",
+         "model": "239438",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "boost",
+      "type": "clean-boost",
+      "foot": 6,
+      "params": {
+       "gain": 3
+      }
+     },
+     {
+      "id": "kill",
+      "type": "killswitch",
+      "foot": 8,
+      "params": {
+       "depth": 100,
+       "length": 50,
+       "sync": "1/16",
+       "trigger": "Engage"
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 12,
+       "decay": 1.2,
+       "predelay": 10,
+       "hicut": 6500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean Intro",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 2.2
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-A"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "B",
+   "name": "Chug",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Lead",
+   "blocks": {
+    "boost": true,
+    "kill": false,
+    "dly": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Breakdown",
+   "blocks": {
+    "boost": false,
+    "kill": false,
+    "dly": false
+   },
+   "params": {
+    "gate": {
+     "thresh": -40
+    },
+    "eq": {
+     "lowcut": 80,
+     "midgain": -2
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Stutter",
+   "blocks": {
+    "boost": false,
+    "kill": true,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "pre": [
+   {
+    "foot": 9,
+    "id": "whammy",
+    "type": "whammy-dt",
+    "params": {
+     "won": true,
+     "mode": "↑1 Oct",
+     "don": false,
+     "drop": "Drop −2 semitones (1 step)"
+    }
+   },
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -48,
+     "attack": 1,
+     "release": 80
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 100,
+     "midgain": 1,
+     "midfreq": 900,
+     "highs": 0
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "stealth",
+       "type": "amp-nam",
+       "label": "EVH 5150 III Stealth",
+       "ref": "28245",
+       "model": "379997",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "v30",
+       "type": "cab",
+       "label": "Mesa 4x12 Celestion V30",
+       "ref": "45023",
+       "model": "239394",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "clean",
+       "type": "amp-nam",
+       "label": "Peavey 5150 II",
+       "ref": "2282",
+       "model": "419322",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "v30b",
+       "type": "cab",
+       "label": "Mesa 4x12 Celestion V30",
+       "ref": "45023",
+       "model": "239438",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "boost",
+    "type": "clean-boost",
+    "foot": 6,
+    "params": {
+     "gain": 3
+    }
+   },
+   {
+    "id": "kill",
+    "type": "killswitch",
+    "foot": 8,
+    "params": {
+     "depth": 100,
+     "length": 50,
+     "sync": "1/16",
+     "trigger": "Engage"
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/4",
+     "feedback": 28,
+     "mix": 16
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 12,
+     "decay": 1.2,
+     "predelay": 10,
+     "hicut": 6500
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "28245",
+   "model": "379997"
+  },
+  {
+   "type": "cab",
+   "ref": "45023",
+   "model": "239394"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "2282",
+   "model": "419322"
+  },
+  {
+   "type": "cab",
+   "ref": "45023",
+   "model": "239438"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "c7e78646e8b2a7d6e447518fd8e2208e13196dd8ac131544560107a9490cfd8b",
+   "uid": "t3k:28245",
+   "kind": "amp",
+   "bytes": 294598,
+   "name": "APP-EVH-Stealth100-Dialled",
+   "source": "t3k",
+   "amp": "EVH 5150 III Stealth 100W",
+   "arch": "2",
+   "brand": "EVH",
+   "creator": "ampspedalspickups",
+   "url": "https://www.tone3000.com/tones/app-evh-5150iii-stealth-100w-28245"
+  },
+  {
+   "sha256": "86e4b4cad67b65b96f5c091dee33e5594d9707bafffd2099c4bcde05800bd198",
+   "uid": "t3k:45023",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "V30 UL 4FB 4x12 SM57 0.50in 0.0in SA73",
+   "source": "t3k",
+   "amp": "Celestion Vintage 30 - 2002 Mesa Boogie 4x12 - SM57",
+   "brand": "Celestion",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45023"
+  },
+  {
+   "sha256": "b39747ef1c4eb81642ffc6fcb5d13d615b84c6cb2401e143a987b7d9fbac9765",
+   "uid": "t3k:2282",
+   "kind": "amp",
+   "bytes": 295965,
+   "name": "PEAVEY - 5150 II - CLEAN - B0 - G7.0",
+   "source": "t3k",
+   "amp": "Peavey 5150",
+   "arch": "1",
+   "brand": "Peavey",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/peavey-5150-ii-052-2282"
+  },
+  {
+   "sha256": "577a59ea66f3d00bb75d191ce141b1a7e79b356c0e6f69b53d98265782cce686",
+   "uid": "t3k:45023",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "V30 UR 4FB 4x12 SM57 0.50in 0.0in SA73",
+   "source": "t3k",
+   "amp": "Celestion Vintage 30 - 2002 Mesa Boogie 4x12 - SM57",
+   "brand": "Celestion",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45023"
+  },
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "maestrium",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "maestrium",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"vu\", \"7\": \"wave\", \"8\": \"scanner\", \"9\": \"vortex\", \"A\": \"sheen\", \"B\": \"pulse\", \"C\": \"aurora\", \"D\": \"smoke\", \"E\": \"snow\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"boost\", \"params\": {\"gain\": 3}, \"type\": \"clean-boost\"}, {\"foot\": 8, \"id\": \"kill\", \"params\": {\"depth\": 100, \"length\": 50, \"sync\": \"1/16\", \"trigger\": \"Engage\"}, \"type\": \"killswitch\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.2, \"hicut\": 6500, \"mix\": 12, \"predelay\": 10}, \"type\": \"reverb-plate\"}], \"pre\": [{\"foot\": 9, \"id\": \"whammy\", \"params\": {\"don\": false, \"drop\": \"Drop −2 semitones (1 step)\", \"mode\": \"↑1 Oct\", \"won\": true}, \"type\": \"whammy-dt\"}, {\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 80, \"thresh\": -48}, \"type\": \"gate\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 100, \"midfreq\": 900, \"midgain\": 1}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"stealth\", \"label\": \"EVH 5150 III Stealth\", \"model\": \"379997\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"28245\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"clean\", \"label\": \"Peavey 5150 II\", \"model\": \"419322\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2282\", \"type\": \"amp-nam\"}, {\"id\": \"v30b\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239438\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#ff0033\", \"6\": \"#ff0033\", \"7\": \"#ff0033\", \"8\": \"#ff0033\", \"9\": \"#ff0033\", \"A\": \"#ff0033\", \"B\": \"#ff0033\", \"C\": \"#ff0033\", \"D\": \"#ff0033\", \"E\": \"#ff0033\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"boost\", \"params\": {\"gain\": 3}, \"type\": \"clean-boost\"}, {\"foot\": 8, \"id\": \"kill\", \"params\": {\"depth\": 100, \"length\": 50, \"sync\": \"1/16\", \"trigger\": \"Engage\"}, \"type\": \"killswitch\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.2, \"hicut\": 6500, \"mix\": 12, \"predelay\": 10}, \"type\": \"reverb-plate\"}], \"pre\": [{\"foot\": 9, \"id\": \"whammy\", \"params\": {\"don\": false, \"drop\": \"Drop −2 semitones (1 step)\", \"mode\": \"↑1 Oct\", \"won\": true}, \"type\": \"whammy-dt\"}, {\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 80, \"thresh\": -48}, \"type\": \"gate\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 100, \"midfreq\": 900, \"midgain\": 1}, \"type\": \"eq\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"stealth\", \"label\": \"EVH 5150 III Stealth\", \"model\": \"379997\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"28245\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"clean\", \"label\": \"Peavey 5150 II\", \"model\": \"419322\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2282\", \"type\": \"amp-nam\"}, {\"id\": \"v30b\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239438\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Modern Metal\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"boost\": false, \"dly\": true, \"kill\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean Intro\", \"params\": {\"verb\": {\"decay\": 2.2, \"mix\": 26}}}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Chug\", \"params\": {}}, {\"blocks\": {\"boost\": true, \"dly\": true, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Lead\", \"params\": {}}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Breakdown\", \"params\": {\"eq\": {\"lowcut\": 80, \"midgain\": -2}, \"gate\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Stutter\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"boost\": false, \"dly\": true, \"kill\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-A\"}}, \"level\": -1, \"name\": \"Clean Intro\", \"params\": {\"verb\": {\"decay\": 2.2, \"mix\": 26}}}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Chug\"}, {\"blocks\": {\"boost\": true, \"dly\": true, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Lead\"}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Breakdown\", \"params\": {\"eq\": {\"lowcut\": 80, \"midgain\": -2}, \"gate\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"dly\": false, \"kill\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Stutter\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#ff0033",
+  "B": "#ff0033",
+  "C": "#ff0033",
+  "D": "#ff0033",
+  "E": "#ff0033",
+  "6": "#ff0033",
+  "7": "#ff0033",
+  "8": "#ff0033",
+  "10": "#ff0033",
+  "9": "#ff0033"
+ },
+ "anims": {
+  "A": "sheen",
+  "B": "pulse",
+  "C": "aurora",
+  "D": "smoke",
+  "E": "snow",
+  "6": "vu",
+  "7": "wave",
+  "8": "scanner",
+  "10": "ember",
+  "9": "vortex"
+ }
+}

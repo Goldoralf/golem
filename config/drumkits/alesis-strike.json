@@ -1,0 +1,60 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "alesis-strike",
+ "name": "Alesis Strike / Strike Pro (SE)",
+ "identity": {
+  "brand": "Alesis",
+  "model": "Strike",
+  "connection": "usb+din",
+  "usb_names": [
+   "Strike"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "48": "tom1",
+  "45": "tom2",
+  "43": "tom3",
+  "41": "tom4",
+  "42": "hh-closed",
+  "46": "hh-open",
+  "44": "hh-pedal",
+  "49": "crash1",
+  "57": "crash2",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "55": "splash",
+  "52": "china"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "note-off",
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "url": "https://files.kraftmusic.com/media/ownersmanual/Alesls_Strike_User_Guide.pdf",
+  "note": "Aucune table par défaut publiée (manuels v1.3, v1.5, SE v1.0 lus) : tout est défini par l'utilisateur, la table GM est SUPPOSÉE. Mécanique du manuel : HiHat « Note+CC#4 » ou « Note Only » au choix, « Cymbal Choke » = une note d'étouffement, activable."
+ },
+ "note": "Repli GM assumé — mesurer.",
+ "audio_outs": {
+  "master": "stereo",
+  "direct": 7,
+  "assignable": true
+ }
+}

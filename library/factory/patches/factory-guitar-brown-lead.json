@@ -1,0 +1,537 @@
+{
+ "id": "factory-guitar-brown-lead",
+ "name": "Brown Lead",
+ "role": "guitar",
+ "tags": [
+  "rock",
+  "lead",
+  "80s"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Brown Lead",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Rhythm",
+     "blocks": {
+      "wah": false,
+      "phaser": false,
+      "flanger": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Brown Lead",
+     "blocks": {
+      "wah": false,
+      "phaser": true,
+      "flanger": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Wah Lead",
+     "blocks": {
+      "wah": true,
+      "phaser": false,
+      "flanger": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Flanged Riff",
+     "blocks": {
+      "wah": false,
+      "phaser": false,
+      "flanger": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Clean-ish",
+     "blocks": {
+      "wah": false,
+      "phaser": false,
+      "flanger": false,
+      "dly": false
+     },
+     "params": {
+      "evh": {
+       "input": -14,
+       "output": 8
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "attack": 2,
+       "release": 120
+      }
+     },
+     {
+      "id": "wah",
+      "type": "wah",
+      "foot": 6,
+      "params": {
+       "wah": 0.55,
+       "volume": 0
+      }
+     },
+     {
+      "id": "phaser",
+      "type": "phaser-js",
+      "foot": 7,
+      "params": {
+       "rate": 0.6,
+       "low": 300,
+       "high": 2200,
+       "feedback": -6,
+       "wet": -3
+      }
+     },
+     {
+      "id": "flanger",
+      "type": "flanger-js",
+      "foot": 8,
+      "params": {
+       "length": 5,
+       "feedback": -12,
+       "wet": -8,
+       "dry": 0,
+       "rate": 0.15
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "evh",
+         "type": "amp",
+         "label": "EVH 5150",
+         "ref": "6440",
+         "model": "418076",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "jcm",
+         "type": "amp",
+         "label": "Marshall JCM800 2203 Modified",
+         "ref": "44209",
+         "model": "567082",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "dly",
+      "type": "delay-tape",
+      "foot": 9,
+      "params": {
+       "time": "16th",
+       "feedback": 30,
+       "mix": 18,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 16,
+       "decay": 1.4,
+       "predelay": 15,
+       "hicut": 7000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Rhythm",
+   "blocks": {
+    "wah": false,
+    "phaser": false,
+    "flanger": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Brown Lead",
+   "blocks": {
+    "wah": false,
+    "phaser": true,
+    "flanger": false,
+    "dly": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "C",
+   "name": "Wah Lead",
+   "blocks": {
+    "wah": true,
+    "phaser": false,
+    "flanger": false,
+    "dly": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Flanged Riff",
+   "blocks": {
+    "wah": false,
+    "phaser": false,
+    "flanger": true,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Clean-ish",
+   "blocks": {
+    "wah": false,
+    "phaser": false,
+    "flanger": false,
+    "dly": false
+   },
+   "params": {
+    "evh": {
+     "input": -14,
+     "output": 8
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -55,
+     "attack": 2,
+     "release": 120
+    }
+   },
+   {
+    "id": "wah",
+    "type": "wah",
+    "foot": 6,
+    "params": {
+     "wah": 0.55,
+     "volume": 0
+    }
+   },
+   {
+    "id": "phaser",
+    "type": "phaser-js",
+    "foot": 7,
+    "params": {
+     "rate": 0.6,
+     "low": 300,
+     "high": 2200,
+     "feedback": -6,
+     "wet": -3
+    }
+   },
+   {
+    "id": "flanger",
+    "type": "flanger-js",
+    "foot": 8,
+    "params": {
+     "length": 5,
+     "feedback": -12,
+     "wet": -8,
+     "dry": 0,
+     "rate": 0.15
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "evh",
+       "type": "amp",
+       "label": "EVH 5150",
+       "ref": "6440",
+       "model": "418076",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "jcm",
+       "type": "amp",
+       "label": "Marshall JCM800 2203 Modified",
+       "ref": "44209",
+       "model": "567082",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "dly",
+    "type": "delay-tape",
+    "foot": 9,
+    "params": {
+     "time": "16th",
+     "feedback": 30,
+     "mix": 18,
+     "medium": "Tape"
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 16,
+     "decay": 1.4,
+     "predelay": 15,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "6440",
+   "model": "418076"
+  },
+  {
+   "type": "amp",
+   "ref": "44209",
+   "model": "567082"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "de421439307fb81dc787ccbf7c8194c5c76e94053b1afd25ffd1bdeb82815047",
+   "uid": "t3k:6440",
+   "kind": "amp-cab",
+   "bytes": 295368,
+   "name": "EVH 5150 ",
+   "source": "t3k",
+   "amp": "EVH 5150",
+   "arch": "2",
+   "brand": "EVH",
+   "creator": "rusen",
+   "url": "https://www.tone3000.com/tones/evh-5150-6440"
+  },
+  {
+   "sha256": "92d4033a3f2c4abb555969dadeea377381df1036def4446c7dbf9080ee4b4816",
+   "uid": "t3k:44209",
+   "kind": "amp-cab",
+   "bytes": 294688,
+   "name": "[AMP] JCM800-2203-MODIFIED-HI Bad Boys 2 - BLEND #1",
+   "source": "t3k",
+   "amp": "Marshall JCM800 2203",
+   "arch": "2",
+   "brand": "Marshall",
+   "creator": "2dor",
+   "url": "https://www.tone3000.com/tones/marshall-jcm800-2203-modified-el34-community-pack-44209"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"rain\", \"7\": \"glitch\", \"8\": \"pulse\", \"9\": \"heartbeat\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"snow\", \"D\": \"ember\", \"E\": \"sheen\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 9, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"medium\": \"Tape\", \"mix\": 18, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.4, \"hicut\": 7000, \"mix\": 16, \"predelay\": 15}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"wah\", \"params\": {\"volume\": 0, \"wah\": 0.55}, \"type\": \"wah\"}, {\"foot\": 7, \"id\": \"phaser\", \"params\": {\"feedback\": -6, \"high\": 2200, \"low\": 300, \"rate\": 0.6, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 8, \"id\": \"flanger\", \"params\": {\"dry\": 0, \"feedback\": -12, \"length\": 5, \"rate\": 0.15, \"wet\": -8}, \"type\": \"flanger-js\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"evh\", \"label\": \"EVH 5150\", \"model\": \"418076\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6440\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203 Modified\", \"model\": \"567082\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"44209\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"6\": \"#c2541b\", \"7\": \"#c2541b\", \"8\": \"#c2541b\", \"9\": \"#c2541b\", \"A\": \"#c2541b\", \"B\": \"#c2541b\", \"C\": \"#c2541b\", \"D\": \"#c2541b\", \"E\": \"#c2541b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 9, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"medium\": \"Tape\", \"mix\": 18, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.4, \"hicut\": 7000, \"mix\": 16, \"predelay\": 15}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"wah\", \"params\": {\"volume\": 0, \"wah\": 0.55}, \"type\": \"wah\"}, {\"foot\": 7, \"id\": \"phaser\", \"params\": {\"feedback\": -6, \"high\": 2200, \"low\": 300, \"rate\": 0.6, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 8, \"id\": \"flanger\", \"params\": {\"dry\": 0, \"feedback\": -12, \"length\": 5, \"rate\": 0.15, \"wet\": -8}, \"type\": \"flanger-js\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"evh\", \"label\": \"EVH 5150\", \"model\": \"418076\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6440\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203 Modified\", \"model\": \"567082\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"44209\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Brown Lead\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": false, \"flanger\": false, \"phaser\": false, \"wah\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Rhythm\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"flanger\": false, \"phaser\": true, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Brown Lead\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"flanger\": false, \"phaser\": false, \"wah\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Wah Lead\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"flanger\": true, \"phaser\": false, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Flanged Riff\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"flanger\": false, \"phaser\": false, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Clean-ish\", \"params\": {\"evh\": {\"input\": -14, \"output\": 8}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": false, \"flanger\": false, \"phaser\": false, \"wah\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Rhythm\"}, {\"blocks\": {\"dly\": true, \"flanger\": false, \"phaser\": true, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-B\"}}, \"level\": 3, \"name\": \"Brown Lead\"}, {\"blocks\": {\"dly\": true, \"flanger\": false, \"phaser\": false, \"wah\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Wah Lead\"}, {\"blocks\": {\"dly\": false, \"flanger\": true, \"phaser\": false, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Flanged Riff\"}, {\"blocks\": {\"dly\": false, \"flanger\": false, \"phaser\": false, \"wah\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-E\"}}, \"level\": -1, \"name\": \"Clean-ish\", \"params\": {\"evh\": {\"input\": -14, \"output\": 8}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#c2541b",
+  "B": "#c2541b",
+  "C": "#c2541b",
+  "D": "#c2541b",
+  "E": "#c2541b",
+  "6": "#c2541b",
+  "7": "#c2541b",
+  "8": "#c2541b",
+  "9": "#c2541b",
+  "10": "#c2541b"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "vortex",
+  "C": "snow",
+  "D": "ember",
+  "E": "sheen",
+  "6": "rain",
+  "7": "glitch",
+  "8": "pulse",
+  "9": "heartbeat",
+  "10": "stars"
+ }
+}

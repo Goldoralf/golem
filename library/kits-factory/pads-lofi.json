@@ -1,0 +1,112 @@
+{
+ "id": "pads-lofi",
+ "name": "Lo-fi",
+ "role": "pad",
+ "engine": "rs5k",
+ "factory": true,
+ "pads": [
+  {
+   "note": 36,
+   "sample": "assets/samples/kits/pads-lofi/01_kick.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 38,
+   "sample": "assets/samples/kits/pads-lofi/03_snare.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 42,
+   "sample": "assets/samples/kits/pads-lofi/06_hat_closed.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 46,
+   "sample": "assets/samples/kits/pads-lofi/08_hat_open.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 39,
+   "sample": "assets/samples/kits/pads-lofi/04_clap.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 37,
+   "sample": "assets/samples/kits/pads-lofi/05_rim.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 45,
+   "sample": "assets/samples/kits/pads-lofi/10_tom_mid.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 49,
+   "sample": "assets/samples/kits/pads-lofi/14_crash.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 35,
+   "sample": "assets/samples/kits/pads-lofi/02_kick_sub.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 44,
+   "sample": "assets/samples/kits/pads-lofi/07_hat_pedal.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 41,
+   "sample": "assets/samples/kits/pads-lofi/09_tom_low.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 48,
+   "sample": "assets/samples/kits/pads-lofi/11_tom_high.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 51,
+   "sample": "assets/samples/kits/pads-lofi/12_ride.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 57,
+   "sample": "assets/samples/kits/pads-lofi/15_crash2.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 53,
+   "sample": "assets/samples/kits/pads-lofi/13_ride_bell.wav",
+   "mode": "oneshot",
+   "level": 0
+  },
+  {
+   "note": 56,
+   "sample": "assets/samples/kits/pads-lofi/16_cowbell.wav",
+   "mode": "oneshot",
+   "level": 0
+  }
+ ],
+ "source": {
+  "by": "drumsynth (synthèse procédurale, ~/code/drumsynth)",
+  "kit": "lofi-000",
+  "seed": 0,
+  "licence": "own — synthesized, no third-party sample",
+  "date": "2026-10-13"
+ }
+}

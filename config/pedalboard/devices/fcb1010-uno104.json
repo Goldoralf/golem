@@ -1,0 +1,155 @@
+{
+ "id": "fcb1010-uno104",
+ "name": "FCB1010 — UnO 1.0.4 chip",
+ "kind": "pedalboard",
+ "schema": 2,
+ "_": "Repris de docs/archive/fcb-uno104/descriptor.json (gelé au commit 608f6ec), débarrassé de l'intention — scènes, stomps et pédales vivent maintenant dans config/pedalboard/contract.json et ne sont plus écrits deux fois. La PROCÉDURE, elle, n'a pas changé d'un mot : elle a été validée au pied le 2026-07-24 et c'est elle qui tient la promesse de rollback.",
+
+ "identity": {
+  "brand": "Behringer",
+  "model": "FCB1010",
+  "firmware": "UnO 1.0.4",
+  "connection": "din",
+  "note": "DIN muette : cette puce NE RÉPOND À RIEN. Elle ne peut donc jamais être détectée, seulement déclarée — le silence sur la demande d'identité élimine la UnO2, il ne prouve pas la 1.0.4."
+ },
+
+ "channel": 1,
+ "channel_comment": "⚠ C'EST LA LIGNE QUI REND LE ROLLBACK VRAI. tools/fcb/gen_golem_syx.py met tous les canaux de cette puce à 0 (canal MIDI 1). Tant que le lecteur portait « canal 2 » en dur, ressouder la 1.0.4 rendait le rack SOURD sans un mot de log : chaque appui était jeté par le filtre de canal, pédalier vivant et rack indifférent.",
+
+ "quirks": {
+  "note_edges": "paired",
+  "note_base": 0,
+  "thru_echo": false,
+  "display_base": 0
+ },
+ "quirks_comment": "⚠ note_edges=paired : cette puce affiche l'appui ET le relâchement en « Note off », souvent sans vélocité — les fronts sont donc reconstruits par appariement (1er événement = press, 2e = release). Ce rattrapage lui est SPÉCIFIQUE : l'appliquer à une puce qui émet des fronts francs inverserait les gestes. thru_echo=false : son MIDI MERGE se coupe, et la procédure le coupe (phase 2).",
+
+ "transport": {"kind": "din-soundcard"},
+ "transport_comment": "Par où le pédalier ARRIVE : le DIN de la carte son active. Un pédalier USB déclarerait {\"kind\": \"usb\", \"port_match\": \"<nom ALSA>\"} — docs/pedalboards.md §10.",
+
+ "capabilities": {
+  "identifies": false,
+  "gestures": false,
+  "goto_bank": {"supported": false},
+  "load": "wire+foot"
+ },
+ "capabilities_comment": "gestures=false : sur la rangée haute, cette puce ne donne pas de fronts de relâchement exploitables — l'appui long du switch 10 n'existe pas ici, et c'est une limite d'appareil, pas un réglage. load=wire+foot : la puce IGNORE les octets globaux du dump filaire, donc le mode stompbox, la rangée haute, Direct Select, le MIDI MERGE et le toggling de chaque stomp se règlent AU PIED, une fois.",
+
+ "load": {
+  "recipe": "uno104",
+  "label": "Flash the FCB1010",
+  "hint": "Sends the frozen golem dump (2352 bytes). The pedal must be in GLOBAL CONFIGURATION with SysEx receive armed — follow the steps."
+ },
+
+ "install": {
+  "needs": [
+   "Volt 276 MIDI OUT → FCB1010 MIDI IN (temporary — only while flashing)",
+   "FCB1010 MIDI OUT → Volt 276 MIDI IN (playing cable)"
+  ],
+  "phases": [
+   {
+    "name": "Flash the golem layout",
+    "steps": [
+     {
+      "title": "Cable for flashing",
+      "do": "Plug the Volt 276 MIDI OUT into the FCB1010 MIDI IN (temporary — this is the flashing direction).",
+      "hint": "Keep the usual FCB OUT → Volt IN cable connected too."
+     },
+     {
+      "title": "New chip? Initialize the memory",
+      "do": "FIRST INSTALL OF THE UnO CHIP ONLY: power the FCB ON while HOLDING footswitches 1 AND 9. Keep them pressed until the display goes BLACK, release, then wait for the 9→0 countdown.",
+      "badge": "first install only",
+      "hint": "Skipping this leaves random data in the UnO memory: ghost program changes, erratic stomps."
+     },
+     {
+      "title": "Enter setup mode",
+      "do": "Power the FCB OFF, then back ON while HOLDING the DOWN pedal (~2.5 s). The unit boots into GLOBAL CONFIGURATION.",
+      "hint": "The display changes and the setup LEDs light up."
+     },
+     {
+      "title": "Go to the third setup page",
+      "do": "Press UP twice.",
+      "hint": "This page holds the SysEx functions."
+     },
+     {
+      "title": "Arm SysEx receive",
+      "do": "Press footswitch 7 — its LED lights up: the FCB now waits for the dump."
+     },
+     {
+      "title": "Flash",
+      "do": "Press the Flash button below. The FCB display flickers while receiving (~2 s).",
+      "action": "pedalboard-load"
+     },
+     {
+      "title": "Store & restart",
+      "do": "Long-press DOWN (~2.5 s) to store, then power-cycle the FCB normally.",
+      "hint": "Display should show bank 00."
+     }
+    ]
+   },
+   {
+    "name": "Global setup (on the pedal)",
+    "steps": [
+     {
+      "title": "Enter setup mode again",
+      "do": "Power OFF, then ON while HOLDING DOWN (~2.5 s).",
+      "hint": "The chip ignores these settings when they come from the wire — they must be set here, once."
+     },
+     {
+      "title": "Page 1 — stompbox mode",
+      "do": "Footswitch 9 → LED ON (stompbox mode). Footswitch 8 → LED ON (stomps on the UPPER row 6-10). Footswitch 10 → LED OFF (Direct Select must stay off).",
+      "hint": "Check the three LEDs before moving on: 8 ON · 9 ON · 10 OFF."
+     },
+     {
+      "title": "Page 3 — kill the MIDI echo",
+      "do": "Press UP twice. Footswitch 8 → LED OFF (MIDI MERGE — leaving it on loops golem's own Whammy messages back in). Footswitch 9 → LED OFF (running status).",
+      "hint": "Check: 8 OFF · 9 OFF."
+     },
+     {
+      "title": "Store & restart",
+      "do": "Long-press DOWN (~2.5 s), then power-cycle. Display shows 00 and switches 1-5 now keep their LED lit."
+     }
+    ]
+   },
+   {
+    "name": "Stomp LEDs (once per stomp)",
+    "steps": [
+     {
+      "title": "Repeat for EACH stomp switch (6, 7, 8, 9, 10)",
+      "do": "Hold the STOMP SWITCH and DOWN together (~2.5 s) — you enter that stomp's own setup. Press UP once. Press footswitch 8 → its LED ON (CC toggling). Long-press DOWN (~2.5 s) to store. Then do the next stomp.",
+      "hint": "This is what makes a stomp LED STAY lit when the effect is on (127/0 toggle). 5 rounds, ~30 s each."
+     }
+    ]
+   },
+   {
+    "name": "Verify",
+    "steps": [
+     {
+      "title": "Re-cable for playing",
+      "do": "Put the Volt 276 MIDI OUT back on its usual gear (Whammy DT chain). Live cabling stays FCB OUT → Volt IN."
+     },
+     {
+      "title": "Checklist",
+      "do": "Display shows 00 · press SW1: its LED stays lit (scene A) · press SW6 twice: its LED latches ON then OFF while SW1 stays lit · UP shows 01, DOWN comes back · long-press SW1 then two digits recalls that slot.",
+      "hint": "Anything off? Pedalboards are described in docs/pedalboards.md."
+     }
+    ]
+   }
+  ]
+ },
+
+ "verify": {
+  "checks": [
+   {"label": "Display shows 00", "expect": "the two-digit display reads 00 after power-up"},
+   {"label": "Scene LED latches", "expect": "press SW1 — its LED stays lit"},
+   {"label": "Stomp LED toggles", "expect": "press SW6 twice — its LED latches ON then OFF, SW1 stays lit"},
+   {"label": "Bank navigation", "expect": "UP shows 01, DOWN comes back to 00"}
+  ]
+ },
+
+ "provenance": {
+  "source": "manual+hardware",
+  "note": "process validé au pied le 2026-07-24 (docs/archive/fcb1010-mapping.md) ; sorti du code en données le 2026-07-28 ; rollback complet gelé dans docs/archive/fcb-uno104/ (dump .syx md5 e6b5134004383d4d925345159530d9d7)",
+  "confidence": "verified"
+ }
+}

@@ -1,0 +1,5 @@
+{
+  "_doc": "Recettes de capture NAM des plugins (bridge/plugin_capture.py, docs/plugin-capture.md). Par plugin (nom REAPER exact) : ce qu'on COUPE avant chaque capture, par NOM de paramètre et valeur AFFICHÉE (relue après écriture, sinon la capture est refusée) — 'min'/'max' = bout de course. Une section temporelle (delay, reverb, modulation) ou un gate laissés dans le rendu donneraient un modèle faux qui « réussit » : la recette les coupe, la conversion les traduit en blocs golem. Le PANNEAU du tiroir (2026-10-10, docs/plugin-capture.md §11) lit trois listes : `refuse` (ce qui EMPÊCHE la capture, nommé, avec sa place et son réglage — `when` porte la SECTION en plus de l'interrupteur : un effet « actif » dans une section coupée ne joue pas), `captured` (ce que la capture contiendra) et, dans `translate`, `show`/`detail`/`loss_if` (ce qui devient un bloc golem, et ce qui s'y perd). golem ne coupe RIEN de ce qui bloque : il le dit, le musicien règle son plugin. Un plugin SANS recette se capture aussi, entier, sous la responsabilité du musicien (il le confirme).",
+  "version": 1,
+  "plugins": {}
+}

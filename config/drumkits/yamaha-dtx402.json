@@ -1,0 +1,53 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "yamaha-dtx402",
+ "name": "Yamaha DTX402 / 432 / 452",
+ "identity": {
+  "brand": "Yamaha",
+  "model": "DTX402",
+  "connection": "usb",
+  "usb_names": [
+   "DTX402",
+   "DTX432",
+   "DTX452",
+   "DTX"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "38": "snare",
+  "40": "snare-rim",
+  "37": "snare-xstick",
+  "48": "tom1",
+  "47": "tom2",
+  "43": "tom3",
+  "51": "ride",
+  "49": "crash1",
+  "46": "hh-open",
+  "42": "hh-closed",
+  "44": "hh-pedal",
+  "83": "hh-splash",
+  "36": "kick",
+  "57": "crash2"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "poly-aftertouch",
+ "provenance": {
+  "source": "manual",
+  "confidence": "reported",
+  "url": "https://data.yamaha.com/files/download/other_assets/8/1181128/dtx402k_432k_452k_en_rm_a0.pdf",
+  "note": "MIDI Reference Yamaha : tom 2 = 47 (pas 45), splash 83, pad additionnel 57. CC4 0 = ouvert → 127 = fermé. Aftertouch = étouffement (seule la crash a un capteur)."
+ }
+}

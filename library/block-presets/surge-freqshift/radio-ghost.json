@@ -1,0 +1,13 @@
+{
+ "name": "Radio ghost",
+ "type": "surge-freqshift",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "shift": 0.62,
+  "shift_r": 0.58,
+  "time": 0.2,
+  "fbk": 0.3,
+  "mix": 0.5
+ }
+}

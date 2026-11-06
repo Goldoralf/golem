@@ -1,0 +1,11 @@
+{
+ "name": "Cleaned up",
+ "type": "amp-nam",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "input": -6,
+  "output": 0,
+  "quality": 1
+ }
+}

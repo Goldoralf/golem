@@ -1,0 +1,52 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "alesis-turbo",
+ "name": "Alesis Turbo Mesh",
+ "identity": {
+  "brand": "Alesis",
+  "model": "Turbo",
+  "connection": "usb+din",
+  "usb_names": [
+   "Turbo"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "48": "tom1",
+  "45": "tom2",
+  "43": "tom3",
+  "41": "tom4",
+  "42": "hh-closed",
+  "46": "hh-open",
+  "44": "hh-pedal",
+  "49": "crash1",
+  "57": "crash2",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "55": "splash",
+  "52": "china"
+ },
+ "hihat": {
+  "cc": null,
+  "open_value": null,
+  "closed_value": null,
+  "positions": 2,
+  "bands": [],
+  "notes": "distinct"
+ },
+ "choke": "none",
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "url": "https://www.alesis.com/rscdn/1937/documents/Turbo%20Drum%20Module%20-%20User%20Guide%20-%20v1.3.pdf",
+  "note": "Le manuel Alesis v1.3 n'imprime AUCUNE table de notes : la table GM est SUPPOSÉE. Tiers : la pédale de charleston est un interrupteur (pas de CC), l'état est envoyé juste avant la note ouverte."
+ },
+ "note": "Repli GM assumé — mesurer avant de s'y fier."
+}

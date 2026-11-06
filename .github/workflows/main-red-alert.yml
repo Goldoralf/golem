@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Main red alert
+
+# Dépôt privé sur un plan gratuit : pas de protection de branche, rien ne refuse un push rouge sur main. Ce
+# workflow est l'alarme qui remplace le verrou (docs/quality-automation.md, lot 1) : CI ou Desktop tests rouge
+# sur main -> une issue « ci-red » s'ouvre (ou reçoit un commentaire si elle est déjà ouverte) ; le prochain
+# run vert du même workflow la ferme.
+on:
+  workflow_run:
+    workflows: ["CI", "Desktop tests"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  alert:
+    name: Open or close the ci-red issue
+    runs-on: ubuntu-24.04
+    if: github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Issue ci-red
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WF: ${{ github.event.workflow_run.name }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          TITLE_: ${{ github.event.workflow_run.head_commit.message }}
+        run: |
+          set -eu
+          title="CI red on main: $WF"
+          subject=$(printf '%s' "$TITLE_" | head -1)
+          existing=$(gh issue list -R "$REPO" --state open --label ci-red --search "in:title \"$title\"" \
+                       --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+          if [ "$CONCLUSION" = "failure" ]; then
+            gh label create ci-red -R "$REPO" --color B60205 --force \
+              --description "A workflow failed on main; closed by the next green run" >/dev/null
+            body="**$WF** failed on \`main\` at \`${SHA:0:10}\` — _${subject}_
+
+            Run: $RUN_URL
+
+            Fix forward or revert; the next green run of **$WF** on \`main\` closes this issue."
+            if [ -n "$existing" ]; then gh issue comment "$existing" -R "$REPO" --body "$body"
+            else gh issue create -R "$REPO" --title "$title" --label ci-red --body "$body"; fi
+          elif [ -n "$existing" ]; then
+            gh issue close "$existing" -R "$REPO" --comment "Green again: **$WF** passed on \`main\` at \`${SHA:0:10}\` ($RUN_URL)."
+          fi

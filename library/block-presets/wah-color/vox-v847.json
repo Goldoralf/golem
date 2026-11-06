@@ -1,0 +1,13 @@
+{
+ "name": "Vox V847",
+ "type": "wah-color",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "model": "Vox V847",
+  "mode": "manual",
+  "wah": 0.3,
+  "freq": 24,
+  "mix": 100
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "name": "Ring tracker",
+ "type": "surge-treemonster",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "thr": 0.3,
+  "speed": 0.6,
+  "lowcut": 0.3,
+  "highcut": 0.7,
+  "pitch": 0.5,
+  "ring": 0.6,
+  "mix": 0.5
+ },
+ "default": true
+}

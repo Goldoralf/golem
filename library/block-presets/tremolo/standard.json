@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "tremolo",
+ "factory": true,
+ "params": {
+  "rate": 5,
+  "depth": 0.6,
+  "wave": "Sine"
+ },
+ "default": true,
+ "inst": "any"
+}

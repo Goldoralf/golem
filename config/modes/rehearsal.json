@@ -1,0 +1,37 @@
+{
+ "id": "rehearsal",
+ "name": "Rehearsal",
+ "icon": "🥁",
+ "order": 4,
+ "desc": "Rehearsal studio — your rig + band multitrack recorder",
+ "services": {
+  "voice": true,
+  "keys": true,
+  "pads": true,
+  "looper": true,
+  "backing": true,
+  "perfrec": true,
+  "sample": true,
+  "arrangement": true,
+  "standard": true,
+  "drummachine": true,
+  "compo": true
+ },
+ "ui": {
+  "pages": [
+   "live",
+   "designer",
+   "songs",
+   "library",
+   "system"
+  ],
+  "boot": "live",
+  "locked": false,
+  "live": "rehearsal"
+ },
+ "perfrec_mode": "auto",
+ "click_mode": "manual",
+ "take_kind": "rehearsal",
+ "foot_list": "factory",
+ "perf_boost": false
+}

@@ -1,0 +1,11 @@
+{
+ "name": "12-string wide",
+ "type": "detune",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "detune": 0.45,
+  "wet": 0.65,
+  "dry": 0.6
+ }
+}

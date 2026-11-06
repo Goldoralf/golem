@@ -1,0 +1,116 @@
+{
+ "id": "test-voice-plain",
+ "name": "Test — Voice plain",
+ "role": "voice",
+ "tags": [
+  "test"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "bpm": 120,
+ "origin": "test",
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Test voice",
+   "midi": false,
+   "stereo": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate"
+     },
+     {
+      "id": "deess",
+      "type": "deesser"
+     },
+     {
+      "id": "comp",
+      "type": "comp"
+     }
+    ],
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq"
+     },
+     {
+      "id": "pitch",
+      "type": "pitch-shift-js",
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Dry",
+     "blocks": {
+      "pitch": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Wet",
+     "blocks": {
+      "pitch": false,
+      "dly": true
+     },
+     "params": {
+      "dly": {
+       "mix": 25
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Dry",
+   "blocks": {
+    "pitch": false,
+    "dly": false
+   },
+   "branches": {},
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Wet",
+   "blocks": {
+    "pitch": false,
+    "dly": true
+   },
+   "branches": {},
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  }
+ }
+}

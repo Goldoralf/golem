@@ -1,0 +1,12 @@
+{
+ "name": "OC-2 classic",
+ "type": "octaver",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "direct": 1,
+  "octave1": 0.7,
+  "octave2": 0
+ },
+ "default": true
+}

@@ -1,0 +1,334 @@
+{
+ "id": "factory-voice-clean",
+ "name": "Clean Vocal",
+ "role": "voice",
+ "tags": [
+  "pop",
+  "rock",
+  "clean"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Clean Vocal",
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Verse",
+     "blocks": {
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Chorus",
+     "blocks": {
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 28,
+       "decay": 2.6
+      },
+      "dly": {
+       "time": "1/4•",
+       "feedback": 35
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Dry",
+     "blocks": {
+      "dly": false
+     },
+     "params": {
+      "verb": {
+       "mix": 6
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "attack": 2,
+       "release": 200
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 10,
+       "release": 150
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 100,
+       "bass": 0,
+       "f1": 250,
+       "g1": -2,
+       "f2": 1000,
+       "g2": 0,
+       "f3": 3500,
+       "g3": 2,
+       "treble": 1
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 8
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 6,
+      "params": {
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 14
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 18,
+       "decay": 1.6,
+       "predelay": 30,
+       "hicut": 8000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Verse",
+   "blocks": {
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Chorus",
+   "blocks": {
+    "dly": true
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 1,
+     "state": "st-voice-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Ballad",
+   "blocks": {
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 28,
+     "decay": 2.6
+    },
+    "dly": {
+     "time": "1/4•",
+     "feedback": 35
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Dry",
+   "blocks": {
+    "dly": false
+   },
+   "params": {
+    "verb": {
+     "mix": 6
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D"
+    }
+   }
+  }
+ ],
+ "config": {
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  },
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -55,
+     "attack": 2,
+     "release": 200
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -20,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 10,
+     "release": 150
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 100,
+     "bass": 0,
+     "f1": 250,
+     "g1": -2,
+     "f2": 1000,
+     "g2": 0,
+     "f3": 3500,
+     "g3": 2,
+     "treble": 1
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 6500,
+     "range": 8
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 6,
+    "params": {
+     "time": "1/4",
+     "feedback": 25,
+     "mix": 14
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 18,
+     "decay": 1.6,
+     "predelay": 30,
+     "hicut": 8000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [],
+ "deps_sig": "{\"anims\": null, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 150, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 3500, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 1}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 8, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.6, \"hicut\": 8000, \"mix\": 18, \"predelay\": 30}, \"type\": \"reverb-plate\"}]}, \"colors\": null, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"black-pearl\", \"motion\": \"comp\", \"standard\": \"rented-room-blues\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 150, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 3500, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 1}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 8, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.6, \"hicut\": 8000, \"mix\": 18, \"predelay\": 30}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Clean Vocal\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Verse\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Chorus\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Ballad\", \"params\": {\"dly\": {\"feedback\": 35, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 2.6, \"mix\": 28}}}, {\"blocks\": {\"dly\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Dry\", \"params\": {\"verb\": {\"mix\": 6}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Verse\"}, {\"blocks\": {\"dly\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-B\"}}, \"level\": 1, \"name\": \"Chorus\"}, {\"blocks\": {\"dly\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Ballad\", \"params\": {\"dly\": {\"feedback\": 35, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 2.6, \"mix\": 28}}}, {\"blocks\": {\"dly\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Dry\", \"params\": {\"verb\": {\"mix\": 6}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#4cc9f0",
+  "B": "#4cc9f0",
+  "C": "#4cc9f0",
+  "D": "#4cc9f0",
+  "9": "#4cc9f0",
+  "10": "#4cc9f0"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "glitch",
+  "C": "heartbeat",
+  "D": "vu",
+  "9": "vortex",
+  "10": "stars"
+ }
+}

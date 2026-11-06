@@ -1,0 +1,11 @@
+{
+ "name": "Shimmer cloud",
+ "type": "granular",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "freeze": 0,
+  "grains": 32,
+  "pos": 0.5
+ }
+}

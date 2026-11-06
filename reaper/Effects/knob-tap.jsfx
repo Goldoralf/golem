@@ -1,0 +1,58 @@
+desc:GoleM knob tap (knob-tap) -- sniffe les CC entrants -> gmem golem_knobs (passthrough MIDI integral)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM keys knob layer (patron dx7-ctl/midi-clock : FX MIDI transparent). Pose par golem_rig
+//! en TETE de chaine du ROOT de la lane Keys (la piste qui porte l'ENTREE MIDI du clavier AKAI,
+//! AVANT les sends MIDI aux enfants-instruments). Role :
+//!   - capte chaque Control Change (0xB0..0xBF) et le publie en memoire globale partagee
+//!     `golem_knobs` : gmem[cc] = valeur 0..127 ; gmem[128+cc] = compteur de changement (seq,
+//!     +1 a chaque CC recu) -> golem_knobs.lua poll les seq et pilote le param cible ;
+//!   - PASSTHROUGH MIDI INTEGRAL : tous les messages (dont les CC) repartent tels quels vers
+//!     l'aval. La Leslie (organ, CC1) et l'arp continuent de recevoir leurs CC -> AUCUNE
+//!     interception destructrice, on ne fait qu'OBSERVER.
+//! Slider temoin "Last CC seen" = numero du dernier CC recu, relu au fxdump : aide le mainteneur a
+//! identifier les CC REELS emis par les 8 potards de son MPK (les defauts config/knobs.json sont
+//! a verifier au rig). Cout quasi nul (une lecture de file MIDI par block).
+//!
+//! Carte gmem golem_knobs : [cc]=derniere valeur 0..127 ; [128+cc]=seq (heartbeat par CC).
+//! Extension CALIBRATION (docs/calibration.md, 2026-07-26) — le meme sniff sert le MIDI-learn :
+//!   [256]=derniere note-on (numero) ; [257]=velocite ; [258]=seq note-on ; [259]=son CANAL 1-16 (2026-10-13 :
+//!   pads et clavier sur le meme canal = un pad joue aussi l'instrument ; la calibration le mesure)
+//!   [260]=pitch bend 0..16383 ; [261]=seq pitch bend
+//!   [262]=dernier CC recu (numero, global) ; [263]=seq CC global
+//! Toujours passthrough integral : la calibration OBSERVE, elle n'intercepte rien.
+//! ⚠ NON validable hors-Reaper : reception MIDI/gmem a prouver au rig (fxdump + golem_knobs).
+
+options:gmem=golem_knobs
+
+slider1:last_cc=-1<-1,127,1>Last CC seen (temoin)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@block
+// lit toute la file MIDI du block : publie CC + notes + pitch bend en gmem, REEMET TOUT
+while (midirecv(mp, s1, s2, s3)) (
+  st = s1 & 0xF0;
+  st == 0xB0 ? (                     // Control Change (tous canaux)
+    cc = s2 & 0x7F;
+    gmem[cc] = s3 & 0x7F;           // valeur courante 0..127
+    gmem[128 + cc] += 1;            // bump du seq -> le lecteur sait que ce CC a bouge
+    gmem[262] = cc; gmem[263] += 1; // learn : dernier CC global
+    last_cc = cc;                    // temoin fxdump
+  );
+  st == 0x90 && s3 > 0 ? (           // Note ON (velocite > 0 ; un 0x90 vel 0 = note off)
+    gmem[256] = s2 & 0x7F;
+    gmem[257] = s3 & 0x7F;
+    gmem[259] = (s1 & 0x0F) + 1;
+    gmem[258] += 1;                  // seq EN DERNIER : le lecteur voit la note avec son canal
+  );
+  st == 0xE0 ? (                     // Pitch bend (14 bits)
+    gmem[260] = (s3 & 0x7F) * 128 + (s2 & 0x7F);
+    gmem[261] += 1;
+  );
+  midisend(mp, s1, s2, s3);         // passthrough : tout continue vers les moteurs (Leslie, arp...)
+);

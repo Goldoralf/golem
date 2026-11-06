@@ -1,0 +1,19 @@
+{
+ "name": "Hygiaphone",
+ "type": "eq-graphic",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "g1": -12,
+  "g2": -12,
+  "g3": -12,
+  "g4": -6,
+  "g5": 2,
+  "g6": 4,
+  "g7": 4,
+  "g8": 0,
+  "g9": -12,
+  "g10": -12,
+  "g11": -12
+ }
+}

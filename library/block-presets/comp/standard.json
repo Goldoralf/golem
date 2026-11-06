@@ -1,0 +1,14 @@
+{
+ "name": "Clean 4:1",
+ "type": "comp",
+ "factory": true,
+ "params": {
+  "thresh": -18,
+  "ratio": 4,
+  "makeup": 3,
+  "attack": 15,
+  "release": 150
+ },
+ "default": true,
+ "inst": "guitar"
+}

@@ -1,0 +1,19 @@
+{
+ "name": "Pad hold",
+ "type": "spectral-comp",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "thresh": -30,
+  "down": 4,
+  "up": 3,
+  "center": 500,
+  "slope": 0,
+  "attack": 150,
+  "release": 500,
+  "window": "4096",
+  "mix": 100,
+  "out": -3
+ },
+ "default": true
+}

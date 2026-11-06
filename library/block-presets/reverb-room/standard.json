@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "reverb-room",
+ "factory": true,
+ "params": {
+  "mix": 25,
+  "decay": 0.7,
+  "size": 12,
+  "hicut": 7000
+ },
+ "default": true,
+ "inst": "any"
+}

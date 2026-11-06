@@ -1,0 +1,18 @@
+{
+ "name": "Hygiaphone",
+ "type": "eq-para",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "lowcut_on": true,
+  "lowcut": 250,
+  "bass": -12,
+  "f1": 600,
+  "g1": 3,
+  "f2": 1200,
+  "g2": 4,
+  "f3": 3000,
+  "g3": -2,
+  "treble": -12
+ }
+}

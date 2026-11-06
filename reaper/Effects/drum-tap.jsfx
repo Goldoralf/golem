@@ -1,0 +1,64 @@
+desc:GoleM drum tap (drum-tap) -- sniffe notes/aftertouch/CC d'un module de batterie -> gmem golem_drumlearn (passthrough)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! Calibration ▸ Drums (docs/calibration.md, addendum 2026-09-23). Pose par golem_drumlearn.lua sur
+//! la piste d'ecoute a la demande « DrumLearn » (entree MIDI = le module). Il OBSERVE, n'intercepte
+//! rien : tout repart en aval (il n'y a rien en aval, mais la regle est la meme que knob-tap).
+//!
+//! POURQUOI UN TAMPON ET PAS « LE DERNIER EVENEMENT » (knob-tap) : un geste de batterie en produit
+//! plusieurs — « charleston ferme » = rafale d'aftertouch poly (la pedale qui se ferme) + note 44
+//! (le chick) + la frappe 42 deux secondes plus tard. Mesure sur l'Alesis Nitro le 2026-09-23 : un
+//! lecteur qui ne garde que le dernier (ou le premier) ecrit une fausse note. Ici : les 32 derniers
+//! evenements, horodates, et le lecteur (le stepper) decide avec la SEQUENCE.
+//!
+//! Carte gmem golem_drumlearn :
+//!   [0] = seq (nombre total d'evenements ecrits, monotone)   [1] = nb d'octets d'horloge MIDI (0xF8)
+//!   [2] = nb de messages ignores (note-off, autres)          [3] = derniere heure vue (time_precise)
+//!   [16 + i*8 .. +7], i = seq % 32 : kind (1 note-on, 2 CC, 3 aftertouch poly), num, val, canal 0-15,
+//!                                     heure (s), 0, 0, 0
+//! ⚠ EEL2 est INSENSIBLE A LA CASSE (CLAUDE.md) : aucun nom ici ne differe d'un autre par la casse.
+//! ⚠ Rien avant la premiere section @ n'est execute : les constantes vivent dans @init.
+
+options:gmem=golem_drumlearn
+
+slider1:last_note=-1<-1,127,1>Last note-on (temoin)
+slider2:last_vel=0<0,127,1>Last velocity (temoin)
+slider3:evt_count=0<0,1000000,1>Events seen (temoin)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+dl_ring = 32; dl_base = 16; dl_stride = 8;
+ext_noinit = 1;      // une re-instanciation ne remet pas le compteur a zero : le lecteur garde ses seq
+
+@block
+while (midirecv(mp, s1, s2, s3)) (
+  st = s1 & 0xF0;
+  s1 == 0xF8 ? (
+    gmem[1] += 1;                          // horloge MIDI : la Nitro en emet en continu, a l'arret
+  ) : (
+    kind = 0;
+    st == 0x90 && s3 > 0 ? kind = 1;       // note-on (velocite > 0 ; un 0x90 vel 0 = note-off)
+    st == 0xB0 ? kind = 2;                 // control change
+    st == 0xA0 ? kind = 3;                 // aftertouch polyphonique (choke, ou pedale de charleston)
+    kind > 0 ? (
+      slot = dl_base + (gmem[0] % dl_ring) * dl_stride;
+      gmem[slot] = kind;
+      gmem[slot + 1] = s2 & 0x7F;
+      gmem[slot + 2] = s3 & 0x7F;
+      gmem[slot + 3] = s1 & 0x0F;
+      gmem[slot + 4] = time_precise();
+      gmem[0] += 1;                        // EN DERNIER : le lecteur ne voit la case qu'une fois pleine
+      kind == 1 ? ( last_note = s2 & 0x7F; last_vel = s3 & 0x7F; );
+      evt_count += 1;
+    ) : (
+      gmem[2] += 1;
+    );
+  );
+  gmem[3] = time_precise();
+  midisend(mp, s1, s2, s3);               // passthrough : on observe, on n'intercepte rien
+);

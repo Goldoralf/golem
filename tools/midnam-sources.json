@@ -1,0 +1,64 @@
+{
+ "why": "Ce qu'on importe du dépôt MIDNAM d'Ardour (GPL-2), et ce qu'on écarte. LE CRITÈRE : est-ce que l'appareil est un BLOC dans la chaîne, ou est-ce qu'il REMPLACE la chaîne ? Un POD ou un GT-8 est un rig complet — il ne se met pas devant GoleM, il le concurrence. Un Whammy, un delay ou une reverb dédiée est un maillon : le rack lui envoie un programme par scène, et c'est exactement ce que ce catalogue sert à faire. (Décision 2026-07-29.)",
+ "license": "Les fichiers MIDNAM d'Ardour sont sous GPL-2.0-or-later (la licence d'Ardour) ; les descripteurs importés gardent cette licence, compatible avec la GPL-3.0-or-later de ce dépôt. Les fichiers créditent leurs auteurs : la provenance de chaque descripteur importé conserve le nom et le chemin d'origine.",
+ "import": [
+  {
+   "midnam": "Line_6_EchoPro",
+   "why": "delay dédié (rack Pro), 99 programmes nommés — un maillon de chaîne"
+  },
+  {
+   "midnam": "Line_6_ModPro",
+   "why": "modulation dédiée, même série"
+  },
+  {
+   "midnam": "Line_6_FilterPro",
+   "why": "filtre dédié, même série"
+  },
+  {
+   "midnam": "Lexicon_MPX100",
+   "why": "reverb de référence, encore très présente en boucle d'effets"
+  },
+  {
+   "midnam": "Lexicon_MX200",
+   "why": "reverb/delay, l'une des plus répandues"
+  },
+  {
+   "midnam": "TC_Electronic_M3000",
+   "why": "reverb de référence"
+  },
+  {
+   "midnam": "Eventide_Eclipse",
+   "why": "processeur d'effets haut de gamme, utilisé EN BOUCLE comme un bloc — 347 presets d'usine nommés (les 89 slots utilisateur sans nom sont écartés à l'import)"
+  }
+ ],
+ "rejected": [
+  {
+   "midnam": "Line_6_POD*, Roland_Boss_GT_3, GT_8, SE_50, SE_70*",
+   "why": "multi-effets / modélisateurs : ils REMPLACENT la chaîne du rack, ils n'y sont pas un bloc"
+  },
+  {
+   "midnam": "Digitech_Quad_4, DSP_128*, Alesis_Quadraverb*, MIDIVerb*, ART_Multiverb*, Rocktron_Replifex",
+   "why": "multi-effets de rack des années 90 — même raison, et personne ne les branche sur un rig moderne"
+  },
+  {
+   "midnam": "Roland_Boss_DS_330",
+   "why": "module de sons, pas un effet"
+  },
+  {
+   "midnam": "Lexicon_*_Expansion",
+   "why": "cartes d'extension, pas des appareils"
+  },
+  {
+   "midnam": "Digitech_Whammy_DT",
+   "why": "déjà au catalogue, et NOTRE version est calibrée au matériel (39 modes validés à l'oreille, familles, treadle). L'import serait une régression."
+  },
+  {
+   "midnam": "les ~430 autres",
+   "why": "synthés et modules de sons : hors sujet pour une chaîne guitare"
+  },
+  {
+   "midnam": "(correction 2026-07-29)",
+   "why": "l'Eclipse avait été écarté sur la foi de ses 5 premières lignes — ses slots utilisateur sont numérotés, mais 347 presets d'usine sont bel et bien nommés. Juger un fichier sur son début est une erreur qu'on ne refait pas."
+  }
+ ]
+}

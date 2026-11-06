@@ -1,0 +1,78 @@
+{
+  "_comment": "Liste de référence des amplis à avoir dans la lib GoleM. Wishlist consommée par tools/t3k pull-catalog : pour chaque entrée on cherche `search` sur TONE3000 (gears amp/amp-cab, sort downloads-all-time) et on récupère la/les meilleures captures NAM. 'style' suit notre convention (metal/rock/blues/jazz/funk/bass). Rien n'est embarqué dans Git : les .nam tirés vont dans assets/ (gitignored).",
+  "_schema": { "make": "marque/modèle canonique", "search": "requête TONE3000", "style": "famille principale", "tags": "descripteurs", "era": "période/usage", "note": "pourquoi il est dans la liste" },
+  "categories": {
+    "clean-american": {
+      "label": "Cleans & crunch américains (Fender & co)",
+      "amps": [
+        { "make": "Fender Twin Reverb", "search": "Fender Twin Reverb", "style": "rock", "tags": ["clean", "fender", "blackface"], "era": "60s→", "note": "Le clean US de référence, pedal-platform." },
+        { "make": "Fender Deluxe Reverb", "search": "Fender Deluxe Reverb", "style": "rock", "tags": ["clean", "fender", "breakup"], "era": "65", "note": "Clean + breakup doux, ultra demandé." },
+        { "make": "Fender Super Reverb", "search": "Fender Super Reverb", "style": "blues", "tags": ["clean", "fender", "4x10"], "era": "60s", "note": "Top téléchargements TONE3000." },
+        { "make": "Fender Princeton Reverb", "search": "Fender Princeton Reverb", "style": "rock", "tags": ["clean", "fender", "studio"], "era": "60s", "note": "Petit combo studio iconique." },
+        { "make": "Fender Bassman 5F6-A", "search": "Fender Bassman tweed", "style": "blues", "tags": ["tweed", "crunch", "fender"], "era": "59", "note": "Ancêtre du Marshall, crunch bluesy." }
+      ]
+    },
+    "british": {
+      "label": "British crunch (Marshall / Vox / Hiwatt)",
+      "amps": [
+        { "make": "Marshall 1959 Super Lead Plexi", "search": "Marshall Plexi 1959", "style": "rock", "tags": ["plexi", "marshall", "crunch"], "era": "68", "note": "Le son rock classic-rock par excellence." },
+        { "make": "Marshall JTM45", "search": "Marshall JTM45", "style": "blues", "tags": ["marshall", "bluesbreaker"], "era": "62", "note": "Bluesbreaker, blues-rock tone." },
+        { "make": "Marshall JCM800 2203", "search": "Marshall JCM800 2203", "style": "rock", "tags": ["marshall", "hot-rod", "80s"], "era": "81", "note": "Hard rock/metal 80s, hyper populaire." },
+        { "make": "Marshall JCM900", "search": "Marshall JCM900", "style": "rock", "tags": ["marshall", "90s", "gain"], "era": "90s", "note": "Plus de gain, grunge/alt." },
+        { "make": "Vox AC30", "search": "Vox AC30 Top Boost", "style": "rock", "tags": ["vox", "chime", "british"], "era": "60s→", "note": "Chime british." },
+        { "make": "Vox AC15", "search": "Vox AC15", "style": "blues", "tags": ["vox", "chime", "combo"], "era": "60s→", "note": "Petit frère, crunch précoce." },
+        { "make": "Hiwatt DR103", "search": "Hiwatt DR103", "style": "rock", "tags": ["hiwatt", "clean-loud", "british"], "era": "70s", "note": "Headroom massif." }
+      ]
+    },
+    "boutique-highgain": {
+      "label": "Boutique haut-gain (Soldano / Friedman / Bogner / Diezel / Dumble)",
+      "amps": [
+        { "make": "Soldano SLO-100", "search": "Soldano SLO-100", "style": "rock", "tags": ["soldano", "lead", "saturated"], "era": "87", "note": "Le lead saturé de référence." },
+        { "make": "Friedman BE-100", "search": "Friedman BE100", "style": "rock", "tags": ["friedman", "modded-marshall", "brown"], "era": "10s", "note": "Marshall modded moderne, énorme sur T3K." },
+        { "make": "Bogner Ecstasy", "search": "Bogner Ecstasy", "style": "rock", "tags": ["bogner", "lead", "blue-red"], "era": "90s→", "note": "Lead boutique polyvalent." },
+        { "make": "Bogner Uberschall", "search": "Bogner Uberschall", "style": "metal", "tags": ["bogner", "high-gain", "tight"], "era": "00s", "note": "Brutal et serré, metal moderne." },
+        { "make": "Diezel VH4", "search": "Diezel VH4", "style": "metal", "tags": ["diezel", "high-gain", "german"], "era": "90s→", "note": "Rythmiques chirurgicales, prog/metal." },
+        { "make": "Diezel Herbert", "search": "Diezel Herbert", "style": "metal", "tags": ["diezel", "high-gain", "mid"], "era": "00s", "note": "Variante Herbert, gros médiums." },
+        { "make": "Dumble Overdrive Special", "search": "Dumble Overdrive Special", "style": "blues", "tags": ["dumble", "smooth", "boutique"], "era": "rare", "note": "Le Graal blues/fusion (clones)." }
+      ]
+    },
+    "mesa": {
+      "label": "Mesa/Boogie (Mark & Recto)",
+      "amps": [
+        { "make": "Mesa Mark IIC+", "search": "Mesa Mark IIC+", "style": "metal", "tags": ["mesa", "mark", "lead"], "era": "80s", "note": "Le lead metal des années 80-90." },
+        { "make": "Mesa Mark IV", "search": "Mesa Mark IV", "style": "metal", "tags": ["mesa", "mark", "tight"], "era": "90s", "note": "Polyvalent, son scooped." },
+        { "make": "Mesa Dual Rectifier", "search": "Mesa Dual Rectifier", "style": "metal", "tags": ["mesa", "recto", "nu-metal"], "era": "90s→", "note": "Le recto nu-metal/modern, indispensable." },
+        { "make": "Mesa Triple Rectifier", "search": "Mesa Triple Rectifier", "style": "metal", "tags": ["mesa", "recto", "huge"], "era": "90s→", "note": "Encore plus de coffre." },
+        { "make": "Mesa Badlander", "search": "Mesa Badlander", "style": "metal", "tags": ["mesa", "modern", "tight"], "era": "20s", "note": "Recto moderne, top T3K." }
+      ]
+    },
+    "metal-modern": {
+      "label": "Metal moderne (5150 / ENGL / Revv / Fortin…)",
+      "amps": [
+        { "make": "Peavey 5150 Block Letter", "search": "Peavey 5150 block letter", "style": "metal", "tags": ["5150", "peavey", "high-gain"], "era": "90s", "note": "Déjà dans la lib. Le standard metal." },
+        { "make": "Peavey 6505+", "search": "Peavey 6505+", "style": "metal", "tags": ["6505", "peavey", "metalcore"], "era": "00s→", "note": "Le 5150 v2, metalcore par défaut." },
+        { "make": "EVH 5150III 100W", "search": "EVH 5150III", "style": "metal", "tags": ["evh", "5150", "modern"], "era": "10s→", "note": "Trois canaux, polyvalent." },
+        { "make": "ENGL Powerball", "search": "ENGL Powerball", "style": "metal", "tags": ["engl", "german", "high-gain"], "era": "00s", "note": "Tight et agressif." },
+        { "make": "ENGL Fireball", "search": "ENGL Fireball", "style": "metal", "tags": ["engl", "german", "tight"], "era": "00s", "note": "Focalisé, death/thrash." },
+        { "make": "Revv Generator", "search": "Revv Generator", "style": "metal", "tags": ["revv", "modern", "djent"], "era": "10s→", "note": "Djent/modern metal, purple channel." },
+        { "make": "Fortin Natas / Cali", "search": "Fortin", "style": "metal", "tags": ["fortin", "brutal", "8-string"], "era": "10s→", "note": "Très haut gain, ère 8 cordes." },
+        { "make": "Randall (Dimebag)", "search": "Randall Dimebag", "style": "metal", "tags": ["randall", "solid-state"], "era": "90s", "note": "Le son solid-state metal des années 90." }
+      ]
+    },
+    "jazz-clean": {
+      "label": "Jazz & cleans spécialisés",
+      "amps": [
+        { "make": "Roland JC-120 Jazz Chorus", "search": "Roland JC-120", "style": "jazz", "tags": ["roland", "clean", "chorus", "solid-state"], "era": "75→", "note": "LE clean jazz/post-punk, chorus stéréo." },
+        { "make": "Polytone Mini-Brute", "search": "Polytone", "style": "jazz", "tags": ["polytone", "jazz", "warm"], "era": "70s→", "note": "Clean jazz chaud (Metheny)." },
+        { "make": "Henriksen Bud", "search": "Henriksen", "style": "jazz", "tags": ["henriksen", "jazz", "acoustic-amp"], "era": "00s→", "note": "Ampli jazz moderne neutre." }
+      ]
+    },
+    "bass": {
+      "label": "Basse (pour la voix/2e source plus tard, et complétude)",
+      "amps": [
+        { "make": "Ampeg SVT", "search": "Ampeg SVT", "style": "bass", "tags": ["ampeg", "bass", "8x10"], "era": "69→", "note": "Le son basse rock/metal de référence." },
+        { "make": "Darkglass B7K", "search": "Darkglass", "style": "bass", "tags": ["darkglass", "bass", "modern", "distortion"], "era": "10s→", "note": "Basse moderne saturée (djent)." }
+      ]
+    }
+  }
+}

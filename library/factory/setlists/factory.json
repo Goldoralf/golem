@@ -1,0 +1,225 @@
+{
+ "id": "factory",
+ "name": "Factory Golem",
+ "fcb": true,
+ "rev": 1,
+ "kind": "songs",
+ "presets": [
+  "factory-chill-jazz",
+  "factory-blues-night",
+  "factory-funk-session",
+  "factory-rock-classics",
+  "factory-indie-pop",
+  "factory-alt-rock",
+  "factory-metal-for-all",
+  "factory-loop-station",
+  "factory-ambient-metal"
+ ],
+ "origin": "factory",
+ "lines": [
+  {
+   "id": "r:factory:0",
+   "rev": 2,
+   "preset": "factory-chill-jazz",
+   "title": "Rooftop Prowl",
+   "bpm": 180
+  },
+  {
+   "id": "r:factory:1",
+   "rev": 2,
+   "preset": "factory-blues-night",
+   "title": "Rented Room Blues",
+   "bpm": 96
+  },
+  {
+   "id": "r:factory:2",
+   "rev": 2,
+   "preset": "factory-funk-session",
+   "title": "Velvet Pocket",
+   "bpm": 104
+  },
+  {
+   "id": "r:factory:3",
+   "rev": 2,
+   "preset": "factory-rock-classics",
+   "title": "Diesel Heart",
+   "bpm": 128
+  },
+  {
+   "id": "r:factory:4",
+   "rev": 2,
+   "preset": "factory-indie-pop",
+   "title": "Paper Satellites",
+   "bpm": 118
+  },
+  {
+   "id": "r:factory:5",
+   "rev": 2,
+   "preset": "factory-alt-rock",
+   "title": "Static Bloom",
+   "bpm": 120
+  },
+  {
+   "id": "r:factory:6",
+   "rev": 2,
+   "preset": "factory-metal-for-all",
+   "title": "Iron Tide",
+   "bpm": 140
+  },
+  {
+   "id": "r:factory:7",
+   "rev": 2,
+   "preset": "factory-loop-station",
+   "title": "One-Man Orchestra",
+   "bpm": 100
+  },
+  {
+   "id": "r:factory:8",
+   "rev": 1,
+   "band_song": "rs:f3f0252689f96910f01c81be0325855f",
+   "title": "Golem Rising",
+   "preset": "factory-ambient-metal",
+   "bpm": 120,
+   "tuning": "Standard",
+   "arrangement": {
+    "type": "arrangement",
+    "id": "arr-song",
+    "params": {
+     "advance": "bars",
+     "sig": {
+      "num": 4,
+      "den": 4
+     },
+     "count_in": 1,
+     "starts": {
+      "drums": true,
+      "click": false,
+      "backing": false
+     },
+     "sections": [
+      {
+       "name": "Intro",
+       "bars": 4,
+       "scene": "A",
+       "drums": 0,
+       "blocks": {
+        "dly-3": true
+       }
+      },
+      {
+       "name": "Verse 1",
+       "bars": 7,
+       "scene": "B",
+       "drums": 1,
+       "blocks": {
+        "shim-2": true
+       }
+      },
+      {
+       "name": "Fill",
+       "bars": 1,
+       "drums": 5,
+       "blocks": {
+        "ts": true,
+        "scream": true
+       }
+      },
+      {
+       "name": "Chorus",
+       "bars": 8,
+       "scene": "D",
+       "drums": 2,
+       "blocks": {
+        "chorus-2": true
+       }
+      },
+      {
+       "name": "Verse 2",
+       "bars": 7,
+       "scene": "C",
+       "drums": 3,
+       "blocks": {
+        "dly-3": true
+       }
+      },
+      {
+       "name": "Fill",
+       "bars": 1,
+       "drums": 5,
+       "blocks": {
+        "shim": true,
+        "scream": true
+       }
+      },
+      {
+       "name": "Chorus",
+       "bars": 7,
+       "scene": "D",
+       "drums": 2,
+       "blocks": {
+        "echo": true
+       }
+      },
+      {
+       "name": "Fill",
+       "bars": 1,
+       "drums": 5,
+       "blocks": {
+        "dly-2": true,
+        "scream": true
+       }
+      },
+      {
+       "name": "Solo",
+       "bars": 4,
+       "scene": "E",
+       "drums": 4,
+       "blocks": {
+        "chorus": true
+       }
+      },
+      {
+       "name": "Solo · climb",
+       "bars": 4,
+       "blocks": {
+        "shim": true
+       }
+      },
+      {
+       "name": "Chorus",
+       "bars": 8,
+       "scene": "D",
+       "drums": 2,
+       "blocks": {
+        "shim": true,
+        "double": true,
+        "dly-3": true
+       }
+      },
+      {
+       "name": "Outro",
+       "bars": 4,
+       "scene": "C",
+       "drums": 3,
+       "blocks": {
+        "shim-2": true,
+        "scream": true
+       }
+      },
+      {
+       "name": "End",
+       "bars": 1,
+       "drums": 6,
+       "blocks": {
+        "dly": true,
+        "shim": true,
+        "shim-2": true
+       }
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "factory": true
+}

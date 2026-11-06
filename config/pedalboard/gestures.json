@@ -1,0 +1,77 @@
+{
+ "_comment": "LES GESTES DE CHAQUE BLOC AU PIED, par état — la SEULE source de ce que /live dessine sur ses cases (glyphes) et de ce que l'onglet MIDI assign du Designer écrit en toutes lettres (2026-09-21). Ce fichier DÉCRIT, le bridge AGIT (backing.py, looper.py, sample.py, drums.py, standards.py, arrangement.py, foot.py) : tests/test_gestures_table.py accroche chaque durée d'ici à la constante du code, pour qu'un seuil changé d'un côté casse le test au lieu de mentir à l'écran. Signes : tap · double (double-tap) · hold (appui long) · longhold (maintien prolongé). `icon` = le glyphe de /live ; `text` = la phrase du Designer (ANGLAIS : c'est de l'UI). `s` = durée en secondes quand le geste en a une.",
+ "signs": ["tap", "double", "hold", "longhold"],
+ "blocks": {
+  "backing-track": {
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Play"}]},
+    "playing": {"label": "Playing", "gestures": [
+      {"g": "tap", "icon": "⏸", "text": "Pause"},
+      {"g": "double", "icon": "⏮", "text": "Restart from the top", "s": 0.4},
+      {"g": "hold", "icon": "■", "text": "Stop and rewind", "s": 0.6}]}
+   }
+  },
+  "take": {
+   "_comment": "Rec + Backing sur le MÊME switch : un seul geste (docs/blocks-doctrine.md, addendum 2026-09-21). Un tap seul : /live ne dessine rien.",
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "●", "text": "Count-in, then the take and the backing start from the top"}]},
+    "playing": {"label": "Recording", "gestures": [{"g": "tap", "icon": "■", "text": "Stop the take and the backing"}]}
+   }
+  },
+  "sample": {
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Play the next sample"}]},
+    "playing": {"label": "Playing", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop"},
+      {"g": "hold", "icon": "■", "text": "Stop", "s": 0.6}]}
+   }
+  },
+  "drums": {
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Play the groove"}]},
+    "playing": {"label": "Playing", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop"},
+      {"g": "hold", "icon": "↻", "text": "Next variation, on the bar", "s": 0.6},
+      {"g": "longhold", "icon": "■", "text": "Stop", "s": 1.5}]}
+   }
+  },
+  "standard": {
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Play the chart"}]},
+    "playing": {"label": "Playing", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop"},
+      {"g": "hold", "icon": "⏮", "text": "Restart from the top", "s": 1.2}]}
+   }
+  },
+  "arrangement": {
+   "states": {
+    "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Start the song"}]},
+    "playing": {"label": "Running", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop the song — in Foot mode: next part, then stop after the last one"}]}
+   }
+  },
+  "looper-slot": {
+   "states": {
+    "empty": {"label": "Empty", "gestures": [{"g": "tap", "icon": "●", "text": "Record"}]},
+    "rec":   {"label": "Recording", "gestures": [{"g": "tap", "icon": "▶", "text": "Close the loop and play"}]},
+    "play":  {"label": "Playing", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop"},
+      {"g": "double", "icon": "⊕", "text": "Overdub on / off", "s": 0.4},
+      {"g": "hold", "icon": "✕", "text": "Clear this loop", "s": 0.6}]},
+    "dub":   {"label": "Overdubbing", "gestures": [
+      {"g": "tap", "icon": "■", "text": "Stop"},
+      {"g": "double", "icon": "⊕", "text": "Overdub on / off", "s": 0.4},
+      {"g": "hold", "icon": "✕", "text": "Clear this loop", "s": 0.6}]},
+    "stop":  {"label": "Stopped", "gestures": [
+      {"g": "tap", "icon": "▶", "text": "Play"},
+      {"g": "hold", "icon": "✕", "text": "Clear this loop", "s": 0.6}]}
+   }
+  },
+  "looper-all":  {"states": {"any": {"label": "", "gestures": [{"g": "tap", "icon": "⏯", "text": "Play / stop all loops"}]}}},
+  "looper-kill": {"states": {"any": {"label": "", "gestures": [{"g": "hold", "icon": "✕", "text": "Delete all loops", "s": 1.2}]}}},
+  "select": {
+   "_comment": "L'appui long du switch de sélection (contract.json select.switch) : saisie d'un n° de slot. S'AJOUTE au geste de la case (scène ou bloc).",
+   "states": {"any": {"label": "", "gestures": [{"g": "hold", "icon": "#", "text": "Type a slot number (two switches, 10 = 0)", "s": 1.5}]}}
+  }
+ }
+}

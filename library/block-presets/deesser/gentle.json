@@ -1,0 +1,12 @@
+{
+ "name": "Gentle",
+ "type": "deesser",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -24,
+  "freq": 6500,
+  "range": 6,
+  "listen": false
+ }
+}

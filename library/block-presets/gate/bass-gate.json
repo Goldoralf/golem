@@ -1,0 +1,16 @@
+{
+ "name": "Bass gate",
+ "type": "gate",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "thresh": -55,
+  "attack": 5,
+  "hold": 50,
+  "release": 250,
+  "hpf": 30,
+  "lpf": 8000,
+  "hyst": -4
+ },
+ "default": true
+}

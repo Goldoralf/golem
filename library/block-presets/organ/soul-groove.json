@@ -1,0 +1,24 @@
+{
+ "name": "Soul Groove",
+ "type": "organ",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "db16": 8,
+  "db513": 8,
+  "db8": 8,
+  "db4": 6,
+  "db223": 3,
+  "db2": 0,
+  "db135": 0,
+  "db113": 0,
+  "db1": 0,
+  "leslie": "slow",
+  "vibrato": "C3",
+  "perc": false,
+  "perc_harm": "3rd",
+  "perc_decay": "fast",
+  "drive": false,
+  "character": 30
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "name": "Vocal opto",
+ "type": "comp",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -20,
+  "ratio": 3,
+  "makeup": 3,
+  "attack": 25,
+  "release": 300
+ },
+ "default": true
+}

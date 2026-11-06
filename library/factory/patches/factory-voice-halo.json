@@ -1,0 +1,525 @@
+{
+ "id": "factory-voice-halo",
+ "name": "Halo Vocal",
+ "role": "voice",
+ "tags": [
+  "metal",
+  "ambient",
+  "falsetto"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Halo Vocal",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "attack": 2,
+       "hold": 40,
+       "release": 200
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 7000,
+       "range": 10
+      }
+     },
+     {
+      "id": "scream",
+      "type": "grit",
+      "foot": 6,
+      "params": {
+       "lo_m1": "Off",
+       "lo_m2": "Off",
+       "lm_m1": "Off",
+       "lm_m2": "Off",
+       "hm_m1": "Sample divide",
+       "hm_m2": "Gain",
+       "hi_m1": "Off",
+       "hi_m2": "Off",
+       "lo_v1": 0,
+       "lo_v2": 0,
+       "lm_v1": 0,
+       "lm_v2": 0,
+       "hm_v1": 24,
+       "hm_v2": 53,
+       "hi_v1": 0,
+       "hi_v2": 0,
+       "lo_gain": 50,
+       "lm_gain": 50,
+       "hm_gain": 50,
+       "hi_gain": 50,
+       "x1": 25,
+       "x2": 63,
+       "x3": 70,
+       "wet": 100,
+       "quality": false
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -22,
+       "ratio": 3.5,
+       "makeup": 4,
+       "attack": 8,
+       "release": 140
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 110,
+       "bass": 0,
+       "f1": 280,
+       "g1": -2,
+       "f2": 1200,
+       "g2": 0,
+       "f3": 5000,
+       "g3": 1.5,
+       "treble": 2
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus-js",
+      "foot": 8,
+      "params": {
+       "length": 22,
+       "voices": 2,
+       "rate": 0.3,
+       "wet": -14,
+       "dry": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 7,
+      "params": {
+       "time": "1/4",
+       "feedback": 32,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 26,
+       "decay": 2.6,
+       "predelay": 40,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Falsetto Halo",
+     "blocks": {
+      "scream": false,
+      "double": true,
+      "dly": true
+     },
+     "params": {
+      "dly": {
+       "feedback": 38,
+       "mix": 18
+      },
+      "verb": {
+       "mix": 32,
+       "decay": 3.0,
+       "predelay": 40
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Close Verse",
+     "blocks": {
+      "scream": false,
+      "double": false,
+      "dly": false
+     },
+     "params": {
+      "verb": {
+       "mix": 16,
+       "decay": 1.8,
+       "predelay": 30
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Grit Belt",
+     "blocks": {
+      "scream": true,
+      "double": false,
+      "dly": false
+     },
+     "params": {
+      "gate": {
+       "thresh": -45
+      },
+      "comp": {
+       "ratio": 5
+      },
+      "verb": {
+       "mix": 12,
+       "decay": 1.2,
+       "predelay": 20
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Anthem",
+     "blocks": {
+      "scream": false,
+      "double": true,
+      "dly": true
+     },
+     "params": {
+      "double": {
+       "wet": -10
+      },
+      "dly": {
+       "time": "1/8•",
+       "feedback": 25,
+       "mix": 12
+      },
+      "verb": {
+       "mix": 24,
+       "decay": 2.4,
+       "predelay": 40
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Falsetto Halo",
+   "blocks": {
+    "scream": false,
+    "double": true,
+    "dly": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   },
+   "params": {
+    "dly": {
+     "feedback": 38,
+     "mix": 18
+    },
+    "verb": {
+     "mix": 32,
+     "decay": 3.0,
+     "predelay": 40
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Close Verse",
+   "blocks": {
+    "scream": false,
+    "double": false,
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 16,
+     "decay": 1.8,
+     "predelay": 30
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Grit Belt",
+   "blocks": {
+    "scream": true,
+    "double": false,
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C",
+     "level": 1
+    }
+   },
+   "params": {
+    "gate": {
+     "thresh": -45
+    },
+    "comp": {
+     "ratio": 5
+    },
+    "verb": {
+     "mix": 12,
+     "decay": 1.2,
+     "predelay": 20
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Anthem",
+   "blocks": {
+    "scream": false,
+    "double": true,
+    "dly": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "double": {
+     "wet": -10
+    },
+    "dly": {
+     "time": "1/8•",
+     "feedback": 25,
+     "mix": 12
+    },
+    "verb": {
+     "mix": 24,
+     "decay": 2.4,
+     "predelay": 40
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-chorus.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -55,
+     "attack": 2,
+     "hold": 40,
+     "release": 200
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 7000,
+     "range": 10
+    }
+   },
+   {
+    "id": "scream",
+    "type": "grit",
+    "foot": 6,
+    "params": {
+     "lo_m1": "Off",
+     "lo_m2": "Off",
+     "lm_m1": "Off",
+     "lm_m2": "Off",
+     "hm_m1": "Sample divide",
+     "hm_m2": "Gain",
+     "hi_m1": "Off",
+     "hi_m2": "Off",
+     "lo_v1": 0,
+     "lo_v2": 0,
+     "lm_v1": 0,
+     "lm_v2": 0,
+     "hm_v1": 24,
+     "hm_v2": 53,
+     "hi_v1": 0,
+     "hi_v2": 0,
+     "lo_gain": 50,
+     "lm_gain": 50,
+     "hm_gain": 50,
+     "hi_gain": 50,
+     "x1": 25,
+     "x2": 63,
+     "x3": 70,
+     "wet": 100,
+     "quality": false
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -22,
+     "ratio": 3.5,
+     "makeup": 4,
+     "attack": 8,
+     "release": 140
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 110,
+     "bass": 0,
+     "f1": 280,
+     "g1": -2,
+     "f2": 1200,
+     "g2": 0,
+     "f3": 5000,
+     "g3": 1.5,
+     "treble": 2
+    }
+   },
+   {
+    "id": "double",
+    "type": "chorus-js",
+    "foot": 8,
+    "params": {
+     "length": 22,
+     "voices": 2,
+     "rate": 0.3,
+     "wet": -14,
+     "dry": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 7,
+    "params": {
+     "time": "1/4",
+     "feedback": 32,
+     "mix": 16
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 26,
+     "decay": 2.6,
+     "predelay": 40,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#9d4edd",
+  "B": "#9d4edd",
+  "C": "#9d4edd",
+  "D": "#9d4edd",
+  "6": "#9d4edd",
+  "7": "#9d4edd",
+  "8": "#9d4edd",
+  "9": "#9d4edd",
+  "10": "#9d4edd"
+ },
+ "anims": {
+  "A": "aurora",
+  "B": "wave",
+  "C": "fire",
+  "D": "sheen",
+  "6": "lightning",
+  "7": "rain",
+  "8": "ripple",
+  "9": "vu",
+  "10": "stars"
+ },
+ "deps": [
+  {
+   "sha256": "1ff30ef63eb7dc2ce27659188626195b830c2e217df6322796d14de1c612e546",
+   "uid": "local:groove-golem-metal-chorus",
+   "kind": "groove",
+   "bytes": 393,
+   "name": "Metal chorus",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"stars\", \"6\": \"lightning\", \"7\": \"rain\", \"8\": \"ripple\", \"9\": \"vu\", \"A\": \"aurora\", \"B\": \"wave\", \"C\": \"fire\", \"D\": \"sheen\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"hold\": 40, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"hi_gain\": 50, \"hi_m1\": \"Off\", \"hi_m2\": \"Off\", \"hi_v1\": 0, \"hi_v2\": 0, \"hm_gain\": 50, \"hm_m1\": \"Sample divide\", \"hm_m2\": \"Gain\", \"hm_v1\": 24, \"hm_v2\": 53, \"lm_gain\": 50, \"lm_m1\": \"Off\", \"lm_m2\": \"Off\", \"lm_v1\": 0, \"lm_v2\": 0, \"lo_gain\": 50, \"lo_m1\": \"Off\", \"lo_m2\": \"Off\", \"lo_v1\": 0, \"lo_v2\": 0, \"quality\": false, \"wet\": 100, \"x1\": 25, \"x2\": 63, \"x3\": 70}, \"type\": \"grit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"makeup\": 4, \"ratio\": 3.5, \"release\": 140, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 280, \"f2\": 1200, \"f3\": 5000, \"g1\": -2, \"g2\": 0, \"g3\": 1.5, \"lowcut\": 110, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 22, \"rate\": 0.3, \"voices\": 2, \"wet\": -14}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 32, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.6, \"hicut\": 7000, \"mix\": 26, \"predelay\": 40}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#9d4edd\", \"6\": \"#9d4edd\", \"7\": \"#9d4edd\", \"8\": \"#9d4edd\", \"9\": \"#9d4edd\", \"A\": \"#9d4edd\", \"B\": \"#9d4edd\", \"C\": \"#9d4edd\", \"D\": \"#9d4edd\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"hold\": 40, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"hi_gain\": 50, \"hi_m1\": \"Off\", \"hi_m2\": \"Off\", \"hi_v1\": 0, \"hi_v2\": 0, \"hm_gain\": 50, \"hm_m1\": \"Sample divide\", \"hm_m2\": \"Gain\", \"hm_v1\": 24, \"hm_v2\": 53, \"lm_gain\": 50, \"lm_m1\": \"Off\", \"lm_m2\": \"Off\", \"lm_v1\": 0, \"lm_v2\": 0, \"lo_gain\": 50, \"lo_m1\": \"Off\", \"lo_m2\": \"Off\", \"lo_v1\": 0, \"lo_v2\": 0, \"quality\": false, \"wet\": 100, \"x1\": 25, \"x2\": 63, \"x3\": 70}, \"type\": \"grit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"makeup\": 4, \"ratio\": 3.5, \"release\": 140, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 280, \"f2\": 1200, \"f3\": 5000, \"g1\": -2, \"g2\": 0, \"g3\": 1.5, \"lowcut\": 110, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 22, \"rate\": 0.3, \"voices\": 2, \"wet\": -14}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 32, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 2.6, \"hicut\": 7000, \"mix\": 26, \"predelay\": 40}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Halo Vocal\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": true, \"double\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Falsetto Halo\", \"params\": {\"dly\": {\"feedback\": 38, \"mix\": 18}, \"verb\": {\"decay\": 3.0, \"mix\": 32, \"predelay\": 40}}}, {\"blocks\": {\"dly\": false, \"double\": false, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Close Verse\", \"params\": {\"verb\": {\"decay\": 1.8, \"mix\": 16, \"predelay\": 30}}}, {\"blocks\": {\"dly\": false, \"double\": false, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Grit Belt\", \"params\": {\"comp\": {\"ratio\": 5}, \"gate\": {\"thresh\": -45}, \"verb\": {\"decay\": 1.2, \"mix\": 12, \"predelay\": 20}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Anthem\", \"params\": {\"dly\": {\"feedback\": 25, \"mix\": 12, \"time\": \"1/8•\"}, \"double\": {\"wet\": -10}, \"verb\": {\"decay\": 2.4, \"mix\": 24, \"predelay\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": true, \"double\": true, \"scream\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Falsetto Halo\", \"params\": {\"dly\": {\"feedback\": 38, \"mix\": 18}, \"verb\": {\"decay\": 3.0, \"mix\": 32, \"predelay\": 40}}}, {\"blocks\": {\"dly\": false, \"double\": false, \"scream\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Close Verse\", \"params\": {\"verb\": {\"decay\": 1.8, \"mix\": 16, \"predelay\": 30}}}, {\"blocks\": {\"dly\": false, \"double\": false, \"scream\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Grit Belt\", \"params\": {\"comp\": {\"ratio\": 5}, \"gate\": {\"thresh\": -45}, \"verb\": {\"decay\": 1.2, \"mix\": 12, \"predelay\": 20}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"scream\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Anthem\", \"params\": {\"dly\": {\"feedback\": 25, \"mix\": 12, \"time\": \"1/8•\"}, \"double\": {\"wet\": -10}, \"verb\": {\"decay\": 2.4, \"mix\": 24, \"predelay\": 40}}}]}"
+}

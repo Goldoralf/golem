@@ -1,0 +1,42 @@
+{
+ "schema": 1,
+ "kind": "controller-model",
+ "id": "akai-mpk-mini-mk2",
+ "name": "AKAI MPK Mini Mk II",
+ "usb": [
+  "09e8:0045"
+ ],
+ "names": [
+  "MPK Mini Mk II"
+ ],
+ "provenance": {
+  "source": "format du dump repris de mpd-utils/mpk_mini.py via akai-mpkmini-mkii-ctrl (Apache-2.0) — relu, pas exécuté",
+  "measured": "2026-10-13 sur un AKAI : 4 programmes lus, programme 1 réécrit puis relu, mémoire de travail (0) réécrite, pads entendus sur le canal 10",
+  "confidence": "verified"
+ },
+ "factory": {
+  "note": "réglé d'usine, le programme 1 envoie pads ET clavier sur le canal 1, pads en 44-51 / 32-39",
+  "pad_channel": 1,
+  "key_channel": 1
+ },
+ "program": {
+  "kind": "sysex-dump",
+  "read": "f0 47 00 26 66 00 01 {prog} f7",
+  "length": 117,
+  "header": "f0 47 00 26",
+  "command_at": 4,
+  "command_dump": 103,
+  "command_load": 100,
+  "prog_at": 7,
+  "stored": 1,
+  "working": 0,
+  "pad_channel_at": 8,
+  "key_channel_at": 9,
+  "pad_notes": {
+   "at": 27,
+   "stride": 4,
+   "count": 16
+  },
+  "channel_base": 0
+ }
+}

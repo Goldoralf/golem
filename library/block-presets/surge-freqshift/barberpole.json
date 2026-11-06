@@ -1,0 +1,14 @@
+{
+ "name": "Barberpole",
+ "type": "surge-freqshift",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "shift": 0.52,
+  "shift_r": 0.52,
+  "time": 0.4,
+  "fbk": 0.65,
+  "mix": 0.45
+ },
+ "default": true
+}

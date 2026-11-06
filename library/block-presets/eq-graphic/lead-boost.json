@@ -1,0 +1,19 @@
+{
+ "name": "Lead boost",
+ "type": "eq-graphic",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 0,
+  "g4": 0,
+  "g5": 1,
+  "g6": 3,
+  "g7": 4,
+  "g8": 2,
+  "g9": -1,
+  "g10": 0,
+  "g11": 0
+ }
+}

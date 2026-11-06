@@ -1,0 +1,10 @@
+{
+ "name": "Cleaned up",
+ "type": "pedal-nam",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "input": -6,
+  "output": 0
+ }
+}

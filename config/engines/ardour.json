@@ -1,0 +1,23 @@
+{
+  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5, moteur : docs/ardour-engine.md). COQUILLE (2026-10-06) : aucun moteur derrière, d'où selectable=false — la page et l'installateur le montrent sans permettre de le choisir. Capacités = la cible de ardour-engine.md, pas une mesure. Le nom définitif reste à trancher (ardour-engine.md §4).",
+  "id": "ardour",
+  "name": "Ardour",
+  "by": "built by golem from Ardour 9.8",
+  "license": "gpl-2.0-or-later",
+  "sources_url": "https://github.com/Ardour/ardour",
+  "order": 2,
+  "default": false,
+  "selectable": false,
+  "unavailable_reason": "Coming soon",
+  "platforms": {
+    "linux": {"available": false, "reason": "Coming soon"},
+    "win32": {"available": false, "reason": "Linux only for now"},
+    "darwin": {"available": false, "reason": "Linux only for now"}
+  },
+  "summary": "Free, nothing to buy. Some features come later.",
+  "capabilities": {
+    "lanes": "planned", "nam_ir": "planned", "recording": "planned", "backing": "planned", "click": "planned",
+    "midi_clock": "planned", "looper": "no", "drum_machine": "no", "samples": "no", "standards": "no",
+    "riff": "no", "kill_switch": "no", "previews": "planned", "reamp": "planned"
+  }
+}

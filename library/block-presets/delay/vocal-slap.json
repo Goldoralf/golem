@@ -1,0 +1,12 @@
+{
+ "name": "Vocal slap",
+ "type": "delay",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "time": "1/16",
+  "feedback": 8,
+  "mix": 18
+ },
+ "default": true
+}

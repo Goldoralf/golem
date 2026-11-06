@@ -1,0 +1,60 @@
+desc:GoleM note-zone (note-zone) -- keyboard split/layer filter
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM keys zone filter (docs/archive/keys-rig-plan.md P2, docs/blocks-doctrine.md).
+//! Se place EN TETE de la chaine d'un bloc-instrument keys (DEVANT sfizz / b3-ctl / dx7-ctl /
+//! Vital) sur sa sous-piste. Filtre le flux de notes du controleur pour ne laisser passer que
+//! la zone [Zone Low..Zone High] et applique Transpose. Estampille golem:<blockid> (partagee
+//! avec le moteur : la resolution de params se fait par NOM, cf. golem_rig.lua).
+//!
+//!   - note-on/off HORS de [lo..hi] : elimines (rien envoye).
+//!   - dans la zone : note += transpose (clampe 0..127).
+//!   - un note-OFF suit le MEME transpose que son note-ON : le transpose applique est memorise
+//!     PAR note active (16 canaux x 128 notes). Changer le transpose en tenant des notes ne
+//!     laisse donc AUCUNE note fantome (la coupure part sur la note reellement jouee).
+//!   - CC / pitchbend / aftertouch (canal & poly) / program / SysEx : passent TOUJOURS,
+//!     inchanges. midirecv ne capture pas le SysEx -> il traverse automatiquement (sustain
+//!     CC64, Leslie CC1, cartouches Dexed intacts pour tous les moteurs en aval).
+
+slider1:lo=0<0,127,1>Zone Low
+slider2:hi=127<0,127,1>Zone High
+slider3:tr=0<-24,24,1>Transpose
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+// active[ch*128 + note] = note reellement envoyee + 1 ; 0 = note non sonnante (ou droppee).
+active = 0;
+
+@block
+lo0 = lo|0; hi0 = hi|0; tr0 = tr|0;
+lo0 > hi0 ? ( t = lo0; lo0 = hi0; hi0 = t; );   // tolere des bornes inversees
+while (midirecv(ofs, msg1, msg2, msg3)) (
+  st = msg1 & 0xF0;
+  ch = msg1 & 0x0F;
+  (st == 0x90 && msg3 > 0) ? (
+    // NOTE ON
+    (msg2 >= lo0 && msg2 <= hi0) ? (
+      nn = msg2 + tr0;
+      nn < 0 ? nn = 0 : nn > 127 ? nn = 127;
+      active[ch*128 + msg2] = nn + 1;
+      midisend(ofs, msg1, nn, msg3);
+    );
+    // hors zone -> droppe (rien envoye, rien memorise)
+  ) : (st == 0x80 || (st == 0x90 && msg3 == 0)) ? (
+    // NOTE OFF (0x80, ou 0x90 velocite 0)
+    slot = active[ch*128 + msg2];
+    slot > 0 ? (
+      active[ch*128 + msg2] = 0;
+      midisend(ofs, msg1, slot - 1, msg3);   // MEME transpose que le note-on correspondant
+    );
+    // pas de note-on correspondant (droppee) -> droppe le note-off
+  ) : (
+    // TOUT le reste : CC, pitchbend, aftertouch canal/poly, program, etc. -> passe
+    midisend(ofs, msg1, msg2, msg3);
+  );
+);

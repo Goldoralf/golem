@@ -1,0 +1,41 @@
+{
+ "id": "factory-drums",
+ "name": "Factory Drums",
+ "fcb": true,
+ "rev": 2,
+ "kind": "sounds",
+ "presets": [
+  "patch:factory-drums-jazz-brushes",
+  "patch:factory-drums-classic-rock",
+  "patch:factory-drums-studio-rock",
+  "patch:factory-drums-metal"
+ ],
+ "origin": "factory",
+ "lines": [
+  {
+   "id": "r:factory-drums:06d62477",
+   "rev": 1,
+   "title": "Jazz Brushes",
+   "patch": "factory-drums-jazz-brushes"
+  },
+  {
+   "id": "r:factory-drums:4b76da22",
+   "rev": 1,
+   "title": "Classic Rock",
+   "patch": "factory-drums-classic-rock"
+  },
+  {
+   "id": "r:factory-drums:c54f4ddc",
+   "rev": 1,
+   "title": "Studio Rock",
+   "patch": "factory-drums-studio-rock"
+  },
+  {
+   "id": "r:factory-drums:24434b39",
+   "rev": 1,
+   "title": "Metal",
+   "patch": "factory-drums-metal"
+  }
+ ],
+ "factory": true
+}

@@ -1,0 +1,11 @@
+{
+ "name": "Standard",
+ "type": "pitch",
+ "factory": true,
+ "params": {
+  "shift": 12,
+  "mix": 50
+ },
+ "default": true,
+ "inst": "any"
+}

@@ -1,0 +1,15 @@
+{
+ "name": "Soft",
+ "type": "gate",
+ "factory": true,
+ "params": {
+  "thresh": -58,
+  "attack": 5,
+  "hold": 40,
+  "release": 300,
+  "hpf": 0,
+  "lpf": 20000,
+  "hyst": -3
+ },
+ "inst": "guitar"
+}

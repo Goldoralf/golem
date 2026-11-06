@@ -1,0 +1,609 @@
+{
+ "id": "factory-guitar-texas-blues",
+ "name": "Texas Blues",
+ "role": "guitar",
+ "tags": [
+  "blues",
+  "crunch"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Texas Blues",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Texas Rhythm",
+     "blocks": {
+      "klon": true,
+      "ts": false,
+      "leslie": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Lead",
+     "blocks": {
+      "klon": false,
+      "ts": true,
+      "leslie": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Vibratone",
+     "blocks": {
+      "klon": false,
+      "ts": false,
+      "leslie": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Clean",
+     "blocks": {
+      "klon": false,
+      "ts": false,
+      "leslie": false,
+      "dly": false
+     },
+     "params": {
+      "super": {
+       "input": -6,
+       "output": 4
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Big Ending",
+     "blocks": {
+      "klon": true,
+      "ts": true,
+      "leslie": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 0.4,
+       "decay": 0.7
+      },
+      "dly": {
+       "mix": 24,
+       "feedback": 38
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 3,
+       "release": 150
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "klon",
+         "type": "pedal-nam",
+         "variant": "klon",
+         "foot": 6,
+         "label": "Klon Centaur",
+         "ref": "2599",
+         "model": "419209",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "ts",
+         "type": "pedal-nam",
+         "variant": "tube-screamer",
+         "foot": 7,
+         "label": "Ibanez TS9 Tube Screamer",
+         "ref": "36827",
+         "model": "381612",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "super",
+         "type": "amp",
+         "label": "Fender Super Reverb",
+         "ref": "19",
+         "model": "379727",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "dumble",
+         "type": "amp-nam",
+         "label": "Dumble Overdrive Special",
+         "ref": "30435",
+         "model": "138210",
+         "params": {
+          "input": -4,
+          "output": -3
+         }
+        },
+        {
+         "id": "dcab",
+         "type": "cab",
+         "label": "Palmer 2x12 Creamback",
+         "ref": "5004",
+         "model": "67597",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "leslie",
+      "type": "rotary",
+      "foot": 8,
+      "params": {
+       "speed": "slow",
+       "mic": 70,
+       "spacing": 50,
+       "depth": 60
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay-tape",
+      "foot": 9,
+      "params": {
+       "time": "16th",
+       "feedback": 25,
+       "mix": 16,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "surge-spring",
+      "params": {
+       "mix": 0.22,
+       "decay": 0.5,
+       "size": 0.5
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Texas Rhythm",
+   "blocks": {
+    "klon": true,
+    "ts": false,
+    "leslie": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Lead",
+   "blocks": {
+    "klon": false,
+    "ts": true,
+    "leslie": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "C",
+   "name": "Vibratone",
+   "blocks": {
+    "klon": false,
+    "ts": false,
+    "leslie": true,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Clean",
+   "blocks": {
+    "klon": false,
+    "ts": false,
+    "leslie": false,
+    "dly": false
+   },
+   "params": {
+    "super": {
+     "input": -6,
+     "output": 4
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "E",
+   "name": "Big Ending",
+   "blocks": {
+    "klon": true,
+    "ts": true,
+    "leslie": false,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 0.4,
+     "decay": 0.7
+    },
+    "dly": {
+     "mix": 24,
+     "feedback": 38
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "auto",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
+     }
+    }
+   ]
+  }
+ },
+ "bpm": 92,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "attack": 3,
+     "release": 150
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "klon",
+       "type": "pedal-nam",
+       "variant": "klon",
+       "foot": 6,
+       "label": "Klon Centaur",
+       "ref": "2599",
+       "model": "419209",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "ts",
+       "type": "pedal-nam",
+       "variant": "tube-screamer",
+       "foot": 7,
+       "label": "Ibanez TS9 Tube Screamer",
+       "ref": "36827",
+       "model": "381612",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      },
+      {
+       "id": "super",
+       "type": "amp",
+       "label": "Fender Super Reverb",
+       "ref": "19",
+       "model": "379727",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "dumble",
+       "type": "amp-nam",
+       "label": "Dumble Overdrive Special",
+       "ref": "30435",
+       "model": "138210",
+       "params": {
+        "input": -4,
+        "output": -3
+       }
+      },
+      {
+       "id": "dcab",
+       "type": "cab",
+       "label": "Palmer 2x12 Creamback",
+       "ref": "5004",
+       "model": "67597",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "leslie",
+    "type": "rotary",
+    "foot": 8,
+    "params": {
+     "speed": "slow",
+     "mic": 70,
+     "spacing": 50,
+     "depth": 60
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay-tape",
+    "foot": 9,
+    "params": {
+     "time": "16th",
+     "feedback": 25,
+     "mix": 16,
+     "medium": "Tape"
+    }
+   },
+   {
+    "id": "verb",
+    "type": "surge-spring",
+    "params": {
+     "mix": 0.22,
+     "decay": 0.5,
+     "size": 0.5
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "2599",
+   "model": "419209"
+  },
+  {
+   "type": "pedal-nam",
+   "ref": "36827",
+   "model": "381612"
+  },
+  {
+   "type": "amp",
+   "ref": "19",
+   "model": "379727"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "30435",
+   "model": "138210"
+  },
+  {
+   "type": "cab",
+   "ref": "5004",
+   "model": "67597"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "3ca89ed7f28d629d29e80107daf9468abbc588cb1c03e204e8e4c9e996a0e08d",
+   "uid": "t3k:2599",
+   "kind": "pedal",
+   "bytes": 295893,
+   "name": "KLON 2",
+   "source": "t3k",
+   "amp": "Klon Centaur",
+   "arch": "2",
+   "brand": "Klon",
+   "creator": "seanashe",
+   "url": "https://www.tone3000.com/tones/klon-centaur-silver-2599"
+  },
+  {
+   "sha256": "5d88d226629e6ee90c4d51075a998949d435a31fb09c2da9f3e88ad2bd078b94",
+   "uid": "t3k:36827",
+   "kind": "pedal",
+   "bytes": 298631,
+   "name": "Ibanez TS9 Tube Screamer Drive 8 Tone 8 Level 8",
+   "source": "t3k",
+   "amp": "Ibanez TS9 Tube Screamer",
+   "arch": "2",
+   "brand": "Ibanez",
+   "creator": "studioampcaptures",
+   "url": "https://www.tone3000.com/tones/ibanez-ts9-tube-screamer-36827"
+  },
+  {
+   "sha256": "84425a854256ff56b5ff4836a0611f452835a595352ffe8f3a13a40edd57f4e7",
+   "uid": "t3k:19",
+   "kind": "amp-cab",
+   "bytes": 297141,
+   "name": "Fender Super Reverb: EQ Flat, Volume 3, sm57 and AKG 414",
+   "source": "t3k",
+   "amp": "Fender Super Reverb 1977",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/fender-super-reverb-1977-19"
+  },
+  {
+   "sha256": "06897d6a760ed753d9e7ba4f93ae33c7d32629f50b49e1dc5e85b49d6c11901f",
+   "uid": "t3k:30435",
+   "kind": "amp",
+   "bytes": 257929,
+   "name": "SLAMMIN_DUMBLE_FORD_OD_HIGH_MV_MIDS_XS",
+   "source": "t3k",
+   "amp": "Dumble Overdrive Special 102 Ford",
+   "arch": "custom",
+   "brand": "Dumble",
+   "creator": "slamminmofo",
+   "url": "https://www.tone3000.com/tones/dumble-ods-102-ford-hyper-accuracy-30435"
+  },
+  {
+   "sha256": "57111f8044147c002495c1bc1af96102da96a6e9b72384cf373c86e1388a5526",
+   "uid": "t3k:5004",
+   "kind": "cab",
+   "bytes": 235418,
+   "name": "16 - PALMER G12M65 SM57 MID 15cm 45°",
+   "source": "t3k",
+   "amp": "Palmer 2X12 G12M-65 Creamback - Shure SM57",
+   "brand": "Cabs / IR",
+   "creator": "elgringoloco",
+   "url": "https://www.tone3000.com/tones/palmer-2x12-g12m-65-creamback-shure-sm57-5004"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"glitch\", \"7\": \"strobe\", \"8\": \"fire\", \"9\": \"ripple\", \"A\": \"vortex\", \"B\": \"smoke\", \"C\": \"ember\", \"D\": \"snow\", \"E\": \"pulse\"}, \"backing\": null, \"bpm\": 92, \"chain\": {\"post\": [{\"foot\": 8, \"id\": \"leslie\", \"params\": {\"depth\": 60, \"mic\": 70, \"spacing\": 50, \"speed\": \"slow\"}, \"type\": \"rotary\"}, {\"foot\": 9, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"medium\": \"Tape\", \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"mix\": 0.22, \"size\": 0.5}, \"type\": \"surge-spring\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 150, \"thresh\": -62}, \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2599\", \"type\": \"pedal-nam\", \"variant\": \"klon\"}, {\"foot\": 7, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381612\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}, {\"id\": \"super\", \"label\": \"Fender Super Reverb\", \"model\": \"379727\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"19\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"dumble\", \"label\": \"Dumble Overdrive Special\", \"model\": \"138210\", \"params\": {\"input\": -4, \"output\": -3}, \"ref\": \"30435\", \"type\": \"amp-nam\"}, {\"id\": \"dcab\", \"label\": \"Palmer 2x12 Creamback\", \"model\": \"67597\", \"params\": {\"level\": 0}, \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#ff9f1c\", \"6\": \"#ff9f1c\", \"7\": \"#ff9f1c\", \"8\": \"#ff9f1c\", \"9\": \"#ff9f1c\", \"A\": \"#ff9f1c\", \"B\": \"#ff9f1c\", \"C\": \"#ff9f1c\", \"D\": \"#ff9f1c\", \"E\": \"#ff9f1c\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"black-pearl\", \"motion\": \"comp\", \"standard\": \"rented-room-blues\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 8, \"id\": \"leslie\", \"params\": {\"depth\": 60, \"mic\": 70, \"spacing\": 50, \"speed\": \"slow\"}, \"type\": \"rotary\"}, {\"foot\": 9, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"medium\": \"Tape\", \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"mix\": 0.22, \"size\": 0.5}, \"type\": \"surge-spring\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 3, \"release\": 150, \"thresh\": -62}, \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2599\", \"type\": \"pedal-nam\", \"variant\": \"klon\"}, {\"foot\": 7, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381612\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}, {\"id\": \"super\", \"label\": \"Fender Super Reverb\", \"model\": \"379727\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"19\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"dumble\", \"label\": \"Dumble Overdrive Special\", \"model\": \"138210\", \"params\": {\"input\": -4, \"output\": -3}, \"ref\": \"30435\", \"type\": \"amp-nam\"}, {\"id\": \"dcab\", \"label\": \"Palmer 2x12 Creamback\", \"model\": \"67597\", \"params\": {\"level\": 0}, \"ref\": \"5004\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Texas Blues\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": false, \"klon\": true, \"leslie\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Texas Rhythm\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"klon\": false, \"leslie\": false, \"ts\": true}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Lead\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"klon\": false, \"leslie\": true, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Vibratone\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"klon\": false, \"leslie\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Clean\", \"params\": {\"super\": {\"input\": -6, \"output\": 4}}}, {\"blocks\": {\"dly\": true, \"klon\": true, \"leslie\": false, \"ts\": true}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Big Ending\", \"params\": {\"dly\": {\"feedback\": 38, \"mix\": 24}, \"verb\": {\"decay\": 0.7, \"mix\": 0.4}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": false, \"klon\": true, \"leslie\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Texas Rhythm\"}, {\"blocks\": {\"dly\": true, \"klon\": false, \"leslie\": false, \"ts\": true}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-B\"}}, \"level\": 3, \"name\": \"Lead\"}, {\"blocks\": {\"dly\": false, \"klon\": false, \"leslie\": true, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Vibratone\"}, {\"blocks\": {\"dly\": false, \"klon\": false, \"leslie\": false, \"ts\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-D\"}}, \"level\": -1, \"name\": \"Clean\", \"params\": {\"super\": {\"input\": -6, \"output\": 4}}}, {\"blocks\": {\"dly\": true, \"klon\": true, \"leslie\": false, \"ts\": true}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Big Ending\", \"params\": {\"dly\": {\"feedback\": 38, \"mix\": 24}, \"verb\": {\"decay\": 0.7, \"mix\": 0.4}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#ff9f1c",
+  "B": "#ff9f1c",
+  "C": "#ff9f1c",
+  "D": "#ff9f1c",
+  "E": "#ff9f1c",
+  "6": "#ff9f1c",
+  "7": "#ff9f1c",
+  "8": "#ff9f1c",
+  "9": "#ff9f1c",
+  "10": "#ff9f1c"
+ },
+ "anims": {
+  "A": "vortex",
+  "B": "smoke",
+  "C": "ember",
+  "D": "snow",
+  "E": "pulse",
+  "6": "glitch",
+  "7": "strobe",
+  "8": "fire",
+  "9": "ripple",
+  "10": "heartbeat"
+ }
+}

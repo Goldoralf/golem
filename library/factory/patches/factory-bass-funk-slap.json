@@ -1,0 +1,526 @@
+{
+ "id": "factory-bass-funk-slap",
+ "name": "Funk Slap",
+ "role": "bass",
+ "tags": [
+  "funk",
+  "slap"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Funk Slap",
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Slap",
+     "blocks": {
+      "env": false,
+      "oct": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Finger",
+     "blocks": {
+      "env": false,
+      "oct": false
+     },
+     "params": {
+      "comp": {
+       "ratio": 3,
+       "attack": 15
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Envelope",
+     "blocks": {
+      "env": true,
+      "oct": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Octave",
+     "blocks": {
+      "env": false,
+      "oct": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-E",
+     "name": "Solo",
+     "blocks": {
+      "env": true,
+      "oct": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "attack": 1,
+       "release": 100
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -28,
+       "ratio": 6,
+       "makeup": 5,
+       "attack": 3,
+       "release": 100
+      }
+     },
+     {
+      "id": "env",
+      "type": "autowah",
+      "foot": 6,
+      "params": {
+       "wah": 0.5
+      }
+     },
+     {
+      "id": "oct",
+      "type": "octaver",
+      "foot": 7,
+      "params": {
+       "direct": 1,
+       "octave1": 0.6,
+       "octave2": 0
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "ebs",
+         "type": "amp",
+         "label": "EBS bass rig",
+         "ref": "46888",
+         "model": "385414",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "svtcl",
+         "type": "amp-nam",
+         "label": "Ampeg SVT-CL",
+         "ref": "45809",
+         "model": "382790",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        },
+        {
+         "id": "glock",
+         "type": "cab",
+         "label": "Glockenklang DUO 2x10",
+         "ref": "70612",
+         "model": "580768",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 6,
+       "decay": 0.5,
+       "predelay": 0,
+       "hicut": 6000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Slap",
+   "blocks": {
+    "env": false,
+    "oct": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Finger",
+   "blocks": {
+    "env": false,
+    "oct": false
+   },
+   "params": {
+    "comp": {
+     "ratio": 3,
+     "attack": 15
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Envelope",
+   "blocks": {
+    "env": true,
+    "oct": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Octave",
+   "blocks": {
+    "env": false,
+    "oct": true
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Solo",
+   "blocks": {
+    "env": true,
+    "oct": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "level": 3,
+     "state": "st-bass-1-E"
+    }
+   },
+   "level": 3
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-funk-16.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 100,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "attack": 1,
+     "release": 100
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -28,
+     "ratio": 6,
+     "makeup": 5,
+     "attack": 3,
+     "release": 100
+    }
+   },
+   {
+    "id": "env",
+    "type": "autowah",
+    "foot": 6,
+    "params": {
+     "wah": 0.5
+    }
+   },
+   {
+    "id": "oct",
+    "type": "octaver",
+    "foot": 7,
+    "params": {
+     "direct": 1,
+     "octave1": 0.6,
+     "octave2": 0
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "ebs",
+       "type": "amp",
+       "label": "EBS bass rig",
+       "ref": "46888",
+       "model": "385414",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "svtcl",
+       "type": "amp-nam",
+       "label": "Ampeg SVT-CL",
+       "ref": "45809",
+       "model": "382790",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      },
+      {
+       "id": "glock",
+       "type": "cab",
+       "label": "Glockenklang DUO 2x10",
+       "ref": "70612",
+       "model": "580768",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 6,
+     "decay": 0.5,
+     "predelay": 0,
+     "hicut": 6000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "46888",
+   "model": "385414"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "45809",
+   "model": "382790"
+  },
+  {
+   "type": "cab",
+   "ref": "70612",
+   "model": "580768"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "f83c97cdce378788bace6bf274aa7df50aa6c960efa7be3cb647c40996b142eb",
+   "uid": "t3k:46888",
+   "kind": "amp-cab",
+   "bytes": 299127,
+   "name": "FUNKY settings",
+   "source": "t3k",
+   "amp": "EBS HD350 EBS Evolution Proline 2000 2x10",
+   "arch": "2",
+   "brand": "EBS",
+   "creator": "difesa98",
+   "url": "https://www.tone3000.com/tones/ebs-marcus-miller-tal-wilkenfeld-henrik-linder-46888"
+  },
+  {
+   "sha256": "367faf46f93e80dc2f02381c6e7b581870edae57bf9509e12d594adeb3a96ace",
+   "uid": "t3k:45809",
+   "kind": "amp",
+   "bytes": 296327,
+   "name": "SVT CLEAN",
+   "source": "t3k",
+   "amp": "AMPEG SVT-CL",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-cl-bass-head-45809"
+  },
+  {
+   "sha256": "93e898275ca5abfd27e0816a584b522c330d843e0b1e5d17143db21e49fa9be8",
+   "uid": "t3k:70612",
+   "kind": "cab",
+   "bytes": 145120,
+   "name": "Glockenklang DUO 2x10 d6x bal w horn",
+   "source": "t3k",
+   "amp": "Glockenklang DUO 2x10",
+   "brand": "Glockenklang",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/glockenklang-duo-2x10-70612"
+  },
+  {
+   "sha256": "aa8dac161664bc666606874b2b7894b08d24885cfea0c1cef0c58621abe57a80",
+   "uid": "local:groove-golem-funk-16",
+   "kind": "groove",
+   "bytes": 441,
+   "name": "Funk 16",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"fire\", \"7\": \"strobe\", \"A\": \"smoke\", \"B\": \"scanner\", \"C\": \"lightning\", \"D\": \"glitch\", \"E\": \"ripple\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"hicut\": 6000, \"mix\": 6, \"predelay\": 0}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"makeup\": 5, \"ratio\": 6, \"release\": 100, \"thresh\": -28}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.5}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 1, \"octave1\": 0.6, \"octave2\": 0}, \"type\": \"octaver\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"ebs\", \"label\": \"EBS bass rig\", \"model\": \"385414\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"46888\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#f72585\", \"6\": \"#f72585\", \"7\": \"#f72585\", \"A\": \"#f72585\", \"B\": \"#f72585\", \"C\": \"#f72585\", \"D\": \"#f72585\", \"E\": \"#f72585\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"verb\", \"params\": {\"decay\": 0.5, \"hicut\": 6000, \"mix\": 6, \"predelay\": 0}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"makeup\": 5, \"ratio\": 6, \"release\": 100, \"thresh\": -28}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.5}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 1, \"octave1\": 0.6, \"octave2\": 0}, \"type\": \"octaver\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"ebs\", \"label\": \"EBS bass rig\", \"model\": \"385414\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"46888\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"glock\", \"label\": \"Glockenklang DUO 2x10\", \"model\": \"580768\", \"params\": {\"level\": 0}, \"ref\": \"70612\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Funk Slap\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Slap\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-B\", \"name\": \"Finger\", \"params\": {\"comp\": {\"attack\": 15, \"ratio\": 3}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Octave\", \"params\": {}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-E\", \"name\": \"Solo\", \"params\": {}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Slap\"}, {\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Finger\", \"params\": {\"comp\": {\"attack\": 15, \"ratio\": 3}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"env\": false, \"oct\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Octave\"}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-E\"}}, \"level\": 3, \"name\": \"Solo\"}]}",
+ "factory": true,
+ "colors": {
+  "A": "#f72585",
+  "B": "#f72585",
+  "C": "#f72585",
+  "D": "#f72585",
+  "E": "#f72585",
+  "6": "#f72585",
+  "7": "#f72585",
+  "9": "#f72585",
+  "10": "#f72585"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "scanner",
+  "C": "lightning",
+  "D": "glitch",
+  "E": "ripple",
+  "6": "fire",
+  "7": "strobe",
+  "9": "snow",
+  "10": "aurora"
+ }
+}

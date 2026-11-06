@@ -1,0 +1,13 @@
+{
+ "name": "Gentle",
+ "type": "comp",
+ "factory": true,
+ "params": {
+  "thresh": -14,
+  "ratio": 2.5,
+  "makeup": 2,
+  "attack": 20,
+  "release": 180
+ },
+ "inst": "guitar"
+}

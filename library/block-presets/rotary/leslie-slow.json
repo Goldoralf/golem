@@ -1,0 +1,13 @@
+{
+ "name": "Leslie slow",
+ "type": "rotary",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "speed": "slow",
+  "mic": 70,
+  "spacing": 50,
+  "depth": 60
+ },
+ "default": true
+}

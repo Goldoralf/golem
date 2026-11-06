@@ -1,0 +1,106 @@
+desc:GoleM Parametric EQ -- the eq-para block on Windows (x42-eq parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « eq-para » joue x42-eq (fil4) Mono sous Linux ; x42-eq n'est pas installe sous Windows
+// (docs/platforms.md §5). Ce JSFX en reprend les NOMS de parametres et leurs unites natives (Hz, dB), pour que
+// effects-windows.json le nomme sans toucher un preset : golem_rig resout chaque potard par le nom du slider
+// et l'ecrit en BRUT (effects.json, map raw). Bornes et defauts = ceux de fil4 (lv2ttl/fil4.ports.ttl.in, lu le
+// 2026-10-22), formes de filtres ramenees a des biquads RBJ equivalents :
+//
+//  - Cloches : fil4 emploie la section de Fons Adriaensen (src/filters.h) ; ses poles valent ceux d'une cloche RBJ
+//    dont alpha = 7 x Bandwidth x f / fs, et le rack laisse Bandwidth a 0,5 : alpha = 3,5 f / fs (Q ~ 0,9).
+//  - Lowshelf 80 Hz et Highshelf 8 kHz : les shelves RBJ de fil4 (src/iir.h), q = 0,2129 + Bandwidth / 2,25 avec
+//    Bandwidth = 1 (defaut), soit q = 0,657.
+//  - Highpass : 2 poles, Q 0,707 (fil4 : resonance 0,7) ; eteint par defaut, comme fil4. Son filtre (hip.h)
+//    n'est pas recopie : la pente est la meme, le genou peut differer de peu.
+//  - Les gains vont de -18 a +18 dB : minimum NEGATIF mais plage SYMETRIQUE. REAPER traite un tel slider en
+//    bipolaire (normalise 0,5 = 0 dB) ; symetrique, c'est la meme droite que la lineaire, donc une ecriture
+//    normalisee (pedale EXP) tombe juste. golem_rig, lui, ecrit en brut.
+//  - Les coefficients glissent vers leur cible (~20 ms) : une scene qui change un gain ne claque pas.
+//
+// Pieges respectes (docs/pitfalls/jsfx.md) : rien avant @init ; variables prefixees eq_ ; ext_noinit (le
+// transport ne remet pas les filtres a zero en plein signal) et srate relu dans @block.
+
+slider1:eq_hpon=0<0,1,1{Off,On}>Highpass
+slider2:eq_hpf=20<5,1250,1>Highpass Frequency
+slider3:eq_lsg=0<-18,18,0.1>Lowshelf Gain
+slider4:eq_f1=160<20,2000,1>Frequency 1
+slider5:eq_g1=0<-18,18,0.1>Gain 1
+slider6:eq_f2=397<40,4000,1>Frequency 2
+slider7:eq_g2=0<-18,18,0.1>Gain 2
+slider8:eq_f3=1250<100,10000,1>Frequency 3
+slider9:eq_g3=0<-18,18,0.1>Gain 3
+slider10:eq_hsg=0<-18,18,0.1>Highshelf Gain
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+eq_NB = 6;                       // etages : 0 passe-haut, 1 lowshelf, 2..4 cloches, 5 highshelf
+eq_STRIDE = 16;                  // par etage : 5 coefs cibles, 5 coefs courants, 2x2 etats (L, R)
+eq_mem = 0;
+memset(eq_mem, 0, eq_NB * eq_STRIDE);
+eq_sr = srate;
+
+// coefficients RBJ normalises (a0 = 1) dans les 5 premieres cases de l'etage k
+function eq_set(k, b0, b1, b2, a0, a1, a2) local(p) (
+  p = eq_mem + k * eq_STRIDE;
+  p[0] = b0 / a0; p[1] = b1 / a0; p[2] = b2 / a0; p[3] = a1 / a0; p[4] = a2 / a0;
+);
+function eq_flat(k) ( eq_set(k, 1, 0, 0, 1, 0, 0); );
+function eq_peak(k, f, g) local(A, w, al, c) (
+  A = 10 ^ (g / 40); f = min(f, 0.45 * srate); w = 2 * $pi * f / srate; al = 3.5 * f / srate; c = cos(w);
+  eq_set(k, 1 + al * A, -2 * c, 1 - al * A, 1 + al / A, -2 * c, 1 - al / A);
+);
+function eq_shelf(k, f, g, high) local(A, w, c, s, al, sq) (
+  A = 10 ^ (g / 40); w = 2 * $pi * min(f, 0.45 * srate) / srate; c = cos(w); s = sin(w);
+  al = s / (2 * 0.657);                          // q de fil4 a Bandwidth 1
+  sq = 2 * sqrt(A) * al;
+  high ? eq_set(k, A * ((A + 1) + (A - 1) * c + sq), -2 * A * ((A - 1) + (A + 1) * c), A * ((A + 1) + (A - 1) * c - sq),
+                   (A + 1) - (A - 1) * c + sq, 2 * ((A - 1) - (A + 1) * c), (A + 1) - (A - 1) * c - sq)
+       : eq_set(k, A * ((A + 1) - (A - 1) * c + sq), 2 * A * ((A - 1) - (A + 1) * c), A * ((A + 1) - (A - 1) * c - sq),
+                   (A + 1) + (A - 1) * c + sq, -2 * ((A - 1) + (A + 1) * c), (A + 1) + (A - 1) * c - sq);
+);
+function eq_hp(k, f) local(w, al, c) (
+  w = 2 * $pi * min(f, 0.45 * srate) / srate; al = sin(w) / (2 * 0.7071); c = cos(w);
+  eq_set(k, (1 + c) / 2, -(1 + c), (1 + c) / 2, 1 + al, -2 * c, 1 - al);
+);
+function eq_targets() (
+  eq_hpon >= 0.5 ? eq_hp(0, eq_hpf) : eq_flat(0);
+  eq_shelf(1, 80, eq_lsg, 0);
+  eq_peak(2, eq_f1, eq_g1);
+  eq_peak(3, eq_f2, eq_g2);
+  eq_peak(4, eq_f3, eq_g3);
+  eq_shelf(5, 8000, eq_hsg, 1);
+  eq_sm = 1 - exp(-1 / (0.02 * srate));          // glissement des coefficients : ~20 ms
+);
+function eq_snap() local(k, p) (                 // courants = cibles (au chargement : pas de glissement depuis 0)
+  k = 0; loop(eq_NB, p = eq_mem + k * eq_STRIDE; p[5] = p[0]; p[6] = p[1]; p[7] = p[2]; p[8] = p[3]; p[9] = p[4]; k += 1;);
+);
+eq_targets();
+eq_snap();
+
+@slider
+eq_targets();
+
+@block
+srate != eq_sr ? ( eq_sr = srate; eq_targets(); eq_snap(); );
+
+@sample
+eq_k = 0;
+eq_l = spl0; eq_r = spl1;
+loop(eq_NB,
+  eq_p = eq_mem + eq_k * eq_STRIDE;
+  eq_p[5] += (eq_p[0] - eq_p[5]) * eq_sm; eq_p[6] += (eq_p[1] - eq_p[6]) * eq_sm; eq_p[7] += (eq_p[2] - eq_p[7]) * eq_sm;
+  eq_p[8] += (eq_p[3] - eq_p[8]) * eq_sm; eq_p[9] += (eq_p[4] - eq_p[9]) * eq_sm;
+  // forme directe II transposee, un etat par canal
+  eq_y = eq_p[5] * eq_l + eq_p[10]; eq_p[10] = eq_p[6] * eq_l - eq_p[8] * eq_y + eq_p[11]; eq_p[11] = eq_p[7] * eq_l - eq_p[9] * eq_y; eq_l = eq_y;
+  eq_y = eq_p[5] * eq_r + eq_p[12]; eq_p[12] = eq_p[6] * eq_r - eq_p[8] * eq_y + eq_p[13]; eq_p[13] = eq_p[7] * eq_r - eq_p[9] * eq_y; eq_r = eq_y;
+  eq_k += 1;
+);
+spl0 = eq_l; spl1 = eq_r;

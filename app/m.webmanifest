@@ -1,0 +1,12 @@
+{
+  "name": "golem Companion",
+  "short_name": "Companion",
+  "start_url": "/app/m.html",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c0e12",
+  "theme_color": "#0c0e12",
+  "icons": [{ "src": "icons/favicon-180.png?v=2", "sizes": "180x180", "type": "image/png" },
+            { "src": "icons/icon-512.png?v=2", "sizes": "512x512", "type": "image/png" }]
+}

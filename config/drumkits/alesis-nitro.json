@@ -1,0 +1,51 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "alesis-nitro",
+ "name": "Alesis Nitro",
+ "identity": {
+  "brand": "Alesis",
+  "model": "Nitro",
+  "connection": "usb+din",
+  "usb_names": [
+   "Nitro"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "40": "snare-rim",
+  "42": "hh-closed",
+  "43": "tom3",
+  "44": "hh-pedal",
+  "45": "tom2",
+  "46": "hh-open",
+  "48": "tom1",
+  "49": "crash1",
+  "51": "ride"
+ },
+ "hihat": {
+  "cc": null,
+  "positions": 2,
+  "notes": "distinct"
+ },
+ "choke": "none",
+ "provenance": {
+  "source": "measured",
+  "confidence": "verified",
+  "measured_at": "2026-09-23",
+  "measured_on": "Alesis Nitro",
+  "reported_note": "Mesuré pad par pad avec tools/check-drums.py, geste par geste, séquence horodatée. CE QUI SORT : les 11 notes ci-dessus, toutes sur le canal 10. CE QUI NE SORT JAMAIS : 23 (mi-ouverte), 21 (splash), 50/47/58 (cercles de tom), 41/39 (tom 4), 57 (crash 2) — les pads n'existent pas ou n'ont qu'une zone. La pédale est un INTERRUPTEUR : aucun CC n'a été émis de toute la session, et la mi-course sort en note ouverte (46). Frapper le cercle d'un tom rend la note de peau à vélocité 10-14 (plus de la diaphonie sur le pad voisin), la cloche de ride rend la note de ride : une seule zone partout sauf la caisse claire (40 à 114 de vélocité, franc).",
+  "reported_url": "https://www.alesis.com/rscdn/1886/documents/Nitro%20Drum%20Module%20-%20User%20Guide%20-%20v1.2.pdf",
+  "note": "Table mesurée pad par pad (Calibration ▸ Drums, stepper au vrai kit, 2026-09-23), 11 éléments : 10 frappés, + le chick de pédale (44) déduit du geste « fermé » (la pédale s'enfonce -> 44@94, puis la frappe 42@102 ; mesuré deux fois le matin, et l'étape « pédale seule » a été passée). Charleston : pédale interrupteur, aucun CC, 2 positions. Étouffement : none — les cymbales de ce kit n'ont pas de capteur (Skip = la bonne réponse)."
+ },
+ "note": "Cymbales mono-zone (ni edge ni bell), toms sans cercle, pédale de charleston à deux états. L'aftertouch polyphonique de ce module n'est PAS un étouffement de cymbale : c'est la pédale qui se ferme (voir `pedal_aftertouch`). Les lignes du manuel que ce kit n'envoie pas sont gardées dans `provenance.reported_map` — un Nitro Max en a peut-être besoin, mais aucune n'a été mesurée ici.",
+ "pedal_aftertouch": "Quand la pédale de charleston se ferme, le module envoie une rafale d'aftertouch polyphonique à 127 sur ses QUATRE notes de charleston (46, 23, 42, 21) en 3 ms, puis la note 44 si la pédale va au bout. C'est un ordre d'étouffement du sample ouvert, pas un geste de cymbale : mesuré trois fois le 2026-09-23, jamais pendant un étouffement de crash.",
+ "audio_outs": {
+  "master": "stereo",
+  "direct": 0,
+  "assignable": false
+ }
+}

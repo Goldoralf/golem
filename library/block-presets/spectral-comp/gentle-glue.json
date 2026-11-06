@@ -1,0 +1,19 @@
+{
+ "name": "Gentle glue",
+ "type": "spectral-comp",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "thresh": -24,
+  "down": 2,
+  "up": 1.2,
+  "center": 420,
+  "slope": 0,
+  "attack": 150,
+  "release": 300,
+  "window": "2048",
+  "mix": 100,
+  "out": 0
+ },
+ "default": true
+}

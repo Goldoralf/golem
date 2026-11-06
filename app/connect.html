@@ -1,0 +1,116 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0e12">
+  <title>golem — connecting</title>
+  <link rel="icon" href="icons/favicon-180.png?v=2">
+  <!-- docs/connect.md §4.4 (lot R1, 2026-09-16) : l'arrivée depuis golem.fm/connect.
+       #t=<ticket> : le rack rachète le ticket auprès de golem.fm ⇒ jeton ; puis, si le NOM du rack (.local)
+       répond, le jeton est posé sous ce nom (#h=<code>, 60 s) : c'est l'origine qui suit le téléphone de la
+       répète à la scène. Sans fragment : jeton déjà là ? on ouvre l'app. Page AUTONOME : pas de lib.js
+       (sa garde « jeton inconnu » renverrait vers unpaired.html avant qu'on ait fini). -->
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0c0e12;color:#e8ecf1;
+      font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px;box-sizing:border-box}
+    main{max-width:440px;width:100%;display:flex;flex-direction:column;gap:14px}
+    .mk{font:700 18px ui-monospace,monospace}.mk span{color:#ff5a3c}
+    h1{margin:0;font-size:26px;line-height:1.2;text-wrap:balance}
+    p{margin:0;color:#9aa4b1}
+    .spin{width:28px;height:28px;border-radius:50%;border:3px solid #232b35;border-top-color:#ff5a3c;animation:r 0.9s linear infinite}
+    @keyframes r{to{transform:rotate(360deg)}}
+    @media (prefers-reduced-motion: reduce){.spin{animation:none}}
+    .ok h1{color:#8fe2b1}.err h1{color:#ff8a80}
+    a.btn{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:14px;background:#ff5a3c;color:#fff;
+      font:700 17px system-ui,sans-serif;text-decoration:none}
+    a.btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+    code{color:#e8ecf1}
+  </style>
+</head>
+<body>
+  <main id="box">
+    <div class="mk"><span>/</span>golem_</div>
+    <div class="spin" id="spin" aria-hidden="true"></div>
+    <h1 id="title">Connecting to this golem…</h1>
+    <p id="sub">One moment.</p>
+    <div id="act"></div>
+  </main>
+  <script>
+    const box = document.getElementById('box'), spin = document.getElementById('spin');
+    const say = (title, sub, kind, action) => {
+      document.getElementById('title').textContent = title;
+      document.getElementById('sub').textContent = sub || '';
+      box.className = kind || '';
+      spin.hidden = kind === 'ok' || kind === 'err';
+      document.getElementById('act').innerHTML = action || '';
+    };
+    const store = tok => {
+      try { localStorage.setItem('golem_token', tok); } catch (_) { /* navigation privée : le cookie suffit pour cette visite */ }
+      document.cookie = 'golem_token=' + tok + '; path=/; SameSite=Lax; max-age=31536000';
+    };
+    const post = async (path, body, tok) => {
+      const r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(tok ? { 'x-golem-token': tok } : {}) },
+        body: JSON.stringify(body || {}) });
+      let d = {};
+      try { d = await r.json(); } catch (_) { /* corps vide */ }
+      if (!r.ok) throw new Error(d.error || ('The rack refused (' + r.status + ').'));
+      return d;
+    };
+    // le nom du rack répond-il depuis ce téléphone ? (mDNS absent sur certains Android) — sonde sans CORS, 2 s
+    const reachable = url => new Promise(res => {
+      const ac = new AbortController();
+      const tm = setTimeout(() => { ac.abort(); res(false); }, 2000);
+      fetch(url + '/app/icons/favicon-180.png?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ac.signal })
+        .then(() => { clearTimeout(tm); res(true); }).catch(() => { clearTimeout(tm); res(false); });
+    });
+    const done = d => {
+      say('✓ ' + (d.name || 'Connected'), d.kind === 'Phone' ? 'Opening your Companion…' : 'Opening golem…', 'ok');
+      setTimeout(() => location.replace(d.open || '/app/'), 600);
+    };
+    const fail = e => say("Couldn't connect", e.message || String(e), 'err',
+      '<p>No internet here? Scan the QR on the rack instead (Settings ▸ Connect ▸ Devices).</p>');
+
+    const frag = new URLSearchParams(location.hash.slice(1));
+    history.replaceState(null, '', location.pathname);            // le ticket ne reste ni dans l'URL ni dans l'historique
+    (async () => {
+      try {
+        if (frag.get('t')) {
+          say('Connecting to this golem…', 'golem.fm is telling the rack who you are.');
+          const d = await post('/api/auth/connect', { ticket: frag.get('t') });
+          store(d.token);
+          if (d.local_url && d.local_url !== location.origin) {
+            say('Connecting to this golem…', 'Saving it under its name, so it follows you to the gig.');
+            if (await reachable(d.local_url)) {
+              try {
+                const h = await post('/api/auth/handoff', {}, d.token);
+                location.replace(d.local_url + '/app/connect.html#h=' + encodeURIComponent(h.code));
+                return;
+              } catch (_) { /* le transfert a échoué : on reste sur l'adresse IP, qui marche */ }
+            }
+          }
+          return done(d);
+        }
+        if (frag.get('h')) {
+          const d = await post('/api/auth/handoff/claim', { code: frag.get('h') });
+          store(d.token);
+          return done(d);
+        }
+        // sans fragment : la page gardée par golem.fm/connect hors ligne arrive ici — jeton déjà rangé ?
+        let tok = '';
+        try { tok = localStorage.getItem('golem_token') || ''; } catch (_) { /* rien */ }
+        const w = await fetch('/api/auth/whoami', { headers: tok ? { 'x-golem-token': tok } : {} }).then(r => r.json());
+        if (w.local) return done({ name: 'This rack', kind: 'Computer', open: '/app/' });
+        if (tok && w.token === 'ok' && w.device) {
+          store(tok);
+          return done({ name: w.device.name, kind: w.device.kind, open: w.device.kind === 'Phone' ? '/app/m.html' : '/app/' });
+        }
+        say('Not connected yet', 'This phone has no pass for this golem under this address.', 'err',
+          '<p>Scan the QR on the rack (Settings ▸ Connect ▸ Devices). If this golem is paired with golem.fm, <code>golem.fm/connect</code> also finds it.</p>');
+      } catch (e) { fail(e); }
+    })();
+  </script>
+</body>
+</html>

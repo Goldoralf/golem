@@ -1,0 +1,424 @@
+{
+ "id": "factory-voice-pop-tuned",
+ "name": "Pop Tuned",
+ "role": "voice",
+ "tags": [
+  "pop",
+  "electro"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Pop Tuned",
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Natural",
+     "blocks": {
+      "tune": true,
+      "double": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Hard Tune",
+     "blocks": {
+      "tune": true,
+      "double": false,
+      "dly": true
+     },
+     "params": {
+      "tune": {
+       "corr": 1.0,
+       "filter": 0.02,
+       "fastmode": true
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Double",
+     "blocks": {
+      "tune": true,
+      "double": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Ambient",
+     "blocks": {
+      "tune": true,
+      "double": true,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 32,
+       "decay": 3.0
+      },
+      "dly": {
+       "time": "1/4•",
+       "feedback": 40
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "attack": 2,
+       "release": 200
+      }
+     },
+     {
+      "id": "tune",
+      "type": "pitch-correct",
+      "foot": 7,
+      "params": {
+       "corr": 0.6,
+       "filter": 0.15,
+       "fastmode": false,
+       "key": "C",
+       "scale": "Major",
+       "offset": 0
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 10,
+       "release": 140
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq-para",
+      "params": {
+       "lowcut_on": true,
+       "lowcut": 100,
+       "bass": 0,
+       "f1": 250,
+       "g1": -2,
+       "f2": 1000,
+       "g2": 0,
+       "f3": 4000,
+       "g3": 2,
+       "treble": 2
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 7000,
+       "range": 10
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus-js",
+      "foot": 8,
+      "params": {
+       "length": 20,
+       "voices": 2,
+       "rate": 0.35,
+       "wet": -10,
+       "dry": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "foot": 6,
+      "params": {
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 20,
+       "decay": 1.8,
+       "predelay": 25,
+       "hicut": 8500
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Natural",
+   "blocks": {
+    "tune": true,
+    "double": false,
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Hard Tune",
+   "blocks": {
+    "tune": true,
+    "double": false,
+    "dly": true
+   },
+   "params": {
+    "tune": {
+     "corr": 1.0,
+     "filter": 0.02,
+     "fastmode": true
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 1,
+     "state": "st-voice-1-B"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "C",
+   "name": "Double",
+   "blocks": {
+    "tune": true,
+    "double": true,
+    "dly": true
+   },
+   "lanes": {
+    "voice-1": {
+     "level": 1,
+     "state": "st-voice-1-C"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Ambient",
+   "blocks": {
+    "tune": true,
+    "double": true,
+    "dly": true
+   },
+   "params": {
+    "verb": {
+     "mix": 32,
+     "decay": 3.0
+    },
+    "dly": {
+     "time": "1/4•",
+     "feedback": 40
+    }
+   },
+   "lanes": {
+    "voice-1": {
+     "level": -1,
+     "state": "st-voice-1-D"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-four-on-the-floor.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 118,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -55,
+     "attack": 2,
+     "release": 200
+    }
+   },
+   {
+    "id": "tune",
+    "type": "pitch-correct",
+    "foot": 7,
+    "params": {
+     "corr": 0.6,
+     "filter": 0.15,
+     "fastmode": false,
+     "key": "C",
+     "scale": "Major",
+     "offset": 0
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "thresh": -20,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 10,
+     "release": 140
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq-para",
+    "params": {
+     "lowcut_on": true,
+     "lowcut": 100,
+     "bass": 0,
+     "f1": 250,
+     "g1": -2,
+     "f2": 1000,
+     "g2": 0,
+     "f3": 4000,
+     "g3": 2,
+     "treble": 2
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 7000,
+     "range": 10
+    }
+   },
+   {
+    "id": "double",
+    "type": "chorus-js",
+    "foot": 8,
+    "params": {
+     "length": 20,
+     "voices": 2,
+     "rate": 0.35,
+     "wet": -10,
+     "dry": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "foot": 6,
+    "params": {
+     "time": "1/4",
+     "feedback": 28,
+     "mix": 16
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 20,
+     "decay": 1.8,
+     "predelay": 25,
+     "hicut": 8500
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "165f2cf0f259a1812ed50146696a922c422e379f044f520a6eebf02a52bcd588",
+   "uid": "local:groove-golem-four-on-the-floor",
+   "kind": "groove",
+   "bytes": 281,
+   "name": "Four on the floor",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"ember\", \"7\": \"aurora\", \"8\": \"rain\", \"A\": \"fire\", \"B\": \"stars\", \"C\": \"vortex\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 118, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": false, \"filter\": 0.15, \"key\": \"C\", \"offset\": 0, \"scale\": \"Major\"}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 140, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 4000, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.35, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 8500, \"mix\": 20, \"predelay\": 25}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#ff70a6\", \"7\": \"#ff70a6\", \"8\": \"#ff70a6\", \"A\": \"#ff70a6\", \"B\": \"#ff70a6\", \"C\": \"#ff70a6\", \"D\": \"#ff70a6\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-four-on-the-floor.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": false, \"filter\": 0.15, \"key\": \"C\", \"offset\": 0, \"scale\": \"Major\"}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 140, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 4000, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.35, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 8500, \"mix\": 20, \"predelay\": 25}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Pop Tuned\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"double\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Natural\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"fastmode\": true, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Double\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Ambient\", \"params\": {\"dly\": {\"feedback\": 40, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 3.0, \"mix\": 32}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"double\": false, \"tune\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Natural\"}, {\"blocks\": {\"dly\": true, \"double\": false, \"tune\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-B\"}}, \"level\": 1, \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"fastmode\": true, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Double\"}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": -1, \"state\": \"st-voice-1-D\"}}, \"level\": -1, \"name\": \"Ambient\", \"params\": {\"dly\": {\"feedback\": 40, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 3.0, \"mix\": 32}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#ff70a6",
+  "B": "#ff70a6",
+  "C": "#ff70a6",
+  "D": "#ff70a6",
+  "9": "#ff70a6",
+  "10": "#ff70a6"
+ },
+ "anims": {
+  "A": "fire",
+  "B": "stars",
+  "C": "vortex",
+  "D": "scanner",
+  "9": "glitch",
+  "10": "rain"
+ }
+}

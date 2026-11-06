@@ -1,0 +1,11 @@
+{
+ "name": "Jet",
+ "type": "flanger",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.15,
+  "depth": 5.5,
+  "feedback": 0.85
+ }
+}

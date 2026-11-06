@@ -1,0 +1,15 @@
+{
+ "name": "Transparent",
+ "type": "pitch-correct",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "corr": 0.7,
+  "filter": 0.06,
+  "fastmode": false,
+  "key": "C",
+  "scale": "Chromatic",
+  "offset": 0
+ },
+ "default": true
+}

@@ -1,0 +1,34 @@
+{
+  "id": "demo-rig",
+  "name": "Demo Rig",
+  "tag": "stereo",
+  "paths": [
+    {
+      "id": "guitar",
+      "name": "Guitare",
+      "input": 1,
+      "chain": [
+        { "type": "gate" },
+        { "type": "boost", "bypass": true, "label": "OD808" },
+        { "type": "amp-nam", "ref": "5150-block-letter", "label": "5150" },
+        { "split": {
+            "branches": [
+              { "blocks": [ { "type": "cab", "ref": "mesa-4x12-recto-ksm313", "label": "Mesa" } ] },
+              { "blocks": [ { "type": "cab", "ref": "marshall-1960", "label": "1960" } ] }
+            ],
+            "merge": { "gain": -3 }
+        } },
+        { "type": "eq" }
+      ],
+      "out": 1
+    },
+    {
+      "id": "voice",
+      "name": "Voix",
+      "input": 2,
+      "chain": [ { "type": "gate" }, { "type": "comp" }, { "type": "eq" }, { "type": "reverb" } ],
+      "out": 2
+    }
+  ],
+  "scenes": [ { "id": "A", "name": "base", "blocks": {} } ]
+}

@@ -1,0 +1,11 @@
+{
+ "name": "Jungle",
+ "type": "delay",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "time": "1/8",
+  "feedback": 30,
+  "mix": 35
+ }
+}

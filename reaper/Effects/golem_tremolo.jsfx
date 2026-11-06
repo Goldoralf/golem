@@ -1,0 +1,73 @@
+desc:GoleM Tremolo -- the tremolo block on Windows and macOS (Calf Pulsator parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « tremolo » joue Calf Pulsator sous Linux ; Calf n'existe ni sous Windows ni sous macOS (docs/platforms.md
+// §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES, leurs DEFAUTS natifs et ses choix (src/metadata.cpp
+// de Calf, lu le 2026-10-22). L'idee est celle, publique, du Pulsator : un LFO par canal (sinus, triangle, carre ;
+// Calf a aussi deux dents de scie que le catalogue n'ecrit pas), decale par canal (Offset R = 0,5 natif : la droite
+// est a contre-temps de la gauche), largeur d'impulsion, et la loi de niveau de Calf :
+//     sortie = entree * (lfo * 0,5 + Modulation / 2) + entree * (1 - Modulation).
+// Le CODE est le notre.
+//
+//  - Timing     : l'unite de la vitesse — BPM, ms, Hz (defaut Calf : Hz, PERIODICAL_DEFINITIONS(2) ; le catalogue
+//                 ecrit « Frequency » en Hz) ; « Host BPM » suit le tempo du projet.
+//  - Frequency  : vitesse en Hz (0,01..100) ; BPM 30..300 ; ms 10..2000 (la periode).
+//  - Mode       : forme du LFO. Modulation : profondeur (0..1). Offset L/R : phase par canal (0..1).
+//  - Pulse Width : 8 / 4 / 2 / 1 / 1/2 periodes (la phase est etiree, comme Calf).
+//
+// Pieges respectes : rien avant @init ; variables prefixees tr_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel.
+
+slider1:tr_timing=2<0,3,1{BPM,ms,Hz,Host BPM}>Timing
+slider2:tr_bpm=120<30,300,1>BPM
+slider3:tr_ms=500<10,2000,1>ms
+slider4:tr_hz=2<0.01,100,0.01>Frequency
+slider5:tr_mode=0<0,2,1{Sine,Triangle,Square}>Mode
+slider6:tr_amount=1<0,1,0.01>Modulation
+slider7:tr_offl=0<0,1,0.01>Offset L
+slider8:tr_offr=0.5<0,1,0.01>Offset R
+slider9:tr_pwidth=3<0,4,1{8 Periods,4 Periods,2 Periods,1 Period,Half Period}>Pulse Width
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+tr_phase = 0;
+tr_pw = 1;
+tr_freq = 2;
+
+// la forme de Calf (simple_lfo::get_value_from_phase) : phase etiree par la largeur, decalee, puis repliee
+function tr_shape(p, off) local(q, v) (
+  q = min(100, p / tr_pw + off);
+  q > 1 ? q = q - floor(q);
+  tr_mode == 1 ? (
+    v = q > 0.75 ? ((q - 0.75) * 4 - 1) : q > 0.5 ? ((q - 0.5) * 4 * -1) : q > 0.25 ? (1 - (q - 0.25) * 4) : (q * 4);
+  ) : tr_mode == 2 ? (
+    v = q < 0.5 ? -1 : 1;
+  ) : (
+    v = sin(2 * $pi * q);
+  );
+  v * tr_amount;
+);
+
+@slider
+tr_t = floor(tr_timing + 0.5);
+tr_freq = tr_t == 0 ? tr_bpm / 60 : tr_t == 1 ? 1000 / max(10, tr_ms) : tr_t == 2 ? tr_hz : max(1, tempo) / 60;
+tr_pwi = floor(tr_pwidth + 0.5);
+tr_pw = tr_pwi == 0 ? 0.125 : tr_pwi == 1 ? 0.25 : tr_pwi == 2 ? 0.5 : tr_pwi == 3 ? 1 : 2;
+
+@block
+tr_t == 3 ? tr_freq = max(1, tempo) / 60;                        // Host BPM : le tempo du projet, relu a chaque bloc
+tr_dph = tr_freq / srate;
+
+@sample
+tr_l = tr_shape(tr_phase, tr_offl);
+tr_r = tr_shape(tr_phase, tr_offr);
+tr_phase += tr_dph; tr_phase >= 1 ? tr_phase -= 1;
+spl0 = spl0 * (tr_l * 0.5 + tr_amount / 2) + spl0 * (1 - tr_amount);
+spl1 = spl1 * (tr_r * 0.5 + tr_amount / 2) + spl1 * (1 - tr_amount);

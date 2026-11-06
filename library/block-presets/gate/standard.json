@@ -1,0 +1,16 @@
+{
+ "name": "Standard",
+ "type": "gate",
+ "factory": true,
+ "params": {
+  "thresh": -50,
+  "attack": 3,
+  "hold": 20,
+  "release": 150,
+  "hpf": 80,
+  "lpf": 12000,
+  "hyst": -3
+ },
+ "default": true,
+ "inst": "guitar"
+}

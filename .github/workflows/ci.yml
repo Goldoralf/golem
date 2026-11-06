@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: CI
+
+# À CHAQUE push et pull request, Linux seul (audit 2026-10-15, lot 3) : la suite Python, l'analyse statique, les tests
+# de l'app et la syntaxe de ce qui ne se compile jamais (modules JS, scripts Lua de REAPER). Les runners Windows et
+# macOS restent à la demande (desktop-tests.yml) : ils coûtent cher et la VM fait la recette Windows au quotidien.
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Tests and static checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            bridge/requirements.txt
+            requirements-dev.lock
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38  # v6.5.0
+        with:
+          node-version: '24'
+      - name: System packages
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg libasound2-dev
+      - name: Python dependencies
+        run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: Static analysis (ruff)
+        run: ruff check .
+      - name: Syntax of the app (JS) and REAPER scripts (Lua)
+        run: python tools/check-syntax.py
+      - name: App tests (node)
+        run: node --test app/*.test.mjs
+      - name: First launch (factory content)
+        # ce que fait le premier démarrage d'un golem : poser le contenu d'usine dans library/ — des tests le supposent
+        run: python -c "from bridge import factory; factory.seed()"
+      - name: Python tests
+        run: python -m pytest -q tests
+
+  ui:
+    # L'app RENDUE (docs/quality-automation.md, lot 2) : un bridge jetable, chaque page du rack à 1024×600 et le
+    # Companion à 390×844 dans le Chrome du runner — pas d'erreur console, pas de défilement, pas de français,
+    # la marque bien écrite. En parallèle des tests : le verdict arrive en ~2 min. Les captures partent en artefact.
+    name: Rendered app (Chrome)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            bridge/requirements.txt
+            requirements-dev.lock
+      - name: System packages
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg libasound2-dev
+      - name: Python dependencies
+        run: python -m pip install --require-hashes -r requirements-dev.lock
+      - name: First launch (factory content)
+        run: python -c "from bridge import factory; factory.seed()"
+      - name: Every page, rendered, with the test content
+        # --test-content : le pack de test posé dans le dépôt jetable (docs/quality-automation.md §8) ; l'inventaire des
+        # boutons est comparé à tests/ui/inventory-linux.json — absent, il est écrit et part dans l'artefact : à commiter
+        # --press declared : les commandes dont tests/ui/expectations.json dit l'effet attendu sont appuyées (vite) ;
+        # la tournée complète (--press all, ~20 min) est celle de la nuit du rack
+        run: python tools/check-ui.py --test-content --press declared --out ${{ runner.temp }}/ui-check --json ${{ runner.temp }}/ui-check/report.json
+      - name: Screenshots and report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        with:
+          name: ui-check
+          path: ${{ runner.temp }}/ui-check/
+          if-no-files-found: ignore

@@ -1,0 +1,11 @@
+{
+ "name": "Dotted Edge",
+ "type": "delay",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "time": "1/8•",
+  "feedback": 42,
+  "mix": 33
+ }
+}

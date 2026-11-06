@@ -1,0 +1,517 @@
+{
+ "id": "line-6-filterpro",
+ "name": "FilterPro",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Line 6",
+  "model": "FilterPro",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "Synth String 1",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Attack Synth 1",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "Synth-O-Matic 1",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Mutron Down 1",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Mutron Up 1",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Q Filter 1",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Slow Filter 1",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "V-Tron 1",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "Voice Box 1",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Seeker 1",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Oberheim 1",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Throbber 1",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Spin Cycle 1",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Comet Trails 1",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Octi Synth 1",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Growler 1",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "Synth String 2",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Synth String 3",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "Synth String 4",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Synth String 5",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Attack Synth 2",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Attack Synth 3",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Attack Synth 4",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Attack Synth 5",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "Synth-O-Matic 2",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "Synth-O-Matic 3",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "Synth-O-Matic 4",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "Synth-O-Matic 5",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Synth-O-Matic 6",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Synth-O-Matic 7",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Synth-O-Matic 8",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Mutron Down 2",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "Mutron Down 3",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Mutron Down 4",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Mutron Down 5",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Mutron Down 6",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Mutron Up 2",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Mutron Up 3",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Mutron Up 4",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Mutron Up 5",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Mutron Up 6",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Q Filter 2",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Q Filter 3",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Q Filter 4",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Q Filter 5",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "Slow Filter 2",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Slow Filter 3",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Slow Filter 4",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "Slow Filter 5",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "Slow Filter 6",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "Slow Filter 7",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "V-Tron 2",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "V-Tron 3",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "V-Tron 4",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "V-Tron 5",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "V-Tron 6",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "V-Tron 7",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "Voice Box 2",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "Voice Box 3",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "Voice Box 4",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Voice Box 5",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Voice Box 6",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Seeker 2",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Seeker 3",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Seeker 4",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Seeker 5",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Seeker 6",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Seeker 7",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Oberheim 2",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Oberheim 3",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Oberheim 4",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Oberheim 5",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Oberheim 6",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Throbber 2",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Throbber 3",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Throbber 4",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Throbber 5",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Throbber 6",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Spin Cycle 2",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Spin Cycle 3",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Spin Cycle 4",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Spin Cycle 5",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Spin Cycle 6",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Comet Trails 2",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Comet Trails 3",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Comet Trails 4",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Comet Trails 5",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Comet Trails 6",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Octi Synth 2",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Octi Synth 3",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Octi Synth 4",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Octi Synth 5",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Octi Synth 6",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Growler 2",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Growler 3",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Growler 4",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "Growler 5",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Growler 6",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Growler 7",
+   "family": "custom",
+   "active_pc": 99
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Line_6_FilterPro.midnam du dépôt Ardour (GPL-2), auteur : File generated with CherryPicker by Rob Martin 2003. filtre dédié, même série",
+  "upstream": "Ardour/share/patchfiles/Line_6_FilterPro.midnam"
+ }
+}

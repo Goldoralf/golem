@@ -1,0 +1,56 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "millenium-mps450",
+ "name": "Millenium MPS-450",
+ "identity": {
+  "brand": "Millenium (Medeli)",
+  "model": "MPS-450",
+  "connection": "usb",
+  "usb_names": [
+   "MPS-450",
+   "MPS450"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "37": "snare-xstick",
+  "40": "snare-rim",
+  "48": "tom1",
+  "45": "tom2",
+  "43": "tom3",
+  "41": "tom4",
+  "42": "hh-closed",
+  "46": "hh-open",
+  "44": "hh-pedal",
+  "49": "crash1",
+  "57": "crash2",
+  "51": "ride",
+  "53": "ride-bell",
+  "59": "ride-edge",
+  "55": "splash",
+  "52": "china"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 127,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "unknown",
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "url": "https://www.thomann.de/",
+  "note": "Manuels inaccessibles lors de la recherche du 2026-09-17 ; canal 10 et notes éditables rapportés. Table GM SUPPOSÉE."
+ },
+ "note": "Repli GM assumé — mesurer."
+}

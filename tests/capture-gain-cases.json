@@ -1,0 +1,630 @@
+{
+ "spec": "capture-gain v0.1 — brouillon golem.fm, 2026-09-14, relu avec l'agent GoleM (familles d'entrée, fréquence d'échantillonnage)",
+ "source": "noms de modèles réels, API TONE3000 /api/v1/models, packs gear=outboard format=nam les plus téléchargés",
+ "names": [
+  {
+   "name": "1073MP - 70 dB Hard - B",
+   "gain": 70,
+   "hot": true,
+   "channel": 2,
+   "why": "nombre suivi de dB ; « 1073 » n'est suivi ni d'une clé ni de dB ; Hard ; canal B"
+  },
+  {
+   "name": "1073MP - 40 dB - A",
+   "gain": 40,
+   "channel": 1
+  },
+  {
+   "name": "Neve 31102 - Pre 60 - R",
+   "gain": 60,
+   "channel": 2,
+   "why": "clé pre ; « 31102 » ignoré"
+  },
+  {
+   "name": "Avalon - 54 dB - Chan 2",
+   "gain": 54,
+   "channel": 2
+  },
+  {
+   "name": "API 512c - right mic gain 8",
+   "gain": 8,
+   "channel": 2,
+   "why": "clé mic gain ; right ; famille d'entrée mic",
+   "family": "mic"
+  },
+  {
+   "name": "610B Gain +5",
+   "gain": 5,
+   "channel": null,
+   "why": "signe + explicite"
+  },
+  {
+   "name": "610B Gain -10",
+   "gain": -10,
+   "channel": null,
+   "why": "espace puis -10 : signe"
+  },
+  {
+   "name": "610B Gain 0",
+   "gain": 0,
+   "channel": null
+  },
+  {
+   "name": "WA273 55db",
+   "gain": 55,
+   "channel": null,
+   "why": "dB en minuscules, collé ; « 273 » ignoré"
+  },
+  {
+   "name": "Tascam 424 Preamp - Gain-8 Bass-7 High-7",
+   "gain": 8,
+   "channel": null,
+   "why": "tiret collé à la clé = séparateur, PAS un signe ; High-7 est un réglage d'EQ, pas un mot de niveau"
+  },
+  {
+   "name": "Tascam 424 Preamp - Gain-MAX Bass-5 High-5",
+   "gain": null,
+   "max": true,
+   "channel": null,
+   "why": "MAX après la clé : au-dessus de tout nombre"
+  },
+  {
+   "name": "1073_Mic_G70",
+   "gain": 70,
+   "channel": null,
+   "why": "G collé au nombre après _ ; famille mic",
+   "family": "mic"
+  },
+  {
+   "name": "1073DI_0.65Vin_G45",
+   "gain": 45,
+   "channel": null,
+   "why": "« 0.65Vin » n'est pas une clé de gain ; DI collé au numéro de modèle = famille di",
+   "family": "di"
+  },
+  {
+   "name": "1073_Mic_Hard",
+   "gain": null,
+   "hot": true,
+   "channel": null,
+   "why": "aucun gain lisible, variante chaude",
+   "family": "mic"
+  },
+  {
+   "name": "1176LN - Inp24",
+   "gain": 24,
+   "channel": null,
+   "why": "clé inp"
+  },
+  {
+   "name": "1176LN - InpOff",
+   "gain": null,
+   "off": true,
+   "channel": null,
+   "why": "Off après la clé d'entrée : sous tout nombre"
+  },
+  {
+   "name": "1176LN - 30_18_3_7",
+   "gain": null,
+   "channel": null,
+   "why": "aucune clé : illisible"
+  },
+  {
+   "name": "Neve 1057 Hardware Line 10 (+3dB High Shelf EQ)",
+   "gain": 10,
+   "channel": null,
+   "why": "clé line d'abord, et famille line ; « +3dB » est un réglage d'EQ",
+   "family": "line"
+  },
+  {
+   "name": "Neve 1057 Hardware Line 20 (EQ off)",
+   "gain": 20,
+   "channel": null,
+   "why": "« off » après EQ n'est pas une entrée coupée",
+   "family": "line"
+  },
+  {
+   "name": "Rupert Neve Designs 5059 SILK RED at 75%",
+   "gain": 75,
+   "channel": null,
+   "why": "pourcentage"
+  },
+  {
+   "name": "Culture Vulture HIGH OD Bias 3 Drive 15 PK3",
+   "gain": 15,
+   "channel": null,
+   "why": "clé drive ; Bias n'est pas un gain ; un nombre l'emporte sur le mot HIGH"
+  },
+  {
+   "name": "Tascam Porta 03 MkII Mini Studio Preamp Low Gain",
+   "gain": null,
+   "level": 1,
+   "channel": null,
+   "why": "mot de niveau, la clé Gain n'a pas de nombre ; « 03 » ignoré"
+  },
+  {
+   "name": "Tascam Porta 03 MkII Mini Studio Preamp High Gain",
+   "gain": null,
+   "level": 3,
+   "channel": null
+  },
+  {
+   "name": "DEKILL-LA2A-cranked",
+   "gain": null,
+   "level": 3,
+   "channel": null,
+   "why": "mot après un tiret ; « LA2A » ignoré"
+  },
+  {
+   "name": "GSSL Bus Gold A-30 R-100 Ratio-2 L",
+   "gain": null,
+   "channel": 1,
+   "why": "A-30, R-100, Ratio-2 : réglages de compresseur, pas un gain ; R et A suivis d'un tiret ne sont PAS des canaux ; L final"
+  },
+  {
+   "name": "GSSL Bus Gold NoCompression R",
+   "gain": null,
+   "channel": 2
+  },
+  {
+   "name": "Premier 1073 - Mic Mojo 2 (48k)",
+   "gain": null,
+   "channel": null,
+   "why": "« 48k » : fréquence d'échantillonnage, pas un gain ; « Mojo 2 » n'a pas de clé ; famille mic",
+   "family": "mic",
+   "rate": 48000
+  },
+  {
+   "name": "Premier 1073 - Transformer Drive (44.1k)",
+   "gain": null,
+   "channel": null,
+   "why": "« Drive » sans nombre ; « 44.1k » exclu du gain",
+   "rate": 44100
+  },
+  {
+   "name": "Super Silk - Red (R)",
+   "gain": null,
+   "channel": 2,
+   "why": "canal entre parenthèses"
+  },
+  {
+   "name": "CPS 100 LowBoost 0 ATTEN 0 KCS 10 Highboost 5 ATTEN 0 BANDWIDTH 0 [Right Unit Pultec EQP-1 SN.923]",
+   "gain": null,
+   "channel": 2,
+   "why": "réglages d'EQ, pas de gain ; « Right » dans les crochets"
+  },
+  {
+   "name": "M79_15",
+   "gain": null,
+   "channel": null,
+   "why": "vitesse ou piste, pas une clé"
+  },
+  {
+   "name": "AMS Neve 1073N L",
+   "gain": null,
+   "channel": 1
+  },
+  {
+   "name": "Tascam Porta 03 MkII Mini Studio Preamp Medium Gain",
+   "gain": null,
+   "level": 2,
+   "channel": null,
+   "why": "« Studio » ne contient pas la famille di : il faut un non-lettre avant et après"
+  },
+  {
+   "name": "Tascam 424 Dirtier Preamp",
+   "gain": null,
+   "channel": null,
+   "why": "« Dirtier » n'est pas la famille di"
+  }
+ ],
+ "packs": [
+  {
+   "tone_id": "26483",
+   "title": "BAE 1073MP Preamp",
+   "models": [
+    "1073MP - 70 dB Hard - B",
+    "1073MP - 70 dB - B",
+    "1073MP - 60 dB Hard - B",
+    "1073MP - 60 dB - B",
+    "1073MP - 50 dB - B",
+    "1073MP - 40 dB - B",
+    "1073MP - 70 dB Hard - A",
+    "1073MP - 70 dB - A",
+    "1073MP - 60 dB Hard - A",
+    "1073MP - 60 dB - A",
+    "1073MP - 50 dB - A",
+    "1073MP - 40 dB - A"
+   ],
+   "order": [
+    "1073MP - 40 dB - A",
+    "1073MP - 40 dB - B",
+    "1073MP - 50 dB - A",
+    "1073MP - 50 dB - B",
+    "1073MP - 60 dB - A",
+    "1073MP - 60 dB - B",
+    "1073MP - 60 dB Hard - A",
+    "1073MP - 60 dB Hard - B",
+    "1073MP - 70 dB - A",
+    "1073MP - 70 dB - B",
+    "1073MP - 70 dB Hard - A",
+    "1073MP - 70 dB Hard - B"
+   ],
+   "defaults": {
+    "voice": "1073MP - 40 dB - A",
+    "other": "1073MP - 40 dB - A"
+   }
+  },
+  {
+   "tone_id": "43900",
+   "title": "Neve 31102 Stereo Pair Console Pre & EQ",
+   "models": [
+    "Neve 31102 - Pre 60 - R",
+    "Neve 31102 - Pre 60 - L",
+    "Neve 31102 - Pre 40 - R",
+    "Neve 31102 - Pre 40 - L",
+    "Neve 31102 - Pre 50 - L",
+    "Neve 31102 - Pre 30 - R",
+    "Neve 31102 - Pre 30 - L",
+    "Neve 31102 - Pre 50 - R",
+    "Neve 31102 - Pre 70 - R",
+    "Neve 31102 - Pre 70 - L"
+   ],
+   "order": [
+    "Neve 31102 - Pre 30 - L",
+    "Neve 31102 - Pre 30 - R",
+    "Neve 31102 - Pre 40 - L",
+    "Neve 31102 - Pre 40 - R",
+    "Neve 31102 - Pre 50 - L",
+    "Neve 31102 - Pre 50 - R",
+    "Neve 31102 - Pre 60 - L",
+    "Neve 31102 - Pre 60 - R",
+    "Neve 31102 - Pre 70 - L",
+    "Neve 31102 - Pre 70 - R"
+   ],
+   "defaults": {
+    "voice": "Neve 31102 - Pre 30 - L",
+    "other": "Neve 31102 - Pre 30 - L"
+   }
+  },
+  {
+   "tone_id": "26480",
+   "title": "Avalon AD2022 Preamp",
+   "models": [
+    "Avalon - 54 dB - Chan 2",
+    "Avalon - 54 dB - Chan 1",
+    "Avalon - 46 dB - Chan 2",
+    "Avalon - 46 dB - Chan 1",
+    "Avalon - 38 dB - Chan 2",
+    "Avalon - 38 dB - Chan 1",
+    "Avalon - 30 dB - Chan 2",
+    "Avalon - 30 dB - Chan 1",
+    "Avalon - 22 dB - Chan 2",
+    "Avalon - 22 dB - Chan 1"
+   ],
+   "order": [
+    "Avalon - 22 dB - Chan 1",
+    "Avalon - 22 dB - Chan 2",
+    "Avalon - 30 dB - Chan 1",
+    "Avalon - 30 dB - Chan 2",
+    "Avalon - 38 dB - Chan 1",
+    "Avalon - 38 dB - Chan 2",
+    "Avalon - 46 dB - Chan 1",
+    "Avalon - 46 dB - Chan 2",
+    "Avalon - 54 dB - Chan 1",
+    "Avalon - 54 dB - Chan 2"
+   ],
+   "defaults": {
+    "voice": "Avalon - 22 dB - Chan 1",
+    "other": "Avalon - 22 dB - Chan 1"
+   }
+  },
+  {
+   "tone_id": "10908",
+   "title": "Universal Audio 610-B Tube Preamp",
+   "models": [
+    "610B Gain +5",
+    "610B Gain +10",
+    "610B Gain -10",
+    "610B Gain 0",
+    "610B Gain -5"
+   ],
+   "order": [
+    "610B Gain -10",
+    "610B Gain -5",
+    "610B Gain 0",
+    "610B Gain +5",
+    "610B Gain +10"
+   ],
+   "defaults": {
+    "voice": "610B Gain -10",
+    "other": "610B Gain -10"
+   }
+  },
+  {
+   "tone_id": "10909",
+   "title": "Warm Audio WA273 (Neve 1073 Clone)",
+   "models": [
+    "WA273 55db",
+    "WA273 45dB",
+    "WA273 35dB"
+   ],
+   "order": [
+    "WA273 35dB",
+    "WA273 45dB",
+    "WA273 55db"
+   ],
+   "defaults": {
+    "voice": "WA273 35dB",
+    "other": "WA273 35dB"
+   }
+  },
+  {
+   "tone_id": "6009",
+   "title": "1176LN Limiter, Color Only",
+   "models": [
+    "1176LN - Inp24",
+    "1176LN - Inp6",
+    "1176LN - Inp48",
+    "1176LN - Inp12",
+    "1176LN - Inp18",
+    "1176LN - 30_18_3_7",
+    "1176LN - Inp30",
+    "1176LN - InpOff",
+    "1176LN - Inp0",
+    "1176LN - Inp36"
+   ],
+   "order": [
+    "1176LN - InpOff",
+    "1176LN - Inp0",
+    "1176LN - Inp6",
+    "1176LN - Inp12",
+    "1176LN - Inp18",
+    "1176LN - Inp24",
+    "1176LN - Inp30",
+    "1176LN - Inp36",
+    "1176LN - Inp48",
+    "1176LN - 30_18_3_7"
+   ],
+   "note": "« InpOff » ouvre le cadran mais n'est pas le défaut : une entrée coupée ne dit pas quel son la capture rend. Le défaut est le plus bas NUMÉRIQUE. Choix à confirmer.",
+   "defaults": {
+    "voice": "1176LN - Inp0",
+    "other": "1176LN - Inp0"
+   }
+  },
+  {
+   "tone_id": "42323",
+   "title": "LA2A Emulation",
+   "models": [
+    "DEKILL-LA2A-Mild",
+    "DEKILL-LA2A",
+    "DEKILL-LA2A-cranked"
+   ],
+   "order": [
+    "DEKILL-LA2A-Mild",
+    "DEKILL-LA2A",
+    "DEKILL-LA2A-cranked"
+   ],
+   "note": "le nom nu prend le niveau 2 parce que ses voisins portent des mots de niveau",
+   "defaults": {
+    "voice": "DEKILL-LA2A-Mild",
+    "other": "DEKILL-LA2A-Mild"
+   }
+  },
+  {
+   "tone_id": "39262",
+   "title": "Broken Tascam Porta 03 MkII Ministudio",
+   "models": [
+    "Tascam Porta 03 MkII Mini Studio Preamp High Gain",
+    "Tascam Porta 03 MkII Mini Studio Preamp Medium Gain",
+    "Tascam Porta 03 MkII Mini Studio Preamp Low Gain"
+   ],
+   "order": [
+    "Tascam Porta 03 MkII Mini Studio Preamp Low Gain",
+    "Tascam Porta 03 MkII Mini Studio Preamp Medium Gain",
+    "Tascam Porta 03 MkII Mini Studio Preamp High Gain"
+   ],
+   "defaults": {
+    "voice": "Tascam Porta 03 MkII Mini Studio Preamp Low Gain",
+    "other": "Tascam Porta 03 MkII Mini Studio Preamp Low Gain"
+   }
+  },
+  {
+   "tone_id": "21689",
+   "title": "Neve 1073 Preamp Clone",
+   "models": [
+    "1073_Mic_Hard",
+    "1073_Mic_Transformer Pushed",
+    "1073_Mic_G70",
+    "1073_Mic_G50",
+    "1073_Mic_G60",
+    "1073_Mic_G65",
+    "1073DI_0.65Vin_G65",
+    "1073DI_0.65Vin_G60",
+    "1073DI_0.65Vin_G55",
+    "1073DI_0.65Vin_G50",
+    "1073DI_0.65Vin_G45"
+   ],
+   "order": [
+    "1073DI_0.65Vin_G45",
+    "1073_Mic_G50",
+    "1073DI_0.65Vin_G50",
+    "1073DI_0.65Vin_G55",
+    "1073_Mic_G60",
+    "1073DI_0.65Vin_G60",
+    "1073_Mic_G65",
+    "1073DI_0.65Vin_G65",
+    "1073_Mic_G70",
+    "1073_Mic_Hard",
+    "1073_Mic_Transformer Pushed"
+   ],
+   "note": "le pack mélange l'entrée micro et l'entrée DI : une voix prend la prise Mic la plus basse (G50), les autres rôles la prise DI la plus basse (G45). La famille se choisit AVANT le gain. Les illisibles viennent après les lisibles, dans l'ordre du pack.",
+   "defaults": {
+    "voice": "1073_Mic_G50",
+    "other": "1073DI_0.65Vin_G45"
+   }
+  },
+  {
+   "tone_id": "60128",
+   "title": "NEVE 1057 Hardware",
+   "models": [
+    "Neve 1057 Hardware Line 10 (+3dB High Shelf EQ)",
+    "Neve 1057 Hardware Line 20 (EQ off)",
+    "Neve 1057 Hardware Line 0 (EQ off)",
+    "Neve 1057 Hardware Line 10 (EQ off)"
+   ],
+   "order": [
+    "Neve 1057 Hardware Line 0 (EQ off)",
+    "Neve 1057 Hardware Line 10 (+3dB High Shelf EQ)",
+    "Neve 1057 Hardware Line 10 (EQ off)",
+    "Neve 1057 Hardware Line 20 (EQ off)"
+   ],
+   "defaults": {
+    "voice": "Neve 1057 Hardware Line 0 (EQ off)",
+    "other": "Neve 1057 Hardware Line 0 (EQ off)"
+   }
+  },
+  {
+   "tone_id": "47292",
+   "title": "Tascam 424 Preamp pedal",
+   "models": [
+    "Tascam 424 Preamp - Gain-8 Bass-7 High-7",
+    "Tascam 424 Preamp - Gain-7 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-8 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-9 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-MAX Bass-5 High-5"
+   ],
+   "order": [
+    "Tascam 424 Preamp - Gain-7 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-8 Bass-7 High-7",
+    "Tascam 424 Preamp - Gain-8 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-9 Bass-5 High-5",
+    "Tascam 424 Preamp - Gain-MAX Bass-5 High-5"
+   ],
+   "defaults": {
+    "voice": "Tascam 424 Preamp - Gain-7 Bass-5 High-5",
+    "other": "Tascam 424 Preamp - Gain-7 Bass-5 High-5"
+   }
+  },
+  {
+   "tone_id": "59494",
+   "title": "GSSL Bus Gold Compressor",
+   "models": [
+    "GSSL Bus Gold NoCompression R",
+    "GSSL Bus Gold NoCompression L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-4 R",
+    "GSSL Bus Gold A-10 R-Auto Ratio-2 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-2 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-4 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-2 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-4 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-4 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-10 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-2 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-10 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-10 R",
+    "GSSL Bus Gold A-10 R-Auto Ratio-10 R"
+   ],
+   "order": [
+    "GSSL Bus Gold NoCompression R",
+    "GSSL Bus Gold NoCompression L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-4 R",
+    "GSSL Bus Gold A-10 R-Auto Ratio-2 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-2 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-4 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-2 R",
+    "GSSL Bus Gold A-30 R-100 Ratio-4 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-4 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-10 L",
+    "GSSL Bus Gold A-10 R-Auto Ratio-2 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-10 L",
+    "GSSL Bus Gold A-30 R-100 Ratio-10 R",
+    "GSSL Bus Gold A-10 R-Auto Ratio-10 R"
+   ],
+   "note": "aucun gain lisible : ordre du pack ; défaut = premier canal 1",
+   "defaults": {
+    "voice": "GSSL Bus Gold NoCompression L",
+    "other": "GSSL Bus Gold NoCompression L"
+   }
+  },
+  {
+   "tone_id": "55814",
+   "title": "Rupert Neve Designs 5059 Satellite SILK RED",
+   "models": [
+    "Rupert Neve Designs 5059 SILK RED at 75%",
+    "Rupert Neve Designs 5059 SILK RED at 85%",
+    "Rupert Neve Designs 5059 SILK RED at 65%",
+    "Rupert Neve Designs 5059 SILK RED at 100%",
+    "Rupert Neve Designs 5059 SILK RED at 25%",
+    "Rupert Neve Designs 5059 SILK RED at 50%"
+   ],
+   "order": [
+    "Rupert Neve Designs 5059 SILK RED at 25%",
+    "Rupert Neve Designs 5059 SILK RED at 50%",
+    "Rupert Neve Designs 5059 SILK RED at 65%",
+    "Rupert Neve Designs 5059 SILK RED at 75%",
+    "Rupert Neve Designs 5059 SILK RED at 85%",
+    "Rupert Neve Designs 5059 SILK RED at 100%"
+   ],
+   "defaults": {
+    "voice": "Rupert Neve Designs 5059 SILK RED at 25%",
+    "other": "Rupert Neve Designs 5059 SILK RED at 25%"
+   }
+  },
+  {
+   "tone_id": "45472",
+   "title": "Culture Vulture Super 15 Valve Distortion",
+   "models": [
+    "Culture Vulture HIGH OD Bias 1 Drive 15 SQ3",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 T",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 T",
+    "Culture Vulture HIGH OD Bias 3 Drive 14 PK5",
+    "Culture Vulture HIGH OD Bias 3 Drive 11 PK4",
+    "Culture Vulture HIGH OD Bias 3 Drive 3 PK4",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK3",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 PK3",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 PK2",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK2",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK1"
+   ],
+   "order": [
+    "Culture Vulture HIGH OD Bias 3 Drive 3 PK4",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 T",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 PK3",
+    "Culture Vulture HIGH OD Bias 3 Drive 7 PK2",
+    "Culture Vulture HIGH OD Bias 3 Drive 11 PK4",
+    "Culture Vulture HIGH OD Bias 3 Drive 14 PK5",
+    "Culture Vulture HIGH OD Bias 1 Drive 15 SQ3",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 T",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK3",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK2",
+    "Culture Vulture HIGH OD Bias 3 Drive 15 PK1"
+   ],
+   "defaults": {
+    "voice": "Culture Vulture HIGH OD Bias 3 Drive 3 PK4",
+    "other": "Culture Vulture HIGH OD Bias 3 Drive 3 PK4"
+   }
+  },
+  {
+   "tone_id": "5999",
+   "title": "Neve 1073 Preamp Clone (Premier)",
+   "models": [
+    "Premier 1073 - Mic Mojo 2 (48k)",
+    "Premier 1073 - Transformer Drive (48k)",
+    "Premier 1073 - Mic Mojo (48k)",
+    "Premier 1073 - Mic Mojo (44.1k)",
+    "Premier 1073 - Transformer Drive (44.1k)"
+   ],
+   "order": [
+    "Premier 1073 - Mic Mojo 2 (48k)",
+    "Premier 1073 - Transformer Drive (48k)",
+    "Premier 1073 - Mic Mojo (48k)"
+   ],
+   "note": "aucun gain lisible : ordre du pack. Les doublons (44.1k) disparaissent au profit de leur jumeau (48k), le rack tourne à 48 kHz.",
+   "defaults": {
+    "voice": "Premier 1073 - Mic Mojo 2 (48k)",
+    "other": "Premier 1073 - Mic Mojo 2 (48k)"
+   }
+  }
+ ]
+}

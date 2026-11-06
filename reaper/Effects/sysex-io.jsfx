@@ -1,0 +1,53 @@
+desc:GoleM sysex io (sysex-io) -- capte les SysEx d'un controleur et lui en envoie (gmem golem_sysex)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! Programmer un controleur MIDI que Reaper tient en EXCLUSIF (Linux : rawmidi ; personne d'autre ne
+//! peut l'ouvrir pendant que le moteur tourne). Pose par golem_drumlearn.lua sur la piste « SysexIO »
+//! (entree MIDI = le controleur, sortie MIDI materielle = le meme). Ne joue rien : aucune note ne sort.
+//!
+//! Carte gmem golem_sysex :
+//!   [0] = nonce d'envoi (le Lua l'incremente EN DERNIER)   [1] = longueur a envoyer   [2..1001] = octets
+//!   [1100] = nombre de SysEx recus (monotone, ecrit EN DERNIER)   [1101] = longueur du dernier
+//!   [1102..2101] = ses octets (F0 .. F7 compris)                   [1099] = nombre de messages envoyes
+//! ⚠ EEL2 est INSENSIBLE A LA CASSE (CLAUDE.md) ; rien avant la premiere section @ n'est execute.
+
+options:gmem=golem_sysex
+
+slider1:sx_rx=0<0,1000000,1>SysEx received (temoin)
+slider2:sx_tx=0<0,1000000,1>SysEx sent (temoin)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+tx_nonce_i = 0; tx_len_i = 1; tx_base = 2; tx_max = 1000;
+rx_cnt_i = 1100; rx_len_i = 1101; rx_base = 1102; tx_cnt_i = 1099;
+buf = 0;                     // tampon local (memoire du JSFX, pas gmem)
+seen_tx = gmem[tx_nonce_i];  // une re-instanciation ne rejoue PAS le dernier envoi
+
+@block
+// reception : on garde le DERNIER SysEx entier ; le reste (notes, CC) est jete — rien ne sort
+while ((n = midirecv_buf(ofs, buf, tx_max)) > 0) (
+  buf[0] == 0xF0 ? (
+    i = 0; loop(n, gmem[rx_base + i] = buf[i]; i += 1; );
+    gmem[rx_len_i] = n;
+    gmem[rx_cnt_i] += 1;     // EN DERNIER : le lecteur ne voit le message qu'une fois entier
+    sx_rx += 1;
+  );
+);
+// envoi : quand le nonce change
+gmem[tx_nonce_i] != seen_tx ? (
+  seen_tx = gmem[tx_nonce_i];
+  n = gmem[tx_len_i] | 0;
+  n > 1 && n <= tx_max ? (
+    i = 0; loop(n, buf[i] = gmem[tx_base + i] | 0; i += 1; );
+    buf[0] == 0xF0 && buf[n - 1] == 0xF7 ? (
+      midisend_buf(0, buf, n);
+      gmem[tx_cnt_i] += 1;
+      sx_tx += 1;
+    );
+  );
+);

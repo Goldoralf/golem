@@ -1,0 +1,13 @@
+{
+ "name": "Dub throw",
+ "type": "delay-tape",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "time": "dotted 8th",
+  "time_r": "8th",
+  "feedback": 70,
+  "mix": 45,
+  "medium": "Old Tape"
+ }
+}

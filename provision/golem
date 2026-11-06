@@ -1,0 +1,331 @@
+#!/usr/bin/env bash
+# GoleM — le lanceur. UNE installation, DEUX usages (docs/installer.md §4, 2026-10-06) :
+# GoleM tourne toujours de la même façon (bridge + Reaper masqué) ; seul change le fait d'ouvrir
+# une fenêtre sur cet ordinateur. On passe de l'un à l'autre sans couper le son.
+#
+#   golem desktop      (et `golem` seul) démarre GoleM s'il ne tourne pas, puis ouvre la fenêtre :
+#                      l'UI dans une coquille de TABLETTE (1024x600 exact), Reaper MASQUÉ. Si
+#                      GoleM tourne déjà, ouvre SEULEMENT la fenêtre.
+#                      --fullscreen pour l'immersion · --dev pour voir Reaper
+#   golem server       GoleM SANS fenêtre : une tablette ou un téléphone est l'écran. Donne
+#                      l'adresse, et le code d'appairage si aucun appareil principal n'existe.
+#                      (`rack` et `headless` : mêmes effets, anciens noms)
+#   golem autostart on|off|status   démarrer avec l'ordinateur : `golem server` au BOOT, sans session
+#                      ouverte (service systemd utilisateur + linger) — provision/autostart/. Sans
+#                      durcissement : c'est un geste séparé (System ▸ Dashboard ▸ Lock down this machine)
+#   golem window       la fenêtre seule, sur un golem qui tourne (System ▸ Dashboard ▸ Show on this computer)
+#   golem phone        DEV SEULEMENT : le Companion (/app/m.html) dans une coquille de TÉLÉPHONE,
+#                      pour tester la vue du musicien. Aucune icône ne le propose à l'utilisateur.
+#   golem start        la pile seule, sans fenêtre GoleM et Reaper VISIBLE : c'est le mode
+#                      des racks autonomes (sans écran) et du débogage
+#   golem ui           l'UI dans une fenêtre simple (1024x600), Reaper masqué
+#   golem stop         arrête Reaper + le bridge ET ferme les fenêtres GoleM (le PC
+#                      redevient un PC normal) — le bouton ⏻ de la coquille fait exactement ça
+#
+#   `device` reste accepté comme ancien nom de `desktop`.
+#
+# ── POURQUOI REAPER EST MASQUÉ PAR DÉFAUT ───────────────────────────────────────────────
+# Un utilisateur de GoleM ne lit jamais Reaper. Lui ouvrir deux fenêtres, c'est lui montrer
+# la machinerie. Reaper part donc sur un écran X virtuel (Xvfb) — voir provision/start.sh.
+# `--dev` (ou `golem start`) le remet à l'écran.
+#   golem status       état bridge / Reaper / lien OSC en une ligne
+#   golem uninstall    le désinstallateur graphique (docs/uninstall.md §4) ; --dry-run montre le plan en texte
+#                      sans rien toucher ; --dry ouvre les écrans en simulation
+#   golem restart      stop puis start
+#
+# La fenêtre RETIENT sa taille et son zoom (docs/ui-architecture.md) — par coquille : ui,
+# device et phone ont chacune la leur. `--reset` remet celle de la commande à sa taille
+# d'origine : indispensable, une fenêtre mémorisée plus grande que l'écran du jour serait
+# inatteignable (jamais de mode sans sa sortie).
+#
+# Installation : provision/install-desktop.sh (symlink dans ~/.local/bin).
+set -uo pipefail
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+PORT="${GOLEM_PORT:-8770}"
+URL="http://localhost:${PORT}/app/"
+
+# --dev : Reaper à l'écran. Sinon il part sur un écran virtuel (provision/start.sh).
+# GOLEM_LAUNCH : le bridge sait comment il a été lancé (code d'appairage d'un server, rack_identity) —
+# il ne le lit qu'à SON démarrage : un bridge déjà lancé garde la valeur de son premier lancement.
+start() { GOLEM_SHOW_REAPER="$SHOW_REAPER" GOLEM_LAUNCH="${LAUNCH:-desktop}" "$HERE/provision/start.sh"; }
+
+# L'app est dessinée pour le panneau du rack : 1024x600, sans scroll (docs/ui-architecture.md).
+# En fenêtre libre sur un 27", on ne voit jamais ce que voit l'utilisateur — d'où deux modes :
+#   ui       fenêtre app à la taille du panneau (rapide, comme le rack)
+#   device   la même chose DANS une coquille de tablette : l'iframe fait EXACTEMENT 1024x600,
+#            ce qu'une fenêtre ne garantit pas (elle compte ses propres bordures)
+PANEL_W=1024
+PANEL_H=600
+
+browser() {
+  for b in chromium chromium-browser google-chrome brave-browser; do
+    command -v "$b" >/dev/null 2>&1 && { echo "$b"; return 0; }
+  done
+  return 1
+}
+
+# PROFIL DÉDIÉ — indispensable, pas un détail de confort : si un Chrome tourne déjà avec le
+# profil par défaut, le nouveau processus lui PASSE l'URL et s'arrête, et --window-size est
+# ignoré (constaté le 2026-07-29 : fenêtre ouverte, mais à la taille du navigateur courant).
+# Un user-data-dir à part force une instance séparée, donc une taille garantie.
+# Un Chromium en SNAP (le seul qu'Ubuntu propose, chromium-browser n'étant qu'un paquet de transition) ne peut écrire
+# dans AUCUN dossier caché du home (interface `home`) : --user-data-dir sous ~/.local était refusé, et le profil dédié
+# avec lui (2026-11-03). Son profil va sous ~/snap/chromium/common, qu'il possède. Même règle que le profil de
+# l'installateur (installer/platform_linux.py _profile_dir) : snap = le binaire mène à /usr/bin/snap, ou /snap/<nom>
+# existe pour un nom de la famille.
+appdir() {
+  local b exe snap=""
+  b=$(browser) || { echo "${XDG_DATA_HOME:-$HOME/.local/share}/golem/browser"; return; }
+  exe=$(readlink -f "$(command -v "$b")" 2>/dev/null || true)
+  case "$b" in chromium*) snap=chromium ;; *) snap="$b" ;; esac
+  if [ "$exe" = /usr/bin/snap ] || [ -d "/snap/$snap" ]; then
+    echo "$HOME/snap/$snap/common/golem-browser"
+  else
+    echo "${XDG_DATA_HOME:-$HOME/.local/share}/golem/browser"
+  fi
+}
+APPDIR="$(appdir)"
+
+# ── MÉMOIRE DE FENÊTRE (docs/ui-architecture.md) ────────────────────────────────────────────
+# La page rapporte sa géométrie au bridge (elle seule la connaît : en Wayland un client ne peut
+# pas interroger une fenêtre, et cette machine n'a ni xdotool ni wmctrl). On la rejoue ici.
+#   --window-size                 px CSS  — aller-retour EXACT avec outerWidth/outerHeight
+#   --force-device-scale-factor   l'échelle, orthogonale : elle ne touche pas outerWidth
+# On ne force l'échelle QUE si l'utilisateur a vraiment zoomé (dpr != l'échelle naturelle de son
+# écran, mémorisée sous `base`) : la forcer d'office épinglerait le bureau d'un écran HiDPI.
+GEOM="$HERE/config/.desktop.json"
+
+geom() {   # $1 = coquille, $2 = largeur par défaut, $3 = hauteur par défaut -> "W H DSF"
+  local reused=0; pgrep -f -- "--user-data-dir=$APPDIR" >/dev/null 2>&1 && reused=1
+  python3 - "$GEOM" "$1" "$2" "$3" "${RESET:-0}" "$reused" <<'PYEOF'
+import json, os, sys
+f, shell, dw, dh = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
+reset, reused = sys.argv[5] == "1", sys.argv[6] == "1"
+try:
+    d = json.load(open(f))
+except Exception:
+    d = {}
+m = (d.get(shell) or {}) if isinstance(d, dict) else {}
+if reset:
+    m = {}
+    if isinstance(d, dict) and shell in d:
+        d.pop(shell)
+        json.dump(d, open(f, "w"), indent=1)
+w = int(m.get("w") or 0) or dw
+h = int(m.get("h") or 0) or dh
+dpr, base = float(m.get("dpr") or 0), float(m.get("base") or 0)
+dsf = dpr if (dpr and base and abs(dpr - base) > 0.01) else 0
+# Chrome recycle son processus : nos drapeaux seront ignorés. On l'écrit (forced=0) au lieu de
+# prétendre avoir forcé — sinon la page verrait un dpr différent de ce qu'on annonce et
+# effacerait le zoom mémorisé, pour la seule raison qu'une autre fenêtre était ouverte.
+if reused:
+    dsf = 0
+# on ÉCRIT ce qu'on force : la page saura que le dpr qu'elle voit n'est pas celui de l'écran
+# (sinon elle enregistrerait le zoom comme échelle naturelle, et il deviendrait irréversible).
+if isinstance(d, dict) and m:
+    m["forced"] = round(dsf, 4)
+    d[shell] = m
+    try:
+        json.dump(d, open(f, "w"), indent=1)
+    except Exception:
+        pass
+print(w, h, round(dsf, 4) if dsf else 0)
+PYEOF
+}
+
+# Chrome est un SINGLETON par --user-data-dir : une seconde fenêtre est ouverte par le processus
+# déjà en place, qui IGNORE --window-size et --force-device-scale-factor (mesuré le 2026-07-31 :
+# 700×500 demandé, 1024×600 obtenu). La page se remet elle-même à sa taille (shell-geom.js), mais
+# l'échelle, elle, ne se rattrape pas depuis une page — alors on le DIT plutôt que de mentir.
+warn_reuse() {
+  pgrep -f -- "--user-data-dir=$APPDIR" >/dev/null 2>&1 &&
+    echo "· une fenêtre golem est déjà ouverte : Chrome réutilise son processus, le zoom mémorisé ne s'appliquera pas à celle-ci."
+  return 0
+}
+
+open_app() {   # $1 = url, $2 = largeur, $3 = hauteur, $4 = échelle (0 = ne rien forcer)
+  local b; b=$(browser) || { xdg-open "$1" >/dev/null 2>&1 || echo "ouvre $1 dans ton navigateur"; return; }
+  mkdir -p "$APPDIR"
+  local extra=(--window-size="$2,$3")
+  [ "${4:-0}" != 0 ] && extra+=(--force-device-scale-factor="$4")
+  warn_reuse
+  ("$b" --app="$1" --user-data-dir="$APPDIR" "${extra[@]}" \
+        --no-first-run --no-default-browser-check --disable-features=Translate \
+        >/dev/null 2>&1 &)
+}
+
+# ?shell= : c'est LUI qui autorise la page à écrire la mémoire. Sans marqueur, la même app
+# ouverte dans un onglet du navigateur personnel enregistrerait la taille de cette fenêtre-là.
+ui()     { local w h k; read -r w h k <<<"$(geom ui "$PANEL_W" "$PANEL_H")"; open_app "${URL}?shell=ui" "$w" "$h" "$k"; }
+
+# FENÊTRE par défaut. Le kiosk a été essayé et RETIRÉ le 2026-07-29 : il enferme — pas de barre
+# système, Échap ne le quitte pas, et `window.close()` est refusé à un script, donc la croix de la
+# coquille ne pouvait rien faire. On avait échangé une barre de titre contre un piège.
+# `--fullscreen` reste disponible pour l'immersion : c'est un plein écran NAVIGATEUR, dont F11
+# sort — contrairement au kiosk. Et la croix marche partout depuis (POST /api/ui/quit).
+open_shell() {   # $1 = query (?d=…), $2 = coquille (device|phone), $3 = largeur, $4 = hauteur
+  local w h k sep u b extra
+  read -r w h k <<<"$(geom "$2" "$3" "$4")"
+  sep="?"; [ -n "$1" ] && sep="&"
+  u="http://localhost:${PORT}/app/device.html$1${sep}shell=$2"
+  b=$(browser) || { xdg-open "$u" >/dev/null 2>&1 || echo "ouvre $u dans ton navigateur"; return; }
+  mkdir -p "$APPDIR"
+  extra=(--window-size="$w,$h")
+  [ "$k" != 0 ] && extra+=(--force-device-scale-factor="$k")
+  # plein écran : la taille n'a plus de sens, mais la mémoire reste intacte pour la prochaine
+  # fenêtre — on n'écrase pas un réglage parce qu'on a demandé autre chose une fois.
+  [ "${FULLSCR:-0}" = 1 ] && extra=(--start-fullscreen)
+  warn_reuse
+  ("$b" --app="$u" --user-data-dir="$APPDIR" "${extra[@]}" \
+        --no-first-run --no-default-browser-check >/dev/null 2>&1 &)
+}
+
+# +2× lunette, + la barre d'état sous l'appareil (utile seulement en mode --window)
+# hauteur = appareil + lunettes + la barre du bas (mesurée à ~40 px, marge comprise). Le
+# téléphone en demande plus : sa barre porte AUSSI le sélecteur de rôle et d'onglet.
+# ⚠ La COMMANDE s'appelle `desktop`, la COQUILLE reste `device` : c'est le nom du gabarit
+# matériel (le panneau du rack) que device.html rend, et la clé de la mémoire de fenêtre
+# (GEOM_SHELLS). Renommer la clé orphelinerait la taille déjà mémorisée pour rien.
+desktop() { open_shell "" device "$((PANEL_W + 52 + 24))" "$((PANEL_H + 52 + 72))"; }
+# largeur : la barre du bas (zoom + rôle + onglets) demande plus que l'appareil lui-même —
+# un peu de « bureau » de chaque côté vaut mieux qu'une barre sur deux lignes.
+# largeur : de quoi poser l'appareil sur un peu de « bureau ». La barre du bas passe
+# sciemment sur DEUX lignes ici (zoom + rôle + onglets) : une seule ligne demanderait
+# 730 px pour un téléphone qui en fait 418 — le cadre paraîtrait perdu au milieu du vide.
+phone()  { open_shell "?d=phone" phone "$((390 + 28 + 130))" "$((844 + 28 + 96))"; }
+
+stop() {   # $1 = keepwin (restart) : la pile meurt, la fenêtre reste — elle se reconnecte
+  echo "→ arrêt Reaper…"
+  pkill -x reaper 2>/dev/null || true
+  echo "→ arrêt bridge…"
+  pkill -f "uvicorn bridge.app" 2>/dev/null || true
+  pkill -x aseqdump 2>/dev/null || true
+  # l'écran virtuel de Reaper : sinon un Xvfb orphelin survit à chaque cycle
+  pkill -f "Xvfb ${GOLEM_XVFB_DISPLAY:-:99}" 2>/dev/null || true
+  # Les fenêtres GoleM AUSSI — même geste que le ⏻ de la coquille (POST /api/ui/quit),
+  # qui « fait exactement ça » d'après l'en-tête de ce fichier : c'était `stop` qui mentait.
+  # Sans ça, chaque cycle stop/desktop laissait une fenêtre de plus, branchée sur le bridge
+  # suivant — des doublons qui « marchent » (vécu le 2026-08-28). Périmètre : le profil
+  # DÉDIÉ uniquement, jamais le navigateur personnel. `restart` les épargne (keepwin).
+  [ "${1:-}" = keepwin ] || pkill -f -- "--user-data-dir=$APPDIR" 2>/dev/null || true
+  # ATTENDRE la mort réelle avant de rendre la main : pkill envoie le signal et s'en va,
+  # mais uvicorn s'éteint proprement (~1 s). `golem stop && golem desktop` relançait donc
+  # PENDANT l'agonie — le pgrep de start.sh voyait l'ancien bridge, disait « déjà actif »,
+  # et l'ancien finissait de mourir : Reaper up, bridge absent (vécu le 2026-08-28).
+  # Chrome est attendu pour la même raison : un singleton mourant avalerait l'URL de la
+  # fenêtre suivante (il la prend, s'arrête, rien ne s'ouvre).
+  for _ in $(seq 1 20); do
+    alive=0
+    pgrep -x reaper >/dev/null 2>&1 && alive=1
+    pgrep -f "uvicorn bridge.app" >/dev/null 2>&1 && alive=1
+    if [ "${1:-}" != keepwin ]; then
+      pgrep -f -- "--user-data-dir=$APPDIR" >/dev/null 2>&1 && alive=1
+    fi
+    [ "$alive" = 0 ] && break
+    sleep 0.5
+  done
+  echo "golem arrêté."
+}
+
+status() {
+  local b="down" r="down" osc="—"
+  pgrep -f "uvicorn bridge.app" >/dev/null && b="up"
+  pgrep -x reaper >/dev/null && r="up"
+  if [ "$b" = "up" ]; then
+    osc=$(curl -sf --max-time 2 "http://localhost:${PORT}/api/state" \
+      | python3 -c "import json,sys; d=json.load(sys.stdin); print('up' if d.get('reaper_connected') else 'down')" 2>/dev/null || echo "?")
+  fi
+  echo "bridge: $b · reaper: $r · osc link: $osc · ui: $URL"
+}
+
+SHOW_REAPER=0
+for a in "$@"; do
+  [ "$a" = "--reset" ] && RESET=1
+  [ "$a" = "--fullscreen" ] && FULLSCR=1
+  [ "$a" = "--dev" ] && SHOW_REAPER=1
+done
+
+# ── SERVER (docs/installer.md §4) : la pile seule, Reaper masqué, et l'adresse à ouvrir sur la
+# tablette. Plus de « profil » : `golem` sans argument ouvre toujours la fenêtre (desktop), et
+# config/profile.json, s'il traîne d'une ancienne installation, n'est plus lu.
+server() {
+  LAUNCH=server start
+  local ip; ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+  local msg="golem is running. Open http://${ip:-<this machine>}:${PORT}/app/ on your tablet (Companion: /app/m.html)."
+  # un rack sans écran et sans appareil admin : le code d'appairage de la première tablette (docs/devices-people.md, lot C)
+  local code; code=$(pair_code quiet)
+  [ -n "$code" ] && msg="$msg Pairing code for the first screen: $code (10 min) — http://${ip:-<this machine>}:${PORT}/app/pair.html"
+  echo "$msg"
+  command -v notify-send >/dev/null 2>&1 && notify-send -i golem "golem" "$msg" 2>/dev/null || true
+}
+# `golem pair` : un code à six chiffres, 10 min, usage unique — la tablette qui le saisit devient l'écran du rack
+pair_code() {
+  if [ "${1:-}" = "quiet" ]; then
+    # au démarrage : seulement si aucun appareil admin n'existe encore (sinon, rien à afficher)
+    curl -sf --max-time 5 "http://localhost:${PORT}/api/auth/devices" \
+      | python3 -c "import json,sys; sys.exit(0 if not any(d.get('admin') for d in json.load(sys.stdin).get('devices',[])) else 1)" 2>/dev/null || return 0
+  fi
+  local out; out=$(curl -sf --max-time 5 -X POST "http://localhost:${PORT}/api/auth/pair-code" 2>/dev/null) || return 0
+  local code; code=$(printf '%s' "$out" | python3 -c "import json,sys; print(json.load(sys.stdin).get('code',''))" 2>/dev/null)
+  if [ "${1:-}" = "quiet" ]; then echo "$code"; return 0; fi
+  local ip; ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+  echo "Pairing code: $code   (valid 10 min, one use)"
+  echo "On the tablet: http://${ip:-<this machine>}:${PORT}/app/pair.html"
+}
+# ── BOÎTE DÉDIÉE : `golem server` au boot, sans session (provision/autostart/install-autostart.sh)
+autostart() {
+  case "${1:-status}" in
+    on)  "$HERE/provision/autostart/install-autostart.sh" ;;
+    off) "$HERE/provision/autostart/install-autostart.sh" --off ;;
+    status)
+      if systemctl --user is-enabled golem-server.service >/dev/null 2>&1; then
+        echo "autostart: on — golem server starts when this machine boots ($(systemctl --user is-active golem-server.service 2>/dev/null))"
+      else
+        echo "autostart: off — \`golem autostart on\` starts golem server when this machine boots (no login) — also in System ▸ Dashboard"
+      fi ;;
+    *) echo "usage: golem autostart on|off|status"; return 1 ;;
+  esac
+}
+# ── DÉSINSTALLER (docs/uninstall.md) : `--dry-run` montre le plan en texte, ne touche à rien. Le python3 du
+# SYSTÈME : ni le moteur ni l'interface n'ont besoin du venv de golem (qu'ils suppriment).
+# Sans option : le DÉSINSTALLATEUR GRAPHIQUE (§4), un mode du serveur de l'installateur. Il se copie dans
+# /tmp/golem-uninstaller-*/ et repart de là — il supprime ce dossier — puis ouvre le navigateur (xdg-open,
+# comme l'installateur sous Linux). `exec` : ce script vit dans le dossier qui va disparaître.
+# `--dry` : les mêmes écrans, plan réel, sauvegarde et désinstallation SIMULÉES (captures, démonstration).
+uninstall() {
+  if [ "${1:-}" = "--dry-run" ]; then
+    python3 "$HERE/provision/uninstall.py" plan --root "$HERE"
+    return $?
+  fi
+  local dry=""
+  [ "${1:-}" = "--dry" ] && dry="--dry"
+  echo "Opening the golem uninstaller in your browser — nothing is removed before its Review screen."
+  exec python3 "$HERE/installer/server.py" --uninstall --root "$HERE" --open $dry ${GOLEM_INSTALLER_PORT:+--port "$GOLEM_INSTALLER_PORT"}
+}
+case "${1:-desktop}" in
+  server|rack|headless) server ;;
+  autostart) autostart "${2:-status}" ;;
+  # `golem start` = DÉBOGAGE : la pile sans fenêtre GoleM, et Reaper VISIBLE. L'usage sans
+  # fenêtre de l'utilisateur, c'est `golem server` (Reaper masqué).
+  start)   SHOW_REAPER=1 start ;;
+  ui)      start && ui ;;
+  desktop) start && desktop ;;
+  # `golem window` : SEULEMENT la fenêtre de `golem desktop`, sur un golem qui tourne déjà — le geste « Show on this
+  # computer » de System ▸ Dashboard (bridge/machine.py show) ; la pile n'est ni relancée ni touchée
+  window)  desktop ;;
+  device)  start && desktop ;;            # ancien nom, toujours accepté
+  -*)      start && desktop ;;            # `golem --fullscreen` : des options seules = desktop
+  phone)   start && phone ;;
+  stop)    stop ;;
+  status)  status ;;
+  pair)    pair_code ;;
+  restart) stop keepwin; start ;;   # keepwin : la fenêtre survit et se reconnecte d'elle-même
+  uninstall) uninstall "${2:-}" ;;
+  # Health et ses réparations en ligne de commande (docs/assistant.md §3) — le python3 du SYSTÈME, bibliothèque
+  # standard seulement : il sert quand l'écran ou le venv sont cassés
+  doctor)  shift; exec python3 "$HERE/tools/doctor.py" "$@" ;;
+  *) echo "usage: golem [desktop|server|window|stop|status|restart|pair|doctor [--list|--fix ACTION]|autostart on|off|status|uninstall [--dry-run|--dry]]   (sans argument : desktop)"
+     echo "       dev: golem phone|ui|start"
+     echo "       desktop|phone|ui : + --reset (taille d'origine) · desktop|phone : + --fullscreen"
+     echo "       desktop|phone|ui : + --dev (Reaper à l'écran ; masqué par défaut)"; exit 2 ;;
+esac

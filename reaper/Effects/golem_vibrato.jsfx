@@ -1,0 +1,67 @@
+desc:GoleM Tube Vibrato -- the vibrato block on Windows and macOS (GxTubeVibrato parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « vibrato » joue GxTubeVibrato (guitarix) sous Linux ; guitarix n'existe ni sous Windows ni sous macOS
+// (docs/platforms.md §5). Ce JSFX reprend ses NOMS de parametres, leurs BORNES et leurs DEFAUTS natifs
+// (gxtubevibrato.ttl, lu le 2026-10-22) et l'idee publique de gxtubevibrato.dsp : un VRAI vibrato de hauteur — une
+// ligne a retard dont le temps (10 a 15 ms x Depth) ondule a Speed, LFO triangle ou sinus — entre deux etages
+// de lampe (Drive) et un niveau de sortie. Guitarix le fait sur quatre bandes ; ici une seule, avec la meme
+// courbe de retard. Le CODE est le notre.
+//
+//  - SineWave : 0 = triangle, 1 = sinus.  Depth : profondeur (0..1).  Speed : vitesse en Hz (0,1..14).
+//  - Drive : saturation douce (0..1).  Output : niveau de sortie (0..1, 0,5 = 0 dB).
+//
+// Pieges respectes : rien avant @init ; variables prefixees vb_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel.
+
+slider1:vb_sine=0<0,1,1{triangle,sine}>SineWave
+slider2:vb_depth=0.5<0,1,0.01>Depth
+slider3:vb_speed=3<0.1,14,0.1>Speed
+slider4:vb_drive=0.5<0,1,0.01>Drive
+slider5:vb_out=0.5<0,1,0.01>Output
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+vb_MAXD = 4096;                   // 21 ms a 192 kHz (le retard va a 15 ms)
+vb_bufl = 1024; vb_bufr = 8192;
+vb_pos = 0; vb_phase = 0;
+
+function vb_read(buf, d) local(p, i, fr) (
+  d = max(1, min(vb_MAXD - 3, d));
+  p = vb_pos - d; p < 0 ? p += vb_MAXD;
+  i = floor(p); fr = p - i;
+  buf[i] * (1 - fr) + buf[(i + 1) >= vb_MAXD ? 0 : i + 1] * fr;
+);
+// la lampe : une saturation douce dont Drive regle la pente (0 = quasi lineaire)
+function vb_th(x) local(e) ( e = exp(2 * max(-20, min(20, x))); (e - 1) / (e + 1); );   // tanh (EEL2 n'en a pas)
+function vb_tube(x) (
+  vb_th(x * vb_k) / vb_k;                                          // gain unitaire en petit signal, sature au-dela
+);
+function vb_lfo(ph) local(q) (                                      // 0..1, comme le LFO de gxtubevibrato.dsp
+  q = ph - floor(ph);
+  vb_sine >= 0.5 ? 0.5 + 0.5 * sin(2 * $pi * q) : (q < 0.5 ? 2 * q : 2 - 2 * q);
+);
+
+@slider
+vb_k = 1 + 6 * vb_drive;
+vb_gain = 10 ^ ((vb_out - 0.5) * 40 / 20);                       // 0..1 -> -20..+20 dB (guitarix : output en dB)
+
+@block
+vb_dph = vb_speed / srate;
+
+@sample
+// retard = ((lfo + 1) x 5 + 5) ms x Depth avec lfo dans 0..1 : 10..15 ms x Depth, comme gxtubevibrato.dsp
+vb_d = ((vb_lfo(vb_phase) + 1) * 5 + 5) * vb_depth / 1000 * srate + 1;
+vb_bufl[vb_pos] = vb_tube(spl0) + 0.000000000000000001;
+vb_bufr[vb_pos] = vb_tube(spl1) + 0.000000000000000001;
+spl0 = vb_tube(vb_read(vb_bufl, vb_d)) * vb_gain;
+spl1 = vb_tube(vb_read(vb_bufr, vb_d)) * vb_gain;
+vb_pos += 1; vb_pos >= vb_MAXD ? vb_pos = 0;
+vb_phase += vb_dph; vb_phase >= 1 ? vb_phase -= 1;

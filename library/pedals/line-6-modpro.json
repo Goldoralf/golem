@@ -1,0 +1,522 @@
+{
+ "id": "line-6-modpro",
+ "name": "ModPro",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Line 6",
+  "model": "ModPro",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "Enable Bypass",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "Fender Opto Tremolo 1",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "Vox AC15 Bias Tremolo 1",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "MXR Phase 90 1",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "Mutron Bi-Phase 1",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "Ibanez Flying Pan 1",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "Uni-Vibe 1",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "Fender Vibratone 1",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "Leslie 1",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "MXR Flanger 1",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "Jet Flanger 1",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "Boss CE-1 1",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "Dimension D 1",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "Tri-Stereo Chorus 1",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 1",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "Ring Modulator 1",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "Panner 1",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "Fender Opto Tremolo 2",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "Fender Opto Tremolo 3",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "Fender Opto Tremolo 4",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "Fender Opto Tremolo 5",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "Vox AC15 Bias Tremolo 2",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "Vox AC15 Bias Tremolo 3",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "Vox AC15 Bias Tremolo 4",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "Vox AC15 Bias Tremolo 5",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "MXR Phase 90 2",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "MXR Phase 90 3",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "MXR Phase 90 4",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "MXR Phase 90 5",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "Mutron Bi-Phase 2",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "Mutron Bi-Phase 3",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "Mutron Bi-Phase 4",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "Mutron Bi-Phase 5",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "Mutron Bi-Phase 6",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "Ibanez Flying Pan 2",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "Ibanez Flying Pan 3",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "Ibanez Flying Pan 4",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "Ibanez Flying Pan 5",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "Ibanez Flying Pan 6",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "Ibanez Flying Pan 7",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "Uni-Vibe 2",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "Uni-Vibe 3",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "Uni-Vibe 4",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "Uni-Vibe 5",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "Uni-Vibe 6",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "Fender Vibratone 2",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "Fender Vibratone 3",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "Fender Vibratone 4",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "Fender Vibratone 5",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "Fender Vibratone 6",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "Leslie 2",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "Leslie 3",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "Leslie 4",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "Leslie 5",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "Leslie 6",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "MXR Flanger 2",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "MXR Flanger 3",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "MXR Flanger 4",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "MXR Flanger 5",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "MXR Flanger 6",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "MXR Flanger 7",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "Jet Flanger 2",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "Jet Flanger 3",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "Jet Flanger 4",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "Jet Flanger 5",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "Jet Flanger 6",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "Jet Flanger 7",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "Boss CE-1 2",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "Boss CE-1 3",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "Boss CE-1 4",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "Boss CE-1 5",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "Boss CE-1 6",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "Boss CE-1 7",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "Dimension D 2",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "Dimension D 3",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "Dimension D 4",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "Dimension D 5",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "Dimension D 6",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "Dimension D 7",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "Tri-Stereo Chorus 2",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "Tri-Stereo Chorus 3",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "Tri-Stereo Chorus 4",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "Tri-Stereo Chorus 5",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "Tri-Stereo Chorus 6",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "Tri-Stereo Chorus 7",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 2",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 3",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 4",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 5",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 6",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "Boss VB-2 Pitch Vibrato 7",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "Ring Modulator 2",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "Ring Modulator 3",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "Ring Modulator 4",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "Ring Modulator 5",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "Ring Modulator 6",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "Panning 2",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "Panning 3",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "Panning 4",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "Panning 5",
+   "family": "custom",
+   "active_pc": 99
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Line_6_ModPro.midnam du dépôt Ardour (GPL-2), auteur : Rob Martin. modulation dédiée, même série",
+  "upstream": "Ardour/share/patchfiles/Line_6_ModPro.midnam"
+ }
+}

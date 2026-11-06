@@ -1,0 +1,14 @@
+{
+ "name": "RE-201 Space Echo",
+ "type": "delay-echo",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "repeats": 45,
+  "mix": 40,
+  "input": 30,
+  "head1": true,
+  "head2": false,
+  "head3": true
+ }
+}

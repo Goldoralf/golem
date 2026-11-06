@@ -1,0 +1,51 @@
+name: Bug report
+description: Something does not work on your golem
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. golem does not phone home: this report is how we learn that something broke.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `golem doctor`
+      description: Run `golem doctor` (Windows and macOS — `python tools/doctor.py` in the golem folder) and paste the output. It works even when the bridge is down.
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux (Ubuntu 24.04)
+        - Linux (other)
+        - Windows 10/11
+        - macOS
+    validations:
+      required: true
+  - type: input
+    id: interface
+    attributes:
+      label: Audio interface and buffer size
+      placeholder: "e.g. Universal Audio Volt 276, 128 samples"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: golem version
+      description: Settings ▸ About
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Pedalboard, controllers, a screenshot, the install report saved by the installer…

@@ -1,0 +1,19 @@
+{
+ "name": "V shape",
+ "type": "eq-graphic",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 2,
+  "g4": 0,
+  "g5": -3,
+  "g6": -4,
+  "g7": 2,
+  "g8": 3,
+  "g9": 2,
+  "g10": 0,
+  "g11": 0
+ }
+}

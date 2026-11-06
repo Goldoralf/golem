@@ -1,0 +1,24 @@
+{
+ "name": "Jazz mellow",
+ "type": "organ",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "db16": 8,
+  "db513": 3,
+  "db8": 8,
+  "db4": 0,
+  "db223": 0,
+  "db2": 0,
+  "db135": 0,
+  "db113": 0,
+  "db1": 0,
+  "leslie": "slow",
+  "vibrato": "off",
+  "perc": true,
+  "perc_harm": "2nd",
+  "perc_decay": "slow",
+  "drive": false,
+  "character": 30
+ }
+}

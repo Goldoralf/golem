@@ -1,0 +1,12 @@
+{
+ "name": "Dark hall",
+ "type": "reverb",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "mix": 30,
+  "decay": 2.2,
+  "size": 35,
+  "hicut": 3800
+ }
+}

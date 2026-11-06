@@ -1,0 +1,11 @@
+{
+ "name": "Surf",
+ "type": "tremolo",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 4.5,
+  "depth": 0.7,
+  "wave": "Sine"
+ }
+}

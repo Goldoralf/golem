@@ -1,0 +1,11 @@
+{
+ "name": "Helicopter",
+ "type": "tremolo",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "rate": 9,
+  "depth": 1.0,
+  "wave": "Square"
+ }
+}

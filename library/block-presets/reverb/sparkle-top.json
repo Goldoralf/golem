@@ -1,0 +1,12 @@
+{
+ "name": "Sparkle top",
+ "type": "reverb",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "mix": 22,
+  "decay": 1.1,
+  "size": 18,
+  "hicut": 11000
+ }
+}

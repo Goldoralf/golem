@@ -1,0 +1,13 @@
+{
+ "name": "Old tape wobble",
+ "type": "delay-tape",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "time": "8th",
+  "time_r": "8th",
+  "feedback": 45,
+  "mix": 32,
+  "medium": "Old Tape"
+ }
+}

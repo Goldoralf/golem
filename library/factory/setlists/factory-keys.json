@@ -1,0 +1,69 @@
+{
+ "id": "factory-keys",
+ "name": "Factory Keys",
+ "fcb": true,
+ "rev": 2,
+ "kind": "sounds",
+ "presets": [
+  "patch:factory-keys-jazz-piano",
+  "patch:factory-keys-electric-piano",
+  "patch:factory-keys-rock-organ",
+  "patch:factory-keys-80s-epiano",
+  "patch:factory-keys-warm-pad",
+  "patch:factory-keys-synth-lead",
+  "patch:factory-keys-loop-bass-beat",
+  "patch:factory-keys-cathedral-piano"
+ ],
+ "origin": "factory",
+ "lines": [
+  {
+   "id": "r:factory-keys:9977416c",
+   "rev": 1,
+   "title": "Jazz Piano",
+   "patch": "factory-keys-jazz-piano"
+  },
+  {
+   "id": "r:factory-keys:34496e36",
+   "rev": 1,
+   "title": "Electric Piano",
+   "patch": "factory-keys-electric-piano"
+  },
+  {
+   "id": "r:factory-keys:b039b464",
+   "rev": 1,
+   "title": "Rock Organ",
+   "patch": "factory-keys-rock-organ"
+  },
+  {
+   "id": "r:factory-keys:a34ebfc3",
+   "rev": 1,
+   "title": "80s E-Piano",
+   "patch": "factory-keys-80s-epiano"
+  },
+  {
+   "id": "r:factory-keys:b9aadcde",
+   "rev": 1,
+   "title": "Warm Pad",
+   "patch": "factory-keys-warm-pad"
+  },
+  {
+   "id": "r:factory-keys:5ff0ffe5",
+   "rev": 1,
+   "title": "Synth Lead",
+   "patch": "factory-keys-synth-lead"
+  },
+  {
+   "id": "r:factory-keys:fb0fb3a2",
+   "rev": 1,
+   "title": "Loop Bass & Beat",
+   "patch": "factory-keys-loop-bass-beat"
+  },
+  {
+   "id": "r:factory-keys:cathedral-piano",
+   "rev": 1,
+   "title": "Cathedral Piano",
+   "patch": "factory-keys-cathedral-piano"
+  }
+ ],
+ "factory": true
+}

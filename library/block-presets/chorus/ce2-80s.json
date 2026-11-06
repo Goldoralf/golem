@@ -1,0 +1,11 @@
+{
+ "name": "CE-2 80s",
+ "type": "chorus",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.5,
+  "depth": 4.5,
+  "mix": 0.35
+ }
+}

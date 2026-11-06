@@ -1,0 +1,14 @@
+{
+ "name": "Hard tune",
+ "type": "pitch-correct",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "corr": 1.0,
+  "filter": 0.5,
+  "fastmode": true,
+  "key": "C",
+  "scale": "Minor",
+  "offset": 0
+ }
+}

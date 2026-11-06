@@ -1,0 +1,463 @@
+{
+ "id": "factory-guitar-british-crunch",
+ "name": "British Crunch",
+ "role": "guitar",
+ "tags": [
+  "rock",
+  "crunch",
+  "70s"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "British Crunch",
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Power Chords",
+     "blocks": {
+      "treble": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Treble Lead",
+     "blocks": {
+      "treble": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Wall of Chords",
+     "blocks": {
+      "treble": false,
+      "dly": false
+     },
+     "params": {
+      "verb": {
+       "mix": 22,
+       "decay": 1.1
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Clean-ish",
+     "blocks": {
+      "treble": false,
+      "dly": false
+     },
+     "params": {
+      "plexi": {
+       "input": -12,
+       "output": 6
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "attack": 2,
+       "release": 130
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "plexi",
+         "type": "amp",
+         "label": "Marshall JMP-50 Plexi",
+         "ref": "65578",
+         "model": "418470",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "treble",
+         "type": "boost",
+         "foot": 6,
+         "params": {
+          "drive": 10,
+          "level": 70,
+          "treble": 6,
+          "bass": -5,
+          "mid": 3
+         }
+        },
+        {
+         "id": "ac30",
+         "type": "amp",
+         "label": "VOX AC30 Top Boost",
+         "ref": "2696",
+         "model": "413050",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "dly",
+      "type": "delay-tape",
+      "foot": 7,
+      "params": {
+       "time": "16th",
+       "feedback": 35,
+       "mix": 22,
+       "medium": "Tape"
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb-room",
+      "foot": 8,
+      "params": {
+       "mix": 14,
+       "decay": 0.7,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Power Chords",
+   "blocks": {
+    "treble": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Treble Lead",
+   "blocks": {
+    "treble": true,
+    "dly": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "C",
+   "name": "Wall of Chords",
+   "blocks": {
+    "treble": false,
+    "dly": false
+   },
+   "params": {
+    "verb": {
+     "mix": 22,
+     "decay": 1.1
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": 1,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Clean-ish",
+   "blocks": {
+    "treble": false,
+    "dly": false
+   },
+   "params": {
+    "plexi": {
+     "input": -12,
+     "output": 6
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "level": -1,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -58,
+     "attack": 2,
+     "release": 130
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "plexi",
+       "type": "amp",
+       "label": "Marshall JMP-50 Plexi",
+       "ref": "65578",
+       "model": "418470",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "treble",
+       "type": "boost",
+       "foot": 6,
+       "params": {
+        "drive": 10,
+        "level": 70,
+        "treble": 6,
+        "bass": -5,
+        "mid": 3
+       }
+      },
+      {
+       "id": "ac30",
+       "type": "amp",
+       "label": "VOX AC30 Top Boost",
+       "ref": "2696",
+       "model": "413050",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "dly",
+    "type": "delay-tape",
+    "foot": 7,
+    "params": {
+     "time": "16th",
+     "feedback": 35,
+     "mix": 22,
+     "medium": "Tape"
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb-room",
+    "foot": 8,
+    "params": {
+     "mix": 14,
+     "decay": 0.7,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "65578",
+   "model": "418470"
+  },
+  {
+   "type": "amp",
+   "ref": "2696",
+   "model": "413050"
+  }
+ ],
+ "origin": "factory",
+ "deps": [
+  {
+   "sha256": "18187d7f2375671de6253bebd2aadc6f1471b8f829eadb412d187bbe4301e930",
+   "uid": "t3k:65578",
+   "kind": "amp-cab",
+   "bytes": 294690,
+   "name": "MRSH JM50LD I Crunch2 FAT CAB",
+   "source": "t3k",
+   "amp": "Marshall JMP-50 Lead 1969 Plexi",
+   "arch": "2",
+   "brand": "Marshall",
+   "creator": "amalgamaudio",
+   "url": "https://www.tone3000.com/tones/marshall-jmp-50-lead-1969-plexi-a2-65578"
+  },
+  {
+   "sha256": "4db9c60519c8b39085eb5696cb4bf4f1c06a8fecec22848b5bbdc644811bb3be",
+   "uid": "t3k:2696",
+   "kind": "amp-cab",
+   "bytes": 294464,
+   "name": "VOX TOPBOOST HI FULLGAIN TC 0 MAST4 - SM57",
+   "source": "t3k",
+   "amp": "VOX AC30",
+   "arch": "2",
+   "brand": "Vox",
+   "creator": "darkwaverec",
+   "url": "https://www.tone3000.com/tones/vox-ac30-top-boost-greenback-2696"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"vu\", \"6\": \"fire\", \"7\": \"rain\", \"8\": \"monster\", \"9\": \"strobe\", \"A\": \"wave\", \"B\": \"scanner\", \"C\": \"pulse\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"medium\": \"Tape\", \"mix\": 22, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"foot\": 8, \"id\": \"verb\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 130, \"thresh\": -58}, \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"plexi\", \"label\": \"Marshall JMP-50 Plexi\", \"model\": \"418470\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"65578\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"foot\": 6, \"id\": \"treble\", \"params\": {\"bass\": -5, \"drive\": 10, \"level\": 70, \"mid\": 3, \"treble\": 6}, \"type\": \"boost\"}, {\"id\": \"ac30\", \"label\": \"VOX AC30 Top Boost\", \"model\": \"413050\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2696\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#e76f51\", \"6\": \"#e76f51\", \"7\": \"#e76f51\", \"8\": \"#e76f51\", \"9\": \"#e76f51\", \"A\": \"#e76f51\", \"B\": \"#e76f51\", \"C\": \"#e76f51\", \"D\": \"#e76f51\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"medium\": \"Tape\", \"mix\": 22, \"time\": \"1/4\"}, \"type\": \"delay-tape\"}, {\"foot\": 8, \"id\": \"verb\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 130, \"thresh\": -58}, \"type\": \"gate\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"plexi\", \"label\": \"Marshall JMP-50 Plexi\", \"model\": \"418470\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"65578\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"foot\": 6, \"id\": \"treble\", \"params\": {\"bass\": -5, \"drive\": 10, \"level\": 70, \"mid\": 3, \"treble\": 6}, \"type\": \"boost\"}, {\"id\": \"ac30\", \"label\": \"VOX AC30 Top Boost\", \"model\": \"413050\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2696\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"British Crunch\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": false, \"treble\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Power Chords\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"treble\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Treble Lead\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"treble\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Wall of Chords\", \"params\": {\"verb\": {\"decay\": 1.1, \"mix\": 22}}}, {\"blocks\": {\"dly\": false, \"treble\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Clean-ish\", \"params\": {\"plexi\": {\"input\": -12, \"output\": 6}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": false, \"treble\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Power Chords\"}, {\"blocks\": {\"dly\": true, \"treble\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-B\"}}, \"level\": 3, \"name\": \"Treble Lead\"}, {\"blocks\": {\"dly\": false, \"treble\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-C\"}}, \"level\": 1, \"name\": \"Wall of Chords\", \"params\": {\"verb\": {\"decay\": 1.1, \"mix\": 22}}}, {\"blocks\": {\"dly\": false, \"treble\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-D\"}}, \"level\": -1, \"name\": \"Clean-ish\", \"params\": {\"plexi\": {\"input\": -12, \"output\": 6}}}]}",
+ "factory": true,
+ "colors": {
+  "A": "#e76f51",
+  "B": "#e76f51",
+  "C": "#e76f51",
+  "D": "#e76f51",
+  "6": "#e76f51",
+  "7": "#e76f51",
+  "8": "#e76f51",
+  "9": "#e76f51",
+  "10": "#e76f51"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "scanner",
+  "C": "pulse",
+  "D": "vortex",
+  "6": "fire",
+  "7": "rain",
+  "8": "monster",
+  "9": "strobe",
+  "10": "vu"
+ }
+}

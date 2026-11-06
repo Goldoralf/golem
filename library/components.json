@@ -1,0 +1,34 @@
+{
+ "_comment": "Le matos réutilisable. id stable + source. file: pointe vers assets/ (git-ignored, tiré par fetch-assets.sh). NE PAS embarquer les captures tierces. — 2026-09-09 : AUCUNE capture livrée avec le rack ; les captures viennent de golem.fm / Tone3000 après appairage. Le mécanisme `file`+`source` reste pour qui veut semer les siennes.",
+ "amps": [],
+ "cabs": [
+  {
+   "id": "mesa-4x12-recto-ksm313",
+   "name": "Mesa 4x12 Oversized Rectifier — Shure KSM313",
+   "type": "ir",
+   "file": "assets/irs/Mesa 4x12 Oversized Rectifier Standard - Shure KSM313.wav",
+   "tags": [
+    "4x12",
+    "mesa",
+    "recto",
+    "metal"
+   ],
+   "source": "tone3000:URL-A-COMPLETER",
+   "_note": "Pack inclut aussi les variantes SM57 et SM58 (mêmes assets/irs/)."
+  }
+ ],
+ "pedals": [
+  {
+   "id": "EXEMPLE-ts9",
+   "name": "Tube Screamer (exemple)",
+   "type": "plugin",
+   "plugin": "TS-M1N3",
+   "preset": "assets/presets/ts9.json",
+   "tags": [
+    "boost",
+    "od"
+   ],
+   "source": "guitarml"
+  }
+ ]
+}

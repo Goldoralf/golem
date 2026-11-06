@@ -1,0 +1,106 @@
+desc:GoleM drum translator (golem_drumtrans) -- e-drum module notes -> rack kit notes
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//! GoleM drum translator (docs/drums-kit.md lot 2). Se place EN TETE de la chaine d'un bloc
+//! drumkit (devant le moteur avldrums / drumgizmo / sfizz) sur la lane Drums en MIDI.
+//!   - traduit chaque NOTE du module (Alesis, Roland, Millenium...) vers la note du KIT du rack
+//!     via une table de 128 entrees ecrite dans gmem par golem_rig.lua (bridge : descripteur du
+//!     module x table du kit) ; -1 = le kit n'a pas cet element -> la note est droppee ;
+//!   - CHARLESTON A TROIS POSITIONS (decision 2026-09-17) : la pedale arrive par un CC ;
+//!     quand la note traduite est l'une des trois notes de charleston du kit, c'est la POSITION
+//!     lue sur le CC (fermee / mi-ouverte / ouverte, bornes en % de la course, SENS declare par
+//!     le descripteur : Roland 0->90, Medeli/Yamaha 0->127) qui choisit la note envoyee ;
+//!   - un note-OFF suit la note reellement ENVOYEE par son note-on (memoire par canal x note),
+//!     donc la pedale peut bouger entre l'appui et le relachement sans note fantome ;
+//!   - le CC de la pedale est AVALE (un moteur en aval ne doit pas le lire comme autre chose) ;
+//!     tout le reste (aftertouch poly = etouffement, autres CC, pitchbend) passe inchange.
+//! gmem golem_drumtrans, un SLOT de 256 entrees par bloc (slider1) : [0..127] note du kit ou -1,
+//! [128] cc (-1 = pedale interrupteur, pas de CC), [129] open_value, [130] closed_value,
+//! [131] band_a, [132] band_b, [133] positions (2|3), [134] note fermee, [135] mi-ouverte,
+//! [136] ouverte, [137] nonce (>= 1 = table posee ; 0 = rien : PASSTHROUGH et temoin « no table »),
+//! [138] canal attendu du module (temoin). Les notes SORTENT sur le canal 10 quel que soit le canal
+//! d'entree : les kits du rack (avldrums) n'ecoutent que lui (mesure golem_drums.lua).
+//! ⚠ EEL2 est INSENSIBLE A LA CASSE et le code AVANT la premiere section @ n'est jamais execute :
+//!    les index gmem sont des constantes `ix_*` dans @init, les variables de travail des `cur_*` --
+//!    aucune paire ne differe seulement par la casse (CLAUDE.md, pieges JSFX : DT_CC / dt_cc = 1 seule variable).
+
+options:gmem=golem_drumtrans
+
+slider1:slot=0<0,15,1>Slot
+slider2:hhpos=0<0,2,1{closed,half,open}>Hi-hat position (read-only)
+slider3:lastcc=0<0,127,1>Hi-hat CC (read-only)
+slider4:loaded=0<0,1,1{no table - passthrough,table loaded}>Table (read-only)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ix_stride = 256;
+ix_cc = 128; ix_open = 129; ix_closed = 130; ix_band_a = 131; ix_band_b = 132; ix_positions = 133;
+ix_n_closed = 134; ix_n_half = 135; ix_n_open = 136; ix_nonce = 137;
+OUT_CH = 9;          // les kits du rack (avldrums = FluidSynth) ne jouent que sur le canal 10 (mesure golem_drums.lua)
+last_loaded = -1; last_pos = -1; last_cc = -1;
+active = 0;          // active[ch*128 + note] = note ENVOYEE + 1 ; 0 = rien
+cur_pos = 0;          // 0 fermee, 1 mi-ouverte, 2 ouverte (position courante de la pedale)
+cur_cc_seen = 0;
+
+@block
+cur_base = (slot|0) * ix_stride;
+cur_loaded = gmem[cur_base + ix_nonce] > 0 ? 1 : 0;
+cur_loaded != last_loaded ? ( loaded = cur_loaded; sliderchange(loaded); last_loaded = cur_loaded; );
+cur_cc = cur_loaded ? gmem[cur_base + ix_cc] : -1;   // sans table : rien n'est traduit ni avale (passthrough)
+cur_n_closed = gmem[cur_base + ix_n_closed];
+cur_n_half   = gmem[cur_base + ix_n_half];
+cur_n_open   = gmem[cur_base + ix_n_open];
+while (midirecv(ofs, msg1, msg2, msg3)) (
+  st = msg1 & 0xF0;
+  ch = msg1 & 0x0F;
+  (st == 0xB0 && cur_cc >= 0 && msg2 == cur_cc) ? (
+    // PEDALE DE CHARLESTON : position = pourcentage de la course, dans le SENS declare
+    cur_open = gmem[cur_base + ix_open]; cur_closed = gmem[cur_base + ix_closed];
+    cur_span = cur_closed - cur_open; cur_span == 0 ? cur_span = 1;
+    cur_pct = (msg3 - cur_open) * 100 / cur_span;
+    cur_pct < 0 ? cur_pct = 0 : cur_pct > 100 ? cur_pct = 100;
+    gmem[cur_base + ix_positions] == 2 ? (
+      cur_pos = cur_pct >= 50 ? 0 : 2;
+    ) : (
+      cur_pos = cur_pct < gmem[cur_base + ix_band_a] ? 2 : cur_pct < gmem[cur_base + ix_band_b] ? 1 : 0;
+    );
+    cur_cc_seen = 1;
+    cur_pos != last_pos ? ( hhpos = cur_pos; sliderchange(hhpos); last_pos = cur_pos; );
+    msg3 != last_cc ? ( lastcc = msg3; sliderchange(lastcc); last_cc = msg3; );
+    // avale : le moteur en aval ne lit pas ce CC
+  ) : (st == 0x90 && msg3 > 0 && !cur_loaded) ? (
+    midisend(ofs, msg1, msg2, msg3);           // pas de table : passthrough, et le temoin le dit
+  ) : (st == 0x90 && msg3 > 0) ? (
+    // NOTE ON : traduction module -> kit, EMISE SUR LE CANAL 10 (les kits n'ecoutent que lui)
+    nn = gmem[cur_base + msg2];
+    nn >= 0 ? (
+      // charleston : la position de la pedale decide, si le kit a la note de cette position
+      (nn == cur_n_closed || nn == cur_n_half || nn == cur_n_open) && cur_cc >= 0 && cur_cc_seen ? (
+        cur_want = cur_pos == 0 ? cur_n_closed : cur_pos == 1 ? cur_n_half : cur_n_open;
+        cur_want < 0 ? cur_want = cur_pos == 1 ? cur_n_closed : cur_pos == 2 ? cur_n_half : cur_n_closed;
+        cur_want >= 0 ? nn = cur_want;
+      );
+      active[ch*128 + msg2] = nn + 1;
+      midisend(ofs, 0x90 | OUT_CH, nn, msg3);
+    );
+    // -1 : le kit n'a pas cet element -> rien
+  ) : (st == 0x80 || (st == 0x90 && msg3 == 0)) ? (
+    // NOTE OFF : la MEME note que celle envoyee
+    sl = active[ch*128 + msg2];
+    sl > 0 ? (
+      active[ch*128 + msg2] = 0;
+      midisend(ofs, 0x80 | OUT_CH, sl - 1, msg3);
+    ) : !cur_loaded ? midisend(ofs, msg1, msg2, msg3);   // passthrough sans table
+  ) : (st == 0xA0) ? (
+    // AFTERTOUCH POLY (etouffement) : suit la note traduite si elle sonne, sinon passe telle quelle
+    sl = active[ch*128 + msg2];
+    sl > 0 ? midisend(ofs, 0xA0 | OUT_CH, sl - 1, msg3) : midisend(ofs, msg1, msg2, msg3);
+  ) : (
+    midisend(ofs, msg1, msg2, msg3);
+  );
+);

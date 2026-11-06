@@ -1,0 +1,16 @@
+{
+ "name": "Standard",
+ "type": "delay-echo",
+ "factory": true,
+ "params": {
+  "time": 120,
+  "repeats": 30,
+  "mix": 35,
+  "input": 25,
+  "head1": false,
+  "head2": false,
+  "head3": true
+ },
+ "default": true,
+ "inst": "any"
+}

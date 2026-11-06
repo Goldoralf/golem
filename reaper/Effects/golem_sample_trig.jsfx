@@ -1,0 +1,79 @@
+desc:GoleM sample trigger (sample-trig) -- fires note-on/off into the RS5k behind it
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+
+//! GoleM bloc "sample" (lanceur de one-shots au pied), control layer. Se place DEVANT les
+//! ReaSamplOmatic5000 du/des bloc(s) sample sur la piste PERMANENTE "Sample". Raison d'etre :
+//! ReaScript ne peut PAS injecter de MIDI dans une instance FX precise (StuffMIDIMessage ->
+//! bus virtuel GLOBAL, jamais cette instance -- cf. golem_rig.lua l.893, meme constat que
+//! Dexed/setBfree). Patron b3-ctl / dx7-ctl : golem_sample.lua pousse des params Reaper
+//! (sliders), le JSFX les traduit en note-on/off vers l'aval.
+//!
+//! CONTRAT (golem_sample.lua) : pour DECLENCHER, on ecrit s_off, s_on, s_chan PUIS on
+//! incremente s_nonce (toujours EN DERNIER). Le @block detecte le changement de nonce et emet :
+//!   note-off(s_off)  PUIS  note-on(s_on, 127).
+//! L'ordre off->on fait qu'un nouveau "play" COUPE le sample courant (son note-off) AVANT de
+//! relancer le nouveau. s_off = -1 (aucune coupe) / s_on = -1 (aucun declenchement, ex. "stop").
+//!
+//! One-shot cuttable : les RS5k en aval sont configures "Obey note-off = ON" par golem_rig-style
+//! (golem_sample). Note TENUE (on emet le note-on, jamais le note-off tant que le sample doit
+//! sonner) => RS5k joue le sample jusqu'au bout (aucun loop). note-off explicite => coupe avant
+//! la fin (stop, ou nouveau play qui coupe l'ancienne note). golem_sample tient la comptabilite
+//! de la note courante par bloc.
+//!
+//! ── PRE-ARMEMENT (s_delay, 2026-07-31) ──
+//! La gigue du chemin bridge->Reaper vaut ~30 ms : c'est le tick `defer` (mesure :
+//! tools/check-jitter.py). Suffisant pour un riser, PAS pour un impact sur le temps. On
+//! renverse donc la logique : l'arrangement envoie « joue dans N ms » AU LIEU de « joue
+//! maintenant », et c'est CE JSFX qui decompte -- dans le thread audio, donc a l'echantillon
+//! pres. La gigue de 30 ms devient une MARGE D'AVANCE au lieu d'une erreur.
+//! L'emission finale utilise l'OFFSET D'ECHANTILLON de midisend (1er argument) : la note tombe
+//! au bon echantillon DANS le bloc, pas au debut du bloc.
+//! s_delay = 0 -> comportement du PIED, strictement inchange (emission immediate).
+//! La COUPE (note-off) reste TOUJOURS immediate : on n'arme pas un silence.
+//!
+//! ⚠ NON validable hors-rig : reception effective des note-on/off par RS5k en aval, timing de
+//!   TrackFX_SetParamNormalized -> @block (meme mecanisme que b3-ctl/dx7-ctl, prouve sur rig).
+
+slider1:s_off=-1<-1,127,1>off note
+slider2:s_on=-1<-1,127,1>on note
+slider3:s_nonce=0<0,1000000,1>nonce
+slider4:s_chan=0<0,15,1>channel
+slider5:s_delay=0<0,10000,1>trigger delay (ms)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+last_nonce = -1;   // -1 : ne DECLENCHE PAS au 1er block (evite un one-shot fantome au chargement)
+pend = -1;         // note-on ARMEE en attente (-1 = aucune)
+pend_smp = 0;      // echantillons restants avant son emission
+
+@block
+// 1) passthrough MIDI integral (la piste Sample n'en recoit pas, mais neutre et coherent)
+while (midirecv(mp, s1, s2, s3)) ( midisend(mp, s1, s2, s3); );
+
+// 2) declenchement sur front de nonce (midisend interdit hors @block/@sample -> ici, comme b3-ctl)
+(s_nonce|0) != last_nonce ? (
+  last_nonce = s_nonce|0;
+  st  = 0x80 + (s_chan & 0x0F);   // note-off
+  non = 0x90 + (s_chan & 0x0F);   // note-on
+  // la COUPE est toujours immediate (on n'arme jamais un silence)
+  s_off >= 0 ? midisend(0, st,  s_off & 0x7F, 0);
+  s_on < 0 ? ( pend = -1; ) : (               // "stop" annule aussi une echeance armee
+    d = s_delay * srate / 1000;
+    d < 1 ? midisend(0, non, s_on & 0x7F, 127)          // 0 ms : chemin du PIED, inchange
+          : ( pend = s_on & 0x7F; pend_smp = d; );      // sinon : on ARME
+  );
+);
+
+// 3) echeance armee : quand elle tombe DANS ce bloc, on emet a l'OFFSET exact (midisend arg 1)
+pend >= 0 ? (
+  pend_smp < samplesblock ? (
+    midisend(max(0, pend_smp|0), 0x90 + (s_chan & 0x0F), pend, 127);
+    pend = -1;
+  ) : ( pend_smp -= samplesblock; );
+);

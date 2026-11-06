@@ -1,0 +1,11 @@
+{
+ "name": "Standard",
+ "type": "vibrato",
+ "factory": true,
+ "params": {
+  "depth": 0.4,
+  "speed": 0.5
+ },
+ "default": true,
+ "inst": "any"
+}

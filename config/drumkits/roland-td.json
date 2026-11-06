@@ -1,0 +1,71 @@
+{
+ "schema": 1,
+ "kind": "drumkit",
+ "id": "roland-td",
+ "name": "Roland TD (TD-1 · TD-4 · TD-07 · TD-17 · TD-27)",
+ "identity": {
+  "brand": "Roland",
+  "model": "TD series",
+  "connection": "usb+din",
+  "usb_names": [
+   "TD-17",
+   "TD-27",
+   "TD-07",
+   "TD-1",
+   "TD-4",
+   "TD-",
+   "Roland"
+  ]
+ },
+ "channel": 10,
+ "editable_on_module": true,
+ "map": {
+  "36": "kick",
+  "38": "snare",
+  "40": "snare-rim",
+  "37": "snare-xstick",
+  "48": "tom1",
+  "50": "tom1-rim",
+  "45": "tom2",
+  "47": "tom2-rim",
+  "43": "tom3",
+  "58": "tom3-rim",
+  "46": "hh-open",
+  "26": "hh-open-edge",
+  "42": "hh-closed",
+  "22": "hh-closed-edge",
+  "44": "hh-pedal",
+  "49": "crash1",
+  "55": "crash1-edge",
+  "57": "crash2",
+  "52": "crash2-edge",
+  "51": "ride",
+  "59": "ride-edge",
+  "53": "ride-bell",
+  "27": "aux1",
+  "28": "aux1-rim",
+  "29": "aux2",
+  "30": "aux2-rim",
+  "31": "aux3",
+  "32": "aux3-rim"
+ },
+ "hihat": {
+  "cc": 4,
+  "open_value": 0,
+  "closed_value": 90,
+  "positions": 3,
+  "bands": [
+   33,
+   66
+  ],
+  "notes": "distinct"
+ },
+ "choke": "poly-aftertouch",
+ "provenance": {
+  "source": "manual",
+  "confidence": "reported",
+  "url": "https://static.roland.com/assets/media/pdf/TD-17_MIDI_Imple_eng04_W.pdf",
+  "note": "MIDI Implementation Roland (TD-17 v2.00, TD-27 v1.02) + manuels TD-1/TD-4/TD-07 : une seule table pour la famille. CC4 0 (ouvert) → 90 (fermé), envoyé au mouvement ET juste avant chaque note ; TD-27 : plage 0–127 et CC au choix. Étouffement = aftertouch polyphonique 127 à la saisie, 0 au relâchement ; note-off fixe 0,1 s v64. TD-1 : USB en émission seule ; TD-4 : DIN seul."
+ },
+ "note": "La table la mieux documentée de la liste."
+}

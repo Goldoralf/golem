@@ -1,0 +1,12 @@
+{
+ "name": "Leslie fast",
+ "type": "rotary",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "speed": "fast",
+  "mic": 80,
+  "spacing": 60,
+  "depth": 75
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "name": "Chug tight",
+ "type": "gate",
+ "factory": true,
+ "params": {
+  "thresh": -38,
+  "attack": 0.5,
+  "hold": 8,
+  "release": 60,
+  "hpf": 120,
+  "lpf": 8000,
+  "hyst": -6
+ },
+ "inst": "guitar"
+}

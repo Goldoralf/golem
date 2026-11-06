@@ -1,0 +1,267 @@
+desc:GoleM Tuner (pitch -> gmem)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+// GoleM — détecteur de hauteur MONOPHONIQUE pour l'accordeur de scène.
+// Se pose dans la chaîne d'ENTRÉE (input/rec FX) de "Sandbox #Input 1" : voit la
+// guitare SÈCHE (avant ampli / pitch-shift) et NE MODIFIE PAS le signal (transparent).
+// Écrit le résultat en mémoire globale partagée `golem_tuner`, lue par golem_tuner.lua :
+//   gmem[0] = freq Hz        gmem[1] = midi (fractionnaire, ex 40.12)
+//   gmem[2] = conf 0..1      gmem[3] = seq (compteur, +1 à chaque analyse = heartbeat)
+//   gmem[4..6] = DIAGNOSTIC seulement (horloge audio / charge) — contrat 0..3 INCHANGÉ.
+// Coût nul quand le FX est BYPASSÉ (c'est le gate on/off : Reaper ne fait tourner ni
+// @sample ni @block d'un FX désactivé).
+//
+// ── POURQUOI CETTE VERSION (mesuré sur le rig le 2026-07-26) ──
+// La v1 faisait TOUTE l'analyse YIN dans UN SEUL @block, à 48 kHz plein débit :
+//   maxlag = ceil(48000/65) = 739 lags × W = 4096-739 = 3357 paires = 2,48 M itérations
+// dans un bloc audio de 192 échantillons (= 4 ms de budget temps réel). Résultat MESURÉ,
+// témoin = compteur de ticks du click GoleM (incrémenté dans @sample par le thread audio,
+// comparé à l'horloge murale) :
+//   click seul .................... 98,8 % de santé audio (100 % aux arrondis près)
+//   click + tuner v1 armé ......... 26,5 %  -> le moteur ne traitait plus qu'un quart du
+//                                             temps réel : son haché, trous de 6 s.
+// Deux corrections, cumulées :
+//   1) DÉCIMATION x6 (48 k -> 8 k) avec anti-repliement réel (passe-haut 30 Hz DC-blocker
+//      + Butterworth 4e ordre à 1600 Hz + moyenne glissante sur DECIM échantillons, dont
+//      les zéros tombent PILE sur les multiples de la fréquence décimée). Détecter 65-1320 Hz
+//      ne demande pas 48 kHz ; Nyquist décimé = 4 kHz, soit 3x MAXF -> marge confortable.
+//      Coût divisé par ~36 (maxlag 124, W 388 -> ~48 k itérations au lieu de 2,48 M).
+//   2) ÉTALEMENT sur plusieurs @block : l'analyse est une MACHINE À ÉTATS incrémentale qui
+//      consomme au plus BUDGET_PS itérations PAR ÉCHANTILLON de bloc (budget proportionnel
+//      à samplesblock -> même fraction de CPU quelle que soit la taille de tampon). Plus
+//      aucun pic : ~3000 itérations par bloc de 192 au lieu de 2,48 M.
+// Précision : la décimation seule coûterait ~4 cents sur les cordes aiguës (lag court).
+// On RAFFINE donc, uniquement pour les périodes courtes (> ~125 Hz), autour du creux trouvé,
+// à PLEIN DÉBIT sur ±DECIM échantillons (13 lags) — meilleure résolution que la v1.
+//
+// ⚠ NON exécutable/validable hors-Reaper. À régler AU RIG avec une vraie guitare :
+//   - seuils rms_gate / thresh / conf (bruit de fond du DI, sustain, cordes graves) ;
+//   - BUDGET_PS vs cadence de rafraîchissement voulue (mesurée ~11-16 analyses/s à 16) ;
+//   - bornes MINF/MAXF selon accordages.
+//
+// ── PLANCHER ABAISSÉ (2026-10-06) : guitare 8 cordes (F#1 = 46 Hz) et basse 5 cordes (B0 = 31 Hz) ──
+// MINF 65 -> 28 Hz : maxlag_d passe de 124 à 286. Une fenêtre YIN doit couvrir au moins une
+// période du lag cherché (B0 = 259 échantillons décimés) : DBUF 512 -> 768 (W_d = 482). Coût
+// d'une analyse ~48 k -> ~138 k itérations ; BUDGET_PS 16 -> 24 pour garder ~8 analyses/s
+// (~4600 it. par bloc de 192 : toujours un étalement, aucun pic). Passe-haut 30 -> 15 Hz :
+// à 30 Hz il retirait 3 dB au si grave de la basse.
+
+options:gmem=golem_tuner
+
+@init
+// ── réglages ────────────────────────────────────────────────────────────────
+MINF   = 28;                 // Hz plancher (un peu sous B0 = 30,9 Hz, basse 5 cordes)
+MAXF   = 1320;               // Hz plafond (fondamental jusqu'à ~E6)
+THRESH = 0.15;               // seuil YIN (1er creux)
+RMS_GATE = 0.0008;           // ~ -62 dBFS : sous ce niveau => pas de note
+A4 = 440;
+HOP = 2048;                  // écart MINIMUM (en échantillons) entre deux DÉBUTS d'analyse
+BUDGET_PS = 24;              // itérations autorisées par échantillon de bloc (temps réel)
+                             //   192 éch. -> ~4600 it./bloc (~0,3 ms) au lieu de 2,48 M.
+FC_LP  = 1600;               // anti-repliement (> MAXF, < Nyquist décimé)
+FC_HP  = 15;                 // DC-blocker / anti-rumble (-0,9 dB à 31 Hz, le si grave de la basse)
+REF_PD_MAX = 64;             // raffinement plein débit si période décimée < ce seuil (~> 125 Hz)
+
+// ── décimation ──────────────────────────────────────────────────────────────
+DECIM = floor(srate / 8000); DECIM < 1 ? DECIM = 1;    // 48k->6, 44.1k->5, 96k->12
+DSR = srate / DECIM;                                    // ~8 kHz
+
+BUFSZ = 2048;                // fenêtre plein débit (sert AU RAFFINEMENT seulement)
+DBUF  = 768;                 // fenêtre d'analyse décimée (~96 ms @8k = 3 périodes à 31 Hz)
+
+minlag_d = floor(DSR / MAXF); minlag_d < 2 ? minlag_d = 2;
+maxlag_d = ceil(DSR / MINF);
+maxlag_d > DBUF - 64 ? maxlag_d = DBUF - 64;            // garde une marge de paires
+W_d = DBUF - maxlag_d;                                  // nb de paires comparées (décimé)
+
+// ── mémoire ─────────────────────────────────────────────────────────────────
+buf  = 0;                    // ring plein débit (signal FILTRÉ)   [BUFSZ]
+lin  = buf  + BUFSZ;         // snapshot plein débit linéarisé      [BUFSZ]
+// ⚠ EEL2 EST INSENSIBLE À LA CASSE : ce pointeur s'est appelé `dbuf` et écrasait DBUF
+// (fenêtre 512 -> 4096) — l'analyse lisait les échantillons les plus VIEUX d'une fenêtre
+// 8x trop grande, soit une note vieille de ~450 ms (audit 2026-08-12). D'où `dring`.
+dring = lin  + BUFSZ;        // ring décimé                          [DBUF]
+dlin = dring + DBUF;         // snapshot décimé linéarisé            [DBUF]
+dcm  = dlin + DBUF;          // CMND par lag décimé                  [DBUF]
+rdv  = dcm  + DBUF;          // fonction de différence du raffinement [64]
+
+wpos = 0; filled = 0; since = 0;
+dwpos = 0; dfilled = 0; dacc = 0; dn = 0;
+st = 0;                      // état de la machine : 0 repos, 1 snapshot, 2 balayage, 3 raffinement
+blkspl = 0; itmax = 0;       // témoins de diagnostic (gmem[4..6])
+
+// ── filtres (calculés ici : @init rejoue si la fréquence d'échantillonnage change) ──
+// passe-haut 1 pôle (DC-blocker) : y = a*(y1 + x - x1)
+hp_a = 1 / (1 + 2*$pi*FC_HP/srate);
+hp_x1 = 0; hp_y1 = 0;
+// passe-bas Butterworth 4e ordre = 2 biquads RBJ (Q = 0,5412 et 1,3066), forme directe II transposée
+w0 = 2*$pi*FC_LP/srate; cw = cos(w0); sw = sin(w0);
+// étage 1 (Q = 0,5412) — coefficients RBJ passe-bas, déjà divisés par a0
+al = sw / (2 * 0.54119610); a0i = 1 / (1 + al);
+b10 = (1 - cw) * 0.5 * a0i; b11 = (1 - cw) * a0i; b12 = b10;
+a11 = (-2 * cw) * a0i;      a12 = (1 - al) * a0i;
+// étage 2 (Q = 1,3066)
+al = sw / (2 * 1.30656296); a0i = 1 / (1 + al);
+b20 = (1 - cw) * 0.5 * a0i; b21 = (1 - cw) * a0i; b22 = b20;
+a21 = (-2 * cw) * a0i;      a22 = (1 - al) * a0i;
+z11 = 0; z12 = 0; z21 = 0; z22 = 0;
+
+@sample
+// mono (somme L+R) ; le signal traverse INCHANGÉ (on ne touche jamais à spl0/spl1)
+x = 0.5*(spl0 + spl1);
+
+// passe-haut 1 pôle
+hp_y1 = hp_a * (hp_y1 + x - hp_x1); hp_x1 = x; y = hp_y1;
+// passe-bas 4e ordre (anti-repliement AVANT décimation — une prise 1/6 crue replierait tout
+// le haut du spectre de la guitare dans la bande d'analyse)
+t0 = b10*y  + z11; z11 = b11*y  - a11*t0 + z12; z12 = b12*y  - a12*t0;
+t1 = b20*t0 + z21; z21 = b21*t0 - a21*t1 + z22; z22 = b22*t0 - a22*t1;
+
+// ring plein débit (filtré) : sert au raffinement sous-échantillon
+buf[wpos] = t1;
+wpos += 1; wpos >= BUFSZ ? wpos = 0;
+filled < BUFSZ ? filled += 1;
+since += 1;
+
+// décimation par moyenne glissante (zéros du boxcar pile sur les multiples de DSR)
+dacc += t1; dn += 1;
+dn >= DECIM ? (
+  dring[dwpos] = dacc / DECIM; dacc = 0; dn = 0;
+  dwpos += 1; dwpos >= DBUF ? dwpos = 0;
+  dfilled < DBUF ? dfilled += 1;
+);
+
+@block
+// budget PROPORTIONNEL à la taille de bloc : la charge reste la même fraction du temps réel
+// que Reaper tourne à 64, 192 ou 1024 échantillons de tampon.
+budget = BUDGET_PS * samplesblock;
+used = 0;
+blkspl += samplesblock;              // horloge audio (diagnostic : à comparer au temps mural)
+
+st == 0 ? (
+  // repos : attend une fenêtre pleine + l'écart minimum depuis la dernière analyse
+  (filled >= BUFSZ && dfilled >= DBUF && since >= HOP) ? ( since = 0; st = 1; );
+) : st == 1 ? (
+  // snapshot des deux ring buffers (l'analyse dure plusieurs blocs : elle doit travailler sur
+  // une photo STABLE pendant que @sample continue d'écrire) + énergie (gate de silence)
+  n1 = BUFSZ - wpos;  memcpy(lin,  buf  + wpos,  n1); memcpy(lin  + n1, buf,  wpos);
+  n1 = DBUF  - dwpos; memcpy(dlin, dring + dwpos, n1); memcpy(dlin + n1, dring, dwpos);
+  eng = 0; k = 0;
+  loop(DBUF, eng += dlin[k]*dlin[k]; k += 1; );
+  used = DBUF;
+  rms = sqrt(eng / DBUF);
+  rms < RMS_GATE ? (
+    gmem[2] = 0;                     // conf = 0 : pas de note -> publie tout de suite
+    gmem[3] = gmem[3] + 1;
+    st = 0;
+  ) : (
+    tau = 1; runsum = 0; bestlag = 0; bestval = 1; bestval_lag = minlag_d;
+    st = 2;
+  );
+) : st == 2 ? (
+  // ── balayage YIN décimé, ÉTALÉ : n lags par bloc (au moins 1 pour toujours progresser) ──
+  n = floor(budget / W_d); n < 1 ? n = 1;
+  while (n > 0 && tau <= maxlag_d) (
+    sum = 0; j = 0;
+    while (j < W_d) (
+      dv = dlin[j] - dlin[j + tau];
+      sum += dv*dv;
+      j += 1;
+    );
+    runsum += sum;
+    cmnd = runsum > 0 ? sum * tau / runsum : 1;
+    tau >= minlag_d ? (
+      cmnd < bestval ? ( bestval = cmnd; bestval_lag = tau; );
+      (bestlag == 0 && cmnd < THRESH) ? bestlag = tau;
+    );
+    dcm[tau] = cmnd;
+    used += W_d;
+    tau += 1; n -= 1;
+  );
+  tau > maxlag_d ? (
+    // ── YIN étape 4 : DESCENDRE jusqu'au creux ─────────────────────────────
+    // BUG CORRIGÉ (trouvé en simulation 2026-07-26, présent depuis la v1) : prendre le
+    // PREMIER tau passant sous THRESH, c'est atterrir sur la PENTE du creux, pas dans le
+    // creux. Sur un signal propre le CMND descend doucement et croise le seuil plusieurs
+    // échantillons trop tôt -> lecture SYSTÉMATIQUEMENT TROP HAUTE (mesuré en simu sur des
+    // tons synthétiques : +70 cents en décimé, jusqu'à +2400 cents à 48 kHz plein débit où
+    // la pente est 6x plus large). Et la parabole, posée sur un segment quasi droit, a un
+    // dénominateur ~0 : elle ne rattrape rien. Le YIN canonique descend tant que le CMND
+    // continue de baisser. Coût : ≤ maxlag_d pas, une seule fois, négligeable.
+    bestlag ? (
+      while (bestlag < maxlag_d && dcm[bestlag+1] < dcm[bestlag]) ( bestlag += 1; );
+    );
+    // balayage terminé : creux retenu + interpolation parabolique sur le CMND
+    chosen = bestlag ? bestlag : bestval_lag;
+    (chosen > minlag_d && chosen < maxlag_d) ? (
+      xa = dcm[chosen-1]; xb = dcm[chosen]; xc = dcm[chosen+1];
+      den = xa + xc - 2*xb;
+      shift = den != 0 ? 0.5*(xa - xc)/den : 0;
+      abs(shift) > 1 ? shift = 0;
+      pd = chosen + shift;
+    ) : ( pd = chosen; );
+    conf = 1 - (bestlag ? dcm[bestlag] : bestval);
+
+    // périodes COURTES = cordes aiguës : 1 échantillon décimé y vaut plusieurs cents, on
+    // raffine à plein débit. Périodes longues (graves) : la parabole décimée donne déjà
+    // ~1 cent, on publie directement.
+    (pd < REF_PD_MAX) ? (
+      rc  = floor(pd * DECIM + 0.5);
+      rlo = rc - DECIM; rlo < 2 ? rlo = 2;
+      rhi = rc + DECIM;
+      W_ref = 4 * rc;
+      W_ref > 1536 ? W_ref = 1536;
+      W_ref < 256  ? W_ref = 256;
+      (W_ref + rhi + 1) > BUFSZ ? W_ref = BUFSZ - rhi - 1;
+      W_ref < 64 ? (                 // sécurité : pas la place -> on garde la grossière
+        pfull = pd * DECIM; st = 4;
+      ) : (
+        rt = rlo; rbi = -1; rbv = 0; st = 3;
+      );
+    ) : ( pfull = pd * DECIM; st = 4; );
+  );
+) : st == 3 ? (
+  // ── raffinement plein débit, ÉTALÉ lui aussi (13 lags max) ──
+  n = floor(budget / W_ref); n < 1 ? n = 1;
+  while (n > 0 && rt <= rhi) (
+    s2 = 0; j = 0;
+    while (j < W_ref) (
+      dv = lin[j] - lin[j + rt];
+      s2 += dv*dv;
+      j += 1;
+    );
+    rdv[rt - rlo] = s2;
+    (rbi < 0 || s2 < rbv) ? ( rbv = s2; rbi = rt; );
+    used += W_ref;
+    rt += 1; n -= 1;
+  );
+  rt > rhi ? (
+    (rbi > rlo && rbi < rhi) ? (
+      xa = rdv[rbi-1-rlo]; xb = rdv[rbi-rlo]; xc = rdv[rbi+1-rlo];
+      den = xa + xc - 2*xb;
+      shift = den != 0 ? 0.5*(xa - xc)/den : 0;
+      abs(shift) > 1 ? shift = 0;
+      pfull = rbi + shift;
+    ) : ( pfull = pd * DECIM; );      // creux au bord de la fenêtre -> estimation grossière
+    st = 4;
+  );
+) : (
+  // ── publication (contrat gmem INCHANGÉ) ──
+  freq = pfull > 0 ? srate / pfull : 0;
+  (freq >= MINF && freq <= MAXF && conf > 0.5) ? (
+    gmem[0] = freq;
+    gmem[1] = 69 + 12 * log(freq / A4) / log(2);   // midi fractionnaire
+    gmem[2] = conf;
+  ) : (
+    gmem[2] = 0;
+  );
+  gmem[3] = gmem[3] + 1;             // heartbeat : le lecteur sait que c'est frais
+  st = 0;
+);
+
+// témoins de diagnostic (hors contrat, lus seulement par le mode diag de golem_tuner.lua)
+used > itmax ? itmax = used;
+gmem[4] = blkspl;                    // échantillons traités par le thread audio
+gmem[5] = used;                      // itérations du dernier bloc
+gmem[6] = itmax;                     // pic d'itérations sur un bloc depuis le chargement

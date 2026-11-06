@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "delay",
+ "factory": true,
+ "params": {
+  "time": "1/8•",
+  "feedback": 35,
+  "mix": 25
+ },
+ "default": true,
+ "inst": "any"
+}

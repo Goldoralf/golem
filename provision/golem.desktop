@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Name=golem
+GenericName=Guitar rig
+Comment=Open golem in a window — or start it as a server and play from a tablet
+# Exec est réécrit à l'installation (chemin absolu du dépôt) — cf. provision/install-desktop.sh
+# Libellés = UI, donc en anglais (CLAUDE.md règle 4). Deux usages, docs/installer.md §4.
+Exec=golem desktop
+Icon=golem
+Terminal=false
+Categories=AudioVideo;Audio;
+StartupNotify=true
+StartupWMClass=localhost__8770
+Actions=server;stop;
+
+[Desktop Action server]
+Name=golem server — no window, use a tablet
+Exec=golem server
+
+[Desktop Action stop]
+Name=Stop golem
+Exec=golem stop

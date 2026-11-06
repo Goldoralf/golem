@@ -1,0 +1,30 @@
+#cloud-config
+# golem — VM de test d'install (B1). GABARIT : vm.sh create remplace les @GOLEM_VM_…@
+# (utilisateur, mot de passe console, clé SSH de l'hôte) — rien de personnel n'est versionné.
+hostname: golem-vm
+locale: fr_FR.UTF-8
+timezone: Europe/Paris
+
+users:
+  - name: @GOLEM_VM_USER@
+    gecos: golem test VM
+    shell: /bin/bash
+    groups: [sudo, audio, adm]
+    sudo: ALL=(ALL) NOPASSWD:ALL   # VM de test jetable — pas le réglage du rack
+    lock_passwd: false
+    # mot de passe console de secours (accès virsh console si SSH KO) — généré par vm.sh
+    plain_text_passwd: "@GOLEM_VM_PASSWORD@"
+    ssh_authorized_keys:
+      - @GOLEM_VM_SSH_KEY@
+
+ssh_pwauth: true
+
+package_update: true
+packages:
+  - qemu-guest-agent
+  - openssh-server
+  - git
+  - rsync                       # vm.sh push ; l'image cloud Debian ne l'a pas (2026-11-03)
+
+runcmd:
+  - systemctl enable --now qemu-guest-agent

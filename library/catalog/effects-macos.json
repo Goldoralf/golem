@@ -1,0 +1,346 @@
+{
+ "_comment": "REAPER macOS (Apple Silicon) : noms des plugins, lus par golem_rig.lua sur macOS seulement (DESKTOP_TABLE) et par bridge/blockstatus.py. Révision 2 (2026-10-04, docs/platforms.md) : établie depuis la table Linux (effects.json), la table Windows (révision 5) et ce que chaque éditeur PUBLIE pour macOS (releases GitHub, pages officielles ; installeurs ouverts et en-têtes Mach-O lus). Les NOMS restent ceux de Windows — un VST3/CLAP/LV2 porte le même nom sur les deux systèmes quand l'éditeur livre le même build — mais aucun scan REAPER sur Mac ne les a encore confirmés : la recette (docs/private/recette-macos.md §7) les confronte au scan réel. Un nom faux n'est pas silencieux : le bloc est laissé de côté et le tiroir dit « not installed ». Un type ABSENT de `effects` se résout comme sur le rack (même LV2, mêmes ports : x42 limiter, autotune, eq). `unsupported` = aucune version macOS utilisable, vérifié.",
+ "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on this desktop OS (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on this desktop OS (`note` says which, and what is still missing); untested = never tried on this desktop OS (`why`).",
+ "revision": 4,
+ "derived_from": {
+  "file": "effects-windows.json",
+  "revision": 5
+ },
+ "sources": {
+  "checked": "2026-10-04",
+  "how": "GitHub releases API, pages éditeurs ; .pkg/.dmg ouverts (PackageInfo, Distribution, Mach-O) pour PawPaw, AVL, Dragonfly, NAM, Spectral Shift, PaulXStretch, sfizz, Dexed, Airwindows, DrumGizmo"
+ },
+ "effects": {
+  "boost": {
+   "plugin": "VST3: Proteus (GuitarML)",
+   "param_modes": {
+    "bass": "norm",
+    "mid": "norm",
+    "treble": "norm"
+   }
+  },
+  "pedal-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "preamp-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "comp-nam": {
+   "plugin": "VST3: NeuralAmpModeler",
+   "params": {
+    "input": "Input",
+    "output": "Output"
+   },
+   "param_mode": "pow",
+   "param_ranges": {
+    "output": {
+     "min": -40,
+     "max": 40
+    }
+   }
+  },
+  "reverb": {
+   "plugin": "VST3: Dragonfly Hall Reverb (Michael Willis and Rob vd Berg)",
+   "param_mode": "norm"
+  },
+  "reverb-plate": {
+   "plugin": "VST3: Dragonfly Plate Reverb (Michael Willis)",
+   "param_mode": "norm"
+  },
+  "reverb-room": {
+   "plugin": "VST3: Dragonfly Room Reverb (Michael Willis)",
+   "param_mode": "norm"
+  },
+  "granular": {
+   "plugin": "VST3: ZamGrains (Damien Zammit) (mono)",
+   "param_mode": "norm"
+  },
+  "pitch-spectral": {
+   "plugin": "VST3: Spectral Shift (trencrumb)"
+  },
+  "surge-spring": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "size": "Reverb Size",
+    "decay": "Reverb Decay",
+    "refl": "Reverb Reflections",
+    "damp": "Reverb HF Damping",
+    "spin": "Modulation Spin",
+    "chaos": "Modulation Chaos",
+    "knock": "Modulation Knock"
+   },
+   "fx_init": {
+    "FX Type": 0.928571
+   },
+   "late_params": true,
+   "note": "2026-10-22 : le VST3 Surge XT Effects expose « FX Type » normalisé (Spring Reverb = 26/28 des 29 types) et renomme ses 17 fentes selon le type ; le plugin réinitialise ses paramètres au bloc audio suivant — d'où late_params. Noms lus au banc."
+  },
+  "surge-freqshift": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "shift": "Shift Left",
+    "shift_r": "Shift Right",
+    "time": "Delay Time",
+    "fbk": "Delay Feedback"
+   },
+   "fx_init": {
+    "FX Type": 0.214286
+   },
+   "late_params": true,
+   "note": "2026-10-22 : Surge XT Effects VST3, Frequency Shifter = 6/28 (voir surge-spring)."
+  },
+  "surge-treemonster": {
+   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
+   "param_mode": "norm",
+   "params": {
+    "thr": "Pitch Detection Threshold",
+    "speed": "Pitch Detection Speed",
+    "lowcut": "Pitch Detection Low Cut",
+    "highcut": "Pitch Detection High Cut",
+    "pitch": "Oscillator Pitch",
+    "ring": "Oscillator Ring Modulation"
+   },
+   "fx_init": {
+    "FX Type": 0.821429
+   },
+   "late_params": true,
+   "note": "2026-10-22 : Surge XT Effects VST3, Treemonster = 23/28 (voir surge-spring)."
+  },
+  "spectral-comp": {
+   "plugin": "VST3: Spectral Compressor (Robbert van der Helm)"
+  },
+  "stretch": {
+   "plugin": "VST3: PaulXStretch (Sonosaurus) (18ch)"
+  },
+  "ringmod": {
+   "plugin": "LV2: MDA RingMod"
+  },
+  "bitcrusher": {
+   "plugin": "LV2: MDA Degrade"
+  },
+  "rezfilter": {
+   "plugin": "LV2: MDA RezFilter"
+  },
+  "chorus": {
+   "plugin": "JS:golem/golem_chorus",
+   "note": "2026-10-22 : Calf Multi Chorus n'existe pas ici ; golem_chorus.jsfx (maison, MIT) reprend ses 12 paramètres (noms, bornes, défauts) et son architecture publique (N voix sur une ligne à retard, Overlap, Stereo Phase, deux passe-bande en sortie) — code à nous, son proche, pas identique."
+  },
+  "flanger": {
+   "plugin": "JS:golem/golem_flanger",
+   "note": "2026-10-22 : Calf Flanger n'existe pas ici ; golem_flanger.jsfx (maison, MIT) reprend ses paramètres (noms, bornes, défauts) et son architecture (ligne à retard modulée, retour dans la ligne, phase stéréo) — code à nous."
+  },
+  "phaser": {
+   "plugin": "JS:golem/golem_phaser",
+   "note": "2026-10-22 : Calf Phaser n'existe pas ici ; golem_phaser.jsfx (maison, MIT) reprend ses paramètres (Center Freq, Mod depth en cents, Mod rate, Feedback, # Stages, Stereo phase, Amount, Dry Amount) et son architecture publique (passe-tout d'ordre 1 en cascade, LFO triangle, retour) — code à nous."
+  },
+  "tremolo": {
+   "plugin": "JS:golem/golem_tremolo",
+   "note": "2026-10-22 : Calf Pulsator n'existe pas ici ; golem_tremolo.jsfx (maison, MIT) reprend ses paramètres (Timing/BPM/ms/Frequency, Mode, Modulation, Offset L/R, Pulse Width), ses formes de LFO et sa loi de niveau — code à nous."
+  },
+  "wah": {
+   "plugin": "JS:golem/golem_wah",
+   "note": "2026-10-22 : Gxgcb_95 (guitarix) n'existe pas ici ; golem_wah.jsfx (maison, MIT) reprend ses noms, bornes et défauts, et sa réponse (filtre d'ordre 4 du GCB-95 évaluée à 48 kHz, rejouée par un SVF) — son proche, pas identique."
+  },
+  "wah-color": {
+   "plugin": "JS:golem/golem_colwah",
+   "note": "2026-10-22 : GxWahwah (guitarix colwah) n'existe pas ici ; golem_colwah.jsfx (maison, MIT) reprend ses 7 modèles, 3 modes, noms, bornes et défauts ; la réponse de chaque modèle évaluée à 48 kHz pilote un SVF — son proche, pas identique."
+  },
+  "autowah": {
+   "plugin": "JS:golem/golem_autowah",
+   "note": "2026-10-22 : GxAutoWah (guitarix) n'existe pas ici ; golem_autowah.jsfx (maison, MIT) : le suiveur d'enveloppe de dunwahauto et le filtre du GCB-95 ; Wah = sensibilité (le plugin Linux n'a aucun paramètre)."
+  },
+  "delay-tape": {
+   "plugin": "JS:golem/golem_tapedelay",
+   "note": "2026-10-22 : Calf n'a aucune version macOS ; golem_tapedelay.jsfx (maison, MIT) en reprend les noms, bornes et sens de paramètres — les presets ne changent pas. Pas le DSP de Calf."
+  },
+  "delay-echo": {
+   "plugin": "JS:golem/golem_echocat",
+   "note": "2026-10-22 : GxEchoCat (guitarix) est en quarantaine (il fige le moteur ~520 ms) ; golem_echocat.jsfx (maison, MIT) reprend ses paramètres (BPM, Sustain, Swell, Input, Head 1-3) et l'architecture du Copicat — code à nous, ne fige rien (banc de gel)."
+  },
+  "reverb-shimmer": {
+   "plugin": "JS:golem/golem_shimmer",
+   "note": "2026-10-22 : GxShimmizita (guitarix) n'existe pas ici ; golem_shimmer.jsfx (maison, MIT) en reprend les noms, bornes et défauts de paramètres et l'idée (FDN 8 lignes, transposition dans la boucle) — notre code, son proche, niveaux à vérifier à l'oreille."
+  },
+  "rotary": {
+   "plugin": "JS:golem/golem_rotary",
+   "note": "2026-10-22 : Calf Rotary Speaker n'existe pas ici ; golem_rotary.jsfx (maison, MIT) reprend ses paramètres (Speed Mode 0..5, Tap Spacing/Offset, FM/AM Depth, Mic Distance, Reflection, moteurs) et son architecture (deux rotors sur une ligne à retard, Doppler + AM, croisement 800 Hz / 2 kHz, rampes de vitesse de Calf) — code à nous."
+  },
+  "eq-graphic": {
+   "plugin": "JS:golem/golem_geq",
+   "note": "2026-10-22 : GxGraphicEQ (guitarix) n'existe pas ici ; golem_geq.jsfx (maison, MIT) reprend G1..G11 et les bandes du banc de filtres de guitarix (cloches d'une octave en cascade, plateaux aux extrêmes) — code à nous."
+  },
+  "octaver": {
+   "plugin": "JS:golem/golem_octaver",
+   "note": "2026-10-22 : Gxoc_2 (guitarix, Boss OC-2) n'existe pas ici ; golem_octaver.jsfx (maison, MIT) reprend ses paramètres et l'architecture de la pédale (filtre d'entrée, diviseur par bascules, commutation, passe-bas par octave ; corners évalués dans oc_2.lib) — code à nous."
+  },
+  "vibrato": {
+   "plugin": "JS:golem/golem_vibrato",
+   "note": "2026-10-22 : GxTubeVibrato (guitarix) n'existe pas ici ; golem_vibrato.jsfx (maison, MIT) reprend ses paramètres (SineWave, Depth, Speed en Hz, Drive, Output) et sa courbe de retard — code à nous."
+  },
+  "detune": {
+   "unsupported": "guitarix / GxPlugins : aucune version macOS (vérifié le 2026-10-04 : .deb et win64 seulement)"
+  },
+  "freeze": {
+   "unsupported": "GoleM Freeze : compilé depuis les sources sur le rack, aucune version macOS construite"
+  },
+  "grit": {
+   "plugin": "JS:golem/golem_grit",
+   "note": "2026-10-22 : pas de Prisma à installer ici ; golem_grit.jsfx (maison, MIT) en reprend l'interface (noms, 23 modules, crossovers, gains) — le DSP de chaque module est le nôtre (Prisma est AGPL), son de la même famille, pas identique."
+  },
+  "delay-tape-aw": {
+   "plugin": "VST: TapeDelay2 (airwindows)"
+  },
+  "capture-module": {
+   "plugin": "CLAP: golem Capture (golem)"
+  }
+ },
+ "unmapped": {
+  "amp": {
+   "family": "core"
+  },
+  "amp-nam": {
+   "family": "core"
+  },
+  "arrangement": {
+   "family": "no-plugin"
+  },
+  "backing-track": {
+   "family": "no-plugin"
+  },
+  "cab": {
+   "family": "core"
+  },
+  "chorus-js": {
+   "family": "reaper-jsfx"
+  },
+  "clean-boost": {
+   "family": "reaper-jsfx"
+  },
+  "click": {
+   "family": "no-plugin"
+  },
+  "comp": {
+   "family": "reaper-plugin"
+  },
+  "compo": {
+   "family": "no-plugin"
+  },
+  "deesser": {
+   "family": "golem-jsfx"
+  },
+  "delay": {
+   "family": "reaper-plugin"
+  },
+  "drumkit": {
+   "family": "installed-plugin",
+   "note": "AVL Drumkits (x42, LV2, paquet signé arm64+x86_64) installé par l'installateur macOS (provision/macos/install-system.sh --avldrums). DrumGizmo n'existe sur Mac qu'en VST2 Intel (0.9.20, 2019) : le kit Aasimonster est indisponible."
+  },
+  "drums": {
+   "family": "no-plugin"
+  },
+  "ep": {
+   "family": "untested",
+   "why": "Dexed existe pour macOS (1.0.1, VST3/AU/CLAP universels) mais GoleM ne l'installe ni ne le mappe encore"
+  },
+  "eq": {
+   "family": "reaper-plugin"
+  },
+  "flanger-js": {
+   "family": "reaper-jsfx"
+  },
+  "gate": {
+   "family": "reaper-plugin"
+  },
+  "guitar-drive": {
+   "family": "reaper-jsfx"
+  },
+  "killswitch": {
+   "family": "golem-jsfx"
+  },
+  "looper": {
+   "family": "no-plugin"
+  },
+  "midi-pedal": {
+   "family": "no-plugin"
+  },
+  "organ": {
+   "family": "untested",
+   "why": "setBfree existe pour macOS (x42, LV2 gratuit, arm64) mais GoleM ne l'installe ni ne l'a essayé sur Mac"
+  },
+  "pads": {
+   "family": "untested",
+   "why": "son moteur (ReaSamplomatic5000) est livré avec REAPER, mais le bloc n'a jamais été essayé sur Mac"
+  },
+  "phaser-js": {
+   "family": "reaper-jsfx"
+  },
+  "piano": {
+   "family": "untested",
+   "why": "sfizz is installed by the installer (--sfizz) and golem_rig loads the .sfz through its VST3 state, but no Mac has played it yet (measured on Windows only, 2026-10-22)"
+  },
+  "pitch": {
+   "family": "reaper-plugin"
+  },
+  "pitch-shift-js": {
+   "family": "reaper-jsfx"
+  },
+  "rec": {
+   "family": "no-plugin"
+  },
+  "sample": {
+   "family": "no-plugin"
+  },
+  "standard": {
+   "family": "no-plugin"
+  },
+  "tuner": {
+   "family": "no-plugin"
+  },
+  "vital": {
+   "family": "installed-plugin",
+   "note": "Vital officiel (vital.audio, compte gratuit) d'abord, à installer soi-même ; sinon Vitalium (DISTRHO, LV2) installé par l'installateur macOS depuis PawPaw 1.1 (binaires universels, paquet non signé déclarant x86_64 : Rosetta est posé avant). Même chemin que Windows : le .vital passe par le chunk."
+  },
+  "volume": {
+   "family": "reaper-plugin"
+  },
+  "whammy-dt": {
+   "family": "no-plugin"
+  },
+  "limiter": {
+   "family": "installed-plugin",
+   "note": "x42-dpl (LV2, gratuit) existe pour macOS arm64 : x42-plugins.com/x42/mac/x42-limiter-v0.7.3.pkg — résolu comme sur le rack (même LV2). À installer soi-même (liste de la dernière page de l'installateur)."
+  },
+  "pitch-correct": {
+   "family": "installed-plugin",
+   "note": "x42-autotune (fat1, LV2, gratuit) existe pour macOS arm64 — résolu comme sur le rack. À installer soi-même."
+  },
+  "eq-para": {
+   "family": "installed-plugin",
+   "note": "x42-eq (fil4, LV2) existe pour macOS arm64 en démo : sans licence (29 $) l'interface s'éteint, le SON n'est pas touché — GoleM ne l'ouvre pas. Résolu comme sur le rack. À installer soi-même."
+  }
+ }
+}

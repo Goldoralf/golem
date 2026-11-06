@@ -1,0 +1,12 @@
+{
+ "name": "Standard",
+ "type": "flanger",
+ "factory": true,
+ "params": {
+  "rate": 0.3,
+  "depth": 2,
+  "feedback": 0.6
+ },
+ "default": true,
+ "inst": "any"
+}

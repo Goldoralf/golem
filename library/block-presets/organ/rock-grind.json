@@ -1,0 +1,24 @@
+{
+ "name": "Rock grind",
+ "type": "organ",
+ "inst": "keys",
+ "factory": true,
+ "params": {
+  "db16": 8,
+  "db513": 8,
+  "db8": 8,
+  "db4": 8,
+  "db223": 8,
+  "db2": 8,
+  "db135": 8,
+  "db113": 8,
+  "db1": 8,
+  "leslie": "fast",
+  "vibrato": "off",
+  "perc": false,
+  "perc_harm": "3rd",
+  "perc_decay": "fast",
+  "drive": true,
+  "character": 65
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "name": "Bass clean-up",
+ "type": "eq",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "lowcut": 35,
+  "midfreq": 700,
+  "midgain": -2,
+  "highs": 1
+ }
+}

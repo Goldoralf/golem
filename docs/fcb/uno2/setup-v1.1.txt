@@ -1,0 +1,310 @@
+/* ============================================================================
+   GoleM — setup UnO2 v1.1 (BENCH, canal 2 + Stomp10 sans conditionnel)                                    2026-08-04
+
+   ⚠ VERSION CORRIGÉE À LA MAIN dans ControlCenter — c'est CE fichier qui est
+   flashé dans la puce. Mon brouillon (écrit du manuel, jamais compilé) avait
+   faux : l'ORDRE des sections, la syntaxe des variables ($slot, pas slot),
+   et le if/else (style C, pas If/Endif). Découvertes consignées en fin de
+   fichier — matière du futur descripteur UnO2 + compilateur GoleM.
+
+   BUT : reproduire le contrat MIDI de la 1.0.4 pour que le
+   rack marche SANS TOUCHER foot.py — et mesurer les deux espèces de stomp.
+
+   Contrat à reproduire :
+     SW1-5  : PC=<bank> + CC 20-24=127 + Note 0-4 press/release   (scènes A-E)
+     SW6-10 : CC 30-34 bascule 127/0  + Note 5-9 press/release    (stomps)
+     UP/DOWN: navigation silencieuse ; écran = slot de setlist
+     EXP A  : CC7 0-127 · EXP B : CC11 0-127
+     Canal  : 2 partout (v1.1 — l'écho THRU de la puce renvoie nos ordres Whammy
+                canal 1 ; foot.py n'écoute plus QUE le canal du contrat)
+
+   CHOIX DE BENCH (à trancher par la mesure) :
+     SW6-9 = EFFECTS  -> CC bascule + LED d'état, MAIS pas de release.
+     SW10  = TRIGGER  -> press+release complets, CC bascule reconstruite par
+                         variable — MAIS la LED ne reste pas allumée.
+
+   ORDRE IMPOSÉ par le compilateur UnO2 (manuel v1.4, chap. « The UnO2
+   programming language ») — ne pas réorganiser :
+     1. PRESETS / EFFECTS / TRIGGERS / SWEEPS
+     2. [GLOBALSWITCH] [USE_DIRECT_BANK] BANKS
+     3. REMOTE_CONTROL_CHANNEL, puis CHANNEL
+     4. VAR
+     5. INIT_FCB
+     6. INIT_BANK
+     7. contenus (PRESET / EFFECT_ON / TRIGGER_CLICK / SWEEP, ordre libre)
+
+   ⚠ NOTER AU PREMIER download : la taille compilée (budget total 2048 octets).
+   ========================================================================== */
+
+// ── 1. listes d'éléments ────────────────────────────────────────────────────
+PRESETS =
+{
+  SceneA
+  SceneB
+  SceneC
+  SceneD
+  SceneE
+}
+EFFECTS =
+{
+  Stomp6
+  Stomp7
+  Stomp8
+  Stomp9
+}
+TRIGGERS =
+{
+  Stomp10
+}
+SWEEPS =
+{
+  ExpVolume
+  ExpFx
+}
+
+// ── 2. structure de banks : 19 slots de setlist, tous identiques ────────────
+//     (GLOBALSWITCH = confort d'éditeur uniquement, pas compilé — on s'en
+//      passe puisque chaque bank est écrite explicitement)
+BANKS =
+{
+  Slot00 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot01 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot02 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot03 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot04 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot05 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot06 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot07 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot08 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot09 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot10 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot11 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot12 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot13 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot14 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot15 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot16 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot17 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+  Slot18 : SceneA | SceneB | SceneC | SceneD | SceneE | Stomp6 | Stomp7 | Stomp8 | Stomp9 | Stomp10
+}
+
+// ── 3. pilotage entrant + canaux ────────────────────────────────────────────
+//     REMOTE_CONTROL_CHANNEL doit précéder les CHANNEL (manuel 4.3)
+//     canal 16 = réservé au rack, jamais utilisé ailleurs dans le rig
+REMOTE_CONTROL_CHANNEL = 16
+CHANNEL Golem = 2
+
+// ── 4. variables (toutes ici, juste après les CHANNEL) ──────────────────────
+VAR $slot = 0    // numéro de slot courant, posé par INIT_BANK, envoyé en PC
+
+
+// ── 5. état initial ─────────────────────────────────────────────────────────
+INIT_FCB =
+{
+  Pedal 1 = ExpVolume
+  Pedal 2 = ExpFx
+}
+
+// ── 6. init de bank : silencieuse, ne fait que poser $slot ──────────────────
+INIT_BANK Slot00 =
+{
+  $slot = 0
+}
+INIT_BANK Slot01 =
+{
+  $slot = 1
+}
+INIT_BANK Slot02 =
+{
+  $slot = 2
+}
+INIT_BANK Slot03 =
+{
+  $slot = 3
+}
+INIT_BANK Slot04 =
+{
+  $slot = 4
+}
+INIT_BANK Slot05 =
+{
+  $slot = 5
+}
+INIT_BANK Slot06 =
+{
+  $slot = 6
+}
+INIT_BANK Slot07 =
+{
+  $slot = 7
+}
+INIT_BANK Slot08 =
+{
+  $slot = 8
+}
+INIT_BANK Slot09 =
+{
+  $slot = 9
+}
+INIT_BANK Slot10 =
+{
+  $slot = 10
+}
+INIT_BANK Slot11 =
+{
+  $slot = 11
+}
+INIT_BANK Slot12 =
+{
+  $slot = 12
+}
+INIT_BANK Slot13 =
+{
+  $slot = 13
+}
+INIT_BANK Slot14 =
+{
+  $slot = 14
+}
+INIT_BANK Slot15 =
+{
+  $slot = 15
+}
+INIT_BANK Slot16 =
+{
+  $slot = 16
+}
+INIT_BANK Slot17 =
+{
+  $slot = 17
+}
+INIT_BANK Slot18 =
+{
+  $slot = 18
+}
+
+// ── 7a. scènes : PC = slot courant + CC de scène + Note press/release ───────
+PRESET SceneA =
+{
+  SendMidi Golem ProgChange $slot
+  SendMidi Golem CtrlChange 20 127
+  SendMidi Golem NoteOn 0 100
+}
+PRESET_RELEASE SceneA = SendMidi Golem NoteOff 0 0
+
+PRESET SceneB =
+{
+  SendMidi Golem ProgChange $slot
+  SendMidi Golem CtrlChange 21 127
+  SendMidi Golem NoteOn 1 100
+}
+PRESET_RELEASE SceneB = SendMidi Golem NoteOff 1 0
+
+PRESET SceneC =
+{
+  SendMidi Golem ProgChange $slot
+  SendMidi Golem CtrlChange 22 127
+  SendMidi Golem NoteOn 2 100
+}
+PRESET_RELEASE SceneC = SendMidi Golem NoteOff 2 0
+
+PRESET SceneD =
+{
+  SendMidi Golem ProgChange $slot
+  SendMidi Golem CtrlChange 23 127
+  SendMidi Golem NoteOn 3 100
+}
+PRESET_RELEASE SceneD = SendMidi Golem NoteOff 3 0
+
+PRESET SceneE =
+{
+  SendMidi Golem ProgChange $slot
+  SendMidi Golem CtrlChange 24 127
+  SendMidi Golem NoteOn 4 100
+}
+PRESET_RELEASE SceneE = SendMidi Golem NoteOff 4 0
+
+// ── 7b. stomps 6-9 : bascule + LED d'état (espèce « effect », pas de release)
+//   ⚠ SÉMANTIQUE À MESURER : ici chaque état envoie un NoteOn et jamais de
+//     NoteOff. foot.py, qui apparie press/release, va voir deux press
+//     consécutifs. Variante à tester si ça casse : ajouter un NoteOff
+//     immédiat dans chaque état, pour émettre un clic complet à chaque
+//     bascule (cf. bench point 4).
+EFFECT_ON  Stomp6 =
+{
+  SendMidi Golem CtrlChange 30 127
+  SendMidi Golem NoteOn 5 100
+}
+EFFECT_OFF Stomp6 =
+{
+  SendMidi Golem CtrlChange 30 0
+  SendMidi Golem NoteOn 5 100
+}
+
+EFFECT_ON  Stomp7 =
+{
+  SendMidi Golem CtrlChange 31 127
+  SendMidi Golem NoteOn 6 100
+}
+EFFECT_OFF Stomp7 =
+{
+  SendMidi Golem CtrlChange 31 0
+  SendMidi Golem NoteOn 6 100
+}
+
+EFFECT_ON  Stomp8 =
+{
+  SendMidi Golem CtrlChange 32 127
+  SendMidi Golem NoteOn 7 100
+}
+EFFECT_OFF Stomp8 =
+{
+  SendMidi Golem CtrlChange 32 0
+  SendMidi Golem NoteOn 7 100
+}
+
+EFFECT_ON  Stomp9 =
+{
+  SendMidi Golem CtrlChange 33 127
+  SendMidi Golem NoteOn 8 100
+}
+EFFECT_OFF Stomp9 =
+{
+  SendMidi Golem CtrlChange 33 0
+  SendMidi Golem NoteOn 8 100
+}
+
+// ── 7c. stomp 10 : gestes complets (espèce « trigger ») ─────────────────────
+//     la bascule CC34 est reconstruite par variable booléenne
+//     v1.1 : le conditionnel $s10 est RETIRÉ — au bench v1, SW10 n'a émis AUCUN
+//     événement (ni CC34 ni Note) : le if/else dans un TRIGGER_CLICK est le
+//     suspect n°1. Version symétrique sans état : CC34 suit le press/release.
+//     (Pour un switch REVENDIQUÉ — le cas réel de SW10 — le rack n'écoute que
+//     les Notes, donc rien n'est perdu ; on retentera la bascule après.)
+TRIGGER_CLICK Stomp10 =
+{
+  SendMidi Golem CtrlChange 34 127
+  SendMidi Golem NoteOn 9 100
+}
+TRIGGER_RELEASE Stomp10 =
+{
+  SendMidi Golem CtrlChange 34 0
+  SendMidi Golem NoteOff 9 0
+}
+
+// ── 7d. pédales d'expression : mêmes CC que la 1.0.4 ────────────────────────
+SWEEP ExpVolume = SendMidi Golem CtrlChange 7 0-127
+SWEEP ExpFx     = SendMidi Golem CtrlChange 11 0-127
+
+/* ── DÉCOUVERTES DU FLASH (2026-08-04) — matière du descripteur UnO2 ──
+   · L'ORDRE des sections est IMPOSÉ (cf. en-tête) — mon brouillon avait tout
+     mélangé, le compilateur a refusé dès la première ligne.
+   · Variables préfixées `$`, booléens `true/false`, négation `!$var`,
+     conditionnel `if (...) { } else { }` — style C, pas le pseudo-basic
+     du manuel §4 que j'avais imité.
+   · GLOBALSWITCH n'est PAS compilé : pure aide d'éditeur.
+   · ⚠ L'ÉCRAN AFFICHE 01-19, PAS 00-18 : la UnO2 numérote les banks depuis 1.
+     Le PC émis reste $slot (0-18) — le CONTRAT rack est intact — mais
+     l'afficheur du pédalier et l'UI GoleM (BANK #00-#18) sont décalés de 1.
+     À trancher : renuméroter l'UI, ou documenter l'écart.
+   ────────────────────────────────────────────────────────────────────────── */

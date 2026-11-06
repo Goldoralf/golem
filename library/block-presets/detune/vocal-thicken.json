@@ -1,0 +1,12 @@
+{
+ "name": "Vocal thicken",
+ "type": "detune",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "detune": 0.2,
+  "wet": 0.45,
+  "dry": 0.8
+ },
+ "default": true
+}

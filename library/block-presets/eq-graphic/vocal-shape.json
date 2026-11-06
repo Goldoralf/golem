@@ -1,0 +1,19 @@
+{
+ "name": "Vocal shape",
+ "type": "eq-graphic",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "g1": -12,
+  "g2": -8,
+  "g3": -2,
+  "g4": -1,
+  "g5": 0,
+  "g6": 0,
+  "g7": 1,
+  "g8": 2,
+  "g9": 2,
+  "g10": 3,
+  "g11": 2
+ }
+}

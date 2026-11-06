@@ -1,0 +1,1757 @@
+{
+ "id": "eventide-eclipse",
+ "name": "Eclipse",
+ "kind": "pedal",
+ "schema": 1,
+ "identity": {
+  "brand": "Eventide",
+  "model": "Eclipse",
+  "firmware": null,
+  "connection": "din",
+  "note": "Importé d'un MIDNAM : la table vient d'un tiers, pas d'une mesure sur l'appareil. Vérifie-la au pied avant de t'y fier en concert."
+ },
+ "channel": 1,
+ "modes": [
+  {
+   "name": "100 Mute_Series",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "101 Mute_Xfade",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "102 Thru_Series",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "103 Thru_Xfade",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "104 Banddelays",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "105 Bandtaps",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "106 Chorusdelays",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "107 Chorustaps",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "108 Combdelays",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "109 Combtaps",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "112 Ringdelays",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "113 Ringtaps",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "114 Pandelays",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "115 St Chorus",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "116 DuckedDelays",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "117 Ultratap 2",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "118 Loop10",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "119 Loop20",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "120 DualLoop5",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "121 DualLoop10",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "122 Reverse10",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "123 Reverse20",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "124 DualReverse5",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "125 DualReverse10",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "126 StereoComp",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "127 DualGates",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "128 FM Panner",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "129 FM Trem",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "130 2BandXover",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "131 Dual 4B Parametric",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "132 Dual8Band Eq",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "133 Dual Filters",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "134 Dual Modfilters",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "135 St Phaser",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "136 StereoizePhaser",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "137 DualSamp/Hold",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "138 VocalizedWa",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "139 Vocoder10",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "140 Delay8Plex",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "141 LrgDelay8Plex",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "142 Detune4Plex",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "143 Reverse4Plex",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "144 FuzzADSRPreamp",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "145 BassPreamp",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "146 OverdrivePreamp",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "147 FuzzPreamp",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "148 PolyDriver",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "149 FuzzWaWammyPre",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "150 EZPolyFuzz",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "151 PolyFuzz",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "152 FmFilterPan",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "153 LfoFilter+Pong",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "154 S/HFilter+Pong",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "155 ManifoldAlpha",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "156 ManifoldBeta",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "157 VocalProcess",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "158 AutoCorrect",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "159 DualWammy",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "160 4Detuners",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "161 ReverseCrystals",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "162 St Shifter",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "163 DiatonicShift2",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "164 MutiShift2",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "165 DualDiatonic",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "166 DualMultishift",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "167 DiatonicShift4",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "168 MultiShift4",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "170 ModFreqShift",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "174 Reverb 8",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "175 LongVerb8",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "176 Reverb 16",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "177 DenseRoom 8",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "178 DenseRoom16",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "180 St Diffusor",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "181 Diffchorus",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "183 Chordlys+Verb8",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "184 Mshift+Reverb8",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "185 Dshift+Reverb8",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "186 Stshift+Reverb8",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "190 Dither",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "191 OSC440",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "192 Tuner",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "200 Biomec 1",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "201 Biomec 2",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "202 FuzzPitch",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "203 Desert Gtr",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "204 Wide Crunch",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "205 Dominion",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "206 PolyCloudverb",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "207 LittleDemons",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "208 Mountainrange",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "209 Hemispheres",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "210 ElementalBass",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "211 GerrysBass+Tune",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "212 OD VerbedDly",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "213 Bandpong",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "214 BandCenter&amp;Pong",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "215 BandtapsL/C/R",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "216 BandtapsR/C/L",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "217 Choruspong",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "218 Ticktock",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "219 Ticktock2",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "220 Ringpong",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "221 RingpongRoom",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "222 DualCompress",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "223 Flangerator",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "224 ChorusSpace2",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "225 Brown",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "226 Browner",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "227 WIDE solo",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "228 De-Bigulator",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "229 Detunedspace",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "230 WhiplashSnare",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "231 Bob's Claps",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "232 Bob's Delay",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "233 Angelic Echos",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "234 ResonEchoes",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "235 CompressedRoom",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "236 Dual Reverbs",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "237 Phaser+Verb",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "238 TremmedVerb",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "239 LarynxDelays",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "240 Larynx 2",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "241 LatinCathedral",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "242 LarynxVerb1",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "243 LarynxVerb2",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "244 Biomec 3",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "245 ShiftedVerb1",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "246 ShiftedVerb2",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "247 ShiftedClusters",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "248 ArenaSound2",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "249 Crystal Verb",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "250 EarlyReflec1",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "251 EarlyReflec2",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "252 EarlyClust1",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "253 EarlyClust2",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "254 BostonChamber",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "255 MediumChamber",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "256 ToonChamber2",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "257 EMT Plate",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "258 MetallicPlate",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "259 StereoPlate",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "260 StPlate2&amp;Chorus",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "261 ReelRoom",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "262 UnreelRoom",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "263 MediumBooth",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "264 SweptBooth",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "265 RMX Ambience",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "266 SpongeSpring",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "267 New Air 2",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "268 SoftSmallRoom",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "269 StMike&amp;Room2",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "270 AcousticRoom2",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "271 EchoRoom",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "272 StringRoom2",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "273 BlackHole2",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "274 EchospaceOfGod",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "275 FlangeCanyon",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "276 ChorusCanyon",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "277 ReverseNonlin",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "278 Wormhole2",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "279 Diat+3rd+5th",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "280 Diat+5th+7th",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "281 Diat+4th+6th",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "282 Diat+5th+Oct",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "283 Diat-4th+5th",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "284 Diat-Oct+5th",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "285 Diat-Oct+Oct",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "286 Diat+5th+10th",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "287 E/R+Verb8",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "288 Delays+Verb8",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "289 Vibrato",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "290 BuenosNotches",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "291 DolphinTalk",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "292 Jimi James",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "293 AcidReign",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "294 AnalogDelays2",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "295 FatAsCanB",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "296 Micropitchshift",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "297 MicropitchSlap",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "298 DigDly+Wah",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "299 Thick 700's",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "300 Thick -500's",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "301 Thick 1200's",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "302 Thick -1200's",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "303 ScaryMovie",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "304 RicherChorus",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "305 JustStereo2",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "306 EchoplexingPong",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "307 Micro-Verb2",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "308 Steeplechase2",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "309 WarmFlange",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "310 Pandemonium",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "311 OpenVerb",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "312 Backwards 1",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "313 Backwards 2",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "314 Aliens",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "315 Taps L&gt;R",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "316 DeathFlange2",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "317 Undulator 2",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "318 Phase/Plex",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "319 Chorus/Ring",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "320 Crystal/Wash",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "321 GatedCorrecter",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "322 Gate V16",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "323 RealRingmod",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "324 Choralspace",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "325 Moonlight Gtr",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "326 CJ's EchoFlange",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "327 CJ's EchoPhase",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "328 TriangleFlange",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "329 CJ's Fugue",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "330 NQ Phase",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "331 Megaphone",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "332 DistortVoxFilt",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "333 SolsticeBells",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "334 Solstice2",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "335 'Aarrhh",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "336 Rich Plate",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "337 Shimmerish",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "338 FuzzySampleMe",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "339 Rainbow Drops",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "340 RingDelayWa",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "341 FilterEchos",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "342 Diamond Rain",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "343 MiniMalism",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "344 Spaced Spaces",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "345 Doubler Phased",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "346 FiltaPongVerb",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "347 ChoralFlange",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "348 Eclipsed Delays",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "349 Flangedown",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "350 Trem-A-Phase",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "351 FritterpanVerb",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "352 FuzzyFlange",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "353 Reson8Delayz",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "354 FiltaShiftVerb",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "355 BrillianceLoop",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "356 PhasedRoom",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "357 4Evers Loop",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "358 Filters Nonstop",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "359 Quintilizer",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "360 Insta-Magic",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "361 Vox-A-Verb",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "362 6th World",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "363 Octa-Fuzz",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "364 PanVerbEcho",
+   "family": "custom",
+   "active_pc": 64
+  },
+  {
+   "name": "365 RingerPhase",
+   "family": "custom",
+   "active_pc": 65
+  },
+  {
+   "name": "366 GhostingDelay",
+   "family": "custom",
+   "active_pc": 66
+  },
+  {
+   "name": "367 Ample Say",
+   "family": "custom",
+   "active_pc": 67
+  },
+  {
+   "name": "368 AmpliDetuner",
+   "family": "custom",
+   "active_pc": 68
+  },
+  {
+   "name": "369 AutoVox",
+   "family": "custom",
+   "active_pc": 69
+  },
+  {
+   "name": "370 BalancingAct",
+   "family": "custom",
+   "active_pc": 70
+  },
+  {
+   "name": "371 XtremeBalancing",
+   "family": "custom",
+   "active_pc": 71
+  },
+  {
+   "name": "372 DrumBreaker 2",
+   "family": "custom",
+   "active_pc": 72
+  },
+  {
+   "name": "373 DrumMangle",
+   "family": "custom",
+   "active_pc": 73
+  },
+  {
+   "name": "374 DynaFat",
+   "family": "custom",
+   "active_pc": 74
+  },
+  {
+   "name": "375 HardPolyTrem",
+   "family": "custom",
+   "active_pc": 75
+  },
+  {
+   "name": "376 IntelliReverse",
+   "family": "custom",
+   "active_pc": 76
+  },
+  {
+   "name": "377 JitterPitchVerb",
+   "family": "custom",
+   "active_pc": 77
+  },
+  {
+   "name": "378 JitterPitchFwd",
+   "family": "custom",
+   "active_pc": 78
+  },
+  {
+   "name": "379 MagicPitchRing",
+   "family": "custom",
+   "active_pc": 79
+  },
+  {
+   "name": "380 MgkRingTalk",
+   "family": "custom",
+   "active_pc": 80
+  },
+  {
+   "name": "381 Malu Reverb",
+   "family": "custom",
+   "active_pc": 81
+  },
+  {
+   "name": "382 MicroReverse",
+   "family": "custom",
+   "active_pc": 82
+  },
+  {
+   "name": "383 ParaRezoTap",
+   "family": "custom",
+   "active_pc": 83
+  },
+  {
+   "name": "384 PitchModRinger",
+   "family": "custom",
+   "active_pc": 84
+  },
+  {
+   "name": "385 PitchModTrem",
+   "family": "custom",
+   "active_pc": 85
+  },
+  {
+   "name": "386 PolyPitchStep",
+   "family": "custom",
+   "active_pc": 86
+  },
+  {
+   "name": "387 ReversePosse",
+   "family": "custom",
+   "active_pc": 87
+  },
+  {
+   "name": "388 RvsTapNVerb",
+   "family": "custom",
+   "active_pc": 88
+  },
+  {
+   "name": "389 Ring-A-Verb",
+   "family": "custom",
+   "active_pc": 89
+  },
+  {
+   "name": "390 RythmRingers",
+   "family": "custom",
+   "active_pc": 90
+  },
+  {
+   "name": "391 SeriesResoTap",
+   "family": "custom",
+   "active_pc": 91
+  },
+  {
+   "name": "392 TouchPhase",
+   "family": "custom",
+   "active_pc": 92
+  },
+  {
+   "name": "393 UglyRvsRezo",
+   "family": "custom",
+   "active_pc": 93
+  },
+  {
+   "name": "394 Anguish",
+   "family": "custom",
+   "active_pc": 94
+  },
+  {
+   "name": "395 Artifacts",
+   "family": "custom",
+   "active_pc": 95
+  },
+  {
+   "name": "396 BandModFilters",
+   "family": "custom",
+   "active_pc": 96
+  },
+  {
+   "name": "397 BandPass",
+   "family": "custom",
+   "active_pc": 97
+  },
+  {
+   "name": "398 BigBandTap",
+   "family": "custom",
+   "active_pc": 98
+  },
+  {
+   "name": "399 BouncingBall",
+   "family": "custom",
+   "active_pc": 99
+  },
+  {
+   "name": "400 BrittleVerb",
+   "family": "custom",
+   "active_pc": 0
+  },
+  {
+   "name": "401 CrazyPhazy",
+   "family": "custom",
+   "active_pc": 1
+  },
+  {
+   "name": "402 CreeperShift",
+   "family": "custom",
+   "active_pc": 2
+  },
+  {
+   "name": "403 DiffusePhaser",
+   "family": "custom",
+   "active_pc": 3
+  },
+  {
+   "name": "404 DrunkMusic",
+   "family": "custom",
+   "active_pc": 4
+  },
+  {
+   "name": "405 DuckedRobot",
+   "family": "custom",
+   "active_pc": 5
+  },
+  {
+   "name": "406 EnvHiLowShift",
+   "family": "custom",
+   "active_pc": 6
+  },
+  {
+   "name": "407 GargleTrem",
+   "family": "custom",
+   "active_pc": 7
+  },
+  {
+   "name": "408 HiLowFilterPan",
+   "family": "custom",
+   "active_pc": 8
+  },
+  {
+   "name": "409 LittleRadio",
+   "family": "custom",
+   "active_pc": 9
+  },
+  {
+   "name": "410 MadScientist",
+   "family": "custom",
+   "active_pc": 10
+  },
+  {
+   "name": "411 ModNotch",
+   "family": "custom",
+   "active_pc": 11
+  },
+  {
+   "name": "412 NoiseMimic",
+   "family": "custom",
+   "active_pc": 12
+  },
+  {
+   "name": "413 OpeningFilters",
+   "family": "custom",
+   "active_pc": 13
+  },
+  {
+   "name": "414 OpeningFltrPan",
+   "family": "custom",
+   "active_pc": 14
+  },
+  {
+   "name": "415 PulseDelay",
+   "family": "custom",
+   "active_pc": 15
+  },
+  {
+   "name": "416 RingMod",
+   "family": "custom",
+   "active_pc": 16
+  },
+  {
+   "name": "417 RobotAttack",
+   "family": "custom",
+   "active_pc": 17
+  },
+  {
+   "name": "418 RingTapsMod",
+   "family": "custom",
+   "active_pc": 18
+  },
+  {
+   "name": "419 RubberWorldDly",
+   "family": "custom",
+   "active_pc": 19
+  },
+  {
+   "name": "420 ScratchIt",
+   "family": "custom",
+   "active_pc": 20
+  },
+  {
+   "name": "421 StereoFuzz",
+   "family": "custom",
+   "active_pc": 21
+  },
+  {
+   "name": "422 Submerged",
+   "family": "custom",
+   "active_pc": 22
+  },
+  {
+   "name": "423 Swimmer",
+   "family": "custom",
+   "active_pc": 23
+  },
+  {
+   "name": "424 ReverbTrem",
+   "family": "custom",
+   "active_pc": 24
+  },
+  {
+   "name": "425 Waves",
+   "family": "custom",
+   "active_pc": 25
+  },
+  {
+   "name": "426 Wide Notch",
+   "family": "custom",
+   "active_pc": 26
+  },
+  {
+   "name": "427 XoverGate",
+   "family": "custom",
+   "active_pc": 27
+  },
+  {
+   "name": "428 AmbientGtr 1",
+   "family": "custom",
+   "active_pc": 28
+  },
+  {
+   "name": "429 AmbientGtr 2",
+   "family": "custom",
+   "active_pc": 29
+  },
+  {
+   "name": "430 DesertPerc 1",
+   "family": "custom",
+   "active_pc": 30
+  },
+  {
+   "name": "431 DesertPerc 2",
+   "family": "custom",
+   "active_pc": 31
+  },
+  {
+   "name": "432 Distortion D",
+   "family": "custom",
+   "active_pc": 32
+  },
+  {
+   "name": "433 Fifth Dominion",
+   "family": "custom",
+   "active_pc": 33
+  },
+  {
+   "name": "434 Pulse Guitar",
+   "family": "custom",
+   "active_pc": 34
+  },
+  {
+   "name": "435 Swampy Guitar",
+   "family": "custom",
+   "active_pc": 35
+  },
+  {
+   "name": "436 Wart Guitar",
+   "family": "custom",
+   "active_pc": 36
+  },
+  {
+   "name": "437 Gravely Throat",
+   "family": "custom",
+   "active_pc": 37
+  },
+  {
+   "name": "438 Logan’s Box",
+   "family": "custom",
+   "active_pc": 38
+  },
+  {
+   "name": "439 Soundwave",
+   "family": "custom",
+   "active_pc": 39
+  },
+  {
+   "name": "440 Voder 13",
+   "family": "custom",
+   "active_pc": 40
+  },
+  {
+   "name": "441 Allan Chorus",
+   "family": "custom",
+   "active_pc": 41
+  },
+  {
+   "name": "442 Alverman",
+   "family": "custom",
+   "active_pc": 42
+  },
+  {
+   "name": "443 Atavachron",
+   "family": "custom",
+   "active_pc": 43
+  },
+  {
+   "name": "444 Chrs/Dly/Verb",
+   "family": "custom",
+   "active_pc": 44
+  },
+  {
+   "name": "445 Cumulonimbus2",
+   "family": "custom",
+   "active_pc": 45
+  },
+  {
+   "name": "446 Earth Rise",
+   "family": "custom",
+   "active_pc": 46
+  },
+  {
+   "name": "447 EtherHarp",
+   "family": "custom",
+   "active_pc": 47
+  },
+  {
+   "name": "448 Fuzack",
+   "family": "custom",
+   "active_pc": 48
+  },
+  {
+   "name": "449 Gentle Giant",
+   "family": "custom",
+   "active_pc": 49
+  },
+  {
+   "name": "450 GTR rack",
+   "family": "custom",
+   "active_pc": 50
+  },
+  {
+   "name": "451 Kaizeeer",
+   "family": "custom",
+   "active_pc": 51
+  },
+  {
+   "name": "452 LoopKruncher",
+   "family": "custom",
+   "active_pc": 52
+  },
+  {
+   "name": "453 Mercury Cloud",
+   "family": "custom",
+   "active_pc": 53
+  },
+  {
+   "name": "454 PLEX &gt; LOOP",
+   "family": "custom",
+   "active_pc": 54
+  },
+  {
+   "name": "455 Polyreverse2",
+   "family": "custom",
+   "active_pc": 55
+  },
+  {
+   "name": "456 Splatter GTR",
+   "family": "custom",
+   "active_pc": 56
+  },
+  {
+   "name": "457 SRV",
+   "family": "custom",
+   "active_pc": 57
+  },
+  {
+   "name": "458 Venusian Girls",
+   "family": "custom",
+   "active_pc": 58
+  },
+  {
+   "name": "459 Big Snare1",
+   "family": "custom",
+   "active_pc": 59
+  },
+  {
+   "name": "460 Big Snare 2",
+   "family": "custom",
+   "active_pc": 60
+  },
+  {
+   "name": "461 Pcm70 Hall",
+   "family": "custom",
+   "active_pc": 61
+  },
+  {
+   "name": "462 FrontOfHouse",
+   "family": "custom",
+   "active_pc": 62
+  },
+  {
+   "name": "463 FOH for HDM",
+   "family": "custom",
+   "active_pc": 63
+  },
+  {
+   "name": "464 Wonderful Birds",
+   "family": "custom",
+   "active_pc": 64
+  }
+ ],
+ "provenance": {
+  "source": "imported",
+  "confidence": "unconfirmed",
+  "note": "MIDNAM Eventide_Eclipse.midnam du dépôt Ardour (GPL-2), auteur : Ing. Andreas Neuhold hd-recording.at v03, 89 slot(s) utilisateur sans nom écartés. processeur d'effets haut de gamme, utilisé EN BOUCLE comme un bloc — 347 presets d'usine nommés (les 89 slots utilisateur sans nom sont écartés à l'import)",
+  "upstream": "Ardour/share/patchfiles/Eventide_Eclipse.midnam"
+ }
+}

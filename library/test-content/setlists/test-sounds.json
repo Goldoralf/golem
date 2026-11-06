@@ -1,0 +1,54 @@
+{
+ "id": "test-sounds",
+ "name": "Test — Sounds",
+ "fcb": true,
+ "rev": 1,
+ "kind": "sounds",
+ "origin": "test",
+ "presets": [
+  "patch:test-guitar-bench",
+  "patch:test-bass-fanout",
+  "patch:test-guitar-bench",
+  "patch:test-voice-plain",
+  "patch:test-keys-pads",
+  "patch:test-drums-kit"
+ ],
+ "lines": [
+  {
+   "id": "r:test-sounds:00",
+   "rev": 1,
+   "title": "Guitar bench",
+   "patch": "test-guitar-bench"
+  },
+  {
+   "id": "r:test-sounds:01",
+   "rev": 1,
+   "title": "Bass fan-out",
+   "patch": "test-bass-fanout"
+  },
+  {
+   "id": "r:test-sounds:02",
+   "rev": 1,
+   "title": "Guitar bench again",
+   "patch": "test-guitar-bench"
+  },
+  {
+   "id": "r:test-sounds:03",
+   "rev": 1,
+   "title": "Voice plain",
+   "patch": "test-voice-plain"
+  },
+  {
+   "id": "r:test-sounds:04",
+   "rev": 1,
+   "title": "Keys pads",
+   "patch": "test-keys-pads"
+  },
+  {
+   "id": "r:test-sounds:05",
+   "rev": 1,
+   "title": "Drums kit",
+   "patch": "test-drums-kit"
+  }
+ ]
+}

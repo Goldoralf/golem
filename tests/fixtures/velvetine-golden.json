@@ -1,0 +1,610 @@
+{
+ "id": "velvetine",
+ "name": "Velvetine",
+ "style": "metal",
+ "bpm": 120,
+ "guitar": {
+  "pre": [
+   {
+    "type": "whammy-dt",
+    "id": "whammy-dt-ai",
+    "params": {
+     "won": false,
+     "don": false
+    }
+   },
+   {
+    "type": "gate",
+    "id": "gate-1",
+    "params": {
+     "thresh": -45
+    }
+   },
+   {
+    "type": "comp",
+    "id": "comp-1",
+    "foot": 6,
+    "params": {
+     "thresh": -25,
+     "ratio": 4,
+     "makeup": 3
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "clean",
+     "blocks": [
+      {
+       "type": "amp",
+       "id": "amp-clean",
+       "ref": "10912",
+       "params": {
+        "input": -2
+       },
+       "model": 379739
+      }
+     ]
+    },
+    {
+     "id": "dirty",
+     "blocks": [
+      {
+       "type": "pedal-nam",
+       "id": "fuzz-1",
+       "foot": 7,
+       "ref": "1740",
+       "label": "BOSS FZ-2 Hyper Fuzz",
+       "bypass": false
+      },
+      {
+       "type": "amp",
+       "id": "amp-dirty",
+       "ref": "69206",
+       "params": {
+        "input": 2
+       },
+       "model": 557132
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "type": "chorus",
+    "id": "chorus-1",
+    "foot": 8,
+    "params": {
+     "rate": 0.4,
+     "depth": 3.5,
+     "mix": 0.5
+    }
+   },
+   {
+    "type": "delay",
+    "id": "delay-1",
+    "foot": 9,
+    "params": {
+     "time": "1/8•",
+     "feedback": 35,
+     "mix": 20
+    }
+   },
+   {
+    "type": "reverb-plate",
+    "id": "reverb-1",
+    "foot": 10,
+    "params": {
+     "mix": 30,
+     "decay": 2.2
+    }
+   },
+   {
+    "type": "volume",
+    "id": "volume-sys"
+   }
+  ]
+ },
+ "voice": {
+  "chain": [
+   {
+    "type": "deesser",
+    "id": "deesser-1",
+    "params": {
+     "thresh": -24,
+     "freq": 6500,
+     "range": 12
+    }
+   },
+   {
+    "type": "comp",
+    "id": "comp-2",
+    "params": {
+     "thresh": -18,
+     "ratio": 8,
+     "makeup": 4,
+     "attack": 3,
+     "release": 100
+    }
+   },
+   {
+    "type": "eq",
+    "id": "eq-1",
+    "params": {
+     "lowcut": 120,
+     "midfreq": 2000,
+     "midgain": 3,
+     "highs": 2
+    }
+   },
+   {
+    "type": "chorus",
+    "id": "chorus-2",
+    "foot": 6,
+    "params": {
+     "rate": 0.5,
+     "depth": 3,
+     "mix": 0.3
+    }
+   },
+   {
+    "type": "delay-tape",
+    "id": "delay-2",
+    "foot": 7,
+    "params": {
+     "tempo": 105,
+     "time": "1/4",
+     "feedback": 25,
+     "mix": 25,
+     "medium": "Old Tape"
+    }
+   },
+   {
+    "type": "reverb-plate",
+    "id": "reverb-2",
+    "foot": 8,
+    "params": {
+     "mix": 20,
+     "decay": 1.2,
+     "predelay": 10,
+     "hicut": 8000
+    }
+   }
+  ]
+ },
+ "keys": {
+  "chain": []
+ },
+ "config": {
+  "gen": {
+   "blocks": [
+    {
+     "type": "backing-track",
+     "id": "backing-track-3bn1",
+     "params": {}
+    }
+   ],
+   "out": "1-2"
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": true,
+      "usb": true,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "transcribe": "auto"
+     }
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": -12.0,
+      "beats": 4
+     }
+    }
+   ],
+   "tap": "post",
+   "click_out": "1-2"
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "scenes": [
+  {
+   "id": "A",
+   "name": "base",
+   "blocks": {
+    "fuzz-1": false,
+    "chorus-1": false,
+    "delay-1": false,
+    "reverb-1": true,
+    "chorus-2": false,
+    "delay-2": false,
+    "reverb-2": true
+   },
+   "voice": true,
+   "levels": {
+    "guitar": -4,
+    "voice": -4
+   },
+   "params": {
+    "reverb-1": {
+     "mix": 15
+    },
+    "reverb-2": {
+     "mix": 15
+    }
+   },
+   "branches": {
+    "clean": {
+     "mute": false
+    },
+    "dirty": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "blocks": {
+    "chorus-1": false,
+    "delay-1": true,
+    "reverb-1": true,
+    "chorus-2": false,
+    "delay-2": true,
+    "reverb-2": true
+   },
+   "params": {
+    "delay-1": {
+     "mix": 30,
+     "feedback": 20
+    },
+    "reverb-1": {
+     "mix": 25,
+     "decay": 1.5
+    },
+    "delay-2": {
+     "mix": 30,
+     "feedback": 20
+    },
+    "reverb-2": {
+     "mix": 25,
+     "decay": 1.5
+    }
+   },
+   "voice": true,
+   "name": "Aggressive Chorus",
+   "levels": {
+    "voice": -8
+   }
+  },
+  {
+   "id": "C",
+   "blocks": {
+    "chorus-1": true,
+    "delay-1": true,
+    "reverb-1": true,
+    "chorus-2": true,
+    "delay-2": true,
+    "reverb-2": true
+   },
+   "params": {
+    "chorus-1": {
+     "mix": 0.4
+    },
+    "delay-1": {
+     "mix": 40,
+     "feedback": 35
+    },
+    "reverb-1": {
+     "mix": 35,
+     "decay": 2.2
+    },
+    "chorus-2": {
+     "mix": 0.4
+    },
+    "delay-2": {
+     "mix": 40,
+     "feedback": 35
+    },
+    "reverb-2": {
+     "mix": 35,
+     "decay": 2.2
+    }
+   },
+   "voice": true,
+   "name": "Haunting Bridge",
+   "levels": {
+    "voice": -6
+   }
+  },
+  {
+   "id": "D",
+   "blocks": {
+    "chorus-1": false,
+    "delay-1": true,
+    "reverb-1": true,
+    "chorus-2": false,
+    "delay-2": true,
+    "reverb-2": true
+   },
+   "params": {
+    "delay-1": {
+     "mix": 50,
+     "feedback": 60
+    },
+    "reverb-1": {
+     "mix": 30,
+     "decay": 2
+    },
+    "delay-2": {
+     "mix": 50,
+     "feedback": 60
+    },
+    "reverb-2": {
+     "mix": 30,
+     "decay": 2
+    }
+   },
+   "voice": true,
+   "name": "Outro Screams",
+   "levels": {
+    "voice": -6
+   }
+  }
+ ],
+ "lanes": [
+  {
+   "id": "guitar",
+   "key": "1",
+   "role": "guitar",
+   "name": "Guitar 1",
+   "input": 1,
+   "out": 1,
+   "in_sel": "1",
+   "out_sel": "1-2",
+   "disabled": false,
+   "chain": {
+    "pre": [
+     {
+      "type": "whammy-dt",
+      "id": "whammy-dt-ai",
+      "params": {
+       "won": false,
+       "don": false
+      }
+     },
+     {
+      "type": "gate",
+      "id": "gate-1",
+      "params": {
+       "thresh": -45
+      }
+     },
+     {
+      "type": "comp",
+      "id": "comp-1",
+      "foot": 6,
+      "params": {
+       "thresh": -25,
+       "ratio": 4,
+       "makeup": 3
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "clean",
+       "blocks": [
+        {
+         "type": "amp",
+         "id": "amp-clean",
+         "ref": "10912",
+         "params": {
+          "input": -2
+         },
+         "model": 379739
+        }
+       ]
+      },
+      {
+       "id": "dirty",
+       "blocks": [
+        {
+         "type": "pedal-nam",
+         "id": "fuzz-1",
+         "foot": 7,
+         "ref": "1740",
+         "label": "BOSS FZ-2 Hyper Fuzz",
+         "bypass": false
+        },
+        {
+         "type": "amp",
+         "id": "amp-dirty",
+         "ref": "69206",
+         "params": {
+          "input": 2
+         },
+         "model": 557132
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "type": "chorus",
+      "id": "chorus-1",
+      "foot": 8,
+      "params": {
+       "rate": 0.4,
+       "depth": 3.5,
+       "mix": 0.5
+      }
+     },
+     {
+      "type": "delay",
+      "id": "delay-1",
+      "foot": 9,
+      "params": {
+       "time": "1/8•",
+       "feedback": 35,
+       "mix": 20
+      }
+     },
+     {
+      "type": "reverb-plate",
+      "id": "reverb-1",
+      "foot": 10,
+      "params": {
+       "mix": 30,
+       "decay": 2.2
+      }
+     },
+     {
+      "type": "volume",
+      "id": "volume-sys"
+     }
+    ]
+   },
+   "midi": false,
+   "stereo": false,
+   "level_key": "guitar",
+   "on_card": true
+  },
+  {
+   "id": "voice",
+   "key": "2",
+   "role": "voice",
+   "name": "Input 2",
+   "input": 2,
+   "out": 2,
+   "in_sel": "2",
+   "out_sel": "1-2",
+   "disabled": false,
+   "chain": {
+    "pre": [
+     {
+      "type": "deesser",
+      "id": "deesser-1",
+      "params": {
+       "thresh": -24,
+       "freq": 6500,
+       "range": 12
+      }
+     },
+     {
+      "type": "comp",
+      "id": "comp-2",
+      "params": {
+       "thresh": -18,
+       "ratio": 8,
+       "makeup": 4,
+       "attack": 3,
+       "release": 100
+      }
+     },
+     {
+      "type": "eq",
+      "id": "eq-1",
+      "params": {
+       "lowcut": 120,
+       "midfreq": 2000,
+       "midgain": 3,
+       "highs": 2
+      }
+     },
+     {
+      "type": "chorus",
+      "id": "chorus-2",
+      "foot": 6,
+      "params": {
+       "rate": 0.5,
+       "depth": 3,
+       "mix": 0.3
+      }
+     },
+     {
+      "type": "delay-tape",
+      "id": "delay-2",
+      "foot": 7,
+      "params": {
+       "tempo": 105,
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 25,
+       "medium": "Old Tape"
+      }
+     },
+     {
+      "type": "reverb-plate",
+      "id": "reverb-2",
+      "foot": 8,
+      "params": {
+       "mix": 20,
+       "decay": 1.2,
+       "predelay": 10,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "stereo": false,
+   "level_key": "voice",
+   "on_card": true
+  },
+  {
+   "id": "keys",
+   "key": "k",
+   "role": "keys-pads",
+   "name": "Keys",
+   "input": 3,
+   "out": 3,
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "disabled": false,
+   "chain": {
+    "pre": [],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "stereo": false,
+   "level_key": "keys",
+   "on_card": true
+  }
+ ],
+ "lanes_v": 2,
+ "names": {
+  "1": "Guitar 1",
+  "2": "Input 2",
+  "k": "Keys"
+ }
+}

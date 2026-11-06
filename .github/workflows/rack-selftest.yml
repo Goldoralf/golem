@@ -1,0 +1,78 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Rack self-test
+
+# Le rack se teste LUI-MÊME, chaque nuit, sur un runner auto-hébergé (docs/quality-automation.md, lot 5) : la machine
+# qui a REAPER, la carte son, les plugins sous licence et les modèles — ce qu'aucun runner GitHub n'aura. Minutes
+# gratuites. Deux garde-fous, de la règle des sondes : rien ne démarre si quelqu'un joue, enregistre, ou a touché le
+# rack depuis dix minutes (tools/rack-free.py) ; et chaque sonde jouée ici est de celles qui ne touchent pas le rack
+# vivant — REAPER et bridge jetables (check-rig-materialize), écritures interceptées (check-ui), suite Python.
+# Les sondes qui font du son (scene-gap, silence, meter --rig) attendent le câble de bouclage : pas ici.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 3 * * *'          # 03:45 UTC — après la nuit des runners GitHub
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rack-selftest
+  cancel-in-progress: false
+
+jobs:
+  selftest:
+    name: The rack, by itself
+    runs-on: [self-hosted, rack]
+    timeout-minutes: 90
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Is the rack free?
+        id: free
+        shell: powershell
+        run: |
+          python tools/rack-free.py
+          $rc = $LASTEXITCODE
+          # Windows PowerShell 5.1 (pas de pwsh sur le poste) : `>>` écrirait de l'UTF-16, que le runner ne relit pas
+          $flag = if ($rc -eq 0) { "run=true" } else { "run=false" }
+          [IO.File]::AppendAllText($env:GITHUB_OUTPUT, "$flag`n")
+          if ($rc -ne 0) { "::notice::rack not free (code $rc): nothing done tonight" }
+          exit 0
+      - name: Python environment
+        if: steps.free.outputs.run == 'true'
+        shell: powershell
+        run: |
+          if (-not (Test-Path .venv)) { python -m venv .venv }
+          .\.venv\Scripts\python -m pip install -q --require-hashes -r requirements-dev.lock
+      - name: First launch (factory content)
+        # comme ci.yml : des tests supposent le contenu d'usine posé (test_factory) — un clone neuf ne l'a pas
+        if: steps.free.outputs.run == 'true'
+        shell: powershell
+        run: .\.venv\Scripts\python -c "from bridge import factory; factory.seed()"
+      - name: Full Python suite on the real Windows box
+        if: steps.free.outputs.run == 'true'
+        shell: powershell
+        run: .\.venv\Scripts\python -m pytest -q tests -p no:cacheprovider
+      # les sondes suivantes tournent même si la suite est rouge : chacune juge autre chose, le job reste rouge
+      - name: Every page rendered, against the live bridge
+        if: steps.free.outputs.run == 'true' && !cancelled()
+        shell: powershell
+        # --press all : chaque commande de chaque page appuyée (~20 min), écritures interceptées, pack de test posé par
+        # registre et retiré ; un effet qui change par rapport à tests/ui/effects-win32.json fait tomber l'étape
+        run: .\.venv\Scripts\python tools/check-ui.py --base http://127.0.0.1:8770 --test-content --press all --out "$env:RUNNER_TEMP/ui-check" --json "$env:RUNNER_TEMP/ui-check/report.json"
+      - name: Every patch materialized and rendered, in an isolated REAPER
+        if: steps.free.outputs.run == 'true' && !cancelled()
+        shell: powershell
+        run: .\.venv\Scripts\python tools/check-rig-materialize.py --all --fixture --render --keep --work "$env:RUNNER_TEMP/rig-check" --json "$env:RUNNER_TEMP/rig-check/report.json"
+      - name: Reports
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        with:
+          name: rack-selftest
+          path: |
+            ${{ runner.temp }}/ui-check/report.json
+            ${{ runner.temp }}/rig-check/*.json
+            ${{ runner.temp }}/rig-check/*.log
+          if-no-files-found: ignore

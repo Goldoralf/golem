@@ -1,0 +1,171 @@
+{
+ "id": "drums-aasimonster",
+ "name": "Aasimonster",
+ "role": "drum",
+ "engine": "drumgizmo",
+ "drumkit": "library/drumkits/aasimonster2/aasimonster.xml",
+ "midimap": "library/drumkits/aasimonster2/midimap.xml",
+ "mix": [
+  {
+   "ch": 1,
+   "name": "OHL",
+   "gain": 0,
+   "pan": -0.9,
+   "short": "L",
+   "group": "oh"
+  },
+  {
+   "ch": 2,
+   "name": "OHR",
+   "gain": 0,
+   "pan": 0.9,
+   "short": "R",
+   "group": "oh"
+  },
+  {
+   "ch": 3,
+   "name": "Snare top",
+   "gain": -2,
+   "pan": 0.05,
+   "short": "top",
+   "group": "snare"
+  },
+  {
+   "ch": 4,
+   "name": "Snare bottom",
+   "gain": -8,
+   "pan": 0.05,
+   "short": "bot",
+   "group": "snare"
+  },
+  {
+   "ch": 5,
+   "name": "Snare trigger",
+   "gain": -60,
+   "pan": 0,
+   "short": "Sn",
+   "group": "trig"
+  },
+  {
+   "ch": 6,
+   "name": "Alesis DM5",
+   "gain": -60,
+   "pan": 0,
+   "short": "DM5",
+   "group": "trig"
+  },
+  {
+   "ch": 7,
+   "name": "Kick out",
+   "gain": -3,
+   "pan": 0,
+   "short": "out",
+   "group": "kick"
+  },
+  {
+   "ch": 8,
+   "name": "Kick in",
+   "gain": -3,
+   "pan": 0,
+   "short": "in",
+   "group": "kick"
+  },
+  {
+   "ch": 9,
+   "name": "Hihat",
+   "gain": -6,
+   "pan": -0.45,
+   "short": "HH",
+   "group": "cym"
+  },
+  {
+   "ch": 10,
+   "name": "Ride",
+   "gain": -6,
+   "pan": 0.4,
+   "short": "Rd",
+   "group": "cym"
+  },
+  {
+   "ch": 11,
+   "name": "Tom 1",
+   "gain": -4,
+   "pan": -0.4,
+   "short": "T1",
+   "group": "toms"
+  },
+  {
+   "ch": 12,
+   "name": "Tom 2",
+   "gain": -4,
+   "pan": -0.15,
+   "short": "T2",
+   "group": "toms"
+  },
+  {
+   "ch": 13,
+   "name": "Tom 3",
+   "gain": -4,
+   "pan": 0.2,
+   "short": "T3",
+   "group": "toms"
+  },
+  {
+   "ch": 14,
+   "name": "Tom 4",
+   "gain": -4,
+   "pan": 0.5,
+   "short": "T4",
+   "group": "toms"
+  },
+  {
+   "ch": 15,
+   "name": "Room L",
+   "gain": -12,
+   "pan": -1,
+   "short": "L",
+   "group": "room"
+  },
+  {
+   "ch": 16,
+   "name": "Room R",
+   "gain": -12,
+   "pan": 1,
+   "short": "R",
+   "group": "room"
+  }
+ ],
+ "factory": true,
+ "hint": "metal · multi-mic (DrumGizmo)",
+ "notes": {
+  "kick": 36,
+  "snare": 38,
+  "snare-rim": 40,
+  "snare-xstick": 37,
+  "tom1": 48,
+  "tom2": 47,
+  "tom3": 45,
+  "tom4": 43,
+  "tom1-rim": 48,
+  "tom2-rim": 47,
+  "tom3-rim": 45,
+  "tom4-rim": 43,
+  "hh-closed": 42,
+  "hh-half": 41,
+  "hh-open": 46,
+  "hh-pedal": 44,
+  "hh-splash": 46,
+  "hh-open-edge": 46,
+  "hh-closed-edge": 42,
+  "crash1": 49,
+  "crash1-edge": 49,
+  "crash2": 57,
+  "crash2-edge": 57,
+  "ride": 51,
+  "ride-edge": 51,
+  "ride-bell": 53,
+  "splash": 55,
+  "china": 52
+ },
+ "notes_note": "DrumGizmo Aasimonster : lu dans library/drumkits/aasimonster2/midimap.xml — ⚠ 41 et 44 sont des CHARLESTONS (closed2/closed3), 50 un crash1_stop, 35 un second kick : GM y est faux sur les toms."
+}

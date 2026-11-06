@@ -1,0 +1,11 @@
+{
+ "name": "Slapback",
+ "type": "delay",
+ "factory": true,
+ "params": {
+  "time": "1/16",
+  "feedback": 12,
+  "mix": 22
+ },
+ "inst": "any"
+}

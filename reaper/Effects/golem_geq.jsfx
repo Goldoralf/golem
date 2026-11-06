@@ -1,0 +1,108 @@
+desc:GoleM Graphic EQ -- the eq-graphic block on Windows and macOS (GxGraphicEQ parameters)
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// Le bloc « eq-graphic » joue GxGraphicEQ (guitarix) sous Linux ; guitarix n'existe ni sous Windows ni sous macOS
+// (docs/platforms.md §5). Ce JSFX reprend ses onze gains G1..G11 (gx_graphiceq.ttl : -30..+20 dB, defaut 0 ;
+// le catalogue ecrit -12..+12) et leurs bandes : guitarix decoupe le spectre par un banc de filtres aux
+// frontieres 44, 88, 177, 354, 707, 1414, 2828, 5657, 11384 et 18110 Hz (graphiceq.dsp) — onze bandes d'une
+// octave, G1 = sous 44 Hz, G11 = au-dessus de 18 kHz. Ici chaque bande est un filtre en cloche au CENTRE de la
+// bande (largeur une octave), en cascade ; le banc de filtres de guitarix sommait des bandes : meme dessin,
+// transitions moins raides. Le CODE est le notre. Le slider va de -30 a +30 dB pour rester SYMETRIQUE (un
+// minimum negatif est bipolaire pour REAPER, docs/pitfalls/jsfx.md) ; +20 reste la borne native, ecrite nulle part.
+//
+// Pieges respectes : rien avant @init ; variables prefixees ge_ ; ext_noinit ; pas de nom qui ne differe que par
+// la casse ; pas de litteral exponentiel.
+
+slider1:ge_g1=0<-30,30,0.1>G1
+slider2:ge_g2=0<-30,30,0.1>G2
+slider3:ge_g3=0<-30,30,0.1>G3
+slider4:ge_g4=0<-30,30,0.1>G4
+slider5:ge_g5=0<-30,30,0.1>G5
+slider6:ge_g6=0<-30,30,0.1>G6
+slider7:ge_g7=0<-30,30,0.1>G7
+slider8:ge_g8=0<-30,30,0.1>G8
+slider9:ge_g9=0<-30,30,0.1>G9
+slider10:ge_g10=0<-30,30,0.1>G10
+slider11:ge_g11=0<-30,30,0.1>G11
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+ext_noinit = 1;
+ge_NB = 11;
+// centres : sous 44 Hz -> 31 Hz (plateau bas), puis les moyennes geometriques des frontieres, au-dessus de 18 kHz -> 20 kHz
+ge_fc = 0;
+ge_fc[0] = 31; ge_fc[1] = 62; ge_fc[2] = 125; ge_fc[3] = 250; ge_fc[4] = 500; ge_fc[5] = 1000;
+ge_fc[6] = 2000; ge_fc[7] = 4000; ge_fc[8] = 8000; ge_fc[9] = 14360; ge_fc[10] = 20000;
+ge_c = 16;                        // 11 filtres x 8 coefficients : 16..103
+ge_s = 128;                       // etats : 2 canaux x 11 filtres x 4 : 128..215
+ge_last = 256;                    // le gain pose par bande : 256..266
+ge_sr = 0;
+
+function ge_sh(y) ( (exp(y) - exp(-y)) / 2; );                       // sinh (EEL2 n'en a pas)
+// cloche RBJ (largeur une octave) ; G1 est un plateau bas, G11 un plateau haut (shelves RBJ)
+function ge_set(b, g) local(w, A, al, a0, c, be, base) (
+  base = b * 8;                                                    // decalage ABSOLU dans ge_c[]
+  A = 10 ^ (g / 40);
+  w = 2 * $pi * min(ge_fc[b], 0.45 * srate) / srate; c = cos(w);
+  b == 0 ? (                                                       // plateau bas
+    be = sqrt(2 * A) * sin(w);                                       // S = 1 (RBJ : 2 sqrt(A) alpha, alpha = sin(w)/2 sqrt(2))
+    a0 = (A + 1) + (A - 1) * c + be;
+    ge_c[base] = A * ((A + 1) - (A - 1) * c + be) / a0; ge_c[base + 1] = 2 * A * ((A - 1) - (A + 1) * c) / a0; ge_c[base + 2] = A * ((A + 1) - (A - 1) * c - be) / a0;
+    ge_c[base + 3] = -2 * ((A - 1) + (A + 1) * c) / a0; ge_c[base + 4] = ((A + 1) + (A - 1) * c - be) / a0;
+  ) : b == ge_NB - 1 ? (                                           // plateau haut
+    be = sqrt(2 * A) * sin(w);
+    a0 = (A + 1) - (A - 1) * c + be;
+    ge_c[base] = A * ((A + 1) + (A - 1) * c + be) / a0; ge_c[base + 1] = -2 * A * ((A - 1) + (A + 1) * c) / a0; ge_c[base + 2] = A * ((A + 1) + (A - 1) * c - be) / a0;
+    ge_c[base + 3] = 2 * ((A - 1) - (A + 1) * c) / a0; ge_c[base + 4] = ((A + 1) - (A - 1) * c - be) / a0;
+  ) : (                                                            // cloche, largeur 1 octave : alpha = sin(w) sinh(ln2/2 x w / sin(w))
+    al = sin(w) * ge_sh(log(2) / 2 * w / sin(w));
+    a0 = 1 + al / A;
+    ge_c[base] = (1 + al * A) / a0; ge_c[base + 1] = -2 * c / a0; ge_c[base + 2] = (1 - al * A) / a0;
+    ge_c[base + 3] = -2 * c / a0; ge_c[base + 4] = (1 - al / A) / a0;
+  );
+  // une bande qui se rallume repart d'un etat propre (ses etats n'ont pas suivi pendant qu'elle etait sautee)
+  abs(ge_last[b]) <= 0.001 && abs(g) > 0.001 ? ( ge_s[b * 4] = 0; ge_s[b * 4 + 1] = 0; ge_s[b * 4 + 2] = 0; ge_s[b * 4 + 3] = 0;
+    ge_s[(ge_NB + b) * 4] = 0; ge_s[(ge_NB + b) * 4 + 1] = 0; ge_s[(ge_NB + b) * 4 + 2] = 0; ge_s[(ge_NB + b) * 4 + 3] = 0; );
+  ge_last[b] = g;
+);
+function ge_run(x, b, ch) local(base, st, y) (
+  base = b * 8; st = (ch * ge_NB + b) * 4;                          // decalages ABSOLUS dans ge_c[] / ge_s[]
+  y = ge_c[base] * x + ge_c[base + 1] * ge_s[st] + ge_c[base + 2] * ge_s[st + 1] - ge_c[base + 3] * ge_s[st + 2] - ge_c[base + 4] * ge_s[st + 3];
+  abs(y) < 0.000000000000001 ? y = 0;
+  ge_s[st + 1] = ge_s[st]; ge_s[st] = x; ge_s[st + 3] = ge_s[st + 2]; ge_s[st + 2] = y;
+  y;
+);
+function ge_gain(b) (
+  b == 0 ? ge_g1 : b == 1 ? ge_g2 : b == 2 ? ge_g3 : b == 3 ? ge_g4 : b == 4 ? ge_g5 : b == 5 ? ge_g6 :
+  b == 6 ? ge_g7 : b == 7 ? ge_g8 : b == 8 ? ge_g9 : b == 9 ? ge_g10 : ge_g11;
+);
+function ge_refresh(force) local(b, g) (
+  b = 0;
+  loop(ge_NB,
+    g = ge_gain(b);
+    (force || abs(g - ge_last[b]) > 0.001) ? ge_set(b, g);
+    b += 1;
+  );
+);
+
+@slider
+ge_refresh(0);
+
+@block
+ge_sr != srate ? ( ge_sr = srate; ge_refresh(1); );
+
+@sample
+ge_b = 0;
+loop(ge_NB,
+  abs(ge_gain(ge_b)) > 0.001 ? (                                  // une bande a 0 dB ne coute rien
+    spl0 = ge_run(spl0, ge_b, 0);
+    spl1 = ge_run(spl1, ge_b, 1);
+  );
+  ge_b += 1;
+);

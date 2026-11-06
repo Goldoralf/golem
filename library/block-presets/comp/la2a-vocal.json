@@ -1,0 +1,14 @@
+{
+ "name": "LA-2A vocal",
+ "type": "comp",
+ "inst": "voice",
+ "factory": true,
+ "params": {
+  "thresh": -22,
+  "ratio": 3,
+  "makeup": 4,
+  "attack": 10,
+  "release": 300
+ },
+ "default": true
+}

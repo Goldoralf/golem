@@ -36,7 +36,16 @@ jobs:
         with:
           node-version: '24'
       - name: System packages
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg libasound2-dev
+        # un miroir apt qui ne répond plus figeait l'étape jusqu'à la limite du job (deux fois le 2026-11-06) :
+        # délais réseau, trois tentatives bornées
+        run: |
+          for i in 1 2 3; do
+            timeout 240 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
+              && timeout 300 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y ffmpeg libasound2-dev \
+              && break
+            echo "apt: attempt $i failed"; sleep 10
+          done
+          command -v ffmpeg
       - name: Python dependencies
         run: python -m pip install --require-hashes -r requirements-dev.lock
       - name: Static analysis (ruff)
@@ -71,7 +80,16 @@ jobs:
             bridge/requirements.txt
             requirements-dev.lock
       - name: System packages
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg libasound2-dev
+        # un miroir apt qui ne répond plus figeait l'étape jusqu'à la limite du job (deux fois le 2026-11-06) :
+        # délais réseau, trois tentatives bornées
+        run: |
+          for i in 1 2 3; do
+            timeout 240 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
+              && timeout 300 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y ffmpeg libasound2-dev \
+              && break
+            echo "apt: attempt $i failed"; sleep 10
+          done
+          command -v ffmpeg
       - name: Python dependencies
         run: python -m pip install --require-hashes -r requirements-dev.lock
       - name: First launch (factory content)

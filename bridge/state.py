@@ -46,6 +46,7 @@ class RigState:
         self.stomps = {}             # état on/off des stomps de la rangée haute (Live) : {type: bool}
         self.exp1 = 0               # pédale physique EXP 1 (ExpA, CC7) 0..127
         self.exp2 = 0               # pédale physique EXP 2 (ExpB, CC11) 0..127
+        self.exp_known = {"exp1": False, "exp2": False}   # position reçue depuis le démarrage (pédale ou écran)
         # derniere position de treadle ENVOYEE a la pedale : un CC identique ne se renvoie pas
         self.whammy_pedal = None
         self.exp2_target = "Whammy"   # cible du RÔLE bloc du rig émis (wah, mix…, sinon Whammy) — affichage Live

@@ -58,7 +58,7 @@ A v2 document is recognised by `preset_view.is_v2`: `lanes_v == 2` **and** `lane
 | `config` | object | written by migration | service lanes `gen` / `rec` / `arr` (§6) | `preset_view.migrate`, `_config_blocks`, `_arr_blocks` |
 | `bpm` | number | no | tempo | summary, click, arrangement, standards |
 | `style` / `styles` | string / string[] | no | genre **families** (0–2); `style` = `styles[0]`; normalised by `genres.migrate_styles` | summary, golem.fm |
-| `exp1` | `{block, param, min, max}` \| null | no | target of the expression pedal in the **volume** role; absent → first `volume` block, `gain` −60…0 | `app._set_exp_vol_from` |
+| `exp1` | `{block, param, min, max}` \| null | no | target of the expression pedal in the **volume** role; absent → first `volume` block, `gain` −60…0. The pedal's **position** is the rack's, not the preset's: written on the target at every emission ([`architecture.md`](architecture.md) §2.4) | `app._set_exp_vol_from`, `app._exp_bake` |
 | `exp2` | same | no | target of the pedal in the **block** role; absent or orphan → first `wah*`/`autowah` block, `wah` 0…1; else nothing (or "Loop level" in looper presets) | `app._set_exp_blk_from` |
 | `colors` / `anims` | `{scene id or switch number: value}` | no | /live tile look; cosmetic, excluded from the sound fingerprint | `preset_view.preset_summary`, `preset_export.fingerprint` |
 | `backing` | `{songs: [{slug, title, artist, duration_sec}]}` | no | backing tracks played with the preset | `backing.py`, summary |

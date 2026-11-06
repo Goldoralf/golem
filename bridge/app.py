@@ -1153,6 +1153,8 @@ def _load_pedals():
 
 
 state.pedals = _load_pedals()
+# rien reçu encore : le rôle VOLUME part à 100 % (0 dB, ce que joue le bloc volume du preset), l'autre à 0 (_exp_bake)
+setattr(state, state.pedals.get("volume", "exp1"), 127)
 _LIVEMAP = {"mtime": None, "map": None}
 _FXDEFS = {"mtime": None, "map": None}
 _LIVEMAP_PATH = os.path.join(C.PRESETS_DIR, ".livemap.json")
@@ -1224,8 +1226,8 @@ def _iter_ui_blocks(preset):
             yield b
 
 
-def _set_exp_blk_from(preset):
-    """Cible du rôle BLOC pour le rig émis : explicite (preset.exp2) > 1er bloc wah* > None (Whammy)."""
+def _exp_blk_assign(preset):
+    """La cible du rôle BLOC, calculée sans rien poser : explicite (preset.exp2) > 1er bloc wah* > None."""
     a = preset.get("exp2")
     # assignation ORPHELINE (le bloc a été supprimé mais exp2 a survécu — presets d'avant le
     # fix rmBlock 2026-07-23) : ignorée -> repli auto wah*/Whammy, plus de « Wah » fantôme
@@ -1236,6 +1238,12 @@ def _set_exp_blk_from(preset):
             if str(b.get("type", "")).startswith("wah") or b.get("type") == "autowah":
                 a = {"block": b.get("id"), "param": "wah", "min": 0, "max": 1}
                 break
+    return a
+
+
+def _set_exp_blk_from(preset):
+    """Cible du rôle BLOC pour le rig émis : explicite (preset.exp2) > 1er bloc wah* > None (Whammy)."""
+    a = _exp_blk_assign(preset)
     _EXP_BLK["assign"] = a
     if a:
         # label depuis le PRESET (pas la livemap : elle est écrite par golem_rig APRÈS l'émission)
@@ -1281,8 +1289,8 @@ def _apply_exp(a, v):
     return True
 
 
-def _set_exp_vol_from(preset):
-    """Cible du rôle VOLUME : explicite (preset.exp1) > 1er bloc volume de la chaîne.
+def _exp_vol_assign(preset):
+    """La cible du rôle VOLUME, calculée sans rien poser : explicite (preset.exp1) > 1er bloc volume.
     Balaye -60 dB (talon ≈ silence) -> 0 dB (pointe = unité) ; le +6 du potard reste à la main."""
     a = preset.get("exp1")
     if not a:
@@ -1290,7 +1298,43 @@ def _set_exp_vol_from(preset):
             if b.get("type") == "volume":
                 a = {"block": b.get("id"), "param": "gain", "min": -60, "max": 0}
                 break
-    _EXP_VOL["assign"] = a
+    return a
+
+
+def _set_exp_vol_from(preset):
+    """Cible du rôle VOLUME pour le rig émis (voir _exp_vol_assign)."""
+    _EXP_VOL["assign"] = _exp_vol_assign(preset)
+
+
+# ── LA POSITION DES PÉDALES SUIT D'UN PRESET À L'AUTRE (2026-11-06, décision du mainteneur) ───────────────────────────
+# Le pédalier ne dit sa position que quand on BOUGE la pédale (la UnO2 n'a rien à interroger). Avant, un rappel posait la
+# cible de chaque pédale sans lui donner la valeur connue : le bloc volume jouait au gain du preset (0 dB) pendant que
+# /live affichait 0 %, et chaque changement de scène remettait le gain du preset (reapply_scene pose l'état complet).
+# Maintenant la valeur est ÉCRITE DANS LA COPIE ÉMISE, juste avant la compilation : rebuild ou bascule de scène, REAPER
+# reçoit le bon niveau, sans saut ni course avec le moteur.
+#  · le rôle VOLUME a toujours une valeur : la dernière position reçue (pédale ou curseur de l'écran), sinon 100 % au
+#    démarrage (0 dB — le son d'avant, jamais un départ muet) ;
+#  · le rôle BLOC n'est écrit qu'une fois la pédale bougée : sinon le réglage enregistré du preset (un mix, une position
+#    de wah posée à la main) reste.
+def _exp_bake(work):
+    """Écrit la position connue des pédales sur leurs cibles dans `work` (la copie émise), base ET scènes."""
+    vol = state.pedals.get("volume", "exp1")
+    blk = "exp2" if vol == "exp1" else "exp1"
+    for a, phys in ((_exp_vol_assign(work), vol), (_exp_blk_assign(work), blk)):
+        if not a or not a.get("block") or not a.get("param"):
+            continue
+        if phys == blk and not state.exp_known.get(phys):
+            continue
+        lo, hi = float(a.get("min", 0)), float(a.get("max", 1))
+        raw = round(lo + (getattr(state, phys) / 127.0) * (hi - lo), 4)
+        for b in _iter_ui_blocks(work):
+            if b.get("id") == a["block"]:
+                b.setdefault("params", {})[a["param"]] = raw
+        # une scène qui fixerait ce potard ne doit pas reprendre la main sur la pédale
+        for sc in work.get("scenes") or []:
+            per = (sc.get("params") or {}).get(a["block"]) if isinstance(sc, dict) else None
+            if isinstance(per, dict):
+                per.pop(a["param"], None)
 
 
 def _on_pedal(phys, v):
@@ -1298,6 +1342,7 @@ def _on_pedal(phys, v):
     Appelé des THREADS lecteurs : rester léger. Rôle volume : bloc volume (sinon affichage seul).
     Rôle bloc : param assigné, sinon défaut/compat = relais treadle Whammy DT."""
     setattr(state, phys, v)
+    state.exp_known[phys] = True                    # la position est connue : elle suivra les rappels (_exp_bake)
     if state.pedals.get("volume") == phys:
         _apply_exp(_EXP_VOL["assign"], v)
     elif not _EXP_BLK["assign"] and state.looper.get("enabled"):
@@ -2926,7 +2971,7 @@ recall_mod.init(
     # _hw_pedals_glue = Whammy (chemin nominatif prouvé) PUIS blocs midi-pedal génériques —
     # même point d'entrée f(baked), même autorité à chaque émission (chantier ① 2026-08-13)
     whammy_glue=_hw_pedals_glue,
-    set_exp_blk=_set_exp_blk_from, set_exp_vol=_set_exp_vol_from,
+    set_exp_blk=_set_exp_blk_from, set_exp_vol=_set_exp_vol_from, exp_bake=_exp_bake,
     click_follow=_click_follow_preset,
     notify=broadcast_threadsafe,
 )

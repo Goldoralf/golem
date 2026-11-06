@@ -62,6 +62,7 @@ _bind_foot_services = None # enregistre les blocs pilotés par les fronts (app.p
 _whammy_dt_glue = None     # bloc whammy-dt -> MIDI matériel (app.py, autorité sur la pédale)
 _set_exp_blk_from = None   # cible du rôle bloc des pédales EXP (app.py)
 _set_exp_vol_from = None   # cible du rôle volume (app.py)
+_exp_bake = None           # la position connue des pédales écrite dans la copie émise (app.py)
 _click_follow_preset = None  # politique click « preset » (app.py)
 _notify = None             # broadcast_threadsafe : pousser l'état aux WebSockets
 
@@ -80,15 +81,16 @@ _LIVEMAP_STATE_PATH = os.path.join(C.PRESETS_DIR, ".livemap.json")
 
 
 def init(arr_ctl, backing_ctl, drums_ctl, bind_foot_services, whammy_glue,
-         set_exp_blk, set_exp_vol, click_follow, notify):
+         set_exp_blk, set_exp_vol, click_follow, notify, exp_bake=None):
     """Branche la glue d'app.py. Appelé UNE fois, en fin de module app (les fonctions doivent
     exister). Le moteur ne démarre rien ici — attach_loop() vient au startup uvicorn."""
     global _arr_ctl, _backing_ctl, _drums_ctl, _bind_foot_services, _whammy_dt_glue
-    global _set_exp_blk_from, _set_exp_vol_from, _click_follow_preset, _notify
+    global _set_exp_blk_from, _set_exp_vol_from, _click_follow_preset, _notify, _exp_bake
     _arr_ctl, _backing_ctl, _drums_ctl = arr_ctl, backing_ctl, drums_ctl
     _bind_foot_services = bind_foot_services
     _whammy_dt_glue = whammy_glue
     _set_exp_blk_from, _set_exp_vol_from = set_exp_blk, set_exp_vol
+    _exp_bake = exp_bake
     _click_follow_preset = click_follow
     _notify = notify
 
@@ -879,6 +881,9 @@ def emit_sandbox_preset(preset, scene, action="rig_recall"):
             # invisible : il ne vit que dans la copie émise (bake + cibles EXP).
             work = _copy.deepcopy(preset)
             store.ensure_volume(work)                      # utilitaire système : master de volume (cible EXP), jamais dans le Designer
+            if _exp_bake:                                  # la position connue des pédales, rebuild comme bascule de scène
+                with contextlib.suppress(Exception):
+                    _exp_bake(work)
             # union=True : toutes les lanes posées (mute par scène = D_MUTE) -> topologie stable entre scènes,
             # donc scene_apply peut basculer une scène sans rebuild (un seul chemin de matérialisation).
             baked = scene_bake.to_paths_preset(work, scene, union=True, veto=input_veto(work))

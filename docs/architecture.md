@@ -198,6 +198,14 @@ bypass) become `scene_apply`.
 3. **Send.** `_apply_exp(assign, v)` looks up the block in `.livemap.json` (cached by mtime) to get
    the track, FX, parameter and native range, normalizes the value, and calls
    `reaper.set_fx_param(...)`. That is **one OSC datagram**, with no command slot and no Lua.
+4. **Carry over** (2026-11-06, the maintainer's decision). A pedalboard sends a pedal's position only
+   when it moves; nothing can query it. So every emission (`recall.emit_sandbox_preset`, rebuild **and**
+   scene switch — `reapply_scene` sets each block's whole state) passes its working copy through
+   `app._exp_bake` before compiling: the known position is written on each role's target, base params
+   and scene overrides alike. The volume role always has a value — the last one received (pedal or
+   screen, `POST /api/pedal`), else **100 %** after a bridge start (0 dB, never a silent start). The block
+   role is written only once its pedal has moved (`state.exp_known`); until then the preset's own setting
+   stays. Nothing is saved to disk: after a restart the pedal may have moved.
 
 ---
 

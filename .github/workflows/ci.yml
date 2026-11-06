@@ -35,16 +35,24 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38  # v6.5.0
         with:
           node-version: '24'
+      # LES PAQUETS APT EN CACHE (2026-11-06) : le miroir Azure d'Ubuntu a débité ~20 Ko/s pour les 72 Mo de ffmpeg et ses
+      # 100 dépendances — l'étape tournait jusqu'à la limite du job. Une fois en cache, plus aucun téléchargement.
+      - name: Cache of the apt packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
+        with:
+          path: ~/apt-cache
+          key: apt-${{ runner.os }}-${{ runner.arch }}-ffmpeg-libasound2-v1
       - name: System packages
-        # un miroir apt qui ne répond plus figeait l'étape jusqu'à la limite du job (deux fois le 2026-11-06) :
-        # délais réseau, trois tentatives bornées
         run: |
+          mkdir -p ~/apt-cache/partial
           for i in 1 2 3; do
-            timeout 240 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
-              && timeout 300 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y ffmpeg libasound2-dev \
+            sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
+              && sudo apt-get -o Dir::Cache::Archives="$HOME/apt-cache" -o Acquire::Retries=3 -o Acquire::http::Timeout=30 \
+                   install -y --no-install-recommends ffmpeg libasound2-dev \
               && break
             echo "apt: attempt $i failed"; sleep 10
           done
+          sudo chown -R "$USER" ~/apt-cache
           command -v ffmpeg
       - name: Python dependencies
         run: python -m pip install --require-hashes -r requirements-dev.lock
@@ -79,16 +87,24 @@ jobs:
           cache-dependency-path: |
             bridge/requirements.txt
             requirements-dev.lock
+      # LES PAQUETS APT EN CACHE (2026-11-06) : le miroir Azure d'Ubuntu a débité ~20 Ko/s pour les 72 Mo de ffmpeg et ses
+      # 100 dépendances — l'étape tournait jusqu'à la limite du job. Une fois en cache, plus aucun téléchargement.
+      - name: Cache of the apt packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
+        with:
+          path: ~/apt-cache
+          key: apt-${{ runner.os }}-${{ runner.arch }}-ffmpeg-libasound2-v1
       - name: System packages
-        # un miroir apt qui ne répond plus figeait l'étape jusqu'à la limite du job (deux fois le 2026-11-06) :
-        # délais réseau, trois tentatives bornées
         run: |
+          mkdir -p ~/apt-cache/partial
           for i in 1 2 3; do
-            timeout 240 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
-              && timeout 300 sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y ffmpeg libasound2-dev \
+            sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update \
+              && sudo apt-get -o Dir::Cache::Archives="$HOME/apt-cache" -o Acquire::Retries=3 -o Acquire::http::Timeout=30 \
+                   install -y --no-install-recommends ffmpeg libasound2-dev \
               && break
             echo "apt: attempt $i failed"; sleep 10
           done
+          sudo chown -R "$USER" ~/apt-cache
           command -v ffmpeg
       - name: Python dependencies
         run: python -m pip install --require-hashes -r requirements-dev.lock

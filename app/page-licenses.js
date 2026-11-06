@@ -28,12 +28,13 @@ function GolemUpdateCard() {
     'update-available': ['warn', '⬆ update available'],
     'ahead': ['ok', '✓ ahead of latest release (dev)'],
     'no-release': ['idle', 'no release tags yet'],
+    'no-git': ['idle', 'cannot update from here'],
   };
   const [stState, stLabel] = (u && STATUS[u.status]) || ['idle', '…'];
   return html`<section class="card-panel">
     <h3>golem</h3>
     <div class="upd-rows">
-      <div class="upd-row"><label>Current version</label><b>${u ? u.current : '…'}</b></div>
+      <div class="upd-row"><label>Current version</label><b>${u ? (u.current || '—') : '…'}</b></div>
       <div class="upd-row"><label>Branch</label><b>${u ? u.branch : '…'}</b></div>
       <div class="upd-row"><label>Working tree</label>
         <b class=${u && !u.clean ? 'warnish' : ''} title=${u && !u.clean ? (u.changes || []).join('\n') : ''}>
@@ -42,6 +43,9 @@ function GolemUpdateCard() {
         <span class=${cls('upd-status', stState)}>${stLabel}</span></div>
     </div>
     ${u && u.fetch_error ? html`<p class="muted warn">✗ ${u.fetch_error}</p>` : ''}
+    ${/* SANS GIT (une install Windows/macOS est une copie sans .git) : on le DIT, au lieu d'un faux nom de version */''}
+    ${u && u.status === 'no-git' ? html`<p class="muted">This golem was installed without git, so it cannot update from
+      this screen yet. To get the latest release, run the install line again — your presets, settings and takes are kept.</p>` : ''}
     ${/* LES NOTES DE LA RELEASE (message du tag annoté, en anglais) — plus les sujets de commit, en français */''}
     ${u && u.status === 'update-available' && u.notes ? html`
       <div class="upd-log"><b>What's new in ${u.latest}</b>

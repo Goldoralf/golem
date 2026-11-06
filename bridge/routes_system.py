@@ -1185,7 +1185,10 @@ async def import_apply(body: dict):
 
 # ── mise à jour git — RELEASES UNIQUEMENT (tags) ─────────────────────────────
 def _git_rc(*args, timeout=30):
-    r = subprocess.run(["git", "-C", C.ROOT, *args], capture_output=True, text=True, timeout=timeout)
+    try:
+        r = subprocess.run(["git", "-C", C.ROOT, *args], capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.SubprocessError) as e:
+        return 127, "", str(e)
     return r.returncode, (r.stdout or "").strip(), (r.stderr or "").strip()
 
 
@@ -1193,6 +1196,11 @@ def _git_rc(*args, timeout=30):
 def system_update(fetch: int = 0):
     """État de mise à jour, borné aux TAGS (releases). fetch=1 : git fetch --tags d'abord (réseau).
     status : no-release | up-to-date | update-available | ahead (dev local devant la release)."""
+    # SANS GIT, PAS DE MISE À JOUR D'ICI (2026-11-06) : une install Windows/macOS est une COPIE sans .git (le bootstrap
+    # télécharge l'archive), et sans git `_git` rend son message d'erreur — l'écran le prenait pour un nom de release.
+    if not shutil.which("git") or _git_rc("rev-parse", "--git-dir")[0] != 0:
+        return {"current": None, "branch": None, "clean": True, "changes": [], "full_restart": sys.platform in ("win32", "darwin"),
+                "latest": None, "status": "no-git", "log": [], "notes": "", "fetch_error": None, "signed": None}
     fetch_err = None
     if fetch:
         rc, _, err = _git_rc("fetch", "--tags", "--quiet", "origin", timeout=60)

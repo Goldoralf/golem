@@ -398,6 +398,9 @@ def ensure_git_repo(ctx, target, src):
         return
     base = os.path.basename(os.path.abspath(src or ""))
     ref = base[len("golem-"):] if base.startswith("golem-") else ""
+    # le zip « Source code » d'une release GitHub s'extrait dans golem-0.6.1, SANS le v du tag
+    if re.fullmatch(r"\d+(\.\d+)+", ref):
+        ref = "v" + ref
     if not ref:
         ctx.log("⚠ not a git checkout and no release name — updates from System ▸ About need a git clone", "system")
         return

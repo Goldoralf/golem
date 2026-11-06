@@ -31,8 +31,10 @@ cloning — and a folder without `.git` could never update. git arrives with the
 (`provision/packages.txt`), so right after them the installer links the folder to the repository
 (`installer/platform_linux.ensure_git_repo`): `git init`, `origin` = the public repository, fetch of the installed tag
 only (depth 1), `git reset` (the index follows the release, the files are not touched), then any file the archive
-left out. The release name comes from the bootstrap's cache folder (`golem-<tag>`). Never fatal: if it fails, the
-install goes on and the screen says updates will need a git clone.
+left out. The release name comes from the folder name: the bootstrap's cache (`golem-<tag>`), or the "Source code" zip
+of a GitHub release, which unpacks into `golem-0.6.1` — without the `v` of the tag, put back. Never fatal: if it fails,
+the install goes on and the screen says updates will need a git clone. It is git the tool that is needed, never a
+GitHub account: the repository is public.
 
 ## 3. Which REAPER is the rack's
 
@@ -55,4 +57,8 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
 
 - Python dependencies are not reinstalled by the button: a release that changes `requirements*.txt` needs a step
   that runs pip (none did up to v0.6.1).
+- **Windows and macOS** installs are copies without `.git` (the PowerShell bootstrap always downloads the archive, and
+  neither installer installs git): the button cannot update them. `GET /api/system/update` says `status: "no-git"`
+  and the screen tells the user to run the install line again (local state is kept). Before 2026-11-06, without
+  git, `_git` returned its own error message and the screen showed it as the latest release.
 - Signed tags: inactive until a release key is declared ([`release-signing.md`](release-signing.md)).

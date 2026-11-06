@@ -32,6 +32,7 @@ def remote(tmp_path):
     _git(work, "add", "-A")
     _git(work, "commit", "-q", "-m", "un message de commit en français")
     _git(work, "tag", "-a", "v1", "-m", "golem v1")
+    _git(work, "tag", "-a", "v0.6.1", "-m", "golem v0.6.1")
     (work / "reaper" / "a.lua").write_text("-- v2\n")
     _git(work, "commit", "-q", "-am", "encore du français")
     _git(work, "tag", "-a", "v2", "-m", "What's new\n\n- one\n- two\n-----BEGIN SSH SIGNATURE-----\nxx\n")
@@ -65,7 +66,7 @@ def test_archive_puis_mise_a_jour_puis_reaper(tmp_path, remote, monkeypatch):
     assert not (t / ".git").exists()
     ctx = Ctx()
     L.ensure_git_repo(ctx, str(t), str(t))
-    assert _git(t, "describe", "--tags") == "v1"
+    assert _git(t, "describe", "--tags") in ("v1", "v0.6.1")       # deux tags sur le même commit
     assert _git(t, "status", "--porcelain", "--untracked-files=no") == ""
     assert any("linked to the golem repository at v1" in m for m in ctx.logs)
     # 2. la page About voit v2, avec SES notes (pas les sujets de commit, pas la signature)
@@ -113,3 +114,25 @@ def test_sans_nom_de_release_rien_n_est_converti(tmp_path):
     ctx = Ctx()
     L.ensure_git_repo(ctx, str(t), str(t))
     assert not (t / ".git").exists() and ctx.logs
+
+
+def test_le_zip_source_code_de_github_sans_le_v(tmp_path, remote, monkeypatch):
+    """Le zip « Source code » d'une release s'extrait dans golem-0.6.1 — sans le v du tag v0.6.1."""
+    from installer import platform_linux as L
+    monkeypatch.setattr(L, "DEFAULT_REPO", "file://" + str(remote))
+    t = tmp_path / "golem-0.6.1"
+    t.mkdir()
+    arc = subprocess.run(["git", "-C", str(remote), "archive", "v0.6.1"], capture_output=True, check=True).stdout
+    subprocess.run(["tar", "-x", "-C", str(t)], input=arc, check=True)
+    L.ensure_git_repo(Ctx(), str(t), str(t))
+    assert _git(t, "describe", "--tags") in ("v0.6.1", "v1")      # même commit : git peut nommer l'un ou l'autre
+    assert _git(t, "status", "--porcelain", "--untracked-files=no") == ""
+
+
+def test_sans_git_l_ecran_le_dit_au_lieu_d_un_faux_nom_de_version(tmp_path, monkeypatch):
+    from bridge import config as C, routes_system as R
+    monkeypatch.setattr(C, "ROOT", str(tmp_path))            # une copie sans .git (install Windows / macOS)
+    st = R.system_update(fetch=1)
+    assert st["status"] == "no-git" and st["latest"] is None and st["current"] is None
+    monkeypatch.setattr(R.shutil, "which", lambda name: None)  # git absent de la machine
+    assert R.system_update(fetch=0)["status"] == "no-git"

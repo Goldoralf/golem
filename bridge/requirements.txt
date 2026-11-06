@@ -7,7 +7,7 @@ uvicorn[standard]==0.49.0
 python-osc==1.10.2
 python-rtmidi==1.5.8
 qrcode==8.2
-zeroconf==0.151.5
+zeroconf==0.153.0
 # séparation de sources (docs/separation.md §11)
 numpy==2.5.4
 # macOS : 1.31 n'a de wheel que pour Apple Silicon sous macOS 14 — un Mac Intel n'avait RIEN à installer (trouvé le

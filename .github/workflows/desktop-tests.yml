@@ -162,7 +162,7 @@ jobs:
         run: python tools/check-native-nam.py --reaper "${{ env.REAPER_EXE }}" --work-dir "${{ runner.temp }}/native-nam-check"
       - name: Upload render diagnostics
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: native-nam-${{ matrix.os }}
           path: ${{ runner.temp }}/native-nam-check/
@@ -182,7 +182,7 @@ jobs:
         run: python tools/check-rig-materialize.py --fixture --cold --render --reaper "${{ env.REAPER_EXE }}" --keep --work "${{ runner.temp }}/rig-check" --json "${{ runner.temp }}/rig-check/report.json"
       - name: Upload materialization logs
         if: always() && runner.os == 'Windows'
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: rig-check-${{ matrix.os }}
           path: |

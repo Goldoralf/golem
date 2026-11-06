@@ -28,7 +28,7 @@ HEAD=$(git rev-parse HEAD)
 ci=$(gh run list -R "$REPO_SLUG" -L 20 --json headSha,name,conclusion \
        -q ".[] | select(.headSha==\"$HEAD\") | select(.name==\"CI\") | .conclusion" | head -1)
 [ "$ci" = success ] || die "CI of $HEAD is '${ci:-not found}', not success"
-python3 tools/public_export.py --deny ~/golem-public/denylist.txt --allow ~/golem-public/allowlist.txt --summary \
+python3 tools/public_export.py --deny ~/golem-public/denylist.txt --allow ~/golem-public/allowlist.txt --summary 2>&1 \
   | tail -1 | grep -q ' 0 forbidden' || die "the public scan finds forbidden words"
 
 echo "→ signed tag $TAG on $(git rev-parse --short HEAD)"

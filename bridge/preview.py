@@ -325,6 +325,11 @@ def set_restore(fn):
 
 
 _gen_lock = threading.Lock()   # une seule génération à la fois (UI ET jobs golem.fm)
+
+
+def rendering():
+    """Une démo se rend-elle (le moteur est pris) ? app._exp_bake n'écrit pas la pédale du musicien dans un clip."""
+    return _gen_lock.locked()
 # après le clone, côté Lua : les plugins du clone rechargent leur état (NAM son modèle, un kit ses samples) —
 # même délai que le re-amp (reamp.CLONE_SETTLE_S)
 CLONE_SETTLE_S = 2.0

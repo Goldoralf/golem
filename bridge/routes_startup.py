@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """L'accueil au démarrage (bridge/startup_home.py, maquette mockups/startup-home.html)."""
+import contextlib
+
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
@@ -9,8 +11,13 @@ from .state import state
 router = APIRouter()
 
 
-def _touch():
+async def _touch():
+    """Le changement part TOUT DE SUITE aux écrans. `state.touch()` seul ne pousse rien : l'écran ne l'apprenait qu'à
+    la diffusion suivante, et « ⌂ Open at startup » semblait sans effet jusqu'au redémarrage (vécu le 2026-11-06)."""
     state.touch()
+    with contextlib.suppress(Exception):
+        from . import app as _app
+        await _app._broadcast()
 
 
 @router.post("/api/services/check")
@@ -34,7 +41,7 @@ async def startup_policy(body: dict):
         r = SH.set_policy((body or {}).get("policy"))
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
-    _touch()
+    await _touch()
     return {"ok": True, **r}
 
 
@@ -44,12 +51,12 @@ async def startup_home_set(body: dict):
         r = SH.set_home(body or {})
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
-    _touch()
+    await _touch()
     return {"ok": True, **r}
 
 
 @router.delete("/api/startup/home")
 async def startup_home_clear():
     r = SH.clear_home()
-    _touch()
+    await _touch()
     return {"ok": True, **r}

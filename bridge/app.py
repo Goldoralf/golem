@@ -1318,6 +1318,12 @@ def _set_exp_vol_from(preset):
 #    de wah posée à la main) reste.
 def _exp_bake(work):
     """Écrit la position connue des pédales sur leurs cibles dans `work` (la copie émise), base ET scènes."""
+    # ⚠ PAS PENDANT UNE DÉMO (2026-11-06) : rendre la démo d'un son applique ses scènes par ce même chemin, et la
+    # position de la pédale du musicien finissait dans le clip — une pédale volume laissée au talon a rendu trois scènes
+    # de Modern Metal muettes. Une démo sonne au réglage du preset.
+    from . import preview as _pv
+    if _pv.rendering():
+        return
     vol = state.pedals.get("volume", "exp1")
     blk = "exp2" if vol == "exp1" else "exp1"
     for a, phys in ((_exp_vol_assign(work), vol), (_exp_blk_assign(work), blk)):

@@ -9,7 +9,7 @@
   "factory-guitar-british-crunch": {"A": "guitar/crunch", "B": "guitar/lead", "C": "guitar/crunch", "D": "guitar/clean"},
   "factory-guitar-fuzz-wall": {"A": "guitar/clean", "B": "guitar/crunch", "C": "guitar/lead", "D": "guitar/crunch", "E": "guitar/crunch"},
   "factory-guitar-brown-lead": {"A": "guitar/crunch", "B": "guitar/lead", "C": "guitar/lead", "D": "guitar/crunch", "E": "guitar/clean"},
-  "factory-guitar-modern-metal": {"A": "guitar/clean", "B": "guitar/high-gain", "C": "guitar/lead", "D": "guitar/high-gain", "E": "guitar/high-gain"},
+  "factory-guitar-modern-metal": {"A": "guitar/clean", "B": "guitar/high-gain", "C": "guitar/lead", "D": "guitar/djent", "E": "guitar/high-gain"},
   "factory-guitar-gypsy-lead": {"A": "guitar/lead-clean", "B": "guitar/lead-clean", "C": "guitar/clean", "D": "guitar/clean", "E": "guitar/lead-clean"},
   "factory-guitar-hero-lead": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/lead", "D": "guitar/lead"},
   "factory-guitar-ambient-djent": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/djent", "D": "guitar/djent", "E": "guitar/lead"},

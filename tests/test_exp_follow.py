@@ -87,3 +87,16 @@ def test_l_emission_ecrit_la_position_avant_de_compiler(monkeypatch):
     monkeypatch.setattr(state, "exp_known", {"exp1": True, "exp2": False})
     recall.emit_sandbox_preset(_preset(), "A")
     assert seen["gain"] == -60.0
+
+
+def test_une_demo_sonne_au_reglage_du_preset_pas_a_la_pedale(monkeypatch):
+    from bridge import preview
+    monkeypatch.setattr(state, "exp1", 0)
+    monkeypatch.setattr(state, "exp_known", {"exp1": True, "exp2": False})
+    w = _preset()
+    assert preview._gen_lock.acquire(blocking=False)
+    try:
+        A._exp_bake(w)
+    finally:
+        preview._gen_lock.release()
+    assert _p(w, "vol-1", "gain") == 0                       # le réglage du preset, pas le talon de la pédale

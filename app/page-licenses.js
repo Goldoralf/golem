@@ -28,7 +28,6 @@ function GolemUpdateCard() {
     'update-available': ['warn', '⬆ update available'],
     'ahead': ['ok', '✓ ahead of latest release (dev)'],
     'no-release': ['idle', 'no release tags yet'],
-    'no-git': ['idle', 'cannot update from here'],
   };
   const [stState, stLabel] = (u && STATUS[u.status]) || ['idle', '…'];
   return html`<section class="card-panel">
@@ -43,9 +42,7 @@ function GolemUpdateCard() {
         <span class=${cls('upd-status', stState)}>${stLabel}</span></div>
     </div>
     ${u && u.fetch_error ? html`<p class="muted warn">✗ ${u.fetch_error}</p>` : ''}
-    ${/* SANS GIT (une install Windows/macOS est une copie sans .git) : on le DIT, au lieu d'un faux nom de version */''}
-    ${u && u.status === 'no-git' ? html`<p class="muted">This golem was installed without git, so it cannot update from
-      this screen yet. To get the latest release, run the install line again — your presets, settings and takes are kept.</p>` : ''}
+
     ${/* LES NOTES DE LA RELEASE (message du tag annoté, en anglais) — plus les sujets de commit, en français */''}
     ${u && u.status === 'update-available' && u.notes ? html`
       <div class="upd-log"><b>What's new in ${u.latest}</b>
@@ -58,7 +55,7 @@ function GolemUpdateCard() {
           ${updating === 'busy' ? (u.full_restart ? '⏳ updating — golem restarting…' : '⏳ updating — bridge restarting…') : `⬆ Update to ${u.latest}`}</button>` : ''}
       ${updating && updating !== 'busy' ? html`<span class="perf-err">✗ ${updating}</span>` : ''}
     </div>
-    <p class="muted" style="margin-top:12px">Updates are bound to <b>tagged releases</b> only (git).${' '}
+    <p class="muted" style="margin-top:12px">Updates are bound to <b>tagged releases</b> only${u && u.mode === 'archive' ? ' — downloaded from GitHub, your presets, settings and takes are kept' : ' (git)'}.${' '}
       ${u && u.full_restart
         ? html`golem <b>restarts entirely</b> after switching — this window closes and reopens, audio stops ~30 s.`
         : 'The bridge restarts automatically after switching — the page reloads itself.'}</p>

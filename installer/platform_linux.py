@@ -392,8 +392,8 @@ def ensure_git_repo(ctx, target, src):
     System ▸ About (« Update to … » vit de `git fetch --tags` / `git checkout <tag>`). git arrive avec les paquets
     système (provision/packages.txt) : juste après, le dossier devient le dépôt de la release installée — le tag seul,
     profondeur 1, `git reset` qui aligne l'index sans toucher aux fichiers, puis ce qu'une archive aurait omis. La
-    version se lit dans le nom du cache du bootstrap (golem-<tag>). Jamais fatal : au pire, la mise à jour reste à la
-    main, comme avant."""
+    version se lit dans le nom du cache du bootstrap (golem-<tag>). Jamais fatal : au pire, la mise à jour passe par
+    l'archive de la release (bridge/release_update)."""
     if ctx.S["dry"] or os.path.isdir(os.path.join(target, ".git")) or not shutil.which("git"):
         return
     base = os.path.basename(os.path.abspath(src or ""))
@@ -402,7 +402,7 @@ def ensure_git_repo(ctx, target, src):
     if re.fullmatch(r"\d+(\.\d+)+", ref):
         ref = "v" + ref
     if not ref:
-        ctx.log("⚠ not a git checkout and no release name — updates from System ▸ About need a git clone", "system")
+        ctx.log("→ not a git checkout and no release name — System ▸ About updates from the release archives", "system")
         return
     tag = ref.startswith("v")
     steps = [["-c", "init.defaultBranch=main", "init", "-q"], ["remote", "add", "origin", DEFAULT_REPO],
@@ -411,8 +411,8 @@ def ensure_git_repo(ctx, target, src):
     for args in steps:
         if ctx.run(["git", "-C", target, *args], "system") != 0:
             shutil.rmtree(os.path.join(target, ".git"), ignore_errors=True)   # pas de dépôt à moitié fait
-            ctx.log("⚠ could not link this folder to the golem repository — updates from System ▸ About will "
-                    "need a git clone (the install itself is fine)", "system")
+            ctx.log("→ could not link this folder to the golem repository — System ▸ About will update it from the "
+                    "release archives instead (the install itself is fine)", "system")
             return
     gone = subprocess.run(["git", "-C", target, "ls-files", "-d", "-z"], capture_output=True, text=True).stdout
     gone = [g for g in gone.split("\0") if g]

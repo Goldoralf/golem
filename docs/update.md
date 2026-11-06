@@ -1,7 +1,9 @@
 # Updating a golem, and cutting a release
 
-> **Status: CODED (2026-11-06)** — the "Update to …" button of Settings ▸ About, checked end to end on throw-away
-> installs (a git clone and an extracted archive, v0.6.0 → a test v0.6.1) and on the maintainer's rack.
+> **Status: CODED (2026-11-06)** — the "Update to …" button of Settings ▸ About. The git way is checked end to end on
+> throw-away installs (a git clone and an extracted archive, v0.6.0 → a test v0.6.1) and on the maintainer's rack; the
+> archive way (§3) on a Windows/macOS-style copy against the real GitHub (v0.6.0 → v0.6.1), **not yet on a real
+> Windows or Mac**.
 
 ## 1. What the button does
 
@@ -33,10 +35,36 @@ cloning — and a folder without `.git` could never update. git arrives with the
 only (depth 1), `git reset` (the index follows the release, the files are not touched), then any file the archive
 left out. The release name comes from the folder name: the bootstrap's cache (`golem-<tag>`), or the "Source code" zip
 of a GitHub release, which unpacks into `golem-0.6.1` — without the `v` of the tag, put back. Never fatal: if it fails,
-the install goes on and the screen says updates will need a git clone. It is git the tool that is needed, never a
+the install goes on and the button falls back to the archive way (§3). It is git the tool that is needed, never a
 GitHub account: the repository is public.
 
-## 3. Which REAPER is the rack's
+## 3. Updating without git — Windows, macOS (by archive)
+
+Windows and macOS installs are copies without `.git` (the PowerShell bootstrap always downloads the archive, and
+neither installer installs git — Git for Windows is a heavy, elevated dependency, and the first `git` on a Mac opens
+the Command Line Tools dialog). There the button redoes what the installer does (`bridge/release_update.py`), chosen
+by `routes_system` whenever the install is not a git repository:
+
+1. **Check** (`GET /api/system/update?fetch=1`, only on "Check for releases"): GitHub's `releases/latest` — the
+   bootstrap's own request — gives the tag and its notes; the answer is kept in `presets/.release-check.json` for
+   About's dot. The installed version is `.golem-release`, written by the installer (`installer/desktop_steps`, from the
+   folder name) and by every update; an install without it is "unknown" and is offered the latest release. Response
+   `mode: "archive"`.
+2. **Update** (`POST`): the tag's zip (`/archive/refs/tags/<tag>.zip`, as `bootstrap.ps1`), extracted into a temporary
+   folder (no member may leave it), copied over the install by the installer's own `desktop_steps.step_source` —
+   `presets`, `sets`, `mappings`, `config`, `setlists`, `recordings`, `assets` are never overwritten —, then the files
+   the previous version had and this one has not are removed (manifest `.golem-files`; never local state), and the
+   version is written.
+3. **Python packages**: if `bridge/requirements.lock` changed, pip runs — on Windows and macOS **after** the bridge has
+   stopped (a loaded module cannot be replaced on Windows): flag `.golem-pip-pending`, read by
+   `provision/desktop.py restart`; on Linux at once.
+4. **Restart**: the same as the git way — everything on Windows/macOS, `reload.sh --with-reaper` on Linux (without git,
+   the scripts' fingerprint cannot be compared).
+
+A declared release key closes this way (a signed tag is only checked with git): the button then asks to run the install
+line again. When signing comes, a signed checksum published with the release will open it again.
+
+## 4. Which REAPER is the rack's
 
 `provision/lib-reaper.sh` (`rack_reaper_pids`) and `routes_system._rack_reaper_pids`: a process named `reaper` that is
 **not a zombie** and **not a bench** — `tools/check-rig-materialize.py` and `tools/shell_snapshot.py` start theirs with
@@ -44,7 +72,7 @@ GitHub account: the repository is public.
 it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The output of the relaunch goes to
 `/tmp/golem-reaper-restart.log`.
 
-## 4. Cutting a release
+## 5. Cutting a release
 
 1. Everything on `main`, CI green on that commit, `tools/public_export.py --summary` at 0 forbidden occurrences.
 2. An **annotated** tag, version bumped (`v0.6.0` → `v0.6.1` for fixes): never move a published tag. Its message is the
@@ -53,12 +81,8 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
    the same notes. GitHub attaches the source archives itself; nothing else to upload.
 4. The website's Download button points at `releases/latest`: nothing to change there.
 
-## 5. Not covered yet
+## 6. Not covered yet
 
-- Python dependencies are not reinstalled by the button: a release that changes `requirements*.txt` needs a step
-  that runs pip (none did up to v0.6.1).
-- **Windows and macOS** installs are copies without `.git` (the PowerShell bootstrap always downloads the archive, and
-  neither installer installs git): the button cannot update them. `GET /api/system/update` says `status: "no-git"`
-  and the screen tells the user to run the install line again (local state is kept). Before 2026-11-06, without
-  git, `_git` returned its own error message and the screen showed it as the latest release.
+- On a git install (Linux), Python dependencies are not reinstalled by the button: a release that changes
+  `bridge/requirements.lock` needs that step there too (the archive way already has it). None did up to v0.6.1.
 - Signed tags: inactive until a release key is declared ([`release-signing.md`](release-signing.md)).

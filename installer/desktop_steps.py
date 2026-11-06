@@ -46,6 +46,9 @@ def step_source(ctx, src, target):
     src, target = os.path.abspath(src), os.path.abspath(target)
     if os.path.normcase(src) == os.path.normcase(target):
         ctx.log("→ installing in place (the installer runs from the target folder)", "source")
+        tag = release_of(src)
+        if tag and not ctx.S["dry"] and not os.path.isdir(os.path.join(target, ".git")):
+            write_release_marker(target, tag, code_files(src))
         return 0
     if ctx.S["dry"]:
         return ctx.run(ctx.dry_cmd("source"), "source")
@@ -67,7 +70,45 @@ def step_source(ctx, src, target):
             shutil.copy2(os.path.join(root, fn), dst)
             n += 1
     ctx.log(f"✓ {n} files copied" + (f", {kept} of yours kept as they were" if kept else ""), "source")
+    tag = release_of(src)
+    if tag:                                              # la version, pour la mise à jour par archive (docs/update.md §3)
+        write_release_marker(target, tag, code_files(src))
     return 0
+
+
+# ── LA VERSION D'UNE INSTALL SANS GIT (docs/update.md §3, 2026-11-06) ────────────────────────────────────────────────
+# Sans .git, rien ne dit quelle release est posée : l'installateur et la mise à jour par archive (bridge/release_update)
+# la notent, avec la liste des fichiers de code — la mise à jour suivante retire ce que la nouvelle version n'a plus.
+RELEASE_FILE = ".golem-release"
+MANIFEST_FILE = ".golem-files"
+
+
+def release_of(src):
+    """Le tag d'un dossier de release : le cache du bootstrap (golem-v0.6.2) ou le zip « Source code » de GitHub
+    (golem-0.6.2, sans le v). None sinon."""
+    import re
+    base = os.path.basename(os.path.abspath(src or ""))
+    m = re.fullmatch(r"golem-v?(\d+(?:\.\d+)+)", base)
+    return "v" + m.group(1) if m else None
+
+
+def code_files(src):
+    """Les fichiers d'une version, chemins relatifs « / » (sans .git, .venv ni caches)."""
+    out = []
+    for root, dirs, files in os.walk(src):
+        dirs[:] = [d for d in dirs if d not in (".git", ".venv", "__pycache__")]
+        for fn in files:
+            out.append(os.path.relpath(os.path.join(root, fn), src).replace(os.sep, "/"))
+    return out
+
+
+def write_release_marker(root, tag, files):
+    import json
+    import time
+    with open(os.path.join(root, RELEASE_FILE), "w", encoding="utf-8") as f:
+        json.dump({"tag": tag, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, f)
+    with open(os.path.join(root, MANIFEST_FILE), "w", encoding="utf-8") as f:
+        json.dump(sorted(files), f, indent=0)
 
 
 def _py_env():

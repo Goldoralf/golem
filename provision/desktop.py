@@ -1398,10 +1398,27 @@ def restart(shell="device"):
         time.sleep(0.5)
     # le bridge qui nous lance nous passe son GOLEM_LAUNCH : un `golem server` revient server (sans fenêtre,
     # code d'appairage), pas desktop
+    _pending_pip()
     if os.environ.get("GOLEM_LAUNCH") == "server":
         start(window=False)
     else:
         start(shell)
+
+
+def _pending_pip():
+    """LA MISE À JOUR PAR ARCHIVE a changé bridge/requirements.lock (bridge/release_update.py, docs/update.md §3) : pip,
+    MAINTENANT que le bridge est arrêté — sous Windows, un module chargé ne se remplace pas. Jamais fatal : un échec se
+    dit dans le journal, golem repart avec ce qu'il a."""
+    flag = ROOT / ".golem-pip-pending"
+    if not flag.exists():
+        return
+    r = subprocess.run([str(venv_python()), "-m", "pip", "install", "--require-hashes", "-r",
+                        str(ROOT / "bridge" / "requirements.lock")], capture_output=True, text=True)
+    if r.returncode == 0:
+        flag.unlink(missing_ok=True)
+    else:
+        print("golem: pip after the update failed — " + ((r.stderr or "").strip().splitlines() or ["?"])[-1],
+              file=sys.stderr)
 
 
 def _tell(message, error=False):

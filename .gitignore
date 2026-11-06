@@ -299,3 +299,8 @@ reaper/FXChains/*.vitalium.txt
 assets/samples/.kinds.json
 # packs d'animation INSTALLÉS depuis golem.fm (le pack par défaut est livré avec l'app)
 library/anim-packs/
+
+# la version d une install SANS git et son manifeste (installer/desktop_steps, bridge/release_update — docs/update.md §3)
+/.golem-release
+/.golem-files
+/.golem-pip-pending

@@ -1192,15 +1192,20 @@ def _git_rc(*args, timeout=30):
     return r.returncode, (r.stdout or "").strip(), (r.stderr or "").strip()
 
 
+def _has_git_repo():
+    return bool(shutil.which("git")) and _git_rc("rev-parse", "--git-dir")[0] == 0
+
+
 @router.get("/api/system/update")
 def system_update(fetch: int = 0):
     """État de mise à jour, borné aux TAGS (releases). fetch=1 : git fetch --tags d'abord (réseau).
     status : no-release | up-to-date | update-available | ahead (dev local devant la release)."""
     # SANS GIT, PAS DE MISE À JOUR D'ICI (2026-11-06) : une install Windows/macOS est une COPIE sans .git (le bootstrap
     # télécharge l'archive), et sans git `_git` rend son message d'erreur — l'écran le prenait pour un nom de release.
-    if not shutil.which("git") or _git_rc("rev-parse", "--git-dir")[0] != 0:
-        return {"current": None, "branch": None, "clean": True, "changes": [], "full_restart": sys.platform in ("win32", "darwin"),
-                "latest": None, "status": "no-git", "log": [], "notes": "", "fetch_error": None, "signed": None}
+    # Une telle install se met à jour PAR ARCHIVE (bridge/release_update.py, docs/update.md §3) : la release de GitHub.
+    if not _has_git_repo():
+        from . import release_update
+        return release_update.status(fetch=bool(fetch))
     fetch_err = None
     if fetch:
         rc, _, err = _git_rc("fetch", "--tags", "--quiet", "origin", timeout=60)
@@ -1255,6 +1260,8 @@ async def system_update_apply(body: dict):
     """Bascule sur une RELEASE (git checkout <tag>) puis redémarre le bridge pour charger le
     nouveau code. Refus si l'arbre n'est pas propre (aucun stash/reset automatique)."""
     tag = (body or {}).get("tag")
+    if not _has_git_repo():
+        return await _update_by_archive(tag)
     if not tag or _git_rc("rev-parse", "--verify", tag + "^{}")[0] != 0:
         return JSONResponse({"error": f"unknown release: {tag}"}, status_code=400)
     if _code_changes():
@@ -1272,6 +1279,29 @@ async def system_update_apply(body: dict):
     restore()                                             # même en échec : la machine retrouve ses réglages
     if rc != 0:
         return JSONResponse({"error": err or "git checkout failed"}, status_code=500)
+    return _restart_after_update(tag, signed)
+
+
+async def _update_by_archive(tag):
+    """La release `tag` posée par archive (install sans git), puis le même redémarrage que la voie git."""
+    from . import release_update, release_sig
+    if not release_update.vkey(tag):
+        return JSONResponse({"error": f"unknown release: {tag}"}, status_code=400)
+    # une release SIGNÉE ne se vérifie qu'avec git (git verify-tag) : déclarer une clé ferme la voie archive
+    if release_sig._keys(os.path.join(C.ROOT, release_sig.SIGNERS)):
+        return JSONResponse({"error": "releases are signed: updating needs git — run the install line again"},
+                            status_code=409)
+    try:
+        await asyncio.get_running_loop().run_in_executor(None, release_update.apply, tag)
+    except Exception as e:
+        log.error(f"mise à jour par archive vers {tag} : {e}")
+        return JSONResponse({"error": f"update failed: {e}"}, status_code=500)
+    return _restart_after_update(tag, None, with_reaper=True)
+
+
+def _restart_after_update(tag, signed, with_reaper=False):
+    """Relance ce qu'il faut pour charger la release : TOUT sur un poste (Windows, macOS), le bridge sous Linux — et
+    REAPER quand ses scripts ont changé (reload.sh le voit par git ; sans git, `with_reaper` le demande)."""
     if sys.platform in ("win32", "darwin"):
         # POSTE : pas de reload.sh ni de systemd. Le lanceur relance TOUT (fenêtre, REAPER, bridge) —
         # il faut de toute façon que REAPER relise les scripts Lua de la release (copy_resources au
@@ -1286,7 +1316,7 @@ async def system_update_apply(body: dict):
                          creationflags=flags, start_new_session=sys.platform != "win32",
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return {"ok": True, "tag": tag, "restarting": True, "full_restart": True, "signed": signed}
-    subprocess.Popen(["bash", "-c", "sleep 0.5; exec ./provision/reload.sh"],
+    subprocess.Popen(["bash", "-c", "sleep 0.5; exec ./provision/reload.sh" + (" --with-reaper" if with_reaper else "")],
                      cwd=C.ROOT, start_new_session=True,
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return {"ok": True, "tag": tag, "restarting": True, "signed": signed}

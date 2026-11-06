@@ -129,10 +129,13 @@ def test_le_zip_source_code_de_github_sans_le_v(tmp_path, remote, monkeypatch):
     assert _git(t, "status", "--porcelain", "--untracked-files=no") == ""
 
 
-def test_sans_git_l_ecran_le_dit_au_lieu_d_un_faux_nom_de_version(tmp_path, monkeypatch):
-    from bridge import config as C, routes_system as R
-    monkeypatch.setattr(C, "ROOT", str(tmp_path))            # une copie sans .git (install Windows / macOS)
+def test_sans_git_la_page_passe_par_l_archive_au_lieu_d_un_faux_nom_de_version(tmp_path, monkeypatch):
+    """Sans git, `_git` rendait son message d'erreur — l'écran le montrait comme nom de release. Une copie sans .git
+    (install Windows / macOS) passe maintenant par la mise à jour par archive (bridge/release_update)."""
+    from bridge import config as C, routes_system as R, release_update as U
+    monkeypatch.setattr(U, "check", lambda fetch=False: {"latest": "v9.9.9", "notes": "", "fetch_error": None})
+    monkeypatch.setattr(C, "ROOT", str(tmp_path))
     st = R.system_update(fetch=1)
-    assert st["status"] == "no-git" and st["latest"] is None and st["current"] is None
+    assert st["mode"] == "archive" and st["latest"] == "v9.9.9" and st["current"] == "unknown"
     monkeypatch.setattr(R.shutil, "which", lambda name: None)  # git absent de la machine
-    assert R.system_update(fetch=0)["status"] == "no-git"
+    assert R.system_update(fetch=0)["mode"] == "archive"

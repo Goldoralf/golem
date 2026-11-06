@@ -12,5 +12,5 @@ zeroconf==0.151.5
 numpy==2.5.4
 # macOS : 1.31 n'a de wheel que pour Apple Silicon sous macOS 14 — un Mac Intel n'avait RIEN à installer (trouvé le
 # 2026-10-15 en simulant l'installation macOS du verrou). 1.23.2 = la dernière qui couvre Intel ET Apple Silicon (macOS 13+).
-onnxruntime==1.31.0; sys_platform != "darwin"
-onnxruntime==1.23.2; sys_platform == "darwin"
+onnxruntime==1.31.1; sys_platform != "darwin"
+onnxruntime==1.31.1; sys_platform == "darwin"

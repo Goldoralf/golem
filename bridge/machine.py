@@ -32,8 +32,9 @@ from .golog import get as _get_log
 log = _get_log("machine")
 
 GRACE_S = 3.0                    # une fenêtre qui se recharge ne fait pas basculer le profil
+CLOSE_STOP_S = 8.0               # la croix de la fenêtre arrête golem desktop : après ce délai, fenêtre vraiment partie
 _LOCK = threading.Lock()
-_W = {"open": 0, "last_close": None, "seen": False}
+_W = {"open": 0, "last_close": None, "seen": False, "detached": False}
 
 
 def dry():
@@ -46,6 +47,7 @@ def window_opened():
         _W["open"] += 1
         _W["seen"] = True
         _W["last_close"] = None
+        _W["detached"] = False                   # une fenêtre rouverte : sa croix arrête de nouveau golem
 
 
 def window_closed():
@@ -57,6 +59,28 @@ def window_closed():
 
 def windows():
     return _W["open"]
+
+
+def window_detached():
+    """La fenêtre se ferme EXPRÈS sans arrêter golem : « Continue on a tablet » (/api/ui/quit sans stop)."""
+    with _LOCK:
+        _W["detached"] = True
+
+
+def close_stops_golem(now=None):
+    """LA CROIX ARRÊTE GOLEM DESKTOP (décision du 2026-11-08, docs/ui-architecture.md §5). Fermer un logiciel par
+    sa croix le ferme : la fenêtre de golem fermée laissait REAPER et le bridge tourner sans rien à l'écran. Vrai
+    quand golem a été lancé AVEC fenêtre (GOLEM_LAUNCH=desktop — Windows, macOS et Linux ; pas `golem server`, ni
+    l'autostart d'une boîte dédiée, qui lance `golem server`), que la dernière fenêtre de cet ordinateur est fermée
+    depuis CLOSE_STOP_S (un rechargement de page se reconnecte avant) et qu'elle ne l'a pas été exprès pour passer
+    sur une tablette. ⚠ Linux : codé le 2026-11-08 sous Windows, À VÉRIFIER sur le rack."""
+    if dry() or os.environ.get("GOLEM_LAUNCH") != "desktop":
+        return False
+    with _LOCK:
+        if not _W["seen"] or _W["open"] > 0 or _W["detached"] or _W["last_close"] is None:
+            return False
+        now = time.monotonic() if now is None else now
+        return now - _W["last_close"] >= CLOSE_STOP_S
 
 
 def profile(now=None):
@@ -385,7 +409,7 @@ def harden_start(password):
 
 def _reset_for_tests():
     with contextlib.suppress(Exception):
-        _W.update(open=0, last_close=None, seen=False)
+        _W.update(open=0, last_close=None, seen=False, detached=False)
         _CACHE.update(at=0.0, v=None)
         _H.update(phase="idle", error=None, log=[], at=None)
         _DRY_AUTOSTART["on"] = False

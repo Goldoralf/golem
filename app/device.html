@@ -144,7 +144,7 @@ html,body{height:100%; margin:0; overflow:hidden;
   <span class="sep">·</span>
   <button id="reload" title="reload the app (zoom and role are kept)">↻</button>
   <button id="tablet" title="continue on a tablet — closes this window, golem keeps running">📱</button>
-  <button class="halt" id="halt" title="stop golem — closes the window AND stops Reaper + the bridge (Esc: close without stopping)">⏻</button>
+  <button class="halt" id="halt" title="stop golem — closes the window AND stops Reaper + the bridge">⏻</button>
   <span class="sep" id="dbgsep" hidden>·</span>
   <span id="dbg" hidden>
     <select id="who" title="who holds this phone — someone in the band, or a role alone"></select>
@@ -356,8 +356,8 @@ requestAnimationFrame(apply);      // la barre a sa taille définitive après la
 // fenêtre du profil dédié du lanceur. En dernier recours seulement, on dit quoi presser.
 //
 // ⚠ PLUS DE BOUTON ✕ (retiré le 2026-08-03) : il faisait doublon avec la croix système de la
-// fenêtre. Sa fonction — fermer SANS arrêter le rig — vit toujours sur **Échap** (plus bas),
-// et le titre du ⏻ le dit. On ne supprime pas une sortie, on lui retire son bouton.
+// fenêtre. Fermer SANS arrêter golem ne sert plus qu'à « Continue on a tablet » (2026-11-08) : la croix
+// système, elle, ARRÊTE golem desktop (bridge/app.py stop_if_window_closed), et Échap ne ferme plus rien.
 async function quit() {
   window.close();
   try {
@@ -390,7 +390,7 @@ async function halt() {
 
 // ── « Continue on tablet » : desktop -> server, SANS couper le son (docs/installer.md §4) ─────
 // Le panneau est app/tablet-sheet.js — UN SEUL, que System ▸ Dashboard ouvre aussi par window.golemTabletSheet
-// (l'app est dans l'iframe, même origine). Fermer la fenêtre = quit(), le chemin d'Échap : golem continue.
+// (l'app est dans l'iframe, même origine). Fermer la fenêtre = quit(), fermeture VOULUE : golem continue.
 window.golemTabletSheet = () => import('./tablet-sheet.js').then(m => m.openTabletSheet({ onClose: quit }));
 const tabletBtn = document.getElementById('tablet');     // absent de la coquille téléphone
 if (tabletBtn) tabletBtn.onclick = () => window.golemTabletSheet();
@@ -418,12 +418,11 @@ if (reloadBtn) reloadBtn.onclick = () => {
   try { frame.contentWindow.location.reload(); }
   catch { frame.src = srcFor(); }                 // repli si le contexte a été remplacé
 };
-// Échap = sortir, mais en plein écran NAVIGATEUR (F11) le JS ne peut pas le défaire : on le dit
-// au lieu de laisser croire à une touche morte.
+// Échap NE FERME PLUS la fenêtre (2026-11-08) : fermer arrête maintenant golem desktop, et Échap se presse par
+// réflexe. En plein écran NAVIGATEUR (F11), le JS ne peut pas le défaire : on dit quoi presser.
 addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (window.innerHeight >= screen.height - 2) hint('Full screen: <b>F11</b> back to a window · <b>Ctrl+W</b> closes.');
-  else quit();
+  if (window.innerHeight >= screen.height - 2) hint('Full screen: <b>F11</b> back to a window · <b>Ctrl+W</b> closes golem.');
 });
 
 // ── LED = santé du BRIDGE, pas de la page ────────────────────────────────────

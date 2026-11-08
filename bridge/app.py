@@ -2960,6 +2960,42 @@ async def ws(websocket: WebSocket):
             # après le délai de grâce (une fenêtre qui se recharge ne bascule pas), le profil passe à server : on le dit
             with contextlib.suppress(Exception):
                 asyncio.get_running_loop().call_later(machine_mod.GRACE_S + 0.2, broadcast_threadsafe)
+            # golem desktop : la croix de la fenêtre arrête golem (machine.close_stops_golem, 2026-11-08)
+            with contextlib.suppress(Exception):
+                asyncio.get_running_loop().call_later(
+                    machine_mod.CLOSE_STOP_S + 0.2,
+                    lambda: threading.Thread(target=stop_if_window_closed, daemon=True).start())
+
+
+def _window_alive():
+    """Un processus du navigateur DÉDIÉ de golem tourne-t-il encore ? Jamais le navigateur personnel : seul compte
+    le profil `--user-data-dir` du lanceur. Windows/macOS : provision.desktop.app_window_pids. Linux : le profil de
+    provision/golem change selon le navigateur (~/.local/share/golem/browser, ~/snap/<nom>/common/golem/browser
+    pour un snap) — tout profil qui finit par `golem/browser` compte. Dans le doute (ps impossible), vivante."""
+    import sys
+    if sys.platform != "linux":
+        from provision import desktop
+        return bool(desktop.app_window_pids())
+    try:
+        out = subprocess.run(["ps", "-eo", "args="], capture_output=True, text=True, timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        return True
+    return any(re.search(r"--user-data-dir=\S*golem/browser(\s|$)", ln) for ln in out.splitlines())
+
+
+def stop_if_window_closed():
+    """La dernière fenêtre de golem desktop est fermée (sa croix, Ctrl+W) : golem s'arrête comme par le ⏻, par la
+    MÊME route (routes_dev.ui_quit {stop: true}) — REAPER enregistré puis fermé, le bridge en dernier, le lanceur
+    avec lui. Le WebSocket peut tomber sans que la fenêtre parte (veille, bridge occupé) : on ne s'arrête que si
+    les processus de la fenêtre ont VRAIMENT disparu (_window_alive)."""
+    if getattr(state, "stopping", False) or not machine_mod.close_stops_golem():
+        return False
+    if _window_alive():
+        get("ui").info("fenêtre golem toujours là (WebSocket coupé) : golem continue")
+        return False
+    get("ui").info("fenêtre golem fermée par sa croix : arrêt de golem (REAPER, puis le bridge)")
+    asyncio.run(routes_dev.ui_quit({"stop": True}))
+    return True
 
 
 # ── statique : app + catalogue (l'app fetch ../library/...) ──────────────────

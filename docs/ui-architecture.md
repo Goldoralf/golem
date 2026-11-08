@@ -110,9 +110,10 @@ window larger than today's screen would be unreachable.
 
 | | Effect |
 |---|---|
-| the system **close** button, or **Esc** | closes the **window**. REAPER and the bridge keep running: the sound does not stop |
+| the system **close** button (or Ctrl+W), **golem desktop** (Windows, macOS, Linux) | closes the window **and stops golem** — like any program (2026-11-08). The bridge waits `CLOSE_STOP_S` (8 s: a page reload reconnects first), checks the window processes are really gone, then stops through the ⏻ route itself (`bridge/app.py` `stop_if_window_closed`, `machine.close_stops_golem`). **Verified on Windows only (2026-11-08); macOS and Linux to verify on a real machine.** `golem server` — and so the Linux autostart box — never stops this way |
+| **Esc** | closes nothing (it is pressed by reflex; closing now stops golem). In browser full screen the page says what to press |
 | **⏻ Stop golem** (System ▸ Dashboard) | closes the window **and** stops the rig (REAPER, MIDI reader, bridge): the same as `golem stop`. It needs **two taps** ("sure?") |
-| **Continue on a tablet** (System ▸ Dashboard) | shows the working address and its QR code, a pairing code if no main device exists, then closes the window the Esc way: golem keeps running ([`installer.md`](installer.md)) |
+| **Continue on a tablet** (System ▸ Dashboard) | shows the working address and its QR code, a pairing code if no main device exists, then closes the window **without stopping** (`/api/ui/quit` without `stop` marks the close as deliberate, `machine.window_detached`): golem keeps running ([`installer.md`](installer.md)) |
 
 The tablet shell has **no bottom bar** (2026-10-17): its only controls are **− +** in the bottom-right corner of
 the bezel (the zoom; the percentage shows on hover and just after a change; **auto** appears only when the zoom is
@@ -120,9 +121,11 @@ manual) and Ctrl+wheel. They sit over the stage at a constant size, not inside t
 "New version installed" banner or F5. The **phone** shell (`golem phone`, a dev tool) keeps its bar: ↻, ⏻, the
 zoom, the Who selector and the conductor switch.
 
-Closing a window and cutting the audio engine are two intentions: a close button that stopped everything
-would cut the sound mid-song. In browser full screen (F11), Esc cannot be undone from JS: the page shows
-what to press (`F11` / `Ctrl+W`).
+**Decision 2026-11-08 (FIXED).** The close button used to close only the window, so the sound would not stop if
+the window was pushed aside mid-song. On a Windows or macOS desktop that left REAPER and the bridge running with
+nothing on screen, which no one expects from a close button: in **golem desktop**, closing the window now stops
+golem. The two intentions stay apart where they matter: "Continue on a tablet" keeps golem running without a
+window, and `golem server` has none. In browser full screen (F11), the page shows what to press (`F11` / `Ctrl+W`).
 
 `window.close()` is refused for a window no script opened, so both go through the bridge:
 `POST /api/ui/quit` (`{"stop": true}` for ⏻). Only processes carrying the launcher's **dedicated**

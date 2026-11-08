@@ -244,10 +244,14 @@ async def calibrate_midi(body: dict):
 # ── coquille d'appareil du poste de travail (app/device.html) ────────────────
 @router.post("/api/ui/quit")
 async def ui_quit(body: dict = Body(default=None)):
-    """Ferme la fenêtre de la coquille — le bouton ✕ de app/device.html.
+    """Ferme la fenêtre de la coquille SANS arrêter golem — « Continue on a tablet » (app/tablet-sheet.js).
 
     Avec `{"stop": true}` (bouton ⏻) : ferme la fenêtre **ET** arrête le rig — Reaper, le
     lecteur MIDI, puis ce bridge. L'équivalent exact de `golem stop`, sans quitter l'écran.
+
+    ⚠ LA CROIX SYSTÈME, ELLE, ARRÊTE GOLEM DESKTOP (2026-11-08, Windows/macOS : app.stop_if_window_closed) —
+    sous Windows, fermer un logiciel par sa croix le ferme. Cette route sans `stop` marque donc la fermeture comme
+    VOULUE (machine.window_detached) : la fenêtre part, golem continue pour la tablette. Échap ne ferme plus rien.
 
     ⚠ POURQUOI DEUX BOUTONS ET PAS UN. Fermer une fenêtre et arrêter le moteur audio sont
     deux intentions différentes. Un ✕ qui couperait le son parce qu'on écarte la coquille
@@ -271,6 +275,9 @@ async def ui_quit(body: dict = Body(default=None)):
     if (body or {}).get("stop"):                     # /api/health cesse de dire « ok » : un lanceur attendra la fin
         from .state import state
         state.stopping = True
+    else:                                            # fermée EXPRÈS : la croix-arrêt ne s'applique pas
+        from . import machine
+        machine.window_detached()
     if sys.platform in ("win32", "darwin"):
         return await asyncio.to_thread(_ui_quit_desktop, bool((body or {}).get("stop")))
     profile = os.path.join(os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share"),

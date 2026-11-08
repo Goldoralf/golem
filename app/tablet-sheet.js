@@ -4,7 +4,8 @@
 // alors celui de la coquille (lib.js shellTabletSheet), qui couvre toute la fenêtre et la ferme à la fin.
 // DOM nu, sans Preact : la coquille n'est pas l'app. Il vit dans le document qui l'a importé.
 //
-// Le moteur ne bouge pas : seule la fenêtre s'en va (onClose — le chemin d'Échap, /api/ui/quit sans stop). Avant, on
+// Le moteur ne bouge pas : seule la fenêtre s'en va (onClose — /api/ui/quit sans stop, qui marque la fermeture VOULUE ;
+// la croix système, elle, arrête golem desktop — 2026-11-08). Avant, on
 // donne ce dont la tablette a besoin : l'adresse qui MARCHE (le nom s'il répond, sinon l'IP — /api/network/open-url),
 // son QR, et un code d'appairage si aucun appareil principal n'existe encore : sans lui, une tablette ne pourrait pas
 // arrêter golem, et sans fenêtre personne d'autre ne le peut.

@@ -73,6 +73,8 @@ end
 
 local ROOT  = repo_root()
 local runtime = dofile(ROOT .. "/reaper/Scripts/golem_paths.lua")
+-- la piste ne se crée que dans le projet du golem (golem_project.lua, 2026-11-08)
+local project = dofile(ROOT .. "/reaper/Scripts/golem_project.lua")
 local OUT   = ROOT .. "/presets/.click.json"
 local TRACK = "Click"
 -- JSFX (link-reaper.sh symlink reaper/Effects -> <resource>/Effects/golem)
@@ -432,28 +434,46 @@ end
 local GEN = tostring(reaper.time_precise())
 reaper.SetExtState("golem", "click_gen", GEN, false)
 
-local function tick()
-  poll_cmd()
-  publish(false)
-end
-
--- Au démarrage : le métronome NATIF ne doit jamais tourner (double click pendant un backing).
-if reaper.GetToggleCommandState(40364) == 1 then
-  reaper.Main_OnCommand(40364, 0)
-  log("métronome natif éteint (le click GoleM le remplace)")
-end
-
+-- ── l'ADOPTION de la piste dans le projet du golem — et seulement là (golem_project.lua, 2026-11-08) ──
+-- Au démarrage si le projet ouvert est le nôtre ; sinon au premier tick où il le devient (premier démarrage : le
+-- projet sans chemin ne devient le nôtre qu'au rappel de la bank 00 ; ou le set ouvert après un projet étranger).
+-- UNE ADOPTION PAR PROJET (revue du 2026-11-08) : adopter, c'est éteindre le click et reprendre le seq sauvé DANS CE
+-- projet sans le rejouer. Lu une seule fois au démarrage, le seq d'un set ouvert ensuite aurait été rejoué — le click
+-- s'allumait rien qu'en ouvrant le set. Et une piste perdue DANS le projet adopté (supprimée, annulation) se répare
+-- sans rien éteindre : jamais de click coupé en plein morceau.
+--
 -- ADOPTER le seq résiduel SANS le rejouer (un click_cmd sauvegardé ne doit pas relancer le click
--- au boot), sauf « kick » explicite. Et si la piste existe déjà avec le JSFX à ON (projet sauvé
--- click allumé), on la RAMÈNE à OFF : le boot est toujours silencieux.
-if reaper.GetExtState("golem", "click_kick") == "1" then
-  reaper.SetExtState("golem", "click_kick", "", false)
-  last_seq = nil
-else
-  local _, body = reaper.GetProjExtState(0, "golem", "click_cmd")
-  last_seq = body and body:match('"seq"%s*:%s*(%-?%d+)') or nil
+-- au boot), sauf « kick » explicite — consommé une fois. Et si la piste existe déjà avec le JSFX à ON (projet sauvé
+-- click allumé), on la RAMÈNE à OFF : l'ouverture est toujours silencieuse.
+local kick = reaper.GetExtState("golem", "click_kick") == "1"
+if kick then reaper.SetExtState("golem", "click_kick", "", false) end
+local adopted = nil                                        -- « pointeur|chemin » du projet adopté
+local native_off = false
+
+local function project_key()
+  local proj, path = project.current()
+  return tostring(proj) .. "|" .. path
 end
-do
+
+local function adopt()
+  adopted = project_key()
+  -- le métronome NATIF ne doit jamais tourner (double click pendant un backing) ; c'est une bascule GLOBALE de
+  -- REAPER, pas du projet : coupée une seule fois, pas à chaque set ouvert
+  if not native_off then
+    native_off = true
+    if reaper.GetToggleCommandState(40364) == 1 then
+      reaper.Main_OnCommand(40364, 0)
+      log("métronome natif éteint (le click GoleM le remplace)")
+    end
+  end
+  if kick then
+    kick, last_seq = false, nil
+  else
+    local _, body = reaper.GetProjExtState(0, "golem", "click_cmd")
+    last_seq = body and body:match('"seq"%s*:%s*(%-?%d+)') or nil
+  end
+  st.on, st.anchor = false, -1                             -- l'état publié dit ce que joue le JSFX : OFF
+  cur_tr, cur_fx = nil, -1                                 -- la piste d'un autre projet n'est pas la sienne
   local tr = find_track(TRACK)
   -- ⚠ CRÉÉE DÈS LE DÉMARRAGE (2026-10-08) : elle n'apparaissait qu'à la PREMIÈRE commande click — c'est-à-dire au
   -- départ du premier morceau. Or golem_backing y pose les temps du click du morceau AU CHARGEMENT de la backing
@@ -474,6 +494,30 @@ do
     end
   end
 end
+
+local foreign_logged = nil
+local function tick()
+  if not project.is_golem(ROOT) then
+    -- projet étranger : aucune piste créée, aucune commande lue ; l'état publié dit « absent »
+    if not foreign_logged then log("projet étranger au golem : piste " .. TRACK .. " non créée") end
+    foreign_logged = true
+    publish(false)
+    return
+  end
+  if foreign_logged then log("retour dans le projet du golem") end
+  foreign_logged = false
+  if project_key() ~= adopted then
+    adopt()
+  elseif not (cur_tr and reaper.ValidatePtr2(0, cur_tr, "MediaTrack*")) then
+    cur_tr = nil                                           -- même projet, piste perdue : réparée, état intact
+    apply(true)
+    log("piste " .. TRACK .. " réparée (état conservé)")
+  end
+  poll_cmd()
+  publish(false)
+end
+
+if project.is_golem(ROOT) then adopt() end
 
 local err_streak = 0
 local function loop()

@@ -20,6 +20,7 @@ of a subsystem before changing it.
 ## REAPER
 
 - Service track (click, clock, drums, sampler, looper) stops or never starts → arm it with `I_RECMODE = 2` → [reaper.md](reaper.md#an-unarmed-service-track-leaves-the-live-graph)
+- A blank project gets a `MIDI Clock`/`Click` track, an instrument on it is silent → service loops create tracks only in golem's project (`golem_project.lua`) → [reaper.md](reaper.md#service-loops-run-in-every-project-reaper-opens)
 - Silence while REAPER reports audio running → trust only an audio-thread counter vs wall clock; `audio_reset` → [reaper.md](reaper.md#reaper-cannot-tell-that-its-sound-card-disappeared)
 - All Lua loops freeze after a restart, one thread at 100 % → never persist `time_precise()`; reject future timestamps, cap waits → [reaper.md](reaper.md#a-relative-clock-persisted-in-the-project-freezes-reaper)
 - One script error stops unrelated loops → every `defer` callback under `pcall`/`xpcall`, errors to `.lua-errors.log` → [reaper.md](reaper.md#all-lua-loops-share-one-context-one-failing-callback-kills-the-others)

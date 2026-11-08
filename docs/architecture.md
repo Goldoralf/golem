@@ -274,7 +274,7 @@ restart, which is why drum-kit tables are rewritten on every materialization.
 | `golem_rig.lua` | The engine: `materialize`, `reapply_scene`, `handle_stomp`, mixer, VST host, `verify_files`, livemap and knobmap |
 | `golem_apply.lua` | Dev probes and utility actions (not the recall) |
 | `golem_backing` · `golem_click` · `golem_drums` · `golem_sample` · `golem_chordseq` · `golem_looper` · `golem_perfrec` · `golem_preview` · `golem_drumlearn` · `golem_tuner` · `golem_clock` (MIDI clock + audio witness) · `golem_knobs` · `golem_midi` (MIDI device guard) | Service loops (`.lua`), each reading its relay or gmem; most publish a `presets/.<name>.json` |
-| `golem_fxinventory.lua` (runs once from golem_watch) · `golem_paths.lua` · `golem_desktop_audio.lua` · `golem_capture.lua` · `golem_audio_snapshot.lua` | Helpers |
+| `golem_fxinventory.lua` (runs once from golem_watch) · `golem_paths.lua` · `golem_project.lua` (is the current project golem's? service loops create tracks only there) · `golem_desktop_audio.lua` · `golem_capture.lua` · `golem_audio_snapshot.lua` | Helpers |
 
 Key JSFX (`reaper/Effects/`): `golem_super8` (looper), `golem_drumseq`, `golem_drumtrans`,
 `golem_chordseq`, `golem_click`, `golem_tuner`, `golem_safety` (output limiter), `golem_killswitch`,

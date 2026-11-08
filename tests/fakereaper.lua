@@ -14,7 +14,7 @@
 ]]--
 local F = { tracks = {}, installed = {}, specs = {}, os = FAKE_OS or "Other", resource = FAKE_RESOURCE or "",
             gmem = {}, gmem_ns = nil, ext = {}, calls = {}, defers = {}, now = 1000.0, bpm = 120, guid_n = 0,
-            log = {} }
+            log = {}, proj = "proj#1", project_path = "" }
 FAKE = F
 for _, n in ipairs(FAKE_INSTALLED or {}) do F.installed[n] = true end
 if FAKE_SPECS then for k, v in pairs(FAKE_SPECS) do F.specs[k] = v end end
@@ -289,8 +289,10 @@ function reaper.SetExtState(sec, key, val, _) F.ext[sec .. "/" .. key] = val end
 function reaper.GetExtState(sec, key) return F.ext[sec .. "/" .. key] or "" end
 function reaper.DeleteExtState(sec, key, _) F.ext[sec .. "/" .. key] = nil end
 function reaper.HasExtState(sec, key) return F.ext[sec .. "/" .. key] ~= nil end
-function reaper.SetProjExtState(_, sec, key, val) F.ext["proj:" .. sec .. "/" .. key] = val; return 1 end
-function reaper.GetProjExtState(_, sec, key) local v = F.ext["proj:" .. sec .. "/" .. key]; return v and 1 or 0, v or "" end
+-- l'ExtState de PROJET appartient à un projet : 0 (ou nil) = le projet courant, F.proj
+local function proj_key(p, sec, key) return "proj:" .. tostring((p == 0 or p == nil) and F.proj or p) .. ":" .. sec .. "/" .. key end
+function reaper.SetProjExtState(p, sec, key, val) F.ext[proj_key(p, sec, key)] = val; return 1 end
+function reaper.GetProjExtState(p, sec, key) local v = F.ext[proj_key(p, sec, key)]; return v and 1 or 0, v or "" end
 function reaper.time_precise() F.now = F.now + 0.001; return F.now end
 function reaper.defer(fn) F.defers[#F.defers + 1] = fn end
 function reaper.SetCurrentBPM(_, bpm, _) F.bpm = bpm end
@@ -301,6 +303,13 @@ function reaper.GetResourcePath() return F.resource end
 function reaper.GetAudioDeviceInfo(_, _) return false, "" end
 function reaper.GetMIDIInputName(_, _) return false, "" end
 function reaper.GetNumMIDIInputs() return 0 end
+function reaper.GetNumMIDIOutputs() return 0 end
+function reaper.GetMIDIOutputName(_, _) return false, "" end
+-- le projet courant : `F.project_path` vide = jamais enregistré ; `F.proj` change quand on « ouvre » un autre projet
+function reaper.EnumProjects(idx, _) if idx == -1 then return F.proj, F.project_path end return nil, "" end
+function reaper.GetToggleCommandState(cmd) return (F.toggles or {})[cmd] or 0 end
+function reaper.Main_OnCommand(cmd, _) count("Main_OnCommand"); F.last_command = cmd
+  if F.toggles and F.toggles[cmd] then F.toggles[cmd] = 1 - F.toggles[cmd] end end
 function reaper.ShowConsoleMsg(s) note(tostring(s)) end
 function reaper.file_exists(p) local f = io.open(p, "r"); if f then f:close(); return true end return false end
 function reaper.RecursiveCreateDirectory(p, _) if py_mkdir then py_mkdir(p) end return 0 end

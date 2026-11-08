@@ -59,7 +59,7 @@ class Lab:
         self.root, self.res, self.rt = tmp / "root", tmp / "res", tmp / "rt"
         for d in (self.root / "reaper/Scripts", self.root / "reaper/FXChains", self.root / "presets", self.root / "library/catalog", self.res, self.rt):
             d.mkdir(parents=True, exist_ok=True)
-        for f in ("golem_rig.lua", "golem_paths.lua"):
+        for f in ("golem_rig.lua", "golem_paths.lua", "golem_project.lua"):
             shutil.copy2(ROOT / "reaper/Scripts" / f, self.root / "reaper/Scripts" / f)
         for f in ("effects.json", "effects-windows.json", "effects-macos.json"):
             shutil.copy2(ROOT / "library/catalog" / f, self.root / "library/catalog" / f)
@@ -125,6 +125,25 @@ def lab(tmp_path, request):
 
 
 # ── matérialisation ───────────────────────────────────────────────────────────────────────────────────
+def test_le_rappel_fait_du_projet_celui_du_golem(lab):
+    """golem_project.lua (2026-11-08) : les pistes de service ne s'installent que dans le projet du golem ; un projet
+    sans chemin (premier démarrage, REAPER lancé avec -new) le devient au rappel. Une bascule de scène ne marque rien."""
+    def owner():
+        return lab.L.eval('select(2, reaper.GetProjExtState(0, "golem", "owner"))')
+    lab.run(action="scene_apply", preset="ci-engine", scene="A")
+    assert owner() == ""
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    assert owner() == "1", lab.log()
+
+
+def test_un_projet_range_ailleurs_ne_devient_pas_celui_du_golem(lab, tmp_path):
+    """Un rappel qui arrive pendant que le musicien est sur SON projet y monte le rig (comme avant), mais ne le
+    marque pas : les pistes de service ne l'y suivent pas pour toujours."""
+    lab.F.project_path = str(tmp_path / "Music" / "song.rpp")
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    assert lab.L.eval('select(2, reaper.GetProjExtState(0, "golem", "owner"))') == ""
+
+
 def test_le_rappel_pose_toutes_les_pistes_et_tous_les_blocs(lab):
     lab.run(action="rig_recall", preset="ci-engine", scene="A")
     tracks = lab.tracks()

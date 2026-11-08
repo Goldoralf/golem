@@ -316,6 +316,43 @@ or level measurements are slightly off.
 
 ---
 
+## Service loops run in every project REAPER opens
+
+**Symptom.** A project that has nothing to do with the rack — a blank project opened to render a bass
+line — gets a `MIDI Clock` (or `Click`) track out of nowhere. An instrument put on it stays silent and
+cannot be recorded: the track has no master send (`B_MAINSEND = 0`) and is armed with "record: none"
+(`I_RECMODE = 2`). Seen 2026-11-08 with EZbass.
+
+**Cause.** `__startup.lua` starts the service loops for the whole REAPER session, not for one project.
+`reaper.GetTrack(0, …)` and `InsertTrackAtIndex` act on the **current** project, whatever it is. The clock
+re-created its track on every tick; the click created its track in the project open at startup.
+
+**Rule.** A loop creates or repairs a service track only in **golem's project**
+(`reaper/Scripts/golem_project.lua`, `is_golem`): a project saved under `<root>/sets/` (the launchers
+open nothing else), or an **untitled** project that carries the project ExtState `golem/owner = 1`, which
+`golem_rig.lua` sets on `rig_recall` — that covers the first boot, when REAPER starts with `-new` and the
+project has no path yet. A project saved anywhere else is never golem's, marked or not: a recall that
+lands on the musician's own tab builds the rig there (as before) but does not make it golem's for good.
+Elsewhere the loop does nothing. No cached verdict: REAPER may keep the same `ReaProject*` when File ▸ New
+replaces a project in the same tab, and a cache keyed on it would call the new blank project golem's.
+
+A loop that publishes an audio-thread witness (`golem_clock` → `presets/.clock.json`) **stops publishing**
+in a foreign project — a fresh timestamp with a frozen counter would read as a lost sound card and trigger
+`audio_reset` (`bridge/monitors.py` `_audio_alive`) — and waits 1.5 s after coming back, since a background
+tab is not processed. The click adopts its track **once per project**: it forces the click off and takes the
+saved `click_cmd` seq of *that* project without replaying it; a track lost inside the adopted project is
+repaired without switching anything off.
+
+**Detect.** Open a blank project next to the rack: no `MIDI Clock`, no `Click`;
+`presets/.clock.log` says "projet étranger au golem".
+
+**Code.** `reaper/Scripts/golem_project.lua`; `golem_clock.lua` (`tick`), `golem_click.lua` (`adopt`, `tick`);
+`golem_rig.lua` (`project.mark()` on `rig_recall`); tests `tests/test_service_tracks_lua.py`.
+Command-driven loops (backing, drums, sample, perfrec, chordseq, drumlearn, preview) create tracks only on
+an order from the bridge, so they are not guarded.
+
+---
+
 ## The OSC meter is linear in dB, not an amplitude
 
 `TRACK_VU n/track/@/vu` (`reaper/OSC/golem.ReaperOSC`) sends a normalized 0..1 value that is **linear in

@@ -92,6 +92,7 @@ local function repo_root()
   return os.getenv("GOLEM_ROOT") or res
 end
 local runtime = dofile(repo_root() .. "/reaper/Scripts/golem_paths.lua")
+local project = dofile(repo_root() .. "/reaper/Scripts/golem_project.lua")
 
 local function read_file(p) local f = io.open(p, "r"); if not f then return nil end local s = f:read("*a"); f:close(); return s end
 
@@ -4067,6 +4068,9 @@ local function main()
   end
   if not raw then log("aucune commande") return end
   if not cmd then log("commande illisible") return end
+  -- un RAPPEL fait de ce projet celui du golem : les boucles de service (horloge, click) n'installent leur piste
+  -- que là (golem_project.lua, 2026-11-08) — c'est ce qui couvre le premier démarrage, projet sans chemin
+  if cmd.action == "rig_recall" then project.mark() end
   if cmd.action == "capture_params" then
     for ti = 0, reaper.CountTracks(0) - 1 do
       local tr = reaper.GetTrack(0, ti)

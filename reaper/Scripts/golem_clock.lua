@@ -15,6 +15,8 @@
   Piste utilitaire PERMANENTE "MIDI Clock" (patron "Recording") :
     - creee au besoin, JAMAIS balayee (ne matche aucun pattern de purge de golem_rig : sweep_legacy=
       GoleM:* ; delete_unwanted/sandbox_idle = "Sandbox #Input <n>") ;
+    - et SEULEMENT dans le projet du golem (golem_project.lua, 2026-11-08) : un projet etranger ouvert dans le
+      meme REAPER ne recoit rien, et le temoin du thread audio y est suspendu (repris 1,5 s apres le retour) ;
     - aucun audio (B_MAINSEND=0, pas de send hw, pas d'entree) ;
     - JSFX midi-clock en FX0 ;
     - SORTIE MIDI HARDWARE vers l'AKAI : I_MIDIHWOUT = (index_out << 5) | canal, canal 0 = tous
@@ -49,6 +51,8 @@ end
 
 local ROOT  = repo_root()
 LOGP        = ROOT .. "/presets/.clock.log"
+-- la piste ne se crée que dans le projet du golem (golem_project.lua, 2026-11-08)
+local project = dofile(ROOT .. "/reaper/Scripts/golem_project.lua")
 local TRACK     = "MIDI Clock"
 local OLD_TRACK = "Sandbox #Clock"       -- ancien nom : migré au vol dans ensure_track
 -- noms d'ajout du JSFX (symlink link-reaper.sh : reaper/Effects -> <resource>/Effects/golem)
@@ -233,7 +237,24 @@ end
 local GEN = tostring(reaper.time_precise())
 reaper.SetExtState("golem", "clock_gen", GEN, false)      -- la derniere instance lancee gagne
 
+local foreign_logged = nil
 local function tick()
+  -- ⚠ HORS DU PROJET DU GOLEM (2026-11-08) : ni piste créée, ni témoin publié. Le témoin `ticks` est celui du
+  -- THREAD AUDIO (bridge/monitors.py `_audio_alive`) : publier `t` qui avance avec des `ticks` figés dirait « carte
+  -- perdue » et déclencherait la récupération audio. Un `t` figé, lui, se lit « boucle absente » : aucune alarme.
+  if not project.is_golem(ROOT) then
+    if not foreign_logged then log("projet étranger au golem : piste " .. TRACK .. " non créée, témoin suspendu") end
+    foreign_logged = true
+    return
+  end
+  if foreign_logged then
+    -- RETOUR (revue du 2026-11-08) : un onglet d'arrière-plan n'est pas traité par REAPER, le JSFX a pu s'arrêter.
+    -- Publier tout de suite un `t` neuf avec les `ticks` d'avant ferait croire au bridge à un thread audio mort
+    -- (récupération automatique, une seule par épisode) : on laisse d'abord tourner quelques blocs.
+    w_next = reaper.time_precise() + 1.5
+    log("retour dans le projet du golem")
+  end
+  foreign_logged = false
   local tr = find_track(TRACK) or ensure_track()
   -- resolution device : au demarrage, puis re-tente toutes ~2 s tant qu'absent (branchement a chaud)
   if not dev_idx and reaper.time_precise() >= next_resolve then
@@ -269,6 +290,6 @@ do
   else log("⚠ aucun port AKAI OUT (le MPK mini mk2 n'a peut-etre pas de MIDI-IN USB) — horloge sans destination") end
 end
 
-ensure_track()
+if project.is_golem(ROOT) then ensure_track() end       -- sinon : au premier tick dans le projet du golem
 log("demarre. piste=" .. TRACK .. " ; toggle ExtState golem/clock_on (defaut ON) ; log=" .. LOGP)
 loop()

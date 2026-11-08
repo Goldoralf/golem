@@ -12,7 +12,8 @@ from pathlib import Path
 
 import pytest
 
-from bridge import machine
+from bridge import app as _app  # noqa: F401 — importé sous la VRAIE plateforme : la fixture se dit win32, et un
+from bridge import machine       # premier import de bridge.app sous ce masque cherche winreg (absent sous Linux)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -141,3 +142,73 @@ def test_linux_reconnait_la_fenetre_de_golem_seulement(monkeypatch, ps, alive):
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: type("R", (), {"stdout": ps + "\n"})())
     assert A._window_alive() is alive
+
+
+# ── Linux : l'arrêt complet (routes_dev._linux_full_stop), corrigé le 2026-11-08 au premier essai réel ──────────
+@pytest.fixture
+def linux_stop(monkeypatch):
+    """Rien de réel : os.kill, pkill, l'OSC et /proc sont simulés ; on note l'ordre des gestes."""
+    import os
+    import subprocess
+    from bridge import desktop_audio, routes_dev, routes_system
+    steps, alive = [], {"reaper": [111, 112]}
+    monkeypatch.setattr(routes_system, "_rack_reaper_pids", lambda: list(alive["reaper"]))
+    monkeypatch.setattr(routes_system, "_wait_reaper_dead",
+                        lambda timeout=12.0: steps.append("wait-reaper") or alive["reaper"] == [])
+    monkeypatch.setattr(desktop_audio, "save_project_in_place",
+                        lambda wait=1.0: steps.append("save") or "/x/sets/golem-set.rpp")
+
+    def kill(pid, sig):
+        steps.append(("kill", pid))
+        if pid in alive["reaper"]:
+            alive["reaper"].remove(pid)
+    monkeypatch.setattr(os, "kill", kill)
+    monkeypatch.setattr(subprocess, "run", lambda argv, **k: steps.append(tuple(argv)))
+    monkeypatch.setattr(routes_dev, "_stop_xvfb", lambda: steps.append("xvfb") or 1)
+    return routes_dev, steps, alive
+
+
+def test_linux_ferme_reaper_puis_l_ecran_virtuel_puis_le_bridge_par_son_pid_sans_enregistrer(linux_stop):
+    """Pas d'enregistrement du set sous Linux : SIGTERM n'ouvre aucune boîte, le rig est reconstruit au rappel."""
+    import os
+    routes_dev, steps, _ = linux_stop
+    me = os.getpid()
+    routes_dev._linux_full_stop(grace=0)
+    assert steps == [("kill", 111), ("kill", 112), "wait-reaper", ("pkill", "-x", "aseqdump"), "xvfb",
+                     ("kill", me)]
+
+
+def test_linux_sans_reaper_le_bridge_s_arrete_quand_meme(linux_stop):
+    import os
+    routes_dev, steps, alive = linux_stop
+    alive["reaper"] = []
+    routes_dev._linux_full_stop(grace=0)
+    assert "wait-reaper" not in steps and steps[-2:] == ["xvfb", ("kill", os.getpid())]
+
+
+def test_linux_ne_tue_plus_par_motif():
+    """Ni `pkill -f "uvicorn bridge.app"` (le shell qui le cite, les bridges des sondes), ni `pkill -x reaper` (le
+    REAPER d'un banc)."""
+    import inspect
+    from bridge import routes_dev
+    code = [ln for ln in inspect.getsource(routes_dev).splitlines() if not ln.lstrip().startswith(("#", "-", "`"))]
+    assert not any("pkill" in ln and ("uvicorn" in ln or '"reaper"' in ln) for ln in code)
+
+
+def test_xvfb_seulement_l_ecran_du_rack(monkeypatch, tmp_path):
+    import os
+    from bridge import routes_dev
+    procs = {"10": [b"Xvfb", b":99", b"-screen", b"0"], "11": [b"/usr/bin/Xvfb", b":98"],
+             "12": [b"bash", b"-c", b"Xvfb :99"], "13": [b"/usr/bin/Xvfb", b":99", b"-nolisten", b"tcp"]}
+    real_open = open
+    monkeypatch.setattr(os, "listdir", lambda p: list(procs) + ["self"] if p == "/proc" else os.listdir(p))
+
+    def fake_open(path, mode="r", *a, **k):
+        if isinstance(path, str) and path.startswith("/proc/"):
+            return __import__("io").BytesIO(b"\0".join(procs[path.split("/")[2]]) + b"\0")
+        return real_open(path, mode, *a, **k)
+    monkeypatch.setattr("builtins.open", fake_open)
+    killed = []
+    monkeypatch.setattr(os, "kill", lambda pid, sig: killed.append(pid))
+    monkeypatch.delenv("GOLEM_XVFB_DISPLAY", raising=False)
+    assert routes_dev._stop_xvfb() == 2 and sorted(killed) == [10, 13]

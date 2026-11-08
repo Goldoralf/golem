@@ -2985,7 +2985,7 @@ def _window_alive():
 
 def stop_if_window_closed():
     """La dernière fenêtre de golem desktop est fermée (sa croix, Ctrl+W) : golem s'arrête comme par le ⏻, par la
-    MÊME route (routes_dev.ui_quit {stop: true}) — REAPER enregistré puis fermé, le bridge en dernier, le lanceur
+    MÊME route (routes_dev.ui_quit {stop: true}) — REAPER fermé (enregistré d'abord sous Windows/macOS), le bridge en dernier, le lanceur
     avec lui. Le WebSocket peut tomber sans que la fenêtre parte (veille, bridge occupé) : on ne s'arrête que si
     les processus de la fenêtre ont VRAIMENT disparu (_window_alive)."""
     if getattr(state, "stopping", False) or not machine_mod.close_stops_golem():

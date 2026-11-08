@@ -304,17 +304,67 @@ async def ui_quit(body: dict = Body(default=None)):
         return {"ok": True, "killed": len(killed)}
 
     # ── arrêt complet : mêmes cibles que `golem stop`, dans le même ordre ──────────────
-    # Reaper d'abord (il porte l'audio), aseqdump ensuite (le lecteur MIDI du pédalier),
-    # ce bridge en DERNIER et en DIFFÉRÉ : la réponse doit partir avant qu'il meure, sinon
-    # l'appelant ne sait pas si l'arrêt a eu lieu (même patron que bridge-restart).
-    for pat in (["pkill", "-x", "reaper"], ["pkill", "-x", "aseqdump"]):
-        with contextlib.suppress(Exception):
-            subprocess.run(pat, timeout=5)
-    subprocess.Popen(["bash", "-c", 'sleep 0.6; pkill -f "uvicorn bridge.app"'],
-                     start_new_session=True,
-                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # Dans un fil : la réponse doit partir avant que ce bridge meure, sinon l'appelant ne sait pas si l'arrêt a eu
+    # lieu (même patron que bridge-restart) — et l'écran virtuel attend la mort de REAPER.
+    import threading
+    threading.Thread(target=_linux_full_stop, name="golem-stop", daemon=True).start()
     log.info("arrêt complet demandé (Reaper + bridge) — le PC redevient un PC normal")
     return {"ok": True, "killed": len(killed), "stopped": True}
+
+
+def _linux_full_stop(grace=0.6):
+    """Linux : le REAPER de ce rack fermé, le lecteur MIDI, l'écran virtuel, ce bridge en DERNIER.
+
+    LE SET N'EST PAS ENREGISTRÉ SOUS LINUX, ET C'EST VOULU (essayé puis retiré le 2026-11-08). Windows/macOS
+    l'enregistrent parce qu'ils ferment REAPER POLIMENT (WM_CLOSE, Apple Event) et que « Save project? » bloquerait
+    l'arrêt ; ici REAPER reçoit SIGTERM, pas de boîte. Le rig est reconstruit au rappel de chaque démarrage :
+    sets/golem-set.rpp reste une coquille (inchangée depuis juillet sur le rack) — un rig entier enregistré dedans
+    ferait charger tous ses plugins par REAPER avant le premier rappel (démarrage plus lent, plugin qui fige au
+    chargement). Et « Save project » (40026) par OSC n'avait de toute façon rien réécrit au premier essai.
+
+    Deux écarts corrigés le 2026-11-08 (premier essai de la croix sous Linux) :
+    - L'XVFB SURVIVAIT : l'écran virtuel de REAPER (provision/start.sh) restait après chaque arrêt ; `golem stop`
+      le fermait, pas cette route. On le ferme APRÈS la mort de REAPER, qui dessine dessus.
+    - `pkill -f "uvicorn bridge.app"` TUAIT PAR MOTIF : toute ligne de commande qui le contient (le shell qui le
+      cite, les bridges jetables des sondes sur un autre port — le piège corrigé dans reload.sh le 2026-10-25).
+      Ce bridge s'arrête par SON PID ; REAPER par les PID du rack, jamais le REAPER d'un banc (-cfgfile)."""
+    import signal
+    from . import routes_system
+    pids = routes_system._rack_reaper_pids()
+    if pids:
+        for p in pids:
+            with contextlib.suppress(OSError):
+                os.kill(p, signal.SIGTERM)
+        if not routes_system._wait_reaper_dead(timeout=15.0):
+            log.warning("REAPER toujours là 15 s après l'arrêt demandé")
+    with contextlib.suppress(Exception):
+        subprocess.run(["pkill", "-x", "aseqdump"], timeout=5)   # -x : le nom exact, pas la ligne de commande
+    _stop_xvfb()
+    time.sleep(grace)
+    os.kill(os.getpid(), signal.SIGTERM)             # uvicorn s'arrête proprement (rapport de session compris)
+
+
+def _stop_xvfb():
+    """L'écran virtuel de REAPER, celui que provision/start.sh lance : un process `Xvfb` dont le PREMIER argument est
+    exactement l'écran du rack (GOLEM_XVFB_DISPLAY, :99) — jamais un autre Xvfb. Rend le nombre de process arrêtés."""
+    import signal
+    display = os.environ.get("GOLEM_XVFB_DISPLAY", ":99")
+    n = 0
+    for d in os.listdir("/proc"):
+        if not d.isdigit():
+            continue
+        try:
+            with open(f"/proc/{d}/cmdline", "rb") as f:
+                argv = f.read().split(b"\0")
+        except OSError:
+            continue
+        if len(argv) > 1 and os.path.basename(argv[0]) == b"Xvfb" and argv[1] == display.encode():
+            with contextlib.suppress(OSError):
+                os.kill(int(d), signal.SIGTERM)
+                n += 1
+    if n:
+        log.info(f"écran virtuel de REAPER fermé ({display})")
+    return n
 
 
 def _ui_quit_desktop(full):

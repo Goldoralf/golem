@@ -294,9 +294,9 @@ any time. `GOLEM_BIND=127.0.0.1` closes it.
   `ui.can_show = {ok, why}` in its state.
 - The bridge knows which use it is in **now**, not only at launch: `profile` (`desktop|server`) follows the window —
   set to `server` when the last golem window closes, `desktop` when one opens.
-- **golem desktop: the window's close button (or Ctrl+W) stops golem**, like any program — REAPER saved and
-  closed, then the bridge (decision 2026-11-08, [`ui-architecture.md`](ui-architecture.md) §5; verified on Windows,
-  macOS and Linux still to verify). Only "Continue on a tablet" closes the window and keeps golem running. Escape
+- **golem desktop: the window's close button (or Ctrl+W) stops golem**, like any program — REAPER closed (its
+  project saved first on Windows/macOS; not on Linux, where the rig is rebuilt at each start), then the bridge (decision 2026-11-08, [`ui-architecture.md`](ui-architecture.md) §5; verified on Windows
+  and Linux, macOS still to verify). Only "Continue on a tablet" closes the window and keeps golem running. Escape
   closes nothing. `golem server` (and the autostart of a dedicated box, which runs it) never stops this way.
 - **Stopping without a window**: only an **admin** device (or the computer itself) can stop golem, from
   **Settings ▸ System ▸ Dashboard**, or `golem stop` / "Stop golem". Route `POST /api/ui/quit {stop: true}` (admin path).

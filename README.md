@@ -5,7 +5,7 @@
 > The audio engine is **REAPER, running headless**; everything else is in this repository.
 
 > **Status: an advanced prototype (v0.6).** Its authors use it on stage and in rehearsal, on Linux. Windows
-> and macOS are **experimental**. golem ships **no amp captures**: without a free TONE3000 account the amp and pedal
+> is tested on real hardware; macOS is **experimental**. golem ships **no amp captures**: without a free TONE3000 account the amp and pedal
 > blocks stay silent (the app says so and downloads the factory captures once you connect). Expect rough edges, and
 > please tell us about them ([reporting a bug](#reporting-a-bug)).
 
@@ -72,7 +72,7 @@ For developers, the same steps by hand from a clone, without the screens (both r
 ./provision/install-desktop.sh      # the `golem` command and the desktop icons
 ```
 
-**Windows 10/11** (experimental) — in PowerShell,
+**Windows 10/11** — in PowerShell,
 `irm https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.ps1 | iex`, or double-click
 `install-windows.cmd` in a clone.
 

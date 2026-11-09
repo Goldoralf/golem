@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 # GoleM — le bootstrap en une ligne (docs/installer.md §2) :
-#     curl -fsSL https://get.golem.fm | sh          (ou : bash provision/bootstrap.sh)
+#     curl -fsSL https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.sh | bash
+#     (ou : bash provision/bootstrap.sh — get.golem.fm n'existe pas : pas de DNS, vérifié le 2026-11-09)
 # Il ne fait QUE trois choses, sans sudo : vérifier le strict minimum (Ubuntu 24.04, x86_64, python3,
 # curl), récupérer le dépôt à la DERNIÈRE RELEASE dans un cache, et lancer l'installateur graphique
 # (installer/server.py, bibliothèque standard) qui pose les questions et exécute provision/install.sh.

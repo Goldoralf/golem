@@ -613,8 +613,9 @@ local _FX_SEEN = {}
 local function add_block_fx(track, block, effects)
   local schema = effects[block.type]
   local host_name = tostring(block.plugin or "")
-  if block.type == "vst-host" and (not DESKTOP_FX or not (host_name:match("^VST3?i?:") or host_name:match("^CLAPi?:"))) then
-    log("  x vst-host : plugin desktop invalide ou absent")
+  -- toutes plateformes depuis le 2026-11-09 (Linux : docs/platforms.md §6.1) ; seuls VST, VST3 et CLAP
+  if block.type == "vst-host" and not (host_name:match("^VST3?i?:") or host_name:match("^CLAPi?:")) then
+    log("  x vst-host : nom de plugin invalide ou absent")
     return -1, nil
   end
   if DESKTOP_FX and schema and schema.unsupported then
@@ -2971,10 +2972,22 @@ end
 -- Écrit presets/.livemap.json : pour CHAQUE bloc posé, la piste (1-based), l'index FX et, par potard,
 -- l'index de param + sa plage NATIVE (pmin/pmax lus au TrackFX_GetParam). Le bridge s'en sert pour
 -- pousser la pédale EXP en OSC normalisé (/track/N/fx/M/fxparam/P/value) SANS rebuild ni Lua.
-local function livemap_entry(tr, fx, id, btype, effects, out, native_core)
+local function livemap_entry(tr, fx, id, btype, effects, out, native_core, block)
   local schema = effects[btype]
   local tnum = math.floor(reaper.GetMediaTrackInfo_Value(tr, "IP_TRACKNUMBER"))
   local ps = {}
+  -- BLOC VST HOST (2026-11-09, docs/platforms.md §6.1, lot 2) : pas de schéma — ses potards sont les « knobs » que le
+  -- musicien a choisis (block.knobs = {{i, name}}), en valeur NORMALISÉE 0..1 (la clé « p<i> » de block.params) : la
+  -- pédale EXP les pilote comme un potard du catalogue
+  if btype == "vst-host" and type(block) == "table" and type(block.knobs) == "table" then
+    local n = reaper.TrackFX_GetNumParams(tr, fx)
+    for _, k in ipairs(block.knobs) do
+      local i = type(k) == "table" and tonumber(k.i)
+      if i and i >= 0 and i < n and i == math.floor(i) then
+        ps[#ps + 1] = string.format('"p%d":{"p":%d,"pmin":0,"pmax":1}', i, i)
+      end
+    end
+  end
   for _, def in ipairs((schema and schema.params) or {}) do
     if def.type ~= "enum" and def.type ~= "bool" and def.type ~= "kitref" and def.type ~= "midilist" then   -- contenu, pas un slider (P5)
       local map = def.map
@@ -3059,9 +3072,9 @@ local function write_livemap(root, plan, created, effects)
       local is_native_core = e.spec.native_core and
                              (id == e.spec.native_core.amp_id or id == e.spec.native_core.cab_id)
       if id and not is_zone and not is_native_core then
-        local btype
-        for _, b in ipairs(e.spec.blocks or {}) do if b.id == id then btype = b.type; break end end
-        if btype then livemap_entry(tr, i, id, btype, effects, out) end
+        local btype, blk
+        for _, b in ipairs(e.spec.blocks or {}) do if b.id == id then btype, blk = b.type, b; break end end
+        if btype then livemap_entry(tr, i, id, btype, effects, out, nil, blk) end
       end
     end
     for _, b in ipairs(e.spec.blocks or {}) do                       -- cœur (NAM/IR, non estampillé)
@@ -4140,6 +4153,12 @@ local function main()
       local _, ftype = reaper.TrackFX_GetNamedConfigParm(tr, fx, "fx_type")
       local kind = (ftype or ""):find("CLAP") and "clap_chunk" or "vst_chunk"
       if (ftype or ""):find("LV2") then return nil, "LV2 plugins do not expose their state here" end
+      -- même garde que vst_state : Surge XT plante REAPER à la relecture de son grand vst_chunk — la fenêtre
+      -- s'ouvre (bloc VST Host sous Linux, 2026-11-09), son état ne se lit pas
+      local _, fxname = reaper.TrackFX_GetFXName(tr, fx, "")
+      if (fxname or ""):lower():find("surge xt", 1, true) then
+        return nil, "Native state capture unavailable for Surge XT"
+      end
       local got, v = reaper.TrackFX_GetNamedConfigParm(tr, fx, kind)
       if got and v and #v > 0 then return v, nil, kind end
       return nil, "the plugin did not give its state"

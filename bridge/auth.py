@@ -73,7 +73,9 @@ SENSITIVE_GET_PREFIX = ("/api/backup/", "/api/loop", "/api/take/", "/api/backing
                         "/api/golemfm/pair",
                         # audit 2026-11-04 (M1) : le système de fichiers du rack (dossiers, volumes, chemins absolus, nom
                         # d'utilisateur) se parcourait sans jeton ; /api/separation/browse, la même fonction, était admin
-                        "/api/kits/import", "/api/song-folders", "/api/inbox", "/api/storage")
+                        "/api/kits/import", "/api/song-folders", "/api/inbox", "/api/storage",
+                        # 2026-11-09 : les dossiers de plugins du rack (chemins absolus, nom d'utilisateur)
+                        "/api/vst-host/folders")
 
 # ── palier ADMIN (audit 2026-08-12, M-1) : le rôle d'un appareil (Guitar, Voice…) est un
 # INSTRUMENT, pas un privilège — et tout appareil appairé pouvait flasher le FCB, changer le
@@ -102,7 +104,9 @@ ADMIN_PATHS = ("/api/auth/qr",       # audit 2026-11-04 (L1) : le QR d'une invit
                "/api/fxprobe", "/api/fxdump", "/api/gapmeter", "/api/lcbench",
                # 2026-10-16 (docs/installer.md §4) : cet ORDINATEUR — rouvrir sa fenêtre, le faire démarrer avec lui,
                # le verrouiller (pare-feu, mises à jour figées : mot de passe de l'utilisateur). Comme ⏻ Stop golem.
-               "/api/ui/show", "/api/system/autostart", "/api/system/harden")
+               "/api/ui/show", "/api/system/autostart", "/api/system/harden",
+               # 2026-11-09 : « Rescan plugins » du tiroir VST Host redémarre REAPER — comme reaper-restart
+               "/api/vst-host/rescan")
 # …et l'ÉCRITURE de la config du rack, qu'un téléphone de musicien n'a jamais à toucher (la lire reste permis) :
 # éditer un mode, le recorder, la carte d'entrées, les appareils connus, lancer la file de jobs golem.fm à la main
 ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/recorder",

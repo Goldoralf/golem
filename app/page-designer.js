@@ -1127,6 +1127,8 @@ export function DesignerPage({ rig, sub }) {
       if (dead) return;
       const m = {}; (r.blocks || []).forEach(x => { if (x.id) m[x.id] = x; });
       setBstat(m); setBsSum(r.summary || null);
+      // un plugin VST en cours d'essai sur le banc (Linux, docs/platforms.md §6.1) : relire jusqu'au verdict
+      if ((r.blocks || []).some(x => x.reason === 'trial')) setTimeout(() => !dead && setBsTick(x => x + 1), 2000);
     }).catch(() => {}), 350);
     return () => { dead = true; clearTimeout(t); };
   }, [bsig, bsTick]);
@@ -1240,6 +1242,9 @@ export function DesignerPage({ rig, sub }) {
   // Demander la fenêtre d'un plugin est un geste d'édition : le brouillon est joué, puis la fenêtre est cherchée
   // pendant que REAPER charge (une suite d'ampli commerciale prend plusieurs secondes).
   const openVst = async id => {
+    // Linux (2026-11-09, docs/platforms.md §6.1) : la fenêtre du plugin vit sur l'écran virtuel de REAPER — elle est
+    // filmée et montrée ici, comme celle de Vital ; à sa fermeture l'état natif est capturé dans le patch.
+    if (winAvail && winAvail.mode === 'view') return openPluginWindow(id, '', 'vst');
     const tryOpen = () => post('/api/vst-host/open', { block: id }).then(() => true, () => false);
     if (await tryOpen()) return;
     flash('▶ playing this draft — loading the plugin…');
@@ -1262,19 +1267,28 @@ export function DesignerPage({ rig, sub }) {
   // (USB compris) alors que l'enregistreur ne prenait pas USB, et le tap les éteignait — un Riff clavier refusé.
   const { data: recCfg, reload: reloadRecCfg } = useAsync(() => fetch('/api/recorder').then(r => r.json()).catch(() => null), []);
   const setRecCfg = async (k, v) => { await post('/api/recorder', { [k === 'rec_mode' ? 'mode' : k]: v }).catch(() => null); reloadRecCfg(); };
-  const [winWatch, setWinWatch] = useState(null);     // { blockId, seq, from }
-  const openVitalWindow = async (blockId, from) => {
+  const [winWatch, setWinWatch] = useState(null);     // { blockId, seq, from, kind: 'vital' | 'vst', title, sceneId }
+  // kind 'vst' : le bloc VST Host sous Linux — même fenêtre filmée, mais à la fermeture c'est l'état natif du plugin
+  // qui est capturé dans le patch (applyHostState), pas un preset Vital
+  const openPluginWindow = async (blockId, from, kind = 'vital') => {
+    const vst = kind === 'vst';
+    const blk = vst ? allBlocksOf(p).find(b => b.id === blockId) : null;
+    const title = vst ? String((blk && (blk.label || blk.plugin)) || 'Plugin').replace(/^(VST3?i?|CLAPi?):\s*/, '') : 'Vital';
     const tryOpen = () => post('/api/plugin-window/open', { block: blockId }).then(r => r, () => null);
     let r = await tryOpen();
     if (!r) {                                          // le brouillon ne joue pas encore : le jouer d'abord (comme openVst)
-      flash('▶ playing this draft — loading Vital…');
+      // un plugin jamais essayé passe d'abord le banc (Linux, docs/platforms.md §6.1) : le dire, et attendre le verdict
+      const testing = vst && bstat && bstat[blockId] && bstat[blockId].reason === 'trial';
+      flash(testing ? '⏳ golem is testing this plugin before it plays — a few seconds…'
+                    : `▶ playing this draft — loading ${vst ? 'the plugin' : 'Vital'}…`);
       if (!(await audition(bodyOf()))) return;
-      for (let i = 0; i < 10 && !r; i++) { await new Promise(res => setTimeout(res, 1500)); r = await tryOpen(); }
+      for (let i = 0; i < (testing ? 30 : vst ? 12 : 10) && !r; i++) { await new Promise(res => setTimeout(res, 1500)); r = await tryOpen(); }
     }
-    if (!r) { flash('✗ Vital window not found'); return; }
-    if (!r.readable) flash('⚠ Vital opened, but its changes cannot be kept here');
+    if (!r) { flash(vst ? '✗ plugin window not found in REAPER' : '✗ Vital window not found'); return; }
+    if (!r.readable) flash(`⚠ ${title} opened, but its changes cannot be kept here${r.error ? ' — ' + r.error : ''}`);
     // Linux : la fenêtre est filmée et montrée ici (PluginView) ; « Done » la ferme, la surveillance ci-dessous range
-    setWinWatch({ blockId, seq: r.seq, from: from || '', mode: r.mode || 'native', w: r.w, h: r.h, closing: false });
+    setWinWatch({ blockId, seq: r.seq, from: from || '', mode: r.mode || 'native', w: r.w, h: r.h, closing: false,
+                  kind, title, sceneId: sc && sc.id });
   };
   const closeVitalView = () => {
     if (!winWatch) return;
@@ -1288,8 +1302,17 @@ export function DesignerPage({ rig, sub }) {
       const st = await fetch('/api/plugin-window/' + encodeURIComponent(winWatch.blockId)).then(r => r.json()).catch(() => null);
       if (!alive || !st || String(st.seq) !== String(winWatch.seq) || st.state === 'open') return;
       clearInterval(t); setWinWatch(null);
-      if (st.state === 'lost') { flash('✗ Vital was reloaded while its window was open — changes not kept'); return; }
+      if (st.state === 'lost') { flash(`✗ ${winWatch.title || 'Vital'} was reloaded while its window was open — changes not kept`); return; }
       if (st.state !== 'closed' || !st.changed) return;          // fermée sans retouche : rien à dire
+      if (winWatch.kind === 'vst') {                              // le bloc VST Host : l'état natif va dans le patch
+        const r = await fetch('/api/vst-host/state/' + encodeURIComponent(winWatch.blockId)).catch(() => null);
+        const state = r && await r.json().catch(() => null);
+        if (!r || !r.ok || !state) { flash('✗ plugin settings not captured' + (state && state.error ? ' — ' + state.error : '')); return; }
+        applyHostState(winWatch.blockId, winWatch.sceneId, state);
+        window.dispatchEvent(new CustomEvent('golem:vst-captured', { detail: { blockId: winWatch.blockId } }));
+        flash('✓ plugin settings captured into the patch');
+        return;
+      }
       const r = await post('/api/plugin-window/' + encodeURIComponent(winWatch.blockId) + '/save-vital',
         { seq: winWatch.seq, from: winWatch.from }).catch(() => null);
       if (!r || !r.id) { flash('✗ could not keep the Vital changes'); return; }
@@ -2059,6 +2082,27 @@ export function DesignerPage({ rig, sub }) {
     i = arrBlocks.findIndex(b => b && pred(b)); if (i >= 0) return { ca: i };
     return null;
   };
+  // L'ÉTAT NATIF D'UN BLOC VST HOST CAPTURÉ DANS LE PATCH — par son id (le tiroir, ou la fenêtre filmée de Linux qui
+  // se ferme quand le tiroir n'est peut-être plus ouvert) : la base du bloc, et les valeurs de la scène `sceneId`
+  const applyHostState = (blockId, sceneId, state) => {
+    const ref = findRefBy(b => b.id === blockId);
+    if (!ref) return false;
+    setP(prev => {
+      const old = blockAt(prev, ref);
+      if (old?.id !== blockId || !['vst_chunk', 'clap_chunk'].includes(state.kind)) return prev;
+      const oldOvr = (prev.scenes || []).find(s => s.id === sceneId)?.params?.[old.id];
+      const captured = captureHostState(old.params, oldOvr, state);
+      if (!captured.changed) return prev;
+      const n = structuredClone(prev);
+      const b = blockAt(n, ref);
+      b.params = captured.params;
+      const scn = (n.scenes || []).find(s => s.id === sceneId);
+      if (scn?.params?.[b.id]) scn.params[b.id] = captured.overrides;
+      propagateLaneStates(prev, n);
+      return n;
+    });
+    return true;
+  };
   const findVolumeRef = () => findRefBy(b => b.type === 'volume');
   const refOfBlockId = id => findRefBy(b => b.id === id);
 
@@ -2190,7 +2234,7 @@ export function DesignerPage({ rig, sub }) {
   return html`
     <div class="designer">
       ${glancePop()}
-      ${winWatch && winWatch.mode === 'view' ? html`<${PluginView} blockId=${winWatch.blockId} title="Vital"
+      ${winWatch && winWatch.mode === 'view' ? html`<${PluginView} blockId=${winWatch.blockId} title=${winWatch.title || 'Vital'}
         w=${winWatch.w} h=${winWatch.h} saving=${winWatch.closing} onDone=${closeVitalView} />` : ''}
       ${songPick ? html`<div class="detail" onClick=${e => e.target.classList.contains('detail') && setSongPick(null)}>
         <div class="detail-card bp-songs">
@@ -2441,20 +2485,20 @@ export function DesignerPage({ rig, sub }) {
             b.params = { ...(b.params || {}) };
             params.forEach(pm => { b.params['p' + pm.i] = pm.value; });
           })}
-          onNativeState=${state => setP(prev => {
-            const old = blockAt(prev, sel);
-            if (old?.id !== selBlock.id || !['vst_chunk', 'clap_chunk'].includes(state.kind)) return prev;
-            const oldOvr = (prev.scenes || []).find(s => s.id === sc.id)?.params?.[old.id];
-            const captured = captureHostState(old.params, oldOvr, state);
-            if (!captured.changed) return prev;
-            const n = structuredClone(prev);
-            const b = blockAt(n, sel);
-            b.params = captured.params;
-            const scn = (n.scenes || []).find(s => s.id === sc.id);
-            if (scn?.params?.[b.id]) scn.params[b.id] = captured.overrides;
-            propagateLaneStates(prev, n);
-            return n;
-          })}
+          onNativeState=${state => applyHostState(selBlock.id, sc.id, state)}
+          captureOk=${!!(effects && effects.vst_capture)}
+          inApp=${!!(winAvail && winAvail.mode === 'view')}
+          onKnobs=${(list, remember) => {
+            upd(n => { const b = blockAt(n, sel); if (!b?.id) return;
+              if (list.length) b.knobs = list; else delete b.knobs;
+              // la pédale qui pilotait un potard retiré ne pilote plus rien
+              if (n.exp2 && n.exp2.block === b.id && !list.some(k => 'p' + k.i === n.exp2.param)) n.exp2 = null; });
+            if (remember && selBlock.plugin) post('/api/vst-host/knobs', { plugin: selBlock.plugin, knobs: list }).catch(() => {});
+          }}
+          exp2=${p.exp2} expN=${(((rig && rig.state && rig.state.pedals) || {}).volume) === 'exp2' ? 1 : 2}
+          onExp=${k => upd(n => { const cur = n.exp2, key = 'p' + k.i;
+            n.exp2 = (cur && cur.block === selBlock.id && cur.param === key) ? null
+                   : { block: selBlock.id, param: key, min: 0, max: 1 }; })}
           onApplyAll=${() => applyParamsAllScenes(sel)}
           onBypass=${() => toggleBypass(sel)} onScene=${on => setSceneBlock(sel, on)}
           onMove=${d => move(sel, d)} onRemove=${() => rmBlock(sel)}
@@ -2475,7 +2519,7 @@ export function DesignerPage({ rig, sub }) {
                 onSongs: songs => upd(n => { if (songs.length) n.backing = { songs }; else delete n.backing; }),
                 recSrc: recCfg ? { ...recCfg, rec_mode: recCfg.mode } : null,
                 // la fenêtre de Vital (2026-10-14) : seulement sur l'écran de la machine, sous Windows / macOS
-                vitalWindow: selBlock.type === 'vital' ? (cur => openVitalWindow(selBlock.id, cur)) : null,
+                vitalWindow: selBlock.type === 'vital' ? (cur => openPluginWindow(selBlock.id, cur)) : null,
                 // grisé ailleurs que sur l'écran d'un golem Windows / macOS : le tiroir dit pourquoi au tap
                 vitalWindowWhy: winAvail && winAvail.available ? '' : ((winAvail && winAvail.why) || 'Vital’s window is not available here'),
                 vitalWindowOpen: !!(winWatch && winWatch.blockId === selBlock.id),
@@ -2567,7 +2611,7 @@ export function DesignerPage({ rig, sub }) {
         const roleArch = role ? archetypes.filter(a => (a.roles || ['guitar']).includes(role)) : [];
         return html`<${CategoryDrawer} cats=${isCfg ? cats : (roleCats || cats)} fx=${dfx} flat=${isCfg}
           pedals=${isCfg ? [] : roleArch} fam=${role ? ROLE_FAM[role] : null}
-          post=${!!drawer.post} voice=${dLane.role === 'voice'} stereo=${drawer.add === 'pre' && !split && !dLane.midi}
+          post=${!!drawer.post} voice=${dLane.role === 'voice'} stereo=${drawer.add === 'pre' && !split && !dLane.midi} laneStereo=${!!dLane.stereo}
           present=${new Set([...laneBlocks(dLane), ...genBlocks, ...recBlocks].filter(Boolean).map(b => b.type))}
           hw=${isCfg ? [] : hwPedals}
           onAdd=${(type, tone) => { if (isCfg) addConfigBlock(type, drawer.config);

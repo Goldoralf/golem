@@ -5,14 +5,15 @@
 // ses réglages sont CAPTURÉS dans le patch (état natif complet, vst_chunk). Les réglages par scène posés
 // AVANT (block.params / overrides de scène) restent appliqués : l'en-tête les compte.
 import { html, useState, useEffect, useRef, esc, cls } from './lib.js';
-import { PowerBtn } from './designer-sheets.js';
+import { PowerBtn, Knob } from './designer-sheets.js';
 import { ParametricCapture } from './capture-parametric.js';
 
 const hhmm = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 export function VstHostSheet({ block, sceneId, sceneOff, ovr, onParam, onCapture, onNativeState,
                                onApplyAll, onBypass, onScene, onMove, onRemove, onOpen, onClose, powerOn, onPower, multiScene,
-                               patchName, onReplace }) {
+                               patchName, onReplace, captureOk = true, inApp = false,
+                               onKnobs, exp2, expN = 2, onExp }) {
   const [openError, setOpenError] = useState('');
   const [opened, setOpened] = useState(false);          // fenêtre ouverte depuis ce tiroir, pas encore capturée
   const [capture, setCapture] = useState(null);         // { at: Date } | { busy: true }
@@ -32,6 +33,12 @@ export function VstHostSheet({ block, sceneId, sceneOff, ovr, onParam, onCapture
       throw e;
     }
   };
+  // Linux (2026-11-09) : la fenêtre filmée est fermée par la page, qui capture l'état et le dit ici
+  useEffect(() => {
+    const onCaptured = e => { if (e.detail && e.detail.blockId === block.id) { setOpened(false); setCapture({ at: new Date() }); } };
+    window.addEventListener('golem:vst-captured', onCaptured);
+    return () => window.removeEventListener('golem:vst-captured', onCaptured);
+  }, [block.id]);
   useEffect(() => {
     const onFocus = () => { setTimeout(() => captureNative().catch(e =>
       setOpenError(String(e.message || e))), 250); };
@@ -64,11 +71,14 @@ export function VstHostSheet({ block, sceneId, sceneOff, ovr, onParam, onCapture
       </div>
       ${openError ? html`<p class="vst-host-error">${esc(openError)}</p>` : ''}
       <div class="sheet-body vh-plugin">
+        <div class="vh-col">
         <div class="vh-card">
           <div class="vh-name">${esc(plugName)}</div>
           ${vendor ? html`<div class="vh-vendor">${esc(vendor)}</div>` : ''}
           <button class="vh-open" onClick=${open}>⧉ Open plugin window</button>
-          <p class="vh-hint">The plugin's own interface opens in a separate window. Set it up there, then come back and tap <b>Done</b>.</p>
+          <p class="vh-hint">${inApp
+            ? html`The plugin's own interface opens full screen inside golem. Set it up there, then tap <b>Done</b>: its settings go into the patch.`
+            : html`The plugin's own interface opens in a separate window. Set it up there, then come back and tap <b>Done</b>.`}</p>
           <div class="vh-capture">
             <span class=${cls('vh-state', capture?.at && 'ok', opened && !capture?.at && 'pending')}>
               ${capture?.busy ? 'Capturing plugin settings…'
@@ -78,8 +88,94 @@ export function VstHostSheet({ block, sceneId, sceneOff, ovr, onParam, onCapture
             <button class="vh-done" onClick=${done} disabled=${!!capture?.busy}>Done</button>
           </div>
         </div>
-        <${CaptureMode} block=${block} patchName=${patchName} onReplace=${onReplace} stamp=${capture?.at} />
+        ${onKnobs ? html`<${KnobRow} block=${block} ovr=${scene} multiScene=${multiScene} onParam=${onParam}
+          onKnobs=${onKnobs} exp2=${exp2} expN=${expN} onExp=${onExp} />` : ''}
+        </div>
+        ${captureOk
+          ? html`<${CaptureMode} block=${block} patchName=${patchName} onReplace=${onReplace} stamp=${capture?.at} />`
+          : html`<div class="vh-card vh-capture-mode vh-off" title="Plugin captures are made on Windows or macOS">
+              <div class="vh-seg" aria-disabled="true">
+                <button class="vh-seg-b" disabled>Current setting</button>
+                <button class="vh-seg-b" disabled>With controls</button>
+              </div>
+              <p class="vh-hint">Turning this plugin into a NAM capture is done on a Windows or macOS golem.</p>
+            </div>`}
       </div>
+    </div>
+  </div>`;
+}
+
+// ── LES KNOBS (2026-11-09, docs/platforms.md §6.1, lot 2) ─────────────────────────────────────────────────────────
+// Jouer sans rouvrir l'interface du plugin, souvent trop petite pour 1024×600 : 4 à 8 potards choisis parmi ses
+// paramètres. Valeur NORMALISÉE 0..1 dans block.params « p<i> » (base) ou la scène (même chemin que le reste du bloc,
+// onParam = setHostParam) ; affichée en %. Le choix vit sur le bloc (block.knobs) et sert de défaut au prochain bloc
+// du même plugin (/api/vst-host/knobs). La pédale EXP prend un potard (exp2 = {block, param: 'p<i>', 0..1}).
+const MAX_KNOBS = 8;
+function KnobRow({ block, ovr, multiScene, onParam, onKnobs, exp2, expN, onExp }) {
+  const knobs = Array.isArray(block.knobs) ? block.knobs : null;
+  const [live, setLive] = useState(null);             // {params:[{i,name,value,display}]} | {error}
+  const [pick, setPick] = useState(false);
+  const read = () => fetch('/api/vst-host/params/' + encodeURIComponent(block.id))
+    .then(async r => { const d = await r.json().catch(() => ({})); setLive(r.ok ? d : { error: d.error || 'cannot read the plugin' }); })
+    .catch(() => setLive({ error: 'cannot read the plugin' }));
+  useEffect(() => { read(); }, [block.id]);
+  // un bloc neuf reprend le choix mémorisé pour ce plugin
+  useEffect(() => {
+    if (knobs || !block.plugin) return;
+    fetch('/api/vst-host/knobs?plugin=' + encodeURIComponent(block.plugin)).then(r => r.json())
+      .then(d => { if (d && Array.isArray(d.knobs) && d.knobs.length) onKnobs(d.knobs, false); }).catch(() => {});
+  }, [block.id]);
+  const liveOf = i => ((live && live.params) || []).find(pm => pm.i === i);
+  const params = block.params || {};
+  const shown = knobs || [];
+  return html`<div class="vh-card vh-knobs">
+    <div class="vh-knobs-head"><b>Knobs</b>
+      <button class="mini" onClick=${() => { setPick(true); if (!live || live.error) read(); }}>${shown.length ? 'Edit' : '+ Add knobs'}</button></div>
+    ${shown.length ? html`<div class="vh-knob-grid">${shown.map(k => {
+        const key = 'p' + k.i, cur = liveOf(k.i);
+        const own = multiScene && Object.hasOwn(ovr || {}, key);
+        const v = own ? ovr[key] : Object.hasOwn(params, key) ? params[key] : cur ? cur.value : 0;
+        const base = Object.hasOwn(params, key) ? params[key] : cur ? cur.value : 0;
+        const onPedal = exp2 && exp2.block === block.id && exp2.param === key;
+        return html`<div class="vh-knob" key=${k.i}>
+          ${onExp ? html`<button class=${cls('exp-chip', onPedal && 'on')} onClick=${() => onExp(k)}
+            title=${onPedal ? `EXP ${expN} drives this knob — tap to unassign` : `assign to expression pedal EXP ${expN}`}>EXP ${expN}</button>` : ''}
+          <${Knob} label=${k.name} value=${Math.round(v * 1000) / 10} min=${0} max=${100} unit="%"
+            overridden=${own} base=${Math.round(base * 100)}
+            onChange=${nv => onParam(k.i, cur ? cur.value : base, nv == null ? null : nv / 100)} />
+        </div>`; })}</div>`
+      : html`<p class="vh-hint">${live && live.error
+          ? 'Play this patch once to read the plugin\'s parameters, then pick the ones you want here.'
+          : 'Pick up to 8 of the plugin\'s parameters: they show here, with a value per scene.'}</p>`}
+    ${pick ? html`<${KnobPicker} live=${live} chosen=${shown} onRetry=${read}
+      onDone=${list => { setPick(false); onKnobs(list, true); }} onClose=${() => setPick(false)} />` : ''}
+  </div>`;
+}
+
+function KnobPicker({ live, chosen, onRetry, onDone, onClose }) {
+  const [sel, setSel] = useState(chosen.map(k => ({ ...k })));
+  const [q, setQ] = useState('');
+  const all = (live && live.params) || [];
+  const ql = q.trim().toLocaleLowerCase();
+  const rows = all.filter(pm => !ql || String(pm.name).toLocaleLowerCase().includes(ql) || String(pm.i) === ql);
+  const has = i => sel.some(k => k.i === i);
+  const toggle = pm => setSel(cur => has(pm.i) ? cur.filter(k => k.i !== pm.i)
+    : cur.length >= MAX_KNOBS ? cur : [...cur, { i: pm.i, name: String(pm.name || 'Param ' + pm.i).slice(0, 40) }]);
+  return html`<div class="vh-kp-scrim" onClick=${e => e.target.classList.contains('vh-kp-scrim') && onClose()}>
+    <div class="vh-kp">
+      <div class="vh-kp-head"><b>Knobs</b><span class="muted">${sel.length} / ${MAX_KNOBS}</span>
+        <span class="grow"></span>
+        <button class="mini" onClick=${onClose}>Cancel</button>
+        <button class="mini primary" onClick=${() => onDone(sel)}>Done</button></div>
+      ${live && live.error ? html`<p class="vh-hint">${esc(live.error)} — play this patch, then
+          <button class="mini" onClick=${onRetry}>Read again</button></p>`
+        : !live ? html`<p class="vh-hint">Reading the plugin's parameters…</p>`
+        : html`<input class="vh-in" type="search" placeholder="Search a parameter" value=${q} onInput=${e => setQ(e.target.value)} />
+          <div class="vh-kp-list">${rows.map(pm => html`<button key=${pm.i} class=${cls('vh-kp-row', has(pm.i) && 'on')}
+              disabled=${!has(pm.i) && sel.length >= MAX_KNOBS} onClick=${() => toggle(pm)}>
+              <span class="vh-kp-ck">${has(pm.i) ? '✓' : ''}</span><span class="vh-kp-nm">${esc(pm.name || 'Param ' + pm.i)}</span>
+              <span class="muted">${esc(pm.display || '')}</span></button>`)}
+            ${rows.length ? '' : html`<p class="vh-hint">No parameter matches.</p>`}</div>`}
     </div>
   </div>`;
 }

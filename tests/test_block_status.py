@@ -255,3 +255,13 @@ def test_les_remplacants_publies_ne_proposent_pas_de_pedale_midi_externe(machine
         {"type": "whammy-dt", "name": "Whammy DT (MIDI)"}, {"type": "octaver", "name": "Octaver"}]})
     monkeypatch.setattr(BS, "effects", lambda: {"whammy-dt": {"engine": "midi"}, "octaver": {"engine": "lv2"}})
     assert BS._alts("detune", "guitar", {}) == [{"type": "octaver", "name": "Octaver"}]
+
+
+def test_linux_le_bloc_vst_host_n_est_plus_refuse_par_plateforme(machine, monkeypatch):
+    """2026-11-09 (docs/platforms.md §6.1) : sous Linux, un plugin installé joue ; un absent reste indisponible."""
+    monkeypatch.setattr(BS.sys, "platform", "linux")
+    _inv(machine, [["CLAP: Surge XT (Surge Synth Team)", "surge"]])
+    ok = BS.block_state({"type": "vst-host", "plugin": "CLAP: Surge XT (Surge Synth Team)"})
+    absent = BS.block_state({"type": "vst-host", "plugin": "VST3: Missing (Vendor)"})
+    assert ok["state"] == "ready", ok
+    assert absent["state"] == "unavailable" and "Windows" not in absent.get("why", "")

@@ -118,7 +118,7 @@ the buffer (Volt at 128: 194 / 198 samples): converters and the driver's USB saf
 | REAPER update from the app | ✅ | ✅ (UAC prompt on the PC) | ❌ "not available on macOS yet" (`bridge/reaper_update.py`) |
 | Plugin window ([`plugin-window.md`](plugin-window.md)) | ✅ filmed view | ✅ native window | ⚠ main REAPER window may reappear |
 | CPU boost (Dashboard ⚡) | ✅ governor | ✅ "Performance" power plan | ❌ 501 (`perf_mode`) |
-| VST Host block (any scanned VST/VST3/CLAP) | — | ✅ | ⚠ (AU-only plugins are not listed) |
+| VST Host block (any scanned VST/VST3/CLAP) | ⚠ coded, first-use bench test, window not tried on the rack (§6.1) | ✅ | ⚠ (AU-only plugins are not listed) |
 | REAPER licence state (registered / evaluation) | file presence only | ✅ read from the window title | file presence only |
 
 ## 4. Known limits
@@ -269,7 +269,7 @@ installs Proteus (`install-system.ps1 -Proteus`). On macOS the elevated step ins
 Dragonfly reverbs, `granular` (ZamGrains), `pitch-spectral`, `spectral-comp`, `stretch`, the MDA
 `ringmod`, `bitcrusher`, `rezfilter`, and `delay-tape-aw` (Airwindows TapeDelay2).
 
-## 6. The VST Host block (Windows, macOS)
+## 6. The VST Host block
 
 On desktop systems a lane can host any plugin **this REAPER** has scanned. In the Designer, open the
 lane's add drawer, then **VST Host** (`app/designer-vst-host.js`; routes `/api/vst-host/*` in
@@ -291,6 +291,72 @@ name, may be missing). AU-only plugins are not listed. Several VST Host blocks c
   Surge XT is excluded from native capture: reading its large state crashes REAPER.
 - **Missing plugin.** If the plugin is uninstalled, the block stays in the preset, REAPER cannot
   instantiate it, and `presets/.golem-rig.log` names the missing plugin.
+
+### 6.1 On Linux
+
+> **Status: CODED (2026-11-09), not yet tried on the rack with a real plugin window** — validated by the maintainer the
+> same day. The block was refused on Linux in five places (`get_effects`, `/api/vst-host/plugins`, `/api/vst-host/open`,
+> `blockstatus`, `golem_rig.lua` `DESKTOP_FX`). No technical reason was written down; the remembered one is "fewer
+> proprietary plugins on Linux". The rack itself scans hundreds (VST3/CLAP: Surge XT, Vital, Dexed, LSP, ZAM,
+> Dragonfly, BYOD…), so the block opens on Linux, in three lots.
+
+1. **Open the block.** The refusals are lifted (`/api/vst-host/open`, the native-window path, stays Windows/macOS).
+   The picker lists the VST, VST3 and CLAP plugins REAPER scanned, from REAPER's own scan paths (LV2 stays out — a
+   later step). The list is for **new** plugins (decided the same day): golem's own plugins (vendor "golem": Freeze, the
+   capture plugin) are never listed, and a plugin the catalogue already plays as a block (`effects.json` and the
+   desktop tables, matched by bare name — `routes_content._catalog_plugin_blocks`) is marked `block` by
+   `/api/vst-host/plugins` and shown folded at the bottom ("N plugins golem already uses"): a tap adds the **golem
+   block** (its settings, its presets), the small **VST** chip still adds the plugin itself (Surge XT Effects holds
+   more than the spring reverb golem uses). This applies on every OS. The **versions of one tool** are one row (`app/vst-host-model.mjs` `variantOf`): LSP
+   publishes a plugin per channel layout and band count ("Compressor Mono / Stereo / LeftRight / MidSide",
+   "Parametric Equalizer x16 Stereo") — 176 rows for 54 tools on the rack. A tap adds the Mono or Stereo version as the
+   lane is mono or stereo, the smallest band count; "+N" unfolds the others (L/R, M/S, x32…). "Sidechain …" stays a
+   tool of its own. **Open plugin window** uses the **filmed view** of [`plugin-window.md`](plugin-window.md) — the
+   `plugin_window` action already targets any `golem:<id>` FX; `app/page-designer.js` `openPluginWindow(id, '', 'vst')`.
+   When the window closes with a changed state, the page captures the native state (`/api/vst-host/state`,
+   `applyHostState`) into the patch — the same capture as on Windows/macOS — even if the drawer was closed meanwhile.
+   Reading the state of **Surge XT** is skipped in `plugin_window` too (the `vst_state` guard: its large chunk crashes
+   REAPER): its window opens, its edits are not captured. The NAM capture of a plugin stays Windows/macOS
+   (`vst_capture: false` in `/api/effects`): its card is shown greyed with that reason.
+2. **Knobs.** A row of up to 8 knobs the musician picks from the plugin's parameters (`/api/vst-host/params`), on one
+   row (1024×600). They live on the block (`block.knobs = [{i, name}]`, so a shared patch carries them); a value is the
+   normalized `p<i>` of `block.params` or of the scene (the existing `setHostParam` path), shown in %. The choice is
+   also remembered **per plugin** in `config/vst-knobs.json` (local state; `GET/POST /api/vst-host/knobs`) and given to
+   the next block of the same plugin. A knob takes the expression pedal (`exp2 = {block, param: "p<i>", min: 0, max: 1}`):
+   `golem_rig.lua` publishes the knobs in `.livemap.json` (`p<i>`, range 0–1) and /live names the knob, not `p12`.
+3. **Bench test on first use** (`bridge/plugin_trial.py`). A plugin never tried on this rack is kept out of the rig
+   (`rig._drop_quarantined`, said in the log) and loaded in a separate REAPER: its own `-cfgfile` folder, dummy audio
+   (`linux_audio_mode=2`), the rack's virtual screen (never the user's), the machine's licence and plugin caches. The
+   track is armed like a rig track (`I_RECMODE = 2`) — otherwise REAPER renders its FX ahead and a stall goes unseen.
+   A JSFX meter placed before the plugin records the longest gap between two audio blocks while the plugin is switched
+   on and off four times. Verdicts, kept per plugin in `config/vst-trials.json` (local state): REAPER crashed, froze
+   (15 s without a sign of life), or the audio stopped longer than **50 ms** → refused (`quarantine`, the measured
+   reason in `detail`); otherwise the draft is re-applied (`recall.reapply_sandbox`) and the block plays. A plugin
+   that does not load (uninstalled, stale name) gets no verdict. Meanwhile `blockstatus` says `reason: "trial"` and
+   the Designer re-reads it every 2 s. `GOLEM_VST_TRIAL=0` turns the bench off (the test suite does).
+   **Calibrated on REAPER 7.82 (2026-11-09):** background 12 ms (ReaEQ, ZamComp, Surge XT, ~8 s per plugin); a JSFX
+   that blocks its audio thread 67 / 83 ms is read 67 / 83 ms. **Not proven:** ReaPitch, measured freezing the live
+   engine 435 ms in September, read 12 ms on this bench — its freeze needs conditions the bench does not reproduce
+   (real input, its settings). The bench catches crashes, freezes and stalls in a plugin's processing; the catalogue
+   quarantine stays the answer for what only the live rig shows.
+
+### 6.2 Installing a plugin, and letting REAPER see it
+
+> **Status: CODED (2026-11-09)**, all three OSes; the restart is not tried on Windows/macOS from this button.
+
+golem keeps **no list of plugin folders of its own**: only REAPER's counts — the block can only add what REAPER can
+load, and the picker already reads REAPER's inventory (`EnumInstalledFX`), user-added paths included. A second list
+could only drift. What the drawer adds:
+
+- **Where to install plugins** (`GET /api/vst-host/folders`, not readable from the LAN: absolute paths) shows the folders
+  REAPER scans here: those of `reaper.ini` when set (`vstpath*` for VST/VST3, `clap_path_*` for CLAP — key names read in
+  the REAPER 7.82 binary), otherwise its defaults for the OS (Linux: `~/.vst3`, `~/.clap`, `~/.vst` and their
+  `/usr/lib`, `/usr/local/lib` twins; Windows: `Common Files\VST3` / `\CLAP`; macOS: `…/Audio/Plug-Ins/VST3|CLAP|VST`).
+  The folder one can write to without a password is highlighted.
+- **Rescan plugins** (`POST /api/vst-host/rescan`, admin like `reaper-restart`): REAPER only scans at start, so the
+  button restarts it (`routes_system.reaper_restart`), waits until it is back and linked for 3 s, then re-applies the
+  draft (a restarted REAPER reopens an empty project). Two taps, the first one says the sound stops; refused during
+  a take, a song, a load or in Gig mode (`reamp.busy_reason`). The drawer re-reads the inventory when REAPER answers.
 
 ## 7. What proves a platform
 

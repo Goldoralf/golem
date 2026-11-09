@@ -1253,7 +1253,10 @@ def _set_exp_blk_from(preset):
         # midi-pedal : le RELAIS treadle (patron whammy-dt) a besoin du descripteur -> on garde le ref,
         # et le label est le NOM de la pédale (posé à l'ajout), pas le générique « MIDI Pedal »
         _EXP_BLK["ref"] = str(blk.get("ref")) if btype == "midi-pedal" and blk.get("ref") else None
-        _EXP_BLK["label"] = ((btype == "midi-pedal" and blk.get("label")) or
+        # bloc VST Host (2026-11-09, docs/platforms.md §6.1) : pas de schéma — le nom du knob choisi, pas « p12 »
+        knob = next((k.get("name") for k in (blk.get("knobs") or []) if isinstance(k, dict)
+                     and f"p{k.get('i')}" == a.get("param")), None) if btype == "vst-host" else None
+        _EXP_BLK["label"] = ((btype == "midi-pedal" and blk.get("label")) or knob or
                              ((_fxdefs() or {}).get(btype) or {}).get("name") or a.get("param") or "FX")
     else:
         # sémantique 2026-07-23  : EXP1 = pédale « bloc » LIBRE ; la Whammy DT a sa PROPRE

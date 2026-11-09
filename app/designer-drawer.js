@@ -13,7 +13,7 @@ const FAMILY_ORDER = ['overdrive', 'distortion', 'fuzz', 'boost', 'clean', 'crun
 // ── tiroir « ajouter un bloc » : catégories → blocs → (ampli/cab) volet des sims ──
 // hw = pédales MIDI INSTALLÉES (registre, /api/mappings, sans la Whammy qui a son bloc dédié) :
 // elles paraissent dans une catégorie `hardware` qui n'existe que si le rack en a (bloc midi-pedal).
-export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, present, hw, onAdd, onAddPedal, onAddHw, onAddStereo, onAddVst, onClose, flat, vstHost, vstOnly }) {
+export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, laneStereo, present, hw, onAdd, onAddPedal, onAddHw, onAddStereo, onAddVst, onClose, flat, vstHost, vstOnly }) {
   // blocs `unique` (looper, pads — docs/blocks-doctrine.md) : grisés si déjà dans le preset
   const taken = t => (present || new Set()).has(t);
   // ── CONFLITS entre blocs ────────────────────────────────────────────────────────────
@@ -58,12 +58,41 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, pre
   const [vstFormats, setVstFormats] = useState(() => Object.fromEntries(FORMATS.map(f => [f, true])));
   const [vstOpen, setVstOpen] = useState(() => new Set());
   const [vstRecent, setVstRecent] = useState(() => recentVsts());
+  const [vstReload, setVstReload] = useState(0);        // relire l'inventaire (après « Rescan plugins »)
   const { data: vstData, err: vstErr } = useAsync(() => cat === 'vst-host'
-    ? fetch('/api/vst-host/plugins').then(r => r.json()) : Promise.resolve(null), [cat]);
-  const vstAll = (vstData && vstData.plugins) || [];
+    ? fetch('/api/vst-host/plugins').then(r => r.json()) : Promise.resolve(null), [cat, vstReload]);
+  // OÙ INSTALLER UN PLUGIN (2026-11-09) : les dossiers que REAPER scanne ici, et « Rescan » qui le redémarre
+  const [vstWhere, setVstWhere] = useState(false);
+  const [vstFolders, setVstFolders] = useState(null);
+  const [vstRescan, setVstRescan] = useState('');       // '' | 'confirm' | 'running' | message d'erreur
+  const openWhere = () => {
+    setVstWhere(!vstWhere); setVstRescan('');
+    if (!vstFolders || vstFolders.error) fetch('/api/vst-host/folders').then(async r => r.ok ? r.json() : { error: true })
+      .then(setVstFolders).catch(() => setVstFolders({ error: true }));
+  };
+  const rescan = async () => {
+    if (vstRescan !== 'confirm') { setVstRescan('confirm'); return; }
+    setVstRescan('running');
+    const r = await fetch('/api/vst-host/rescan', { method: 'POST' }).then(async x => ({ ok: x.ok, d: await x.json().catch(() => ({})) }))
+      .catch(() => ({ ok: false, d: {} }));
+    if (!r.ok) { setVstRescan(r.d.error || 'REAPER could not be restarted'); return; }
+    for (let i = 0; i < 60; i++) {                       // REAPER revient : l'inventaire répond de nouveau
+      await new Promise(res => setTimeout(res, 3000));
+      const ok = await fetch('/api/vst-host/plugins').then(x => x.ok).catch(() => false);
+      if (ok && i > 1) { setVstRescan(''); setVstWhere(false); setVstReload(x => x + 1); return; }
+    }
+    setVstRescan('REAPER did not come back — see Settings ▸ System');
+  };
+  // CE QUE GOLEM PROPOSE DÉJÀ (2026-11-09) : la liste montre les plugins NOUVEAUX ; ceux qu'un bloc golem joue déjà
+  // sont rangés en bas, repliés, avec leur bloc (« Use the golem block ») — pas en remplacement d'un bloc indisponible
+  const vstRaw = (vstData && vstData.plugins) || [];
+  const vstAll = vstRaw.filter(x => !x.block);
+  const [vstKnownOpen, setVstKnownOpen] = useState(false);
+  const vstKnown = vstOnly ? [] : selectVsts(vstRaw.filter(x => x.block), { kind: vstKind, query: vstQuery, stereo: !!laneStereo });
+  const [vstVarOpen, setVstVarOpen] = useState(() => new Set());   // lignes dont les déclinaisons sont dépliées
   const vstCounts = vstFormatCounts(vstAll, vstKind);
   // une case sans plugin ne filtre rien : décochée ou non, elle ne peut pas vider la liste
-  const vstShown = selectVsts(vstAll, { kind: vstKind, formats: FORMATS.filter(f => vstFormats[f] && vstCounts[f]), query: vstQuery });
+  const vstShown = selectVsts(vstAll, { kind: vstKind, formats: FORMATS.filter(f => vstFormats[f] && vstCounts[f]), query: vstQuery, stereo: !!laneStereo });
   const vstTotal = selectVsts(vstAll).length;
   const vstByVendor = vstGroups(vstShown);
   const vstSearching = !!vstQuery.trim();
@@ -171,7 +200,28 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, pre
                 <input class="vst-host-search" placeholder="Search plugins or vendors" value=${vstQuery}
                   onInput=${e => setVstQuery(e.target.value)} />
                 <span class="vh-count"><b>${vstShown.length}</b> of ${vstTotal}</span>
+                ${vstOnly ? '' : html`<button class=${cls('vh-link', 'vh-where-b', vstWhere && 'on')} onClick=${openWhere}>Where to install plugins</button>`}
               </div>
+              ${vstWhere ? html`<div class="vh-where">
+                <p>Copy a plugin into one of the folders REAPER scans on this machine, then tap <b>Rescan plugins</b>.</p>
+                ${!vstFolders ? html`<p class="muted">Reading REAPER's folders…</p>`
+                  : vstFolders.error || !(vstFolders.folders || []).length ? html`<p class="vh-where-err">REAPER's plugin folders could not be read here.</p>`
+                  : html`<div class="vh-where-grid">
+                  ${['VST3', 'CLAP', 'VST'].map(f => {
+                    const rows = (vstFolders.folders || []).filter(x => x.format === f);
+                    const best = rows.find(x => x.exists && x.writable) || rows.find(x => x.writable);
+                    return rows.length ? html`<div class="vh-where-f"><b>${f}</b>
+                      ${rows.map(x => html`<code class=${cls(x === best && 'best', !x.exists && 'gone')}
+                        title=${x === best ? 'you can copy here without a password' : !x.exists ? 'this folder does not exist yet' : !x.writable ? 'needs an administrator password' : ''}>${esc(x.path)}</code>`)}</div>` : '';
+                  })}</div>`}
+                <div class="vh-where-act">
+                  <span class="muted">${vstRescan === 'confirm' ? 'REAPER restarts: the sound stops for a few seconds.'
+                    : vstRescan === 'running' ? 'Restarting REAPER and reading its plugins…'
+                    : vstRescan ? vstRescan : 'REAPER only finds new plugins when it starts.'}</span>
+                  <button class=${cls('mini', vstRescan === 'confirm' && 'danger')} disabled=${vstRescan === 'running'} onClick=${rescan}>
+                    ${vstRescan === 'confirm' ? 'Tap again to restart REAPER' : 'Rescan plugins'}</button>
+                </div>
+              </div>` : ''}
               <div class="vst-host-filters">
                 <div class="tb-seg">
                   ${[['all', 'All'], ['instrument', 'Instruments'], ['effect', 'Effects']].map(([value, label]) => html`
@@ -185,14 +235,24 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, pre
             ${!vstData && !vstErr ? html`<div class="di-group">Scanning REAPER plugins…</div>` : ''}
             ${vstErr ? html`<div class="di-why">${esc(String(vstErr.message || vstErr))}</div>` : ''}
             ${(vstData && vstData.error) ? html`<div class="di-why">${esc(vstData.error)}</div>` : ''}
-            ${vstData && !vstShown.length ? html`<div class="vh-empty">No plugins match. Clear the search or tick another format.</div>` : ''}
+            ${vstData && !vstShown.length && !vstKnown.length ? html`<div class="vh-empty">No plugins match. Clear the search or tick another format.</div>` : ''}
             ${(() => {
-              const row = x => html`<button class="vh-pl" onClick=${() => vstAdd(x, x.formats[0])} title=${x.title + ' — ' + x.vendor}>
+              // une déclinaison (Stereo x32, M/S…) posée telle quelle, dans son format préféré
+              const addVariant = (x, v) => { setVstRecent(rememberVst(x)); onAddVst(v.name); };
+              const vkey = x => x.vendor + '|' + x.title;
+              const row = x => html`<div class=${cls('vh-plw', x.variants && vstVarOpen.has(vkey(x)) && 'open')}>
+                <button class="vh-pl" onClick=${() => vstAdd(x, x.formats[0])} title=${x.title + (x.variant ? ' (' + x.variant + ')' : '') + ' — ' + x.vendor}>
                   <span class=${cls('vh-ic', x.kind === 'instrument' && 'ins')}>${x.kind === 'instrument' ? '♫' : '◈'}</span>
-                  <span class="vh-nm">${esc(x.title)}</span>
-                  <span class="vh-pf">${x.formats.map((f, i) => html`<span class=${cls(i === 0 && 'best')}
+                  <span class="vh-nm">${esc(x.title)}${x.variant ? html`<span class="vh-gblock">${esc(x.variant)}</span>` : ''}</span>
+                  <span class="vh-pf">${x.variants ? html`<span onClick=${e => { e.stopPropagation();
+                      const n = new Set(vstVarOpen); n.has(vkey(x)) ? n.delete(vkey(x)) : n.add(vkey(x)); setVstVarOpen(n); }}
+                      title="other versions of this plugin (channels, bands)">+${x.variants.length - 1}</span>` : ''}
+                    ${x.formats.map((f, i) => html`<span class=${cls(i === 0 && 'best')}
                     onClick=${e => { e.stopPropagation(); vstAdd(x, f); }} title=${'Add the ' + f + ' version'}>${f}</span>`)}</span>
-                </button>`;
+                </button>
+                ${x.variants && vstVarOpen.has(vkey(x)) ? html`<div class="vh-vars">${x.variants.map(v => html`<button class="vh-var"
+                    onClick=${() => addVariant(x, v)} title=${v.title}>${esc(v.label || 'default')}</button>`)}</div>` : ''}
+              </div>`;
               const recent = vstSearching ? [] : pickRecent(vstShown, vstRecent);
               return html`
                 ${recent.length ? html`<div class="vh-sect">Recent</div><div class="vh-grid vh-recent">${recent.map(row)}</div>` : ''}
@@ -209,7 +269,16 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, pre
                     </button>
                     ${open ? html`<div class="vh-grid">${g.items.map(row)}</div>` : ''}
                   </div>`;
-                })}`;
+                })}
+                ${vstKnown.length ? html`<div class="vh-sect vh-known-h">${vstKnown.length} plugin${vstKnown.length > 1 ? 's' : ''} golem already uses
+                  <button class="vh-link" onClick=${() => setVstKnownOpen(!vstKnownOpen)}>${vstKnownOpen || vstSearching ? 'Hide' : 'Show'}</button></div>
+                  ${vstKnownOpen || vstSearching ? html`<div class="vh-grid vh-known">${vstKnown.map(x => html`<button class="vh-pl"
+                      onClick=${() => onAdd(x.block)} title=${'Add the golem block ' + x.blockName + ' — its settings and presets'}>
+                      <span class="vh-ic">▣</span>
+                      <span class="vh-nm">${esc(x.title)}<span class="vh-gblock">golem block: ${esc(x.blockName)}</span></span>
+                      <span class="vh-pf"><span onClick=${e => { e.stopPropagation(); vstAdd(x, x.formats[0]); }}
+                        title=${'Add the plugin itself (' + x.formats[0] + ') instead of the golem block'}>VST</span></span>
+                    </button>`)}</div>` : ''}` : ''}`;
             })()}
           </div>` : ''}
           ${activeCat === 'hardware' ? html`<div class="di-group">Installed MIDI pedals</div>

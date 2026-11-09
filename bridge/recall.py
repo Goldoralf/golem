@@ -254,6 +254,14 @@ def scene_shape(preset, scene_id):
             with contextlib.suppress(Exception):
                 from .resolver import _resolve
                 s += (_resolve(b.get("ref"), {}, b.get("model")),)
+        # BLOC VST HOST (2026-11-09) : son plugin (en changer = un autre FX), et son état au banc du premier usage
+        # (bridge/plugin_trial.py) — le rig le RETIRE tant qu'il n'est pas essayé : le verdict change ce qui est posé.
+        # Sans ça, le brouillon rejoué après le verdict avait la même forme -> scene_apply -> le plugin jamais posé
+        # (vu au rack le 2026-11-09 : « open plugin window » ne montrait plus rien, 404 « missing »).
+        if b.get("type") == "vst-host":
+            from . import plugin_trial
+            plug = b.get("plugin")
+            s += (plug, "pending" if plugin_trial.pending(plug) else "refused" if plugin_trial.failed(plug) else "ok")
         if b.get("type") == "vital":                       # son Vital = vst_chunk greffé -> rebuild
             s += ((b.get("params") or {}).get("preset"),)
         # fichiers d'instrument chargés PAR CHIRURGIE DE CHUNK (pas des potards) : en changer

@@ -329,12 +329,12 @@ def block_state(b, comps=None, manifest_fn=None, inv=None, obs=None):
     if t == "vst-host":
         inv = inventory() if inv is None else inv
         name = b.get("plugin") or ""
-        # Deux refus qui ne se ressemblent pas : ailleurs que sous Windows le bloc ne se pose
-        # JAMAIS (golem_rig le saute) — dire « invalid plugin » d'un plugin parfaitement valide
-        # enverrait chercher une faute dans le preset, alors que c'est la machine qui ne joue pas.
-        if sys.platform not in ("win32", "darwin"):
-            return {"state": "unavailable", "why": "VST Host blocks only play on a Windows or macOS golem",
-                    "reason": "plugin"}
+        # Linux aussi depuis le 2026-11-09 (docs/platforms.md §6.1) : le refus par plateforme est levé, mais un plugin
+        # jamais essayé passe d'abord le banc (bridge/plugin_trial.py) — et un plugin refusé par le banc ne joue pas.
+        from . import plugin_trial
+        if name and plugin_trial.failed(name):
+            return {"state": "unavailable", "why": QUARANTINE_WHY, "reason": "quarantine",
+                    "detail": f"golem tested this plugin before letting it play: it {plugin_trial.failed(name)}"}
         if not re.match(r"^(?:VST3?i?|CLAPi?):", name):
             return {"state": "unavailable", "why": "invalid plugin name", "reason": "plugin"}
         from . import rig
@@ -343,6 +343,9 @@ def block_state(b, comps=None, manifest_fn=None, inv=None, obs=None):
             return {"state": "unavailable", "why": QUARANTINE_WHY, "reason": "quarantine", "detail": why}
         if inv is not None and name.strip().casefold() not in inv.get("qualified_names", set()):
             return {"state": "unavailable", "why": "plugin not installed on this machine", "reason": "plugin"}
+        if plugin_trial.pending(name):                   # le rig ne le pose pas encore : il passe le banc
+            return {"state": "unavailable", "why": "being tested before it plays — a few seconds", "reason": "trial",
+                    "testing": plugin_trial.running(name)}
         return {"state": "ready", "why": None, "plugin_known": inv is not None}
     q = rig.quarantined_types()
     if t in q:

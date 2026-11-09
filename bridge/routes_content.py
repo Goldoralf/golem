@@ -75,18 +75,52 @@ def get_effects():
         for e in data.get("effects", []):
             if e.get("quarantine") and e.get("type") not in q:
                 e["quarantine_linux"] = e.pop("quarantine")
-        data["vst_host"] = True
-        data["effects"] = [*data.get("effects", []), {"type": "vst-host", "name": "VST Host",
-            "short": "VST", "icon": "▣", "category": "utility", "color": "#8b9fd7",
-            "params": []}]
+    # LE BLOC VST HOST, PARTOUT (Linux depuis le 2026-11-09, docs/platforms.md §6.1) : la fenêtre du plugin y est la
+    # vue filmée. La capture NAM d'un plugin reste Windows/macOS (`vst_capture`) : le tiroir la montre grisée.
+    data["vst_host"] = True
+    data["vst_capture"] = sys.platform in ("win32", "darwin")
+    data["effects"] = [*data.get("effects", []), {"type": "vst-host", "name": "VST Host",
+        "short": "VST", "icon": "▣", "category": "utility", "color": "#8b9fd7",
+        "params": []}]
     return data
+
+
+# CE QUE GOLEM PROPOSE DÉJÀ (2026-11-09, demandé par le mainteneur : « ce que l'on veut ici, c'est des nouveaux
+# plugins ») : un plugin que le catalogue joue déjà comme bloc est marqué `block` — le tiroir le range à part et propose
+# le bloc golem (ses réglages, ses presets) au lieu d'un VST brut. Les plugins DE golem (éditeur « golem » : Freeze, le
+# plugin de capture) ne se proposent jamais. Repérage par le nom nu (sans « VST3: » ni « (Éditeur) »), toutes les tables.
+_GOLEM_OWN = re.compile(r"\(\s*golem\s*\)\s*$", re.I)
+
+
+def _bare_plugin(name):
+    n = re.sub(r"^\s*[A-Za-z0-9]+:\s*", "", str(name or ""))
+    while True:
+        m = re.sub(r"\s*\([^()]*\)\s*$", "", n)
+        if m == n:
+            return n.strip().casefold()
+        n = m
+
+
+def _catalog_plugin_blocks():
+    """{nom nu du plugin: (type de bloc, nom du bloc)} pour les blocs du catalogue (effects.json + tables desktop)."""
+    from . import rig
+    data = _read_json(C.EFFECTS, {"effects": []})
+    names = {e.get("type"): e.get("name") or e.get("type") for e in data.get("effects", [])}
+    q = rig.quarantined_types()
+    out = {}
+    pairs = [(e.get("type"), e.get("plugin")) for e in data.get("effects", [])]
+    for table in ("effects-windows.json", "effects-macos.json"):
+        t = _read_json(os.path.join(C.ROOT, "library", "catalog", table), {}).get("effects", {})
+        pairs += [(k, v.get("plugin")) for k, v in t.items() if isinstance(v, dict)]
+    for btype, plugin in pairs:
+        if btype and isinstance(plugin, str) and plugin and btype in names and btype not in q:
+            out.setdefault(_bare_plugin(plugin), (btype, names[btype]))
+    return out
 
 
 @router.get("/api/vst-host/plugins")
 def vst_host_plugins():
     """Demande l'inventaire à REAPER : sa liste tient compte de ses chemins de scan et caches."""
-    if sys.platform not in ("win32", "darwin"):
-        return {"plugins": []}
     path = os.path.join(C.PRESETS_DIR, ".vst-host-list.json")
     seq = write_command({"action": "vst_list", "_route": "rig_recall"})
     deadline = time.monotonic() + 4
@@ -95,8 +129,15 @@ def vst_host_plugins():
         if str(data.get("seq")) == str(seq):
             # un plugin en quarantaine ne se propose pas, même par son nom (rig.quarantined_plugin)
             from . import rig
-            return {"plugins": [p for p in data.get("plugins", [])
-                                if not rig.quarantined_plugin(p.get("name"))]}
+            known = _catalog_plugin_blocks()
+            out = []
+            for p in data.get("plugins", []):
+                name = str(p.get("name") or "")
+                if rig.quarantined_plugin(name) or _GOLEM_OWN.search(name):
+                    continue
+                hit = known.get(_bare_plugin(name))
+                out.append({**p, "block": hit[0], "block_name": hit[1]} if hit else p)
+            return {"plugins": out}
         time.sleep(0.05)
     return JSONResponse({"error": "REAPER did not return its plugin list"}, status_code=503)
 
@@ -263,7 +304,7 @@ def plugin_window_save_vital(block: str, body: dict):
 @router.get("/api/vst-host/params/{block}")
 def vst_host_params(block: str):
     """Lit les vrais paramètres de l'instance REAPER, avec valeurs normalisées."""
-    if sys.platform not in ("win32", "darwin") or not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", block):
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", block):
         return JSONResponse({"error": "invalid block"}, status_code=400)
     path = os.path.join(C.PRESETS_DIR, ".vst-host-params.json")
     seq = write_command({"action": "vst_params", "block": block, "_route": "rig_recall"})
@@ -285,7 +326,7 @@ def vst_host_params(block: str):
 @router.get("/api/vst-host/state/{block}")
 def vst_host_state(block: str):
     """Capture ponctuelle de l'état natif chargé dans l'instance REAPER."""
-    if sys.platform not in ("win32", "darwin") or not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", block):
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", block):
         return JSONResponse({"error": "invalid block"}, status_code=400)
     path = os.path.join(C.PRESETS_DIR, ".vst-host-state.json")
     seq = write_command({"action": "vst_state", "block": block, "_route": "rig_recall"})
@@ -303,6 +344,130 @@ def vst_host_state(block: str):
             return {"kind": kind, "chunk": chunk, "params": data.get("params", [])}
         time.sleep(0.05)
     return JSONResponse({"error": "REAPER did not return plugin state"}, status_code=503)
+
+
+# ── LES « KNOBS » D'UN PLUGIN, MÉMORISÉS PAR PLUGIN (2026-11-09, docs/platforms.md §6.1, lot 2) ─────────────────────
+# Le bloc porte SES potards (block.knobs, dans le patch : un patch partagé les emmène) ; ce fichier n'est que le choix
+# par défaut du prochain bloc du même plugin. État local du rack (CLAUDE.md règle 2, .gitignore).
+VST_KNOBS = os.path.join(C.CONFIG_DIR, "vst-knobs.json")
+MAX_KNOBS = 8
+
+
+def _clean_knobs(knobs):
+    out, seen = [], set()
+    for k in knobs if isinstance(knobs, list) else []:
+        i = k.get("i") if isinstance(k, dict) else None
+        if isinstance(i, int) and not isinstance(i, bool) and 0 <= i < 100000 and i not in seen:
+            seen.add(i)
+            out.append({"i": i, "name": str(k.get("name") or f"Param {i}")[:40]})
+        if len(out) >= MAX_KNOBS:
+            break
+    return out
+
+
+@router.get("/api/vst-host/knobs")
+def vst_host_knobs(plugin: str = ""):
+    """Le choix de potards mémorisé pour ce plugin (nom REAPER exact), ou []."""
+    return {"plugin": plugin, "knobs": _clean_knobs((_read_json(VST_KNOBS, {}) or {}).get(plugin))}
+
+
+@router.post("/api/vst-host/knobs")
+def vst_host_knobs_save(body: dict):
+    plugin = str((body or {}).get("plugin") or "")
+    if not re.match(r"^(?:VST3?i?|CLAPi?):\s*\S", plugin) or len(plugin) > 300:
+        return JSONResponse({"error": "invalid plugin name"}, status_code=400)
+    knobs = _clean_knobs((body or {}).get("knobs"))
+    data = _read_json(VST_KNOBS, {}) or {}
+    if knobs:
+        data[plugin] = knobs
+    else:
+        data.pop(plugin, None)
+    _write_json_atomic(VST_KNOBS, data, indent=1)
+    return {"plugin": plugin, "knobs": knobs}
+
+
+# ── OÙ INSTALLER UN PLUGIN, ET LE FAIRE VOIR À REAPER (2026-11-09, docs/platforms.md §6.2) ─────────────────────────────
+# golem ne tient PAS sa propre liste de dossiers à scanner : seule celle de REAPER compte (le bloc ne pose que ce que
+# REAPER sait charger, et le tiroir lit déjà son inventaire). On la MONTRE : les chemins de reaper.ini s'ils y sont
+# (`vstpath*` pour VST/VST3, `clap_path_*` pour CLAP — noms lus dans le binaire de REAPER 7.82), sinon ses dossiers par
+# défaut sur ce système. REAPER ne rescanne qu'au démarrage : « Rescan » le redémarre, puis rejoue le brouillon.
+_DEFAULT_FOLDERS = {
+    "linux": {"VST3": ["~/.vst3", "/usr/lib/vst3", "/usr/local/lib/vst3"],
+              "CLAP": ["~/.clap", "/usr/lib/clap", "/usr/local/lib/clap"],
+              "VST": ["~/.vst", "/usr/lib/vst", "/usr/local/lib/vst"]},
+    "win32": {"VST3": [r"C:\Program Files\Common Files\VST3"], "CLAP": [r"C:\Program Files\Common Files\CLAP"],
+              "VST": [r"C:\Program Files\VSTPlugins", r"C:\Program Files\Steinberg\VSTPlugins",
+                      r"C:\Program Files\Common Files\VST2", r"C:\Program Files\Common Files\Steinberg\VST2"]},
+    "darwin": {"VST3": ["~/Library/Audio/Plug-Ins/VST3", "/Library/Audio/Plug-Ins/VST3"],
+               "CLAP": ["~/Library/Audio/Plug-Ins/CLAP", "/Library/Audio/Plug-Ins/CLAP"],
+               "VST": ["~/Library/Audio/Plug-Ins/VST", "/Library/Audio/Plug-Ins/VST"]},
+}
+
+
+def _reaper_ini_paths():
+    """{'vst': [...], 'clap': [...]} lus dans le [REAPER] de reaper.ini (vides s'ils n'y sont pas)."""
+    from .reaper_license import resource_dir
+    out = {"vst": [], "clap": []}
+    try:
+        text = open(os.path.join(resource_dir(), "reaper.ini"), encoding="latin-1").read()
+    except OSError:
+        return out
+    sect = re.search(r"(?ims)^\[reaper\]\s*$(.*?)(?=^\[|\Z)", text)
+    for line in (sect.group(1) if sect else "").splitlines():
+        k, _, v = line.partition("=")
+        k = k.strip().lower()
+        if v.strip() and (re.fullmatch(r"vstpath(64|_arm64)?", k) or re.fullmatch(r"clap_path_[\w.-]+", k)):
+            out["clap" if k.startswith("clap") else "vst"] += [x.strip() for x in v.split(";") if x.strip()]
+    return out
+
+
+@router.get("/api/vst-host/folders")
+def vst_host_folders():
+    plat = "win32" if sys.platform == "win32" else "darwin" if sys.platform == "darwin" else "linux"
+    ini = _reaper_ini_paths()
+    rows = []
+    for fmt, paths in _DEFAULT_FOLDERS[plat].items():
+        custom = ini["clap"] if fmt == "CLAP" else ini["vst"]
+        for p in (custom or paths):
+            if "%" in p:                                   # %CLAP_PATH% : une variable d'environnement, pas un dossier
+                continue
+            full = os.path.expanduser(p)
+            rows.append({"format": fmt, "path": p, "exists": os.path.isdir(full),
+                         "writable": os.access(full if os.path.isdir(full) else os.path.dirname(full) or full, os.W_OK),
+                         "custom": bool(custom)})
+    return {"platform": plat, "folders": rows}
+
+
+@router.post("/api/vst-host/rescan")
+async def vst_host_rescan():
+    """REAPER redémarré pour qu'il voie les plugins ajoutés, puis le brouillon rejoué (un REAPER relancé rouvre un
+    projet vide). Refusé pendant une prise, une chanson, un chargement ou en mode Gig — le son se coupe."""
+    from . import reamp
+    from .state import state
+    why = reamp.busy_reason(idle=False)
+    if why:
+        return JSONResponse({"error": f"not now: {why}"}, status_code=409)
+    from .routes_system import reaper_restart
+    gen0 = state.reaper_gen
+    r = await reaper_restart()
+    if isinstance(r, JSONResponse):
+        return r
+
+    def repose():
+        from . import recall
+        deadline = time.monotonic() + 120
+        while time.monotonic() < deadline and state.reaper_gen == gen0:
+            time.sleep(0.5)
+        stable = 0
+        while time.monotonic() < deadline and stable < 6:   # 3 s de suite en vie et en lien
+            stable = stable + 1 if (state.reaper_running and state.reaper_connected) else 0
+            time.sleep(0.5)
+        if stable >= 6:
+            recall._LAST_EMIT["shape"] = None                  # un vrai rebuild sur le projet rouvert
+            recall.reapply_sandbox()
+    import threading as _th
+    _th.Thread(target=repose, name="golem-vst-rescan", daemon=True).start()
+    return {"ok": True, "restarting": True}
 
 
 # ── CAPTURE NAM D'UN BLOC VST (2026-10-05, docs/plugin-capture.md) ─────────────────────────

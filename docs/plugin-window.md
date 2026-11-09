@@ -14,6 +14,9 @@ work it is greyed and a tap says why (a missing button explains nothing).
 | Windows / macOS, tablet | nothing: greyed, "Vital's window opens on the golem's own screen, not on a tablet" |
 | **Linux**, machine screen **or tablet** | the window **filmed**, full screen inside golem (`view`), driven by finger or mouse; **Done** closes it |
 
+The **VST Host block** on Linux uses the same filmed view (2026-11-09, [`platforms.md`](platforms.md) §6.1): on close, its
+native state goes into the patch instead of a Vital preset.
+
 When the window closes, if Vital's state changed, the sound is stored as a Vital preset named
 "*original name* (edited)" in the `edited` pack (`bridge/vital.py` `save_edited`, `library/synth/vital/edited/`,
 local, not versioned) and **replaces the old one on the block** — in the base and in every scene that played the

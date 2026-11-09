@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { captureHostState, selectVsts, vstInfo, vstFormatCounts, vstGroups,
+import { captureHostState, selectVsts, variantOf, vstInfo, vstFormatCounts, vstGroups,
          rememberVst, recentVsts, pickRecent, RECENT_MAX } from './vst-host-model.mjs';
 
 test('REAPER distingue instruments et effets sans perdre les formats', () => {
@@ -89,4 +89,34 @@ test('une retouche native du potard de scène reste dans cette scène', () => {
   });
   assert.equal(captured.params.p7, 0.25);
   assert.equal(captured.overrides.p7, 0.9);
+});
+
+test('un plugin déjà joué par un bloc golem garde sa marque à la fusion des formats (2026-11-09)', () => {
+  const rows = selectVsts([
+    { name: 'VST3: Surge XT Effects (Surge Synth Team)', block: 'surge-spring', block_name: 'Spring Reverb' },
+    { name: 'CLAP: Surge XT Effects (Surge Synth Team)' },
+    { name: 'CLAP: Surge XT (Surge Synth Team)' }]);
+  const fx = rows.find(x => x.title === 'Surge XT Effects');
+  assert.equal(fx.block, 'surge-spring');
+  assert.equal(fx.blockName, 'Spring Reverb');
+  assert.equal(rows.find(x => x.title === 'Surge XT').block, undefined);
+});
+
+test('les déclinaisons LSP (canaux, bandes) sont UNE ligne, la version posée suit la lane (2026-11-09)', () => {
+  assert.deepEqual(variantOf('Parametric Equalizer x16 Stereo'), { base: 'Parametric Equalizer', chan: 'Stereo', size: 16, label: 'Stereo x16' });
+  assert.equal(variantOf('Stereo Tool').base, 'Stereo Tool');                    // un nom qui COMMENCE par Stereo reste
+  const lsp = ['Compressor Mono', 'Compressor Stereo', 'Compressor LeftRight', 'Compressor MidSide',
+               'Sidechain Compressor Mono', 'Parametric Equalizer x16 Stereo', 'Parametric Equalizer x32 Stereo',
+               'Parametric Equalizer x16 Mono', 'Phase Detector'].map(t => ({ name: `CLAP: ${t} (LSP CLAP)` }));
+  const mono = selectVsts(lsp);
+  assert.deepEqual(mono.map(x => x.title), ['Compressor', 'Parametric Equalizer', 'Phase Detector', 'Sidechain Compressor Mono']);
+  const comp = mono.find(x => x.title === 'Compressor');
+  assert.equal(comp.name, 'CLAP: Compressor Mono (LSP CLAP)');
+  assert.equal(comp.variants.length, 4);
+  assert.deepEqual(comp.variants.map(v => v.label), ['Mono', 'Stereo', 'L/R', 'M/S']);
+  const st = selectVsts(lsp, { stereo: true });
+  assert.equal(st.find(x => x.title === 'Compressor').name, 'CLAP: Compressor Stereo (LSP CLAP)');
+  assert.equal(st.find(x => x.title === 'Parametric Equalizer').name, 'CLAP: Parametric Equalizer x16 Stereo (LSP CLAP)');  // la plus petite
+  assert.equal(st.find(x => x.title === 'Phase Detector').variants, undefined);   // un seul : pas de déclinaisons
+  assert.equal(selectVsts(lsp, { query: 'midside' })[0].title, 'Compressor');     // une déclinaison se retrouve par son nom
 });

@@ -25,30 +25,63 @@ export function vstInfo(entry) {
   return { ...entry, format, kind, vendor, label, title };
 }
 
+// ── LES DÉCLINAISONS D'UN MÊME OUTIL (2026-11-09) : LSP publie un plugin par configuration de canaux et par nombre de
+// bandes — « Compressor Mono / Stereo / LeftRight / MidSide », « Parametric Equalizer x16 Stereo »… 176 lignes pour
+// 54 outils. Une ligne par OUTIL ; le tap pose la version Mono ou Stereo selon la lane (la plus petite taille), les
+// autres déclinaisons restent à portée. « Sidechain … » reste un outil à part : il se branche autrement.
+const CHAN = { Mono: 'Mono', Stereo: 'Stereo', LeftRight: 'L/R', MidSide: 'M/S' };
+const CHAN_RE = /\s+(Mono|Stereo|LeftRight|MidSide)\b/g, SIZE_RE = /\s+x(\d+)\b/g;
+export function variantOf(title) {
+  const t = String(title || '');
+  const chan = [...t.matchAll(CHAN_RE)].map(m => m[1])[0] || null;
+  const size = [...t.matchAll(SIZE_RE)].map(m => +m[1])[0] || null;
+  const base = t.replace(CHAN_RE, '').replace(SIZE_RE, '').replace(/\s+/g, ' ').trim() || t;
+  return { base, chan, size, label: [chan && CHAN[chan], size && 'x' + size].filter(Boolean).join(' ') };
+}
+
 /** Une LIGNE par plugin (éditeur + nom) : ses formats installés, du préféré au moins préféré, et le nom
- *  REAPER de chacun (`names[format]`) — `name` est celui que pose un tap. */
-export function mergeVsts(entries) {
-  const m = new Map();
+ *  REAPER de chacun (`names[format]`) — `name` est celui que pose un tap. Les déclinaisons d'un même outil (canaux,
+ *  bandes : variantOf) sont UNE ligne : `variants` les liste, la ligne porte celle qu'un tap pose (`stereo` : la
+ *  lane est stéréo). */
+export function mergeVsts(entries, { stereo = false } = {}) {
+  const groups = new Map();
   for (const x of entries.map(vstInfo)) {
-    const k = x.vendor + '|' + x.title + '|' + x.kind;
-    const e = m.get(k) || { title: x.title, vendor: x.vendor, kind: x.kind, formats: [], names: {} };
+    const v = variantOf(x.title);
+    const gk = x.vendor + '|' + v.base + '|' + x.kind;
+    const g = groups.get(gk) || groups.set(gk, new Map()).get(gk);
+    const k = x.title;
+    const e = g.get(k) || { title: x.title, vendor: x.vendor, kind: x.kind, formats: [], names: {}, ...v };
+    g.set(k, e);
     if (!e.names[x.format]) { e.formats.push(x.format); e.names[x.format] = x.name; }
-    m.set(k, e);
+    // déjà un bloc golem (le bridge le marque, 2026-11-09) : le tiroir le range à part et propose le bloc
+    if (x.block && !e.block) { e.block = x.block; e.blockName = x.block_name || x.block; }
   }
-  for (const e of m.values()) {
-    e.formats.sort((a, b) => RANK[a] - RANK[b]);
-    e.name = e.names[e.formats[0]];
+  const want = stereo ? 'Stereo' : 'Mono';
+  const order = [want, null, stereo ? 'Mono' : 'Stereo', 'LeftRight', 'MidSide'];   // puis la taille, croissante
+  const rank = v => order.indexOf(v.chan) * 1e6 + (v.size || 0);
+  const out = [];
+  for (const g of groups.values()) {
+    const vs = [...g.values()];
+    for (const e of vs) { e.formats.sort((a, b) => RANK[a] - RANK[b]); e.name = e.names[e.formats[0]]; }
+    if (vs.length === 1) { const { base, chan, size, label, ...row } = vs[0]; out.push(row); continue; }
+    vs.sort((a, b) => rank(a) - rank(b) || a.label.localeCompare(b.label));
+    const d = vs[0];
+    out.push({ title: d.base, vendor: d.vendor, kind: d.kind, formats: d.formats, names: d.names, name: d.name,
+               variant: d.label, block: vs.find(v => v.block)?.block, blockName: vs.find(v => v.block)?.blockName,
+               variants: vs.map(v => ({ label: v.label, title: v.title, name: v.name, formats: v.formats, names: v.names })) });
   }
-  return [...m.values()];
+  for (const r of out) if (!r.block) { delete r.block; delete r.blockName; }
+  return out;
 }
 
 /** `formats` = les formats cochés ({VST3: true, …} ou tableau) ; absent = tous. Rend des LIGNES (mergeVsts),
  *  triées par éditeur puis nom ; une ligne garde les formats cochés seulement. */
-export function selectVsts(entries, { kind = 'all', formats = null, query = '' } = {}) {
+export function selectVsts(entries, { kind = 'all', formats = null, query = '', stereo = false } = {}) {
   const on = !formats ? null : new Set(Array.isArray(formats) ? formats : Object.keys(formats).filter(f => formats[f]));
   const q = query.trim().toLocaleLowerCase();
   const kept = entries.map(vstInfo).filter(x => (kind === 'all' || x.kind === kind) && (!on || on.has(x.format)));
-  return mergeVsts(kept).filter(x => !q || `${x.title} ${x.vendor}`.toLocaleLowerCase().includes(q))
+  return mergeVsts(kept, { stereo }).filter(x => !q || `${x.title} ${x.vendor} ${(x.variants || []).map(v => v.title).join(' ')}`
+    .toLocaleLowerCase().includes(q))
     .sort((a, b) => a.vendor.localeCompare(b.vendor) || a.title.localeCompare(b.title));
 }
 

@@ -54,6 +54,8 @@ config/.startup.json
 config/first-run.json
 config/instrument.json
 config/.pedalboard.json
+config/vst-knobs.json
+config/vst-trials.json
 # l'inharmonicité à vide de chaque corde de LA guitare de ce rack (bridge/inharm.py) : mesurée sur elle, pas une recette
 config/string-calib.json
 # sa carte du manche, case par case (bridge/neckmap.py) : mesurée sur elle aussi

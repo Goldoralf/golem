@@ -9,6 +9,10 @@ import os
 
 import pytest
 
+# ── LE BANC DU PREMIER USAGE D'UN PLUGIN (bridge/plugin_trial.py, 2026-11-09) : JAMAIS pendant la suite. Sans ça, tout
+# test qui compile un bloc VST Host sous Linux lancerait un vrai REAPER séparé. Les tests du banc le rallument eux-mêmes.
+os.environ["GOLEM_VST_TRIAL"] = "0"
+
 # ── LES FICHIERS DU RACK QU'UN TEST NE TOUCHE JAMAIS (2026-10-29) ─────────────────────────────────────────────────
 # Un test réécrivait presets/.perfsrc.json (ce que golem_perfrec lit à chaque prise) : après chaque passage de la
 # suite, les prises partaient sans DI et sans partition, en silence. Leur CONTENU est photographié au début de la
@@ -16,7 +20,7 @@ import pytest
 # qui tourne à côté republie .perfsrc.json à chaque rappel, à l'identique.)
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _GUARDED = ("presets/.perfsrc.json", "config/recorder.json", "config/compo.json", "config/click.json",
-            "config/io.json", "config/string-calib.json")
+            "config/io.json", "config/string-calib.json", "config/vst-knobs.json", "config/vst-trials.json")
 
 
 def _snapshot():

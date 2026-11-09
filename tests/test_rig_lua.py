@@ -283,3 +283,23 @@ def test_le_mixer_regle_les_pistes_du_standard(lab):
     vol = lab.L.eval('(function() for _, t in ipairs(FAKE.tracks) do if t.name == "Standard Keys" then return t.hw[1].D_VOL end end end)()')
     assert vol is not None and abs(vol - 10 ** (-6 / 20)) < 1e-6, (vol, lab.log())
     assert "std-bass sans piste" in lab.log()          # une partie que ce standard ne joue pas : dite, pas une erreur
+
+
+# ── bloc VST Host (Linux depuis le 2026-11-09, docs/platforms.md §6.1) ────────────────────────────────────────────
+def test_le_bloc_vst_host_se_pose_sous_linux_et_ses_knobs_vont_a_la_livemap(tmp_path, monkeypatch):
+    """Lot 1 : plus de refus par plateforme dans le moteur. Lot 2 : les potards choisis (block.knobs) sont publiés
+    dans la livemap en valeur normalisée — la pédale EXP les pilote ; un index hors du plugin est ignoré."""
+    import copy
+    import sys
+    plugin = "CLAP: Fake Synth (Vendor)"
+    monkeypatch.setattr(sys.modules[__name__], "_installed", lambda real=_installed: [*real(), plugin])
+    lab = Lab(tmp_path, os_name="Other")
+    patch = copy.deepcopy(PATCH)
+    patch["lanes"][0]["chain"]["post"].append({"id": "host", "type": "vst-host", "plugin": plugin, "label": plugin,
+                                               "knobs": [{"i": 2, "name": "Cutoff"}, {"i": 99, "name": "Ghost"}],
+                                               "params": {"p2": 0.25}})
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    live = lab.livemap()
+    assert "host" in live["blocks"], lab.log()
+    assert live["blocks"]["host"]["params"] == {"p2": {"p": 2, "pmin": 0, "pmax": 1}}

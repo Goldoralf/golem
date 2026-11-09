@@ -143,8 +143,8 @@ shows a fixed placeholder that says what the page does.
   karaoke preset, `patch:<id>`.
 - `GET /api/sandbox` = the **raw** content of `presets/.sandbox.json` (`{preset, scene, edit_rev,
   editor…}`): the Designer's edit buffer, not an exported preset. `?prev=1` = the previous version.
-- `GET /api/effects` = `library/catalog/effects.json` as is; on Windows and macOS, plus `vst_host: true` and
-  a `vst-host` block at the end of the list.
+- `GET /api/effects` = `library/catalog/effects.json` as is, plus `vst_host: true`, `vst_capture` (true on Windows and
+  macOS only) and a `vst-host` block at the end of the list (Linux too since 2026-11-09, [`platforms.md`](platforms.md) §6.1).
 - `GET /api/block-defaults` = computed from `library/block-presets/<type>/*.json` marked `default: true`:
   `{defaults: {<type>: {<inst>: params}}}`.
 - `GET /api/anim-pack/<id>/css`: loaded by a `<link>` (`designer-model.js`), which escapes `shell.js`'s

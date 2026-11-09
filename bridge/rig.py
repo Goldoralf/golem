@@ -295,6 +295,13 @@ def quarantined_plugin(name):
     return next((why for plug, why in _QUARANTINE_PLUGINS.items() if plug and plug in bare), None)
 
 
+def _trial_done(plugin, ok):
+    """Fin d'un essai sur banc : accepté, le brouillon est rejoué (le bloc entre dans le rig) ; refusé, il le reste —
+    rejoué quand même, pour que l'écran relise l'état (le bloc dit pourquoi il ne joue pas)."""
+    from . import recall
+    recall.reapply_sandbox()
+
+
 def _drop_quarantined(blocks):
     """Retire les blocs en quarantaine d'une liste, en le DISANT (jamais en silence)."""
     q = quarantined_types()
@@ -307,6 +314,18 @@ def _drop_quarantined(blocks):
         if why:
             log.warning(f"bloc {b.get('id') or 'vst-host'} (vst-host « {b.get('plugin')} ») : plugin EN QUARANTAINE, retiré du rig — {why}")
             continue
+        # LE BANC DU PREMIER USAGE (Linux, 2026-11-09, docs/platforms.md §6.1 lot 3) : un plugin jamais essayé ici
+        # n'entre pas dans le rig qui joue ; un REAPER séparé l'essaie d'abord, puis le brouillon est rejoué
+        if isinstance(b, dict) and b.get("type") == "vst-host" and b.get("plugin"):
+            from . import plugin_trial
+            why = plugin_trial.failed(b["plugin"])
+            if why:
+                log.warning(f"bloc {b.get('id') or 'vst-host'} (vst-host « {b['plugin']} ») : REFUSÉ par le banc, retiré du rig — {why}")
+                continue
+            if plugin_trial.pending(b["plugin"]):
+                plugin_trial.start(b["plugin"], on_done=_trial_done)
+                log.info(f"bloc {b.get('id') or 'vst-host'} (vst-host « {b['plugin']} ») : essayé d'abord sur un banc, hors du rig")
+                continue
         out.append(b)
     return out
 

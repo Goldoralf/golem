@@ -10,10 +10,13 @@ L'interface, la même pour platform_windows.py :
 `ctx` porte l'état et les outils du serveur : ctx.S, ctx.run(cmd, step, cwd, extra_env), ctx.log,
 ctx.dry_cmd(name), ctx.wait_bridge(secs).
 """
-import grp
+try:                                             # Linux seulement : absents sous Windows, où le module doit
+    import grp                                   # pourtant s'importer (tests de parité des plateformes, CI Desktop
+    import pwd                                   # tests 2026-11-09)
+except ImportError:
+    grp = pwd = None
 import json
 import os
-import pwd
 import re
 import shlex
 import shutil
@@ -506,6 +509,8 @@ def finish(ctx):
 def restart_needed():
     """Vrai si l'utilisateur est membre de `audio` dans /etc/group mais que CETTE session (le processus de
     l'installateur, lancé avant l'install) ne porte pas encore ce groupe. Déjà dans audio avant : rien à redémarrer."""
+    if grp is None or pwd is None:               # pas un Linux (le module s'importe partout : tests de parité)
+        return False
     try:
         g = grp.getgrnam("audio")
         me = pwd.getpwuid(os.getuid())

@@ -4,6 +4,8 @@ import os
 import subprocess
 import sys
 
+import pytest
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "installer"))
 
@@ -132,6 +134,7 @@ def test_les_phases_de_linux_couvrent_chaque_marqueur_d_install_sh():
     assert retry and retry <= set(L.RETRY)          # chaque ↻ proposé à l'écran a son script
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="un vrai bash (sous Windows : le lanceur de WSL)")
 def test_install_sh_n_imprime_aucun_marqueur_hors_de_l_installateur():
     # la sortie terminal reste celle d'avant : `mark` ne parle qu'à l'installateur graphique
     out = subprocess.run(["bash", "-c", 'mark() { if [ "${GOLEM_INSTALLER:-}" = 1 ]; then echo "@@$*"; fi; }; mark phase x'],

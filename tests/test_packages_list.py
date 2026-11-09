@@ -6,6 +6,7 @@ Les tests passent par bash, avec un faux apt-cache dans le PATH : aucun apt n'es
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -13,7 +14,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LIB = os.path.join(ROOT, "provision", "lib-packages.sh")
 LIST = os.path.join(ROOT, "provision", "packages.txt")
 
-pytestmark = pytest.mark.skipif(shutil.which("bash") is None, reason="bash absent")
+# sous Windows, `bash` est le lanceur de WSL, sans distribution sur le runner (CI Desktop tests, 2026-11-09)
+pytestmark = pytest.mark.skipif(shutil.which("bash") is None or sys.platform == "win32", reason="un vrai bash")
 
 # le faux apt-cache : « dispo » a un candidat, « retire » est connu sans version, tout le reste est inconnu (sortie vide)
 FAKE_APT_CACHE = """#!/bin/sh

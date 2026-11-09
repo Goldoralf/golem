@@ -141,7 +141,7 @@ def scan(folder):
     have = _library_keys()
     items, total, seen = [], 0.0, set()
     for cur, f, base, gp, lrc in found:
-        rel = os.path.relpath(os.path.join(cur, f), root)
+        rel = os.path.relpath(os.path.join(cur, f), root).replace(os.sep, "/")   # « / » partout : affiché, et rejoint au dossier tel quel
         info = _probe(os.path.join(cur, f))
         key = uuid.uuid5(uuid.NAMESPACE_URL, rel).hex[:12]
         if not info:
@@ -157,9 +157,9 @@ def scan(folder):
         it = {"key": key, "path": rel, "title": title, "artist": artist, "album": info.get("album"),
               "duration_s": info["duration_s"], "from": src, "state": state}
         if gp:
-            it["gp"] = os.path.relpath(os.path.join(cur, gp), root)
+            it["gp"] = os.path.relpath(os.path.join(cur, gp), root).replace(os.sep, "/")
         if lrc:
-            it["lrc"] = os.path.relpath(os.path.join(cur, lrc), root)
+            it["lrc"] = os.path.relpath(os.path.join(cur, lrc), root).replace(os.sep, "/")
         items.append(it)
         if state == "new":
             total += info["duration_s"]

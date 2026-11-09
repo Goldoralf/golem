@@ -515,7 +515,7 @@ def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None
                         with __import__("contextlib").suppress(OSError):
                             os.remove(os.path.join(out_dir, f"{sc}.midi.txt"))
                     if _encode_opus(got, opus, start=(MIDI_LEAD_IN - MIDI_KEEP_S) if midi else 0.0):
-                        out_scenes[sc] = C.rel(opus)
+                        out_scenes[sc] = C.rel_posix(opus)
                         with __import__("contextlib").suppress(OSError):
                             os.remove(got)
                         # écriture INCRÉMENTALE : scène A jouable dans /library pendant que B/C rendent
@@ -912,7 +912,7 @@ def copy_lane(preset_id, lane_id, pl):
     for sc, psc in pl["copy"].items():
         dst = os.path.join(d, f"{sc}.opus")
         shutil.copy2(os.path.join(C.ROOT, pdemo["scenes"][psc]), dst)
-        scenes[sc] = C.rel(dst)
+        scenes[sc] = C.rel_posix(dst)
         refs[sc] = (pdemo.get("refs") or {}).get(psc) or pdemo.get("ref")
     _write_lane_preview(preset_id, lane_id, {
         "instrument": pdemo.get("instrument"), "ref": pdemo.get("ref"), "refs": refs, "scenes": scenes,
@@ -981,7 +981,7 @@ def render_lane(preset_id, lane_id, pl, seq):
         for sc, rel in (pv.get("scenes") or {}).items():
             dst = os.path.join(d, f"{sc}.opus")
             shutil.copy2(os.path.join(C.ROOT, rel), dst)
-            scenes[sc] = C.rel(dst)
+            scenes[sc] = C.rel_posix(dst)
         _write_lane_preview(preset_id, lane_id, {
             "instrument": pv.get("instrument"), "ref": pv.get("ref"), "refs": pv.get("refs"), "scenes": scenes,
             "fingerprint": pl["fingerprint"], "made": "rendered", "from": pl.get("from"), "why": pl.get("render"),
@@ -1053,7 +1053,7 @@ def render_patch_borrowed(patch_id, seq, force=False):
         for sc, rel in (pv.get("scenes") or {}).items():
             dst = os.path.join(d, f"{sc}.opus")
             shutil.copy2(os.path.join(C.ROOT, rel), dst)
-            scenes[sc] = C.rel(dst)
+            scenes[sc] = C.rel_posix(dst)
         store._write_json_atomic(os.path.join(d, "preview.json"), dict(pv, scenes=scenes, input=ch, borrowed=True))
         return {"status": "rendered", "reason": f"on input {ch}, borrowed for the render"}
     finally:
@@ -1343,9 +1343,9 @@ def render_block(pid, sw, kind, seq, force=False):
             return {"status": "failed", "reason": "encoding failed"}
         store._write_json_atomic(meta_path, {
             "kind": kind, "block": d.get("block"), "switch": int(sw), "bars": BLOCK_BARS, "bpm": bpm,
-            "fingerprint": fp, "file": C.rel(opus), "seconds": round(_clip_duration(opus) or 0, 2),
+            "fingerprint": fp, "file": C.rel_posix(opus), "seconds": round(_clip_duration(opus) or 0, 2),
             "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
-        return {"status": "rendered", "file": C.rel(opus)}
+        return {"status": "rendered", "file": C.rel_posix(opus)}
     finally:
         for f in files + [wav]:
             with __import__("contextlib").suppress(OSError):

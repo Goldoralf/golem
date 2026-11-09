@@ -5,6 +5,8 @@ import os
 import re
 import sys
 
+import pytest
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "installer"))
 
@@ -104,6 +106,7 @@ def test_the_command_line_tools_are_a_blocking_check(monkeypatch, tmp_path):
     assert not M.clt_ok()
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="chemins et droits POSIX de macOS")
 def test_a_clone_in_a_protected_folder_is_not_installed_in_place(monkeypatch, tmp_path):
     monkeypatch.setenv("HOME", str(tmp_path))
     for name in ("Desktop", "Documents", "Downloads"):
@@ -114,6 +117,7 @@ def test_a_clone_in_a_protected_folder_is_not_installed_in_place(monkeypatch, tm
     assert 'getattr(P, "tcc_protected"' in server
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="chemins et droits POSIX de macOS")
 def test_the_elevated_script_runs_from_a_private_copy(monkeypatch, tmp_path):
     # le bash élevé ne lit pas un dossier protégé (« Operation not permitted (126) », 2026-10-16)
     calls = []

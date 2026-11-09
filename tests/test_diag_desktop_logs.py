@@ -20,6 +20,7 @@ def test_macos_bundle_carries_bridge_launcher_and_a_recent_reaper_crash(tmp_path
     monkeypatch.setattr(diag.sys, "platform", "darwin")
     monkeypatch.setattr(diag.C, "reaper_resource_dir", lambda: str(res))
     monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("USERPROFILE", str(home))           # expanduser sous Windows (runner Desktop tests)
     logs, missing = diag.collect_logs(3600, sc=lambda ln: ln)
     assert "démarré" in logs["bridge.log"] and "running" in logs["launcher.log"]
     assert logs["reaper-crash.ips"].strip() == "new crash"

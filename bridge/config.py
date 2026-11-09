@@ -13,6 +13,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSET_ROOTS = [os.path.join(ROOT, "assets")]
 
 
+def rel_posix(path, start=None):
+    """`rel` écrit avec des « / » sur tous les systèmes : pour un chemin qui part dans un fichier partagé ou une adresse
+    (démos de library/previews, listes d'un dossier) — sous Windows, `rel` rend des « \\ » et un manifeste écrit là
+    différait de celui de Linux (CI Desktop tests, 2026-11-09)."""
+    return (rel(path) if start is None else rel(path, start)).replace(os.sep, "/")
+
+
 def rel(path, start=None):
     """`os.path.relpath` qui ne casse pas sous Windows quand `path` est sur un AUTRE lecteur que le dépôt (dossier de
     chansons sur D:, cache sous %TEMP%…) : relpath lève alors ValueError. On rend le chemin absolu tel quel — un

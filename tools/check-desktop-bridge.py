@@ -50,6 +50,12 @@ def check_system_pages(port):
     print(f"Écrans System sur {sys.platform} : Dashboard, Libraries, Network, Soundcard, Licenses OK")
 
 
+def free_port():
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        return probe.getsockname()[1]
+
+
 def main():
     with tempfile.TemporaryDirectory(prefix="golem-bridge-smoke-") as tmp:
         runtime = Path(tmp) / "runtime"
@@ -66,7 +72,12 @@ def main():
             raise RuntimeError(f"environnement desktop absent : {python}")
         env = {**os.environ, "GOLEM_RUNTIME_DIR": str(runtime),
                "GOLEM_REAPER_RESOURCE_DIR": str(resource), "GOLEM_PORT": str(port),
-               "PYTHONUTF8": "1"}
+               "PYTHONUTF8": "1",
+               # un bridge de contrôle n'ouvre jamais le vrai pédalier, et ne se bat pas pour les ports OSC du golem qui
+               # tourne à côté (lancé sur le rack le 2026-11-09 : code 3 sans ça)
+               "GOLEM_NO_HW_MIDI": "1", "GOLEM_NO_REACH": "1",
+               "GOLEM_OSC_RECV": os.environ.get("GOLEM_OSC_RECV") or str(free_port()),
+               "GOLEM_OSC_SEND": os.environ.get("GOLEM_OSC_SEND") or str(free_port())}
         with log_path.open("w", encoding="utf-8") as log:
             bridge = subprocess.Popen(
                 [str(python), "-m", "uvicorn", "bridge.app:app", "--host", "127.0.0.1",
@@ -80,7 +91,8 @@ def main():
                     try:
                         with urlopen(f"http://127.0.0.1:{port}/app/", timeout=0.5) as response:
                             body = response.read()
-                            if response.status != 200 or b"GoleM" not in body:
+                            # la marque s'écrit « golem » depuis la v0.6 (CLAUDE.md règle 4) : « GoleM » ne passait plus (CI Desktop tests rouge)
+                            if response.status != 200 or b"<title>golem</title>" not in body:
                                 raise RuntimeError("interface absente ou réponse inattendue")
                             with urlopen(f"http://127.0.0.1:{port}/api/health", timeout=0.5) as api:
                                 if api.status != 200 or json.load(api).get("ok") is not True:

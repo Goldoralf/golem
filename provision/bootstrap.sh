@@ -15,7 +15,7 @@ set -eu
 REPO="${GOLEM_REPO:-https://github.com/Goldoralf/golem}"
 # CLÉ(S) DE RELEASE (docs/release-signing.md) — au format de provision/release-signers. Vide = pas de vérification
 # (le comportement d'avant). Renseignée : la release clonée doit être un tag SIGNÉ par cette clé, sinon on s'arrête.
-# Elle vit ICI, dans le script servi par get.golem.fm, et pas dans le dépôt téléchargé : une release piégée ne
+# Elle vit ICI, dans le script servi par la ligne d'installation, et pas dans le dépôt téléchargé : une release piégée ne
 # choisit pas la clé qui la vérifie.
 GOLEM_RELEASE_SIGNERS='golem namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJjcxUxxUG4j7eBBraww7MiR5QdCOorn9cNjuozesVk9 golem release'
 CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/golem-installer"

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # GoleM - le bootstrap Windows en une ligne (docs/installer.md, section 8), pendant de bootstrap.sh :
-#     irm https://get.golem.fm/win | iex              (ou : powershell -File provision\bootstrap.ps1)
+#     irm https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.ps1 | iex
+#     (ou : powershell -File provision\bootstrap.ps1 - get.golem.fm/win n'a pas de DNS, verifie le 2026-11-09)
 #
 # Il ne fait QUE trois choses, SANS droits d'administrateur :
 #   1. verifier le strict minimum (Windows 10 2004+ ou 11, x64) - le reste est verifie A L'ECRAN ;

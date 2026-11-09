@@ -8,11 +8,11 @@
 ## 1. What it protects, and what it does not
 
 A rack updates by checking out a release **tag** (Settings ▸ About, `POST /api/system/update`); a new machine installs
-with `curl -fsSL https://get.golem.fm | sh`, which clones the latest release. Both trust GitHub. Signing protects against
+with the README's one-line install (`curl … provision/bootstrap.sh | bash`), which clones the latest release. Both trust GitHub. Signing protects against
 a compromised repository — for example a stolen GitHub token that pushes a booby-trapped tag: without the private key the
 tag is not signed, and no golem installs it.
 
-It does **not** protect against a compromised `get.golem.fm`: that host serves the very script that does the checking.
+It does **not** protect against a compromised host serving the bootstrap (today `raw.githubusercontent.com`): it serves the very script that does the checking.
 This is the limit of any `curl | sh`, and the reason the bootstrap's key list lives in the script, not in the repository.
 
 ## 2. Where the keys live

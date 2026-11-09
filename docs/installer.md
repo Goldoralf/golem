@@ -18,8 +18,8 @@ implementation.
 
 | OS | Command | Script |
 |---|---|---|
-| Linux | `curl -fsSL https://get.golem.fm \| sh`, or `./install-linux.sh` in a clone | `provision/bootstrap.sh` (`install-linux.sh` calls it with `GOLEM_SRC`) |
-| Windows | `irm https://get.golem.fm/win \| iex`, or double-click `install-windows.cmd` in a clone | `provision/bootstrap.ps1` |
+| Linux | `curl -fsSL https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.sh \| bash`, or `./install-linux.sh` in a clone | `provision/bootstrap.sh` (`install-linux.sh` calls it with `GOLEM_SRC`) |
+| Windows | `irm https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.ps1 \| iex`, or double-click `install-windows.cmd` in a clone | `provision/bootstrap.ps1` |
 | macOS | double-click `install-macos.command` in a clone | `install-macos.command` |
 
 **Linux** (`bootstrap.sh`, no sudo):
@@ -443,4 +443,5 @@ nothing.
   machine"); a block whose plugin has no Windows build says "only available on a Linux golem" unless a golem
   JSFX plays it ([platforms.md](platforms.md) §5).
 - macOS: signing / notarisation.
-- `get.golem.fm` and `get.golem.fm/win` must redirect to the bootstrap of the current tag.
+- A short install address: `get.golem.fm` and `get.golem.fm/win` have **no DNS record** (checked 2026-11-09; a user hit
+  it on 2026-11-08). Until they redirect to the bootstrap, every page gives the raw GitHub lines of the README.

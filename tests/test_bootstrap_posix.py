@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""`curl -fsSL https://get.golem.fm | sh` lance le bootstrap avec /bin/sh — dash sur Ubuntu. Un `set -o pipefail`
+"""`curl … bootstrap.sh | sh` lance le bootstrap avec /bin/sh — dash sur Ubuntu. Un `set -o pipefail`
 nu le tuait à la ligne 9 (premier test en VM, 2026-10-15) ; `sh -n` ne le voit pas : il faut l'EXÉCUTER sous dash."""
 import os
 import shutil

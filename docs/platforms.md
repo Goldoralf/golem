@@ -32,7 +32,7 @@ The normal path on every OS is the graphical installer ([`installer.md`](install
 **Linux.**
 
 ```sh
-curl -fsSL https://get.golem.fm | sh        # or, from a clone: ./install-linux.sh
+curl -fsSL https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.sh | bash   # or, from a clone: ./install-linux.sh
 ```
 
 `provision/bootstrap.sh` checks the minimum (x86-64 is blocking, a system outside the tested ones is a warning,
@@ -42,7 +42,7 @@ runs `provision/install.sh`. Without the GUI, from a clone: `./provision/install
 (`--light` skips downloads, `--engine=<id>`, `GOLEM_PACKS=<list>`), then `provision/install-desktop.sh`
 for the `golem` command and icons.
 
-**Windows and macOS — graphical.** Windows: `irm https://get.golem.fm/win | iex`
+**Windows and macOS — graphical.** Windows: `irm https://raw.githubusercontent.com/Goldoralf/golem/main/provision/bootstrap.ps1 | iex`
 (`provision/bootstrap.ps1`), or double-click `install-windows.cmd` in a clone. macOS: double-click
 `install-macos.command` in a clone. Both install Python if needed (Windows) and open the installer.
 

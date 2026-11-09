@@ -547,7 +547,11 @@ def main():
         inventory_note = "inventory not compared (it is taken with --test-content, as CI runs it)"
         print(f"  note {inventory_note}")
     elif not a.no_inventory and not a.only:
-        if a.update_inventory or not a.inventory.exists():
+        if not a.update_inventory and not a.inventory.exists() and os.environ.get("CI"):
+            # en CI, un inventaire absent n'est pas « écrit et vert » : rien n'a été comparé (audit 2026-11-09)
+            bad.append({"page": "inventory", "issues": [f"no inventory for this OS: {a.inventory} — run --update-inventory and commit it"]})
+            print(f"  FAIL inventory — {a.inventory} missing: nothing was compared")
+        elif a.update_inventory or not a.inventory.exists():
             a.inventory.parent.mkdir(parents=True, exist_ok=True)
             a.inventory.write_text(json.dumps(seen, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
             inventory_note = f"inventory written: {a.inventory} ({sum(len(v) for v in seen.values())} controls)"

@@ -7,10 +7,14 @@ name: Rack self-test
 # rack depuis dix minutes (tools/rack-free.py) ; et chaque sonde jouée ici est de celles qui ne touchent pas le rack
 # vivant — REAPER et bridge jetables (check-rig-materialize), écritures interceptées (check-ui), suite Python.
 # Les sondes qui font du son (scene-gap, silence, meter --rig) attendent le câble de bouclage : pas ici.
+#
+# ⚠ PLUS DE LANCEMENT DE NUIT (audit 2026-11-09). Aucun runner « rack » n'est enregistré sur le dépôt PUBLIC : chaque
+# nuit depuis le 2026-10-31, le run restait en file 24 h puis était annulé, sans que personne le voie. Et GitHub
+# déconseille un runner auto-hébergé sur un dépôt public : du code d'ailleurs pourrait finir par tourner sur la machine
+# du musicien. La matérialisation Linux tourne désormais sur un runner GitHub (desktop-tests.yml, job rig-linux). Ce
+# workflow reste lançable à la main, pour qui enregistre un runner sur SON rack en connaissance de cause.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '45 3 * * *'          # 03:45 UTC — après la nuit des runners GitHub
 
 permissions:
   contents: read

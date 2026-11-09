@@ -4,4 +4,5 @@ pytest==9.1.1
 httpx==0.28.1
 ruff==0.17.0
 lupa==2.8
+onnx==1.23.2              # tests/test_separation.py : construit de vrais petits modèles ONNX (sauté en CI sans lui, audit 2026-11-09)
 playwright==1.63.0        # tools/check-ui.py : l'app rendue dans le Chrome du systeme (aucun navigateur telecharge)

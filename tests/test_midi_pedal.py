@@ -40,7 +40,9 @@ def _load(*parts):
 
 @pytest.fixture(scope="module")
 def whammy():
-    return _load("mappings", "whammy-dt.json")
+    # le descripteur VERSIONNÉ (library/pedals) : mappings/ est l'état local d'un rack (ignoré par git) — le test était
+    # sauté en CI, donc nulle part ailleurs que sur un rack déjà installé (audit 2026-11-09)
+    return _load("library", "pedals", "whammy-dt.json")
 
 
 @pytest.fixture(scope="module")

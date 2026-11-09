@@ -29,6 +29,7 @@ jobs:
           CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
           TITLE_: ${{ github.event.workflow_run.head_commit.message }}
         run: |
           set -eu
@@ -47,5 +48,14 @@ jobs:
             if [ -n "$existing" ]; then gh issue comment "$existing" -R "$REPO" --body "$body"
             else gh issue create -R "$REPO" --title "$title" --label ci-red --body "$body"; fi
           elif [ -n "$existing" ]; then
+            # UN RUN SAUTÉ N'EST PAS UN VERT (audit 2026-11-09) : Desktop tests s'arrête au contrôle préalable quand main
+            # n'a pas bougé et finit « success » en 9 s, sans rien tester — l'alarme se fermait toute seule (#9 le
+            # 2026-11-08). On ne ferme que si au moins un job autre que ce contrôle a réussi.
+            ran=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" \
+                    --jq '[.jobs[] | select(.conclusion == "success" and (.name | startswith("Did main move") | not))] | length')
+            if [ "$ran" -eq 0 ]; then
+              echo "Run sauté (aucun job testé) : l'issue reste ouverte"
+              exit 0
+            fi
             gh issue close "$existing" -R "$REPO" --comment "Green again: **$WF** passed on \`main\` at \`${SHA:0:10}\` ($RUN_URL)."
           fi

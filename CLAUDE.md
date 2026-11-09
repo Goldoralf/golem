@@ -31,7 +31,8 @@ damage**, and where the details live. Read the map before you change anything.
    `executable_path="/usr/bin/google-chrome"`) at **1024×600, no scroll** (phone: 390×844). Look at the
    pixels, read the console, and intercept every POST/PUT/DELETE to `/api/` when exploring.
 4. **Languages.** The UI is in **English**; a French label on screen is a bug. Docs are in English. Code
-   identifiers stay as they are; **code comments are in French**. The brand is written **`golem`** or
+   identifiers stay as they are; **code comments are in French**. **Commit messages are in English** (the
+   repository is public, decided 2026-11-09): a short subject line, then what changed and why. The brand is written **`golem`** or
    **`/golem_`** in anything displayed — never "GoleM". Existing identifiers (folders `…/GoleM/…`, firewall
    rule, mDNS service) keep their name: renaming them breaks installs.
 5. **A decision that matters goes into a doc**, with its status at the top (PROPOSED / FIXED / CODED), not into

@@ -87,6 +87,8 @@ root `A–G` with `#`/`b`.
 
 - Write **`mMaj7`**, never `m/maj7` (the slash reads as a bass; the reader normalises it anyway).
 - `dim7`/`dim` and iReal's `07`/`0` are all read; `6/9` is read as `69`.
+- Also read since 2026-11-09 (21 synced charts had silent chords): `mMaj9`, `dimMaj7` (`dimmaj7`), an added note on
+  any quality (`madd9`, `7add11`, `m7add13`), and `sus4add3` — the suspended fourth **with** the third kept.
 - Spell what the chart reads (`Bb`, not `A#`); transposition is the engine's job.
 - An unreadable symbol is reported in the render's `unknown` list and does not sound.
 

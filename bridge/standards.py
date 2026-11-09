@@ -67,6 +67,9 @@ _STEP = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 # contre « m », « m7b5 » contre « m7 »). Chaque entrée : demi-tons depuis la fondamentale.
 _CORES = [
     ("m/maj7", [0, 3, 7, 11]),   # le piège à barre — traité en premier
+    # mineur-majeur 9 et diminué-majeur 7 (2026-11-09) : `EmMaj9`, `Ebdimmaj7` rendaient None dans 21 grilles du
+    # corpus synchronisé — l'accord ne sonnait pas. AVANT `mmaj7` et `dim7`/`dim` (premier préfixe qui colle).
+    ("mmaj9",  [0, 3, 7, 11, 14]),
     ("mmaj7",  [0, 3, 7, 11]),
     ("maj13",  [0, 4, 7, 11, 14, 21]),
     ("maj9",   [0, 4, 7, 11, 14]),
@@ -84,6 +87,7 @@ _CORES = [
     # ÉCRIT dans notre propre format (docs/standards-format.md) — et ils manquaient, alors
     # que la spec les promettait. Trouvé en comparant nos grilles aux références : `C#dim7`
     # rendait None, donc l'accord n'aurait pas sonné.
+    ("dimmaj7", [0, 3, 6, 11]),
     ("dim7",   [0, 3, 6, 9]),
     ("dim",    [0, 3, 6]),
     ("07",     [0, 3, 6, 9]),    # iReal : dim7
@@ -104,6 +108,10 @@ _CORES = [
 # noyau ; une altération qui vise un degré absent l'AJOUTE (7b9 = 7 + un 9 bémol).
 _ALTS = [("b5", 7, -1), ("#5", 7, +1), ("b9", 14, -1), ("#9", 14, +1),
          ("#11", 17, +1), ("b13", 21, -1), ("#13", 21, +1)]
+
+# Notes AJOUTÉES à n'importe quel noyau (2026-11-09) : `madd9`, `7add11`, `m7add13`. Le noyau `add9` reste pour le
+# majeur nu (`Cadd9`) ; ici l'ajout se lit APRÈS un autre noyau. `add3` vit avec `sus` (plus bas) : la tierce GARDÉE.
+_ADDS = [("add9", 14), ("add11", 17), ("add13", 21)]
 
 _SYM_RE = re.compile(r"^([A-G][#b]?)(.*)$")
 
@@ -163,6 +171,9 @@ def parse_symbol(sym):
     if "sus" in suf:
         sus = True
         suf = suf.replace("sus4", "").replace("sus2", "").replace("sus", "")
+    # `7sus4add3` : la quarte suspendue ET la tierce (une couleur de jazz) — sans ceci, `add3` restait un reliquat
+    add3 = "add3" in suf
+    suf = suf.replace("add3", "")
 
     rest = suf.lower()
     ints = None
@@ -180,6 +191,10 @@ def parse_symbol(sym):
         rest = rest.replace("alt", "")
         ints = [i for i in ints if i != 7] + [13, 15, 20]
 
+    for pat, deg in _ADDS:
+        if pat in rest:
+            rest = rest.replace(pat, "")
+            ints = ints + [deg]
     for pat, deg, off in _ALTS:
         if pat in rest:
             rest = rest.replace(pat, "")
@@ -189,6 +204,8 @@ def parse_symbol(sym):
 
     if sus:                                # la tierce cède la place à la quarte
         ints = [i for i in ints if i not in (3, 4)] + [5]
+    if add3:                               # … sauf si on l'a demandée en plus
+        ints = ints + [4]
 
     ints = sorted(set(ints))
     return {"root": root, "ints": ints, "bass": bass,

@@ -173,6 +173,9 @@
     "shimmer": "Shimmer",
     "pitch": "Pitch",
     "hicut": "High Cut"
+   },
+   "init": {
+    "Wet Level": 21.0
    }
   },
   "eq-para": {
@@ -203,6 +206,9 @@
     "direct": "Direct",
     "octave1": "Octave -1",
     "octave2": "Octave -2"
+   },
+   "init": {
+    "Level": 11.9
    }
   },
   "vibrato": {

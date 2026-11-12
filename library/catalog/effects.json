@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 36,
+ "catalog_version": 37,
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
@@ -6317,7 +6317,6 @@
       "mode": "raw"
      },
      "size": 2,
-     "quarantine": "2026-11-12, maintainer's call: it does not work well (judged by ear, not measured). Taken out of the drawer, of the AI vocabulary and of the compile until it is reworked.",
      "note": "the gesture: ON captures the chord and holds it, OFF lets it go in Decay. The block's footswitch drives THIS parameter (never the bypass): the direct always passes, the release tail rings"
     },
     {
@@ -6414,6 +6413,7 @@
      "note": "the FFT window — and the LATENCY: 2048 = 43 ms at 48 kHz. 1024 = tighter, 4096 = smoother on low chords"
     }
    ],
+   "quarantine": "2026-11-12, maintainer's call: it does not work well (judged by ear, not measured). Taken out of the drawer, of the AI vocabulary and of the compile until it is reworked.",
    "note": "GoleM Freeze (our own, GPL-3, plugins/golem_freeze on nih-plug — built by provision/install-spectral.sh, docs/spectral.md §3): the EHX Freeze gesture, spectral. Tap the switch: the chord you are holding is captured (4 frames averaged) and HELD — play over it; tap again: it fades in Decay. The direct always passes; the freeze is added under it. Freeze is a PARAMETER driven by the footswitch (golem_rig.fx_set_on), never the bypass. LATENCY = the window (2048 → 43 ms, Reaper's PDC on the lane): never in the base path of a guitar lane — on a branch, or on voice/keys/pads. Placement: after amp/cab, before delay/reverb (the tails stretch naturally).",
    "_validation": "2026-09-25 : VALIDÉ au banc — fxadd sous « CLAP: GoleM Freeze (GoleM) », pdc=2048 (1024 avec Window 1024) déclaré, check-block-stall : aucun gel (max 3 ms), TENUE MESURÉE au crête-mètre (ton −20 dB en tête de lane, gel enclenché, ton coupé : −20,9 / −20,6 / −21,8 dB à +0,5 / +2 / +4 s ; sans gel −93 dB ; relâché : −41 dB à +0,6 s, −81 dB à +3 s), rig : scène A/B et stomp actionnent le PARAMÈTRE Freeze (FX toujours actif, latence stable), 6 potards relus à la valeur affichée, deux reconstructions. Pas encore joué à l'oreille (le timbre du gel : smear/tone à régler sous les doigts)."
   },

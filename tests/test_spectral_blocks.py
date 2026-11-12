@@ -60,3 +60,10 @@ def test_les_interrupteurs_de_module_de_stretch_suivent_leurs_potards():
     CR._expand_stretch(blocks)
     assert blocks[0]["params"]["spread_on"] is True and blocks[0]["params"]["comp_on"] is False
     assert blocks[1]["params"]["spread_on"] is True and blocks[1]["params"]["comp_on"] is True   # explicite : gardé
+
+
+def test_freeze_est_en_quarantaine_au_niveau_du_bloc():
+    """Catalogue v37 : la quarantaine de Freeze (v35) avait été posée sur un PARAMÈTRE du bloc — inactive, le bloc
+    restait au tiroir et dans la compile (signalé par golem.fm le 2026-11-12). La clé se lit au niveau du bloc."""
+    from bridge import rig
+    assert "freeze" in rig.quarantined_types()

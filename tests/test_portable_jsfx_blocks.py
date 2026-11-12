@@ -57,7 +57,9 @@ def test_chaque_potard_du_catalogue_nomme_un_slider_aux_memes_unites(btype):
             assert s["options"] == p["options"] and (s["min"], s["max"]) == (0, len(p["options"]) - 1), p["id"]
             continue
         assert p["map"]["mode"] == "raw", p["id"]                     # écrit en brut : le slider porte l'unité native
-        scale = p["map"].get("scale", 1)
+        # une table d'OS qui RENOMME le paramètre lui rend une correspondance sans échelle (golem_rig.lua) : le JSFX du
+        # limiteur prend des ms, l'x42 de Linux/macOS des secondes (catalogue v34)
+        scale = 1 if p["id"] in (_table("windows")[btype].get("params") or {}) else p["map"].get("scale", 1)
         if p.get("type") == "enum":
             vals = p.get("values") or list(range(len(p["options"])))
             assert s["min"] <= min(vals) and max(vals) <= s["max"], p["id"]
@@ -95,7 +97,8 @@ def test_le_jsfx_respecte_les_pieges_du_depot(btype):
 def test_les_tables_nomment_le_jsfx_par_son_chemin():
     win, mac = _table("windows"), _table("macos")
     for btype, (stem, _) in BLOCKS.items():
-        assert win[btype] == {"plugin": f"JS:golem/{stem}", "note": win[btype]["note"]}, btype
+        assert {k: v for k, v in win[btype].items() if k != "params"} == {"plugin": f"JS:golem/{stem}",
+                                                                          "note": win[btype]["note"]}, btype
         if btype not in ("eq-para", "limiter"):                    # macOS résout l'x42-eq / x42-dpl que l'on installe soi-même
             assert mac[btype] == {"plugin": f"JS:golem/{stem}", "note": mac[btype]["note"]}, btype
 
@@ -213,3 +216,21 @@ def test_aucun_jsfx_de_golem_n_a_deux_noms_qui_ne_different_que_par_la_casse():
         if clash and os.path.basename(f).startswith("golem_"):
             bad[os.path.basename(f)] = clash
     assert not bad, bad
+
+
+def test_sous_linux_le_limiteur_x42_recoit_des_secondes(tmp_path):
+    """Le catalogue v34 : le potard Release reste en ms, l'x42-dpl attend des SECONDES (ports 0,001..1 s) — mesuré par
+    tools/check-engine-parity.py le 2026-11-12 : 50 ms partaient en 50 s. Windows garde les ms (test ci-dessus)."""
+    pytest.importorskip("lupa")
+    from tests.test_rig_lua import PATCH, Lab
+    lab = Lab(tmp_path)
+    lab.F.specs["x42-dpl - Digital Peak Limiter Mono"] = lab.L.table_from([
+        lab.L.table_from({"name": "Threshold", "min": -10, "max": 0, "def": 0}),
+        lab.L.table_from({"name": "Release Time", "min": 0.001, "max": 1, "def": 0.01})])
+    p = copy.deepcopy(PATCH)
+    p["lanes"][0]["chain"]["post"] += [{"id": "lim", "type": "limiter", "params": {"threshold": -6, "release": 80}}]
+    lab.compile(p)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    vals = {q.name: q.val for q in fx["golem:lim"].params.values()}
+    assert vals["Threshold"] == -6 and vals["Release Time"] == pytest.approx(0.08), lab.log()

@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 33,
+ "catalog_version": 34,
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
  "_bench_comment": "Per-block `bench` (v26) = the block has NOT yet passed the engine-stall bench (tools/check-block-stall.py: does switching it on/off freeze Reaper?). Only value: \"pending\". The rack Designer still offers the block (a person can try it); golem.fm's AI must NOT propose it. The key is REMOVED once the bench concludes clean; a block that fails goes to `quarantine` instead. Never infer it from the plugin family: it is measured, block by block.",
@@ -4975,7 +4975,7 @@
     {
      "id": "threshold",
      "name": "Threshold",
-     "min": -30,
+     "min": -10,
      "max": 0,
      "default": -6,
      "unit": "dB",
@@ -4992,11 +4992,12 @@
      "default": 50,
      "unit": "ms",
      "map": {
-      "mode": "raw"
+      "mode": "raw",
+      "scale": 0.001
      }
     }
    ],
-   "note": "x42 DPL (dpl.lv2, deja installe) — brickwall peak limiter. Chantier 2 (algo OSS). Nom Reaper + params A VERIFIER sur le rig.",
+   "note": "x42 DPL (dpl.lv2) — brickwall peak limiter. v34 (2026-11-12, measured by tools/check-engine-parity.py): its ports are Threshold -10…0 dB and Release Time 0.001…1 SECONDS — the knob stays in ms, `scale` converts (the 50 ms default was sent as 50 s, and thresholds below -10 dB were out of range: REAPER passed them as they were, Ardour clamps). Windows plays golem_limiter.jsfx, which takes ms: its table renames both parameters, which drops the scale there.",
    "short": "Limiter",
    "color": "#8a94a3",
    "glyph": "⎍"

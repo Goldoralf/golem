@@ -1,7 +1,7 @@
 {
  "_comment": "REAPER Windows x64: exact scanned plugin names. Only loaded by golem_rig.lua on Windows. Unsupported entries prevent a Linux alias or numeric parameter fallback from selecting the wrong DSP.",
  "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on Windows (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on Windows (`note` says which, and what is still missing); untested = never tried on Windows (`why`).",
- "revision": 7,
+ "revision": 8,
  "effects": {
   "boost": {
    "plugin": "VST3: Proteus (GuitarML)",
@@ -143,6 +143,10 @@
   },
   "limiter": {
    "plugin": "JS:golem/golem_limiter",
+   "params": {
+    "threshold": "Threshold",
+    "release": "Release Time"
+   },
    "note": "2026-10-22 : x42-dpl n'est pas installé ici ; golem_limiter.jsfx (maison, MIT) reprend ses trois commandes (Input Gain, Threshold, Release Time) et l'idée d'un limiteur à anticipation (64 échantillons, déclarés) — code à nous."
   },
   "chorus": {

@@ -192,11 +192,11 @@ def test_dans_le_designer_un_type_sans_plugin_ici_est_pas_encore():
     prev = engine.use(A.ArdourEngine(link=object()))
     try:
         gate = blockstatus.engine_gate()
-        st = blockstatus.block_state({"type": "pitch-shift-js"})
+        st = blockstatus.block_state({"type": "surge-spring"})
     finally:
         engine.use(prev)
     assert "amp-nam" not in gate and "cab" not in gate                  # dans la table : ils jouent
-    assert gate["pitch-shift-js"] == ("planned", "Golem Engine")         # pas encore (golem-fx)
+    assert gate["surge-spring"] == ("planned", "Golem Engine")           # Surge XT : pas sur ce moteur
     assert gate["looper"][1] == "Golem Engine"                          # fonction du moteur non déclarée
     assert st["reason"] == "engine" and st["why"] == "not available on Golem Engine yet"
 

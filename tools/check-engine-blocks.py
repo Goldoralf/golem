@@ -41,7 +41,9 @@ def probe_input(types=None):
             e, why = P.param_entry(dict(d, name=names.get(pid) or d.get("name")), d.get("default"))
             if e is None:
                 continue                                   # refusé par le plan (contenu, courbe) : rien à sonder
-            labels.append({"pid": pid, "label": e["label"], "value": e.get("value")})
+            # un interrupteur s'écrit 1 (pas le milieu de sa plage : un bool relu 1 pour 0.37 n'est pas une faute)
+            value = e.get("value") if "value" in e else (1.0 if d.get("type") == "bool" else None)
+            labels.append({"pid": pid, "label": e["label"], "value": value})
         for k, v in (spec.get("init") or {}).items():
             labels.append({"pid": f"init:{k}", "label": k, "value": v})
         out.append({"type": t, **P.plugin_of(spec), "labels": labels})

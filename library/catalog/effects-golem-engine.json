@@ -76,9 +76,15 @@
    "vst3": "ABCDEF019182FAEB47744D4C50727433"
   },
   "chorus": {
-   "lv2": "http://calf.sourceforge.net/plugins/MultiChorus",
+   "vst3": "476F6C654D467843686F727573303031",
+   "golem_fx": true,
+   "params": {
+    "rate": "Rate",
+    "depth": "Depth",
+    "mix": "Mix"
+   },
    "init": {
-    "Dry Amount": 1.0
+    "Level Comp": 0
    }
   },
   "flanger": {
@@ -92,18 +98,6 @@
   },
   "rotary": {
    "lv2": "http://calf.sourceforge.net/plugins/RotarySpeaker"
-  },
-  "wah": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_"
-  },
-  "wah-color": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gx_colwah_#_colwah_"
-  },
-  "autowah": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gxautowah#autowah",
-   "absent": {
-    "wah": "GxAutoWah has no such control (the same binary under REAPER: the knob does nothing there either)"
-   }
   },
   "reverb": {
    "lv2": "https://github.com/michaelwillis/dragonfly-reverb"
@@ -184,6 +178,42 @@
     "midfreq": "Mid Freq",
     "lowcut": "Low Cut",
     "highs": "Highs"
+   }
+  },
+  "deesser": {
+   "vst3": "476F6C654D4678446565737365723031",
+   "golem_fx": true,
+   "params": {
+    "thresh": "Threshold",
+    "freq": "Frequency",
+    "range": "Range",
+    "listen": "Listen"
+   }
+  },
+  "wah": {
+   "vst3": "476F6C654D4678576168303030303031",
+   "golem_fx": true,
+   "params": {
+    "wah": "Wah",
+    "volume": "Volume"
+   }
+  },
+  "wah-color": {
+   "vst3": "476F6C654D4678576168303030303031",
+   "golem_fx": true,
+   "params": {
+    "model": "Model",
+    "wah": "Wah",
+    "freq": "Alien Rate",
+    "mix": "Mix",
+    "mode": "Mode"
+   }
+  },
+  "autowah": {
+   "vst3": "476F6C654D46784175746F7761683031",
+   "golem_fx": true,
+   "params": {
+    "wah": "Sensitivity"
    }
   }
  }

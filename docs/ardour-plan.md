@@ -732,6 +732,21 @@ commit; the measured models below stay as reference.)
   cycle was lost (REAPER and Ardour), and read-only meters (gate state, gain reduction) now exist — readable from
   Ardour's Lua and from ReaScript.
 
+**2026-11-12 (late night) — golem-fx: 11 blocks on the engine; a third REAPER bug.**
+- Engine table (`golem_fx: true`): volume, clean-boost (gfx-boost), gate, comp, limiter, eq, deesser, wah and wah-color
+  (gfx-wah), autowah, chorus — each through `check-engine-blocks` and `check-engine-parity`. wah-color and autowah were
+  taken by ear (the maintainer's A/B against GxWahwah / GxAutoWah, level-matched), their numbers having converged to
+  −9 / −12 dB on envelope-driven filters where a few ms of follower move a +20 dB peak across third-octaves. Explicit
+  label maps where the catalog's REAPER names differ (wah-color's "MODE" matched gfx-wah's "Model" by substring).
+  gfx-chorus is 2/2 first (stereo-by-nature effects are, by the golem-fx contract), so the lane turns stereo at it as
+  with Calf; `init` pins Level Comp = 0 for Calf's loudness.
+- **ReaEQ's high pass was never enabled** (BANDENABLED4 = 0 in a fresh instance): the catalog's eq lowcut cut nothing
+  under REAPER (0.0 dB from 20 to 300 Hz, white noise). golem_rig enables it at add (f0da53fe).
+- Bench: the parity bench links golem's JSFX into its REAPER (Effects/golem), honours `index_fallback`, and the block
+  probe writes 1 to booleans.
+- REAPER normalisation of nih-plug VST3 parameters, measured for golem-fx: enums at index/(n−1), snapping to the
+  nearest; booleans as toggles (≤ 0.5 off); linear plain ranges exact, negative minimums included.
+
 ## 8. Risks
 
 - **Scene latency.** REAPER's scene switch is tuned (union materialization, ≤ 40 ms). Ardour's bypass may

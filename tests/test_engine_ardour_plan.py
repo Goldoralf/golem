@@ -346,11 +346,12 @@ def test_les_reglages_d_ajout_partent_avec_le_bloc():
     blk, _ = P.plan_block({"id": "sp", "type": "fake", "params": {}}, P.load_catalog(), table)
     assert blk["init"] == [{"pid": "init:FX Type", "label": "FX Type", "value": 27}]
     blk, _ = P.plan_block({"id": "ch", "type": "chorus", "params": {}}, P.load_catalog(), table)
-    assert blk["init"][0]["label"] == "Dry Amount" and blk["init"][0]["value"] == 1.0
+    assert blk["init"][0]["label"] == "Level Comp" and blk["init"][0]["value"] == 0     # gfx-chorus : niveau de Calf
 
 
 def test_un_parametre_sans_controle_est_refuse_avec_sa_raison():
-    blk, sk = P.plan_block({"id": "aw", "type": "autowah", "params": {"wah": 0.5}}, P.load_catalog(), P.load_table())
+    table = {"autowah": {"lv2": "urn:gxautowah", "absent": {"wah": "GxAutoWah has no such control"}}}
+    blk, sk = P.plan_block({"id": "aw", "type": "autowah", "params": {"wah": 0.5}}, P.load_catalog(), table)
     assert blk["params"] == [] and sk[0]["param"] == "wah" and "GxAutoWah" in sk[0]["why"]
 
 

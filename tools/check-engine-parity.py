@@ -237,7 +237,8 @@ def reaper_script(cs, catalog, work, di, length):
             for d in (catalog.get(c["type"]) or {}).get("params") or []:
                 if d.get("type") not in ("bool", "enum"):
                     if d.get("id"):
-                        defs[d["id"]] = {**d, "num_index": ni}
+                        # index_fallback: false (catalogue v36) : pas de repli au rang, comme golem_rig
+                        defs[d["id"]] = {**d, "num_index": ni} if d.get("index_fallback") is not False else d
                     ni += 1
             used = {k: defs[k] for k in c["values"]}
             alias, fx_init = rig_tables()
@@ -314,6 +315,9 @@ def render_reaper(cs, catalog, work, di, length):
     native = _mod("check_native_nam", "check-native-nam.py")
     res = work / "reaper"
     (res / "Scripts").mkdir(parents=True)
+    # les JSFX de golem (golem_deesser, golem_killswitch…) où le rack les a : Effects/golem (provision/link-reaper.sh)
+    (res / "Effects").mkdir()
+    (res / "Effects" / "golem").symlink_to(ROOT / "reaper" / "Effects", target_is_directory=True)
     # audio factice sous Linux : [reaper] linux_audio_mode=2 (mesuré, tools/check-rig-materialize.py)
     (res / "reaper.ini").write_text("[REAPER]\nnolastproject=1\nopenallrecent=0\nlinux_audio_mode=2\n"
                                     "linux_audio_srate=48000\n[audioconfig]\nmode=4\n", encoding="ascii")

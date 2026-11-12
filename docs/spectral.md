@@ -2,6 +2,8 @@
 
 > **Status: CODED** — three spectral blocks (`spectral-comp`, `stretch`, `freeze`) in the catalog, built from
 > pinned sources by `provision/install-spectral.sh`; validated on the bench, not yet judged by ear.
+> **Freeze is QUARANTINED** since 2026-11-12 (catalog v35, the maintainer's call: it does not work well) — out of the drawer,
+> the AI vocabulary and the compile until it is reworked.
 
 golem does not clone commercial spectral suites (no Linux build to study, licences forbid decompiling, and copying
 code or UI would be infringement). The DSP is public (phase vocoder, bin-wise companders): golem reuses two

@@ -164,7 +164,16 @@
    }
   },
   "reverb-shimmer": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gx_shimmizita_#_shimmizita_"
+   "vst3": "476F6C654D46785368696D6D65723031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "mix": "Mix",
+    "decay": "Decay",
+    "shimmer": "Shimmer",
+    "pitch": "Pitch",
+    "hicut": "High Cut"
+   }
   },
   "eq-para": {
    "lv2": "http://gareus.org/oss/lv2/fil4#mono"

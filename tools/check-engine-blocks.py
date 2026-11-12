@@ -38,7 +38,7 @@ def probe_input(types=None):
         for pid, d in defs.items():
             if pid in (spec.get("absent") or {}):
                 continue                                   # dit absent par la table, avec sa raison
-            e, why = P.param_entry(dict(d, name=names.get(pid) or d.get("name")), d.get("default"))
+            e, why = P.param_entry(P.table_def(spec, d), d.get("default"))
             if e is None:
                 continue                                   # refusé par le plan (contenu, courbe) : rien à sonder
             # un interrupteur s'écrit 1 (pas le milieu de sa plage : un bool relu 1 pour 0.37 n'est pas une faute)

@@ -59,6 +59,23 @@ def db_to_vu(db):
     return 0.0 if db <= -120 else 10 ** (db / 20.0)
 
 
+def _bpm(cmd):
+    """Le TEMPO du morceau, comme golem_rig.lua le pose sur REAPER (SetCurrentBPM) : celui de la ligne de setlist
+    (`cmd.bpm`), sinon celui du preset (presets/<id>.json) — les delays et trémolos synchronisés suivent l'hôte."""
+    try:
+        b = float(cmd.get("bpm"))
+        if 20 <= b <= 400:
+            return b
+    except (TypeError, ValueError):
+        pass
+    try:                                       # le nom tel que golem_rig le lit : l'id brut de la commande
+        with open(os.path.join(C.PRESETS_DIR, f"{cmd.get('preset')}.json"), encoding="utf-8") as f:
+            b = float((json.load(f) or {}).get("bpm"))
+        return b if 20 <= b <= 400 else None
+    except (OSError, ValueError, TypeError):
+        return None
+
+
 class ArdourEngine(EngineAdapter):
     id = "ardour"
     actions = frozenset({"ping", "status", "rig_recall", "scene_apply", "stomp", "rig_verify", "dump", "audio_set",
@@ -86,6 +103,7 @@ class ArdourEngine(EngineAdapter):
                 return None
             for s in plan["skipped"]:
                 log.info(f"ardour : {s.get('id') or s.get('path')} {s.get('type') or ''} {s.get('param') or ''} — {s['why']}")
+            plan["bpm"] = _bpm(cmd)
             cmd = {**cmd, "plan": plan}
         return commands.enqueue(cmd)
 

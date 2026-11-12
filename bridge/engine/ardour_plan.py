@@ -146,6 +146,21 @@ def plan_drumkit(b, spec):
     return [trans, kit], []
 
 
+def table_def(spec, d):
+    """La définition catalogue d'un paramètre TELLE QUE le plugin de la table la reçoit : son nom (`params` de la table),
+    et pour un paramètre RENOMMÉ l'unité du catalogue — la règle de golem_rig pour les tables d'OS, étendue : ni
+    l'échelle (gfx-limiter : la release en ms, l'x42 en secondes), ni la courbe de REAPER (gfx-delay : feedback et mix
+    en % bruts, pas le pct_db de ReaDelay), et une énumération part par son RANG, pas par les `values` du plugin de
+    REAPER (le temps du delay : 0.75 noire pour ReaDelay)."""
+    labels = spec.get("params") or {}
+    dd = dict(d, name=labels.get(d["id"]) or d.get("name"))
+    if d["id"] in labels:
+        dd["map"] = {k: v for k, v in (d.get("map") or {}).items() if k not in ("scale", "curve")}
+        dd["map"]["mode"] = "raw"
+        dd.pop("values", None)
+    return dd
+
+
 def plan_block(b, catalog, table):
     """(bloc moteur, [refus]) ; (None, [raison]) si le type ne joue pas sur ce moteur."""
     t = b.get("type")
@@ -173,12 +188,7 @@ def plan_block(b, catalog, table):
         if not d:
             skipped.append({"id": b.get("id"), "param": pid, "why": "unknown parameter"})
             continue
-        dd = dict(d, name=labels.get(pid) or d.get("name"))
-        if pid in labels and (d.get("map") or {}).get("scale") is not None:
-            # la règle de golem_rig pour les tables d'OS : un paramètre RENOMMÉ par la table perd l'échelle du catalogue —
-            # le plugin de la table prend l'unité du catalogue (gfx-limiter : la release en ms, l'x42 en secondes)
-            dd["map"] = {k: v for k, v in d["map"].items() if k != "scale"}
-        e, why = param_entry(dd, value)
+        e, why = param_entry(table_def(spec, d), value)
         if e is None:
             skipped.append({"id": b.get("id"), "param": pid, "why": why})
         else:

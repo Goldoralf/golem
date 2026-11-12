@@ -280,6 +280,32 @@
     "feedback": "Feedback",
     "wet": "Wet"
    }
+  },
+  "guitar-drive": {
+   "vst3": "476F6C654D4678447269766530303031",
+   "golem_fx": true,
+   "status": "testing",
+   "absent": {
+    "channel": "gfx-drive has no channel mode (it is mono first; a stereo lane gets it dual-mono)"
+   },
+   "params": {
+    "gain": "Gain",
+    "hardness": "Hardness",
+    "ceiling": "Ceiling"
+   },
+   "init": {
+    "Voice": 3
+   }
+  },
+  "delay": {
+   "vst3": "476F6C654D467844656C617930303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "time": "Time",
+    "feedback": "Feedback",
+    "mix": "Mix"
+   }
   }
  }
 }

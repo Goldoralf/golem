@@ -207,7 +207,11 @@ function apply(track, fx, defs, values)
     else
       local mn, mx = tonumber(def.min) or 0, tonumber(def.max) or 1
       local v = tonumber(value)
-      if mode == "raw" then
+      if map and map.curve == "pct_db" then
+        -- golem_rig : un potard en % vise des dB AFFICHÉS (les faders de ReaDelay / ReaPitch : Wet, Feedback)
+        if v <= 0 then reaper.TrackFX_SetParamNormalized(track, fx, p, 0)
+        else set_norm_to_target(track, fx, p, 20 * math.log(v / 100, 10), -60, 12) end
+      elseif mode == "raw" then
         if v < mn then v = mn elseif v > mx then v = mx end
         if map and map.scale then v = v * map.scale end
         reaper.TrackFX_SetParam(track, fx, p, v)

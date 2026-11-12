@@ -192,11 +192,11 @@ def test_dans_le_designer_un_type_sans_plugin_ici_est_pas_encore():
     prev = engine.use(A.ArdourEngine(link=object()))
     try:
         gate = blockstatus.engine_gate()
-        st = blockstatus.block_state({"type": "delay"})
+        st = blockstatus.block_state({"type": "pitch-shift-js"})
     finally:
         engine.use(prev)
     assert "amp-nam" not in gate and "cab" not in gate                  # dans la table : ils jouent
-    assert gate["delay"] == ("planned", "Golem Engine")                 # ReaDelay : pas encore (golem-fx)
+    assert gate["pitch-shift-js"] == ("planned", "Golem Engine")         # pas encore (golem-fx)
     assert gate["looper"][1] == "Golem Engine"                          # fonction du moteur non déclarée
     assert st["reason"] == "engine" and st["why"] == "not available on Golem Engine yet"
 
@@ -377,3 +377,23 @@ def test_chaque_effet_golem_fx_porte_son_statut():
     for t, spec in P.load_table().items():
         if spec.get("golem_fx"):
             assert spec.get("status") in ("testing", "validated"), t
+
+
+def test_un_parametre_renomme_part_dans_l_unite_du_catalogue_sans_courbe_ni_values():
+    # gfx-delay : le temps par son RANG (pas la noire de ReaDelay), feedback et mix en % bruts (pas le pct_db de ReaDelay)
+    cat = P.load_catalog()
+    table = {"delay": {"vst3": "X", "params": {"time": "Time", "feedback": "Feedback", "mix": "Mix"}}}
+    blk, sk = P.plan_block({"id": "d", "type": "delay", "params": {"time": "1/8", "feedback": 35, "mix": 25}}, cat, table)
+    assert sk == [] and {p["pid"]: p["value"] for p in blk["params"]} == {"time": 3, "feedback": 35.0, "mix": 25.0}
+    # sans renommage, la courbe de REAPER reste refusée (rien ne la sait jouer ici)
+    blk, sk = P.plan_block({"id": "d", "type": "delay", "params": {"feedback": 35}}, cat, {"delay": {"vst3": "X"}})
+    assert blk["params"] == [] and "pct_db" in sk[0]["why"]
+
+
+def test_le_plan_emporte_le_tempo_du_morceau(tmp_path, monkeypatch):
+    from bridge.engine import ardour as AR
+    monkeypatch.setattr(C, "PRESETS_DIR", str(tmp_path))
+    assert AR._bpm({"preset": "x", "bpm": 92}) == 92.0                       # la ligne de setlist d'abord
+    (tmp_path / "x.json").write_text(json.dumps({"bpm": 140}))
+    assert AR._bpm({"preset": "x"}) == 140.0                                 # sinon le preset, comme golem_rig
+    assert AR._bpm({"preset": "y"}) is None

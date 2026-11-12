@@ -59,6 +59,12 @@ if c.plugin then
 	-- la stéréo comme sur le rack : le module du veilleur (lancé depuis le dossier du Golem Engine)
 	local CHAIN = dofile ("golem/engine/golem_chain.lua")
 	CHAIN.add (tr, p, 1)
+	-- une piste passée en STÉRÉO a un 2e port de sortie que rien ne relie (Ardour ne relie qu'à la création) : au
+	-- master, canal par canal — sinon l'export rend la droite muette (gfx-rotary, 2026-11-12)
+	local out, min = tr:output (), Session:master_out ():input ()
+	for k = 1, out:n_ports ():n_audio () - 1 do
+		if k < min:n_ports ():n_audio () then out:audio (k):connect (min:audio (k):name ()) end
+	end
 	set_params (p, c.init)
 	set_params (p, c.params)
 	if c.enabled == false then p:to_insert ():deactivate () end

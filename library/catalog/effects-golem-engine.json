@@ -106,7 +106,15 @@
    }
   },
   "rotary": {
-   "lv2": "http://calf.sourceforge.net/plugins/RotarySpeaker"
+   "vst3": "476F6C654D4678526F74617279303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "speed": "Speed",
+    "mic": "Mic Distance",
+    "spacing": "Mic Spacing",
+    "depth": "Depth"
+   }
   },
   "reverb": {
    "lv2": "https://github.com/michaelwillis/dragonfly-reverb"

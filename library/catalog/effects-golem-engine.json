@@ -135,7 +135,8 @@
    },
    "init": {
     "Algorithm": 0,
-    "Predelay": 15
+    "Predelay": 15,
+    "Dry": -1.9
    }
   },
   "reverb-plate": {
@@ -148,7 +149,8 @@
    },
    "init": {
     "Algorithm": 1,
-    "Size": 15
+    "Size": 15,
+    "Dry": -1.9
    }
   },
   "reverb-room": {
@@ -160,7 +162,8 @@
    },
    "init": {
     "Algorithm": 2,
-    "Predelay": 5
+    "Predelay": 5,
+    "Dry": -1.9
    }
   },
   "reverb-shimmer": {

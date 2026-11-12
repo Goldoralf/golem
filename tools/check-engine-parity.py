@@ -248,7 +248,9 @@ def reaper_script(cs, catalog, work, di, length):
             alias, fx_init = rig_tables()
             names = [c["name"]] + [n for n in alias.get(c["type"], []) if n != c["name"]]
             # golem_rig : ses réglages d'ajout (FX_INIT) ; à défaut, ceux de la table du moteur (même binaire)
-            init = fx_init.get(c["type"]) or {e["label"]: e["value"] for e in c["init"]}
+            # golem_rig : ses réglages d'ajout (FX_INIT) ; à défaut, ceux de la table du moteur SEULEMENT si c'est le même
+            # binaire — ceux d'un effet golem-fx visent un autre plugin (« Dry » -1,9 tombait sur le Dry Level de Dragonfly)
+            init = fx_init.get(c["type"]) or ({} if c.get("golem_fx") else {e["label"]: e["value"] for e in c["init"]})
             chain = f'''
 local fx = -1
 for _, n in ipairs({_lua_val(names)}) do

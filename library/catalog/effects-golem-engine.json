@@ -127,13 +127,41 @@
    }
   },
   "reverb": {
-   "lv2": "https://github.com/michaelwillis/dragonfly-reverb"
+   "vst3": "476F6C654D4678526576657262303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "mix": "Mix"
+   },
+   "init": {
+    "Algorithm": 0,
+    "Predelay": 15
+   }
   },
   "reverb-plate": {
-   "lv2": "urn:dragonfly:plate"
+   "vst3": "476F6C654D4678526576657262303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "mix": "Mix",
+    "predelay": "Predelay"
+   },
+   "init": {
+    "Algorithm": 1,
+    "Size": 15
+   }
   },
   "reverb-room": {
-   "lv2": "urn:dragonfly:room"
+   "vst3": "476F6C654D4678526576657262303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "mix": "Mix"
+   },
+   "init": {
+    "Algorithm": 2,
+    "Predelay": 5
+   }
   },
   "reverb-shimmer": {
    "lv2": "http://guitarix.sourceforge.net/plugins/gx_shimmizita_#_shimmizita_"

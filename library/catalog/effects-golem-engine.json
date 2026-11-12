@@ -196,7 +196,14 @@
    }
   },
   "octaver": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gx_oc_2_#_oc_2_"
+   "vst3": "476F6C654D46784F6374617665723031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "direct": "Direct",
+    "octave1": "Octave -1",
+    "octave2": "Octave -2"
+   }
   },
   "vibrato": {
    "vst3": "476F6C654D46785669627261746F3031",

@@ -1,0 +1,154 @@
+{
+ "_comment": "Golem Engine (Ardour 9.9, Linux): the plugin that plays each block type, by LV2 URI, VST3 class id (as Ardour's VST3 scanner reads it; golem/engine/run.sh scans before each start) or Ardour Lua DSP name. Read by bridge/engine/ardour_plan.py only (the REAPER path never reads it). Parameters are resolved like golem_rig.lua does: the catalog's parameter `name`, exact label first, then a case-insensitive substring of the Ardour label (labels measured on 2026-11-10: NAM 'Input Lvl', 'Output Lvl', 'Quality'; zeroconvolv 'Wet Signal Level'; Calf 'Time L', 'BPM', 'Feedback', 'Wet'; ACE 'Gain'). `files` = LV2 patch properties that carry a block's file (NAM model, IR). `loaded_output` = the plugin's output control that proves its file is loaded (> 0) when the plugin does not echo the file property back (sfizz: 'Number of regions', measured 2026-11-12); labels are read in the C locale (run.sh sets LC_ALL=C.UTF-8: sfizz's labels are translated otherwise). `drumkit` is two engine blocks: the translator (Lua DSP golem Drumtrans, port of golem_drumtrans.jsfx, its table written by the watcher) then the avldrums kit of the block's `kit_bank`; drumgizmo kits do not play here yet. `init` = values set ONCE when the plugin is added, before the block's parameters (golem_rig.lua FX_INIT: Calf chorus dry at unity, Surge XT Effects' FX Type). Proteus, Surge XT Effects, ZamGrains and Prisma are taken as VST3, as under REAPER: their LV2 builds expose no or other parameters (measured 2026-11-12, tools/check-engine-blocks.py). `absent` = catalog parameters with no control on this plugin, refused by the plan with the reason. Surge XT Effects (surge-spring, -freqshift, -treemonster) is out: its VST3 renames its controls after the FX type, the catalog's 'FX Parameter N' names do not resolve. A type absent from `effects` does not play on this engine yet (docs/ardour-plan.md §3: T1 blocks are added one by one in A3, T2 blocks come from golem-fx).",
+ "revision": 3,
+ "effects": {
+  "amp-nam": {
+   "lv2": "http://github.com/mikeoliphant/neural-amp-modeler-lv2",
+   "files": {
+    "file": "http://github.com/mikeoliphant/neural-amp-modeler-lv2#model"
+   }
+  },
+  "amp": {
+   "lv2": "http://github.com/mikeoliphant/neural-amp-modeler-lv2",
+   "files": {
+    "file": "http://github.com/mikeoliphant/neural-amp-modeler-lv2#model"
+   }
+  },
+  "pedal-nam": {
+   "lv2": "http://github.com/mikeoliphant/neural-amp-modeler-lv2",
+   "files": {
+    "file": "http://github.com/mikeoliphant/neural-amp-modeler-lv2#model"
+   }
+  },
+  "preamp-nam": {
+   "lv2": "http://github.com/mikeoliphant/neural-amp-modeler-lv2",
+   "files": {
+    "file": "http://github.com/mikeoliphant/neural-amp-modeler-lv2#model"
+   }
+  },
+  "comp-nam": {
+   "lv2": "http://github.com/mikeoliphant/neural-amp-modeler-lv2",
+   "files": {
+    "file": "http://github.com/mikeoliphant/neural-amp-modeler-lv2#model"
+   }
+  },
+  "piano": {
+   "lv2": "http://sfztools.github.io/sfizz",
+   "files": {
+    "sfz_file": "http://sfztools.github.io/sfizz:sfzfile"
+   },
+   "params": {
+    "volume": "Volume"
+   },
+   "loaded_output": "Number of regions",
+   "absent": {
+    "zone_lo": "a REAPER helper of golem_rig (note zone, transpose, arpeggiator), not on this engine yet",
+    "zone_hi": "a REAPER helper of golem_rig (note zone, transpose, arpeggiator), not on this engine yet",
+    "transpose": "a REAPER helper of golem_rig (note zone, transpose, arpeggiator), not on this engine yet",
+    "arp": "a REAPER helper of golem_rig (note zone, transpose, arpeggiator), not on this engine yet"
+   }
+  },
+  "drumkit": {
+   "translator": "golem Drumtrans",
+   "avldrums": {
+    "black-pearl": "http://gareus.org/oss/lv2/avldrums#BlackPearl",
+    "red-zeppelin": "http://gareus.org/oss/lv2/avldrums#RedZeppelin",
+    "blonde-bop": "http://gareus.org/oss/lv2/avldrums#BlondeBop"
+   }
+  },
+  "cab": {
+   "lv2": "http://gareus.org/oss/lv2/zeroconvolv#CfgMono",
+   "files": {
+    "file": "http://gareus.org/oss/lv2/zeroconvolv#ir"
+   }
+  },
+  "delay-tape": {
+   "lv2": "http://calf.sourceforge.net/plugins/VintageDelay"
+  },
+  "volume": {
+   "lua": "ACE Amplifier",
+   "params": {
+    "gain": "Gain"
+   },
+   "note": "Interim, until golem-fx carries the volume block (T2): ACE Amplifier stops at -20 dB, so the heel of a volume pedal is not silence."
+  },
+  "boost": {
+   "vst3": "ABCDEF019182FAEB47744D4C50727433"
+  },
+  "chorus": {
+   "lv2": "http://calf.sourceforge.net/plugins/MultiChorus",
+   "init": {
+    "Dry Amount": 1.0
+   }
+  },
+  "flanger": {
+   "lv2": "http://calf.sourceforge.net/plugins/Flanger"
+  },
+  "phaser": {
+   "lv2": "http://calf.sourceforge.net/plugins/Phaser"
+  },
+  "tremolo": {
+   "lv2": "http://calf.sourceforge.net/plugins/Pulsator"
+  },
+  "rotary": {
+   "lv2": "http://calf.sourceforge.net/plugins/RotarySpeaker"
+  },
+  "wah": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_"
+  },
+  "wah-color": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gx_colwah_#_colwah_"
+  },
+  "autowah": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gxautowah#autowah",
+   "absent": {
+    "wah": "GxAutoWah has no such control (the same binary under REAPER: the knob does nothing there either)"
+   }
+  },
+  "reverb": {
+   "lv2": "https://github.com/michaelwillis/dragonfly-reverb"
+  },
+  "reverb-plate": {
+   "lv2": "urn:dragonfly:plate"
+  },
+  "reverb-room": {
+   "lv2": "urn:dragonfly:room"
+  },
+  "reverb-shimmer": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gx_shimmizita_#_shimmizita_"
+  },
+  "eq-para": {
+   "lv2": "http://gareus.org/oss/lv2/fil4#mono"
+  },
+  "eq-graphic": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gx_graphiceq_#_graphiceq_"
+  },
+  "limiter": {
+   "lv2": "http://gareus.org/oss/lv2/dpl#mono"
+  },
+  "granular": {
+   "vst3": "2046504473616C6352474D5A00000000",
+   "absent": {
+    "pos": "ZamGrains 4 has no Grain Position control (VST3 and LV2)"
+   }
+  },
+  "octaver": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gx_oc_2_#_oc_2_"
+  },
+  "vibrato": {
+   "lv2": "http://guitarix.sourceforge.net/plugins/gxtubevibrato#tubevibrato"
+  },
+  "ringmod": {
+   "lv2": "http://drobilla.net/plugins/mda/RingMod"
+  },
+  "bitcrusher": {
+   "lv2": "http://drobilla.net/plugins/mda/Degrade"
+  },
+  "rezfilter": {
+   "lv2": "http://drobilla.net/plugins/mda/RezFilter"
+  },
+  "grit": {
+   "vst3": "ABCDEF019182FAEB557265645072736D"
+  }
+ }
+}

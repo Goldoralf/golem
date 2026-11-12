@@ -41,6 +41,15 @@ def _ini_set(text, key, value):
 
 
 def _read_bsize():
+    # LE MOTEUR ACTIF (docs/ardour-plan.md §7c) : un autre moteur que REAPER dit lui-même son buffer — Soundcard, le
+    # battement golem.fm (rigstatus.engine_doc), Health et le diagnostic lisent tous ici ; reaper.ini ne vaut que pour REAPER
+    try:
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper":
+            return (eng.audio() or {}).get("buffer")
+    except Exception as _e:
+        _swallowed(_e)
     if sys.platform in ("win32", "darwin"):
         from . import desktop_audio
         actual = desktop_audio._public_actual() or {}
@@ -209,10 +218,14 @@ def reamp_try(body: dict):
 
 @router.get("/api/system")
 def system():
-    from . import desktop_audio
+    from . import desktop_audio, engine
     desktop = sys.platform in ("win32", "darwin")
     actual = desktop_audio._public_actual() if desktop else None
-    return {
+    eng = engine.get()
+    # le moteur ACTIF (docs/ardour-plan.md §7c, A2.2) : REAPER garde exactement ses sources d'avant (reaper.ini, la
+    # carte réelle sous Windows/macOS) ; un autre moteur dit lui-même son buffer, sa fréquence, sa charge
+    eng_audio = {} if eng.id == "reaper" else (eng.audio() or {})
+    out = {
         "platform": sys.platform,
         "reaper_connected": state.reaper_connected,
         "reaper_running": state.reaper_running,
@@ -231,7 +244,16 @@ def system():
         # le pilote garde la main sur le buffer (sa latence ne suit pas la taille demandée) : à dire, avec le geste
         "audio_driver_override": desktop_audio.driver_override(actual) if desktop else None,
         "serial": _serial.plate(),                       # le numéro à vie (docs/connect.md §4.5)
+        "engine": {"id": eng.id, "name": eng.descriptor().get("name") or eng.id, "version": eng.version()},
     }
+    if eng.id != "reaper":
+        out["audio_bsize"] = eng_audio.get("buffer")
+        out["audio_bsizes"] = list(getattr(eng, "BUFFERS", AUDIO_BSIZES))
+        out["audio_srate"] = eng_audio.get("rate")
+        out["audio_dsp_load"] = eng_audio.get("dsp_load")
+        out["audio_backend"] = eng_audio.get("backend")
+        out["audio_live_buffer"] = True                  # le buffer change à chaud : pas de redémarrage
+    return out
 
 
 @router.post("/api/system/serial/recover")
@@ -302,7 +324,17 @@ async def audio_buffer(body: dict):
     sauvant sa config à la sortie. L'UI suit la relance sur reaper_running puis lit latency_ms
     (mesurée sur les hw_params ALSA réels) et surveille les xruns."""
     size = body.get("size")
-    from . import desktop_audio, monitors
+    from . import desktop_audio, monitors, engine
+    eng = engine.get()
+    if eng.id != "reaper":                                    # un autre moteur change son buffer lui-même (à chaud)
+        try:
+            r = await asyncio.to_thread(eng.set_buffer, size)
+        except ValueError as e:
+            return JSONResponse({"error": str(e)}, status_code=400)
+        except (OSError, RuntimeError) as e:
+            return JSONResponse({"error": str(e)}, status_code=409)
+        monitors.xruns_clear()                                # les xruns d'avant jugeaient l'ancien buffer
+        return r
     sizes = (await asyncio.to_thread(desktop_audio.buffer_choices))[0] if sys.platform in ("win32", "darwin") else AUDIO_BSIZES
     if type(size) is not int or size not in sizes:
         return JSONResponse({"error": f"size must be one of {sizes}"}, status_code=400)
@@ -370,15 +402,29 @@ async def engine_select(body: dict):
     """Choisir le moteur. Aujourd'hui seul le moteur courant est sélectionnable : la route valide
     et répond, elle ne bascule rien. Un moteur indisponible est refusé avec sa raison (409)."""
     from . import engines
+    from .engine import switch
     eid = str(body.get("id") or "")
     cur = engines.current()
+    if eid != cur and getattr(state, "recording", None):
+        return JSONResponse({"error": "A take is recording — stop it before switching engines", "current": cur},
+                            status_code=409)
+    if eid != cur and switch.status().get("phase") in ("stopping", "starting", "remounting", "reverting"):
+        return JSONResponse({"error": "An engine switch is already running", "current": cur}, status_code=409)
     try:
         engines.write_choice(eid, set_by="app")
     except ValueError as e:
         return JSONResponse({"error": str(e), "current": cur}, status_code=409)
-    # eid != cur ne peut pas arriver tant qu'un seul moteur est disponible ; le jour où ce sera
-    # possible, la bascule (lot E3) se branche ICI — l'écran lit `switch_pending`.
-    return {"ok": True, "current": eid, "switch_pending": eid != cur}
+    if eid == cur:
+        return {"ok": True, "current": eid, "switch_pending": False}
+    # LA BASCULE (lot E3, bridge/engine/switch.py) : arrêt, démarrage, remontage vérifié, retour seul si l'autre ne répond pas
+    return {"ok": True, "current": eid, "switch_pending": True, "switch": switch.start(eid)}
+
+
+@router.get("/api/engine/switch")
+def engine_switch_status():
+    """Où en est la bascule : {phase: idle|stopping|starting|remounting|done|reverting|failed, from, to, error?}."""
+    from .engine import switch
+    return switch.status()
 
 
 @router.post("/api/system/xruns-clear")
@@ -828,31 +874,21 @@ def soundcard():
 async def reaper_restart():
     """(Re)lance Reaper : pkill (no-op s'il est down) puis provision/start.sh (Set + OSC + veilleur
     repartent via __startup). L'UI suit reaper_running/reaper_connected en WebSocket."""
-    from . import boot_progress
+    from . import boot_progress, engine
     boot_progress.reset("restart")                         # l'écran de chargement revient (mockups/loading.html)
-    if sys.platform in ("win32", "darwin"):
-        from . import desktop_audio
-        current = await asyncio.to_thread(desktop_audio.settings)
-        keys = ("sample_rate", "sample_rate_use", "buffer_size", "buffer_size_use")
-        keys += (("driver", "input_first", "input_last", "output_first", "output_last")
-                 if sys.platform == "win32" else ("input_device", "output_device"))
-        try:
-            apply = await asyncio.to_thread(desktop_audio.start_apply,
-                                            {key: current[key] for key in keys}, ensure_running=True)
-            return {"ok": True, "restarting": True, "apply": apply}
-        except (ValueError, RuntimeError, OSError) as e:
-            return JSONResponse({"error": str(e)}, status_code=409)
-    _restart_reaper_async()
-    return {"ok": True, "restarting": True}
+    try:                                                   # le moteur actif sait se relancer (docs/ardour-plan.md §2)
+        return await asyncio.to_thread(engine.get().restart)
+    except (ValueError, RuntimeError, OSError) as e:
+        return JSONResponse({"error": str(e)}, status_code=409)
 
 
 @router.post("/api/system/osc-refresh")
 async def osc_refresh():
-    """Resynchronise le lien OSC SANS redémarrer : action Reaper native 41743 (« Control surface:
-    refresh all surfaces ») -> Reaper renvoie tout son état OSC ; si le device est vivant, le
-    monitor voit le trafic et reaper_connected repasse à vrai. Sinon -> restart Reaper."""
+    """Resynchronise le lien OSC SANS redémarrer : le moteur renvoie tout son état (REAPER : action native 41743,
+    « Control surface: refresh all surfaces ») ; si le device est vivant, le monitor voit le trafic et
+    reaper_connected repasse à vrai. Sinon -> restart Reaper."""
     from . import app as _app
-    sent = _app.reaper.trigger_action(41743)
+    sent = _app.reaper.refresh()
     return {"ok": bool(sent)}
 
 
@@ -1850,8 +1886,13 @@ def system_health():
         out["reaper"] = reap
         return out
     try:
-        pid = subprocess.run(["pgrep", "-x", "-o", "reaper"], capture_output=True, text=True,
-                             timeout=3).stdout.split()
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper":                                    # le process du moteur actif, par son adaptateur
+            pid = [eng.pid()] if eng.pid() is not None else []
+        else:
+            pid = subprocess.run(["pgrep", "-x", "-o", "reaper"], capture_output=True, text=True,
+                                 timeout=3).stdout.split()
         if pid:
             pid = int(pid[0])
             reap["running"] = True

@@ -62,7 +62,7 @@ Legend: ✅ equivalent · ➖ missing at first (or for good) · ➕ better · �
 | Cost, redistribution | Free, GPL, shipped with the rack | ➕ |
 | Control from the bridge | Ardour's HTTP control API (recent, experimental) and OSC, instead of a Lua watcher and a command file | ➕ ❓ |
 | Sound card unplugged | Ardour stops and reports an I/O error (REAPER reports nothing — see [`CLAUDE.md`](../CLAUDE.md)) | ➕ |
-| Headless | Weak: `hardour` is JACK/PipeWire only → hidden GUI as today, or `hardour` on PipeWire | ➖ |
+| Headless | `luasession` runs libardour with Lua and no GUI; `hardour` takes `-B <backend>` (JACK/PipeWire is only its default) — measured 2026-11-10, [`ardour-plan.md`](ardour-plan.md) §7 | ✅ |
 | Shared memory bridge ↔ DSP (`gmem`) | Does not exist → exchanges over OSC / API | ➖ |
 | ARM64 | Official arm64 builds; low-latency effects on small boards unproven ([`rack-classes.md`](rack-classes.md)) | ❓ |
 | 24/7 endurance on stage | No public data | ❓ |

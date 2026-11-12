@@ -230,11 +230,12 @@ def caps():
     if inv and inv.get("at"):
         with contextlib.suppress(Exception):
             at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(int(inv["at"])))
-    ver = None
-    with contextlib.suppress(Exception):
-        from .rigstatus import reaper_version
-        ver = reaper_version()
-    out = {"os": platform.system().lower(), "engine": "reaper", "engine_version": ver,
+    eid, ver = "reaper", None
+    with contextlib.suppress(Exception):                 # le moteur ACTIF (docs/ardour-plan.md §2), pas un nom en dur
+        from . import engine
+        eng = engine.get()
+        eid, ver = eng.id, eng.version()
+    out = {"os": platform.system().lower(), "engine": eid, "engine_version": ver,
            "inventory": inv is not None, "inventory_at": at,
            "unavailable": unavailable_types(), "quarantine": sorted(rig.quarantined_types()),
            "nam_unreadable": rig.nam_unreadable(),
@@ -321,11 +322,47 @@ QUARANTINE_WHY = "quarantined — this plugin is known to freeze or crash the au
 LINUX_ONLY_WHY = "only available on a Linux golem — its plugin does not exist on this system"
 
 
+_ENGINE_GATE = {"at": 0.0, "eng": None, "gate": None}
+_ENGINE_GATE_TTL = 5.0
+
+
+def engine_gate():
+    """{type de bloc: (capacité, nom du moteur)} pour les blocs que le moteur ACTIF ne sait pas jouer (capacité ≠ yes,
+    docs/ardour-plan.md §2). Relu au plus toutes les 5 s : un écran demande l'état de 30 blocs d'un coup."""
+    from . import engine, engines
+    eng = engine.get()
+    now = time.monotonic()
+    if _ENGINE_GATE["gate"] is None or _ENGINE_GATE["eng"] is not eng or now - _ENGINE_GATE["at"] > _ENGINE_GATE_TTL:
+        gate = {}
+        with contextlib.suppress(Exception):
+            desc = eng.descriptor()
+            caps, name = desc.get("capabilities") or {}, desc.get("name") or eng.id
+            for t, feat in engines.feature_of_block().items():
+                if caps.get(feat, "no") != "yes":
+                    gate[t] = (caps.get(feat, "no"), name)
+            # un type sans plugin sur ce moteur (sa table, ex. effects-golem-engine.json) : « pas encore » — REAPER
+            # répond oui à tout, rien ne change pour lui
+            for t in effects():
+                if t not in gate and not eng.plays(t):
+                    gate[t] = ("planned", name)
+        _ENGINE_GATE.update(at=now, eng=eng, gate=gate)
+    return _ENGINE_GATE["gate"]
+
+
 def block_state(b, comps=None, manifest_fn=None, inv=None, obs=None):
     """{state, why, …} d'UN bloc."""
     from . import rig
     from .resolver import _components
     t = b.get("type")
+    gated = engine_gate().get(t)
+    if gated:                                            # le moteur actif ne porte pas la fonction de ce bloc
+        cap, name = gated
+        return {"state": "unavailable", "reason": "engine", "engine_cap": cap,
+                "why": f"not available on {name} yet" if cap == "planned" else f"{name} can't play this block"}
+    with contextlib.suppress(Exception):                 # son plugin manque à CE moteur, sur cette machine (son inventaire)
+        from . import engine
+        if engine.get().missing_plugin(t):
+            return {"state": "unavailable", "why": "plugin not installed on this machine", "reason": "plugin"}
     if t == "vst-host":
         inv = inventory() if inv is None else inv
         name = b.get("plugin") or ""

@@ -77,11 +77,12 @@ def _ago(t, now=None):
 # ── les faits, un par un (chacun tolérant : une sonde qui casse rend « wait », jamais une exception) ────────────────
 def _f_engine(st):
     running, connected = bool(getattr(st, "reaper_running", False)), bool(getattr(st, "reaper_connected", False))
-    ver = None
-    with contextlib.suppress(Exception):
-        from .rigstatus import reaper_version
-        ver = reaper_version()
-    name = "REAPER" + (f" {ver}" if ver else "")
+    ver, name = None, "REAPER"
+    with contextlib.suppress(Exception):                  # le moteur ACTIF (docs/ardour-plan.md §2) : son nom, sa version
+        from . import engine
+        eng = engine.get()
+        name, ver = eng.descriptor().get("name") or name, eng.version()
+    name = name + (f" {ver}" if ver else "")
     src = "reaper_running · reaper_connected"
     if running and connected:
         return _fact("engine", "Engine", "ok", f"{name} · running · talking to the bridge", src)
@@ -286,7 +287,28 @@ def _f_setlist():
                  fix={"label": "Patches →", "go": "songs/patches"}, detail=nr[:8])
 
 
+def _active_engine():
+    """(adaptateur, nom affiché) du moteur actif — (None, "REAPER") si on ne sait pas le dire."""
+    with contextlib.suppress(Exception):
+        from . import engine
+        eng = engine.get()
+        return eng, eng.descriptor().get("name") or eng.id
+    return None, "REAPER"
+
+
 def _f_plugins():
+    eng, name = _active_engine()
+    if eng is not None and eng.id != "reaper":            # un moteur qui tient son propre inventaire (son veilleur)
+        src = ".engine-plugins.json"
+        inv = eng.inventory()
+        if not inv:
+            return _fact("plugins", "Plugins", "wait", f"{name} has not listed its plugins yet", src)
+        missing = sorted(t for t, ok in (inv.get("found") or {}).items() if not ok)
+        text = f"{inv.get('n')} of {inv.get('total')} block plugins found by {name}"
+        if missing:
+            return _fact("plugins", "Plugins", "warn", text + f" · missing: {', '.join(missing[:4])}"
+                         + ("…" if len(missing) > 4 else ""), src, detail=missing)
+        return _fact("plugins", "Plugins", "ok", text, src)
     src = ".fx-inventory.json"
     caps, n = None, None
     with contextlib.suppress(Exception):
@@ -340,7 +362,28 @@ def _f_golemfm(boot):
 
 def _f_scripts():
     """presets/.lua-errors.log — écrit par le garde-fou xpcall de __startup.lua. Une erreur DEPUIS LE DÉPART du bridge
-    (mtime) est dite avec sa dernière ligne ; un vieux journal n'alarme pas."""
+    (mtime) est dite avec sa dernière ligne ; un vieux journal n'alarme pas. Golem Engine : les échecs de son veilleur,
+    dans presets/.watch.log (« ÉCHEC … », « ARRÊT … »)."""
+    eng, name = _active_engine()
+    if eng is not None and eng.id != "reaper":
+        src = ".watch.log"
+        p = os.path.join(C.PRESETS_DIR, ".watch.log")
+        bad = []
+        with contextlib.suppress(OSError, UnicodeDecodeError):
+            if os.stat(p).st_mtime >= START:
+                with open(p, "rb") as f:
+                    f.seek(max(0, os.path.getsize(p) - 16000))
+                    for ln in f.read().decode("utf-8", "replace").splitlines():
+                        stamp = ln[:19]
+                        with contextlib.suppress(ValueError):
+                            if time.mktime(time.strptime(stamp, "%Y-%m-%d %H:%M:%S")) < START - 1:   # heure à la seconde
+                                continue
+                        if "[golem-engine] ÉCHEC" in ln or "[golem-engine] ARRÊT" in ln:
+                            bad.append(ln)
+        if not bad:
+            return _fact("scripts", "Scripts", "ok", f"no error in {name}'s watcher since start", src)
+        return _fact("scripts", "Scripts", "warn", f"a watcher error at {bad[-1][11:16]} — {bad[-1][20:][:120]}", src,
+                     fix={"label": "Dashboard →", "go": "system/sys"})
     src = ".lua-errors.log"
     with contextlib.suppress(Exception):
         from .state import state as _st
@@ -375,6 +418,9 @@ def env_current():
         from . import rigstatus
         out["golem"] = rigstatus.golem_version()
         out["reaper"] = rigstatus.reaper_version()
+        eng, name = _active_engine()
+        if eng is not None and eng.id != "reaper":         # le moteur ACTIF : son nom et sa version (REAPER : inchangé)
+            out["reaper"] = f"{name} {eng.version() or ''}".strip()
         eng = rigstatus.engine_doc() or {}
         out["card"] = eng.get("device")
         out["samplerate"] = eng.get("samplerate")

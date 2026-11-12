@@ -651,6 +651,9 @@ function DashboardPanel({ rig, admin, acts }) {
   // ── buffer audio Reaper : applique + redémarre le moteur ; le retour vient du live (latency_ms/xruns)
   const [applying, setApplying] = useState(null);          // taille en cours d'application | null
   const bsize = data && data.audio_bsize;
+  const eng = (data && data.engine) || {};
+  const engName = eng.id && eng.id !== 'reaper' ? (eng.name || eng.id) : 'Reaper';
+  const dspLoad = data && data.audio_dsp_load != null ? Math.round(data.audio_dsp_load) : null;
   const sizes = (data && data.audio_bsizes) || [64, 96, 128, 192, 256, 384, 512];
   // Windows : les tailles que le PILOTE ASIO accepte (bridge/asio_probe.py) ; null = on n'en sait rien, tout reste ouvert
   const okSizes = data && data.audio_bsizes_ok;
@@ -660,6 +663,8 @@ function DashboardPanel({ rig, admin, acts }) {
     setApplying(size);
     const r = await post('/api/audio-buffer', { size }).catch(e => ({ ok: false, error: (e.body && e.body.error) || String(e) }));
     if (!r.ok) { setApplying(null); setPerf(r.error || 'failed'); }
+    // le Golem Engine change son buffer À CHAUD (aucune relance, docs/ardour-plan.md §7c) : rien à attendre
+    else if (r.restarting === false) { setTimeout(() => { setApplying(null); reload(); }, 600); }
   };
   // fin de relance = la latence MESURÉE (hw_params ALSA) correspond à la théorique du nouveau buffer.
   useEffect(() => {
@@ -678,7 +683,7 @@ function DashboardPanel({ rig, admin, acts }) {
           setPerf(status.error || 'Audio configuration failed'); setApplying(null);
         } else if (status.phase === 'done') {
           const current = await fetch('/api/system').then(r => r.json());
-          if (current.audio_bsize !== applying) setPerf(`REAPER opened ${current.audio_bsize || 'an unknown buffer'} instead of ${applying} samples`);
+          if (current.audio_bsize !== applying) setPerf(`${engName === 'Reaper' ? 'REAPER' : engName} opened ${current.audio_bsize || 'an unknown buffer'} instead of ${applying} samples`);
           setApplying(null); reload();
         }
       } catch (e) { setPerf(String(e)); setApplying(null); }
@@ -704,10 +709,12 @@ function DashboardPanel({ rig, admin, acts }) {
         <div class="status-grid">
           ${/* UNE tuile Reaper (2026-09-08) : « Reaper process » (pid/RAM/uptime, sonde santé)
                 et « Audio engine » (running + relance) disaient la même chose en deux cartes. */''}
-          ${Tile('Reaper',
+          ${/* le moteur ACTIF (docs/ardour-plan.md §7c, A2.2) : REAPER garde son titre ; un autre moteur dit son nom et sa
+                charge DSP (REAPER ne la publie pas) */''}
+          ${Tile(engName,
                  running
                    ? (hp && hp.reaper && hp.reaper.running
-                        ? `running · pid ${hp.reaper.pid} · ${hp.reaper.rss_mb / 1000 >= 1 ? (hp.reaper.rss_mb / 1000).toFixed(1) + ' GB' : hp.reaper.rss_mb + ' MB'}${hp.reaper.uptime_s != null ? ' · up ' + fmtUp(hp.reaper.uptime_s) : ''}`
+                        ? `running · pid ${hp.reaper.pid} · ${hp.reaper.rss_mb / 1000 >= 1 ? (hp.reaper.rss_mb / 1000).toFixed(1) + ' GB' : hp.reaper.rss_mb + ' MB'}${hp.reaper.uptime_s != null ? ' · up ' + fmtUp(hp.reaper.uptime_s) : ''}${dspLoad != null ? ` · DSP ${dspLoad} %` : ''}`
                         : 'running')
                    : 'not running',
                  running ? 'ok' : 'bad',

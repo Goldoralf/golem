@@ -102,6 +102,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [uninstall.md](uninstall.md) | FIXED, CODED on Linux (VM test pending) | Install receipt, uninstall engine with dry run, graphical uninstaller, full backup outside the install folder, VM test |
 | [audio-engine-choice.md](audio-engine-choice.md) | PARTLY CODED | Engine descriptors and the local engine choice |
 | [ardour-engine.md](ardour-engine.md) | PROPOSED | A free engine built from Ardour, next to REAPER |
+| [ardour-plan.md](ardour-plan.md) | FIXED | Action plan for the Golem Engine: fork strategy, engine contract, block homogeneity, phases A0–A5 |
 | [release-signing.md](release-signing.md) | CODED, inactive until a key is declared | Verifying signed release tags |
 | [update.md](update.md) | CODED | The "Update to …" button of Settings ▸ About, installs from an archive, and how to cut a release |
 | [network.md](network.md) | CODED (macOS reads only) | How a tablet or phone reaches the rack: station, access point |

@@ -13,6 +13,11 @@ import pytest
 # test qui compile un bloc VST Host sous Linux lancerait un vrai REAPER séparé. Les tests du banc le rallument eux-mêmes.
 os.environ["GOLEM_VST_TRIAL"] = "0"
 
+# ── LE MOTEUR DE LA SUITE = REAPER (2026-11-12) : sans ça, l'adaptateur actif par défaut est celui que la MACHINE a choisi
+# (config/engine.json) — un poste passé au Golem Engine faisait échouer les tests écrits pour REAPER. Un test qui veut un
+# autre moteur le pose lui-même (engine.use, ou monkeypatch.setenv("GOLEM_ENGINE", …)).
+os.environ.setdefault("GOLEM_ENGINE", "reaper")
+
 # ── LES FICHIERS DU RACK QU'UN TEST NE TOUCHE JAMAIS (2026-10-29) ─────────────────────────────────────────────────
 # Un test réécrivait presets/.perfsrc.json (ce que golem_perfrec lit à chaque prise) : après chaque passage de la
 # suite, les prises partaient sans DI et sans partition, en silence. Leur CONTENU est photographié au début de la

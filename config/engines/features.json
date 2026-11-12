@@ -5,5 +5,11 @@
     ["click", "Click"], ["midi_clock", "MIDI clock"], ["looper", "Looper"], ["drum_machine", "Drum machine"],
     ["samples", "Samples"], ["standards", "Standards"], ["riff", "Riff"], ["kill_switch", "Kill switch"],
     ["previews", "Previews"], ["reamp", "Reamp"]
-  ]
+  ],
+  "_blocks_doc": "Les types de blocs qu'une fonction porte : un moteur qui ne déclare pas cette fonction « yes » rend ces blocs indisponibles (raison « engine », docs/block-status.md). Un type absent d'ici ne dépend d'aucune fonction.",
+  "blocks": {
+    "recording": ["rec"], "backing": ["backing-track"], "click": ["click"], "looper": ["looper"],
+    "drum_machine": ["drums"], "samples": ["sample", "pads"], "standards": ["standard"], "riff": ["compo"],
+    "kill_switch": ["killswitch"]
+  }
 }

@@ -197,6 +197,9 @@ phone()  { open_shell "?d=phone" phone "$((390 + 28 + 130))" "$((844 + 28 + 96))
 stop() {   # $1 = keepwin (restart) : la pile meurt, la fenêtre reste — elle se reconnecte
   echo "→ arrêt Reaper…"
   pkill -x reaper 2>/dev/null || true
+  # le Golem Engine aussi, s'il tourne (provision/lib-engine.sh) : quel que soit le moteur choisi, rien ne survit à stop
+  . "$HERE/provision/lib-engine.sh"
+  [ -n "$(golem_engine_pid "$HERE")" ] && { echo "→ arrêt Golem Engine…"; stop_golem_engine "$HERE" || true; }
   echo "→ arrêt bridge…"
   pkill -f "uvicorn bridge.app" 2>/dev/null || true
   pkill -x aseqdump 2>/dev/null || true
@@ -231,6 +234,15 @@ status() {
   local b="down" r="down" osc="—"
   pgrep -f "uvicorn bridge.app" >/dev/null && b="up"
   pgrep -x reaper >/dev/null && r="up"
+  . "$HERE/provision/lib-engine.sh"
+  local eng; eng="$(golem_engine "$HERE")"
+  if [ "$eng" = ardour ]; then
+    r="down"; [ -n "$(golem_engine_pid "$HERE")" ] && r="up"
+    osc=$( [ "$b" = up ] && curl -sf --max-time 2 "http://localhost:${PORT}/api/state" \
+      | python3 -c "import json,sys; d=json.load(sys.stdin); print('up' if d.get('reaper_connected') else 'down')" 2>/dev/null || echo "—")
+    echo "bridge: $b · golem engine: $r · osc link: $osc · ui: $URL"
+    return
+  fi
   if [ "$b" = "up" ]; then
     osc=$(curl -sf --max-time 2 "http://localhost:${PORT}/api/state" \
       | python3 -c "import json,sys; d=json.load(sys.stdin); print('up' if d.get('reaper_connected') else 'down')" 2>/dev/null || echo "?")

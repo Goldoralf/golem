@@ -37,7 +37,7 @@ from .state import state
 from . import store
 from .store import load_presets, load_preset, _read_json, _write_json_atomic, _safe_id
 from .commands import write_command
-from .reaper_osc import ReaperLink
+from . import engine as engine_mod
 from .golog import get
 
 # un logger par tag historique : les préfixes [boot]/[bank]/… sont cités dans la doc
@@ -257,7 +257,9 @@ def on_osc(address, args):
     broadcast_threadsafe()
 
 
-reaper = ReaperLink(C.REAPER_OSC_HOST, C.REAPER_OSC_SEND_PORT, C.BRIDGE_OSC_RECV_PORT, on_osc)
+# le moteur audio actif (docs/ardour-plan.md §2) : commandes + chemin rapide + télémétrie. Le nom `reaper` reste
+# (tests et modules le lisent) ; c'est un EngineAdapter, REAPER ou un autre.
+reaper = engine_mod.active()
 
 # contrôleur du looper : dispatch OSC (slider GoleM Cmd) + moteur de gestes du pied.
 # L'adresse (track/fx/param) et le feedback lui sont poussés par monitors._poll_looper.
@@ -842,7 +844,7 @@ async def _startup():
         log_boot.warning(f"code d'appairage : {_e}")
     recall_mod.attach_loop(_loop)        # le moteur planifie ses différés (+0,8 s) sur CETTE boucle
     _arr_ctl.attach_loop(_loop)          # le pied crée sa tâche DANS la boucle, pas dans le thread MIDI
-    reaper.start()
+    reaper.start_feedback(on_osc)
     # Lecteur FCB : le pied passe désormais par le bridge (scène/stomp/treadle Whammy).
     # scène/stomp/recall (lourds : load+compile+write) -> boucle asyncio ; treadle/volume
     # (légers, latence critique) restent dans le thread lecteur.

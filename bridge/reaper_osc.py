@@ -35,8 +35,11 @@ class ReaperLink:
         threading.Thread(target=self._server.serve_forever, daemon=True).start()
 
     def stop(self):
+        """Arrête l'écoute ET libère le port (une bascule de moteur rouvre le même port pour l'autre moteur)."""
         if self._server:
             self._server.shutdown()
+            self._server.server_close()
+            self._server = None
 
     # — réception —
     def _recv(self, address, *args):

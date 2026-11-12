@@ -27,7 +27,15 @@ fi
 # 2) auto-connexion MIDI (best-effort)
 [ -x provision/midi-autoconnect.sh ] && ./provision/midi-autoconnect.sh >/dev/null 2>&1 || true
 
-# 3) Reaper avec le projet Set
+# 3) le MOTEUR AUDIO choisi (provision/lib-engine.sh) : le Golem Engine si c'est lui, sinon Reaper avec le projet Set
+. "$HERE/provision/lib-engine.sh"
+ENGINE="$(golem_engine "$HERE")"
+if [ "$ENGINE" = ardour ]; then
+  start_golem_engine "$HERE" || true
+  IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  echo "✓ prêt → http://localhost:${PORT}/app/   ${IP:+· réseau http://${IP}:${PORT}/app/}"
+  exit 0
+fi
 #
 # ── REAPER CACHÉ (défaut) ────────────────────────────────────────────────────────────────
 # Un utilisateur de GoleM ne lit JAMAIS Reaper : il n'a aucune raison de voir deux fenêtres

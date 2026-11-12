@@ -30,12 +30,14 @@ _PID_MEMO = {"t": 0.0, "pid": None, "fn": None}
 
 
 def reaper_pid_recent(max_age=1.5):
-    """Le PID de REAPER, relu au plus toutes les `max_age` s (audit 2026-11-04, P2) : sous Windows `_reaper_pid` lance
-    `tasklist`, un process par scène sur le chemin du pied. Un PID mémorisé d'un REAPER qui vient de mourir fait
-    échouer `_process_started` — rig_is_live retombe alors sur reaper_gen, comme avant."""
+    """Le PID du moteur ACTIF (REAPER : _reaper_pid), relu au plus toutes les `max_age` s (audit 2026-11-04, P2) : sous
+    Windows `_reaper_pid` lance `tasklist`, un process par scène sur le chemin du pied. Un PID mémorisé d'un moteur qui
+    vient de mourir fait échouer `_process_started` — rig_is_live retombe alors sur reaper_gen, comme avant.
+    ⚠ Le moteur actif, pas REAPER (2026-11-10) : sous le Golem Engine, le REAPER d'à côté (un rack, un banc) donnait
+    sa date de démarrage, le livemap d'un moteur tué paraissait vivant et le rig n'était jamais remonté."""
     now = time.monotonic()
     if now - _PID_MEMO["t"] > max_age or _PID_MEMO.get("fn") is not _reaper_pid:   # remplacée (tests) : relue
-        _PID_MEMO.update(t=now, pid=_reaper_pid(), fn=_reaper_pid)
+        _PID_MEMO.update(t=now, pid=_engine_pid(), fn=_reaper_pid)
     return _PID_MEMO["pid"]
 
 
@@ -120,6 +122,17 @@ def _reaper_running():
     return _reaper_pid() is not None
 
 
+def _engine_pid():
+    """Le PID du moteur ACTIF (docs/ardour-plan.md §2) — REAPER : _reaper_pid."""
+    from . import engine
+    return engine.get().pid()
+
+
+def _engine_ready_since(t0):
+    from . import engine
+    return engine.get().ready_since(t0)
+
+
 _last_reaper_pid = None      # PID observé au poll précédent (change = restart, même sans down visible)
 
 
@@ -127,11 +140,18 @@ async def _monitor_reaper():
     global _last_reaper_pid
     prev_pid = None
     while True:
-        pid = await asyncio.get_running_loop().run_in_executor(None, _reaper_pid)
+        pid = await asyncio.get_running_loop().run_in_executor(None, _engine_pid)
         running = pid is not None
         if pid != _last_reaper_pid:
             _last_reaper_pid = pid
             state.reaper_gen += 1        # start/stop/RESTART de Reaper -> invalide les caches de forme (_LAST_EMIT)
+        # « le moteur parle au bridge » : REAPER par son trafic OSC (on_osc) ; un moteur qui le sait mieux (le battement
+        # du Golem Engine) le dit lui-même — sa surface OSC se tait tant que rien ne change
+        with contextlib.suppress(Exception):
+            from . import engine as _eng
+            talk = _eng.get().talking()
+            if talk is not None and running:
+                state.set_reaper(bool(talk))
         if running != state.reaper_running:
             state.reaper_running = running
             if not running:
@@ -141,7 +161,10 @@ async def _monitor_reaper():
             # lot 8 : Reaper tombé = un paquet `event` tout de suite (un abort de plugin ne laisse
             # rien dans le journal noyau — c'est apport.log, joint au paquet, qui le dit) — SAUF si
             # l'arrêt était voulu (`why` posé par diag.intent : restart, réglages, mise à jour)
-            _diag_trigger("reaper", state="up" if running else "down", **_reaper_why(consume=running))
+            why = _reaper_why(consume=running)
+            _diag_trigger("reaper", state="up" if running else "down", **why)
+            if not running and not why.get("why"):
+                asyncio.create_task(_engine_crash_restart())
         elif running and pid != prev_pid and prev_pid is not None:
             _diag_trigger("reaper", state="restart", **_reaper_why(consume=True))
         # UN NOUVEAU REAPER, APRÈS UN AUTRE (relance, crash) : le son doit revenir tout seul (2026-10-13).
@@ -150,6 +173,7 @@ async def _monitor_reaper():
         # personne ne rappelait un preset — « Restart REAPER » rendait le rack muet.
         global _seen_reaper
         if running and pid != prev_pid:
+            asyncio.create_task(_engine_started(pid))
             if _seen_reaper:
                 asyncio.create_task(_remount_after_restart(pid))
             _seen_reaper = True
@@ -176,14 +200,62 @@ def _watch_started_since(t0):
     return any("démarré. surveille" in line for line in tail)
 
 
+_CRASH_RESTARTS = []          # instants des relances automatiques (au plus CRASH_MAX par CRASH_WINDOW_S)
+CRASH_MAX, CRASH_WINDOW_S = 3, 600
+
+
+async def _engine_crash_restart():
+    """Le Golem Engine est tombé SANS arrêt annoncé (un plantage, docs/ardour-plan.md §7c) : relancé une seconde plus tard,
+    au plus 3 fois en 10 min — le moniteur remonte ensuite le patch, comme après un Restart. Un arrêt voulu (bascule,
+    Restart, réglage) pose son intention avant (diag.intent) et n'arrive jamais ici. REAPER : rien (son chemin d'avant)."""
+    from . import engine
+    eng = engine.get()
+    if eng.id == "reaper":
+        return
+    now = time.time()
+    _CRASH_RESTARTS[:] = [t for t in _CRASH_RESTARTS if now - t < CRASH_WINDOW_S]
+    if len(_CRASH_RESTARTS) >= CRASH_MAX:
+        log_reaper.error(f"{eng.id} tombé {CRASH_MAX} fois en {CRASH_WINDOW_S // 60} min — plus de relance automatique")
+        return
+    await asyncio.sleep(1.0)
+    if engine.get() is not eng or eng.pid() is not None:
+        return                                              # basculé entre-temps, ou déjà reparti
+    _CRASH_RESTARTS.append(time.time())
+    log_reaper.warning(f"{eng.id} tombé sans arrêt annoncé — relance automatique ({len(_CRASH_RESTARTS)}/{CRASH_MAX})")
+    with contextlib.suppress(Exception):
+        from . import diag
+        diag.intent("reaper", "crash-restart")
+    await asyncio.get_running_loop().run_in_executor(None, eng.restart, "crash")
+
+
+async def _engine_started(pid):
+    """Un nouveau process moteur : quand son veilleur lit ses commandes, l'adaptateur repose ce que le moteur oublie à
+    chaque démarrage (docs/ardour-plan.md §7c, A2.1). Le premier process vu par ce bridge aussi : le moteur peut avoir
+    démarré après lui."""
+    from . import engine
+    eng = engine.get()
+    if eng.id != "reaper":                                  # REAPER n'oublie rien à son démarrage : rien à attendre
+        t0 = time.time() - 5
+        for _ in range(90):                                 # ~45 s, comme le remontage
+            if _engine_pid() != pid:
+                return
+            if _engine_ready_since(t0):
+                break
+            await asyncio.sleep(0.5)
+        else:
+            return
+    with contextlib.suppress(Exception):
+        eng.engine_started()
+
+
 async def _remount_after_restart(pid):
     """Rejoue le preset et la scène en cours sur le Reaper qui vient de (re)démarrer, une fois son veilleur
     prêt — sauf si quelqu'un a rappelé entre-temps (le rig est alors déjà celui du nouveau process)."""
     t0 = time.time() - 5                                    # le veilleur peut précéder notre détection (poll 2 s)
     for _ in range(90):                                     # ~45 s : projet, audio, scripts de démarrage
-        if _reaper_pid() != pid:
+        if _engine_pid() != pid:
             return                                          # encore relancé entre-temps : la tâche suivante s'en charge
-        if _watch_started_since(t0):
+        if _engine_ready_since(t0):
             break
         await asyncio.sleep(0.5)
     else:
@@ -193,6 +265,8 @@ async def _remount_after_restart(pid):
     from . import recall as recall_mod
     pid_preset, scene = state.preset_id, state.scene_id
     if not pid_preset or recall_mod.rig_is_live(pid_preset):
+        log_reaper.info(f"moteur relancé (pid {pid}) : rien à remonter ({pid_preset or 'aucun preset'}"
+                        f"{', rig déjà posé' if pid_preset else ''})")
         return
     ok = await asyncio.get_running_loop().run_in_executor(None, recall_mod.do_recall, pid_preset, scene)
     log_reaper.info(f"Reaper relancé : rig remonté ({pid_preset}, scène {scene}) -> {'ok' if ok else 'ÉCHEC'}")
@@ -278,8 +352,37 @@ def _read_latency_ms():
     return None
 
 
+_ENGINE_XRUN = {"last": None, "acc": 0}
+
+
+def _engine_xruns():
+    """Les xruns comptés par le MOTEUR (Golem Engine : surcharge DSP comprise), cumulés depuis le démarrage du bridge à
+    travers les relances du moteur (son compteur repart de zéro). None si le moteur ne les compte pas (REAPER)."""
+    from . import engine
+    cur = engine.get().xruns()
+    if cur is None:
+        return None
+    last = _ENGINE_XRUN["last"]
+    if last is not None:
+        _ENGINE_XRUN["acc"] += cur - last if cur >= last else cur
+    _ENGINE_XRUN["last"] = cur
+    return _ENGINE_XRUN["acc"]
+
+
 def _read_xruns():
-    """Nb de dropouts (xrun/overrun USB) loggués par le noyau depuis le démarrage du bridge (None si indispo)."""
+    """Nb de dropouts (xrun/overrun USB) loggués par le noyau depuis le démarrage du bridge (None si indispo),
+    + ceux que le moteur compte lui-même quand il les compte (_engine_xruns)."""
+    kernel = _read_kernel_xruns()
+    try:
+        eng = _engine_xruns()
+    except Exception:
+        eng = None
+    if eng is None:
+        return kernel
+    return (kernel or 0) + eng
+
+
+def _read_kernel_xruns():
     if sys.platform in ("win32", "darwin"):
         from . import desktop_audio
         actual = desktop_audio._public_actual() or {}

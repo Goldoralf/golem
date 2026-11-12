@@ -40,6 +40,7 @@ config/auth.token
 config/network.json
 config/.mode.json
 config/engine.json
+config/golem-engine.json
 config/genres.remote.json
 config/.desktop.json
 config/.band.json
@@ -106,6 +107,8 @@ presets/.*
 !presets/.gitignore
 presets/*.tmp
 sets/Backups/
+# la session du Golem Engine (docs/ardour-plan.md §7c) : écrite par le moteur en jouant, état local
+sets/golem-engine/
 
 # cache assets assainis (chemins NAM/IR sans espace/# pour le loader LV2)
 assets/.cache/

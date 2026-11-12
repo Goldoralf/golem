@@ -46,14 +46,36 @@ def features(root=None):
     return [tuple(f) for f in d.get("features") or [] if isinstance(f, list) and len(f) == 2]
 
 
+def feature_of_block(root=None):
+    """{type de bloc: fonction} — les blocs qu'une fonction du moteur porte (features.json, clé `blocks`)."""
+    d = _read(os.path.join(_root(root), "config", "engines", "features.json"), {})
+    out = {}
+    for feat, types in (d.get("blocks") or {}).items():
+        for t in types if isinstance(types, list) else []:
+            out[t] = feat
+    return out
+
+
+def _requires_ok(req):
+    """`requires` d'une plateforme : {file, env?, default?} — le fichier `file` sous le dossier donné par la variable
+    `env` (sinon `default`, ~ développé) doit exister. Un moteur que golem construit (le Golem Engine) n'est choisissable
+    que là où il est construit."""
+    if not req:
+        return True
+    base = os.environ.get(req.get("env") or "") or os.path.expanduser(req.get("default") or "~")
+    return os.path.isfile(os.path.join(base, req.get("file") or ""))
+
+
 def availability(desc, platform=None):
-    """(sélectionnable ici ?, raison si non). Il faut les DEUX : le moteur est livré (selectable)
-    ET il existe pour ce système (platforms.<os>.available)."""
+    """(sélectionnable ici ?, raison si non). Il faut les TROIS : le moteur est livré (selectable), il existe pour ce
+    système (platforms.<os>.available), et ce qu'il demande est là (platforms.<os>.requires)."""
     plat = (desc.get("platforms") or {}).get(_os_key(platform)) or {}
     if not desc.get("selectable"):
         return False, plat.get("reason") or desc.get("unavailable_reason") or "Not available yet"
     if not plat.get("available"):
         return False, plat.get("reason") or "Not available on this system"
+    if not _requires_ok(plat.get("requires")):
+        return False, (plat.get("requires") or {}).get("reason") or "Not installed on this machine"
     return True, None
 
 

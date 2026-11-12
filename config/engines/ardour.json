@@ -1,22 +1,22 @@
 {
-  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5, moteur : docs/ardour-engine.md). COQUILLE (2026-10-06) : aucun moteur derrière, d'où selectable=false — la page et l'installateur le montrent sans permettre de le choisir. Capacités = la cible de ardour-engine.md, pas une mesure. Le nom définitif reste à trancher (ardour-engine.md §4).",
+  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5 ; plan : docs/ardour-plan.md). Le Golem Engine est construit depuis Ardour 9.9 (dépôt Goldoralf/golem-engine). Choisissable sous Linux là où il est CONSTRUIT (platforms.linux.requires) ; la bascule est bridge/engine/switch.py (lot E3). Capacités = la cible, pas une mesure.",
   "id": "ardour",
-  "name": "Ardour",
-  "by": "built by golem from Ardour 9.8",
+  "name": "Golem Engine",
+  "by": "built by golem from Ardour 9.9",
   "license": "gpl-2.0-or-later",
-  "sources_url": "https://github.com/Ardour/ardour",
+  "sources_url": "https://github.com/Goldoralf/golem-engine",
   "order": 2,
   "default": false,
-  "selectable": false,
+  "selectable": true,
   "unavailable_reason": "Coming soon",
   "platforms": {
-    "linux": {"available": false, "reason": "Coming soon"},
+    "linux": {"available": true, "requires": {"env": "GOLEM_ENGINE_DIR", "default": "~/golem-engine", "file": "golem/engine/run.sh", "reason": "Golem Engine is not built on this machine"}},
     "win32": {"available": false, "reason": "Linux only for now"},
     "darwin": {"available": false, "reason": "Linux only for now"}
   },
-  "summary": "Free, nothing to buy. Some features come later.",
+  "summary": "Free, nothing to buy. Early: NAM heads, IR cabs, tape delay and volume play; other blocks come next.",
   "capabilities": {
-    "lanes": "planned", "nam_ir": "planned", "recording": "planned", "backing": "planned", "click": "planned",
+    "lanes": "planned", "nam_ir": "yes", "recording": "planned", "backing": "planned", "click": "planned",
     "midi_clock": "planned", "looper": "no", "drum_machine": "no", "samples": "no", "standards": "no",
     "riff": "no", "kill_switch": "no", "previews": "planned", "reamp": "planned"
   }

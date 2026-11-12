@@ -37,8 +37,6 @@ from . import config as C
 from . import golemfm
 from .commands import write_command
 
-ACT_PLAY, ACT_PAUSE, ACT_STOP, ACT_GOTO_START = 1007, 1008, 1016, 40042
-
 
 def _perf_recording():
     """True pendant une prise perf-rec — cf. régression 2026-07-26 en tête de fichier."""
@@ -56,7 +54,7 @@ OPTIMISTIC_S = 0.35       # override optimiste du playing (le retour .backing.js
 
 class BackingControl:
     """Transport + gestes + séquencement. Thread-safe (timers + callbacks pied).
-    `osc` = ReaperLink (trigger_action). Le feedback (playing/pos/len/slug) est
+    `osc` = le moteur actif (EngineAdapter.transport). Le feedback (playing/pos/len/slug) est
     poussé par monitors._poll_backing."""
 
     def __init__(self, osc, on_change=None):
@@ -136,22 +134,22 @@ class BackingControl:
         if _perf_recording():
             write_command({"action": "backing", "op": "mute", "on": False})
         else:
-            self._osc.trigger_action(ACT_PLAY)
+            self._osc.transport("play")
         self._set_opt(True)
 
     def pause(self):
         if _perf_recording():
             write_command({"action": "backing", "op": "mute", "on": True})
         else:
-            self._osc.trigger_action(ACT_PAUSE)
+            self._osc.transport("pause")
         self._set_opt(False)
 
     def stop(self):
         if _perf_recording():
             write_command({"action": "backing", "op": "mute", "on": True})
         else:
-            self._osc.trigger_action(ACT_STOP)
-            self._osc.trigger_action(ACT_GOTO_START)
+            self._osc.transport("stop")
+            self._osc.transport("start")
         self._set_opt(False)
 
     def restart(self):
@@ -166,7 +164,7 @@ class BackingControl:
         # backing qu'on relance hors prise doit s'entendre (2026-10-07)
         write_command({"action": "backing", "op": "mute", "on": False})
         if not self.playing():
-            self._osc.trigger_action(ACT_PLAY)
+            self._osc.transport("play")
             self._set_opt(True)
 
     def toggle(self):
@@ -201,7 +199,7 @@ class BackingControl:
         commande de position et l'ordre de lecture n'empruntent pas le même chemin, partir de 0 puis sauter ferait
         entendre l'intro. Le démute est parti avec la position, avant le décompte : il ne reste que PLAY."""
         if not self.playing():
-            self._osc.trigger_action(ACT_PLAY)
+            self._osc.transport("play")
             self._set_opt(True)
 
     def mix(self, stem, mute=None, vol=None):

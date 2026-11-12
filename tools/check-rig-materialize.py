@@ -23,6 +23,7 @@ n'a pu l'être. ~10 s par patch. Rien ne joue : audio factice, aucune prise, auc
     python tools/check-rig-materialize.py --only kite --keep  # un patch, et garder --work pour lire les journaux
 """
 import argparse
+import contextlib
 import json
 import os
 from pathlib import Path
@@ -176,6 +177,33 @@ def write_fixture(root):
                         for s, n, b, br in states],
              "config": {"gen": {"out": "1-2", "blocks": []}}}
     dest = root / "library" / "patches" / f"{FIXTURE_ID}.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(patch, indent=1, ensure_ascii=False), encoding="utf-8")
+    return dest
+
+
+ENGINE_FIXTURE_ID = "ci-golem-engine"
+
+
+def write_engine_fixture(root):
+    """Le patch de banc du Golem Engine (docs/ardour-plan.md §7c) : seulement des blocs de sa table
+    (library/catalog/effects-golem-engine.json) — une tête NAM et un cab IR du contenu d'usine (Fuzz Wall), un Tape
+    Delay au pied — deux scènes. Ce que REAPER fait avec `ci-engine`, ce moteur le fait avec celui-ci."""
+    lane = "guitar-ge"
+    chain = {"pre": [{"id": "amp", "type": "amp-nam", "label": "Fender Twin Reverb", "ref": "246", "model": "418200"},
+                     {"id": "cab", "type": "cab", "label": "Palmer 2x12 G12M-65 Creamback", "ref": "5004", "model": "67597"}],
+             "post": [{"id": "dly", "type": "delay-tape", "foot": 8}]}
+    states = [("A", "Dry", {"dly": False}, {}), ("B", "Delay, hotter amp", {"dly": True}, {"amp": {"input": 4}})]
+    patch = {"id": ENGINE_FIXTURE_ID, "name": "CI Golem Engine check", "role": "guitar", "tags": ["ci"], "kind": "patch",
+             "patch_v": 2, "lanes_v": 2, "bpm": 120, "origin": "ci",
+             "lanes": [{"id": lane, "role": "guitar", "name": "CI Golem Engine check", "midi": False, "stereo": False,
+                        "chain": chain,
+                        "states": [{"id": f"st-{lane}-{s}", "name": n, "blocks": b, "params": pr, "branches": {}}
+                                   for s, n, b, pr in states]}],
+             "scenes": [{"id": s, "name": n, "blocks": b, "params": pr, "branches": {}, "lanes": {lane: {"state": f"st-{lane}-{s}"}}}
+                        for s, n, b, pr in states],
+             "config": {"gen": {"out": "1-2", "blocks": []}}}
+    dest = root / "library" / "patches" / f"{ENGINE_FIXTURE_ID}.json"
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(patch, indent=1, ensure_ascii=False), encoding="utf-8")
     return dest
@@ -596,11 +624,19 @@ def wait_rig(base, presets, timeout, pid=None, prev_t=-1):
     return st, rc
 
 
+SERVICES_SOFT = False     # --engine golem-engine : les blocs de SERVICE (lanes gen/rec/arr) pas encore portés ne cachent pas le rig
+
+
 def check_patch(base, presets, p, timeout, log, ctx=None):
     pid = "patch:" + p["id"]
     status = http(base, f"/api/blocks/status?preset={pid}")
+    services = []
+    if SERVICES_SOFT:
+        services = [f"{b['id']}:{b['type']}" for b in status.get("blocks", [])
+                    if b.get("state") != "ready" and b.get("reason") == "engine" and b.get("lane") in ("gen", "rec", "arr")]
     not_ready = [f"{b['id']}:{b['type']} ({b['state']}{': ' + b['why'] if b.get('why') else ''})"
-                 for b in status.get("blocks", []) if b.get("state") != "ready"]
+                 for b in status.get("blocks", []) if b.get("state") != "ready"
+                 and f"{b['id']}:{b['type']}" not in services]
     if not_ready:
         return {"id": p["id"], "name": p.get("name"), "verdict": "skipped", "needs": not_ready}
     t0 = time.time()
@@ -658,7 +694,194 @@ def check_patch(base, presets, p, timeout, log, ctx=None):
         issues += more
     return {"id": p["id"], "name": p.get("name"), "verdict": "fail" if issues else "ok", "issues": issues,
             "blocks": len(live.get("blocks") or {}), "rig_check": {"checked": (rc or {}).get("checked"), "t": (rc or {}).get("t")},
-            "scene": scene_note, "renders": renders, "seconds": round(time.time() - t0, 1)}
+            "scene": scene_note, "renders": renders, "seconds": round(time.time() - t0, 1),
+            **({"services_not_here": services} if services else {})}
+
+
+def engine_pid(presets):
+    try:
+        return int((presets / ".engine.pid").read_text().strip())
+    except (OSError, ValueError):
+        return None
+
+
+def kill_restart_round(base, presets, log):
+    """Le Golem Engine tué net (un crash), puis relancé par le bouton du Dashboard : le bridge doit voir la chute, le
+    fait Health « engine » passer au rouge, la relance repartir, le moteur reparler, et le DERNIER patch revenir tout seul
+    (monitors._remount_after_restart) — docs/ardour-plan.md §7c, A2.1."""
+    import signal
+    issues = []
+    st = http(base, "/api/state")
+    want = st.get("preset_id")
+    old = engine_pid(presets)
+    if not old:
+        return ["no engine PID before the kill"]
+    os.kill(old, signal.SIGKILL)
+    t_kill = time.time()
+    down = False
+    for _ in range(40):
+        if not http(base, "/api/state").get("reaper_running"):
+            down = True
+            break
+        time.sleep(0.25)
+    if not down:
+        issues.append("the bridge never saw the engine go down")
+    fact = next((f for f in http(base, "/api/health/facts?fresh=1").get("facts") or [] if f.get("id") == "engine"), {})
+    if fact.get("level") not in ("bad", "wait"):
+        issues.append(f"health fact 'engine' is {fact.get('level')!r} while the engine is dead: {fact.get('text')}")
+    log(f"  engine killed — bridge saw it in {time.time() - t_kill:.1f} s, health: {fact.get('level')} ({fact.get('text')})")
+    t0 = time.time()
+    http(base, "/api/system/reaper-restart", {})
+    back = None
+    for _ in range(120):
+        st = http(base, "/api/state")
+        if st.get("reaper_running") and st.get("reaper_connected") and engine_pid(presets) not in (None, old):
+            back = time.time() - t0
+            break
+        time.sleep(0.25)
+    if back is None:
+        issues.append("the engine did not come back talking within 30 s of the restart")
+        return issues
+    remount = None
+    for _ in range(180):
+        live = read_json(presets / ".livemap.json") or {}
+        try:
+            fresh = (presets / ".livemap.json").stat().st_mtime > t0
+        except OSError:
+            fresh = False
+        if fresh and live.get("preset") == want:
+            remount = time.time() - t0
+            break
+        time.sleep(0.25)
+    if remount is None:
+        issues.append(f"{want} was not remounted on the new engine within 45 s")
+    fact = next((f for f in http(base, "/api/health/facts?fresh=1").get("facts") or [] if f.get("id") == "engine"), {})
+    if fact.get("level") != "ok":
+        issues.append(f"health fact 'engine' is {fact.get('level')!r} after the restart: {fact.get('text')}")
+    log(f"  restarted: talking after {back:.1f} s, {want} remounted after {remount or 0:.1f} s, health: {fact.get('level')}")
+    return issues
+
+
+def real_card_setup(root, log):
+    """La carte du rack pour le banc (--real-card) : sa config (io.json, registre, carte des entrées) copiée dans le
+    worktree, et ses deux noms (id ALSA, nom du registre). Refuse si le rack la tient : REAPER, ou son bridge."""
+    if subprocess.run(["pgrep", "-x", "reaper"], capture_output=True).stdout.strip():
+        raise SystemExit("--real-card: REAPER is running — the card is his (golem stop first)")
+    if subprocess.run(["pgrep", "-f", "uvicorn bridge.app:app --host 0.0.0.0"], capture_output=True).stdout.strip():
+        raise SystemExit("--real-card: the rack's bridge is running — its pedalboard and MIDI are its own (golem stop first)")
+    sys.path.insert(0, str(ROOT))
+    from bridge import config as RC
+    from bridge.engine.ardour import card_device
+    card_id, card_name = RC.alsa_card(), card_device()
+    if not card_id or not card_name:
+        raise SystemExit("--real-card: no active card in this golem's config")
+    for rel in ("config/io.json", f"config/cards/{card_id}.json", f"config/inputmaps/hw-{card_id}.json"):
+        src, dst = ROOT / rel, root / rel
+        if src.is_file():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+    log(f"real card: {card_name} (hw:{card_id}) — no engine output is linked to it")
+    return card_id, card_name
+
+
+def soundcard_round(base, presets, log, card_id):
+    """Le Golem Engine sur la vraie carte (docs/ardour-plan.md §7c, A2.3) : le périphérique ouvert, ses entrées et sorties
+    vues, la latence mesurée par le bridge (hw_params ALSA), les vumètres d'entrée sur les entrées physiques, la lane de
+    chaque rôle sur l'entrée que la carte des entrées lui donne, les ports MIDI de la carte — et rien vers les sorties."""
+    issues = []
+    st = read_json(presets / ".engine-status.json") or {}
+    if st.get("backend") != "ALSA":
+        issues.append(f"engine backend is {st.get('backend')!r}")
+    if not st.get("inputs") or not st.get("outputs"):
+        issues.append(f"card I/O seen by the engine: {st.get('inputs')} in, {st.get('outputs')} out")
+    s = http(base, "/api/state")
+    if s.get("latency_ms") is None:
+        issues.append("no latency measured (ALSA hw_params closed: the engine does not hold the card)")
+    imap = read_json(presets.parent / "config" / "inputmaps" / f"hw-{card_id}.json") or {}
+    want = next((int(i["ch"]) for i in imap.get("inputs") or [] if i.get("role") == "guitar" and str(i.get("ch", "")).isdigit()), None)
+    p = os.path.join(presets, ".engine-dump.json")
+    with contextlib.suppress(OSError):
+        os.remove(p)
+    http(base, "/api/recall", {"preset": "patch:" + ENGINE_FIXTURE_ID}, timeout=60)
+    wait_rig(base, presets, 30, pid="patch:" + ENGINE_FIXTURE_ID)
+    # le dump n'est pas un geste du bridge : posé à la main dans le slot du worktree, après le rappel
+    seq = int(time.time() * 1000)
+    (presets / ".command.json").write_text(json.dumps({"action": "dump", "seq": seq}))
+    dump = None
+    for _ in range(40):
+        dump = read_json(presets / ".engine-dump.json")
+        if dump:
+            break
+        time.sleep(0.25)
+    tracks = (dump or {}).get("tracks") or []
+    lane = next((t for t in tracks if t.get("input")), {})
+    got = [c for c in lane.get("input") or []]
+    if not want:
+        issues.append(f"no guitar input in the card's input map (hw-{card_id}.json)")
+    elif not any(c.endswith(f"capture_{want}") for c in got):
+        issues.append(f"the guitar lane listens to {got}, the card's input map puts guitar on input {want}")
+    outs = [c for t in tracks for c in t.get("output") or [] if "playback" in c]
+    if outs:
+        issues.append(f"engine outputs linked to the card although GOLEM_ENGINE_NO_OUTPUT: {outs}")
+    time.sleep(2)
+    lv = http(base, "/api/state").get("levels") or {}
+    st = read_json(presets / ".engine-status.json") or {}
+    log(f"  card: {st.get('device')} · {st.get('inputs')} in / {st.get('outputs')} out · {st.get('sample_rate')} Hz · "
+        f"buffer {st.get('buffer')} · latency {s.get('latency_ms')} ms · DSP {round(st.get('dsp_load') or 0, 1)} % · "
+        f"xruns {st.get('xruns')}")
+    log(f"  guitar lane on {got} (input map: {want}) · outputs linked: {outs or 'none'} · input levels {lv}")
+    log(f"  MIDI in: {st.get('midi_in')} · MIDI out: {st.get('midi_out')}")
+    return issues
+
+
+def dashboard_round(base, presets, log):
+    """Ce que le Dashboard lit, sous le Golem Engine (docs/ardour-plan.md §7c, A2.2) : le moteur nommé, son buffer, sa
+    fréquence et sa charge DSP lus dans le moteur, la tuile process sur SON pid, le témoin « le thread audio avance »
+    (presets/.clock.json écrit par le veilleur), les xruns comptés, et un changement de buffer appliqué À CHAUD."""
+    issues = []
+    sysd = http(base, "/api/system")
+    eng = sysd.get("engine") or {}
+    if eng.get("id") != "ardour" or eng.get("name") != "Golem Engine":
+        issues.append(f"/api/system engine is {eng}")
+    for k in ("audio_bsize", "audio_srate", "audio_dsp_load"):
+        if sysd.get(k) is None:
+            issues.append(f"/api/system {k} is empty")
+    hp = (http(base, "/api/system/health").get("reaper") or {})
+    if not hp.get("running") or hp.get("pid") != engine_pid(presets):
+        issues.append(f"process tile: {hp} (engine pid {engine_pid(presets)})")
+    st = http(base, "/api/state")
+    if not (st.get("audio") or {}).get("ok"):
+        issues.append(f"audio thread witness not ok: {st.get('audio')}")
+    if st.get("xruns") is None:
+        issues.append("xruns not counted")
+    before = sysd.get("audio_bsize")
+    target = 256 if before != 256 else 512
+    t0 = time.time()
+    try:
+        r = http(base, "/api/audio-buffer", {"size": target})
+    except Exception as e:
+        return issues + [f"buffer change: {e}"]
+    if r.get("restarting") is not False:
+        issues.append(f"buffer change answered {r}")
+    got = None
+    for _ in range(40):
+        got = http(base, "/api/system").get("audio_bsize")
+        if got == target:
+            break
+        time.sleep(0.25)
+    took = time.time() - t0
+    if got != target:
+        issues.append(f"buffer {target} asked, engine on {got}")
+    cfg = read_json(presets.parent / "config" / "golem-engine.json") or {}
+    if cfg.get("buffer") != target:
+        issues.append(f"config/golem-engine.json says {cfg}")
+    st2 = http(base, "/api/state")
+    if not st2.get("reaper_running"):
+        issues.append("engine down after the buffer change")
+    log(f"  dashboard: {eng.get('name')} {eng.get('version')} · buffer {before} → {got} in {took:.1f} s (no restart) · "
+        f"{sysd.get('audio_srate')} Hz · DSP {sysd.get('audio_dsp_load')} % · pid {hp.get('pid')} · "
+        f"xruns {st.get('xruns')} · audio {'ok' if (st.get('audio') or {}).get('ok') else st.get('audio')}")
+    return issues
 
 
 # ── enchaînement : chercher à casser ────────────────────────────────────────────────────────────────
@@ -901,6 +1124,11 @@ def render_patch(ctx, p, pid, scenes, log):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--reaper", type=Path, help="binaire REAPER (défaut : celui du lanceur, ou REAPER_BIN)")
+    ap.add_argument("--engine", choices=("reaper", "golem-engine"), default="reaper",
+                    help="le moteur du banc : REAPER (défaut) ou le Golem Engine (docs/ardour-plan.md §7c : son veilleur, "
+                         "backend factice, session jetable ; un patch dont un bloc ne joue pas sur ce moteur est « skipped »)")
+    ap.add_argument("--engine-dir", type=Path, default=Path.home() / "golem-engine",
+                    help="l'arbre du Golem Engine construit (défaut ~/golem-engine)")
     ap.add_argument("--work", type=Path, help="dossier de travail (défaut : temporaire)")
     ap.add_argument("--only", help="ne rappeler que les patches dont l'id contient ce texte")
     ap.add_argument("--all", action="store_true", help="tous les patches, pas seulement ceux d'usine")
@@ -927,6 +1155,16 @@ def main():
                     help="au lieu des patches : N prises de riff armées AVEC un bed (docs/compo.md §12 ter), l'écart bed / "
                          "« 1 » de la prise mesuré sur le Mix.wav (budget 1 ms), puis gain, mauvais sha et prise sans bed")
     ap.add_argument("--bed", type=Path, default=BED_FILE, help=f"le bed d'essai (défaut {BED_FILE})")
+    ap.add_argument("--real-card", action="store_true",
+                    help="--engine golem-engine : la VRAIE carte de ce golem (ALSA), SANS aucune sortie reliée "
+                         "(GOLEM_ENGINE_NO_OUTPUT) ; la config de carte du rack est copiée dans le worktree. Refuse si "
+                         "REAPER ou le bridge du rack tournent (la carte et le MIDI sont à eux)")
+    ap.add_argument("--dashboard", action="store_true",
+                    help="--engine golem-engine : ce que lit le Dashboard (moteur, buffer, DSP, process, témoin audio) et un "
+                         "changement de buffer à chaud")
+    ap.add_argument("--kill-restart", action="store_true",
+                    help="--engine golem-engine : après la passe, tuer le moteur, le relancer par le Dashboard, et vérifier "
+                         "que le bridge le voit, que Health le dit et que le dernier patch revient")
     g = ap.add_argument_group("rendus de référence (lot 3b)")
     g.add_argument("--render", action="store_true", help="rendre la DI à travers chaque patch posé et comparer à tests/golden/renders.json")
     g.add_argument("--render-scenes", type=int, default=2, help="scènes rendues par patch (défaut 2)")
@@ -938,9 +1176,19 @@ def main():
     a = ap.parse_args()
     if a.update_golden:
         a.render = True
-    reaper = (a.reaper or reaper_binary()).resolve()
-    if not reaper.is_file():
-        raise SystemExit(f"REAPER not found: {reaper} (set --reaper or REAPER_BIN)")
+    golem_engine = a.engine == "golem-engine"
+    global SERVICES_SOFT
+    SERVICES_SOFT = golem_engine
+    if golem_engine:
+        reaper = (a.engine_dir / "golem" / "engine" / "run.sh").resolve()
+        if not reaper.is_file():
+            raise SystemExit(f"Golem Engine not found: {reaper} (set --engine-dir)")
+        if a.render or a.standard_take or a.compo_bed:
+            raise SystemExit("--render, --standard-take and --compo-bed need REAPER for now")
+    else:
+        reaper = (a.reaper or reaper_binary()).resolve()
+        if not reaper.is_file():
+            raise SystemExit(f"REAPER not found: {reaper} (set --reaper or REAPER_BIN)")
     work = (a.work or Path(tempfile.mkdtemp(prefix="golem-rig-check-"))).resolve()
     work.mkdir(parents=True, exist_ok=True)
     t_start = time.monotonic()
@@ -961,10 +1209,21 @@ def main():
                # ni pédalier ni Whammy : le banc tourne sur la machine du rack, son MIDI matériel n'est pas à lui
                "GOLEM_NO_HW_MIDI": "1",
                "GOLEM_BENCH_CARD": "golem-bench"}
+        if golem_engine and a.real_card:
+            card_id, card_name = real_card_setup(root, log)
+            env.pop("GOLEM_BENCH_CARD", None)
+            env.update({"GOLEM_ALSA_CARD": card_id})
+        if golem_engine:
+            env.update({"GOLEM_ENGINE": "ardour", "GOLEM_ENGINE_DIR": str(a.engine_dir),
+                        "GOLEM_ENGINE_SESSION": str(work / "engine-session"), "GOLEM_ENGINE_BACKEND": "None (Dummy)",
+                        "GOLEM_ENGINE_LOG": str(work / "engine.log")})
+            if a.real_card:
+                env.update({"GOLEM_ENGINE_BACKEND": "ALSA", "GOLEM_ENGINE_DEVICE": card_name,
+                            "GOLEM_ENGINE_NO_OUTPUT": "1"})
         py_in_root(root, env, "from bridge import factory; factory.seed()")
         log("factory content seeded in the worktree")
         if a.fixture:
-            log(f"fixture patch: {write_fixture(root)}")
+            log(f"fixture patch: {write_engine_fixture(root) if golem_engine else write_fixture(root)}")
         if a.standard_take:
             write_standard_bench(root, Path(a.content_from).resolve() if a.content_from else ROOT)
         if a.compo_bed:
@@ -973,7 +1232,8 @@ def main():
             bmeta = bed_meta(a.bed)
             write_take_bench(root)
             log(f"bed {bmeta['sha256'][:12]} ({bmeta['bytes']} bytes, {bmeta['length_s']} s) in {seed_bed(root, a.bed, bmeta)}")
-        prepare_reaper(root, resource, env, osc_send, osc_recv, log, reaper, cold=a.cold)
+        if not golem_engine:
+            prepare_reaper(root, resource, env, osc_send, osc_recv, log, reaper, cold=a.cold)
         presets = root / "presets"
         base = f"http://127.0.0.1:{port}"
         bridge_log = (work / "bridge.log").open("w", encoding="utf-8")
@@ -992,13 +1252,22 @@ def main():
                 raise RuntimeError("bridge not ready after 60 s")
             time.sleep(0.3)
         log(f"bridge: {base}")
-        reaper_log = (work / "reaper.log").open("w", encoding="utf-8")
-        reaper_p = subprocess.Popen([str(reaper), "-newinst", "-nosplash", "-cfgfile", str(resource / "reaper.ini"), "-new"],
-                                    env={**os.environ, "GOLEM_RUNTIME_DIR": str(runtime)}, stdout=reaper_log, stderr=subprocess.STDOUT)
+        reaper_log = (work / ("engine.log" if golem_engine else "reaper.log")).open("a", encoding="utf-8")
+        if golem_engine:            # le lanceur de start.sh (provision/lib-engine.sh) : run.sh écrit presets/.engine.pid
+            reaper_p = subprocess.Popen(["bash", str(reaper), str(root), env["GOLEM_ENGINE_SESSION"],
+                                         env["GOLEM_ENGINE_BACKEND"], env.get("GOLEM_ENGINE_DEVICE", "")],
+                                        env=env, stdout=reaper_log, stderr=subprocess.STDOUT)
+        else:
+            reaper_p = subprocess.Popen([str(reaper), "-newinst", "-nosplash", "-cfgfile", str(resource / "reaper.ini"), "-new"],
+                                        env={**os.environ, "GOLEM_RUNTIME_DIR": str(runtime)}, stdout=reaper_log, stderr=subprocess.STDOUT)
         deadline, last_note = time.monotonic() + a.boot, 0
         while True:
             st = http(base, "/api/state")
             if st.get("reaper_connected"):
+                break
+            # le Golem Engine ne parle en OSC qu'à un changement : son veilleur prêt + le bridge qui le voit suffisent
+            if golem_engine and st.get("reaper_running") and "démarré. surveille" in (
+                    (presets / ".watch.log").read_text(errors="replace") if (presets / ".watch.log").exists() else ""):
                 break
             if reaper_p.poll() is not None:
                 raise RuntimeError(f"REAPER exited with {reaper_p.returncode}")
@@ -1011,7 +1280,7 @@ def main():
                 scan = resource / "reaper-vstplugins64.ini"
                 log(f"  waiting for REAPER… (plugin inventory: {scan.stat().st_size if scan.exists() else 0} bytes)")
             time.sleep(0.5)
-        log(f"REAPER {reaper_p.pid} connected after {round(time.monotonic() - t_start)} s")
+        log(f"{'Golem Engine' if golem_engine else 'REAPER'} {reaper_p.pid} connected after {round(time.monotonic() - t_start)} s")
         # le bridge rappelle lui-même son premier preset (bank0) : on le laisse finir avant de prendre la main
         wait_rig(base, presets, 30)
         if a.standard_take:
@@ -1042,7 +1311,7 @@ def main():
             report["compo_bed"] = compo_bed_rounds(base, root, a.compo_bed, bmeta, log) if r["verdict"] == "ok" else []
         patches = [] if a.standard_take or a.compo_bed else http(base, "/api/patches").get("patches") or []
         if not a.all:
-            patches = [p for p in patches if p.get("factory") or p.get("id") == FIXTURE_ID]
+            patches = [p for p in patches if p.get("factory") or p.get("id") in (FIXTURE_ID, ENGINE_FIXTURE_ID)]
         if a.only:
             patches = [p for p in patches if a.only in p["id"]]
         if a.limit:
@@ -1094,7 +1363,25 @@ def main():
                     + ("" if not issues else "\n" + "\n".join("           " + x for x in issues)))
                 if reaper_p.poll() is not None:
                     break
+        if a.real_card and golem_engine:
+            sc = soundcard_round(base, presets, log, env["GOLEM_ALSA_CARD"])
+            report["soundcard"] = sc
+            log(("  ok     " if not sc else "  FAIL   ") + "the engine on the real card"
+                + "".join("\n           " + x for x in sc))
+        if a.dashboard and golem_engine:
+            di = dashboard_round(base, presets, log)
+            report["dashboard"] = di
+            log(("  ok     " if not di else "  FAIL   ") + "dashboard reads the engine"
+                + "".join("\n           " + x for x in di))
+        if a.kill_restart and golem_engine:
+            ki = kill_restart_round(base, presets, log)
+            report["kill_restart"] = ki
+            log(("  ok     " if not ki else "  FAIL   ") + "engine killed and restarted"
+                + "".join("\n           " + x for x in ki))
     finally:
+        if golem_engine and root:                 # le moteur relancé par le bridge n'est pas reaper_p : son PID
+            with contextlib.suppress(OSError, TypeError):
+                os.kill(engine_pid(root / "presets"), 15)
         kill(reaper_p); kill(bridge_p)
         for name in (".watch.log", ".lua-errors.log", ".rig-check.json", ".livemap.json", ".rig-plugins.json"):
             src = (root / "presets" / name) if root else None
@@ -1104,6 +1391,9 @@ def main():
             drop_root(root)
     done = [r for r in report["patches"] if r["verdict"] != "skipped"]
     bad = ([r for r in done if r["verdict"] == "fail"] + [c for c in report.get("chain") or [] if c["issues"]]
+           + ([{"kill_restart": report["kill_restart"]}] if report.get("kill_restart") else [])
+           + ([{"dashboard": report["dashboard"]}] if report.get("dashboard") else [])
+           + ([{"soundcard": report["soundcard"]}] if report.get("soundcard") else [])
            + [t for t in report.get("standard_take") or [] if t["issues"]]
            + [t for t in report.get("compo_bed") or [] if t["issues"]]
            + ([report["riff_reference"]] if (report.get("riff_reference") or {}).get("issues") else []))

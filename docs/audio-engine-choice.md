@@ -30,6 +30,9 @@ same doctrine as pedalboards ([`pedalboards.md`](pedalboards.md)).
 scenes, NAM & IR, Recording, Backing, Click, MIDI clock, Looper, Drum machine, Samples, Standards,
 Riff, Kill switch, Previews, Reamp. REAPER declares all of them `yes`. Ardour's descriptor has
 `selectable: false` and its capabilities are the **target** of `ardour-engine.md`, not a measurement.
+Its `blocks` key maps a feature to the block types it carries (`looper` → `looper`, `samples` →
+`sample`, `pads`…, `engines.feature_of_block()`): a block whose feature the active engine does not declare
+`yes` is `unavailable` with reason `engine` ([`block-status.md`](block-status.md)).
 
 **Single reader.** `bridge/engines.py` (standard library only) is used by the bridge, the graphical
 installer (`installer/server.py`) and `provision/install.sh`:

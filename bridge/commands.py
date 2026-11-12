@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Commande atomique bridge -> golem_watch (presets/.command.json) — extrait d'app.py (P3)."""
+"""Commandes vers le moteur audio : `write_command` (la porte, tous moteurs) et `enqueue` (le transport REAPER :
+slot presets/.command.json lu par golem_watch.lua, accusé, file) — extrait d'app.py (P3)."""
 import os, json, time, tempfile, itertools, sys, glob
 
 from . import config as C
@@ -119,9 +120,10 @@ def _pending():
 
 
 def _reaper_up():
+    """Le moteur actif tourne-t-il ? (le nom reste : les tests le remplacent)"""
     try:
-        from . import monitors
-        return monitors._reaper_running()
+        from . import engine
+        return engine.get().running()
     except Exception:
         return True                           # dans le doute : on attend (borné par _HUNG_S)
 
@@ -188,7 +190,15 @@ def queued():
 
 
 def write_command(cmd: dict):
-    """Écrit la commande pour le ReaScript (apply), de façon atomique. Rend le `seq` posé.
+    """LA porte des commandes vers le moteur audio (docs/ardour-plan.md §2) : le moteur actif la pose à sa façon.
+    REAPER (le seul aujourd'hui) -> `enqueue` ci-dessous. Rend le `seq` posé, ou None si le moteur ne connaît pas
+    l'action. Les ~80 sites d'appel ne changent pas : le dict `{"action": …}` est le contrat."""
+    from . import engine
+    return engine.get().send(cmd)
+
+
+def enqueue(cmd: dict):
+    """Transport REAPER : écrit la commande pour golem_watch.lua, de façon atomique. Rend le `seq` posé.
     + nonce `seq` : garantit que 2 commandes identiques successives re-déclenchent le veilleur.
     + politesse de slot : n'écrase jamais une commande PAS ENCORE LUE — elle attend son tour dans la file
       (ci-dessus), dans l'ordre d'arrivée."""

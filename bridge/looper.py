@@ -107,7 +107,7 @@ OPTIMISTIC_S = 0.25  # durée de l'override optimiste post-dispatch (le retour g
 
 class LooperControl:
     """Moteur de gestes + dispatch. Thread-safe (timers threading + callbacks foot).
-    `osc` = ReaperLink (set_fx_param) ; `get_state`/`set_slot_opt` branchés sur RigState par app.py."""
+    `osc` = le moteur actif (EngineAdapter.set_fx_param) ; `get_state`/`set_slot_opt` branchés sur RigState par app.py."""
 
     def __init__(self, osc, on_change=None):
         self._osc = osc

@@ -49,6 +49,17 @@ TITLES = {"engine": "REAPER not answering", "audio": "Sound card stopped", "drop
           "scripts": "A script error in REAPER", "golemfm": "golem.fm unreachable"}
 _RANK = {"ok": 0, "wait": 1, "warn": 2, "bad": 3}
 
+
+def _title(fid, fallback=None):
+    """Le titre d'un incident ; « REAPER » y devient le moteur ACTIF quand ce n'est pas lui (docs/ardour-plan.md §7c)."""
+    t = TITLES.get(fid, fallback or fid)
+    with contextlib.suppress(Exception):
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper":
+            t = t.replace("REAPER", eng.descriptor().get("name") or eng.id)
+    return t
+
 _lock = threading.Lock()
 _green = {}                       # id d'incident → passages verts consécutifs (mémoire du moment)
 _red = {}                         # id de fait → passages rouges consécutifs, avant l'ouverture
@@ -144,7 +155,7 @@ def observe(facts):
                     _red[fid] = _red.get(fid, 0) + 1
                     if _red[fid] >= OPEN_PASSES_BY_FACT.get(fid, OPEN_PASSES):
                         _red.pop(fid, None)
-                        _open(d, "fact", fid, lvl, TITLES.get(fid, f.get("name") or fid), f.get("text"), fact=fid)
+                        _open(d, "fact", fid, lvl, _title(fid, f.get("name") or fid), f.get("text"), fact=fid)
                         dirty = True
             else:
                 _red.pop(fid, None)

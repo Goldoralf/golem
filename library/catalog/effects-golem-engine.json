@@ -374,15 +374,6 @@
     "smooth": "Smooth"
    }
   },
-  "pitch": {
-   "vst3": "476F6C654D4678506974636830303031",
-   "golem_fx": true,
-   "status": "testing",
-   "params": {
-    "shift": "Shift",
-    "mix": "Mix"
-   }
-  },
   "pitch-shift-js": {
    "vst3": "476F6C654D46785069746368436C3031",
    "golem_fx": true,

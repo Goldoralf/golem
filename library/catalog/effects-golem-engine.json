@@ -395,6 +395,15 @@
     "wet": "Wet",
     "dry": "Dry"
    }
+  },
+  "pitch": {
+   "vst3": "476F6C654D4678506974636830303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "shift": "Shift",
+    "mix": "Mix"
+   }
   }
  }
 }

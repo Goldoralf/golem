@@ -343,6 +343,20 @@
     "feedback": "Feedback",
     "mix": "Mix"
    }
+  },
+  "killswitch": {
+   "vst3": "476F6C654D46784B696C6C7377303031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "depth": "Depth",
+    "length": "Length",
+    "sync": "Sync",
+    "rate": "Rate",
+    "trigger": "Trigger",
+    "sens": "Sensitivity",
+    "smooth": "Smooth"
+   }
   }
  }
 }

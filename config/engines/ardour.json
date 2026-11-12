@@ -18,6 +18,6 @@
   "capabilities": {
     "lanes": "planned", "nam_ir": "yes", "recording": "planned", "backing": "planned", "click": "planned",
     "midi_clock": "planned", "looper": "no", "drum_machine": "no", "samples": "no", "standards": "no",
-    "riff": "no", "kill_switch": "no", "previews": "planned", "reamp": "planned"
+    "riff": "no", "kill_switch": "yes", "previews": "planned", "reamp": "planned"
   }
 }

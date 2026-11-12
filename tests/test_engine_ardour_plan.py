@@ -370,3 +370,10 @@ def test_un_parametre_renomme_par_la_table_perd_l_echelle_du_catalogue():
     table = {"limiter": {"vst3": "X", "params": {"release": "Release"}}}
     blk, _ = P.plan_block({"id": "l", "type": "limiter", "params": {"release": 80}}, cat, table)
     assert blk["params"][0] == {"pid": "release", "label": "Release", "value": 80.0}
+
+
+def test_chaque_effet_golem_fx_porte_son_statut():
+    # pendant les essais au rig : `testing`, puis `validated` sur le oui du mainteneur (seuls ceux-là partent en release)
+    for t, spec in P.load_table().items():
+        if spec.get("golem_fx"):
+            assert spec.get("status") in ("testing", "validated"), t

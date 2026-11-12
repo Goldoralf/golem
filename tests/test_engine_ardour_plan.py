@@ -397,3 +397,18 @@ def test_le_plan_emporte_le_tempo_du_morceau(tmp_path, monkeypatch):
     (tmp_path / "x.json").write_text(json.dumps({"bpm": 140}))
     assert AR._bpm({"preset": "x"}) == 140.0                                 # sinon le preset, comme golem_rig
     assert AR._bpm({"preset": "y"}) is None
+
+
+def test_la_quarantaine_vise_un_plugin_que_le_golem_engine_ne_pose_pas(monkeypatch):
+    # pitch : ReaPitch figeait REAPER (quarantaine du catalogue) ; sous le Golem Engine, gfx-pitch le joue — pas de
+    # quarantaine là ; sous REAPER, elle reste
+    from bridge import engine, rig
+    monkeypatch.setattr(rig, "_QUARANTINE", {"pitch": "ReaPitch freezes REAPER", "delay-echo": "GxEchoCat"})
+    monkeypatch.setattr(P, "load_table", lambda path=None: {"pitch": {"vst3": "X", "golem_fx": True},
+                                                            "delay-echo": {"lv2": "urn:gx"}})
+    prev = engine.use(A.ArdourEngine(link=object()))
+    try:
+        assert set(rig.quarantined_types()) == {"delay-echo"}          # un plugin hors golem-fx reste en quarantaine
+    finally:
+        engine.use(prev)
+    assert set(rig.quarantined_types()) == {"pitch", "delay-echo"}     # REAPER : rien ne change

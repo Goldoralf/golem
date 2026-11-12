@@ -240,7 +240,29 @@ _QUARANTINE = None
 def quarantined_types():
     """Types de blocs en QUARANTAINE (effects.json `quarantine`) : un plugin qui fait tomber Reaper
     ne doit plus jamais l'atteindre, quel que soit le preset qui le demande (GxDetune, 2026-09-07 :
-    tas corrompu, abort au rebuild). Lu une fois ; la donnée vit dans le catalogue, pas ici."""
+    tas corrompu, abort au rebuild). La donnée vit dans le catalogue, pas ici.
+    Ce qu'on met en quarantaine, c'est un PLUGIN : sous le Golem Engine, un type que sa table fait jouer par un effet
+    golem-fx (`golem_fx`) n'atteint jamais le plugin fautif — il n'y est pas en quarantaine (pitch : ReaPitch figeait
+    REAPER, gfx-pitch ne fige rien, 2026-11-12). Le moteur actif est relu à chaque appel : il peut changer en route."""
+    base = _base_quarantine()
+    safe = _engine_safe_types()
+    return {t: why for t, why in base.items() if t not in safe} if safe else base
+
+
+def _engine_safe_types():
+    """Les types que le moteur ACTIF joue par un effet golem-fx (Golem Engine seulement ; REAPER : aucun)."""
+    try:
+        from . import engine
+        if getattr(engine.get(), "id", None) != "ardour":
+            return set()
+        from .engine import ardour_plan
+        return {t for t, spec in ardour_plan.load_table().items() if spec.get("golem_fx")}
+    except Exception:
+        return set()
+
+
+def _base_quarantine():
+    """La quarantaine du catalogue, lue une fois (et ôtée des types qu'un JSFX golem joue sur cet OS)."""
     global _QUARANTINE
     if _QUARANTINE is None:
         try:

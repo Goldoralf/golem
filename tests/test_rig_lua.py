@@ -303,3 +303,39 @@ def test_le_bloc_vst_host_se_pose_sous_linux_et_ses_knobs_vont_a_la_livemap(tmp_
     live = lab.livemap()
     assert "host" in live["blocks"], lab.log()
     assert live["blocks"]["host"]["params"] == {"p2": {"p": 2, "pmin": 0, "pmax": 1}}
+
+
+def test_une_scene_sans_niveau_revient_a_0_db(lab):
+    """2026-11-12 (banc des presets sur deux moteurs) : une scène SANS niveau gardait celui de la scène d'avant — C à
+    +3 dB puis D sans niveau sonnait à +3. Sans niveau = 0 dB, et le gain du merge (un plugin en tête) n'y est pour rien."""
+    import copy
+    p = copy.deepcopy(PATCH)
+    p["scenes"][1]["lanes"][LANE]["level"] = 3                       # B à +3 dB, A et C sans niveau
+    lab.compile(p, scene="A")
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+
+    def vol():
+        t = next(t for t in lab.tracks() if t["name"].endswith("#merge"))
+        return t["info"].get("D_VOL")
+    assert vol() == pytest.approx(1.0), lab.log()
+    lab.compile(p, scene="B")
+    lab.run(action="scene_apply", preset="ci-engine", scene="B")
+    assert vol() == pytest.approx(10 ** (3 / 20)), lab.log()
+    lab.compile(p, scene="C")
+    lab.run(action="scene_apply", preset="ci-engine", scene="C")
+    assert vol() == pytest.approx(1.0), lab.log()
+
+
+def test_l_autowah_linux_ne_coupe_pas_son_plugin(tmp_path):
+    """2026-11-12 : le « Wah » de l'autowah n'existe pas sur GxAutoWah (Linux) ; le repli au rang numérique écrivait
+    0.45 dans son port BYPASS (rang 0) et coupait l'effet. `index_fallback: false` (catalogue v36) : rien n'est écrit."""
+    import copy
+    lab = Lab(tmp_path)
+    lab.F.specs["GxAutoWah"] = lab.L.table_from([lab.L.table_from({"name": "BYPASS", "min": 0, "max": 1, "def": 1})])
+    p = copy.deepcopy(PATCH)
+    p["lanes"][0]["chain"]["pre"].append({"id": "env", "type": "autowah", "params": {"wah": 0.45}})
+    lab.compile(p)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    vals = {q.name: q.val for q in fx["golem:env"].params.values()}
+    assert vals["BYPASS"] == 1, lab.log()

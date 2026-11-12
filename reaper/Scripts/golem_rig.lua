@@ -174,7 +174,13 @@ local function read_effects(root)
     for _, e in ipairs(data.effects) do
       local by_id, ni = {}, 0
       for _, pd in ipairs(e.params or {}) do
-        if pd.type ~= "bool" and pd.type ~= "enum" then pd.num_index = ni; ni = ni + 1 end
+        -- `index_fallback: false` (catalogue) : JAMAIS de repli au rang numérique quand le nom ne se trouve pas — le
+        -- « Wah » de l'autowah n'existe pas sur GxAutoWah (Linux) ; son rang 0 y tombait sur BYPASS, et 0.45 coupait
+        -- l'effet (mesuré 2026-11-12, banc des presets sur deux moteurs). Le rang des suivants ne change pas.
+        if pd.type ~= "bool" and pd.type ~= "enum" then
+          if pd.index_fallback ~= false then pd.num_index = ni end
+          ni = ni + 1
+        end
         if pd.id then by_id[pd.id] = pd end
       end
       if e.type then map[e.type] = { plugin = e.plugin, by_id = by_id, params = e.params, engine = e.engine, knobs = e.knobs } end
@@ -522,6 +528,13 @@ local function apply_gain_sliders(tr, fx, gain_db)
   return set_gain
 end
 
+-- le NIVEAU de scène d'une piste qui sort (D_VOL) : 0 dB sans niveau — jamais celui de la scène d'avant — plus le
+-- gain du merge quand il a dû se rabattre sur ce même D_VOL (P_EXT golem_merge_dvol, posé par set_merge_gain_fx)
+local function out_level(tr, level)
+  local _, base = reaper.GetSetMediaTrackInfo_String(tr, "P_EXT:golem_merge_dvol", "", false)
+  reaper.SetMediaTrackInfo_Value(tr, "D_VOL", dblin((level or 0) + (tonumber(base) or 0)))
+end
+
 local function set_merge_gain_fx(parent, gain_db)
   gain_db = gain_db or 0
   for _, nm in ipairs(GAIN_NAMES) do
@@ -530,12 +543,15 @@ local function set_merge_gain_fx(parent, gain_db)
       reaper.TrackFX_CopyToTrack(parent, fx, parent, 0, true)   -- pousse en position 0 (tête)
       apply_gain_sliders(parent, 0, gain_db)
       tag_fx(parent, 0, "__merge_gain")
+      reaper.GetSetMediaTrackInfo_String(parent, "P_EXT:golem_merge_dvol", "", true)
       log("  merge_gain " .. gain_db .. " dB (" .. nm .. ") @0")
       return true
     end
   end
   log("  merge_gain: aucun plugin gain résolu -> repli D_VOL parent")
   reaper.SetMediaTrackInfo_Value(parent, "D_VOL", dblin(gain_db))
+  -- gardé : le niveau de scène (out_level) s'y ajoute au lieu de l'écraser
+  reaper.GetSetMediaTrackInfo_String(parent, "P_EXT:golem_merge_dvol", tostring(gain_db), true)
   return false
 end
 
@@ -3781,7 +3797,9 @@ local function materialize(root, plan, mono_on)
     if spec.out and not is_child then
       route_monitor(tr, e.rname, spec.out_sel)                           -- sortie physique selon le choix (OUT 1/2/1·2)
       ensure_safety_limiter(tr)                                          -- brickwall -1 dBFS (protège le DAC/baffles)
-      if spec.level ~= nil then reaper.SetMediaTrackInfo_Value(tr, "D_VOL", dblin(spec.level)) end
+      -- une scène SANS niveau = 0 dB, pas le niveau d'avant (une piste réutilisée gardait le D_VOL de la scène
+      -- précédente : C à +3 dB puis D sans niveau sonnait à +3 — mesuré 2026-11-12, banc des presets)
+      out_level(tr, spec.level)
       -- trim mixer : route_monitor vient de purger/recréer le send matériel (D_VOL revenu à
       -- l'unité) — on repose le niveau du rig, sinon chaque recall effacerait le mix de la salle
       mixer_apply_track(tr, mixer_lv[mixer_src_of(e.rname)])
@@ -3983,8 +4001,10 @@ local function reapply_scene(root, plan)
           mutes[#mutes + 1] = { tr = tr, mute = branch_muted }
         end
         -- niveau du path (dB) porté sur la piste de sortie (pas un child de folder)
-        if spec.out and spec.level ~= nil and not (spec.role == "branch" and spec.folder == "child") then
-          reaper.SetMediaTrackInfo_Value(tr, "D_VOL", dblin(spec.level))
+        -- une scène SANS niveau revient à 0 dB : avant le 2026-11-12, la piste gardait le niveau de la scène
+        -- précédente (C à +3 dB puis D sans niveau = +3 dB, mesuré au banc des presets sur deux moteurs)
+        if spec.out and not (spec.role == "branch" and spec.folder == "child") then
+          out_level(tr, spec.level)
         end
       end
     end

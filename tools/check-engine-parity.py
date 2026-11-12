@@ -88,7 +88,7 @@ def cases(types, catalog, table):
         blk, _sk = P.plan_block({"id": t, "type": t, "params": values}, catalog, table)
         out.append({"type": t, "signal": "noise" if t in MODULATED else "di",
                     "name": cat.get("plugin"), "plugin": plug, "init": blk.get("init") or [],
-                    "params": blk["params"], "values": values})
+                    "params": blk["params"], "values": values, "golem_fx": bool(spec.get("golem_fx"))})
     return out
 
 
@@ -103,6 +103,28 @@ def pink_noise(n, seed=20261112):
     k[0] = 1.0
     x = np.fft.irfft(f / np.sqrt(k), n)
     return list(x / np.sqrt(np.mean(x * x)) * 10 ** (-18 / 20))
+
+
+def rig_tables():
+    """ADD_ALIAS et FX_INIT de reaper/Scripts/golem_rig.lua, LUS dans le fichier (pas recopiés) : les noms que golem_rig
+    essaie pour poser un bloc (« ReaPlugs Volume » n'existe pas, il pose « Volume Adjustment ») et ses réglages d'ajout
+    (le plafond « Max Volume » du JSFX neutralisé) — le côté REAPER du banc pose le bloc comme le rack."""
+    src = (ROOT / "reaper" / "Scripts" / "golem_rig.lua").read_text(encoding="utf-8")
+
+    def table(name):
+        m = re.search(rf"^local {name} = \{{\n(.*?)^\}}", src, re.S | re.M)
+        return m.group(1) if m else ""
+    key = r'^\s*(?:\["([^"]+)"\]|([\w]+))\s*=\s*\{(.*)\},?\s*(?:--.*)?$'
+    alias, init = {}, {}
+    for line in table("ADD_ALIAS").splitlines():
+        m = re.match(key, line)
+        if m:
+            alias[m.group(1) or m.group(2)] = re.findall(r'"([^"]+)"', m.group(3))
+    for line in table("FX_INIT").splitlines():
+        m = re.match(key, line)
+        if m:
+            init[m.group(1) or m.group(2)] = {k: float(v) for k, v in re.findall(r'\["([^"]+)"\]\s*=\s*([-\d.]+)', m.group(3))}
+    return alias, init
 
 
 def _lua_str(s):
@@ -166,7 +188,8 @@ function apply(track, fx, defs, values)
   for pid, value in pairs(values) do
     local def = defs[pid]
     local map = def.map
-    local p = find_param_exact(track, fx, def.name) or find_param_by_name(track, fx, def.name)
+    -- golem_rig.resolve_param : le nom exact, une sous-chaîne, puis le RANG numérique du catalogue (num_index)
+    local p = find_param_exact(track, fx, def.name) or find_param_by_name(track, fx, def.name) or def.num_index
     local mode = (map and map.mode) or "norm"
     if not p then TRACE:write("param introuvable " .. def.name .. "\n")
     elseif def.type == "enum" then
@@ -209,10 +232,24 @@ def reaper_script(cs, catalog, work, di, length):
             chain = ""
         else:
             defs = {d["id"]: d for d in (catalog.get(c["type"]) or {}).get("params") or [] if d.get("id")}
+            # num_index comme golem_rig.lua (le repli de resolve_param) : le rang parmi les paramètres ni bool ni enum
+            ni = 0
+            for d in (catalog.get(c["type"]) or {}).get("params") or []:
+                if d.get("type") not in ("bool", "enum"):
+                    if d.get("id"):
+                        defs[d["id"]] = {**d, "num_index": ni}
+                    ni += 1
             used = {k: defs[k] for k in c["values"]}
-            init = {e["label"]: e["value"] for e in c["init"]}
+            alias, fx_init = rig_tables()
+            names = [c["name"]] + [n for n in alias.get(c["type"], []) if n != c["name"]]
+            # golem_rig : ses réglages d'ajout (FX_INIT) ; à défaut, ceux de la table du moteur (même binaire)
+            init = fx_init.get(c["type"]) or {e["label"]: e["value"] for e in c["init"]}
             chain = f'''
-local fx = reaper.TrackFX_AddByName(tr, {_lua_str(c["name"])}, false, -1)
+local fx = -1
+for _, n in ipairs({_lua_val(names)}) do
+  fx = reaper.TrackFX_AddByName(tr, n, false, -1)
+  if fx >= 0 then break end
+end
 if fx < 0 then TRACE:write("error=plugin absent {c['name']}\\n"); TRACE:close(); return end
 for pname, pval in pairs({_lua_val(init)}) do
   local p = find_param_by_name(tr, fx, pname); if p then reaper.TrackFX_SetParam(tr, fx, p, pval) end
@@ -388,12 +425,15 @@ def main():
             if silent or effect < INERT_DB:
                 verdict = "inconclusive"             # rien à comparer : silence, ou la DI telle quelle des deux côtés
                 why = "silent with these values" if silent else "the block leaves the DI untouched with these values"
+            elif c.get("golem_fx"):
+                # un effet golem-fx : un son NOUVEAU (pas un clone) — la distance à l'original REAPER est dite, pas jugée
+                verdict, why = "info", "golem-fx effect: distance to the REAPER original, for information"
             elif t in MODULATED:
                 ok = abs(rel) <= LEVEL_MAX and abs(m["band_db"]) <= BAND_MAX
                 verdict, why = ("ok" if ok else "fail"), "free phase: level and third-octaves judged, not the null"
             else:
                 verdict, why = ("ok" if m["null_db"] <= NULL_MAX else "fail"), ""
-            tag = {"ok": "ok  ", "fail": "FAIL", "inconclusive": "??  "}[verdict]
+            tag = {"ok": "ok  ", "fail": "FAIL", "inconclusive": "??  ", "info": "fx  "}[verdict]
             print(f"  {tag}  {t:<16} nul {m['null_db']:7.1f} dB  niveau {rel:+6.2f} dB  effet {effect:6.1f} dB  "
                   f"pire tiers {m['band_db']:+.1f} dB @ {m['band_hz']:.0f} Hz" + (f"  — {why}" if why else ""))
             report.append({"type": t, **m, "level_rel_db": rel, "effect_db": effect, "verdict": verdict, "why": why,

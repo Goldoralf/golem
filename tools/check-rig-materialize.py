@@ -1063,7 +1063,10 @@ def render_scene(ctx, pid, scene, chain):
     except OSError:
         pass
     cmd = {"action": "preview", "op": "render", "scene": scene, "di": ctx["di"].as_posix(), "out": out.as_posix(),
-           "tail": 1.5, "chain": chain, "tree": True, "_route": "preview"}
+           "tail": 1.5, "chain": chain, "tree": True, "_route": "preview",
+           # une vraie DI (--di) : rendue à 48 kHz, la fréquence du Golem Engine qu'on compare (--against) ; la phrase
+           # synthétique garde la fréquence du projet, celle des références tests/golden/renders.json
+           **({"sr": SR} if ctx.get("real_di") else {})}
     subprocess.run([sys.executable, str(ctx["root"] / "reaper" / "golem-cmd.py"), json.dumps(cmd)], cwd=ctx["root"],
                    env={**ctx["env"], "GOLEM_ROOT": str(ctx["root"])}, check=True, capture_output=True, timeout=60)
     deadline = time.monotonic() + ctx["render_timeout"]
@@ -1077,6 +1080,150 @@ def render_scene(ctx, pid, scene, chain):
     return None, f"no render after {ctx['render_timeout']} s"
 
 
+def render_scene_engine(ctx, pid, scene):
+    """Le Golem Engine (docs/ardour-plan.md §5, A3 étape 3) : la session TELLE QUE LA SCÈNE L'A MONTÉE (commande
+    `snapshot` du veilleur), copiée, la DI posée sur la piste d'entrée de la lane et jouée du disque, les sorties de la
+    lane vers le master (golem-place --disk --to-master), rendue par l'export d'Ardour — rend (wav, erreur)."""
+    presets = ctx["root"] / "presets"
+    name = f"bench-{scene}"
+    stem = f"{pid.replace(':', '_')}-{scene}"
+    out = ctx["work"] / "renders" / f"{stem}.wav"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.unlink(missing_ok=True)
+    snap = presets / ".engine-snapshot.json"
+    snap.unlink(missing_ok=True)
+    subprocess.run([sys.executable, str(ctx["root"] / "reaper" / "golem-cmd.py"), json.dumps({"action": "snapshot", "name": name})],
+                   cwd=ctx["root"], env={**ctx["env"], "GOLEM_ROOT": str(ctx["root"])}, check=True, capture_output=True,
+                   timeout=60)
+    st, deadline = None, time.monotonic() + 30
+    while time.monotonic() < deadline:
+        st = read_json(snap) or {}
+        if st.get("name") == name:
+            break
+        time.sleep(0.25)
+    else:
+        return None, "the engine saved no snapshot within 30 s"
+    tracks = (read_json(presets / ".engine-dump.json") or {}).get("tracks") or []
+    ins = [t["name"] for t in tracks if any("capture" in c for c in t.get("input") or [])]
+    outs = [t["name"] for t in tracks if any("playback" in c for c in t.get("output") or [])]
+    if not ins:
+        return None, "no lane input track in the engine dump"
+    if not outs:
+        return None, "pas de sortie : no route of the rig goes to the card"
+    copy = ctx["work"] / "engine-renders" / stem
+    shutil.rmtree(copy, ignore_errors=True)
+    copy.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(st["dir"], copy, ignore=shutil.ignore_patterns("*.pending", "*.lock"))
+    b = ctx["engine_dir"] / "build"
+    env_sh = ctx["engine_dir"] / "golem" / "dev" / "env.sh"
+    # l'environnement de dev du moteur (ses bibliothèques), puis la commande telle quelle ("$@" : aucun nom réinterprété)
+    run = ['bash', '-c', 'source "$0" >/dev/null 2>&1; exec "$@"', str(env_sh)]
+    envx = {**os.environ, "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"}
+    logs = []
+    for cmd, t in (([str(b / "golem" / "golem-place"), str(copy), name, ins[0], str(ctx["di"]), "1.5", "--disk",
+                     "--to-master", ",".join(outs)], 60),
+                   ([str(b / "session_utils" / "golem-engine9-export"), "-b", "float", "-o", str(out), str(copy), name], 180)):
+        p = subprocess.run(run + cmd, env=envx, capture_output=True, text=True, timeout=t)
+        logs.append(" ".join(cmd) + "\n" + p.stdout + p.stderr)
+        if p.returncode:
+            break
+    (copy.parent / f"{stem}.log").write_text("\n".join(logs), encoding="utf-8")
+    if len(ins) > 1:
+        logs.append(f"several lane inputs ({ins}): the DI went to {ins[0]} only")
+    return (out, None) if out.is_file() else (None, f"engine render failed (engine-renders/{stem}.log)")
+
+
+WARMUP_S = 4                 # secondes de début laissées hors du nul REAPER / Golem Engine (vs_reaper)
+
+
+def engine_blocks_only(root, log):
+    """--engine-blocks-only : les patches du worktree RÉDUITS aux blocs que le Golem Engine joue (sa table,
+    library/catalog/effects-golem-engine.json) — sur les DEUX moteurs, pour comparer tout le reste (blocs du même
+    binaire, branches, fusion, scènes) avant que golem-fx livre les autres (docs/ardour-plan.md §5, A3 étape 3).
+    Un bloc retiré l'est aussi des scènes et des états (blocks, params) ; rend {patch: [types retirés]}."""
+    sys.path.insert(0, str(ROOT))
+    from bridge.engine import ardour_plan as P
+    playable = set(P.load_table())
+    known = set(P.load_catalog())
+    out = {}
+    for d in (root / "library" / "patches", root / "library" / "factory" / "patches"):
+        for f in sorted(d.glob("*.json")) if d.is_dir() else []:
+            p = json.loads(f.read_text(encoding="utf-8"))
+            gone, types = set(), set()
+
+            def strip(o):
+                if isinstance(o, list):
+                    keep = []
+                    for x in o:
+                        t = x.get("type") if isinstance(x, dict) else None
+                        if t in known and t not in playable:
+                            gone.add(x.get("id"))
+                            types.add(t)
+                            continue
+                        keep.append(strip(x))
+                    return keep
+                if isinstance(o, dict):
+                    return {k: strip(v) for k, v in o.items()}
+                return o
+            p["lanes"] = strip(p.get("lanes") or [])
+            if not gone:
+                continue
+
+            def unref(o):
+                if isinstance(o, dict):
+                    for k in ("blocks", "params"):
+                        if isinstance(o.get(k), dict):
+                            o[k] = {i: v for i, v in o[k].items() if i not in gone}
+                    for v in o.values():
+                        unref(v)
+                elif isinstance(o, list):
+                    for v in o:
+                        unref(v)
+            unref(p.get("scenes"))
+            unref(p["lanes"])
+            f.write_text(json.dumps(p, indent=1, ensure_ascii=False), encoding="utf-8")
+            out[p.get("id", f.stem)] = sorted(types)
+    log(f"engine blocks only: {len(out)} patch(es) reduced to what the Golem Engine plays")
+    return out
+
+
+def vs_reaper(ctx, wav):
+    """Le même rendu fait par REAPER (un run --render précédent, gardé : --against) : décalage, niveau, nul, pire tiers
+    d'octave (check-core-parity.py, le banc de parité des blocs) — None sans rendu REAPER du même nom."""
+    ref = ctx.get("against") and ctx["against"] / "renders" / wav.name
+    if not ref or not ref.is_file():
+        return None
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("check_core_parity", ROOT / "tools" / "check-core-parity.py")
+    cp = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cp)
+    x, sr = read_wav(ref)
+    y, _ = read_wav(wav)
+    full = cp._metrics(list(x), list(y))
+    # sans la CHAUFFE : le Golem Engine pré-roule 2 s avant d'exporter, le rendu de démo de REAPER part à froid — un NAM
+    # rend ses premières centaines de ms autrement (mesuré en A0) et un delay en répète l'écart ~3 s (2026-11-12)
+    m = cp._metrics(list(x[WARMUP_S * sr:]), list(y[WARMUP_S * sr:]))
+    m["null_full_db"] = full["null_db"]
+    # le pire tiers d'octave AUDIBLE : une bande à plus de 50 dB sous le total (au-dessus de 10 kHz derrière un baffle,
+    # -60 à -90 dB) ne compte pas — son écart est du bruit de quantification (REAPER rend en 24 bits entiers)
+    import numpy as np
+    a, b = np.asarray(x[WARMUP_S * sr:]), np.asarray(y[WARMUP_S * sr:])
+    k = min(len(a), len(b))
+    A, B = np.abs(np.fft.rfft(a[:k])) ** 2, np.abs(np.fft.rfft(b[:k])) ** 2
+    f = np.fft.rfftfreq(k, 1 / sr)
+    worst, at = 0.0, 0.0
+    for i in range(-15, 13):
+        fc = 1000 * 2 ** (i / 3)
+        sel = (f >= fc * 2 ** (-1 / 6)) & (f < fc * 2 ** (1 / 6))
+        if not sel.any() or A[sel].sum() < A.sum() * 1e-5:
+            continue
+        dv = 10 * np.log10((B[sel].sum() + 1e-30) / A[sel].sum())
+        if abs(dv) > abs(worst):
+            worst, at = float(dv), fc
+    m["band_audible_db"], m["band_audible_hz"] = worst, at
+    return {k: (round(v, 2) if isinstance(v, float) else v) for k, v in m.items()}
+
+
 def render_patch(ctx, p, pid, scenes, log):
     """Rend les premières scènes, compare chaque empreinte à la référence ; rend (liste par scène, problèmes)."""
     results, issues = [], []
@@ -1084,6 +1231,16 @@ def render_patch(ctx, p, pid, scenes, log):
     if p.get("role") in ("keys", "keys-pads", "pads", "drums"):
         # une lane MIDI : la DI audio n'y entre pas (le synthé joue des notes) — rien à comparer
         return [{"scene": s, "status": "skipped (MIDI lane)"} for s in scenes[:ctx["render_scenes"]] or ["A"]], []
+    if ctx.get("di_auto"):
+        # la DI des démos par scène (bridge/preview.py) : le genre du patch choisit le seau ; sans genre, la clean
+        sys.path.insert(0, str(ROOT))
+        from bridge import preview as _pv
+        bucket = _pv._bucket_from_tags(p.get("role"), p.get("tags")) or "guitar/clean"
+        di = ROOT / "library" / "di-refs" / f"{bucket}.wav"
+        if not di.is_file():
+            return [{"scene": s, "status": f"skipped (no DI recorded for {bucket})"} for s in scenes[:ctx["render_scenes"]] or ["A"]], []
+        ctx["di"] = di
+        log(f"    DI {bucket}")
     for scene in scenes[:ctx["render_scenes"]] or ["A"]:
         try:
             http(ctx["base"], "/api/recall", {"scene": scene}, timeout=60)
@@ -1091,11 +1248,13 @@ def render_patch(ctx, p, pid, scenes, log):
         except Exception as e:
             results.append({"scene": scene, "status": "error", "why": f"scene: {e}"}); continue
         wav = err = None
-        for cand in ([chain] if chain else CHAINS):
+        for cand in ([] if ctx.get("engine_dir") else [chain] if chain else CHAINS):
             wav, err = render_scene(ctx, pid, scene, cand)
             # « piste absente » ou « pas de sortie » : ce n'est pas la lane du patch, on essaie la suivante
             if wav or not ("absente" in str(err) or "pas de sortie" in str(err)):
                 chain = cand; break
+        if ctx.get("engine_dir"):
+            wav, err = render_scene_engine(ctx, pid, scene)
         if not wav:
             results.append({"scene": scene, "status": "error", "why": err}); issues.append(f"render {scene}: {err}"); continue
         try:
@@ -1105,9 +1264,17 @@ def render_patch(ctx, p, pid, scenes, log):
             results.append({"scene": scene, "status": "error", "why": f"unreadable render: {e}"}); issues.append(f"render {scene}: {e}"); continue
         ref = (ctx["golden"].get(pid) or {}).get(scene)
         entry = {"scene": scene, "fp": fp, "wav": wav.name, "chain": chain}
+        vs = vs_reaper(ctx, wav)
+        if vs:
+            entry["vs_reaper"] = vs
+            log(f"    {scene}: vs REAPER — lag {vs.get('lag')}, level {vs.get('level_db'):+.2f} dB, null {vs.get('null_db'):.1f} dB, "
+                f"worst audible third-octave {vs.get('band_audible_db'):+.1f} dB @ {vs.get('band_audible_hz'):.0f} Hz (null from the start "
+                f"{vs.get('null_full_db'):.1f} dB)")
         if ctx["update_golden"]:
             ctx["golden"].setdefault(pid, {})[scene] = {"sig": sig, "fp": fp, "os": sys.platform, "at": time.strftime("%Y-%m-%d")}
             entry["status"] = "updated"
+        elif ctx.get("real_di"):
+            entry["status"] = "rendered (real DI: no golden)"     # les références sont faites avec la phrase synthétique
         elif not ref:
             entry["status"] = "no golden"
         elif ref.get("sig") != sig:
@@ -1168,6 +1335,15 @@ def main():
     g = ap.add_argument_group("rendus de référence (lot 3b)")
     g.add_argument("--render", action="store_true", help="rendre la DI à travers chaque patch posé et comparer à tests/golden/renders.json")
     g.add_argument("--render-scenes", type=int, default=2, help="scènes rendues par patch (défaut 2)")
+    g.add_argument("--di", help="la DI rendue : un nom de library/di-refs (« guitar/crunch »), un chemin, ou « auto » (celle "
+                                "que le genre du patch choisit, comme les démos par scène) ; défaut : une phrase "
+                                "synthétique (celle des références tests/golden/renders.json)")
+    g.add_argument("--engine-blocks-only", action="store_true",
+                   help="réduire les patches (des deux moteurs) aux blocs que le Golem Engine joue, pour comparer le reste "
+                        "en attendant golem-fx")
+    g.add_argument("--against", type=Path, help="le --work GARDÉ d'un run --render REAPER : chaque rendu y est comparé au "
+                                                 "sien (décalage, niveau, nul, tiers d'octave) — le banc des presets sur "
+                                                 "deux moteurs (docs/ardour-plan.md §5, A3 étape 3)")
     g.add_argument("--update-golden", action="store_true", help="écrire les empreintes rendues comme nouvelles références")
     g.add_argument("--golden", type=Path, default=GOLDEN, help=f"le fichier des références (défaut {GOLDEN.relative_to(ROOT)})")
     g.add_argument("--tol-env", type=float, default=2.0, help="tolérance d'enveloppe, dB (défaut 2)")
@@ -1183,8 +1359,8 @@ def main():
         reaper = (a.engine_dir / "golem" / "engine" / "run.sh").resolve()
         if not reaper.is_file():
             raise SystemExit(f"Golem Engine not found: {reaper} (set --engine-dir)")
-        if a.render or a.standard_take or a.compo_bed:
-            raise SystemExit("--render, --standard-take and --compo-bed need REAPER for now")
+        if a.standard_take or a.compo_bed:
+            raise SystemExit("--standard-take and --compo-bed need REAPER for now")
     else:
         reaper = (a.reaper or reaper_binary()).resolve()
         if not reaper.is_file():
@@ -1222,8 +1398,15 @@ def main():
                             "GOLEM_ENGINE_NO_OUTPUT": "1"})
         py_in_root(root, env, "from bridge import factory; factory.seed()")
         log("factory content seeded in the worktree")
+        if a.engine_blocks_only:
+            for pid_, types in engine_blocks_only(root, log).items():
+                log(f"  {pid_}: without {', '.join(types)}")
         if a.fixture:
             log(f"fixture patch: {write_engine_fixture(root) if golem_engine else write_fixture(root)}")
+            if not golem_engine and a.render:
+                # le patch de banc du Golem Engine aussi : rendu par REAPER, il sert de référence au même patch rendu par
+                # le Golem Engine (--against), le seul que les deux moteurs jouent en entier tant que golem-fx manque
+                log(f"fixture patch: {write_engine_fixture(root)}")
         if a.standard_take:
             write_standard_bench(root, Path(a.content_from).resolve() if a.content_from else ROOT)
         if a.compo_bed:
@@ -1320,10 +1503,21 @@ def main():
         ctx = None
         if a.render:
             golden = read_json(a.golden, {}) or {}
-            ctx = {"base": base, "root": root, "env": env, "work": work, "di": make_di(work / "di.wav"), "render": True,
+            if a.di == "auto":
+                di = None                          # choisie par patch (render_patch), comme les démos par scène
+            else:
+                di = make_di(work / "di.wav") if not a.di else (Path(a.di) if Path(a.di).is_file()
+                                                                 else ROOT / "library" / "di-refs" / f"{a.di}.wav")
+                if not di.is_file():
+                    raise SystemExit(f"--di: {di} not found")
+                di = di.resolve()
+            ctx = {"base": base, "root": root, "env": env, "work": work, "di": di, "di_auto": a.di == "auto", "render": True,
+                   "real_di": bool(a.di),
+                   "engine_dir": a.engine_dir.resolve() if golem_engine else None,
+                   "against": a.against.resolve() if a.against else None,
                    "render_scenes": a.render_scenes, "golden": golden, "update_golden": a.update_golden,
                    "tol_env": a.tol_env, "tol_band": a.tol_band, "render_timeout": a.render_timeout}
-            log(f"renders: DI {ctx['di'].name}, references {a.golden} ({sum(len(v) for v in golden.values())} scenes known)"
+            log(f"renders: DI {ctx['di'].name if ctx['di'] else 'per patch (genre tags)'}, references {a.golden} ({sum(len(v) for v in golden.values())} scenes known)"
                 + (" — UPDATING" if a.update_golden else ""))
         if a.fetch:
             # le bridge tire les modèles d'UN preset à la fois (blockstatus.fetch) : patch après patch

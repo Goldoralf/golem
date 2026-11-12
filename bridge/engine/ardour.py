@@ -62,7 +62,7 @@ def db_to_vu(db):
 class ArdourEngine(EngineAdapter):
     id = "ardour"
     actions = frozenset({"ping", "status", "rig_recall", "scene_apply", "stomp", "rig_verify", "dump", "audio_set",
-                         "plugins"})
+                         "plugins", "snapshot"})
     PROC_NAMES = ("luasession",)
 
     def __init__(self, link=None):

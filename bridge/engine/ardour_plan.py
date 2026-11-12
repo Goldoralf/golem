@@ -173,7 +173,12 @@ def plan_block(b, catalog, table):
         if not d:
             skipped.append({"id": b.get("id"), "param": pid, "why": "unknown parameter"})
             continue
-        e, why = param_entry(dict(d, name=labels.get(pid) or d.get("name")), value)
+        dd = dict(d, name=labels.get(pid) or d.get("name"))
+        if pid in labels and (d.get("map") or {}).get("scale") is not None:
+            # la règle de golem_rig pour les tables d'OS : un paramètre RENOMMÉ par la table perd l'échelle du catalogue —
+            # le plugin de la table prend l'unité du catalogue (gfx-limiter : la release en ms, l'x42 en secondes)
+            dd["map"] = {k: v for k, v in d["map"].items() if k != "scale"}
+        e, why = param_entry(dd, value)
         if e is None:
             skipped.append({"id": b.get("id"), "param": pid, "why": why})
         else:
@@ -225,8 +230,13 @@ def build(rig, catalog=None, table=None, cards_text=None):
                 tr["midi"] = {"device": dev, "hw": s.get("midi_in"), "channel": int(ch) if ch else None}
                 if not dev:
                     skipped.append({"path": path.get("id"), "why": f"no MIDI device plugged for {s.get('midi_in') or 'this lane'}"})
-            gain = s.get("merge_gain") if role == "merge" else s.get("level")
-            tr["gain_db"] = float(gain) if gain is not None else 0.0
+            # comme golem_rig.lua : le NIVEAU de la scène (`level`) sur la piste qui SORT vers la carte (main, merge) —
+            # le fader, après les plugins (D_VOL) ; le gain du merge (`merge_gain`) AVANT ses plugins — REAPER le pose en
+            # tête de chaîne (Volume Adjustment), ici le trim de la route. Mesuré 2026-11-12 (banc des presets) : le merge
+            # ne recevait que son gain, les niveaux de scène (+3, -1 dB…) ne sonnaient pas sur le Golem Engine.
+            level = s.get("level") if role in ("main", "merge") else None
+            tr["gain_db"] = float(level) if level is not None else 0.0
+            tr["trim_db"] = float(s.get("merge_gain") or 0.0) if role == "merge" else 0.0
             if role in ("main", "merge"):
                 tr["out"] = out_ports(s.get("out_sel"))
             else:

@@ -52,7 +52,20 @@ def test_topologie_pre_branches_merge():
     assert t["G:g"]["kind"] == "track" and t["G:g"]["input"] == 2 and t["G:g"]["out"] is None
     assert t["G:g/lane-a"]["kind"] == "bus" and t["G:g/lane-a"]["from"] == ["G:g"] and t["G:g/lane-a"]["mute"]
     assert t["G:g#merge"]["from"] == ["G:g/lane-a", "G:g/lane-b"] and t["G:g#merge"]["out"] == [3, 4]
-    assert t["G:g#merge"]["gain_db"] == -3.0
+    assert t["G:g#merge"]["trim_db"] == -3.0 and t["G:g#merge"]["gain_db"] == 0.0   # merge_gain AVANT les plugins
+
+
+def test_le_niveau_de_scene_va_au_fader_du_merge_et_son_gain_au_trim():
+    # golem_rig.lua : `level` = D_VOL de la piste qui sort ; `merge_gain` = un Volume Adjustment en tête du merge
+    rig = split_rig()
+    for tr in rig["paths"][0]["tracks"]:
+        if tr["role"] == "merge":
+            tr["level"] = 3
+        elif tr["role"] == "pre":
+            tr["level"] = 5                     # une piste qui ne sort pas : REAPER n'y pose aucun niveau
+    t = {x["name"]: x for x in P.build(rig, CAT, TABLE)["tracks"]}
+    assert t["G:g#merge"]["gain_db"] == 3.0 and t["G:g#merge"]["trim_db"] == -3.0
+    assert t["G:g"]["gain_db"] == 0.0 and t["G:g"]["trim_db"] == 0.0
 
 
 def test_piste_unique_et_sorties():
@@ -179,11 +192,11 @@ def test_dans_le_designer_un_type_sans_plugin_ici_est_pas_encore():
     prev = engine.use(A.ArdourEngine(link=object()))
     try:
         gate = blockstatus.engine_gate()
-        st = blockstatus.block_state({"type": "eq"})
+        st = blockstatus.block_state({"type": "delay"})
     finally:
         engine.use(prev)
     assert "amp-nam" not in gate and "cab" not in gate                  # dans la table : ils jouent
-    assert gate["eq"] == ("planned", "Golem Engine")                    # ReaEQ : pas encore (golem-fx)
+    assert gate["delay"] == ("planned", "Golem Engine")                 # ReaDelay : pas encore (golem-fx)
     assert gate["looper"][1] == "Golem Engine"                          # fonction du moteur non déclarée
     assert st["reason"] == "engine" and st["why"] == "not available on Golem Engine yet"
 
@@ -345,3 +358,14 @@ def test_un_vst3_part_avec_son_identifiant():
     blk, _ = P.plan_block({"id": "b", "type": "boost", "params": {"drive": 40}}, P.load_catalog(), P.load_table())
     assert set(blk["plugin"]) == {"vst3"} and len(blk["plugin"]["vst3"]) == 32
 
+
+
+def test_un_parametre_renomme_par_la_table_perd_l_echelle_du_catalogue():
+    # le limiteur : le catalogue envoie la release en SECONDES à l'x42 (scale 0.001) ; gfx-limiter la prend en ms
+    cat = P.load_catalog()
+    table = {"limiter": {"lv2": "urn:x42"}}
+    blk, _ = P.plan_block({"id": "l", "type": "limiter", "params": {"release": 80}}, cat, table)
+    assert blk["params"][0]["value"] == pytest.approx(0.08)
+    table = {"limiter": {"vst3": "X", "params": {"release": "Release"}}}
+    blk, _ = P.plan_block({"id": "l", "type": "limiter", "params": {"release": 80}}, cat, table)
+    assert blk["params"][0] == {"pid": "release", "label": "Release", "value": 80.0}

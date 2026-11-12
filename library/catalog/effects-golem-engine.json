@@ -1,5 +1,5 @@
 {
- "_comment": "Golem Engine (Ardour 9.9, Linux): the plugin that plays each block type, by LV2 URI, VST3 class id (as Ardour's VST3 scanner reads it; golem/engine/run.sh scans before each start) or Ardour Lua DSP name. Read by bridge/engine/ardour_plan.py only (the REAPER path never reads it). Parameters are resolved like golem_rig.lua does: the catalog's parameter `name`, exact label first, then a case-insensitive substring of the Ardour label (labels measured on 2026-11-10: NAM 'Input Lvl', 'Output Lvl', 'Quality'; zeroconvolv 'Wet Signal Level'; Calf 'Time L', 'BPM', 'Feedback', 'Wet'; ACE 'Gain'). `files` = LV2 patch properties that carry a block's file (NAM model, IR). `loaded_output` = the plugin's output control that proves its file is loaded (> 0) when the plugin does not echo the file property back (sfizz: 'Number of regions', measured 2026-11-12); labels are read in the C locale (run.sh sets LC_ALL=C.UTF-8: sfizz's labels are translated otherwise). `drumkit` is two engine blocks: the translator (Lua DSP golem Drumtrans, port of golem_drumtrans.jsfx, its table written by the watcher) then the avldrums kit of the block's `kit_bank`; drumgizmo kits do not play here yet. `init` = values set ONCE when the plugin is added, before the block's parameters (golem_rig.lua FX_INIT: Calf chorus dry at unity, Surge XT Effects' FX Type). Proteus, Surge XT Effects, ZamGrains and Prisma are taken as VST3, as under REAPER: their LV2 builds expose no or other parameters (measured 2026-11-12, tools/check-engine-blocks.py). `absent` = catalog parameters with no control on this plugin, refused by the plan with the reason. Surge XT Effects (surge-spring, -freqshift, -treemonster) is out: its VST3 renames its controls after the FX type, the catalog's 'FX Parameter N' names do not resolve. A type absent from `effects` does not play on this engine yet (docs/ardour-plan.md §3: T1 blocks are added one by one in A3, T2 blocks come from golem-fx).",
+ "_comment": "Golem Engine (Ardour 9.9, Linux): the plugin that plays each block type, by LV2 URI, VST3 class id (as Ardour's VST3 scanner reads it; golem/engine/run.sh scans before each start) or Ardour Lua DSP name. Read by bridge/engine/ardour_plan.py only (the REAPER path never reads it). Parameters are resolved like golem_rig.lua does: the catalog's parameter `name`, exact label first, then a case-insensitive substring of the Ardour label (labels measured on 2026-11-10: NAM 'Input Lvl', 'Output Lvl', 'Quality'; zeroconvolv 'Wet Signal Level'; Calf 'Time L', 'BPM', 'Feedback', 'Wet'; ACE 'Gain'). `files` = LV2 patch properties that carry a block's file (NAM model, IR). `loaded_output` = the plugin's output control that proves its file is loaded (> 0) when the plugin does not echo the file property back (sfizz: 'Number of regions', measured 2026-11-12); labels are read in the C locale (run.sh sets LC_ALL=C.UTF-8: sfizz's labels are translated otherwise). `drumkit` is two engine blocks: the translator (Lua DSP golem Drumtrans, port of golem_drumtrans.jsfx, its table written by the watcher) then the avldrums kit of the block's `kit_bank`; drumgizmo kits do not play here yet. `init` = values set ONCE when the plugin is added, before the block's parameters (golem_rig.lua FX_INIT: Calf chorus dry at unity, Surge XT Effects' FX Type). Proteus, Surge XT Effects, ZamGrains and Prisma are taken as VST3, as under REAPER: their LV2 builds expose no or other parameters (measured 2026-11-12, tools/check-engine-blocks.py). A parameter renamed by `params` drops the catalog's `map.scale` (golem_rig's rule for the OS tables): the table's plugin takes the catalog's unit. `absent` = catalog parameters with no control on this plugin, refused by the plan with the reason. Surge XT Effects (surge-spring, -freqshift, -treemonster) is out: its VST3 renames its controls after the FX type, the catalog's 'FX Parameter N' names do not resolve. `golem_fx` = the block is played by a golem-fx effect (the separate golem-fx repository, VST3: new sounds, not clones of REAPER's plugin; maintainer's decision 2026-11-12): tools/check-engine-parity.py reports its distance to the REAPER original for information, it does not fail on it. A type absent from `effects` does not play on this engine yet (docs/ardour-plan.md §3: T1 blocks are added one by one in A3, T2 blocks come from golem-fx).",
  "revision": 3,
  "effects": {
   "amp-nam": {
@@ -66,11 +66,11 @@
    "lv2": "http://calf.sourceforge.net/plugins/VintageDelay"
   },
   "volume": {
-   "lua": "ACE Amplifier",
+   "vst3": "476F6C654D4678426F6F737430303031",
    "params": {
     "gain": "Gain"
    },
-   "note": "Interim, until golem-fx carries the volume block (T2): ACE Amplifier stops at -20 dB, so the heel of a volume pedal is not silence."
+   "golem_fx": true
   },
   "boost": {
    "vst3": "ABCDEF019182FAEB47744D4C50727433"
@@ -124,7 +124,11 @@
    "lv2": "http://guitarix.sourceforge.net/plugins/gx_graphiceq_#_graphiceq_"
   },
   "limiter": {
-   "lv2": "http://gareus.org/oss/lv2/dpl#mono"
+   "vst3": "476F6C654D46784C696D697465723031",
+   "golem_fx": true,
+   "params": {
+    "release": "Release"
+   }
   },
   "granular": {
    "vst3": "2046504473616C6352474D5A00000000",
@@ -149,6 +153,38 @@
   },
   "grit": {
    "vst3": "ABCDEF019182FAEB557265645072736D"
+  },
+  "clean-boost": {
+   "vst3": "476F6C654D4678426F6F737430303031",
+   "params": {
+    "gain": "Gain"
+   },
+   "golem_fx": true
+  },
+  "gate": {
+   "vst3": "476F6C654D4678476174653030303031",
+   "params": {
+    "hpf": "Sidechain Low Cut",
+    "lpf": "Sidechain High Cut"
+   },
+   "golem_fx": true
+  },
+  "comp": {
+   "vst3": "476F6C654D4678436F6D703030303031",
+   "golem_fx": true,
+   "params": {
+    "makeup": "Makeup"
+   }
+  },
+  "eq": {
+   "vst3": "476F6C654D4678457130303030303031",
+   "golem_fx": true,
+   "params": {
+    "midgain": "Mid Gain",
+    "midfreq": "Mid Freq",
+    "lowcut": "Low Cut",
+    "highs": "Highs"
+   }
   }
  }
 }

@@ -701,6 +701,37 @@ commit; the measured models below stay as reference.)
   the controller's `setParamNormalized` while processing. Live (the watcher) that is immediate; the bench's session
   builder now lets the engine run 0.3 s before saving (it saved the defaults: Attack 3 instead of 15).
 
+**2026-11-12 (night) — A3 step 3 for the guitar: every factory guitar patch rendered on both engines.**
+- **The bench**: `tools/check-rig-materialize.py --render --di auto [--engine golem-engine --against <REAPER run>]`
+  renders every scene of every patch with the DI its genre picks (the per-scene demos' rule, `bridge/preview.py`). On
+  the Golem Engine the watcher's new `snapshot` command saves the session as the scene mounted it; the bench copies it,
+  `golem-place --disk --to-master` plays the DI from disk into the lane input and routes the lane's outputs to the
+  master, Ardour's export renders it. REAPER renders at 48 kHz when a real DI is used. The comparison skips the first
+  4 s (the engine pre-rolls 2 s, REAPER's preview starts cold: a NAM warms up, a delay repeats the difference) and
+  ignores third-octaves more than 50 dB below the total (24-bit quantisation behind a cab).
+  `--engine-blocks-only` reduces the patches on both engines to the blocks the engine plays, until golem-fx delivers.
+- **Golem Engine fixed**: scene levels were never applied (only the merge gain). Now, as golem_rig does, the scene
+  `level` goes to the fader of the track that reaches the card, the merge gain to the route's trim (before its
+  plugins — REAPER puts a Volume Adjustment at the head of the merge).
+- **Result** (12 guitar patches, 60 scenes, Gypsy Lead skipped: a cab without capture in the factory content, both
+  engines): every scene without a free-phase block nulls at −68 to −107 dB (NAM, cabs, eq-para, octaver, wahs, plate,
+  delay-tape at 120 BPM). Free-phase blocks (hall, room, shimmer, rotary, phaser) stay within ~0.3 dB per third-octave
+  except the Calf phaser on Fuzz Wall (~4 dB at 80 Hz). **Open**: scenes with delay-tape on Singing Clean and Texas
+  Blues null at only ~−25 dB.
+- **Two REAPER bugs found by the comparison, fixed (maintainer's go)**: (1) autowah's Wah does not exist on GxAutoWah;
+  golem_rig fell back to the parameter's numeric rank, landed on the plugin's BYPASS port and switched the effect off
+  in every patch that sets Wah (Funk Clean scene B never had its autowah on Linux) — catalog v36
+  `index_fallback: false`; (2) a scene without a level kept the previous scene's level (Brown Lead D after C: +3 dB) —
+  now 0 dB, plus the merge gain when it had to fall back to the same D_VOL.
+- **golem-fx on the engine** (table key `golem_fx`; the parity bench reports their distance to REAPER's original for
+  information): gfx-boost (volume, clean-boost: null −149 dB vs the JSFX), gfx-gate (−44 dB vs ReaGate, lane stays
+  mono with its Key bus), gfx-comp (level −0.5 dB vs ReaComp after golem-fx recalibrated its detectors from −2.6 dB),
+  gfx-limiter (−34 dB vs x42-dpl, release in ms: a parameter renamed by the engine table drops the catalog's scale,
+  golem_rig's rule), gfx-eq (−10 dB vs ReaEQ, a steeper low cut: ReaEQ's high pass is 2-pole with a 2-octave
+  bandwidth, its high shelf at 5 kHz / 0.8 oct, read and passed to golem-fx). The golem-fx nih-plug fork fixes two things measured here: a value written before the first audio
+  cycle was lost (REAPER and Ardour), and read-only meters (gate state, gain reduction) now exist — readable from
+  Ardour's Lua and from ReaScript.
+
 ## 8. Risks
 
 - **Scene latency.** REAPER's scene switch is tuned (union materialization, ≤ 40 ms). Ardour's bypass may

@@ -90,7 +90,14 @@
    "status": "testing"
   },
   "flanger": {
-   "lv2": "http://calf.sourceforge.net/plugins/Flanger"
+   "vst3": "476F6C654D4678466C616E6765724331",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "rate": "Mod Rate",
+    "depth": "Mod Depth",
+    "feedback": "Feedback"
+   }
   },
   "phaser": {
    "lv2": "http://calf.sourceforge.net/plugins/Phaser"

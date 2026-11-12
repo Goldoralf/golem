@@ -121,6 +121,9 @@
     "mic": "Mic Distance",
     "spacing": "Mic Spacing",
     "depth": "Depth"
+   },
+   "init": {
+    "Level": 5.5
    }
   },
   "reverb": {
@@ -159,7 +162,12 @@
    "lv2": "http://guitarix.sourceforge.net/plugins/gx_oc_2_#_oc_2_"
   },
   "vibrato": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gxtubevibrato#tubevibrato"
+   "vst3": "476F6C654D46785669627261746F3031",
+   "golem_fx": true,
+   "status": "testing",
+   "init": {
+    "Level": 6.6
+   }
   },
   "ringmod": {
    "lv2": "http://drobilla.net/plugins/mda/RingMod"

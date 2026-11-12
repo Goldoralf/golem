@@ -96,7 +96,14 @@
    "lv2": "http://calf.sourceforge.net/plugins/Phaser"
   },
   "tremolo": {
-   "lv2": "http://calf.sourceforge.net/plugins/Pulsator"
+   "vst3": "476F6C654D46785472656D6F6C6F3031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "rate": "Rate",
+    "depth": "Depth",
+    "wave": "Wave"
+   }
   },
   "rotary": {
    "lv2": "http://calf.sourceforge.net/plugins/RotarySpeaker"

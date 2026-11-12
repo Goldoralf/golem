@@ -339,3 +339,11 @@ def test_l_autowah_linux_ne_coupe_pas_son_plugin(tmp_path):
     fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
     vals = {q.name: q.val for q in fx["golem:env"].params.values()}
     assert vals["BYPASS"] == 1, lab.log()
+
+
+def test_le_coupe_bas_de_reaeq_est_active(lab):
+    """2026-11-12 : la bande 4 de ReaEQ (passe-haut = `lowcut`) est désactivée dans une instance neuve ; golem réglait sa
+    fréquence et rien ne coupait (0,0 dB de 20 à 300 Hz, mesuré sur bruit blanc). golem_rig l'active à l'ajout."""
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    assert fx["golem:eq"].cfg["BANDENABLED4"] == "1", lab.log()

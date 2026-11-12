@@ -663,6 +663,12 @@ local function add_block_fx(track, block, effects)
     local p = find_param_by_name(track, fx, pname)
     if p then reaper.TrackFX_SetParam(track, fx, p, pval) end
   end
+  -- ReaEQ : sa bande 4 (passe-haut, la `lowcut` du catalogue) est DÉSACTIVÉE dans une instance neuve (BANDENABLED4=0) —
+  -- sa fréquence se réglait, rien ne coupait : 0,0 dB de 20 à 300 Hz pour lowcut 74 Hz, mesuré 2026-11-12 sur bruit blanc
+  -- (une fois activée : -11,3 dB à 40 Hz, -3,6 dB à 74 Hz). Activée à l'ajout, sur tous les OS (ReaEQ est le même).
+  if block.type == "eq" and tostring(nm):lower():find("reaeq", 1, true) then
+    reaper.TrackFX_SetNamedConfigParm(track, fx, "BANDENABLED4", "1")
+  end
   log("  + " .. tostring(block.type) .. " (" .. tostring(nm) .. ") @" .. fx)
   return fx, nm
 end

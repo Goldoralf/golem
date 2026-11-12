@@ -62,7 +62,97 @@ def _get(path):
     return json.load(urllib.request.urlopen(BRIDGE + path, timeout=10))
 
 
+# ── LE GOLEM ENGINE (docs/ardour-plan.md A2) : les sondes sont GoleM FX Gapmeter (golem-fx), qui envoient leurs mesures
+# en OSC/UDP à CE script — /gfx/gap ,iidd (slot, k, fin en s, durée ms) à la fin d'un trou, /gfx/gapmeter ,idddid
+# (slot, horloge s, enveloppe dB, silence en cours ms, nombre, plus long ms) toutes les ~50 ms. On en refait l'instantané
+# que golem_apply.lua écrit sous REAPER (golem-gaps.json) : le reste du script ne change pas.
+LISTENER = None
+
+
+class GapListener:
+    def __init__(self, names):
+        import socket
+        import threading
+        self.names = names                       # slot -> nom de piste (les détecteurs, dans l'ordre)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind(("127.0.0.1", 0))
+        self.port = self.sock.getsockname()[1]
+        self.slots = {}
+        self.lock = threading.Lock()
+        threading.Thread(target=self._run, daemon=True).start()
+
+    @staticmethod
+    def _osc(data):
+        import struct
+
+        def s(i):
+            j = data.index(b"\0", i)
+            return data[i:j].decode(), (j + 4) & ~3
+        addr, i = s(0)
+        tags, i = s(i)
+        out = []
+        for t in tags[1:]:
+            if t == "i":
+                out.append(struct.unpack(">i", data[i:i + 4])[0]); i += 4
+            elif t == "d":
+                out.append(struct.unpack(">d", data[i:i + 8])[0]); i += 8
+            elif t == "f":
+                out.append(struct.unpack(">f", data[i:i + 4])[0]); i += 4
+        return addr, out
+
+    def _run(self):
+        while True:
+            try:
+                addr, a = self._osc(self.sock.recv(4096))
+            except Exception:
+                continue
+            now = time.monotonic()
+            with self.lock:
+                if addr == "/gfx/gapmeter" and len(a) >= 6:
+                    sl = self.slots.setdefault(a[0], {"gaps": []})
+                    sl.update(clk=a[1], env=a[2], run=a[3], n=a[4], max=a[5], recv=now)
+                elif addr == "/gfx/gap" and len(a) >= 4:
+                    sl = self.slots.setdefault(a[0], {"gaps": []})
+                    sl["gaps"] = (sl["gaps"] + [[a[1], a[3], a[2]]])[-24:]
+
+    def snapshot(self):
+        """{t, slots:[{track, clk, env, n, max, run, gaps:[[k, ms, fin_s]]}]} comme golem-gaps.json : `t` = la réception
+        du dernier battement du slot 0 ; l'horloge des autres slots est ramenée à ce même instant."""
+        with self.lock:
+            if 0 not in self.slots or "clk" not in self.slots[0]:
+                return None
+            t0 = self.slots[0]["recv"]
+            rows = []
+            for k, name in enumerate(self.names):
+                sl = self.slots.get(k)
+                if not sl or "clk" not in sl:
+                    continue
+                rows.append({"track": name, "clk": sl["clk"] + (t0 - sl["recv"]), "env": sl["env"], "n": sl["n"],
+                             "max": sl["max"], "run": sl["run"], "gaps": list(sl["gaps"])})
+            return {"t": t0, "slots": rows}
+
+
+def _port(dets):
+    """Sous le Golem Engine : l'écouteur OSC démarre (port libre) et son port part avec la commande ; sous REAPER : rien."""
+    global LISTENER
+    if _engine() != "ardour":
+        return {}
+    if LISTENER is None:
+        LISTENER = GapListener(dets)
+    return {"port": LISTENER.port}
+
+
+def _engine():
+    """Le moteur actif (/api/engines) : « ardour » = le Golem Engine."""
+    try:
+        return _get("/api/engines").get("current") or "reaper"
+    except Exception:
+        return "reaper"
+
+
 def _read_gaps():
+    if LISTENER is not None:
+        return LISTENER.snapshot()
     try:
         with open(GAPS) as f:
             return json.load(f)
@@ -70,9 +160,35 @@ def _read_gaps():
         return None
 
 
+def _engine_tracks(lane):
+    """Golem Engine : la piste de la lane `lane` est celle que la carte nourrit sur system:capture_<lane> (dump du
+    veilleur) ; son merge est « <piste>#merge », ses branches « <piste>/… »."""
+    dump = os.path.join(ROOT, "presets", ".engine-dump.json")
+    m0 = os.path.getmtime(dump) if os.path.exists(dump) else 0
+    import subprocess
+    subprocess.run([sys.executable, os.path.join(ROOT, "reaper", "golem-cmd.py"), json.dumps({"action": "dump"})],
+                   capture_output=True, timeout=20)
+    for _ in range(60):
+        time.sleep(0.1)
+        if os.path.exists(dump) and os.path.getmtime(dump) > m0:
+            break
+    tracks = (json.load(open(dump)) or {}).get("tracks") or []
+    names = [t["name"] for t in tracks]
+    head = next((t["name"] for t in tracks if any(c.endswith(f"capture_{lane}") for c in t.get("input") or [])), None)
+    if not head:
+        sys.exit(f"✗ aucune lane du Golem Engine n'écoute l'entrée {lane}")
+    branches = [n for n in names if n.startswith(head + "/")]
+    if not branches:
+        sys.exit(f"✗ « {head} » n'a pas de split : ce script mesure une bascule de BRANCHES.")
+    merge = head + "#merge"
+    return head, [merge] + branches if merge in names else branches
+
+
 def _tracks(lane):
     """Les pistes Reaper de la lane `lane` (n° d'entrée), lues au dump FX — le nom est la seule
-    chose que Reaper et nous partageons."""
+    chose que Reaper et nous partageons. Sous le Golem Engine : _engine_tracks."""
+    if _engine() == "ardour":
+        return _engine_tracks(lane)
     m0 = os.path.getmtime(FXDUMP) if os.path.exists(FXDUMP) else 0
     _post("/api/fxdump", {})
     for _ in range(60):
@@ -215,7 +331,7 @@ def listen(a, dets):
                     midi.append((time.monotonic(), ln))
         threading.Thread(target=rd, daemon=True).start()
     print(f"pédalier : " + (f"port {port}, second lecteur branché" if port else "⚠ port introuvable — les messages du pied ne seront pas vus"))
-    _post("/api/gapmeter", {"on": True, "tracks": dets, "hold": min(900, a.listen + 30)})
+    _post("/api/gapmeter", {"on": True, "tracks": dets, "hold": min(900, a.listen + 30), **_port(dets)})
     time.sleep(1.0)
     off = _clock_offset()
     if off is None:
@@ -318,7 +434,7 @@ def main():
               + "CC 20+n, Note n on/off")
 
     _post("/api/gapmeter", {"on": True, "tone": head, "db": a.db, "tracks": dets,
-                            "hold": min(900, 60 + a.n * len(seq) * 2 * (a.settle + 1))})
+                            "hold": min(900, 60 + a.n * len(seq) * 2 * (a.settle + 1)), **_port(dets)})
     _post("/api/recall", {"scene": seq[-1]})           # point de départ connu : la dernière de la ronde
     time.sleep(2.5)
     off = _clock_offset()

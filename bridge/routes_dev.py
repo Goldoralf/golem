@@ -134,7 +134,7 @@ def meters_read():
 @router.post("/api/gapmeter")
 async def gapmeter(body: dict = Body(...)):
     cmd = {"action": "gapmeter", "on": bool(body.get("on"))}
-    for k in ("tone", "tone_head", "db", "hz", "tracks", "thr", "thrs", "min_ms", "hold"):
+    for k in ("tone", "tone_head", "db", "hz", "tracks", "thr", "thrs", "min_ms", "hold", "port"):
         if body.get(k) is not None:
             cmd[k] = body[k]
     write_command(cmd)

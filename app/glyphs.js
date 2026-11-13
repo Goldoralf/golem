@@ -123,6 +123,11 @@ export const GLYPHS = {
 "uni": "⊞",
 "label": "Drum machine"
 },
+"emet": {
+"svg": "<path d='M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 1.5 2 1.5 3 .5-2 1.5-4 1.5-7z'/><path d='M12 21a2 2 0 0 1-2-2c0-1.5 2-2.5 2-4 0 1.5 2 2.5 2 4a2 2 0 0 1-2 2z' opacity='.55'/>",
+"uni": "✶",
+"label": "Emet (high-headroom overdrive)"
+},
 "ep": {
 "svg": "<rect x='2.5' y='8' width='19' height='9' rx='1.5'/><path d='M6 8v5M10 8v5M14 8v5M18 8v5' stroke-width='2.2'/><path d='M5 17v3.5M19 17v3.5'/><path d='M9 4.5c1-1.5 5-1.5 6 0' opacity='.6'/>",
 "uni": "🎺",
@@ -192,6 +197,11 @@ export const GLYPHS = {
 "svg": "<path d='M20 12a8 8 0 1 1-2.3-5.7'/><path d='M18 2.5v4h-4'/><circle cx='12' cy='12' r='2.2' fill='currentColor' stroke='none'/>",
 "uni": "⟳",
 "label": "Looper"
+},
+"met": {
+"svg": "<path d='M3 6h8c2.5 0 3.5 11 7 11h3'/><path d='M3 20h18' opacity='.35'/><path d='M7 3v6' opacity='.6'/>",
+"uni": "⊓",
+"label": "Met (keyed expander-gate)"
 },
 "midi-pedal": {
 "svg": "<circle cx='12' cy='12' r='9'/><circle cx='7.5' cy='12' r='1' fill='currentColor' stroke='none'/><circle cx='16.5' cy='12' r='1' fill='currentColor' stroke='none'/><circle cx='9' cy='8.5' r='1' fill='currentColor' stroke='none'/><circle cx='15' cy='8.5' r='1' fill='currentColor' stroke='none'/><circle cx='12' cy='7.5' r='1' fill='currentColor' stroke='none'/><path d='M10.5 18.5h3'/>",
@@ -302,6 +312,11 @@ export const GLYPHS = {
 "svg": "<path d='M2.5 12h2l1.5-5 2 10 2-14 2 18 2-12 2 7 1.5-4h4'/>",
 "uni": "✱",
 "label": "Sample"
+},
+"shem": {
+"svg": "<path d='M3 19c5 0 5-12 10-12h8'/><path d='M17 3.5l4 3.5-4 3.5'/><path d='M3 21h18' opacity='.35'/>",
+"uni": "⤴",
+"label": "Shem (tight boost)"
 },
 "spectral-comp": {
 "svg": "<path d='M4 21v-5M8 21v-9M12 21v-7M16 21v-10M20 21v-6'/><path d='M12 2.5v4M9.5 4.5 12 7l2.5-2.5'/>",

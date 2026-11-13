@@ -69,12 +69,15 @@ def get_preset(pid: str):
 @router.get("/api/effects")
 def get_effects():
     data = _read_json(C.EFFECTS, {"effects": []})
-    if sys.platform in ("win32", "darwin"):            # macOS : M6, 2026-10-04 (le Lua est commun)
-        from . import rig
-        q = rig.quarantined_types()                    # par PLUGIN : un type joué ici par un JSFX golem sort du tiroir des interdits
-        for e in data.get("effects", []):
-            if e.get("quarantine") and e.get("type") not in q:
-                e["quarantine_linux"] = e.pop("quarantine")
+    # par PLUGIN : un type que ce poste joue autrement sort du tiroir des interdits — par un JSFX golem (Windows, macOS :
+    # M6, 2026-10-04) ou par golem-fx (Golem Engine ; REAPER sous Linux avec le plugin installé : le Pitch, et met / emet /
+    # shem que seul golem-fx joue, catalogue v43). Sous Linux la levée ne se faisait pas : le tiroir les cachait.
+    from . import rig
+    q = rig.quarantined_types()
+    lifted = "quarantine_linux" if sys.platform in ("win32", "darwin") else "quarantine_lifted"
+    for e in data.get("effects", []):
+        if e.get("quarantine") and e.get("type") not in q:
+            e[lifted] = e.pop("quarantine")
     # LE BLOC VST HOST, PARTOUT (Linux depuis le 2026-11-09, docs/platforms.md §6.1) : la fenêtre du plugin y est la
     # vue filmée. La capture NAM d'un plugin reste Windows/macOS (`vst_capture`) : le tiroir la montre grisée.
     # LES EFFETS DE golem-fx (docs/designer-glyphs-pedals.md) : les types que le moteur ACTIF joue par un plugin golem-fx

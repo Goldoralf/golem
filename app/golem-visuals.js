@@ -44,8 +44,21 @@ export function loadVisuals(catalog) {
 let pendingCat = null;
 function useCatalog(cat) {
   const V = typeof window !== 'undefined' && window.GOLEM_VISUALS;
-  if (!V) { pendingCat = cat; return; }
-  V.archetypes = Object.assign({}, V.archetypes, { pedals: cat.pedals || [], amps: cat.amps || [], cabs: cat.cabs || [] });
+  if (!V) { pendingCat = Object.assign({}, pendingCat || {}, cat); return; }
+  if (cat.pedals || cat.amps || cat.cabs)                // le tiroir ne passe que ses blocs (`effects`)
+    V.archetypes = Object.assign({}, V.archetypes, { pedals: cat.pedals || [], amps: cat.amps || [], cabs: cat.cabs || [] });
+  // les blocs que golem-fx dessine : son instantané du catalogue (`blocks`) date de SON dernier passage ; un type que
+  // le catalogue du rack a gagné depuis (met / emet / shem, v43) est rattaché à sa face par la liste `blocks` de la face
+  const have = new Set((V.blocks || []).map(b => b.type));
+  const byType = new Map((cat.effects || []).map(e => [e.type, e]));
+  for (const [crate, face] of Object.entries(V.gfx || {})) for (const t of (face.blocks || [])) {
+    const e = byType.get(t);
+    if (have.has(t) || !e) continue;
+    _pedals.clear(); _stages.clear();                   // un dessin déjà fait l'a été sans sa face
+    V.blocks = [...(V.blocks || []), { type: t, name: e.name, short: e.short, category: e.category || face.category,
+      color: face.color || e.color, glyph: face.glyph || t, family: 'gfx', gfx: crate, params: e.params || [] }];
+    have.add(t);
+  }
   pendingCat = null;
 }
 

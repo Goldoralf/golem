@@ -4,7 +4,9 @@
 //   gfx      "metal"    golem-fx's own effects, in one of two finishes: "anodized" (machined aluminium
 //                       in the family's colour, the motif engraved) or "thrash" (gloss lacquer, diamond
 //                       plate, the motif in yellow lined in black). By default ("auto") the finish
-//                       follows the family (finishFor); GolemPedals.setStyle or opts.style force one. Each effect has a motif saying what it does (MOTIF) and its glyph lit
+//                       follows the family (finishFor); GolemPedals.setStyle or opts.style force one.
+//                       gfx-met, gfx-emet and gfx-shem have their own "blackwork" finish: black
+//                       lacquer, white engraving, a skull whose eyes light when the pedal is on. Each effect has a motif saying what it does (MOTIF) and its glyph lit
 //                       as a rune when on. "clay", the first prototype, stays available.
 //   nam-*    "specimen" NAM captures: a steel pedal with a glass window (the captured circuit), and the
 //                       amp line: head, cab, head + cab (stack or combo), voiced by the amp's family.
@@ -22,6 +24,7 @@
     enamel: "'Shrikhand','Cooper Black','Georgia',serif",
     enamelSmall: "'Saira Semi Condensed','Arial Narrow',sans-serif",
     nam: "'Big Shoulders Display','Oswald','Arial Narrow',sans-serif",
+    blackletter: "'Pirata One','UnifrakturCook','Georgia',serif",
   };
 
   // ---------- colour ----------
@@ -113,6 +116,12 @@
     <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".36" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <linearGradient id="gp-gloss" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".18" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>
+  <linearGradient id="gp-bw-body" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#1c1c1c"/><stop offset=".5" stop-color="#0d0d0d"/><stop offset="1" stop-color="#040404"/></linearGradient>
+  <linearGradient id="gp-bw-gloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset=".2" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <radialGradient id="gp-bw-knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#3a3a3a"/><stop offset="1" stop-color="#030303"/></radialGradient>
+  <filter id="gp-bw-glow" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="3"/></filter>
   <pattern id="gp-hazard" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
     <rect width="10" height="10" fill="#111"/><rect width="5" height="10" fill="#ffd400"/></pattern>
   <pattern id="gp-plate" width="9" height="9" patternUnits="userSpaceOnUse">
@@ -268,6 +277,7 @@
     if (!spec) return '';
     let style = opts.style || api.style;
     if (style === 'auto') style = finishFor(spec);
+    if (style === 'blackwork') return gfxPedalBlackwork(spec, opts);
     if (METAL_STYLES.includes(style)) return spec.shape === 'treadle' ? gfxTreadleMetal(spec, opts, style) : gfxPedalMetal(spec, opts, style);
     if (spec.shape === 'treadle') return gfxTreadle(spec, opts);
     const on = opts.on !== false;
@@ -345,12 +355,14 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-vibrato': 'waves', 'gfx-chorus': 'waves', 'gfx-flanger': 'jet', 'gfx-phaser': 'spiral', 'gfx-rotary': 'swirl',
     'gfx-killswitch': 'bolt', 'gfx-delay': 'echo', 'gfx-reverb': 'rays', 'gfx-shimmer': 'stars', 'gfx-octaver': 'diamonds',
     'gfx-pitch': 'stairs', 'gfx-pitch-classic': 'stairs', 'gfx-detune': 'stairs', 'gfx-gapmeter': 'ticks',
+    'gfx-met': 'barbed', 'gfx-emet': 'flames', 'gfx-shem': 'chevrons',
   };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
   const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash' };
-  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized' };
+  // the high-gain companions (Fortin's role) have their own black finish
+  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork' };
   const finishFor = spec => CRATE_FINISH[spec.crate] || FAMILY_FINISH[spec.category] || 'anodized';
   let metalCount = 0;
   const f1 = v => (+v).toFixed(1);
@@ -643,6 +655,82 @@ ${on ? glyphAt(spec.glyph, W / 2, 86, 40, c.light, 2.8, 'filter="url(#gp-glow)"'
 <text x="${W / 2}" y="${H - 56}" text-anchor="middle" font-family="${FONT.nam}" font-size="13" font-weight="900" letter-spacing="2.5" fill="${style === 'thrash' ? '#fff' : c.ink}"${style === 'thrash' ? ' stroke="#000" stroke-width="1.6" paint-order="stroke"' : ''}>${esc(spec.name.toUpperCase())}</text>
 <circle cx="${W / 2}" cy="${H - 44}" r="2.4" fill="${on ? c.light : mix(c.hue, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
 ${parts}
+</svg>`;
+  }
+
+  // ---------- gfx: blackwork (gfx-met, gfx-emet, gfx-shem) ----------
+  // Black lacquer, white engraving, one engraved skull whose eyes light in the pedal's colour when it
+  // is on: the only colour. One discreet motif per pedal. Drawn on a 200 × 330 grid, scaled to the
+  // stomp's 112-wide body so it stands with the other golem-fx pedals.
+  const BW_INK = '#ecebe6';
+  const BW_EYES = { 'gfx-met': ['#22ff66', '#b9ffd0'], 'gfx-emet': ['#ff2a1a', '#ffd0c8'], 'gfx-shem': ['#ffaa00', '#fff0cc'] };
+  const BW_MOTIF = {
+    'gfx-met': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-width="1">
+  <path d="M22 172 C40 168 52 176 70 172 M130 172 C148 168 160 176 178 172"/><path d="M22 175 C40 179 52 171 70 175 M130 175 C148 179 160 171 178 175"/>
+  <path d="M33 168 l6 10 M39 168 l-6 10 M53 168 l6 10 M59 168 l-6 10 M141 168 l6 10 M147 168 l-6 10 M161 168 l6 10 M167 168 l-6 10"/></g>`,
+    'gfx-emet': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2">
+  <path d="M62 168 C54 152 62 140 58 124 C68 134 72 142 72 150 C74 136 80 128 78 112 C88 124 90 134 88 144"/>
+  <path d="M138 168 C146 152 138 140 142 124 C132 134 128 142 128 150 C126 136 120 128 122 112 C112 124 110 134 112 144"/>
+  <path d="M100 126 C96 116 102 108 100 98 C106 106 106 114 104 122"/></g>`,
+    'gfx-shem': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-width=".9">
+  <path d="M100 168 L30 128 M100 168 L36 112 M100 168 L48 100 M100 168 L170 128 M100 168 L164 112 M100 168 L152 100"/></g>`,
+  };
+  // knob places on the 200 × 330 grid: [x, y, radius] per front knob, in face order
+  const BW_LAYOUT = {
+    'gfx-met': [[100, 70, 23], [40, 40, 10], [160, 40, 10]],
+    'gfx-emet': [[50, 46, 16], [100, 66, 13], [150, 46, 16]],
+    'gfx-shem': [[100, 62, 23]],
+  };
+  const BW_SKULL = `<g class="gp-skull">
+  <path d="M100 126 C78 126 66 142 66 162 C66 176 72 184 76 188 L76 198 C76 202 80 204 84 204 L86 212 L114 212 L116 204 C120 204 124 202 124 198 L124 188 C128 184 134 176 134 162 C134 142 122 126 100 126Z" fill="${BW_INK}" stroke="#000" stroke-width="1.2"/>
+  <path d="M78 161 C78 152 86 150 92 154 C96 157 96 166 92 170 C88 174 80 172 78 166Z M122 161 C122 152 114 150 108 154 C104 157 104 166 108 170 C112 174 120 172 122 166Z" fill="#000"/>
+  <path d="M100 173 L95 185 Q100 187 105 185Z" fill="#000"/>
+  <path d="M80 198 Q100 203 120 198 M86 205 H114 M90 199 V211 M95 200 V212 M100 200 V212 M105 200 V212 M110 199 V211" fill="none" stroke="#000" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M70 170 l5 -2 M71 176 l5 -2 M130 170 l-5 -2 M129 176 l-5 -2" fill="none" stroke="#000" stroke-width=".8" stroke-linecap="round"/></g>`;
+
+  function knobBlackwork(x, y, r, p) {
+    const a = angleOf(p);
+    const big = r >= 15;
+    const label = String(p.name || p.id).toUpperCase();
+    const ly = big ? y + r + 15 : y + r + 10;
+    return `<g class="gp-knob" data-param="${esc(p.id)}" transform="translate(${x} ${y})">
+  <circle cy="2" r="${r + 2}" fill="#000" opacity=".7"/><circle r="${r}" fill="url(#gp-bw-knob)" stroke="#000" stroke-width="${big ? 2 : 1.4}"/>
+  ${big ? `<circle r="${r - 1.5}" fill="none" stroke="#5a5a5a" stroke-width="1.5" stroke-dasharray=".8 1.4"/>` : ''}
+  <line y1="${-r * .26}" y2="${-r * .87}" stroke="${BW_INK}" stroke-width="${big ? 3 : 1.8}" stroke-linecap="round" transform="rotate(${a.toFixed(1)})"/></g>
+<text x="${x}" y="${ly}" text-anchor="middle" font-family="${FONT.nam}" font-weight="900" font-size="${big ? 8 : 7}" letter-spacing="1" fill="${BW_INK}">${esc(label)}</text>`;
+  }
+
+  function gfxPedalBlackwork(spec, opts) {
+    const on = opts.on !== false;
+    const W = 112, H = 188, s = W / 192;
+    const [eye, core] = BW_EYES[spec.crate] || ['#ffffff', '#ffffff'];
+    const layout = BW_LAYOUT[spec.crate] || [];
+    const knobs = (spec.knobs || []).map((p, i) => {
+      const [x, y, r] = layout[i] || [40 + 120 * (i % 2), 40, 10];
+      return knobBlackwork(x, y, r, p);
+    }).join('');
+    const eyes = on
+      ? `<circle cx="87" cy="162" r="4.5" fill="${eye}" filter="url(#gp-bw-glow)"/><circle cx="113" cy="162" r="4.5" fill="${eye}" filter="url(#gp-bw-glow)"/>
+  <circle cx="87" cy="162" r="2.4" fill="${core}"/><circle cx="113" cy="162" r="2.4" fill="${core}"/>`
+      : `<circle cx="87" cy="162" r="2.4" fill="${mix(eye, '#000', .8)}"/><circle cx="113" cy="162" r="2.4" fill="${mix(eye, '#000', .8)}"/>`;
+    return `<svg class="gp-pedal gp-gfx gp-blackwork${on ? ' is-on' : ''}" viewBox="-6 -4 ${W + 12} ${H + 16}" width="${opts.width || W + 12}" ` +
+      `role="img" aria-label="${esc(spec.name)} — golem-fx ${esc(spec.crate)}" data-crate="${esc(spec.crate)}" data-style="blackwork">
+<g filter="url(#gp-shadow)">
+  ${jacks(W, 40)}
+  <rect x="0" y="4" width="${W}" height="${H}" rx="8" fill="#000"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="url(#gp-bw-body)"/>
+</g>
+<g transform="translate(${(-4 * s).toFixed(2)} ${(-4 * s).toFixed(2)}) scale(${s.toFixed(4)})">
+  <rect x="4" y="4" width="192" height="322" rx="14" fill="url(#gp-bw-gloss)"/>
+  <rect x="11" y="11" width="178" height="308" rx="10" fill="none" stroke="${BW_INK}" stroke-width="1.2"/>
+  ${BW_MOTIF[spec.crate] || ''}
+  ${BW_SKULL}
+  <g class="gp-eyes">${eyes}</g>
+  ${knobs}
+  <text x="100" y="258" text-anchor="middle" font-family="${FONT.blackletter}" font-size="40" fill="${BW_INK}" letter-spacing="2">${esc(spec.name)}</text>
+  ${stompSwitch(100, 286, 12)}
+  <text x="100" y="314" text-anchor="middle" font-family="${FONT.nam}" font-weight="900" font-size="7" letter-spacing="2.5" fill="${BW_INK}">GOLEM · FX</text>
+</g>
 </svg>`;
   }
 
@@ -1042,7 +1130,10 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
   // item: a catalogue type, or {type, on, archetype, family, title, size, form}
   function pedalFor(item, opts) {
     const it = typeof item === 'string' ? { type: item } : item;
-    const b = blockByType(it.type) || { type: it.type, name: it.type, color: '#8a94a3', family: 'generic', params: [] };
+    // a type golem's catalogue does not list yet, but a golem-fx pedal stands for, is that pedal
+    const gfxOf = t => Object.values(data().gfx).find(g => (g.blocks || []).includes(t));
+    const b = blockByType(it.type) || (gfxOf(it.type) ? { type: it.type, family: 'gfx', gfx: gfxOf(it.type).crate }
+      : { type: it.type, name: it.type, color: '#8a94a3', family: 'generic', params: [] });
     const o = Object.assign({}, opts || {}, it);
     switch (b.family) {
       case 'gfx': return gfxPedal(b.gfx, o);
@@ -1059,7 +1150,7 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners },
-    style: 'auto', STYLES: ['auto'].concat(METAL_STYLES, 'clay'), MOTIF, METAL_HUE, FAMILY_FINISH, CRATE_FINISH, finishFor,
+    style: 'auto', STYLES: ['auto'].concat(METAL_STYLES, 'blackwork', 'clay'), MOTIF, METAL_HUE, FAMILY_FINISH, CRATE_FINISH, finishFor,
     setStyle(s) { if (this.STYLES.includes(s)) this.style = s; return this.style; },
   };
   root.GolemPedals = api;

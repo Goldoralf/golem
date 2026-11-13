@@ -418,3 +418,47 @@ def test_un_reglage_de_la_pedale_golem_fx_s_ecrit_sous_reaper(tmp_path, monkeypa
     w = p["params"]["Warmth"]
     assert val("Warmth") == pytest.approx((70 - w["min"]) / (w["max"] - w["min"]))
     assert val("Mode") == pytest.approx(1 / (p["params"]["Mode"]["n"] - 1))
+
+
+def test_met_emet_shem_se_posent_sous_reaper_avec_golem_fx(tmp_path, monkeypatch):
+    # les blocs du seul golem-fx (catalogue v43) : sous REAPER avec leurs plugins installés, posés par leur nom REAPER,
+    # réglages de face avant ET experts écrits normalisés ; sans golem-fx, le compilateur les retire (quarantaine)
+    import copy
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    want = {"met": "GoleM FX Met", "emet": "GoleM FX Emet", "shem": "GoleM FX Shem"}
+    cids = {k for k, v in plugins.items() if v["name"] in want.values()}
+    from bridge import rig
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: cids)
+    for cid in cids:
+        p = plugins[cid]
+        lab.F.installed[p["reaper"]] = True
+        lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0}) for k in p["params"]])
+    patch = copy.deepcopy(PATCH)
+    patch["lanes"][0]["chain"]["pre"] = [{"id": "met", "type": "met", "params": {"thresh": -60, "ratio": 4}},
+                                          {"id": "emet", "type": "emet", "params": {"gain": 20, "tight": 510}},
+                                          {"id": "shem", "type": "shem", "params": {"grind": 6, "voice": "Full"}}]
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    by_name = {v["name"]: v for v in plugins.values()}
+
+    def norm(t, label, v):
+        r = by_name[want[t]]["params"][label]
+        return (v - r["min"]) / (r["max"] - r["min"]) if r["kind"] == "float" else v / (r["n"] - 1)
+
+    def val(t, label):
+        return next(q.val for q in fx["golem:" + t].params.values() if q.name == label)
+    for t in want:
+        assert fx["golem:" + t].name == by_name[want[t]]["reaper"], lab.log()
+    assert val("met", "Threshold") == pytest.approx(norm("met", "Threshold", -60))
+    assert val("met", "Ratio") == pytest.approx(norm("met", "Ratio", 4))
+    assert val("emet", "Tight") == pytest.approx(norm("emet", "Tight", 510))
+    assert val("shem", "Voice") == pytest.approx(norm("shem", "Voice", 1))
+
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: set())          # sans golem-fx : hors de la compile
+    plan = lab.compile(patch)
+    txt = json.dumps(plan)
+    assert not any(f'"type": "{t}"' in txt for t in want), txt[:400]

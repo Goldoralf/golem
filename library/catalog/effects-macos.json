@@ -212,6 +212,15 @@
   },
   "capture-module": {
    "plugin": "CLAP: golem Capture (golem)"
+  },
+  "met": {
+   "unsupported": "golem-fx only (catalogue v43): golem-fx has no macOS build yet, and no original plugin plays this block"
+  },
+  "emet": {
+   "unsupported": "golem-fx only (catalogue v43): golem-fx has no macOS build yet, and no original plugin plays this block"
+  },
+  "shem": {
+   "unsupported": "golem-fx only (catalogue v43): golem-fx has no macOS build yet, and no original plugin plays this block"
   }
  },
  "unmapped": {

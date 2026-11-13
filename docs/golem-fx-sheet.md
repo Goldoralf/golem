@@ -51,7 +51,31 @@ null, `params`), `params` (`name`, `kind` float/enum/bool, `min`, `max`, `defaul
 `decimals`, `options`, `exp`, `structural`, `depends` {param, equals}, `help`), `presets`. Every parameter is in
 `front` or exactly one group; ids follow golem-fx's contract (added, never renamed or removed).
 
-## 4. Open
+## 4. Blocks only golem-fx plays
+
+`met` (Met Gate, dynamics), `emet` (Emet Overdrive, drive) and `shem` (Shem Boost, drive) — catalogue v43, golem-fx
+be2380b, status `testing` — have no original plugin. Their catalogue entry carries a `quarantine` that starts with
+"golem-fx only": `rig.quarantined_types()` lifts it wherever golem-fx plays the type, so they are offered, compiled and
+in the AI's vocabulary there and nowhere else (Windows, macOS, REAPER without the plugin). `/api/effects` lifts a
+quarantine on every OS (before 2026-11-13 only on Windows/macOS: on Linux the drawer still hid a type golem-fx plays).
+Their catalogue params are the front panel under golem-fx's ids; the expert groups come from the descriptor.
+golem-fx's visuals list the blocks of their catalogue snapshot: `app/golem-visuals.js` attaches a type the rack's
+catalogue gained since to its face (`face.blocks`).
+
+Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
+colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
+
+Shem is filed under **drive** (golem-fx proposed utility): a boost is looked for next to the drives.
+**Met's key input is not routed yet** (nor gfx-gate's): it reads the main input until a key arrives, so it gates on what
+reaches it in the chain. Routing the lane's DI to the key bus is the next step, on both engines.
+REAPER sees a newly installed VST3 only after a restart (its startup scan).
+
+**Measured under REAPER on 2026-11-13** (the rack, golem-fx be2380b installed): the three blocks auditioned in one
+lane are placed by their REAPER name; rig-check is clean, and `fxparams` reads the written values back normalized on
+the plugin's ranges (Met Threshold −60 dB = 0.333, Emet Gain 20 % = 0.2, Shem Grind +6 dB = 0.5). Met shows 4 input
+pins on a 2-channel track: its key pins read the silent channels 3/4, so it stays on the main input.
+
+## 5. Open
 
 - Only the Chorus has Custom switches and reference presets so far (golem-fx side).
 - The pedals in the Add-block shelf and on `/live` still draw golem-fx's defaults, not the block's values.

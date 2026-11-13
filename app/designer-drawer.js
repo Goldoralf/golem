@@ -111,7 +111,7 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
   const [view, setView0] = useState(() => { try { return localStorage.getItem('golem.drawer.view') || 'blocks'; } catch (e) { return 'blocks'; } });
   const setView = v => { setView0(v); try { localStorage.setItem('golem.drawer.view', v); } catch (e) { /* navigation privée */ } };
   const [vis, setVis] = useState(visualsReady());
-  useEffect(() => { if (view === 'pedals' && !vis) loadVisuals().then(() => setVis(true)).catch(() => setView('blocks')); }, [view]);
+  useEffect(() => { if (view === 'pedals' && !vis) loadVisuals({ effects: fx }).then(() => setVis(true)).catch(() => setView('blocks')); }, [view]);
   const [pick, setPick] = useState(null);         // 3e volet : {type,name,macro?} (sim) | {ped:archétype} (pédale nommée)
   const [gainF, setGainF] = useState('');         // filtre caractère : '' (tout) | clean | crunch | high-gain
   const [rigF, setRigF] = useState('all');        // filtre nature : all | amp (têtes) | amp-cab (full-rig)

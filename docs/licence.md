@@ -109,7 +109,7 @@ MIT, and it does not need to become GPL (the LGPL is compatible). Every golem ch
 - **`golem_super8`**: see §3.
 - **`app/vendor/golem-visuals/`** and **`app/glyphs.js`** come from golem-fx (`visuals/`, GPL-3.0-or-later, same
   authors), copied by `tools/sync-golem-visuals.py`, which records the commit in `SOURCE.json`. The three pedal fonts
-  in `app/vendor/golem-visuals/fonts/` (Saira Semi Condensed, Shrikhand, Big Shoulders Display, latin subset) are under
+  in `app/vendor/golem-visuals/fonts/` (Saira Semi Condensed, Shrikhand, Big Shoulders Display, Pirata One, latin subset) are under
   the **SIL Open Font License 1.1**; each family's licence and copyright travel with its files (`OFL-*.txt`).
 
 Any other file copied from elsewhere must keep its original licence and say so in its header, with

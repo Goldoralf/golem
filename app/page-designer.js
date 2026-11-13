@@ -1805,7 +1805,9 @@ export function DesignerPage({ rig, sub }) {
             : bsNa ? '✕ not available here — ' + (bst.why || '') + ' · tap to replace · ' : '')
           + (ctl ? '▤ started by the Arrangement with « ' + arrSongTitle + ' » — set in Songs · ' : '')
           + (b.pending ? '⬇ to download: ' : (cap ? cap + ' · ' : '')) + (cap && b.pending ? cap + ' · ' : '') + (emptyPed ? 'no capture — left out of the rig · tap to pick/download · ' : '') + 'tap = settings · long press = assign · drag = move'}>
-      ${quar ? html`<span class="tile-badge quar" title="quarantined: this plugin crashes the engine — the block is skipped; remove it">⚠ off</span>`
+      ${quar ? html`<span class="tile-badge quar" title=${/^golem-fx only/.test(quar)
+          ? 'golem-fx only: this engine does not play it — the block is skipped (Golem Engine, or REAPER on Linux with the plugin installed)'
+          : 'quarantined: this plugin crashes the engine — the block is skipped; remove it'}>⚠ off</span>`
         : svcOff ? html`<span class="tile-badge svc-off" title=${'off in ' + (((rig || {}).mode || {}).name || 'this mode') + ' — Settings ▸ Mode ▸ Tools'}>off in ${esc(((rig || {}).mode || {}).name || 'mode')}</span>` : ''}
       ${kitAudio ? html`<span class="tile-badge empty" title="audio input: the drum module makes the sound — this block is LEFT OUT of the rig. Switch the lane to its USB port to play the rack's kits.">audio</span>` : ''}
       ${b.pending ? html`<span class="tile-dl" title=${'to download: ' + esc(cap || '')}>⬇</span>` : ''}

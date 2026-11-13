@@ -24,7 +24,11 @@ def test_bench_value_is_only_pending():
 
 
 def test_bench_and_quarantine_are_exclusive():
+    # sauf un bloc du seul golem-fx (v43) : sa quarantaine dit « pas de plugin ici » et se lève là où golem-fx le joue ;
+    # là, son banc reste à passer
     for e in _catalog()["effects"]:
+        if str(e.get("quarantine", "")).startswith("golem-fx only"):
+            continue
         assert not ("bench" in e and "quarantine" in e), e["type"]
 
 

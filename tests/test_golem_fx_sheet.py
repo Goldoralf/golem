@@ -56,3 +56,22 @@ def test_le_compilateur_retire_les_reglages_de_la_pedale_la_ou_golem_fx_ne_joue_
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"chorus"})
     compile_rig._drop_engine_only(blocks)
     assert blocks[0]["params"] == {"rate": 1.2, "warmth": 70}
+
+
+def test_les_blocs_du_seul_golem_fx_ne_vivent_que_la_ou_golem_fx_joue(monkeypatch):
+    # met, emet, shem (catalogue v43) : aucun plugin d'origine — en quarantaine partout, sauf là où golem-fx les joue
+    from bridge import rig
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
+    q = rig.quarantined_types()
+    assert {"met", "emet", "shem"} <= set(q) and all(q[t].startswith("golem-fx only") for t in ("met", "emet", "shem"))
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"met", "emet", "shem"})
+    assert not {"met", "emet", "shem"} & set(rig.quarantined_types())
+
+
+def test_les_trois_pedales_ont_leur_feuille_et_leur_plugin():
+    plugins, table = golem_fx._load()
+    for t, front in (("met", ["thresh", "hold", "release"]), ("emet", ["gain", "tone_stack", "level"]), ("shem", ["grind"])):
+        params, sheet = golem_fx.merged(t, CAT[t]["params"])
+        assert sheet["front"] == front and sheet["groups"] and sheet["presets"], t
+        assert plugins[table[t]["vst3"]]["reaper"] == CAT[t]["plugin"], t      # même nom des deux côtés
+        assert all("engine_only" not in d for d in params if d["id"] in front), t

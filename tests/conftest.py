@@ -88,6 +88,14 @@ def _pas_de_peripheriques_reels(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _pas_de_boost_cpu_de_la_machine(monkeypatch):
+    """Une bascule de moteur règle le boost CPU (2026-11-13, routes_system.wants_boost) : par sudo, sur le VRAI
+    gouverneur de la machine. Un test de bascule ne touche jamais au processeur du poste."""
+    from bridge.engine import switch
+    monkeypatch.setattr(switch, "_boost", lambda state, why: None)
+
+
+@pytest.fixture(autouse=True)
 def _pas_les_golem_fx_de_la_machine(monkeypatch):
     """Les VST3 golem-fx installés sur la machine (~/.vst3) ne fuient pas dans les tests (2026-11-13) : sous REAPER,
     ils font jouer un bloc par golem-fx (docs/golem-fx-reaper.md), changent sa quarantaine et ses potards — un test

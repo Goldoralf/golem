@@ -89,6 +89,7 @@ def _run(target_id, on_osc, registry):
         log.warning(f"réglage audio non repris : {e}")
     use(new)
     recall.invalidate_shape()                         # le rig est à reconstruire sur le nouveau moteur
+    _boost(state, f" (bascule vers {target_id})")     # AVANT de le démarrer : le Golem Engine part boosté
     _set(phase="starting")
     try:
         new.start_feedback(on_osc)
@@ -119,6 +120,15 @@ def _run(target_id, on_osc, registry):
     _set(phase="done")
 
 
+def _boost(state, why):
+    """Le boost CPU suit le moteur (routes_system.wants_boost) : allumé tant que le Golem Engine tourne."""
+    try:
+        from .. import routes_system
+        routes_system.apply_perf_for_mode(state.mode, why)
+    except Exception as e:
+        log.warning(f"boost CPU non réglé{why} : {e}")
+
+
 def _revert(old, new, on_osc, why):
     from .. import engines, recall
     from . import use
@@ -134,6 +144,8 @@ def _revert(old, new, on_osc, why):
         log.warning(f"choix {old.id} non réécrit : {e}")
     use(old)
     recall.invalidate_shape()
+    from ..state import state
+    _boost(state, f" (retour sur {old.id})")
     try:
         old.start_feedback(on_osc)
         old.restart("switch back")

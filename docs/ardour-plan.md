@@ -786,8 +786,20 @@ Measured, buffer sizes: 192 → 100 % and xruns, 256 → 84 %, 384 → 77 %, no 
 **323 µs**, golem-fx reverb 204, delay 131, IR cabs ~90 each, the small golem-fx blocks 20–80. RT scheduling is fine
 (FIFO 78–80). The cause that dominates: **the CPU governor was `powersave`, the core at 0.67 GHz** — with
 `performance` (the Dashboard's ⚡ CPU boost) the load drops from 80 % to 31 %. REAPER hides it with anticipative FX
-processing; Ardour has to finish each 4 ms cycle. Open: run the CPU boost while the Golem Engine plays; replace the
-Lua limiter with a compiled one; stop computing a muted branch (needs the scene-gap bench before it ships).
+processing; Ardour has to finish each 4 ms cycle. Open: stop computing a muted branch (needs the scene-gap bench
+before it ships).
+**CODED 2026-11-13 — the safety limiter is compiled.** The watcher puts golem-fx's `gfx-limiter` last on every route
+that goes to the card, set like `golem_safety.jsfx`: no lookahead (latency 0), threshold −1 dBFS, release 15 ms, style
+clean, fixed release. The Lua `golem Safety` stays as the fallback when the plugin is missing (logged). Measured on the
+engine bench: 0.2–0.45 µs per sample, against 1.7 for the Lua DSP (323 µs per 192-sample cycle on the rack); the bench
+checks it (< 1 µs) and that the limiter is the compiled one (`dump` reports `safety: "gfx-limiter" | "lua"`). The
+bench's "merge at −3 dB" check reads the route's trim (`dump` `trim_db`), where the merge gain has lived since
+2026-11-12.
+**CODED 2026-11-13 — the CPU boost follows the engine** (the maintainer's decision): while the Golem Engine runs, the
+governor is `performance` whatever the mode; under REAPER, the mode's rule alone (Gig and Show,
+docs/modes.md). `routes_system.wants_boost` decides; it is applied at the bridge's start, at every mode switch, and at
+every engine switch — before the Golem Engine starts, and again on a switch back (`engine/switch._boost`). Tests never
+touch the machine's governor (`conftest._pas_de_boost_cpu_de_la_machine`).
 
 **2026-11-13 — REAPER stall bench on the blocks golem.fm's AI may not propose yet (catalog v41).** The rack was
 switched to REAPER for the run, then back. A first run was void: a golem-fx Rust build in parallel (load 10, 152

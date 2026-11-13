@@ -194,3 +194,28 @@ def test_reaper_n_est_jamais_relance_par_ce_chemin(monkeypatch):
     finally:
         engine.use(prev)
     assert called == []
+
+
+def test_le_golem_engine_allume_le_boost_cpu_quel_que_soit_le_mode(monkeypatch):
+    # 2026-11-13 (le mainteneur) : en économie, le Golem Engine décrochait (80 % de DSP contre 31 %) — boosté tant
+    # qu'il tourne ; sous REAPER, la règle du mode seule (Gig et Show)
+    from bridge import engine, routes_system
+    home, gig = {"name": "Home", "perf_boost": False}, {"name": "Gig", "perf_boost": True}
+
+    class E:
+        def __init__(self, i):
+            self.id = i
+    monkeypatch.setattr(engine, "get", lambda: E("ardour"))
+    assert routes_system.wants_boost(home) == (True, "Golem Engine")
+    monkeypatch.setattr(engine, "get", lambda: E("reaper"))
+    assert routes_system.wants_boost(home)[0] is False and routes_system.wants_boost(gig)[0] is True
+
+
+def test_une_bascule_de_moteur_regle_le_boost_avant_de_demarrer(monkeypatch):
+    from bridge.engine import switch
+    calls = []
+    monkeypatch.setattr(switch, "_boost", lambda state, why: calls.append(why))
+    src = open(switch.__file__, encoding="utf-8").read()
+    run = src[src.index("def _run("):src.index("def _boost(")]
+    assert run.index("_boost(") < run.index("new.restart(")          # boosté AVANT le démarrage du moteur
+    assert "_boost(" in src[src.index("def _revert("):]                # et rendu au retour sur l'ancien

@@ -562,18 +562,33 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     let y = knobs.length ? grid.bottom : 22;
     let svg = grid.svg;
     const row = [...sels.map(p => ({ p, k: 's' })), ...togs.map(p => ({ p, k: 't' }))];
-    if (row.length) {
-      y += 10;
-      row.forEach((it, i) => {
-        const cx = W * (i + .5) / row.length;
-        svg += it.k === 's' ? selectorClay(cx, y, 6.5, it.p, style === 'thrash' ? '#ffd400' : c.light, null, c.ink) : toggleClay(cx, y, it.p, c.ink);
-      });
-      y += 15;
+    const accent = style === 'thrash' ? '#ffd400' : c.light;
+    const control = (it, cx, cy) => it.k === 's' ? selectorClay(cx, cy, 6.5, it.p, accent, null, c.ink) : toggleClay(cx, cy, it.p, c.ink);
+    // layout 'fixed': the rune always sits at the same height and the selectors flank it, so every pedal
+    // of the family lines up; 'flow' (the first layout): the rune centred in what the knob rows leave
+    const fixed = (opts.layout || api.layout) === 'fixed';
+    let gy, gsize;
+    const bottom = 148;
+    if (fixed) {
+      // the selectors right under the knobs (one row), the rune always at 112: the knobs end by y 72 at most
+      // (two rows of two), so the row never reaches the rune
+      row.forEach((it, i) => { svg += control(it, W * (i + .5) / row.length, Math.min(y + 10, 82)); });
+      gy = 112;
+      gsize = 26;
+    } else {
+      if (row.length) {
+        y += 10;
+        row.forEach((it, i) => { svg += control(it, W * (i + .5) / row.length, y); });
+        y += 15;
+      }
+      gy = (y + bottom - 6) / 2;
+      gsize = Math.max(18, Math.min(38, bottom - y - 22));
     }
-    const top = y, bottom = 148;
-    const gy = (top + bottom - 6) / 2, gsize = Math.max(18, Math.min(38, bottom - top - 22));
     const cw = Math.min(W - 26, gsize + 30), ch = gsize + 12;
     const g = { x: W / 2, y: gy, cw, ch };
+    // rune 'cartouche' (dark pill / hexagon), 'engraved' (cut into the metal like the motif, lit when on)
+    // or 'clearing' (the motif stops round an engraved ring; the rune lights on bare metal)
+    const runeMode = opts.rune || api.rune;
 
     const body = style === 'thrash'
       ? `<rect x="0" y="5" width="${W}" height="${H}" rx="${rx}" fill="${c.base}"/>
@@ -595,9 +610,20 @@ ${[[9, H - 36], [W - 9, H - 36], [9, H - 10], [W - 9, H - 10]].map(([x, yy]) => 
     const cart = style === 'thrash'
       ? `<path d="M${f1(g.x - cw / 2)} ${f1(gy)}L${f1(g.x - cw / 2 + ch * .45)} ${f1(gy - ch / 2)}H${f1(g.x + cw / 2 - ch * .45)}L${f1(g.x + cw / 2)} ${f1(gy)}L${f1(g.x + cw / 2 - ch * .45)} ${f1(gy + ch / 2)}H${f1(g.x - cw / 2 + ch * .45)}Z" fill="#0b0707" stroke="#000" stroke-width="2"/>`
       : `<path d="${pill(g.x - cw / 2, gy - ch / 2, cw, ch)}" fill="${mix(c.hue, '#000', .88)}" stroke="${c.rim}" stroke-opacity=".6" stroke-width="1"/>`;
-    const rune = cart + (on
-      ? glyphAt(spec.glyph, g.x, gy, gsize, c.light, 2.8, 'filter="url(#gp-glow)" opacity=".95"') + glyphAt(spec.glyph, g.x, gy, gsize, mix(c.light, '#fff', .75), 1.3)
-      : glyphAt(spec.glyph, g.x, gy, gsize, mix(c.hue, '#000', .45), 1.8));
+    const lit = glyphAt(spec.glyph, g.x, gy, gsize, c.light, 2.8, 'filter="url(#gp-glow)" opacity=".95"') + glyphAt(spec.glyph, g.x, gy, gsize, mix(c.light, '#fff', .75), 1.3);
+    // the glyph cut into the metal: a dark groove and its light edge, as the motif's lines
+    const cut = style === 'thrash'
+      ? glyphAt(spec.glyph, g.x, gy, gsize, '#000', 3.4, 'opacity=".85"') + glyphAt(spec.glyph, g.x, gy, gsize, on ? mix(c.light, '#fff', .3) : '#ffd400', 1.5, on ? '' : 'opacity=".55"')
+      : glyphAt(spec.glyph, g.x + .5, gy + .5, gsize, c.engraveLight, 1.0, 'opacity=".75"') + glyphAt(spec.glyph, g.x, gy, gsize, c.engraveDark, 1.9, 'opacity=".75"');
+    const ringR = ch / 2 + 5;
+    const ring = style === 'thrash'
+      ? `<circle cx="${g.x}" cy="${f1(gy)}" r="${f1(ringR)}" fill="none" stroke="#000" stroke-width="3.4"/><circle cx="${g.x}" cy="${f1(gy)}" r="${f1(ringR)}" fill="none" stroke="#ffd400" stroke-width="1.5"/>`
+      : `<circle cx="${g.x}" cy="${f1(gy)}" r="${f1(ringR)}" fill="none" stroke="${c.engraveDark}" stroke-width="1.6" opacity=".6"/><circle cx="${g.x + .5}" cy="${f1(gy + .5)}" r="${f1(ringR)}" fill="none" stroke="${c.engraveLight}" stroke-width=".6" opacity=".7"/>`;
+    const rune = runeMode === 'engraved' ? cut + (on ? lit : '')
+      : runeMode === 'clearing' ? ring + cut + (on ? lit : '')
+      : cart + (on ? lit : glyphAt(spec.glyph, g.x, gy, gsize, mix(c.hue, '#000', .45), 1.8));
+    const clearMask = runeMode === 'clearing'
+      ? `<mask id="${id}-m"><rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" fill="#fff"/><circle cx="${g.x}" cy="${f1(gy)}" r="${f1(ringR + 4)}" fill="#000"/></mask>` : '';
 
     const name = spec.name.toUpperCase(), fs = name.length > 10 ? 10 : name.length > 7 ? 12 : 14;
     const nameSvg = style === 'thrash'
@@ -612,12 +638,13 @@ ${[[9, H - 36], [W - 9, H - 36], [9, H - 10], [W - 9, H - 10]].map(([x, yy]) => 
   <linearGradient id="${id}-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.top}"/><stop offset=".48" stop-color="${c.hue}"/><stop offset="1" stop-color="${c.bottom}"/></linearGradient>
   <linearGradient id="${id}-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.faceTop}"/><stop offset="1" stop-color="${c.faceBottom}"/></linearGradient>
   <clipPath id="${id}-c"><rect x="${style === 'thrash' ? 0 : 4}" y="${style === 'thrash' ? 0 : 4}" width="${style === 'thrash' ? W : W - 8}" height="${style === 'thrash' ? H : H - 8}" rx="${style === 'thrash' ? rx : rx - 3}"/></clipPath>
+  ${clearMask}
 </defs>
 <g filter="url(#gp-shadow)">
   ${jacks(W, 40)}
   ${body}
 </g>
-<g clip-path="url(#${id}-c)">${motifSvg(MOTIF[spec.crate], style, W, H, g, c)}</g>
+<g clip-path="url(#${id}-c)"><g${clearMask ? ` mask="url(#${id}-m)"` : ''}>${motifSvg(MOTIF[spec.crate], style, W, H, g, c)}</g></g>
 ${finish}
 ${svg}
 ${rune}
@@ -1154,6 +1181,7 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners },
+    layout: 'fixed', rune: 'engraved',
     style: 'auto', STYLES: ['auto'].concat(METAL_STYLES, 'blackwork', 'clay'), MOTIF, METAL_HUE, FAMILY_FINISH, CRATE_FINISH, finishFor,
     setStyle(s) { if (this.STYLES.includes(s)) this.style = s; return this.style; },
   };

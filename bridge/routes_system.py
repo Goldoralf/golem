@@ -1802,13 +1802,29 @@ def apply_perf(on):
         return False, str(e)
 
 
+def wants_boost(mode):
+    """(boost voulu, raison). Le boost SUIT LE MODE (2026-09-08 : Gig et Show l'allument) — ET LE MOTEUR : tant que le
+    Golem Engine tourne, il est allumé quel que soit le mode (2026-11-13, le mainteneur). Mesuré : en économie
+    (powersave, 0,67 GHz) le Golem Engine montait à 80 % de charge DSP et décrochait ; en performance, 31 %
+    (docs/ardour-plan.md). Sous REAPER, la règle du mode seule."""
+    from . import modes as _modes
+    if _modes.perf_boost(mode):
+        return True, f"mode « {(mode or {}).get('name')} »"
+    try:
+        from . import engine as _engine
+        if getattr(_engine.get(), "id", None) == "ardour":
+            return True, "Golem Engine"
+    except Exception:
+        pass
+    return False, f"mode « {(mode or {}).get('name')} »"
+
+
 def apply_perf_for_mode(mode, why=""):
-    """Le boost SUIT LE MODE (2026-09-08) : Gig et Show l'allument, les autres l'éteignent.
-    Jamais fatal — sans règle sudo, on le DIT une fois par bascule, et le bouton ⚡ reste là."""
+    """Le boost suit le mode et le moteur (wants_boost) : appelé au démarrage, à chaque bascule de mode et à chaque
+    bascule de moteur. Jamais fatal — sans règle sudo, on le DIT une fois par bascule, et le bouton ⚡ reste là."""
     if sys.platform not in ("linux", "win32"):
         return None
-    from . import modes as _modes
-    want = _modes.perf_boost(mode)
+    want, reason = wants_boost(mode)
     gov = _cpu_governor()
     if gov is None:
         return None                                    # pas de cpufreq (VM) : rien à faire
@@ -1816,9 +1832,9 @@ def apply_perf_for_mode(mode, why=""):
         return True                                    # déjà dans l'état voulu : pas de sudo pour rien
     ok, out = apply_perf(want)
     if ok:
-        log.info(f"boost CPU {'ON' if want else 'OFF'} — mode « {(mode or {}).get('name')} »{why}")
+        log.info(f"boost CPU {'ON' if want else 'OFF'} — {reason}{why}")
     else:
-        log.warning(f"boost CPU {'ON' if want else 'OFF'} NON appliqué (mode « {(mode or {}).get('name')} ») : {out or PERF_HINT}")
+        log.warning(f"boost CPU {'ON' if want else 'OFF'} NON appliqué ({reason}) : {out or PERF_HINT}")
     return ok
 
 

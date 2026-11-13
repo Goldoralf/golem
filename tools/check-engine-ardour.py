@@ -203,9 +203,11 @@ def rig_bench(eng, check, wait, acked):
           len(mins) == 2 and any("/lane-a/" in c for c in mins) and any("/lane-b/" in c for c in mins), str(mins))
     check("le merge sort sur 1 et 2", sorted(c.rsplit("_", 1)[-1] for c in merge.get("output") or []) == ["1", "2"],
           str(merge.get("output")))
-    check("merge à -3 dB", abs((merge.get("gain_db") or 0) + 3) < 0.05, str(merge.get("gain_db")))
-    check("limiteur de sécurité sur la route qui sort, et seulement elle", merge.get("safety") is True
-          and not any(x.get("safety") for x in (pre, la, lb)))
+    # le gain du merge est son TRIM depuis le 2026-11-12 (le fader porte le niveau de la scène)
+    check("merge à -3 dB (trim)", abs((merge.get("trim_db") or 0) + 3) < 0.05,
+          f"trim {merge.get('trim_db')}, fader {merge.get('gain_db')}")
+    check("limiteur de sécurité COMPILÉ (gfx-limiter) sur la route qui sort, et seulement elle",
+          merge.get("safety") == "gfx-limiter" and not any(x.get("safety") for x in (pre, la, lb)), str(merge.get("safety")))
     blk = d.get("blocks") or {}
     check("scène A : branche B muette, A ouverte", lb.get("mute") is True and la.get("mute") is False)
     check("scène A : delay coupé, NAM A actif", (blk.get("dly") or {}).get("enabled") is False
@@ -219,6 +221,22 @@ def rig_bench(eng, check, wait, acked):
     check("la clé du gate golem-fx aussi", bool(gkey) and all(c.endswith("capture_1") for c in gkey), str(gkey))
     check("échelle du catalogue (Feedback 40 % -> 0,4)",
           abs(((blk.get("dly") or {}).get("params") or {}).get("Feedback", 0) - 0.4) < 0.001)
+
+    # le COÛT du limiteur de sécurité (2026-11-13 : le Lua prenait 323 µs par cycle de 4 ms sur le rack)
+    time.sleep(2)
+    p = os.path.join(C.PRESETS_DIR, ".engine-dspstats.json")
+    if os.path.exists(p):
+        os.remove(p)
+    s = eng.send({"action": "dspstats"})
+    st = wait(lambda: acked(s) and read(".engine-dspstats.json"), 5) or {}
+    lim = [x for r in st.get("routes") or [] if r.get("name") == "GoleM:bench#merge"
+           for x in r.get("procs") or [] if "Limiter" in (x.get("name") or "") or x.get("name") == "golem Safety"]
+    # par ÉCHANTILLON : le banc tourne à 1024, le rack à 192 (le Lua : 323 µs / 192 = 1,7 µs par échantillon)
+    buf = st.get("buffer") or 1024
+    per = (lim[-1].get("avg", 1e9) / buf) if lim else 1e9
+    check("limiteur de sécurité peu coûteux (< 1 µs par échantillon ; le Lua : 1,7)", per < 1.0,
+          f"{lim[-1].get('name')} : {per:.2f} µs/échantillon (moyenne {lim[-1].get('avg'):.0f} µs sur {buf})"
+          if lim else json.dumps(st)[:200])
 
     put("B")
     s = eng.send({"action": "scene_apply", "preset": BENCH_ID, "scene": "B"})

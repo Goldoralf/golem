@@ -131,7 +131,7 @@ nothing would play in this mode"); a second tap within three seconds applies it.
 | `perfrec_mode` | `manual` (REC button on /live) \| `auto` (records as soon as /live is open) | `app/page-live.js`, `app/live-stageboard.js` |
 | `rec_scope` | `song` (default) \| `set` (§4.4) | `rec_scope()` |
 | `take_kind` | what a take recorded in this mode says about itself (§4.5) | `take_kind()` |
-| `perf_boost` | CPU governor `performance` while in this mode | `routes_system.apply_perf_for_mode()` |
+| `perf_boost` | CPU governor `performance` while in this mode — and always while the Golem Engine runs, whatever the mode (2026-11-13) | `routes_system.wants_boost()` / `apply_perf_for_mode()` |
 | `foot_list` | default setlist/bank put on the foot when entering the mode | `apply_foot_list()` |
 | `card` | declared sound card (`"hw:X"`); absent = any card (§4.6) | `card_of()`, `for_card()` |
 | `band` | declared space for takes; absent = keep the current space | `band_of()` |

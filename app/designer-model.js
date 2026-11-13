@@ -231,12 +231,15 @@ export const CONTENT_PARAM = {};
 // les types que le moteur ACTIF joue par un plugin golem-fx (/api/effects `golem_fx` ; vide sous REAPER) : fond
 // « terre cuite » dans le Designer, colonne golem FX du tiroir, pédale golem-fx dans la vue pédalier
 export const GOLEM_FX = new Set();
+// le crate golem-fx de chaque type de la table (/api/effects `gfx_crates`) : la pédale qu'il dessine
+export const GFX_CRATES = {};
 
 export function hydrateBlockMeta(effects, catalog) {
   // `catalog` = le document effects.json entier (pedals/amps/cabs nommés) quand l'appelant l'a : les
   // archétypes nommés servent à la pile de /live (« Big Muff » plutôt que le titre de la capture)
   for (const a of [...((catalog || {}).pedals || []), ...((catalog || {}).amps || []), ...((catalog || {}).cabs || [])]) if (a && a.id && a.name) ARCH_NAME[a.id] = a.name;
   if (catalog && Array.isArray(catalog.golem_fx)) { GOLEM_FX.clear(); for (const t of catalog.golem_fx) GOLEM_FX.add(t); }
+  if (catalog && catalog.gfx_crates) Object.assign(GFX_CRATES, catalog.gfx_crates);
   for (const b of (effects || [])) {
     if (b && b.type) {
       // ⚠ `glyph` PUIS `icon` : le catalogue porte les deux, et tous les blocs n'ont pas de

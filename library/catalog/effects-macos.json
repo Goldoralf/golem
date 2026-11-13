@@ -221,6 +221,9 @@
   },
   "shem": {
    "unsupported": "golem-fx only (catalogue v43): golem-fx has no macOS build yet, and no original plugin plays this block"
+  },
+  "golem-double": {
+   "unsupported": "golem-fx only (catalogue v44): golem-fx has no macOS build yet, and no original plugin plays this block"
   }
  },
  "unmapped": {

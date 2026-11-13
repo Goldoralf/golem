@@ -168,6 +168,11 @@ export const GLYPHS = {
 "uni": "⊓",
 "label": "Noise gate"
 },
+"golem-double": {
+"svg": "<path d='M3 8.5c1.5-2.5 3-2.5 4.5 0s3 2.5 4.5 0 3-2.5 4.5 0 3 2.5 4.5 0'/><path d='M3 16c3-4 6-4 9 0s6 4 9 0' opacity='.6'/>",
+"uni": "♫",
+"label": "Golem (vocal octave doubler)"
+},
 "granular": {
 "svg": "<circle cx='12' cy='12' r='2.2'/><circle cx='5' cy='8' r='1.2' fill='currentColor' stroke='none'/><circle cx='19' cy='7' r='1.6'/><circle cx='17.5' cy='17' r='1.1' fill='currentColor' stroke='none'/><circle cx='6.5' cy='17.5' r='1.7'/><circle cx='12' cy='4' r='.9' fill='currentColor' stroke='none'/><circle cx='21' cy='12.5' r='.8' fill='currentColor' stroke='none'/><circle cx='12' cy='20.5' r='.8' fill='currentColor' stroke='none'/><circle cx='3' cy='13' r='.8' fill='currentColor' stroke='none'/>",
 "uni": "❄",

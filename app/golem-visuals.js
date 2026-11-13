@@ -4,7 +4,7 @@
 // simples qui posent window.GolemPedals / window.GolemStage et rendent des CHAÎNES SVG : on les charge une fois, à la
 // demande (le tiroir en mode Pedals, la vue pédalier, /live), avec leurs polices (OFL, embarquées : le rack joue hors
 // ligne) et leurs définitions communes (dégradés, textures, ids `gp-`), posées une fois dans la page.
-import { GOLEM_FX } from './designer-model.js';
+import { GOLEM_FX, GFX_CRATES, NAME, SHORT, BLOCK_COLOR } from './designer-model.js';
 
 const BASE = 'vendor/golem-visuals/';
 let loading = null;
@@ -35,7 +35,7 @@ export function loadVisuals(catalog) {
       document.body.appendChild(d);
     }
     patchRenderers();
-    if (pendingCat) useCatalog(pendingCat);
+    useCatalog(pendingCat || {});                       // toujours : les blocs que golem-fx ne nomme pas encore
     return true;
   })().catch(e => { loading = null; throw e; });
   return loading;
@@ -51,8 +51,13 @@ function useCatalog(cat) {
   // le catalogue du rack a gagné depuis (met / emet / shem, v43) est rattaché à sa face par la liste `blocks` de la face
   const have = new Set((V.blocks || []).map(b => b.type));
   const byType = new Map((cat.effects || []).map(e => [e.type, e]));
-  for (const [crate, face] of Object.entries(V.gfx || {})) for (const t of (face.blocks || [])) {
-    const e = byType.get(t);
+  // et par le CRATE que le rack sait (/api/effects `gfx_crates`) : un type que golem-fx nomme autrement (golem-double)
+  const pairs = [];
+  for (const [crate, face] of Object.entries(V.gfx || {})) for (const t of (face.blocks || [])) pairs.push([crate, face, t]);
+  for (const [t, crate] of Object.entries(cat.gfx_crates || GFX_CRATES)) if ((V.gfx || {})[crate]) pairs.push([crate, V.gfx[crate], t]);
+  for (const [crate, face, t] of pairs) {
+    // le bloc tel que le catalogue du rack le nomme ; /live n'a pas le catalogue sous la main : les noms hydratés
+    const e = byType.get(t) || (NAME[t] ? { name: NAME[t], short: SHORT[t], color: BLOCK_COLOR[t], params: [] } : null);
     if (have.has(t) || !e) continue;
     _pedals.clear(); _stages.clear();                   // un dessin déjà fait l'a été sans sa face
     V.blocks = [...(V.blocks || []), { type: t, name: e.name, short: e.short, category: e.category || face.category,

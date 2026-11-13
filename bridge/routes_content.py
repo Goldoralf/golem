@@ -89,6 +89,11 @@ def get_effects():
     # la face avant, puis les groupes experts — fondus avec ceux du catalogue (bridge/golem_fx.py)
     from . import golem_fx as _gfx
     gset = set(data["golem_fx"])
+    # le CRATE golem-fx de chaque type de la table : la pédale à dessiner, quel que soit le nom que golem-fx donne au
+    # bloc (golem-double = son « golem » ; app/golem-visuals.js)
+    plugins, table = _gfx._load()
+    data["gfx_crates"] = {t: plugins[s["vst3"]]["crate"] for t, s in table.items()
+                          if isinstance(s, dict) and s.get("golem_fx") and s.get("vst3") in plugins}
     for e in data.get("effects", []):
         if e.get("type") in gset:
             params, sheet = _gfx.merged(e["type"], e.get("params"))

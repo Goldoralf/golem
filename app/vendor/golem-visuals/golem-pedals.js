@@ -5,7 +5,7 @@
 //                       in the family's colour, the motif engraved) or "thrash" (gloss lacquer, diamond
 //                       plate, the motif in yellow lined in black). By default ("auto") the finish
 //                       follows the family (finishFor); GolemPedals.setStyle or opts.style force one.
-//                       gfx-met, gfx-emet and gfx-shem have their own "blackwork" finish: black
+//                       gfx-met, gfx-emet, gfx-shem and gfx-golem have their own "blackwork" finish: black
 //                       lacquer, white engraving, a skull whose eyes light when the pedal is on. Each effect has a motif saying what it does (MOTIF) and its glyph lit
 //                       as a rune when on. "clay", the first prototype, stays available.
 //   nam-*    "specimen" NAM captures: a steel pedal with a glass window (the captured circuit), and the
@@ -355,14 +355,14 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-vibrato': 'waves', 'gfx-chorus': 'waves', 'gfx-flanger': 'jet', 'gfx-phaser': 'spiral', 'gfx-rotary': 'swirl',
     'gfx-killswitch': 'bolt', 'gfx-delay': 'echo', 'gfx-reverb': 'rays', 'gfx-shimmer': 'stars', 'gfx-octaver': 'diamonds',
     'gfx-pitch': 'stairs', 'gfx-pitch-classic': 'stairs', 'gfx-detune': 'stairs', 'gfx-gapmeter': 'ticks',
-    'gfx-met': 'barbed', 'gfx-emet': 'flames', 'gfx-shem': 'chevrons',
+    'gfx-met': 'barbed', 'gfx-emet': 'flames', 'gfx-shem': 'chevrons', 'gfx-golem': 'waves',
   };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
   const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash' };
-  // the high-gain companions (Fortin's role) have their own black finish
-  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork' };
+  // the high-gain companions (Fortin's role) and the vocal doubler have their own black finish
+  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork', 'gfx-golem': 'blackwork' };
   const finishFor = spec => CRATE_FINISH[spec.crate] || FAMILY_FINISH[spec.category] || 'anodized';
   let metalCount = 0;
   const f1 = v => (+v).toFixed(1);
@@ -663,7 +663,7 @@ ${parts}
   // is on: the only colour. One discreet motif per pedal. Drawn on a 200 × 330 grid, scaled to the
   // stomp's 112-wide body so it stands with the other golem-fx pedals.
   const BW_INK = '#ecebe6';
-  const BW_EYES = { 'gfx-met': ['#22ff66', '#b9ffd0'], 'gfx-emet': ['#ff2a1a', '#ffd0c8'], 'gfx-shem': ['#ffaa00', '#fff0cc'] };
+  const BW_EYES = { 'gfx-met': ['#22ff66', '#b9ffd0'], 'gfx-emet': ['#ff2a1a', '#ffd0c8'], 'gfx-shem': ['#ffaa00', '#fff0cc'], 'gfx-golem': ['#a259ff', '#e9dcff'] };
   const BW_MOTIF = {
     'gfx-met': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-width="1">
   <path d="M22 172 C40 168 52 176 70 172 M130 172 C148 168 160 176 178 172"/><path d="M22 175 C40 179 52 171 70 175 M130 175 C148 179 160 171 178 175"/>
@@ -672,6 +672,9 @@ ${parts}
   <path d="M62 168 C54 152 62 140 58 124 C68 134 72 142 72 150 C74 136 80 128 78 112 C88 124 90 134 88 144"/>
   <path d="M138 168 C146 152 138 140 142 124 C132 134 128 142 128 150 C126 136 120 128 122 112 C112 124 110 134 112 144"/>
   <path d="M100 126 C96 116 102 108 100 98 C106 106 106 114 104 122"/></g>`,
+    'gfx-golem': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-width="1.1">
+  <path d="M58 150 A44 44 0 0 0 58 196 M48 142 A56 56 0 0 0 48 204 M38 134 A68 68 0 0 0 38 212"/>
+  <path d="M142 150 A44 44 0 0 1 142 196 M152 142 A56 56 0 0 1 152 204 M162 134 A68 68 0 0 1 162 212"/></g>`,
     'gfx-shem': `<g fill="none" stroke="${BW_INK}" stroke-linecap="round" stroke-width=".9">
   <path d="M100 168 L30 128 M100 168 L36 112 M100 168 L48 100 M100 168 L170 128 M100 168 L164 112 M100 168 L152 100"/></g>`,
   };
@@ -680,6 +683,7 @@ ${parts}
     'gfx-met': [[100, 70, 23], [40, 40, 10], [160, 40, 10]],
     'gfx-emet': [[50, 46, 16], [100, 66, 13], [150, 46, 16]],
     'gfx-shem': [[100, 62, 23]],
+    'gfx-golem': [[52, 50, 16], [148, 50, 16], [72, 96, 10], [128, 96, 10]],
   };
   const BW_SKULL = `<g class="gp-skull">
   <path d="M100 126 C78 126 66 142 66 162 C66 176 72 184 76 188 L76 198 C76 202 80 204 84 204 L86 212 L114 212 L116 204 C120 204 124 202 124 198 L124 188 C128 184 134 176 134 162 C134 142 122 126 100 126Z" fill="${BW_INK}" stroke="#000" stroke-width="1.2"/>

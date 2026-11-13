@@ -62,6 +62,12 @@ Their catalogue params are the front panel under golem-fx's ids; the expert grou
 golem-fx's visuals list the blocks of their catalogue snapshot: `app/golem-visuals.js` attaches a type the rack's
 catalogue gained since to its face (`face.blocks`).
 
+`golem-double` (Golem Double, pitch, **voice lanes only** — catalogue v44, golem-fx 87c55ea) is the same kind: a live
+vocal doubler (a double an octave below, formants kept or moved; the dry voice has no latency). The rack calls it `golem-double`,
+not `golem`: the product's name is not a block type (`golem:golem` in the FX names, the drawer search, the AI's
+vocabulary); golem-fx aligned its face, glyph and snapshot (56616d1). `/api/effects` also gives every golem-fx type its
+crate (`gfx_crates`), so the app draws the right pedal even for a type golem-fx's snapshot does not list yet. Put a de-esser and a gate before it.
+
 Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
 

@@ -256,6 +256,25 @@ def _expand_pitch_harmony(blocks, sk):
             pm["scale"] = "Minor" if minor else "Major"
 
 
+def _drop_engine_only(blocks):
+    """Un potard que seul le Golem Engine a (`engine_only: "golem"` au catalogue : la polarité du flanger de golem-fx)
+    est retiré sous REAPER, où le plugin ne l'a pas — golem_rig loguerait « non résolu » à chaque rappel."""
+    try:
+        from . import engine
+        if getattr(engine.get(), "id", None) == "ardour":
+            return
+    except Exception:
+        pass
+    defs = _fx_defs()
+    for b in blocks or []:
+        pm = b.get("params")
+        if not isinstance(pm, dict):
+            continue
+        for pid, d in (defs.get(b.get("type")) or {}).items():
+            if d.get("engine_only") == "golem":
+                pm.pop(pid, None)
+
+
 def _safe(name):
     return "".join(c if c.isalnum() else "_" for c in name)
 
@@ -542,6 +561,7 @@ def compile_preset(preset: dict) -> str:
             _fill_compile_defaults(t["blocks"])            # défauts du catalogue pour les blocs `defaults: compile`
             _expand_stretch(t["blocks"])                   # Spread/Compress -> leurs interrupteurs de module
             _clamp_params(t["blocks"])                     # filet : jamais de param hors plage au rig
+            _drop_engine_only(t["blocks"])                 # potards du seul Golem Engine : retirés sous REAPER
             if COMPILE_TARGET in ("win32", "darwin"):
                 native_core = _native_core_for(t["blocks"], comps, path_has_cab)
                 if native_core:

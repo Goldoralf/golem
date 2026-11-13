@@ -42,7 +42,7 @@ NULL_MAX = -50.0
 # blocs dont la sortie dépend d'une PHASE libre (LFO lancé à la création du plugin, échantillonneur, grains, réverbe
 # modulée) : leur nul ne prouve rien (mesuré 2026-11-12 : trémolo, même fréquence, même profondeur, phase décalée) ->
 # critères de §4 pour les sons comparables : niveau ≤ 0,5 dB, chaque tiers d'octave ≤ 1 dB
-MODULATED = {"chorus", "flanger", "phaser", "tremolo", "rotary", "vibrato", "ringmod", "bitcrusher", "granular",
+MODULATED = {"chorus", "flanger-js", "phaser", "tremolo", "rotary", "vibrato", "ringmod", "bitcrusher", "granular",
              "reverb", "reverb-room", "reverb-shimmer"}
 LEVEL_MAX, BAND_MAX = 0.5, 1.0
 INERT_DB = -60.0             # sortie REAPER à moins de -60 dB de la DI : le bloc ne fait rien avec ces valeurs

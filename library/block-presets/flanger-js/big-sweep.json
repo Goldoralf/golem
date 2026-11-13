@@ -1,11 +1,13 @@
 {
  "name": "Big Sweep",
- "type": "flanger",
+ "type": "flanger-js",
  "inst": "guitar",
  "factory": true,
  "params": {
   "rate": 0.08,
-  "depth": 5,
-  "feedback": 0.55
+  "length": 5.5,
+  "feedback": -5.2,
+  "wet": -6.0,
+  "dry": 0.0
  }
 }

@@ -1,11 +1,13 @@
 {
  "name": "Subtle swirl",
- "type": "flanger",
+ "type": "flanger-js",
  "inst": "any",
  "factory": true,
  "params": {
   "rate": 0.4,
-  "depth": 1.5,
-  "feedback": 0.25
+  "length": 2.0,
+  "feedback": -12.0,
+  "wet": -6.0,
+  "dry": 0.0
  }
 }

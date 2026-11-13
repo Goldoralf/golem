@@ -1,11 +1,13 @@
 {
  "name": "Standard",
- "type": "flanger",
+ "type": "flanger-js",
  "factory": true,
  "params": {
   "rate": 0.3,
-  "depth": 2,
-  "feedback": 0.6
+  "length": 2.5,
+  "feedback": -4.4,
+  "wet": -6.0,
+  "dry": 0.0
  },
  "default": true,
  "inst": "any"

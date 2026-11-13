@@ -767,6 +767,17 @@ commit; the measured models below stay as reference.)
   renames each route (`golem-gone-N`) before removing it: the port names are free at once. 12/12 rebuilds after the
   fix, against an exact FAIL/ok alternation before (with or without a golem-fx plugin).
 
+**2026-11-13 — one flanger (catalog v40).** golem had two flanger blocks, `flanger` (Calf: rate, depth, linear
+feedback) and `flanger-js` (REAPER's JSFX: length, feedback dB, wet, dry, rate); golem-fx played both with one engine
+through two VST3s. The maintainer's call: one block. `flanger` is retired from the catalog, the OS overrides
+(`golem_flanger.jsfx`, Windows/macOS) and the engine table; `flanger-js` is now named "Flanger" and its feedback goes
+up to −1 dB (the engine's ceiling; REAPER's JSFX accepts +6). A document that still carries `flanger` is rewritten
+on load (`option_renames.RETIRED`) with gfx-flanger-calf's own translation: length = 0.5 + depth ms, feedback =
+|f| in dB, its sign in `fb_polarity` (Normal/Inverted, gfx-flanger's own control), wet −6 dB, dry 0. `fb_polarity`
+is `engine_only: "golem"`: the compiler drops it under REAPER, whose JSFX has none (the sign is lost there only). The
+four block presets moved to `flanger-js`.
+No factory patch used the Calf block. golem-fx retires GoleM FX Flanger Calf.
+
 ## 8. Risks
 
 - **Scene latency.** REAPER's scene switch is tuned (union materialization, ≤ 40 ms). Ardour's bypass may

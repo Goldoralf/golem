@@ -19,7 +19,7 @@ BLOCKS = {"delay-tape": ("golem_tapedelay", "td_"), "eq-para": ("golem_eq", "eq_
           "reverb-shimmer": ("golem_shimmer", "sh_"), "grit": ("golem_grit", "gr_"),
           "wah": ("golem_wah", "wh_"), "wah-color": ("golem_colwah", "cw_"), "autowah": ("golem_autowah", "aw_"),
           "chorus": ("golem_chorus", "ch_"), "tremolo": ("golem_tremolo", "tr_"), "phaser": ("golem_phaser", "ph_"),
-          "octaver": ("golem_octaver", "oc_"), "flanger": ("golem_flanger", "fl_"), "rotary": ("golem_rotary", "ro_"),
+          "octaver": ("golem_octaver", "oc_"), "rotary": ("golem_rotary", "ro_"),
           "limiter": ("golem_limiter", "li_"), "vibrato": ("golem_vibrato", "vb_"), "eq-graphic": ("golem_geq", "ge_"),
           "delay-echo": ("golem_echocat", "ec_")}
 EFFECTS = {e["type"]: e for e in json.load(open(os.path.join(ROOT, "library", "catalog", "effects.json"),
@@ -135,7 +135,6 @@ def _patch():
         {"id": "trem", "type": "tremolo", "params": {"rate": 5, "depth": 0.6, "wave": "Triangle"}},
         {"id": "phs", "type": "phaser", "params": {"rate": 0.4, "depth": 4000, "stages": "8", "feedback": 0.3}},
         {"id": "oct", "type": "octaver", "params": {"direct": 1, "octave1": 0.6, "octave2": 0}},
-        {"id": "flg", "type": "flanger", "params": {"rate": 0.3, "depth": 2, "feedback": 0.6}},
         {"id": "rot", "type": "rotary", "params": {"speed": "fast", "mic": 70, "spacing": 50, "depth": 60}},
         {"id": "lim", "type": "limiter", "params": {"threshold": -6, "release": 80}},
         {"id": "vib", "type": "vibrato", "params": {"depth": 0.4, "speed": 5}},
@@ -144,8 +143,13 @@ def _patch():
     return p
 
 
-def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_path):
+def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_path, monkeypatch):
     pytest.importorskip("lupa")
+    # le bridge AUSSI compile comme sous Windows : sous Linux, delay-echo (GxEchoCat) est en quarantaine et le bloc
+    # tombait avant le REAPER factice — le test passait ou non selon le cache de quarantaine laissé par un autre test
+    from bridge import rig
+    monkeypatch.setattr(rig, "_platform", lambda: "win32")
+    monkeypatch.setattr(rig, "_QUARANTINE", None)
     from tests.test_rig_lua import Lab
     lab = Lab(tmp_path, os_name="Win64")
     for btype, (stem, _) in BLOCKS.items():                            # le REAPER factice connaît leurs vrais sliders
@@ -157,7 +161,7 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
     # les FX vivants du REAPER factice (le snapshot ne garde pas les paramètres)
     fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
     assert {"golem:peq", "golem:tape", "golem:shim", "golem:grit", "golem:cry", "golem:mwah", "golem:awah",
-            "golem:cho", "golem:trem", "golem:phs", "golem:oct", "golem:flg", "golem:rot",
+            "golem:cho", "golem:trem", "golem:phs", "golem:oct", "golem:rot",
             "golem:lim", "golem:vib", "golem:geq", "golem:echo"} <= set(fx), lab.log()
     assert fx["golem:peq"].name == "JS:golem/golem_eq" and fx["golem:tape"].name == "JS:golem/golem_tapedelay"
 
@@ -188,7 +192,6 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
     assert (val("golem:phs", "Mod rate"), val("golem:phs", "Mod depth"), val("golem:phs", "# Stages"), val("golem:phs", "Feedback")) == (pytest.approx(0.4), 4000, 8, pytest.approx(0.3))
     # octaver / flanger / rotary : valeurs brutes ; les % du rotary s'ecrivent 0..1 (scale 0.01)
     assert (val("golem:oct", "DIRECT"), val("golem:oct", "OCTAVE1"), val("golem:oct", "OCTAVE2")) == (1, pytest.approx(0.6), 0)
-    assert (val("golem:flg", "Mod rate"), val("golem:flg", "Mod depth"), val("golem:flg", "Feedback")) == (pytest.approx(0.3), 2, pytest.approx(0.6))
     assert (val("golem:rot", "Speed Mode"), val("golem:rot", "Mic Distance"), val("golem:rot", "Tap Spacing"), val("golem:rot", "FM Depth")) == (2, pytest.approx(0.7), pytest.approx(0.5), pytest.approx(0.6))
     assert (val("golem:lim", "Threshold"), val("golem:lim", "Release Time")) == (-6, 80)
     assert (val("golem:vib", "Depth"), val("golem:vib", "Speed")) == (pytest.approx(0.4), 5)

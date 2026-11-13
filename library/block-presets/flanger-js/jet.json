@@ -1,0 +1,13 @@
+{
+ "name": "Jet",
+ "type": "flanger-js",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "rate": 0.15,
+  "length": 6.0,
+  "feedback": -1.4,
+  "wet": -6.0,
+  "dry": 0.0
+ }
+}

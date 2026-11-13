@@ -149,10 +149,6 @@
    "plugin": "JS:golem/golem_chorus",
    "note": "2026-10-22 : Calf Multi Chorus n'existe pas ici ; golem_chorus.jsfx (maison, MIT) reprend ses 12 paramètres (noms, bornes, défauts) et son architecture publique (N voix sur une ligne à retard, Overlap, Stereo Phase, deux passe-bande en sortie) — code à nous, son proche, pas identique."
   },
-  "flanger": {
-   "plugin": "JS:golem/golem_flanger",
-   "note": "2026-10-22 : Calf Flanger n'existe pas ici ; golem_flanger.jsfx (maison, MIT) reprend ses paramètres (noms, bornes, défauts) et son architecture (ligne à retard modulée, retour dans la ligne, phase stéréo) — code à nous."
-  },
   "phaser": {
    "plugin": "JS:golem/golem_phaser",
    "note": "2026-10-22 : Calf Phaser n'existe pas ici ; golem_phaser.jsfx (maison, MIT) reprend ses paramètres (Center Freq, Mod depth en cents, Mod rate, Feedback, # Stages, Stereo phase, Amount, Dry Amount) et son architecture publique (passe-tout d'ordre 1 en cascade, LFO triangle, retour) — code à nous."

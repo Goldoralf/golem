@@ -72,3 +72,30 @@ def test_plus_aucun_objet_livre_ne_porte_une_ancienne_etiquette():
             glob.glob(os.path.join(ROOT, "library", "block-presets", "*", "*.json")):
         doc = json.load(open(f, encoding="utf-8"))
         assert R.apply(doc) == 0, os.path.relpath(f, ROOT)
+
+
+# ── TYPE RETIRÉ (catalogue v40) : le flanger Calf devient le seul flanger, valeurs converties ──
+def test_le_flanger_calf_devient_le_flanger_valeurs_converties():
+    doc = {"lanes": [{"chain": {"pre": [{"id": "fl", "type": "flanger",
+                                         "params": {"rate": 0.15, "depth": 5.5, "feedback": 0.85}}]}}],
+           "scenes": [{"id": "B", "params": {"fl": {"feedback": 0.25}}}]}
+    assert R.apply(doc) >= 1
+    b = doc["lanes"][0]["chain"]["pre"][0]
+    assert b["type"] == "flanger-js"
+    assert b["params"] == {"rate": 0.15, "length": 6.0, "feedback": -1.4, "wet": -6.0, "dry": 0.0}
+    assert doc["scenes"][0]["params"]["fl"]["feedback"] == -12.0
+    before = json.dumps(doc)
+    R.apply(doc)
+    assert json.dumps(doc) == before                    # idempotent
+
+
+def test_le_flanger_retire_n_est_plus_au_catalogue_et_le_flanger_reste():
+    types = {e["type"] for e in json.load(open(R.C.EFFECTS))["effects"]}
+    assert "flanger" not in types and "flanger-js" in types
+    assert set(R.RETIRED).isdisjoint(types)
+
+
+def test_un_feedback_negatif_garde_son_signe_par_la_polarite():
+    doc = [{"id": "f", "type": "flanger", "params": {"rate": 0.3, "depth": 2, "feedback": -0.6}}]
+    R.apply(doc)
+    assert doc[0]["params"]["fb_polarity"] == "Inverted" and doc[0]["params"]["feedback"] == -4.4

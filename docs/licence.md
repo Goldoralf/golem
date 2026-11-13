@@ -63,7 +63,6 @@ Every file below carries `// SPDX-License-Identifier: MIT`:
 | `golem_tremolo.jsfx` | Tremolo, the `tremolo` block on Windows and macOS (Calf Pulsator parameters; own DSP) |
 | `golem_phaser.jsfx` | Phaser, the `phaser` block on Windows and macOS (Calf Phaser parameters; own DSP) |
 | `golem_octaver.jsfx` | Octaver, the `octaver` block on Windows and macOS (Gxoc_2 / Boss OC-2 parameters; own DSP) |
-| `golem_flanger.jsfx` | Flanger, the `flanger` block on Windows and macOS (Calf Flanger parameters; own DSP) |
 | `golem_rotary.jsfx` | Rotary speaker, the `rotary` block on Windows and macOS (Calf Rotary Speaker parameters; own DSP) |
 | `golem_limiter.jsfx` | Look-ahead peak limiter, the `limiter` block on Windows (x42-dpl controls; own DSP) |
 | `golem_vibrato.jsfx` | Pitch vibrato, the `vibrato` block on Windows and macOS (GxTubeVibrato parameters; own DSP) |

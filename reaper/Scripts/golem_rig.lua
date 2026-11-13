@@ -565,7 +565,6 @@ local ADD_ALIAS = {
   delay   = { "ReaDelay" },
   reverb  = { "Dragonfly Hall Reverb", "ReaVerbate" },
   chorus  = { "Calf Multi Chorus" },
-  flanger = { "Calf Flanger" },
   ["chorus-js"] = { "JS: sstillwell/chorus_stereo", "JS: Chorus Stereo [Stillwell]" },
   ["flanger-js"] = { "JS: guitar/flanger", "JS: Flanger" },
   phaser  = { "Calf Phaser" },

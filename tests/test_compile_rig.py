@@ -611,3 +611,15 @@ def test_le_plan_cuit_emporte_la_tonalite_jusqu_a_la_compile():
     assert scene_bake.to_paths_preset(p, "A")["key"] == "Em"            # le `key` du preset passe devant
     p.pop("key")
     assert scene_bake.to_paths_preset(p, "A")["key"] == "Bbm"           # sinon celui du bloc Standard
+
+
+def test_un_potard_du_seul_golem_engine_est_retire_sous_reaper(rigc, monkeypatch):
+    from bridge import engine
+    monkeypatch.setattr(compile_rig, "_FX_DEFS", {"flanger-js": {
+        "rate": {"id": "rate", "min": 0.05, "max": 2},
+        "fb_polarity": {"id": "fb_polarity", "type": "enum", "options": ["Normal", "Inverted"], "engine_only": "golem"}}})
+    fl = {"id": "f", "type": "flanger-js", "params": {"rate": 0.3, "fb_polarity": "Inverted"}}
+    monkeypatch.setattr(engine, "get", lambda: type("E", (), {"id": "reaper"})())
+    assert "fb_polarity" not in _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]
+    monkeypatch.setattr(engine, "get", lambda: type("E", (), {"id": "ardour"})())
+    assert _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]["fb_polarity"] == "Inverted"

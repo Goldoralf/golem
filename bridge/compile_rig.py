@@ -192,6 +192,70 @@ def _expand_pitch_correct(blocks):
             pm[f"m{i:02d}"] = (i in allowed)
 
 
+# ── pitch (gfx-pitch, Golem Engine) : l'harmonie SUIT LA TONALITÉ DU MORCEAU (2026-11-13) ──
+# `song_key` est VIRTUEL (jamais écrit au plugin) : allumé (défaut) et le patch a une tonalité, Key et Scale la
+# prennent — la tonique, et Major / Minor sauf si la gamme choisie à la main est déjà de la bonne famille (un
+# Dorian reste Dorian dans un morceau mineur). Les noms de Key sont ceux de gfx-pitch : une énumération part par
+# son RANG (ardour_plan.table_def).
+_GFX_KEYS = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
+_NOTE_PC = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+_MINOR_SCALES = {"Minor", "Harmonic Minor", "Melodic Minor", "Dorian", "Phrygian", "Minor Pentatonic"}
+_MAJOR_SCALES = {"Major", "Lydian", "Mixolydian", "Major Pentatonic"}
+
+
+def parse_song_key(s):
+    """« Em », « Bb », « F#m », « C minor », « Eb maj », « G♭m » -> (classe de hauteur 0-11, mineur ?) ; None sinon."""
+    import re
+    m = re.match(r"^\s*([A-Ga-g])\s*([#b♯♭]?)\s*(.*)$", str(s or ""))
+    if not m:
+        return None
+    pc = _NOTE_PC[m.group(1).upper()] + {"#": 1, "♯": 1, "b": -1, "♭": -1}.get(m.group(2), 0)
+    rest = m.group(3).strip().lower()
+    minor = rest in ("m", "min", "minor", "-", "mi", "moll") or rest.startswith(("m ", "min ", "minor"))
+    if rest and not minor and rest not in ("maj", "major", "dur"):
+        return None                                    # « Original », « Cmaj7 »… : pas une tonalité
+    return pc % 12, minor
+
+
+def song_key_of(preset):
+    """La tonalité du morceau que ce patch joue : `key` du preset, sinon celle de son bloc Standard (sa grille si
+    « Original »). (classe de hauteur, mineur ?) ou None."""
+    k = parse_song_key(preset.get("key")) if preset.get("key") else None
+    if k:
+        return k
+    try:
+        from . import store
+        blk = next((b for b, _l in store.all_blocks(preset) if isinstance(b, dict) and b.get("type") == "standard"),
+                   None)
+    except Exception:
+        blk = None
+    if not blk:
+        return None
+    pm = blk.get("params") or {}
+    if pm.get("key") and pm["key"] != "Original":
+        return parse_song_key(pm["key"])
+    try:
+        from . import standards
+        return parse_song_key((standards.get_grid(pm.get("standard")) or {}).get("key"))
+    except Exception:
+        return None
+
+
+def _expand_pitch_harmony(blocks, sk):
+    for b in blocks or []:
+        if b.get("type") != "pitch":
+            continue
+        pm = b.setdefault("params", {})
+        follow = pm.pop("song_key", True)
+        if not (follow and sk):
+            continue
+        pc, minor = sk
+        pm["key"] = _GFX_KEYS[pc]
+        fam = _MINOR_SCALES if minor else _MAJOR_SCALES
+        if pm.get("scale") not in fam:
+            pm["scale"] = "Minor" if minor else "Major"
+
+
 def _safe(name):
     return "".join(c if c.isalnum() else "_" for c in name)
 
@@ -455,6 +519,7 @@ def compile_preset(preset: dict) -> str:
     _drum_slot = [0]                                   # docs/drums-kit.md lot 2 : un slot gmem par bloc drumkit
     comps = _components()
     plan = plan_preset(preset, comps)
+    sk = song_key_of(preset)                           # la tonalité du morceau, une fois pour tout le preset
     os.makedirs(OUT_DIR, exist_ok=True)
     # cœur file-loaders (NAM/x42) par piste. `path_has_cab` : si le path a un cab EN AVAL (branche d'un split),
     # une piste ampli-seule rend une TÊTE NAM seule (le cab vit dans la branche) -> split des cabs possible.
@@ -473,6 +538,7 @@ def compile_preset(preset: dict) -> str:
                 capture_module.prepare(captured)
             _normalize_amp_outputs(t["blocks"], comps)     # normalisation loudness (voir LOUD_TARGET)
             _expand_pitch_correct(t["blocks"])             # Key/Scale -> masque de notes fat1
+            _expand_pitch_harmony(t["blocks"], sk)         # harmonie gfx-pitch : Key/Scale du morceau
             _fill_compile_defaults(t["blocks"])            # défauts du catalogue pour les blocs `defaults: compile`
             _expand_stretch(t["blocks"])                   # Spread/Compress -> leurs interrupteurs de module
             _clamp_params(t["blocks"])                     # filet : jamais de param hors plage au rig

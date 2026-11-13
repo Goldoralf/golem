@@ -412,3 +412,12 @@ def test_la_quarantaine_vise_un_plugin_que_le_golem_engine_ne_pose_pas(monkeypat
     finally:
         engine.use(prev)
     assert set(rig.quarantined_types()) == {"pitch", "delay-echo"}     # REAPER : rien ne change
+
+
+def test_l_harmonie_de_gfx_pitch_part_par_le_rang_et_song_key_reste_au_compilateur():
+    blk, sk = P.plan_block({"id": "h", "type": "pitch", "params": {
+        "harmony": "Scale", "key": "Bb", "scale": "Minor Pentatonic", "shift2": 7, "voice2": -4, "song_key": True}},
+        P.load_catalog(), P.load_table())
+    got = {p["label"]: p for p in blk["params"]}
+    assert set(got) >= {"Harmony", "Key", "Scale", "Shift 2", "Voice 2 Level"}
+    assert [s["param"] for s in sk] == ["song_key"]

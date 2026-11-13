@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 38,
+ "catalog_version": 39,
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
@@ -2808,7 +2808,8 @@
      "max": 12,
      "default": 12,
      "unit": "st",
-     "size": 2
+     "size": 2,
+     "label": "Shift"
     },
     {
      "id": "mix",
@@ -2817,12 +2818,90 @@
      "max": 100,
      "default": 50,
      "unit": "%",
+     "label": "Mix",
      "map": {
       "curve": "pct_db"
      }
+    },
+    {
+     "id": "harmony",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Scale"
+     ],
+     "default": "Off",
+     "label": "Harmony",
+     "note": "v39 (gfx-pitch phase 2, Golem Engine only): Scale reads Shift and Shift 2 as nominal intervals and lands them on the scale above the detected note (+4 or +3 = a third, +7 = a fifth). Off = fixed semitones."
+    },
+    {
+     "id": "key",
+     "type": "enum",
+     "options": [
+      "C",
+      "C#",
+      "D",
+      "Eb",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "Ab",
+      "A",
+      "Bb",
+      "B"
+     ],
+     "default": "C",
+     "label": "Key",
+     "note": "Same order as gfx-pitch's Key: an enum goes by its rank. Replaced by the song's key when song_key is on and the patch has one."
+    },
+    {
+     "id": "scale",
+     "type": "enum",
+     "options": [
+      "Major",
+      "Minor",
+      "Harmonic Minor",
+      "Melodic Minor",
+      "Dorian",
+      "Phrygian",
+      "Lydian",
+      "Mixolydian",
+      "Major Pentatonic",
+      "Minor Pentatonic"
+     ],
+     "default": "Major",
+     "label": "Scale",
+     "note": "Same order as gfx-pitch's Scale (it only grows at the end)."
+    },
+    {
+     "id": "song_key",
+     "type": "bool",
+     "default": true,
+     "label": "Song key",
+     "note": "VIRTUAL: consumed by compile_rig (_expand_pitch_harmony), never written to the plugin. On + the patch has a key (preset `key`, else its Standard block's key): Key and Scale follow the song. A major key sets Major, a minor key Minor; a mode picked by hand (Dorian…) keeps its quality family only if it matches."
+    },
+    {
+     "id": "shift2",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "st",
+     "size": 2,
+     "label": "Shift 2",
+     "note": "Second voice (Golem Engine only). Silent until Voice 2 is raised."
+    },
+    {
+     "id": "voice2",
+     "min": -60,
+     "max": 0,
+     "default": -60,
+     "unit": "dB",
+     "label": "Voice 2",
+     "note": "Level of the second voice; -60 = off."
     }
    ],
-   "note": "Software pitch (harmonies). For the hardware Whammy, see the whammy-dt block.",
+   "note": "Software pitch (harmonies). For the hardware Whammy, see the whammy-dt block. On the Golem Engine (gfx-pitch): a second voice and a scale-aware harmony that follows the song's key.",
    "short": "Pitch",
    "color": "#b06cf0",
    "glyph": "♯",

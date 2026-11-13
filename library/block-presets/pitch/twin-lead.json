@@ -1,0 +1,12 @@
+{
+ "name": "Twin lead",
+ "type": "pitch",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "harmony": "Scale",
+  "song_key": true,
+  "shift": 4,
+  "mix": 50
+ }
+}

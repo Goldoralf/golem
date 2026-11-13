@@ -402,7 +402,15 @@
    "status": "testing",
    "params": {
     "shift": "Shift",
-    "mix": "Mix"
+    "mix": "Mix",
+    "harmony": "Harmony",
+    "key": "Key",
+    "scale": "Scale",
+    "shift2": "Shift 2",
+    "voice2": "Voice 2 Level"
+   },
+   "absent": {
+    "song_key": "virtual: resolved by the compiler (Key and Scale follow the song)"
    }
   }
  }

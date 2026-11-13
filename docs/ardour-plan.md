@@ -747,6 +747,26 @@ commit; the measured models below stay as reference.)
 - REAPER normalisation of nih-plug VST3 parameters, measured for golem-fx: enums at index/(n−1), snapping to the
   nearest; booleans as toggles (≤ 0.5 off); linear plain ranges exact, negative minimums included.
 
+**2026-11-13 — gfx-pitch harmony follows the song's key (catalog v39).**
+- golem-fx phase 2 of gfx-pitch (8a52f9e): `harmony` (Off · Scale), `key` (C…B, flats as gfx-pitch names them), `scale`
+  (10, order only grows at the end), appended after the existing parameters, defaults unchanged. With Scale, `shift` /
+  `shift2` are nominal intervals landed on the scale above the detected note. The catalog exposes them on the `pitch`
+  block with the second voice (`shift2`, `voice2`); the engine table maps them, enums by rank.
+- `song_key` (virtual, default on): `compile_rig._expand_pitch_harmony` replaces Key with the song's tonic and Scale
+  with Major / Minor — unless the scale picked by hand already belongs to the song's family (Dorian stays Dorian in a
+  minor song). The song's key is the preset's `key`, else its Standard block's (its grid's when "Original");
+  `scene_bake.to_paths_preset` carries it to the compiler as `key` ("Em"). Off, or no key: Key and Scale stay as set.
+- Block presets "Twin lead" (Scale, +4, mix 50) and "Twin lead + fifth" (+ `shift2` +7 at −4 dB).
+- The rebuilt plugin, switched on and off by scene on the Golem Engine (`check-scene-gap`, a pitch block in one branch of
+  a merge): 0/24 gaps. `check-block-stall` needs REAPER and was not run.
+- Open: a setlist line cannot carry a key yet (it carries `bpm`); a scene that overrides `key` writes the key as set,
+  not the song's.
+- **Watcher bug found on the way: every other rebuild failed** when the new rig reused a route name (editing a patch
+  in the Designer does): "Port already exists", the rig left empty. Ardour's OSC surface holds its strips (shared_ptr)
+  until its next bank recalculation, so a removed route and its ports outlive `remove_routes`. `clear_routes` now
+  renames each route (`golem-gone-N`) before removing it: the port names are free at once. 12/12 rebuilds after the
+  fix, against an exact FAIL/ok alternation before (with or without a golem-fx plugin).
+
 ## 8. Risks
 
 - **Scene latency.** REAPER's scene switch is tuned (union materialization, ≤ 40 ms). Ardour's bypass may

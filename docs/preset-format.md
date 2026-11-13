@@ -57,6 +57,7 @@ A v2 document is recognised by `preset_view.is_v2`: `lanes_v == 2` **and** `lane
 | `scenes` | Scene[] | yes | scene table, A…H (§5) | `scene_bake._scene`, `preset_view._foot_summary` |
 | `config` | object | written by migration | service lanes `gen` / `rec` / `arr` (§6) | `preset_view.migrate`, `_config_blocks`, `_arr_blocks` |
 | `bpm` | number | no | tempo | summary, click, arrangement, standards |
+| `key` | string | no | the song's musical key ("Em", "Bb", "F# minor"); absent → the Standard block's key. The harmony of a `pitch` block with `song_key` on follows it | `compile_rig.song_key_of`, `scene_bake.to_paths_preset` |
 | `style` / `styles` | string / string[] | no | genre **families** (0–2); `style` = `styles[0]`; normalised by `genres.migrate_styles` | summary, golem.fm |
 | `exp1` | `{block, param, min, max}` \| null | no | target of the expression pedal in the **volume** role; absent → first `volume` block, `gain` −60…0. The pedal's **position** is the rack's, not the preset's: written on the target at every emission ([`architecture.md`](architecture.md) §2.4) | `app._set_exp_vol_from`, `app._exp_bake` |
 | `exp2` | same | no | target of the pedal in the **block** role; absent or orphan → first `wah*`/`autowah` block, `wah` 0…1; else nothing (or "Loop level" in looper presets) | `app._set_exp_blk_from` |

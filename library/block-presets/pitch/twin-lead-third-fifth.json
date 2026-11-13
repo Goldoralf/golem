@@ -1,0 +1,14 @@
+{
+ "name": "Twin lead + fifth",
+ "type": "pitch",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "harmony": "Scale",
+  "song_key": true,
+  "shift": 4,
+  "mix": 50,
+  "shift2": 7,
+  "voice2": -4
+ }
+}

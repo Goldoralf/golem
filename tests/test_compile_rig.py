@@ -555,3 +555,59 @@ def test_un_nam_nourri_dun_wav_est_marque_et_exclu_du_coeur(rigc):
     amp = _main_blocks(plan)[0]
     assert amp.get("bypass") is True and amp.get("_wrong_kind")
     assert "rfxchain" not in plan["paths"][0]["tracks"][0]   # aucun cœur : rien à charger
+
+
+# ── HARMONIE gfx-pitch : Key/Scale suivent la tonalité du morceau (2026-11-13) ──────────────────
+@pytest.fixture
+def golem_engine(rigc, monkeypatch):
+    """pitch est en quarantaine sous REAPER (ReaPitch) : ces tests compilent comme le Golem Engine (gfx-pitch)."""
+    from bridge import rig
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"pitch"})
+    return rigc
+
+
+@pytest.mark.parametrize("s,want", [("Em", (4, True)), ("Bb", (10, False)), ("F#m", (6, True)),
+                                    ("C minor", (0, True)), ("Eb maj", (3, False)), ("Cb", (11, False)),
+                                    ("Original", None), ("Cmaj7", None), ("", None), (None, None)])
+def test_une_tonalite_se_lit(s, want):
+    assert compile_rig.parse_song_key(s) == want
+
+
+def test_l_harmonie_prend_la_tonalite_du_patch(golem_engine):
+    harm = {"id": "h", "type": "pitch", "params": {"shift": 4, "harmony": "Scale", "key": "C", "scale": "Major"}}
+    plan, _ = _compile({**_preset([harm]), "key": "Em"})
+    pm = _main_blocks(plan)[0]["params"]
+    assert pm["key"] == "E" and pm["scale"] == "Minor" and "song_key" not in pm
+
+
+def test_un_mode_de_la_bonne_famille_reste_et_song_key_eteint_garde_la_main(golem_engine):
+    dor = {"id": "h", "type": "pitch", "params": {"harmony": "Scale", "scale": "Dorian"}}
+    hand = {"id": "m", "type": "pitch", "params": {"harmony": "Scale", "key": "G", "scale": "Major", "song_key": False}}
+    plan, _ = _compile({**_preset([dor, hand]), "key": "Am"})
+    a, b = _main_blocks(plan)[:2]
+    assert (a["params"]["key"], a["params"]["scale"]) == ("A", "Dorian")
+    assert (b["params"]["key"], b["params"]["scale"]) == ("G", "Major") and "song_key" not in b["params"]
+
+
+def test_sans_tonalite_rien_ne_bouge(golem_engine):
+    harm = {"id": "h", "type": "pitch", "params": {"harmony": "Scale", "key": "D", "scale": "Lydian"}}
+    pm = _main_blocks(_compile(_preset([harm]))[0])[0]["params"]
+    assert (pm["key"], pm["scale"]) == ("D", "Lydian")
+
+
+def test_la_tonalite_vient_du_bloc_standard_a_defaut():
+    pre = {"id": "s", "lanes_v": 2, "lanes": [{"id": "g", "role": "guitar",
+                                 "chain": {"pre": [{"id": "std", "type": "standard", "params": {"key": "Gm"}}]}}]}
+    assert compile_rig.song_key_of(pre) == (7, True)
+    assert compile_rig.song_key_of({**pre, "key": "D"}) == (2, False)
+
+
+def test_le_plan_cuit_emporte_la_tonalite_jusqu_a_la_compile():
+    from bridge import scene_bake
+    p = {"id": "x", "lanes_v": 2, "key": "E minor", "scenes": [{"id": "A", "blocks": {}}],
+         "lanes": [{"id": "guitar", "role": "guitar", "in_sel": "1",
+                    "chain": {"pre": [{"id": "h", "type": "pitch", "params": {}}], "split": None, "post": []}}],
+         "config": {"arr": {"blocks": [{"id": "std", "type": "standard", "params": {"key": "Bbm"}}]}}}
+    assert scene_bake.to_paths_preset(p, "A")["key"] == "Em"            # le `key` du preset passe devant
+    p.pop("key")
+    assert scene_bake.to_paths_preset(p, "A")["key"] == "Bbm"           # sinon celui du bloc Standard

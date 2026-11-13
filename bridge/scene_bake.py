@@ -365,6 +365,12 @@ def to_paths_preset(preset, scene_id=None, union=False, veto=None):
     out = {"id": preset.get("id"), "name": preset.get("name"),
            "style": preset.get("style"), "scene": sc.get("id"), "paths": paths,
            "looper": looper, **({"unmounted": unmounted} if unmounted else {})}
+    # la TONALITÉ du morceau voyage aussi : `key` du preset ou celle de son bloc Standard (qui vit dans une lane
+    # config, pas dans un path) — l'harmonie de gfx-pitch la lit à la compile (compile_rig._expand_pitch_harmony)
+    from .compile_rig import song_key_of, _GFX_KEYS
+    sk = song_key_of(preset)
+    if sk:
+        out["key"] = _GFX_KEYS[sk[0]] + ("m" if sk[1] else "")
     if not paths:
         out["why_empty"] = _why_empty(vetoed, unmounted)
     return out

@@ -165,6 +165,75 @@ local _GOS = reaper.GetOS()
 local MAC_FX = _GOS:match("^OSX") ~= nil or _GOS:match("^macOS") ~= nil
 local DESKTOP_FX = _GOS:match("^Win") ~= nil or MAC_FX
 local DESKTOP_TABLE = MAC_FX and "effects-macos.json" or "effects-windows.json"
+-- ── golem-fx SOUS REAPER (docs/golem-fx-reaper.md, 2026-11-13) ─────────────────────────────────────────────────
+-- Le Golem Engine joue un type par son plugin golem-fx quand sa table le dit (`golem_fx` dans
+-- effects-golem-engine.json). REAPER suit la MÊME table : le bloc garde son id, ses presets et ses scènes, seul le
+-- plugin change — et les autres blocs gardent leur plugin d'origine. Ce que REAPER ajoute : un VST3 s'écrit
+-- NORMALISÉ, donc chaque potard prend les bornes réelles du plugin (library/catalog/golem-fx-plugins.json, tiré de
+-- golem-fx : plages linéaires, nombre de choix d'une liste). Un plugin golem-fx absent de CE REAPER : le bloc garde
+-- son plugin d'origine. Linux seulement (golem-fx n'est construit que là).
+local _GFX_INSTALLED = nil
+local function gfx_installed_name(base)
+  if _GFX_INSTALLED == nil then
+    _GFX_INSTALLED = {}
+    if reaper.EnumInstalledFX then
+      for i = 0, 20000 do
+        local ok, name = reaper.EnumInstalledFX(i)
+        if not ok then break end
+        if tostring(name):find("GoleM FX", 1, true) then _GFX_INSTALLED[#_GFX_INSTALLED + 1] = tostring(name) end
+      end
+    end
+  end
+  -- « VST3: GoleM FX Chorus (GoleM) » — REAPER peut y ajouter « (mono) » : le nom installé qui COMMENCE ainsi
+  for _, n in ipairs(_GFX_INSTALLED) do if n == base then return n end end
+  for _, n in ipairs(_GFX_INSTALLED) do if n:sub(1, #base) == base then return n end end
+  return nil
+end
+
+local function gfx_range(ranges, label)
+  if not label then return nil, nil end
+  if ranges[label] then return ranges[label], label end
+  local l = label:lower()
+  for k, r in pairs(ranges) do if k:lower():find(l, 1, true) then return r, k end end
+  return nil, nil
+end
+
+local function apply_golem_fx(root, map)
+  local tj, pj = read_file(root .. "/library/catalog/effects-golem-engine.json"), read_file(root .. "/library/catalog/golem-fx-plugins.json")
+  local td, pd = tj and json_decode(tj) or nil, pj and json_decode(pj) or nil
+  local table_ = td and td.effects
+  local plugins = pd and pd.plugins
+  if type(table_) ~= "table" or type(plugins) ~= "table" then return end
+  local n = 0
+  for btype, spec in pairs(table_) do
+    local e = map[btype]
+    local p = type(spec) == "table" and spec.golem_fx and spec.vst3 and plugins[spec.vst3]
+    local inst = p and gfx_installed_name(p.reaper)
+    if e and p and inst then
+      local labels = spec.params or {}
+      e.gfx = { plugin = inst, init = spec.init or {}, absent = spec.absent or {}, ranges = p.params }
+      e.plugin = inst
+      e.fx_init = {}                                     -- l'init du plugin d'origine (Calf…) ne vaut pas ici
+      for _, d in ipairs(e.params or {}) do
+        local label = labels[d.id] or d.name
+        local r, real = gfx_range(p.params, label)
+        d.num_index = nil                                -- un nom golem-fx se trouve toujours : pas de repli au rang
+        d.values = nil                                   -- une liste part par son RANG (comme sous le Golem Engine)
+        if (spec.absent or {})[d.id] then
+          d.gfx_absent = spec.absent[d.id]
+        elseif r then
+          d.name = real
+          if r.kind == "enum" then d.map = { mode = "norm", n = r.n }
+          elseif r.kind == "bool" then d.map = { mode = "norm" }
+          else d.map = { mode = "pow", min = r.min, max = r.max, exp = 1, gfx = true } end
+        end
+      end
+      n = n + 1
+    end
+  end
+  if n > 0 then log("golem-fx sous REAPER : " .. n .. " type(s) joués par golem-fx") end
+end
+
 local function read_effects(root)
   if _effects_cache then return _effects_cache end
   local map = {}
@@ -228,6 +297,7 @@ local function read_effects(root)
       end
     end
   end
+  if not DESKTOP_FX then apply_golem_fx(root, map) end
   _effects_cache = map
   return map
 end
@@ -431,6 +501,8 @@ local function apply_block_params(track, fx, btype, params, effects)
       -- d'autre que salir le journal d'un « non résolu » à chaque recall.
     elseif not def then
       log("  params: id '" .. tostring(pid) .. "' inconnu (type " .. tostring(btype) .. ")")
+    elseif def.gfx_absent then
+      -- un potard que le plugin golem-fx n'a pas (table du moteur, `absent`) : rien à écrire
     elseif def.type == "kitref" or def.type == "midilist" then
       -- CONTENU résolu par la compile (le kit d'un drumkit, les patterns d'une boîte à rythmes) :
       -- aucun slider ne le porte. Sans ce garde, resolve_param retombait sur fxlist[1] @p0 et le
@@ -450,7 +522,8 @@ local function apply_block_params(track, fx, btype, params, effects)
             if mode == "norm" then set_norm_to_target(track, pfx, pidx, tv, tonumber(def.min) or 0, tonumber(def.max) or 1)
             else reaper.TrackFX_SetParam(track, pfx, pidx, tv) end
           elseif mode == "raw" then reaper.TrackFX_SetParam(track, pfx, pidx, i)
-          else reaper.TrackFX_SetParamNormalized(track, pfx, pidx, i / math.max(1, #(def.options or {}) - 1)) end
+          else reaper.TrackFX_SetParamNormalized(track, pfx, pidx,
+            i / math.max(1, ((map and map.n) or #(def.options or {})) - 1)) end      -- map.n : les choix du plugin golem-fx
         elseif def.type == "bool" then
           local b = (value and value ~= 0) and 1 or 0
           if mode == "raw" then reaper.TrackFX_SetParam(track, pfx, pidx, b)
@@ -647,7 +720,10 @@ local function add_block_fx(track, block, effects)
   end
   local hint = block.type == "vst-host" and block.plugin or (schema and schema.plugin)
   local fx, nm = attempt(hint)
-  if not fx and block.type ~= "vst-host" and not (DESKTOP_FX and schema and schema.windows_strict) then
+  if not fx and schema and schema.gfx then
+    log("  x bloc " .. tostring(block.type) .. " : " .. tostring(schema.gfx.plugin) .. " ne se charge pas")
+  end
+  if not fx and block.type ~= "vst-host" and not (DESKTOP_FX and schema and schema.windows_strict) and not (schema and schema.gfx) then
     for _, a in ipairs(ADD_ALIAS[block.type] or {}) do fx, nm = attempt(a); if fx then break end end
   end
   if not fx and block.type ~= "vst-host" and not (DESKTOP_FX and schema and schema.windows_strict) then fx, nm = attempt(block.type) end
@@ -658,9 +734,23 @@ local function add_block_fx(track, block, effects)
     return -1, nil
   end
   _FX_SEEN[tostring(block.type)] = { ok = true, name = nm }
-  for pname, pval in pairs((schema and schema.fx_init) or FX_INIT[block.type] or {}) do   -- init one-shot (cf. FX_INIT ; la table de l'OS peut le remplacer)
-    local p = find_param_by_name(track, fx, pname)
-    if p then reaper.TrackFX_SetParam(track, fx, p, pval) end
+  if schema and schema.gfx then
+    -- golem-fx : son init (table du moteur, en unités du plugin) écrit NORMALISÉ avec les bornes du plugin
+    for label, pval in pairs(schema.gfx.init) do
+      local r, real = gfx_range(schema.gfx.ranges, label)
+      local p = real and find_param_exact(track, fx, real)
+      if p and r then
+        local v = tonumber(pval) or 0
+        local nrm = r.kind == "enum" and v / math.max(1, (r.n or 2) - 1)
+                 or (r.max ~= r.min and (v - r.min) / (r.max - r.min) or 0)
+        reaper.TrackFX_SetParamNormalized(track, fx, p, clamp01(nrm))
+      end
+    end
+  else
+    for pname, pval in pairs((schema and schema.fx_init) or FX_INIT[block.type] or {}) do   -- init one-shot (cf. FX_INIT ; la table de l'OS peut le remplacer)
+      local p = find_param_by_name(track, fx, pname)
+      if p then reaper.TrackFX_SetParam(track, fx, p, pval) end
+    end
   end
   -- ReaEQ : sa bande 4 (passe-haut, la `lowcut` du catalogue) est DÉSACTIVÉE dans une instance neuve (BANDENABLED4=0) —
   -- sa fréquence se réglait, rien ne coupait : 0,0 dB de 20 à 300 Hz pour lowcut 74 Hz, mesuré 2026-11-12 sur bruit blanc
@@ -3029,6 +3119,8 @@ local function livemap_entry(tr, fx, id, btype, effects, out, native_core, block
             local comp = NAM_IR_COMP_DB or 18
             mn, mx = mn - comp, mx - comp
           end
+        elseif map and map.gfx then
+          mn, mx = tonumber(map.min) or 0, tonumber(map.max) or 1
         elseif schema and schema.windows_strict and map and map.mode ~= "raw" then
           mn, mx = tonumber(def.min) or 0, tonumber(def.max) or 1
         end

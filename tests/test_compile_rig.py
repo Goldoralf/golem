@@ -613,13 +613,15 @@ def test_le_plan_cuit_emporte_la_tonalite_jusqu_a_la_compile():
     assert scene_bake.to_paths_preset(p, "A")["key"] == "Bbm"           # sinon celui du bloc Standard
 
 
-def test_un_potard_du_seul_golem_engine_est_retire_sous_reaper(rigc, monkeypatch):
-    from bridge import engine
+def test_un_potard_golem_fx_est_retire_la_ou_golem_fx_ne_joue_pas(rigc, monkeypatch):
+    # la polarité du flanger n'existe que sur le plugin golem-fx : retirée là où le bloc joue un autre plugin
+    # (REAPER sans golem-fx, Windows, macOS), gardée là où golem-fx le joue (Golem Engine, REAPER avec le plugin)
+    from bridge import rig
     monkeypatch.setattr(compile_rig, "_FX_DEFS", {"flanger-js": {
         "rate": {"id": "rate", "min": 0.05, "max": 2},
         "fb_polarity": {"id": "fb_polarity", "type": "enum", "options": ["Normal", "Inverted"], "engine_only": "golem"}}})
     fl = {"id": "f", "type": "flanger-js", "params": {"rate": 0.3, "fb_polarity": "Inverted"}}
-    monkeypatch.setattr(engine, "get", lambda: type("E", (), {"id": "reaper"})())
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
     assert "fb_polarity" not in _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]
-    monkeypatch.setattr(engine, "get", lambda: type("E", (), {"id": "ardour"})())
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"flanger-js"})
     assert _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]["fb_polarity"] == "Inverted"

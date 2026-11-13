@@ -347,3 +347,45 @@ def test_le_coupe_bas_de_reaeq_est_active(lab):
     lab.run(action="rig_recall", preset="ci-engine", scene="A")
     fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
     assert fx["golem:eq"].cfg["BANDENABLED4"] == "1", lab.log()
+
+
+# ── golem-fx SOUS REAPER (docs/golem-fx-reaper.md, 2026-11-13) ──────────────────────────────────────────────────
+# Un type que la table du moteur fait jouer par golem-fx le joue aussi sous REAPER — si le VST3 est installé dans CE
+# REAPER ; sinon le bloc garde son plugin d'origine. Les valeurs du catalogue (dB, ms…) s'écrivent NORMALISÉES avec
+# les bornes du plugin (golem-fx-plugins.json), une liste par son rang sur le nombre de choix du plugin.
+def test_golem_fx_sous_reaper_installe_ou_non(tmp_path):
+    import copy
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    by_name = {p["name"]: p for p in plugins.values()}
+    for nm in ("GoleM FX Delay", "GoleM FX Gate"):                 # installés ; le Chorus golem-fx, non
+        p = by_name[nm]
+        lab.F.installed[p["reaper"]] = True
+        lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0})
+                                                     for k in p["params"]])
+    patch = copy.deepcopy(PATCH)
+    post = patch["lanes"][0]["chain"]["post"]
+    post[1]["params"] = {"time": "1/8", "feedback": 40, "mix": 25}
+    patch["lanes"][0]["chain"]["pre"][0]["params"] = {"thresh": -50}
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    assert fx["golem:dly"].name == "VST3: GoleM FX Delay (GoleM)", lab.log()
+    assert fx["golem:gate"].name == "VST3: GoleM FX Gate (GoleM)"
+    assert fx["golem:chorus"].name != "VST3: GoleM FX Chorus (GoleM)"     # pas installé : le plugin d'origine
+
+    def val(fid, name):
+        return next(p.val for p in fx[fid].params.values() if p.name == name)
+    rd = by_name["GoleM FX Delay"]["params"]
+    fb = rd["Feedback"]
+    assert val("golem:dly", "Feedback") == pytest.approx((40 - fb["min"]) / (fb["max"] - fb["min"]))
+    opts = next(e for e in json.loads((ROOT / "library/catalog/effects.json").read_text(encoding="utf-8"))["effects"]
+                if e["type"] == "delay")
+    tdef = next(d for d in opts["params"] if d["id"] == "time")
+    n = rd["Time"]["n"]
+    assert val("golem:dly", "Time") == pytest.approx(tdef["options"].index("1/8") / (n - 1))
+    th = by_name["GoleM FX Gate"]["params"]["Threshold"]
+    assert val("golem:gate", "Threshold") == pytest.approx((-50 - th["min"]) / (th["max"] - th["min"]))
+    assert "golem-fx sous REAPER : 2 type(s)" in lab.log()

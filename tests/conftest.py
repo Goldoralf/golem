@@ -88,6 +88,15 @@ def _pas_de_peripheriques_reels(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _pas_les_golem_fx_de_la_machine(monkeypatch):
+    """Les VST3 golem-fx installés sur la machine (~/.vst3) ne fuient pas dans les tests (2026-11-13) : sous REAPER,
+    ils font jouer un bloc par golem-fx (docs/golem-fx-reaper.md), changent sa quarantaine et ses potards — un test
+    se comporterait autrement sur le poste du mainteneur. Un test qui veut golem-fx installé le dit lui-même."""
+    from bridge import rig
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: set())
+
+
+@pytest.fixture(autouse=True)
 def _pas_de_kits_mesures_locaux(monkeypatch, tmp_path_factory):
     """Les kits MESURÉS de la machine (config/drumkits.local/, 2026-10-03) ne fuient pas dans les tests : ils
     prennent le pas sur les graines, et un test qui lit le Nitro d'usine lisait la mesure du mainteneur."""

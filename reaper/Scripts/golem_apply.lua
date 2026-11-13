@@ -685,8 +685,11 @@ local function fxparams(root, cmd)
         -- et cette ligne était donc muette sur la seule chose qu'on voulait savoir en cherchant
         -- pourquoi une scène coupait le son (2026-09-20).
         local on = reaper.TrackFX_GetEnabled(tr, fx)
-        w(string.format("FX %d : %s  (pdc=%s samples, %s)", fx, tostring(nm), tostring(pdc),
-          on and "actif" or "BYPASSÉ"))
+        -- les ENTRÉES / SORTIES que REAPER donne au plugin : un VST3 « (mono) » sur une piste stéréo ne traite que
+        -- le canal 1 si REAPER le garde à 1/1 (le canal 2 passe à côté) — golem-fx sous REAPER, 2026-11-13
+        local _, nin, nout = reaper.TrackFX_GetIOSize(tr, fx)
+        w(string.format("FX %d : %s  (pdc=%s samples, %s, pins %s in / %s out)", fx, tostring(nm), tostring(pdc),
+          on and "actif" or "BYPASSÉ", tostring(nin), tostring(nout)))
         for p = 0, reaper.TrackFX_GetNumParams(tr, fx) - 1 do
           local _, pn = reaper.TrackFX_GetParamName(tr, fx, p, "")
           local v, mn, mx = reaper.TrackFX_GetParam(tr, fx, p)

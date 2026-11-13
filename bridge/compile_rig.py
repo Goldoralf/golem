@@ -257,18 +257,18 @@ def _expand_pitch_harmony(blocks, sk):
 
 
 def _drop_engine_only(blocks):
-    """Un potard que seul le Golem Engine a (`engine_only: "golem"` au catalogue : la polarité du flanger de golem-fx)
-    est retiré sous REAPER, où le plugin ne l'a pas — golem_rig loguerait « non résolu » à chaque rappel."""
+    """Un potard que seul le plugin golem-fx a (`engine_only: "golem"` au catalogue : la polarité du flanger) est
+    retiré là où le bloc ne joue PAS par golem-fx (REAPER sans le plugin, Windows, macOS) — golem_rig loguerait
+    « non résolu » à chaque rappel. Sous le Golem Engine, et sous REAPER avec golem-fx installé, il reste."""
     try:
-        from . import engine
-        if getattr(engine.get(), "id", None) == "ardour":
-            return
+        from . import rig
+        safe = rig._engine_safe_types()
     except Exception:
-        pass
+        safe = set()
     defs = _fx_defs()
     for b in blocks or []:
         pm = b.get("params")
-        if not isinstance(pm, dict):
+        if not isinstance(pm, dict) or b.get("type") in safe:
             continue
         for pid, d in (defs.get(b.get("type")) or {}).items():
             if d.get("engine_only") == "golem":

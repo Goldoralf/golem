@@ -241,8 +241,9 @@ def quarantined_types():
     """Types de blocs en QUARANTAINE (effects.json `quarantine`) : un plugin qui fait tomber Reaper
     ne doit plus jamais l'atteindre, quel que soit le preset qui le demande (GxDetune, 2026-09-07 :
     tas corrompu, abort au rebuild). La donnée vit dans le catalogue, pas ici.
-    Ce qu'on met en quarantaine, c'est un PLUGIN : sous le Golem Engine, un type que sa table fait jouer par un effet
-    golem-fx (`golem_fx`) n'atteint jamais le plugin fautif — il n'y est pas en quarantaine (pitch : ReaPitch figeait
+    Ce qu'on met en quarantaine, c'est un PLUGIN : un type que la table fait jouer par un effet golem-fx (`golem_fx`,
+    sous le Golem Engine, et sous REAPER quand le plugin est installé) n'atteint jamais le plugin fautif — il n'y est
+    pas en quarantaine (pitch : ReaPitch figeait
     REAPER, gfx-pitch ne fige rien, 2026-11-12). Le moteur actif est relu à chaque appel : il peut changer en route."""
     base = _base_quarantine()
     safe = _engine_safe_types()
@@ -250,15 +251,35 @@ def quarantined_types():
 
 
 def _engine_safe_types():
-    """Les types que le moteur ACTIF joue par un effet golem-fx (Golem Engine seulement ; REAPER : aucun)."""
+    """Les types que le moteur ACTIF joue par un effet golem-fx. Golem Engine : sa table. REAPER sous Linux
+    (docs/golem-fx-reaper.md) : la MÊME table, pour les plugins golem-fx installés ici (golem_rig.lua ne bascule un
+    bloc vers golem-fx que si REAPER connaît le plugin ; sinon il garde son plugin d'origine). Windows / macOS : aucun."""
     try:
         from . import engine
-        if getattr(engine.get(), "id", None) != "ardour":
-            return set()
         from .engine import ardour_plan
-        return {t for t, spec in ardour_plan.load_table().items() if spec.get("golem_fx")}
+        eid = getattr(engine.get(), "id", None)
+        table = ardour_plan.load_table()
+        types = {t for t, spec in table.items() if spec.get("golem_fx")}
+        if eid == "ardour":
+            return types
+        if eid != "reaper" or _platform() in ("win32", "darwin"):
+            return set()
+        installed = _golem_fx_installed()
+        return {t for t in types if table[t].get("vst3") in installed}
     except Exception:
         return set()
+
+
+def _golem_fx_installed():
+    """Les class ids (hex) des VST3 golem-fx présents dans ~/.vst3 — le dossier où tools/golem-fx-install.py les pose
+    et que REAPER scanne. Lu dans library/catalog/golem-fx-plugins.json (le nom de chaque bundle)."""
+    try:
+        from . import config as C
+        plugins = json.load(open(os.path.join(C.ROOT, "library", "catalog", "golem-fx-plugins.json"))).get("plugins", {})
+    except (OSError, ValueError):
+        return set()
+    home = os.path.join(os.path.expanduser("~"), ".vst3")
+    return {cid for cid, p in plugins.items() if os.path.isdir(os.path.join(home, p.get("name", "") + ".vst3"))}
 
 
 def _base_quarantine():

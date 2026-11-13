@@ -71,6 +71,16 @@ function patchRenderers() {
     const it = typeof item === 'string' ? { type: item } : item;
     const b = P.blockByType(it.type);
     if (b && b.family === 'gfx' && !GOLEM_FX.has(it.type)) return P.genericPedal(b, Object.assign({}, opts || {}, it));
+    // LES VRAIS RÉGLAGES sur la pédale (docs/golem-fx-sheet.md) : la face de golem-fx, ses commandes à la valeur du bloc
+    if (b && b.family === 'gfx' && it.values) {
+      const face = (window.GOLEM_VISUALS.gfx || {})[b.gfx];
+      if (face) {
+        const set = c => (it.values[c.id] != null ? Object.assign({}, c, { value: it.values[c.id] }) : c);
+        const spec = Object.assign({}, face, { knobs: (face.knobs || []).map(set), selectors: (face.selectors || []).map(set),
+                                               toggles: (face.toggles || []).map(set) });
+        return P.gfxPedal(spec, Object.assign({}, opts || {}, it));
+      }
+    }
     return orig(item, opts);
   };
   P.__golem = true;
@@ -78,14 +88,57 @@ function patchRenderers() {
 
 export const visualsReady = () => !!(typeof window !== 'undefined' && window.GolemPedals && window.GolemStage);
 
+// UN DESSIN STABLE (2026-11-13 : « en mode Pedals, ça n'ajoute pas ») : golem-fx numérote les ids de chaque dessin
+// (gpm1-…, gpm2-…), donc deux appels pour la même pédale rendent deux TEXTES différents. Le tiroir est redessiné à chaque
+// état du rack (les vumètres, plusieurs fois par seconde) : le SVG sous le doigt était remplacé entre l'appui et le
+// relâché, et le navigateur annulait le clic. Chaque dessin est donc fait UNE fois par contenu et gardé ; le texte ne
+// change que si ce qu'il montre change. (La mémoire suit le moteur : un bloc joué ailleurs que par golem-fx prend un
+// autre dessin — la clé porte cette règle.)
+const _pedals = new Map(), _stages = new Map();
+const remember = (map, key, make) => {
+  if (map.has(key)) return map.get(key);
+  const v = make();
+  if (map.size > 400) map.clear();
+  map.set(key, v);
+  return v;
+};
+
 /** Le SVG (chaîne) d'un bloc en pédale (pedalFor, avec la règle du moteur actif). */
 export function pedalSvg(item) {
   const P = window.GolemPedals;
-  return P ? P.pedalFor(item) : '';
+  if (!P) return '';
+  const it = typeof item === 'string' ? { type: item } : item;
+  return remember(_pedals, JSON.stringify([it, GOLEM_FX.has(it.type)]), () => P.pedalFor(it));
 }
 
-/** Le pédalier d'une lane (chaîne lanes-v2 + état de scène {blocks, branches}) : SVG (chaîne). */
-export function stageSvg(chain, laneState, opts) {
+/** Les valeurs d'un bloc pour sa pédale golem-fx : {id golem-fx: valeur du plugin} — une liste par son RANG, une case 0/1.
+ *  `def` = la définition du bloc servie par /api/effects (ses réglages portent `gfx.id`), `params` = valeurs effectives. */
+export function pedalValues(def, params) {
+  const out = {};
+  for (const pm of ((def && def.params) || [])) {
+    const gid = pm.gfx && pm.gfx.id;
+    if (!gid) continue;
+    let v = params && params[pm.id] != null ? params[pm.id] : pm.default;
+    if (v == null) continue;
+    if (pm.type === 'enum') { const i = (pm.options || []).indexOf(v); v = i < 0 ? 0 : i; }
+    else if (pm.type === 'bool') v = v ? 1 : 0;
+    if (typeof v === 'number') out[gid] = v;
+  }
+  return out;
+}
+
+/** Le pédalier d'une lane (chaîne lanes-v2 + état de scène {blocks, branches}) : SVG (chaîne). `values` = {id du bloc:
+ *  ses valeurs de pédale (pedalValues)} — les pédales golem-fx montrent alors les réglages du bloc. */
+export function stageSvg(chain, laneState, opts, values) {
   const S = window.GolemStage;
-  return S ? S.render(S.fromGolem(chain, laneState), Object.assign({ floor: 'stage', guitar: true }, opts || {})) : '';
+  if (!S) return '';
+  const o = Object.assign({ floor: 'stage', guitar: true }, opts || {});
+  const withVals = it => {
+    if (!it || typeof it !== 'object') return it;
+    if (it.split) return Object.assign({}, it, { split: Object.assign({}, it.split, { branches: (it.split.branches || []).map(br =>
+      Array.isArray(br) ? br.map(withVals) : Object.assign({}, br, { items: (br.items || []).map(withVals) })) }) });
+    return values && it.id != null && values[it.id] ? Object.assign({}, it, { values: values[it.id] }) : it;
+  };
+  return remember(_stages, JSON.stringify([chain, laneState, o, [...GOLEM_FX].sort(), values || null]),
+    () => S.render(S.fromGolem(chain, laneState).map(withVals), o));
 }

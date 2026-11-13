@@ -31,6 +31,7 @@ import { useSongCtx, SongBar } from './designer-song.js';     // la chanson char
 import { layoutChain } from './chain-layout.js';
 import { BlockStatusSheet, MissingBanner, blockSig } from './designer-blockstatus.js';   // docs/block-status.md
 import { PedalView } from './designer-pedalview.js';     // la vue pédalier (docs/designer-glyphs-pedals.md §2)
+import { pedalValues } from './golem-visuals.js';
 
 // long-press = assigner (convention QC) : longPress/lpFired partagés (lib.js).
 
@@ -1064,6 +1065,11 @@ export function DesignerPage({ rig, sub }) {
       if (b && b.id) blocks[b.id] = blockOn(b);
     for (const br of ((c.split && c.split.branches) || [])) if (br && br.id) branches[br.id] = { mute: laneMuted(br.id) };
     return { blocks, branches }; };
+  // les valeurs EFFECTIVES (scène courante, puis base) de chaque bloc, pour que ses pédales golem-fx les montrent
+  const pedalVals = L => { const out = {}, c = (L && L.chain) || {};
+    for (const b of [...(c.pre || []), ...(c.post || []), ...((c.split && c.split.branches) || []).flatMap(br => br.blocks || [])])
+      if (b && b.id && GOLEM_FX.has(b.type)) out[b.id] = pedalValues(fxDef(b.type), { ...(b.params || {}), ...((sc.params || {})[b.id] || {}) });
+    return out; };
   const setSceneBlock = (ref, on) => { const b = blockAt(p, ref);
     upd(n => { const s = n.scenes[scene]; s.blocks = s.blocks || {};
       // Hériter quand la scène redit la base ; sinon POSER la valeur — y compris `true`, qui
@@ -2398,7 +2404,7 @@ export function DesignerPage({ rig, sub }) {
               ${stompStrip()}
             </div>
             ${dview === 'pedals' && !curLane.midi ? html`<${PedalView} lane=${curLane.id} chain=${curLane.chain} catalog=${effects}
-                sceneState=${pedalState(curLane)}
+                sceneState=${pedalState(curLane)} values=${pedalVals(curLane)}
                 onToggle=${ref => { const b = blockAt(p, ref); if (!b) return;
                   fxDef(b.type).scene_invariant ? toggleBypass(ref) : setSceneBlock(ref, !blockOn(b)); }}
                 onOpen=${ref => { const b = blockAt(p, ref); if (!b) return; setSelTab('params');

@@ -1365,6 +1365,9 @@ svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:
 .dp.off{opacity:.4}
 .dp-svg{display:block; width:78px}
 .dp-svg svg{width:78px; height:auto; display:block}
+/* le dessin ne prend pas le toucher : c'est le BOUTON qui le reçoit, même si le dessin est remplacé sous le doigt */
+.dp-svg, .dp-svg *{pointer-events:none}
+.lpad .lst-pedal, .lpad .lst-pedal *{pointer-events:none}
 .dp-nm{font-size:10.5px; color:var(--muted); max-width:78px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .drawer.flat{width:320px}
 .drawer.flat .drawer-items{grid-template-columns:1fr}
@@ -8321,3 +8324,5 @@ button.mode-live{background:transparent; cursor:pointer}
 .lpad .lst-main.with-pedal .lst-name{margin-top:0; white-space:normal; line-height:1.1}
 .lt-ck{display:inline-block; width:1.2em; text-align:center; font-weight:800}
 
+/* l'onglet Expert de la feuille golem FX : un groupe à la fois (sous-onglets), pour tenir sans défilement */
+.gx-groups{margin:0 0 10px; flex-wrap:wrap}

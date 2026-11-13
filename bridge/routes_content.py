@@ -82,6 +82,15 @@ def get_effects():
     # dans leur colonne, la vue pédalier les dessine en pédales golem-fx
     from . import rig as _rig
     data["golem_fx"] = sorted(_rig._engine_safe_types())
+    # LA FEUILLE golem FX (docs/golem-fx-sheet.md) : pour un bloc que golem-fx joue ici, les réglages de sa pédale —
+    # la face avant, puis les groupes experts — fondus avec ceux du catalogue (bridge/golem_fx.py)
+    from . import golem_fx as _gfx
+    gset = set(data["golem_fx"])
+    for e in data.get("effects", []):
+        if e.get("type") in gset:
+            params, sheet = _gfx.merged(e["type"], e.get("params"))
+            if sheet:
+                e["params"], e["gfx_sheet"] = params, sheet
     data["vst_host"] = True
     data["vst_capture"] = sys.platform in ("win32", "darwin")
     data["effects"] = [*data.get("effects", []), {"type": "vst-host", "name": "VST Host",
@@ -1467,7 +1476,21 @@ def block_presets_list(btype: str):
                                 "params": bp["params"], "factory": bool(bp.get("factory")),
                                 "default": bool(bp.get("default")),
                                 "inst": bp.get("inst") or "any"})
+    out.extend(_golem_fx_presets(btype))
     return {"presets": out}
+
+
+def _golem_fx_presets(btype):
+    """Les réglages de RÉFÉRENCE de golem-fx (descripteur, docs/golem-fx-sheet.md), en presets de bloc d'usine — là où
+    golem-fx joue le bloc seulement (ailleurs ils viseraient des réglages que le plugin d'origine n'a pas)."""
+    from . import golem_fx, rig
+    if btype not in rig._engine_safe_types():
+        return []
+    cat = next((e for e in _read_json(C.EFFECTS, {"effects": []}).get("effects", []) if e.get("type") == btype), {})
+    _params, sheet = golem_fx.merged(btype, cat.get("params"))
+    return [{"id": "gfx-" + _bp_slug(pr.get("name")), "name": pr.get("name") or "golem-fx", "params": pr.get("params") or {},
+             "factory": True, "default": False, "inst": "any", "golem_fx": True}
+            for pr in ((sheet or {}).get("presets") or [])]
 
 
 @router.get("/api/block-defaults")

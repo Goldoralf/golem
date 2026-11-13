@@ -227,11 +227,22 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
   const DB_IDS = ['db16', 'db513', 'db8', 'db4', 'db223', 'db2', 'db135', 'db113', 'db1'];
   const isOrgan = block.type === 'organ';
   const ORGAN_SIDE = ['leslie', 'vibrato'];       // colonne droite du duo tirettes|états (2026-07-23)
-  const visible = params.filter(pm => !pm.hidden &&                                    // hidden = plomberie (masque de notes fat1…)
+  // LA FEUILLE golem FX (docs/golem-fx-sheet.md) : un bloc que golem-fx joue ici montre les réglages de SA pédale —
+  // la face avant dans Settings, les groupes experts (et leur interrupteur « Custom ») dans l'onglet Expert
+  const gsheet = def.gfx_sheet || null;
+  const isExpert = pm => !!(gsheet && pm.gfx && pm.gfx.group);
+  const visible = params.filter(pm => !pm.hidden && !isExpert(pm) &&                  // hidden = plomberie (masque de notes fat1…)
     !(hasZone && ZONE_IDS.includes(pm.id)) && !(isOrgan && (DB_IDS.includes(pm.id) || ORGAN_SIDE.includes(pm.id))) &&
     // midi-pedal : le Treadle n'existe que si le DESCRIPTEUR déclare un CC de pédale d'expression
     !(isHwPedal && pm.id === 'pedal' && !hwTreadle) &&
     !(isPads && pm.id === 'kit'));                     // Pads v2 : le kit se choisit dans la rangée du tiroir
+  const expertAll = params.filter(pm => !pm.hidden && isExpert(pm));
+  const xGroups = gsheet ? (gsheet.groups || []).filter(g => expertAll.some(pm => pm.gfx.group === g.id)) : [];
+  const hasExpert = xGroups.length > 0;
+  const [xg, setXg] = useState(null);
+  const xCur = xGroups.find(g => g.id === xg) || xGroups[0] || null;
+  // le groupe courant : son interrupteur « Custom » d'abord, puis ses réglages (grisés tant qu'il est éteint : depends)
+  const xList = xCur ? [...expertAll.filter(pm => pm.id === xCur.custom), ...expertAll.filter(pm => pm.gfx.group === xCur.id && pm.id !== xCur.custom)] : [];
   const ovrCount = visible.filter(isOvr).length;
   const expHints = params.some(pm => pm.exp);
   const enumOpts = pm =>
@@ -509,8 +520,10 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
           : capName ? html`<em title=${'capture : ' + esc(capName)}>${esc(capName)}</em>` : ''}
         <span class="sheet-tab-x">▾</span>
       </button>
-      ${assign || kitMix || hasPresets ? html`<div class="sheet-tabs2">
+      ${assign || kitMix || hasPresets || hasExpert ? html`<div class="sheet-tabs2">
         <button class=${cls('sheet-tab2', (tab || 'params') === 'params' && 'on')} data-doc="designer.sheet.settings" onClick=${() => onTab && onTab('params')}>Settings</button>
+        ${hasExpert ? html`<button class=${cls('sheet-tab2', tab === 'expert' && 'on')} data-doc="designer.sheet.expert" onClick=${() => onTab && onTab('expert')}
+          title="the pedal's expert settings, group by group — a group follows the profile until its Custom switch is on">Expert</button>` : ''}
         ${hasPresets ? html`<button class=${cls('sheet-tab2', tab === 'presets' && 'on')} data-doc="designer.sheet.presets" onClick=${() => onTab && onTab('presets')} title="block presets — this block's settings, not golem presets">Presets</button>` : ''}
         ${kitMix ? html`<button class=${cls('sheet-tab2', tab === 'mix' && 'on')} onClick=${() => onTab && onTab('mix')}>Mix</button>` : ''}
         ${assign ? html`<button class=${cls('sheet-tab2', tab === 'assign' && 'on')} data-doc="designer.sheet.assign" onClick=${() => onTab && onTab('assign')}>MIDI assign</button>` : ''}
@@ -551,14 +564,19 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
             vit dans son onglet (designer-block-presets.js), avec le réglage courant et la sauvegarde à côté */''}
       ${hasPresets ? html`<div class=${cls('sheet-body', 'bpl-body', tab !== 'presets' && 'ghosted')}>
         <${BlockPresetsList} btype=${block.type} inst=${laneInst || 'guitar'} blockName=${def.name || block.type}
-          defs=${visible.filter(isCellParam)}
-          current=${Object.fromEntries(visible.filter(isCellParam).map(pm => [pm.id, val(pm)]))}
-          sig=${ps => bpSig(ps, visible.filter(isCellParam))}
+          defs=${[...visible, ...expertAll].filter(isCellParam)}
+          current=${Object.fromEntries([...visible, ...expertAll].filter(isCellParam).map(pm => [pm.id, val(pm)]))}
+          sig=${ps => bpSig(ps, [...visible, ...expertAll].filter(isCellParam))}
           onLoad=${onLoadPreset} /></div>` : ''}
       ${assign ? html`<div class=${cls('sheet-body', tab !== 'assign' && 'ghosted')}><${AssignBoard} block=${block} fxIcon=${fxIcon} ...${assign} /></div>` : ''}
       ${kitMix ? html`<div class=${cls('sheet-body', tab !== 'mix' && 'ghosted')}>
         <${DrumMixer} kit=${curKit} block=${block} onParam=${onParam} /></div>` : ''}
-      <div class=${cls('sheet-body', ((tab === 'assign' && assign) || (tab === 'mix' && kitMix) || (tab === 'presets' && hasPresets)) && 'ghosted')}>
+      ${hasExpert ? html`<div class=${cls('sheet-body', 'gx-body', tab !== 'expert' && 'ghosted')}>
+        <div class="tb-seg gx-groups">${xGroups.map(g => html`<button class=${cls(xCur && xCur.id === g.id && 'on')}
+          onClick=${() => setXg(g.id)}>${esc(g.name)}</button>`)}</div>
+        ${renderGrid(xList)}
+      </div>` : ''}
+      <div class=${cls('sheet-body', ((tab === 'assign' && assign) || (tab === 'mix' && kitMix) || (tab === 'presets' && hasPresets) || (tab === 'expert' && hasExpert)) && 'ghosted')}>
         ${captureControls ? html`<${CaptureModuleControls} controls=${captureControls}
           values=${{ ...(block.params || {}), ...(ovr || {}) }} foot=${block.capture_foot}
           scene=${sceneId} onChange=${onParam} onFoot=${onCaptureFoot} />` : ''}

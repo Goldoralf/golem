@@ -169,6 +169,10 @@ def plan_block(b, catalog, table):
         return None, [{"id": b.get("id"), "type": t, "why": NOT_HERE}]
     plugin = plugin_of(spec)
     defs = {p["id"]: p for p in (catalog.get(t) or {}).get("params") or [] if p.get("id")}
+    if spec.get("golem_fx"):
+        # les réglages de la feuille golem FX (docs/golem-fx-sheet.md) : ceux que seul le plugin golem-fx a
+        from .. import golem_fx
+        defs = {p["id"]: p for p in golem_fx.merged(t, list(defs.values()))[0]}
     labels = spec.get("params") or {}
     files = {}
     for key, prop in (spec.get("files") or {}).items():

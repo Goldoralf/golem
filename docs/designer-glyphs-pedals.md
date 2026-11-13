@@ -29,7 +29,7 @@ No second settings grid. The pedal view edits through the existing model:
 
 - **tap a pedal**: on / off in the current scene (what a tile's dot does today);
 - **long press**: opens the block's existing sheet (Settings, Presets, MIDI assign);
-- **knobs drawn on a pedal** show the real values and do not turn: at 1024 × 600, under a finger, they are too small;
+- **knobs drawn on a pedal** show the block's real values (scene first, golem-fx pedals; since 2026-11-13, docs/golem-fx-sheet.md) and do not turn: at 1024 × 600, under a finger, they are too small;
 - **adding, moving or removing a block** stays in the Blocks view.
 
 ## 3. What was open, and how it closed

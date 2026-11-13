@@ -223,9 +223,50 @@ local function apply_golem_fx(root, map)
           d.gfx_absent = spec.absent[d.id]
         elseif r then
           d.name = real
+          -- une liste du catalogue est le DÉBUT de celle du plugin : les choix en plus du plugin (le Free du Delay)
+          -- s'ajoutent, sinon index_of les ramenait au rang 0 (même règle que bridge/golem_fx.py)
+          local dp = nil
+          if type(p.descriptor) == "table" and type(p.descriptor.params) == "table" then
+            for _, x in pairs(p.descriptor.params) do if x.name == real then dp = x; break end end
+          end
+          if d.type == "enum" and dp and type(dp.options) == "table" and #dp.options > #(d.options or {}) then
+            local o = {}
+            for i, v in ipairs(d.options or {}) do o[i] = v end
+            for i = #o + 1, #dp.options do o[i] = dp.options[i] end
+            d.options = o
+          end
           if r.kind == "enum" then d.map = { mode = "norm", n = r.n }
           elseif r.kind == "bool" then d.map = { mode = "norm" }
           else d.map = { mode = "pow", min = r.min, max = r.max, exp = 1, gfx = true } end
+        end
+      end
+      -- LA FEUILLE golem FX (docs/golem-fx-sheet.md) : les réglages du DESCRIPTEUR que le catalogue n'a pas deviennent
+      -- des potards du bloc — même règle de clés que bridge/golem_fx.py : le réglage qui EST un potard du catalogue (même
+      -- nom de plugin) garde l'id du catalogue ; les autres prennent l'id golem-fx, préfixé `gfx_` s'il heurte un id du
+      -- catalogue. Écrits normalisés sur les bornes du plugin, comme les autres.
+      local desc = p.descriptor
+      if type(desc) == "table" and type(desc.params) == "table" then
+        local by_label = {}
+        for _, d in ipairs(e.params or {}) do
+          if d.id and not (spec.absent or {})[d.id] then by_label[d.name or ""] = by_label[d.name or ""] or d end
+        end
+        local order = {}
+        for _, gid in ipairs(desc.front or {}) do order[#order + 1] = gid end
+        for _, grp in ipairs(desc.groups or {}) do for _, gid in ipairs(grp.params or {}) do order[#order + 1] = gid end end
+        for _, gid in ipairs(order) do
+          local dp = desc.params[gid]
+          if type(dp) == "table" and not by_label[dp.name or ""] then
+            local key = e.by_id[gid] and ("gfx_" .. gid) or gid
+            if not e.by_id[key] then
+              local r = gfx_range(p.params, dp.name)
+              local d = { id = key, name = dp.name, min = dp.min, max = dp.max, default = dp.default, gfx_only = true }
+              if dp.kind == "enum" then d.type = "enum"; d.options = dp.options or {}; d.map = { mode = "norm", n = r and r.n or #(dp.options or {}) }
+              elseif dp.kind == "bool" then d.type = "bool"; d.map = { mode = "norm" }
+              else d.map = { mode = "pow", min = r and r.min or dp.min, max = r and r.max or dp.max, exp = 1, gfx = true } end
+              e.params[#e.params + 1] = d
+              e.by_id[key] = d
+            end
+          end
         end
       end
       n = n + 1

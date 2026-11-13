@@ -22,7 +22,7 @@ export function refOfPath(path, chain, lane) {
   return j >= 0 && j < post.length ? { lane, z: 'post', i: j } : null;
 }
 
-export function PedalView({ lane, chain, sceneState, catalog, onToggle, onOpen, onBranch }) {
+export function PedalView({ lane, chain, sceneState, values, catalog, onToggle, onOpen, onBranch }) {
   const [ok, setOk] = useState(visualsReady());
   const [err, setErr] = useState('');
   useEffect(() => { if (!ok) loadVisuals(catalog).then(() => setOk(true)).catch(e => setErr(String(e.message || e))); }, []);
@@ -30,7 +30,7 @@ export function PedalView({ lane, chain, sceneState, catalog, onToggle, onOpen, 
   const press = useRef(null);
   if (err) return html`<div class="pv-msg">The pedal view could not load (${err}). Switch back to Blocks in the ⋯ menu.</div>`;
   if (!ok) return html`<div class="pv-msg">Drawing the pedalboard…</div>`;
-  const svg = stageSvg(chain, sceneState, { floor: 'stage', guitar: true });
+  const svg = stageSvg(chain, sceneState, { floor: 'stage', guitar: true }, values);
   // un geste = ce que le doigt a touché dans le dessin : une pédale (data-idx) ou la bande d'une branche (data-branch)
   const target = e => {
     const t = e.target.closest && e.target.closest('[data-idx],[data-branch]');

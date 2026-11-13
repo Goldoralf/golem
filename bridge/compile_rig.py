@@ -146,8 +146,15 @@ def _fill_compile_defaults(blocks):
 
 
 def _clamp_params(blocks):
+    try:
+        from . import rig, golem_fx
+        safe = rig._engine_safe_types()
+    except Exception:
+        safe, golem_fx = set(), None
     for b in blocks or []:
         defs = _fx_defs().get(b.get("type")) or {}
+        if golem_fx and b.get("type") in safe:          # la feuille golem FX : les bornes de ses réglages propres aussi
+            defs = {d["id"]: d for d in golem_fx.merged(b.get("type"), list(defs.values()))[0]}
         for k, v in list((b.get("params") or {}).items()):
             pd = defs.get(k)
             if not pd or pd.get("type") in ("enum", "bool"):
@@ -266,10 +273,14 @@ def _drop_engine_only(blocks):
     except Exception:
         safe = set()
     defs = _fx_defs()
+    from . import golem_fx
     for b in blocks or []:
         pm = b.get("params")
         if not isinstance(pm, dict) or b.get("type") in safe:
             continue
+        # les réglages de la feuille golem FX qui n'existent que sur le plugin golem-fx (docs/golem-fx-sheet.md)
+        for pid in golem_fx.gfx_only_keys(b.get("type"), list((defs.get(b.get("type")) or {}).values())):
+            pm.pop(pid, None)
         for pid, d in (defs.get(b.get("type")) or {}).items():
             if d.get("engine_only") == "golem":
                 pm.pop(pid, None)

@@ -389,3 +389,32 @@ def test_golem_fx_sous_reaper_installe_ou_non(tmp_path):
     th = by_name["GoleM FX Gate"]["params"]["Threshold"]
     assert val("golem:gate", "Threshold") == pytest.approx((-50 - th["min"]) / (th["max"] - th["min"]))
     assert "golem-fx sous REAPER : 2 type(s)" in lab.log()
+
+
+def test_un_reglage_de_la_pedale_golem_fx_s_ecrit_sous_reaper(tmp_path, monkeypatch):
+    # la feuille golem FX (docs/golem-fx-sheet.md) : Warmth n'existe que sur gfx-chorus — sous REAPER avec le plugin, il
+    # s'écrit NORMALISÉ sur ses bornes (0–100 %) comme les potards du catalogue
+    import copy
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    cid, p = next((k, v) for k, v in plugins.items() if v["name"] == "GoleM FX Chorus")
+    from bridge import rig
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: {cid})     # le bridge le sait installé : il garde Warmth
+    lab.F.installed[p["reaper"]] = True
+    lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0}) for k in p["params"]])
+    patch = copy.deepcopy(PATCH)
+    post = patch["lanes"][0]["chain"]["post"]
+    post[0] = {"id": "chorus", "type": "chorus", "foot": 7, "params": {"rate": 1.0, "warmth": 70, "mode": "Dual I"}}
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    ch = fx["golem:chorus"]
+    assert ch.name == p["reaper"], lab.log()
+
+    def val(name):
+        return next(q.val for q in ch.params.values() if q.name == name)
+    w = p["params"]["Warmth"]
+    assert val("Warmth") == pytest.approx((70 - w["min"]) / (w["max"] - w["min"]))
+    assert val("Mode") == pytest.approx(1 / (p["params"]["Mode"]["n"] - 1))

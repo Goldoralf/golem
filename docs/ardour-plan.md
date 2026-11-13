@@ -778,6 +778,17 @@ is `engine_only: "golem"`: the compiler drops it under REAPER, whose JSFX has no
 four block presets moved to `flanger-js`.
 No factory patch used the Calf block. golem-fx retires GoleM FX Flanger Calf.
 
+**2026-11-13 — Dropouts on the Golem Engine: the CPU clock, then two costs.** Modern Metal on the rack: 6 xruns a
+minute on the Golem Engine, 0 under REAPER with the same chain and buffer (192). The engine's DSP load read 92–100 %.
+Measured, buffer sizes: 192 → 100 % and xruns, 256 → 84 %, 384 → 77 %, no xruns. New watcher command `dspstats`
+(Ardour's per-plugin `get_stats`, written to `presets/.engine-dspstats.json`), average per 4 ms cycle: each NAM
+620–660 µs (peaks to ~2 ms), the **muted branch's NAM still computed**, `golem Safety` (the Lua DSP output limiter)
+**323 µs**, golem-fx reverb 204, delay 131, IR cabs ~90 each, the small golem-fx blocks 20–80. RT scheduling is fine
+(FIFO 78–80). The cause that dominates: **the CPU governor was `powersave`, the core at 0.67 GHz** — with
+`performance` (the Dashboard's ⚡ CPU boost) the load drops from 80 % to 31 %. REAPER hides it with anticipative FX
+processing; Ardour has to finish each 4 ms cycle. Open: run the CPU boost while the Golem Engine plays; replace the
+Lua limiter with a compiled one; stop computing a muted branch (needs the scene-gap bench before it ships).
+
 **2026-11-13 — REAPER stall bench on the blocks golem.fm's AI may not propose yet (catalog v41).** The rack was
 switched to REAPER for the run, then back. A first run was void: a golem-fx Rust build in parallel (load 10, 152
 xruns) made plain JSFX "freeze" up to 500 ms. On a quiet machine, two passes (8 + 18 switch-ons per block):

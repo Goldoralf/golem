@@ -79,7 +79,7 @@ def _bpm(cmd):
 class ArdourEngine(EngineAdapter):
     id = "ardour"
     actions = frozenset({"ping", "status", "rig_recall", "scene_apply", "stomp", "rig_verify", "dump", "audio_set",
-                         "plugins", "snapshot", "gapmeter"})
+                         "plugins", "snapshot", "gapmeter", "dspstats"})
     PROC_NAMES = ("luasession",)
 
     def __init__(self, link=None):

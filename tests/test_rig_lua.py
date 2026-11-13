@@ -462,3 +462,37 @@ def test_met_emet_shem_se_posent_sous_reaper_avec_golem_fx(tmp_path, monkeypatch
     plan = lab.compile(patch)
     txt = json.dumps(plan)
     assert not any(f'"type": "{t}"' in txt for t in want), txt[:400]
+
+
+def test_la_cle_du_gate_entend_le_di_de_la_lane(tmp_path, monkeypatch):
+    # docs/golem-fx-sheet.md §4 : Met (catalogue v43) a une entrée de clé. Sur la piste d'ENTRÉE, golem_keytap en tête
+    # recopie le DI sur 3/4 ; ailleurs (le merge, après l'ampli), un envoi PRÉ-FX de l'entrée arrive sur 3/4
+    import copy
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    cid, p = next((k, v) for k, v in plugins.items() if v["name"] == "GoleM FX Met")
+    from bridge import rig
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: {cid})
+    lab.F.installed[p["reaper"]] = True
+    lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0}) for k in p["params"]])
+    patch = copy.deepcopy(PATCH)
+    ch = patch["lanes"][0]["chain"]
+    ch["pre"] = [{"id": "met", "type": "met"}]                                 # sur la piste d'entrée
+    ch["post"] = [{"id": "met2", "type": "met"}] + ch["post"]                  # sur le merge, après les branches
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    tracks = lab.tracks()
+    root = next(t for t in tracks if any(f["renamed"] == "golem:met" for f in t["fx"]))
+    merge = next(t for t in tracks if any(f["renamed"] == "golem:met2" for f in t["fx"]))
+    assert "keytap" in root["fx"][0]["name"].lower(), [f["name"] for f in root["fx"]]
+    assert root["info"]["I_NCHAN"] == 4 and merge["info"]["I_NCHAN"] == 4, lab.log()
+    raw = next(t for t in lab.F.tracks.values() if t.name == root["name"])
+    sends = [dict(x) for x in raw.sends.values()]
+    key = [x for x in sends if x["I_DSTCHAN"] == 2]
+    assert len(key) == 1 and key[0]["I_SENDMODE"] == 1 and key[0]["I_MIDIFLAGS"] == 31 and key[0]["I_SRCCHAN"] == 1024
+    assert key[0]["dest"].name == merge["name"]
+    assert not any("keytap" in f["name"].lower() for f in merge["fx"])
+    # les autres envois de l'entrée (vers les branches) restent sur 1/2 : la clé ne descend pas dans le son
+    assert all(x["I_DSTCHAN"] == 0 and x["I_SRCCHAN"] == 0 for x in sends if x is not key[0] and x["I_DSTCHAN"] != 2)

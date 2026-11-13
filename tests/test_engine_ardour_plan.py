@@ -421,3 +421,15 @@ def test_l_harmonie_de_gfx_pitch_part_par_le_rang_et_song_key_reste_au_compilate
     got = {p["label"]: p for p in blk["params"]}
     assert set(got) >= {"Harmony", "Key", "Scale", "Shift 2", "Voice 2 Level"}
     assert [s["param"] for s in sk] == ["song_key"]
+
+
+def test_un_gate_a_cle_recoit_l_entree_de_sa_lane():
+    # docs/golem-fx-sheet.md §4 : le sidechain de Met est relié à l'entrée de la carte de son path
+    from bridge.engine import ardour_plan as P
+    rig = {"id": "k", "paths": [{"id": "p", "tracks": [
+        {"role": "pre", "name": "G", "input": 3, "blocks": [], "sends_to": ["G#merge"]},
+        {"role": "merge", "name": "G#merge", "blocks": [{"id": "met", "type": "met"}, {"id": "dly", "type": "delay"}],
+         "out_sel": "1-2"}]}]}
+    plan = P.build(rig)
+    blocks = {b["id"]: b for t in plan["tracks"] for b in t["blocks"]}
+    assert blocks["met"]["key_input"] == 3 and "key_input" not in blocks["dly"]

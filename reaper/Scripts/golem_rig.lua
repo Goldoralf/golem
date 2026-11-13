@@ -211,7 +211,8 @@ local function apply_golem_fx(root, map)
     local inst = p and gfx_installed_name(p.reaper)
     if e and p and inst then
       local labels = spec.params or {}
-      e.gfx = { plugin = inst, init = spec.init or {}, absent = spec.absent or {}, ranges = p.params }
+      e.gfx = { plugin = inst, init = spec.init or {}, absent = spec.absent or {}, ranges = p.params,
+                key = spec.key == true }                  -- un gate À CLÉ (Met, le gate golem-fx) : le DI sur 3/4
       e.plugin = inst
       e.fx_init = {}                                     -- l'init du plugin d'origine (Calf…) ne vaut pas ici
       for _, d in ipairs(e.params or {}) do
@@ -2304,7 +2305,7 @@ local function route_out(tr, name, out_ch, mono_on, mono_gain)
     log("  out " .. name .. " -> OUT1 (mono sum, pad " .. tostring(mono_gain) .. " dB)")
   else
     reaper.SetTrackSendInfo_Value(tr, 1, snd, "I_DSTCHAN", out_ch - 1)  -- 0-based ; base paire = paire stéréo
-    reaper.SetMediaTrackInfo_Value(tr, "I_NCHAN", 2)
+    reaper.SetMediaTrackInfo_Value(tr, "I_NCHAN", wants_nchan(tr))     -- 4 si la piste porte la clé d'un gate
     log("  out " .. name .. " -> hw ch " .. out_ch .. " (I_DSTCHAN " .. (out_ch - 1) .. ")")
   end
   reaper.SetMediaTrackInfo_Value(tr, "B_MAINSEND", 0)          -- jamais via Master
@@ -2313,6 +2314,9 @@ end
 -- combien de canaux une piste DOIT garder : 16 si elle porte un mixeur drumgizmo (un micro par canal,
 -- drummix somme vers 1/2), 2 sinon. Le routage de sortie forçait 2 — ce qui ne laissait que les overheads.
 local function wants_nchan(tr)
+  -- une piste qui porte un gate À CLÉ a 4 canaux : 3/4 = le DI de la lane (key_wire, docs/golem-fx-sheet.md §4)
+  local ok_k, k = reaper.GetSetMediaTrackInfo_String(tr, "P_EXT:golem_key", "", false)
+  if ok_k and k == "1" then return 4 end
   for i = 0, reaper.TrackFX_GetCount(tr) - 1 do
     local ok, nm = reaper.TrackFX_GetNamedConfigParm(tr, i, "renamed_name")
     if ok and nm and nm:find("^drumkit%-mix:") then return 16 end
@@ -2947,12 +2951,41 @@ end
 -- Pose sur `tr` : cœur .RfxChain (ampli+cab bakés), merge-gain (tête), puis FX hors-cœur DANS L'ORDRE
 -- logique (les blocs AVANT l'ampli — ex. overdrive — sont posés avant le NAM, pas appendus en fin) +
 -- fichiers/estampille/bypass/params. La piste doit être VIDÉE avant (clear_track_fx).
+---------------------------------------------------- la CLÉ des gates à clé (docs/golem-fx-sheet.md §4)
+-- Met et le gate de golem-fx ont une entrée de clé (pins 3/4 de leur VST3) : elle doit entendre le DI de la lane, pas
+-- la sortie de l'ampli. Une piste qui en porte un passe à 4 canaux ; sur la piste d'ENTRÉE de la lane, golem_keytap en
+-- tête recopie l'entrée sur 3/4 ; une autre piste du path reçoit le DI par un envoi PRÉ-FX de l'entrée sur 3/4 (key_wire).
+-- Sans clé reliée, Met écoute son entrée principale : rien ne se casse.
+local KEYTAP_NAMES = { "JS:golem/golem_keytap", "JS: golem/golem_keytap", "JS:golem/golem_keytap.jsfx" }
+local function spec_keyed(spec, effects)
+  for _, b in ipairs(spec.blocks or {}) do
+    local e = effects[b.type]
+    if e and e.gfx and e.gfx.key then return true end
+  end
+  return false
+end
+local function ensure_keytap(tr, stereo)
+  local fx = -1
+  for i = 0, reaper.TrackFX_GetCount(tr) - 1 do
+    local _, nm = reaper.TrackFX_GetFXName(tr, i, "")
+    if nm and nm:lower():find("keytap", 1, true) then fx = i; break end
+  end
+  if fx < 0 then
+    fx = add_first(tr, KEYTAP_NAMES)
+    if fx < 0 then log("  ⚠ golem_keytap JSFX introuvable (provision/link-reaper.sh fait ?) — la clé du gate reste vide"); return end
+    if fx > 0 then reaper.TrackFX_CopyToTrack(tr, fx, tr, 0, true); fx = 0 end
+  end
+  reaper.TrackFX_SetParam(tr, fx, 0, stereo and 0 or 1)
+  log("  + keytap @0 (DI -> canaux 3/4, " .. (stereo and "stéréo" or "mono") .. ")")
+end
+
 local function build_track_fx(root, tr, spec, effects)
   reaper.GetSetMediaTrackInfo_String(tr, "P_EXT:golem_core_failed", "", true)
   -- lane Keys : le ROOT (piste a l'entree MIDI du clavier) porte le renifleur de potards AKAI EN TETE
   -- (avant tout instrument/note-zone). CC -> gmem golem_knobs -> golem_knobs.lua. spec.midi + input.
   -- pas sur une lane DRUMS : la pédale de charleston (CC4) aurait piloté la Macro 4 de Vital via golem_knobs (revue 2026-09-17, P3)
   if spec.midi and spec.input ~= nil and spec.midi_role ~= "drums" then ensure_knob_tap(tr) end
+  -- (la clé d'un gate : posée APRÈS le cœur, plus bas — load_fxchain remplace toute la chaîne)
   -- CŒUR d'abord : load_fxchain REMPLACE tout le <FXCHAIN> -> doit précéder le merge_gain (sinon il l'efface).
   local core = {}
   if spec.native_core then
@@ -2970,6 +3003,8 @@ local function build_track_fx(root, tr, spec, effects)
   if spec.role == "merge" and spec.merge_gain ~= nil then
     set_merge_gain_fx(tr, spec.merge_gain)
   end
+  -- la clé d'un gate à clé, sur la piste d'ENTRÉE : le DI recopié sur 3/4 avant tout effet
+  if spec.input ~= nil and not spec.midi and spec_keyed(spec, effects) then ensure_keytap(tr, spec.stereo) end
 
   -- rang logique de l'ampli : les blocs hors-cœur AVANT lui doivent passer avant le NAM.
   local amp_pos
@@ -3504,10 +3539,12 @@ end
 -- NB ep : dx7_bank EST dans la signature (changer de banque = rebuild), PAS dx7_patch (le patch reste un
 -- param scène-first -> Program Change à chaud via le JSFX dx7-ctl, zéro rebuild).
 -- N'inclut AUCUN potard : une édition de param ne réinstancie pas (donc pas de reload IR).
-local function fx_signature(root, spec)
+local function fx_signature(root, spec, effects)
   -- PAS le NOM du .RfxChain (préfixé par preset) mais son CONTENU (hash) : deux presets à chaîne
   -- identique (ex. une copie) partagent la signature -> REUSE au switch -> pas de reload IR (anti-crash).
   local parts = { "role=" .. tostring(spec.role), "mg=" .. tostring(spec.merge_gain) }
+  -- la clé d'un gate (golem_keytap en tête de la piste d'entrée) : sa présence change la chaîne -> rebuild
+  if effects and spec.input ~= nil and not spec.midi and spec_keyed(spec, effects) then parts[#parts + 1] = "key" end
   if DESKTOP_FX then
     local backend = read_file(root .. "/library/catalog/" .. DESKTOP_TABLE)
     parts[#parts + 1] = "windows-fx=" .. (backend and tostring(cheap_hash(backend)) or "missing")
@@ -3838,7 +3875,7 @@ local function materialize(root, plan, mono_on)
           -- GATE FX : reconstruit (clear+build => reload NAM/IR async) UNIQUEMENT si la signature a changé.
           -- Recall identique/même-forme -> signature stable -> ZÉRO chirurgie FX -> rien à libérer pendant
           -- un chargement async (la course delete/ZConvolv disparaît). ANTI-CRASH.
-          local sig = fx_signature(root, spec)
+          local sig = fx_signature(root, spec, effects)
           local expects_fx = spec.rfxchain or spec.native_core or (spec.blocks and #spec.blocks > 0)
           -- signature identique MAIS un fichier attendu (modèle NAM, IR) non chargé : on le DIT (log +
           -- passe rig_verify -> puce « ⚠ FX FILE »), on ne REBÂTIT PAS. Rebâtir pendant que ça joue est
@@ -3895,6 +3932,11 @@ local function materialize(root, plan, mono_on)
     for si = reaper.GetTrackNumSends(tr, 1) - 1, 0, -1 do reaper.RemoveTrackSend(tr, 1, si) end
     reaper.SetMediaTrackInfo_Value(tr, "D_VOL", 1)
     reaper.SetMediaTrackInfo_Value(tr, "D_PAN", 0)
+    local keyed = (not spec.midi) and spec_keyed(spec, effects)
+    reaper.GetSetMediaTrackInfo_String(tr, "P_EXT:golem_key", keyed and "1" or "", true)
+    reaper.SetMediaTrackInfo_Value(tr, "I_NCHAN", wants_nchan(tr))
+    -- la clé (3/4) ne monte JAMAIS au parent : un enfant de dossier n'y envoie que 1/2
+    reaper.SetMediaTrackInfo_Value(tr, "C_MAINSEND_NCH", keyed and 2 or 0)
     local is_child = (spec.role == "branch" and spec.folder == "child")
     reaper.SetMediaTrackInfo_Value(tr, "I_FOLDERDEPTH", 0)                -- défaut (ajusté plus bas)
     reaper.SetMediaTrackInfo_Value(tr, "B_MAINSEND", is_child and 1 or 0) -- child = somme au parent ; sinon on décide via `out`
@@ -3958,6 +4000,27 @@ local function materialize(root, plan, mono_on)
   end
   for _, ci in pairs(last_child) do
     reaper.SetMediaTrackInfo_Value(created[ci].tr, "I_FOLDERDEPTH", -1)
+  end
+
+  -- LA CLÉ hors de la piste d'entrée (docs/golem-fx-sheet.md §4) : un envoi PRÉ-FX de l'entrée du path (son DI) vers
+  -- les canaux 3/4 de la piste qui porte le gate à clé. Après la PASSE 2 (qui purge les envois en tête de chaque piste).
+  for _, e in ipairs(created) do
+    if e.spec.input == nil and not e.spec.midi and spec_keyed(e.spec, effects) then
+      local src
+      for _, r in ipairs(created) do
+        if r.input == e.input and r.spec.input ~= nil then src = r; break end
+      end
+      if src then
+        local s = reaper.CreateTrackSend(src.tr, e.tr)
+        reaper.SetTrackSendInfo_Value(src.tr, 0, s, "I_SENDMODE", 1)                 -- pré-FX : le DI tel qu'il entre
+        reaper.SetTrackSendInfo_Value(src.tr, 0, s, "I_SRCCHAN", src.spec.stereo and 0 or 1024)   -- mono : canal 1 seul
+        reaper.SetTrackSendInfo_Value(src.tr, 0, s, "I_DSTCHAN", 2)                  -- canaux 3/4 = la clé
+        reaper.SetTrackSendInfo_Value(src.tr, 0, s, "I_MIDIFLAGS", 31)               -- audio seul (CLAUDE.md)
+        log("  key " .. src.rname .. " (DI, pré-FX) -> " .. e.rname .. " 3/4")
+      else
+        log("  ⚠ clé : pas de piste d'entrée pour " .. e.rname .. " — le gate écoute son entrée principale")
+      end
+    end
   end
 
   -- SENDS MIDI root -> enfants-instruments (lane Keys en dossier). Après la boucle PASSE 2 (qui purge

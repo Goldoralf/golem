@@ -66,14 +66,27 @@ Their pedals have their own **Blackwork** finish (black lacquer, an engraved sku
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
 
 Shem is filed under **drive** (golem-fx proposed utility): a boost is looked for next to the drives.
-**Met's key input is not routed yet** (nor gfx-gate's): it reads the main input until a key arrives, so it gates on what
-reaches it in the chain. Routing the lane's DI to the key bus is the next step, on both engines.
+**The key of a keyed gate is the lane's DI** (Met, and the golem-fx gate; `key: true` in the engine table), on both
+engines, wherever the block sits in the lane:
+
+- **REAPER** (`golem_rig.lua`): a track carrying one has 4 channels, 3/4 being the key (the plugin's aux pins). On the
+  lane's input track, `golem_keytap.jsfx` at the head of the chain copies the input onto 3/4 (mono lane: channel 1 on
+  both); on another track of the path (a branch, the merge), a **pre-FX** send from the input track lands on 3/4. The
+  key never reaches the sound: the other sends stay on 1/2, and a folder child sends only 1/2 to its parent
+  (`C_MAINSEND_NCH`). The key is part of the FX signature (the keytap appears on a rebuild).
+- **Golem Engine** (`golem_watch.lua`, fork): the plan gives the block `key_input` (the card input of its path); the
+  watcher adds the insert's sidechain (`Route:add_sidechain`) and connects it to that input; `dump` reports it.
+
+Without a key (Windows, macOS, a plugin missing), Met reads its main input: nothing breaks.
+Tests: `tests/test_rig_lua.py::test_la_cle_du_gate_entend_le_di_de_la_lane`, `tests/test_engine_ardour_plan.py`;
+on a real engine, `tools/check-engine-ardour.py` (Met after the branches and the gate in a branch both key on the
+card's input 1, measured 2026-11-13).
 REAPER sees a newly installed VST3 only after a restart (its startup scan).
 
 **Measured under REAPER on 2026-11-13** (the rack, golem-fx be2380b installed): the three blocks auditioned in one
 lane are placed by their REAPER name; rig-check is clean, and `fxparams` reads the written values back normalized on
 the plugin's ranges (Met Threshold −60 dB = 0.333, Emet Gain 20 % = 0.2, Shem Grind +6 dB = 0.5). Met shows 4 input
-pins on a 2-channel track: its key pins read the silent channels 3/4, so it stays on the main input.
+pins on a 2-channel track; before the key was routed, its key pins read silent channels and it stayed on the main input.
 
 ## 5. Open
 

@@ -1,0 +1,38 @@
+desc:GoleM key tap (keytap) -- copies the lane DI to channels 3/4, the key of a keyed gate
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2026 Raphaël Mucchielli, Grégory Beurier and contributors
+// Ce JSFX est sous MIT, PAS sous la GPL du depot : un effet doit pouvoir voyager seul.
+//
+// LA CLE D'UN GATE A CLE (docs/golem-fx-sheet.md §4) : Met et le gate de golem-fx ont une entree de clé (un bus
+// auxiliaire, pins 3/4 sous REAPER). Elle doit entendre la guitare BRUTE — le DI — et non ce qui sort de l'ampli :
+// un gate place apres un ampli high-gain s'ouvre et se ferme sur le jeu, pas sur le souffle.
+// golem_rig le pose EN TETE de la piste d'entree de la lane (avant tout effet) quand un bloc a cle y vit : il recopie
+// l'entree 1/2 sur les canaux 3/4 de la piste (passee a 4 canaux), que les effets suivants laissent passer intacts
+// (un effet a 2 pins ne touche que 1/2). Une piste qui n'est pas l'entree recoit le DI par un envoi pre-FX.
+// Mono : la lane n'a qu'une entree (canal 1), copiee sur 3 ET 4.
+
+slider1:mono=1<0,1,1{Stereo (1/2 -> 3/4),Mono (1 -> 3 and 4)}>Lane input
+
+in_pin:in L
+in_pin:in R
+in_pin:key L
+in_pin:key R
+out_pin:out L
+out_pin:out R
+out_pin:key L
+out_pin:key R
+
+@init
+// tout ici : le code avant la premiere section @ n'est JAMAIS execute (CLAUDE.md)
+pdc_delay = 0;
+pdc_bot_ch = 0;
+pdc_top_ch = 0;
+
+@sample
+mono ? (
+  spl2 = spl0;
+  spl3 = spl0;
+) : (
+  spl2 = spl0;
+  spl3 = spl1;
+);

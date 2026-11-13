@@ -215,6 +215,8 @@ def build(rig, catalog=None, table=None, cards_text=None):
     tracks, skipped = [], []
     for path in rig.get("paths") or []:
         specs = path.get("tracks") or []
+        # l'ENTRÉE de la carte de ce path (sa piste main/pre) : la clé d'un gate à clé l'écoute (docs/golem-fx-sheet.md §4)
+        lane_input = next((s.get("input") for s in specs if s.get("input") is not None and not s.get("midi")), None)
         feeds = {}                                      # nom -> [sources]
         for s in specs:
             for dst in s.get("sends_to") or []:
@@ -233,6 +235,8 @@ def build(rig, catalog=None, table=None, cards_text=None):
                 blk, sk = plan_block(b, catalog, table)
                 skipped += sk
                 if blk:
+                    if (table.get(b.get("type")) or {}).get("key") and lane_input is not None:
+                        blk["key_input"] = lane_input       # le sidechain du plugin, relié au DI de la lane
                     blocks.append(blk)
             midi = bool(s.get("midi")) and role in ("main", "pre")
             tr = {"name": s["name"], "role": role, "kind": "midi" if midi else ("track" if role in ("main", "pre") else "bus"),

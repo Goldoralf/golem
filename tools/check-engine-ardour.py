@@ -139,7 +139,8 @@ def bench_rig(scene):
             {"role": "pre", "name": pre, "input": 1, "blocks": [], "sends_to": [la, lb], "out": None},
             {"role": "merge", "name": merge, "input": None, "merge_gain": -3, "folder": "parent", "out": 1,
              "level": None, "out_sel": "1-2",
-             "blocks": [{"id": "dly", "type": "delay-tape", "foot": 8, "bypass": a, "params": {"feedback": 40, "mix": 30}},
+             "blocks": [{"id": "met", "type": "met", "params": {"thresh": -60}},       # gate à clé : le DI de l'entrée 1
+                        {"id": "dly", "type": "delay-tape", "foot": 8, "bypass": a, "params": {"feedback": 40, "mix": 30}},
                         {"type": "volume", "id": "volume-sys", "params": {"gain": 0.0}}]},
             {"role": "branch", "name": la, "input": None, "folder": "child", "folder_of": merge, "out": None, "mute": not a,
              "blocks": [{"id": "amp-a", "type": "amp-nam", "file": NAM, "bypass": not a, "params": {"output": 3.7}},
@@ -181,8 +182,10 @@ def rig_bench(eng, check, wait, acked):
     s = eng.send({"action": "rig_recall", "preset": BENCH_ID, "scene": "A"})
     lm = wait(lambda: acked(s) and (read(".livemap.json") or {}).get("preset") == BENCH_ID and read(".livemap.json"), 30) or {}
     check("rappel : livemap écrit", bool(lm), f"{(time.time() - t) * 1000:.0f} ms, {len(lm.get('blocks') or {})} blocs")
-    check("bloc REAPER-seul écarté (gate), les autres posés",
-          "gate-b" not in (lm.get("blocks") or {}) and {"amp-a", "cab-a", "amp-b", "dly", "volume-sys"} <= set(lm.get("blocks") or {}))
+    # le gate est joué par golem-fx depuis le 2026-11-12 : il est posé comme les autres (avant : écarté, REAPER seul)
+    check("tous les blocs posés (gate et Met par golem-fx)",
+          {"amp-a", "cab-a", "amp-b", "gate-b", "met", "dly", "volume-sys"} <= set(lm.get("blocks") or {}),
+          ", ".join(sorted(lm.get("blocks") or {})))
     rc = wait(lambda: (read(".rig-check.json") or {}).get("checked") and read(".rig-check.json"), 10) or {}
     check("fichiers NAM et IR lus par les plugins", rc.get("ok") is True and rc.get("checked") == 3, json.dumps(rc)[:160])
     d = dump()
@@ -209,6 +212,11 @@ def rig_bench(eng, check, wait, acked):
           and (blk.get("amp-a") or {}).get("enabled") is True)
     check("paramètre posé (NAM A Output 3,7 dB)",
           abs(((blk.get("amp-a") or {}).get("params") or {}).get("Output Lvl", 0) - 3.7) < 0.01)
+    key = (blk.get("met") or {}).get("key") or []
+    check("la clé de Met (après les branches) entend l'entrée 1 de la carte, le DI",
+          bool(key) and all(c.endswith("capture_1") for c in key), str(key))
+    gkey = (blk.get("gate-b") or {}).get("key") or []
+    check("la clé du gate golem-fx aussi", bool(gkey) and all(c.endswith("capture_1") for c in gkey), str(gkey))
     check("échelle du catalogue (Feedback 40 % -> 0,4)",
           abs(((blk.get("dly") or {}).get("params") or {}).get("Feedback", 0) - 0.4) < 0.001)
 

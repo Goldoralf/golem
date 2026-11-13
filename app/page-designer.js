@@ -14,7 +14,7 @@ import { menuEntry as startupEntry } from './startup-model.mjs';   // l'accueil 
 import { CategoryDrawer, AmpPicker } from './designer-drawer.js';
 import { SceneDictionary } from './designer-scenes.js';
 import { LaneApplySheet } from './designer-lane-apply.js';
-import { assignLaneState, newLaneState, renameLaneState, propagateLaneStates, laneIdentity, laneLineName, laneMutedIn, isLegacyBranchMute, ensureLaneStates } from './designer-model.js';
+import { GOLEM_FX, assignLaneState, newLaneState, renameLaneState, propagateLaneStates, laneIdentity, laneLineName, laneMutedIn, isLegacyBranchMute, ensureLaneStates } from './designer-model.js';
 import { IoSheet, LaneTabs, addChoicesFor, sheetRowsFor as _sheetRowsFor, laneObj as _laneObj, laneSpecOf as _laneSpecOf, laneDisabled as _laneDisabled, laneOffCard as _laneOffCard, laneWaitsCard as _laneWaitsCard } from './designer-lanes.js';
 import { DrumsetSheet, DrumsetHead, drumsetPlan, formsFor, elLabel, KIT_MIX } from './designer-drumset.js';
 import { PatchBrowser } from './designer-browse.js';
@@ -30,6 +30,7 @@ import { ArrangementLane } from './designer-arrlane.js';
 import { useSongCtx, SongBar } from './designer-song.js';     // la chanson chargée (docs/designer-song.md)    // la ligne ⚙ = un panneau, pas une chaîne (version B validée)
 import { layoutChain } from './chain-layout.js';
 import { BlockStatusSheet, MissingBanner, blockSig } from './designer-blockstatus.js';   // docs/block-status.md
+import { PedalView } from './designer-pedalview.js';     // la vue pédalier (docs/designer-glyphs-pedals.md §2)
 
 // long-press = assigner (convention QC) : longPress/lpFired partagés (lib.js).
 
@@ -56,7 +57,7 @@ const svcVetoed = (rig, type) => {
 export function DesignerPage({ rig, sub }) {
   const { data: presets, reload: reloadPresets } = useAsync(() => fetch('/api/presets').then(r => r.json()), []);
   const { data: effects } = useAsync(() => fetch('/api/effects').then(r => r.json())
-    .then(d => { hydrateBlockMeta(d.effects || d); return d; }), []);
+    .then(d => { hydrateBlockMeta(d.effects || d, d); return d; }), []);
   const { data: catalog, reload: reloadCatalog } = useAsync(getCatalog, []);
   // pédales MIDI INSTALLÉES (registre, docs/pedal-registry.md) -> catégorie `hardware` du tiroir.
   // La Whammy DT est exclue : elle a son bloc dédié (chemin nominatif prouvé matériel).
@@ -151,6 +152,15 @@ export function DesignerPage({ rig, sub }) {
   const [sceneSheet, setSceneSheet] = useState(false); // feuille Scène (renommer/niveau/supprimer) au re-tap onglet actif
   const [scenePlus, setScenePlus] = useState(false);   // popover du + de scène (nouvelle/dupliquer/importer)
   const [saveMenu, setSaveMenu] = useState(false);     // popover ⋯ : Assign in a preset
+  // VUE Blocks | Pedals de la chaîne (menu ⋯, docs/designer-glyphs-pedals.md) : une préférence d'affichage de cet écran
+  const [dview, setDview0] = useState(() => { try { return localStorage.getItem('golem.designer.view') || 'blocks'; } catch (e) { return 'blocks'; } });
+  const setDview = v => { setDview0(v); try { localStorage.setItem('golem.designer.view', v); } catch (e) { /* navigation privée */ } };
+  // l'entrée de menu, dans les DEUX menus « ⋯ » : celui d'un preset et celui d'un patch (un bouton posé dans un seul
+  // des deux est invisible dans l'autre, sans erreur — la panne déjà vécue le 2026-09-20, et revécue ici le 2026-11-13)
+  const ViewBtn = () => html`<button class="row-btn sm view-btn" data-doc="designer.menu.view"
+      onClick=${() => { setSaveMenu(false); setDview(dview === 'pedals' ? 'blocks' : 'pedals'); }}
+      title="the same chain, drawn as a pedalboard — tap a pedal: on / off in this scene · long press: its settings">
+      ▦ View: <b class=${cls(dview !== 'pedals' && 'on')}>Blocks</b> · <b class=${cls(dview === 'pedals' && 'on')}>Pedals</b></button>`;
   const [browse, setBrowse] = useState(false);         // modal presets (navigateur)
   // ── SÉLECTEUR DE PATCHES (retour 2026-08-02) ────────────────────────────────────────
   // Il était écarté tant qu'un patch n'avait pas de sauvegarde automatique : une flèche aurait
@@ -1047,6 +1057,13 @@ export function DesignerPage({ rig, sub }) {
         if (b.type in s.blocks) s.blocks[b.id] = on;            // clé legacy par TYPE : l'id la domine
       } });
   };
+  // l'état d'une lane dans la scène courante, pour la vue pédalier : chaque bloc tel que le moteur le joue, chaque
+  // branche coupée ou non (les mêmes lectures que les tuiles : blockOn, laneMuted)
+  const pedalState = L => { const blocks = {}, branches = {}, c = (L && L.chain) || {};
+    for (const b of [...(c.pre || []), ...(c.post || []), ...((c.split && c.split.branches) || []).flatMap(br => br.blocks || [])])
+      if (b && b.id) blocks[b.id] = blockOn(b);
+    for (const br of ((c.split && c.split.branches) || [])) if (br && br.id) branches[br.id] = { mute: laneMuted(br.id) };
+    return { blocks, branches }; };
   const setSceneBlock = (ref, on) => { const b = blockAt(p, ref);
     upd(n => { const s = n.scenes[scene]; s.blocks = s.blocks || {};
       // Hériter quand la scène redit la base ; sinon POSER la valeur — y compris `true`, qui
@@ -1540,6 +1557,7 @@ export function DesignerPage({ rig, sub }) {
             <div class="picker-scrim" onClick=${() => setSaveMenu(false)}></div>
             <div class="save-pop" onClick=${e => e.stopPropagation()}>
               ${PlayOnLiveBtn()}
+              ${ViewBtn()}
               <button class="row-btn sm" onClick=${() => { setSaveMenu(false); toSongCfg.current = true; createFromPatch(); }}
                 title="a new song made of this patch — its sound, scenes, stomps and backing — to lay out an arrangement. The patch stays as it is.">▤ Make a song</button>
               <button class="row-btn sm" onClick=${() => { setSaveMenu(false); setAssignDone(null); setAssignOpen(true); }}
@@ -1569,6 +1587,7 @@ export function DesignerPage({ rig, sub }) {
             <div class="save-pop" onClick=${e => e.stopPropagation()}>
               ${isBlank() ? html`<button class="row-btn sm accent" onClick=${() => { setSaveMenu(false); store(); }}>💾 Name & save</button>` : ''}
               <button class="row-btn sm" onClick=${() => { setSaveMenu(false); setSettings(true); }}>⚙ Preset settings</button>
+              ${ViewBtn()}
               <button class="row-btn sm" data-doc="designer.menu.scenes" onClick=${() => { setSaveMenu(false); setScnSheet(true); }}
                 title="what each lane plays in each scene — name its sounds">▦ Scenes & sounds</button>
               ${/* LANES & INPUTS (retour 2026-09-09) : ajouter, nommer, brancher, retirer une lane — dans une
@@ -1771,7 +1790,7 @@ export function DesignerPage({ rig, sub }) {
     const bsDl = !!bst && bst.state === 'download';
     const bsNa = !!bst && bst.state === 'unavailable' && bst.reason !== 'quarantine';
     const ctl = !patchMode && arrCtl.has(b.type);   // lancé par l'Arrangement (variante 2 : liseré + ▤)
-    return html`<button class=${cls('tile', ctl && 'arr-ctl', (!on && !off) && 'byp', off && 'scene-off', b.pending && 'pending', emptyPed && 'empty-cap', quar && 'quar', svcOff && 'svc-off', bsDl && 'bs-dl', bsNa && 'bs-na', refEq(sel, ref) && 'sel')}
+    return html`<button class=${cls('tile', GOLEM_FX.has(b.type) && 'gfx', ctl && 'arr-ctl', (!on && !off) && 'byp', off && 'scene-off', b.pending && 'pending', emptyPed && 'empty-cap', quar && 'quar', svcOff && 'svc-off', bsDl && 'bs-dl', bsNa && 'bs-na', refEq(sel, ref) && 'sel')}
         style=${'--tc:' + tc} data-drop=${dropKey} aria-label=${nm + ' · ' + b.type} data-doc=${'designer.block:' + (b.id || b.type)}
         onClick=${() => { if (lpFired() || gestFired.current) return; setSelTab('params');
           if (bsDl || bsNa || (quar && bst)) { setBsSheet({ ref, st: bst }); return; }
@@ -2378,8 +2397,15 @@ export function DesignerPage({ rig, sub }) {
                 : curLane && laneOffCard(curLane) ? html`<small class="lane-off warn">⚠ not mounted — IN ${curLane.in_sel} is not on this card, pick another input</small>` : ''}
               ${stompStrip()}
             </div>
-            <${GridChain} head=${gHead} zone=${gZone} tail=${gTail} meta=${gMeta}
-              out=${(!gZone || isMerge) ? OutPill('out:' + curLane.id, curLane.out_sel, s => setOut(curLane.id, s)) : null} />
+            ${dview === 'pedals' && !curLane.midi ? html`<${PedalView} lane=${curLane.id} chain=${curLane.chain} catalog=${effects}
+                sceneState=${pedalState(curLane)}
+                onToggle=${ref => { const b = blockAt(p, ref); if (!b) return;
+                  fxDef(b.type).scene_invariant ? toggleBypass(ref) : setSceneBlock(ref, !blockOn(b)); }}
+                onOpen=${ref => { const b = blockAt(p, ref); if (!b) return; setSelTab('params');
+                  needsModel(b.type) && !b.ref ? setPickAmp(ref) : setSel(ref); }}
+                onBranch=${brId => setSceneLane(brId, laneMuted(brId))} />`
+            : html`<${GridChain} head=${gHead} zone=${gZone} tail=${gTail} meta=${gMeta}
+              out=${(!gZone || isMerge) ? OutPill('out:' + curLane.id, curLane.out_sel, s => setOut(curLane.id, s)) : null} />`}
           </div>` : html`<div class="rig-sec config">
             <div class="cfg-lane">
               <div class="cfg-lane-hd"><b>Players</b><small>${patchMode ? 'looper · sample · drums — to play this patch on its own' : 'backing · looper · sample · drums — mixed into the output'}</small></div>

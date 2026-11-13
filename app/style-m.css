@@ -268,3 +268,6 @@ body { background: var(--bg); color: var(--txt); font: 15px/1.4 system-ui, sans-
 .c-flag b { font-size: 44px; line-height: 1; } .c-flag span { font-size: 20px; font-weight: 800; } .c-flag em { font-style: normal; font-size: 12px; color: var(--muted); }
 .c-flag:disabled { opacity: .4; }
 .c-flag.pop { transform: scale(.96); }
+
+/* les glyphes de golem-fx (app/glyphs.js) : au trait, à la taille et dans la couleur du texte qu'ils remplacent */
+svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:visible}

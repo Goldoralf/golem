@@ -131,6 +131,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [song-folders.md](song-folders.md) | CODED | Reading libraries of `.golem` files in place |
 | [song-backing.md](song-backing.md) | CODED | The backing belongs to the song; a preset plays it and mutes the stems it plays |
 | [designer-song.md](designer-song.md) | CODED | The song loaded in the Designer: its values next to the preset's, saved in the song |
+| [designer-glyphs-pedals.md](designer-glyphs-pedals.md) | CODED | golem-fx's glyphs everywhere, the clay fill of golem FX blocks, the Add-block rows and pedal shelf, the Designer pedal view, pedals on the /live stomps |
 | [library-loans.md](library-loans.md) | CODED | Sounds lent to a band by a band mate |
 | [card-setups-exchange.md](card-setups-exchange.md) | CODED (rack side) | A card's setup shared across the user's racks |
 | [diagnostics.md](diagnostics.md) | CODED | Whitelisted, scrubbed usage and bug reports |

@@ -16,7 +16,8 @@ import { ICON, NAME, SHORT, ARCH_NAME, hydrateBlockMeta, animClass, animPackOf, 
 import { ChartLive } from './live-chart.js';
 import { BankBar } from './live-bankbar.js';
 import { StagePage } from './live-pages.js';   // les pages Répète et Concert (docs/live-pages.md)
-import { useLiveTools, useViewOverride, modeViewKey } from './live-tools.js';   // les outils du top menu et leurs panneaux (2026-10-15)
+import { useLiveTools, useViewOverride, modeViewKey, useLivePedals } from './live-tools.js';
+import { loadVisuals, visualsReady, pedalSvg } from './golem-visuals.js';   // les pédales sur les stomps (L1)   // les outils du top menu et leurs panneaux (2026-10-15)
 
 const EMPTY_SW = [6, 7, 8, 9, 10].map(n => ({ sw: n, blocks: [], whammy: false }));   // pédalier vide (aucun preset)
 
@@ -438,6 +439,11 @@ export function LivePage({ rig }) {
 }
 
 function PedalboardLive({ rig, presets }) {
+  // LES PÉDALES SUR LES STOMPS (menu de vue ▸ « Pedals on the stomps ») : les moteurs de golem-fx, chargés à la demande
+  const pedalsOn = useLivePedals();
+  const [visOk, setVisOk] = useState(visualsReady());
+  useEffect(() => { if (pedalsOn && !visOk) loadVisuals().then(() => setVisOk(true)).catch(() => {}); }, [pedalsOn]);
+  const pedals = pedalsOn && visOk;
   // au boot kiosk direct sur /live le Designer n'est jamais passé : on hydrate ICON/NAME ici aussi
   useAsync(() => fetch('/api/effects').then(r => r.json()).then(d => { hydrateBlockMeta(d.effects || d, d); return d; }), []);
   const st = rig.state;
@@ -756,8 +762,12 @@ function PedalboardLive({ rig, presets }) {
             const names = [...new Set(sw.blocks.map(pileName))];
             const lanes = [...new Set(sw.blocks.map(bk => bk.role || 'service'))];
             const fx = [...new Map(sw.blocks.map(bk => [pileName(bk) + '|' + bk.role, bk])).values()];
+            const b0 = sw.blocks[0];
             return html`<span class="lst-state">${on ? 'ON' : 'OFF'}</span>
-              <span class="lst-main"><i class="lst-ic">${ICON[sw.blocks[0].type] || '•'}</i>
+              <span class=${cls('lst-main', pedals && 'with-pedal')}>${pedals
+                ? html`<span class="lst-pedal" aria-hidden="true"
+                    dangerouslySetInnerHTML=${{ __html: pedalSvg({ type: b0.type, on: on && !blockOffInScene(b0), title: pileName(b0) }) }}></span>`
+                : html`<i class="lst-ic">${ICON[b0.type] || '•'}</i>`}
                 <b class="lst-name">${esc(names[0])}${names.length > 1 ? html`<small>+${names.length - 1}</small>` : ''}</b></span>
               <span class="lst-low">${lanes.length > 1
                 ? html`<span class="lst-lanes">${lanes.map(l => html`<em class=${'li-tag ' + laneCls(l)}>${LANE_TAG[l] || String(l).toUpperCase()}</em>`)}</span>`

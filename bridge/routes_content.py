@@ -77,6 +77,11 @@ def get_effects():
                 e["quarantine_linux"] = e.pop("quarantine")
     # LE BLOC VST HOST, PARTOUT (Linux depuis le 2026-11-09, docs/platforms.md §6.1) : la fenêtre du plugin y est la
     # vue filmée. La capture NAM d'un plugin reste Windows/macOS (`vst_capture`) : le tiroir la montre grisée.
+    # LES EFFETS DE golem-fx (docs/designer-glyphs-pedals.md) : les types que le moteur ACTIF joue par un plugin golem-fx
+    # (Golem Engine seulement ; sous REAPER, aucun) — le Designer leur donne le fond « terre cuite », le tiroir les range
+    # dans leur colonne, la vue pédalier les dessine en pédales golem-fx
+    from . import rig as _rig
+    data["golem_fx"] = sorted(_rig._engine_safe_types())
     data["vst_host"] = True
     data["vst_capture"] = sys.platform in ("win32", "darwin")
     data["effects"] = [*data.get("effects", []), {"type": "vst-host", "name": "VST Host",

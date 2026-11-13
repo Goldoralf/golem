@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Tiroir d'ajout de blocs (catégories→blocs→sims) + SimList + AmpPicker (extraits, P3).
 import { html, useState, useEffect, useAsync, post, cls, esc, getCatalog, refreshCatalog } from './lib.js';
-import { CAT_COLOR, ICON, MODEL_GEARS, needsModel, archOf, archKws, catLabel } from './designer-model.js';
+import { CAT_COLOR, ICON, MODEL_GEARS, needsModel, archOf, archKws, catLabel, GOLEM_FX } from './designer-model.js';
+import { makerOf, splitGolem } from './drawer-rows.mjs';
+import { loadVisuals, pedalSvg, visualsReady } from './golem-visuals.js';
 import { searchDrawer, myCaptures, isMine } from './drawer-search.mjs';
 import { FORMATS, selectVsts, vstFormatCounts, vstGroups, recentVsts, rememberVst, pickRecent } from './vst-host-model.mjs';
 
@@ -104,6 +106,12 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
   };
   const vstToggleVendor = v => { const n = new Set(vstOpen); n.has(v) ? n.delete(v) : n.add(v); setVstOpen(n); };
   const vstAdd = (row, format) => { setVstRecent(rememberVst(row)); onAddVst(row.names[format] || row.name); };
+  // VUE Blocks | Pedals (docs/designer-glyphs-pedals.md, maquette D) : les mêmes blocs, en lignes ou en étagère de
+  // pédales ; le choix est retenu sur cet écran (préférence d'affichage, jamais un réglage du rack)
+  const [view, setView0] = useState(() => { try { return localStorage.getItem('golem.drawer.view') || 'blocks'; } catch (e) { return 'blocks'; } });
+  const setView = v => { setView0(v); try { localStorage.setItem('golem.drawer.view', v); } catch (e) { /* navigation privée */ } };
+  const [vis, setVis] = useState(visualsReady());
+  useEffect(() => { if (view === 'pedals' && !vis) loadVisuals().then(() => setVis(true)).catch(() => setView('blocks')); }, [view]);
   const [pick, setPick] = useState(null);         // 3e volet : {type,name,macro?} (sim) | {ped:archétype} (pédale nommée)
   const [gainF, setGainF] = useState('');         // filtre caractère : '' (tout) | clean | crunch | high-gain
   const [rigF, setRigF] = useState('all');        // filtre nature : all | amp (têtes) | amp-cab (full-rig)
@@ -151,12 +159,88 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
       c.block].filter(Boolean).join(' · '))}</small></button>`;
   const found = flat || vstOnly ? null : searchDrawer(q, { cats: base, fx, archetypes: pedals || [],
     tones: (catg && catg.tones) || [], modelGears: MODEL_GEARS });
+  // les archétypes nommés (pédales par famille, amplis/cabs par marque) — dans les deux présentations du tiroir
+  const archSections = (() => {                      // amplis : sections par MARQUE (comme Library ▸ Amps) ; pédales : par famille
+            if (!arch.length) return '';
+            const unit = activeCat === 'cab' ? 'IR(s)' : 'capture(s)';
+            const tile = a => { const n = nOf(a);
+              return html`<button class=${cls('di', 'ped', !n && 'nocap', pick && pick.ped && pick.ped.id === a.id && 'on')}
+                style=${'--tc:' + (a.color || '#ffb03a')} onClick=${() => setPick({ ped: a })}
+                title=${n ? a.name + ' — ' + n + ' ' + unit + ' on the rack' : a.name + ' — no capture yet (download one from the picker)'}>
+                <span class="di-ic">${a.glyph || '⬢'}</span><span class="di-nm">${brandCat ? (a.short || a.name) : a.name}</span>
+                ${n ? html`<span class="di-count">${n}</span>` : ''}<span class="di-caret">›</span>
+              </button>`; };
+            if (brandCat) {
+              const brandOfArch = a => a.brand || a.name.split(' ')[0];
+              return [...new Set(arch.map(brandOfArch))].sort((a, b) => a.localeCompare(b)).map(b => html`
+                <div class="di-group">${esc(b)}</div>
+                ${arch.filter(a => brandOfArch(a) === b).map(tile)}`);
+            }
+            return FAMILY_ORDER.filter(f => arch.some(a => a.family === f)).map(fam => html`
+              <div class="di-group">${FAMILY_LABELS[fam] || fam}</div>
+              ${arch.filter(a => a.family === fam).map(tile)}`);
+          })();
+  // un bloc du catalogue, en tuile (présentation d'avant, et toute catégorie que les lignes ne couvrent pas)
+  const itemTile = e => { const cf = conflict(e);
+            // `blocked` (+ `why`) : posé par l'appelant quand le bloc existe mais ne peut pas jouer ICI
+            // (Drum Kit sur une lane audio) — même traitement qu'un conflit : grisé, étiqueté, expliqué.
+            const off = (e.unique && taken(e.type)) || !!cf || !!e.blocked;
+            return html`<button class=${cls('di', pick && !pick.macro && !pick.ped && pick.type === e.type && 'on', off && 'off')}
+            disabled=${off} title=${cf ? whyBlocked(e, cf) : e.blocked ? e.why : (e.unique && taken(e.type) ? 'already in this preset (unique block)' : '')}
+            ${/* la couleur du BLOC d'abord, sa catégorie ensuite (2026-09-18) : les services de la
+                  lane ⚙ sont tous en catégorie `utility`, donc tous gris ici alors que leurs tuiles
+                  portent chacune leur teinte — le tiroir et la chaîne doivent dire la même chose. */''}
+            style=${'--tc:' + (e.color || CAT_COLOR[e.category] || '#8a94a3')} onClick=${() => chooseItem(e)}>
+            <span class="di-ic">${ICON[e.type] || e.icon || '▫'}</span><span class="di-nm">${e.name}</span>
+            ${needsModel(e.type) ? html`<span class="di-caret">›</span>` : ''}
+            ${e.blocked ? html`<span class="di-tag">${e.blocked}</span>` : ''}
+            ${/* ⚠ VISIBLE, pas en infobulle : l'écran du rack est TACTILE — il n'y a pas de
+                  survol, donc un `title` n'existe pas au doigt (leçon déjà payée sur le
+                  bouton play des cartes). Une tuile morte sans raison est pire qu'absente. */ ''}
+            ${cf ? html`<span class="di-why">${whyBlocked(e, cf)}</span>` : e.blocked ? html`<span class="di-why">${e.why}</span>` : ''}
+          </button>`; };
+  // ── LIGNES (maquette B) : les effets golem FX dans leur colonne, les autres blocs à côté avec leur fabricant ; en vue
+  // Pedals, les mêmes en étagère de pédales (maquette D). Pas pour la recherche, le 3e volet, Mine, VST Host, Hardware.
+  const useB = !flat && !vstOnly && !found && !pick && !['vst-host', 'hardware', 'mine'].includes(activeCat)
+    && (items.length > 0 || arch.length > 0);
+  const { gfx: gxItems, other: oxItems } = splitGolem(items, GOLEM_FX);
+  const offOf = e => { const cf = conflict(e); return { cf, off: (e.unique && taken(e.type)) || !!cf || !!e.blocked }; };
+  const rowOf = (e, golem) => { const { cf, off } = offOf(e); const mk = golem ? '' : makerOf(e.plugin);
+    return html`<button class=${cls('dr', golem && 'g', off && 'off')} disabled=${off}
+      style=${'--tc:' + (e.color || CAT_COLOR[e.category] || '#8a94a3')}
+      title=${cf ? whyBlocked(e, cf) : e.blocked ? e.why : (e.unique && taken(e.type) ? 'already in this preset (unique block)' : '')}
+      onClick=${() => chooseItem(e)}>
+      <span class="dr-ic">${ICON[e.type] || e.icon || '▫'}</span>
+      <span class="dr-tx"><span class="dr-nm">${e.name}</span>${mk ? html`<small>${esc(mk)}</small>` : ''}
+        ${cf ? html`<span class="di-why">${whyBlocked(e, cf)}</span>` : e.blocked ? html`<span class="di-why">${e.why}</span>` : ''}</span>
+      <span class="dr-add">${needsModel(e.type) ? '›' : '+'}</span></button>`; };
+  const shelf = view === 'pedals' && vis;
+  const pedalOf = e => { const { cf, off } = offOf(e);
+    return html`<button class=${cls('dp', off && 'off')} disabled=${off} onClick=${() => chooseItem(e)} aria-label=${e.name}
+      title=${e.name + (cf ? ' — ' + whyBlocked(e, cf) : e.blocked ? ' — ' + e.why : '')}>
+      <span class="dp-svg" dangerouslySetInnerHTML=${{ __html: pedalSvg({ type: e.type, title: e.short || e.name }) }}></span>
+      <span class="dp-nm">${e.short || e.name}</span></button>`; };
+  // une catégorie sans golem FX (Amp, Cab, Preamp…) prend toute la largeur : une colonne vide ne dirait rien d'utile
+  const bView = () => html`<div class=${cls('dbx', shelf && 'shelf', !gxItems.length && 'solo')}>
+    ${!gxItems.length ? '' : html`<div class="dbx-g">
+      <div class="dbx-h"><b class="dbx-mark">/g_</b><b>golem FX</b>
+        ${gxItems.length ? html`<span>${gxItems.length} effect${gxItems.length > 1 ? 's' : ''}</span><em>testing</em>` : ''}</div>
+      ${shelf ? html`<div class="dp-row">${gxItems.map(pedalOf)}</div>` : gxItems.map(e => rowOf(e, true))}
+    </div>`}
+    <div class="dbx-o">
+      ${oxItems.length ? html`<div class="dbx-h"><b>Other blocks</b><span>${oxItems.length}</span></div>
+        ${shelf ? html`<div class="dp-row">${oxItems.map(pedalOf)}</div>` : oxItems.map(e => rowOf(e, false))}` : ''}
+      ${arch.length ? html`<div class="dbx-arch">${archSections}</div>` : ''}
+    </div></div>`;
   const headTitle = pick ? (pick.ped ? pick.ped.name : pick.name) : flat ? 'Add service' : vstOnly ? 'Replace with your own plugin' : 'Add block';
   return html`<div class="drawer-scrim" onClick=${e => e.target.classList.contains('drawer-scrim') && onClose()}>
-    <div class=${cls('drawer', pick && 'wide', flat && 'flat', activeCat === 'vst-host' && !flat && 'vst-wide')}>
+    <div class=${cls('drawer', pick && 'wide', flat && 'flat', activeCat === 'vst-host' && !flat && 'vst-wide', useB && 'rows')}>
       <div class="drawer-head"><b>${esc(headTitle)}</b>
         ${flat || vstOnly ? '' : html`<input class="drawer-search" type="search" placeholder="Search blocks and captures"
           value=${q} onInput=${e => setQ(e.target.value)} />`}
+        ${flat || vstOnly ? '' : html`<div class="tb-seg dv-seg" title="The same blocks as rows or as pedals">
+          <button class=${cls(view !== 'pedals' && 'on')} onClick=${() => setView('blocks')}>Blocks</button>
+          <button class=${cls(view === 'pedals' && 'on')} onClick=${() => setView('pedals')}>Pedals</button></div>`}
         <button class="close" onClick=${onClose}>×</button></div>
       <div class="drawer-body">
         ${flat ? '' : html`<div class="drawer-cats">
@@ -290,45 +374,9 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
                     une table importée non vérifiée peut jouer un demi-ton à côté sur scène. */ ''}
               ${pd.confidence && pd.confidence !== 'verified' ? html`<span class="di-why">table ${pd.confidence} — verify it on the pedal before a gig</span>` : ''}
             </button>`)}` : ''}
-          ${(() => {                      // amplis : sections par MARQUE (comme Library ▸ Amps) ; pédales : par famille
-            if (!arch.length) return '';
-            const unit = activeCat === 'cab' ? 'IR(s)' : 'capture(s)';
-            const tile = a => { const n = nOf(a);
-              return html`<button class=${cls('di', 'ped', !n && 'nocap', pick && pick.ped && pick.ped.id === a.id && 'on')}
-                style=${'--tc:' + (a.color || '#ffb03a')} onClick=${() => setPick({ ped: a })}
-                title=${n ? a.name + ' — ' + n + ' ' + unit + ' on the rack' : a.name + ' — no capture yet (download one from the picker)'}>
-                <span class="di-ic">${a.glyph || '⬢'}</span><span class="di-nm">${brandCat ? (a.short || a.name) : a.name}</span>
-                ${n ? html`<span class="di-count">${n}</span>` : ''}<span class="di-caret">›</span>
-              </button>`; };
-            if (brandCat) {
-              const brandOfArch = a => a.brand || a.name.split(' ')[0];
-              return [...new Set(arch.map(brandOfArch))].sort((a, b) => a.localeCompare(b)).map(b => html`
-                <div class="di-group">${esc(b)}</div>
-                ${arch.filter(a => brandOfArch(a) === b).map(tile)}`);
-            }
-            return FAMILY_ORDER.filter(f => arch.some(a => a.family === f)).map(fam => html`
-              <div class="di-group">${FAMILY_LABELS[fam] || fam}</div>
-              ${arch.filter(a => a.family === fam).map(tile)}`);
-          })()}
+          ${useB ? bView() : html`${archSections}
           ${arch.length ? html`<div class="di-group">Other</div>` : ''}
-          ${items.map(e => { const cf = conflict(e);
-            // `blocked` (+ `why`) : posé par l'appelant quand le bloc existe mais ne peut pas jouer ICI
-            // (Drum Kit sur une lane audio) — même traitement qu'un conflit : grisé, étiqueté, expliqué.
-            const off = (e.unique && taken(e.type)) || !!cf || !!e.blocked;
-            return html`<button class=${cls('di', pick && !pick.macro && !pick.ped && pick.type === e.type && 'on', off && 'off')}
-            disabled=${off} title=${cf ? whyBlocked(e, cf) : e.blocked ? e.why : (e.unique && taken(e.type) ? 'already in this preset (unique block)' : '')}
-            ${/* la couleur du BLOC d'abord, sa catégorie ensuite (2026-09-18) : les services de la
-                  lane ⚙ sont tous en catégorie `utility`, donc tous gris ici alors que leurs tuiles
-                  portent chacune leur teinte — le tiroir et la chaîne doivent dire la même chose. */''}
-            style=${'--tc:' + (e.color || CAT_COLOR[e.category] || '#8a94a3')} onClick=${() => chooseItem(e)}>
-            <span class="di-ic">${ICON[e.type] || e.icon || '▫'}</span><span class="di-nm">${e.name}</span>
-            ${needsModel(e.type) ? html`<span class="di-caret">›</span>` : ''}
-            ${e.blocked ? html`<span class="di-tag">${e.blocked}</span>` : ''}
-            ${/* ⚠ VISIBLE, pas en infobulle : l'écran du rack est TACTILE — il n'y a pas de
-                  survol, donc un `title` n'existe pas au doigt (leçon déjà payée sur le
-                  bouton play des cartes). Une tuile morte sans raison est pire qu'absente. */ ''}
-            ${cf ? html`<span class="di-why">${whyBlocked(e, cf)}</span>` : e.blocked ? html`<span class="di-why">${e.why}</span>` : ''}
-          </button>`; })}
+          ${items.map(itemTile)}`}
           ${activeCat === 'amp' && stereo ? html`<button class=${cls('di', 'macro', pick && pick.macro && 'on')} style=${'--tc:' + CAT_COLOR.amp}
             title="NAM head + 2 separate cabs routed OUT 1 / OUT 2 (stereo)" onClick=${() => setPick({ type: 'amp-nam', name: 'Amp + 2 cabs (stereo)', macro: true })}>
             <span class="di-ic">⑃</span><span class="di-nm">Amp + 2 cabs<br/>stereo</span><span class="di-caret">›</span>

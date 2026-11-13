@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Modèle du Designer — constantes, couleurs/glyphes, normalisation de chaîne. PUR (zéro DOM/fetch).
-import { post } from './lib.js';
+import { post, html } from './lib.js';
 import { ICONS } from './icons.js';
+import { GLYPHS } from './glyphs.js';
 
 export const SCENE_IDS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
@@ -184,8 +185,21 @@ export const BLOCK_COLOR = {
 };
 export const blkColor = t => BLOCK_COLOR[t] || '#8a94a3';
 
-// glyphes monochromes (héritent la couleur de la tuile) — évite les emojis colorés type ⬛
-export const ICON = {
+// LES GLYPHES DE golem-fx (2026-11-13, docs/designer-glyphs-pedals.md) : un SVG par type de bloc, au trait, en
+// currentColor — il prend la couleur de la tuile comme le caractère Unicode qu'il remplace. Un nœud NEUF à chaque
+// lecture : Preact ne doit pas monter le même vnode à deux endroits (la pile de /live montre un même type deux fois).
+export const glyph = (type, cls) => {
+  const g = GLYPHS[type];
+  return g ? html`<svg class=${'glyph' + (cls ? ' ' + cls : '')} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+    dangerouslySetInnerHTML=${{ __html: g.svg }}></svg>` : null;
+};
+// le caractère d'avant, pour un contexte TEXTE (un title, une chaîne) — jamais un nœud
+export const glyphText = type => (GLYPHS[type] && GLYPHS[type].uni) || ICON_UNI[type] || '•';
+
+// glyphes monochromes (héritent la couleur de la tuile) — évite les emojis colorés type ⬛. Ce sont désormais les
+// REPLIS Unicode : ICON[type] rend le glyphe SVG quand golem-fx en a un (le proxy plus bas).
+const ICON_UNI = {
   'pedal-nam': '⬢', 'preamp-nam': '⬡', 'comp-nam': '◈', grit: '◩',
   gate: '⊓', comp: '◇', boost: '△', drive: '△', amp: '▦', 'amp-nam': '▦', cab: '◨',
   wah: '◑', 'wah-color': '◑', autowah: '◠',
@@ -195,6 +209,9 @@ export const ICON = {
   vital: ICONS.synth, organ: ICONS.organ, piano: ICONS.keys, ep: ICONS.ep, pads: ICONS.pads, drums: ICONS.drums,
   drumkit: ICONS.drumkit,
 };
+export const ICON = new Proxy(ICON_UNI, {
+  get: (t, k) => (typeof k === 'string' && GLYPHS[k] ? glyph(k) : t[k]),
+});
 // ces types gardent leur pictogramme : le glyphe du catalogue (un emoji) ne l'écrase pas
 const ICON_SVG = new Set(['vital', 'organ', 'piano', 'ep', 'pads', 'drums', 'drumkit']);
 
@@ -211,11 +228,15 @@ export const ARCH_NAME = {};    // archétype nommé (pédales/amplis d'effects.
 // d'identité pour les blocs qui n'ont pas de capture : vital→preset, drums→kit, piano→sfz…
 // Le catalogue le déclare (`content_param`), le code n'a aucun cas particulier.
 export const CONTENT_PARAM = {};
+// les types que le moteur ACTIF joue par un plugin golem-fx (/api/effects `golem_fx` ; vide sous REAPER) : fond
+// « terre cuite » dans le Designer, colonne golem FX du tiroir, pédale golem-fx dans la vue pédalier
+export const GOLEM_FX = new Set();
 
 export function hydrateBlockMeta(effects, catalog) {
   // `catalog` = le document effects.json entier (pedals/amps/cabs nommés) quand l'appelant l'a : les
   // archétypes nommés servent à la pile de /live (« Big Muff » plutôt que le titre de la capture)
   for (const a of [...((catalog || {}).pedals || []), ...((catalog || {}).amps || []), ...((catalog || {}).cabs || [])]) if (a && a.id && a.name) ARCH_NAME[a.id] = a.name;
+  if (catalog && Array.isArray(catalog.golem_fx)) { GOLEM_FX.clear(); for (const t of catalog.golem_fx) GOLEM_FX.add(t); }
   for (const b of (effects || [])) {
     if (b && b.type) {
       // ⚠ `glyph` PUIS `icon` : le catalogue porte les deux, et tous les blocs n'ont pas de

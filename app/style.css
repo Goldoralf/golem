@@ -831,6 +831,13 @@ code{background:var(--panel2); padding:2px 6px; border-radius:5px; font-size:13p
    même gabarit optique que les glyphes voisins, et elle hérite --tc comme eux */
 .tile-svg{display:flex; align-items:center; justify-content:center; width:26px; height:26px}
 .tile-svg .ic{width:100%; height:100%}
+/* les glyphes de golem-fx (app/glyphs.js) : au trait, à la taille et dans la couleur du texte qu'ils remplacent */
+/* un bloc joué par golem-fx (moteur Golem Engine) : un fond « terre cuite », la matière de ses pédales ; la bordure et
+   le glyphe gardent la couleur de catégorie (docs/designer-glyphs-pedals.md) */
+.tile.gfx{background:#2b1a13}
+.tile.gfx.scene-off, .tile.gfx.byp{background:#1d1411}
+svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:visible}
+.tile-svg svg.glyph{width:100%; height:100%}
 /* Nom de la tuile sur DEUX lignes au besoin (2026-07-28) : la tuile fait 64 px de haut et son
    contenu est centré — deux lignes de 9,5 px tiennent sans rien déplacer, alors qu'une seule
    ligne coupait « Backing Track » à « Backing Trac… » (58 px utiles pour 61 px de texte). */
@@ -1328,6 +1335,37 @@ code{background:var(--panel2); padding:2px 6px; border-radius:5px; font-size:13p
 .io-pill.cfg{color:var(--funk)}
 .io-pill.cfg.tap b{color:var(--accent)}
 /* tiroir « à plat » (lane config) : pas de colonne catégories, une colonne d'items, plus étroit */
+/* le tiroir en LIGNES (docs/designer-glyphs-pedals.md, maquette B) : golem FX dans leur colonne, les autres à côté */
+.drawer.rows{width:780px; max-width:96%}
+.dv-seg{flex:none}
+.dbx{grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start}
+.dbx-g{border:1px solid #5a2c22; background:#1f1512; border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:6px}
+.dbx-o{padding:10px 2px; display:flex; flex-direction:column; gap:6px; min-width:0}
+.dbx-h{display:flex; align-items:baseline; gap:8px; font-size:13px; padding:0 2px 4px}
+.dbx-h span{color:var(--muted); font-size:12px}
+.dbx-h em{margin-left:auto; font-style:normal; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#f0b35a}
+.dbx-mark{font-family:ui-monospace,monospace; color:#ff7a60}
+.dbx-arch{display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px; margin-top:4px}
+.dbx-arch .di-group{margin-top:4px}
+.dr{display:flex; align-items:center; gap:12px; min-height:48px; padding:6px 12px; border-radius:9px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); text-align:left; font:inherit}
+.dr.g{background:#2a1913; border-color:#6a3226}
+.dr.off{opacity:.45}
+.dr-ic{font-size:24px; color:var(--tc); display:flex; flex:none}
+.dr-tx{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px}
+.dr-nm{font-size:14px}
+.dr-tx small{font-size:11px; color:var(--muted)}
+.dr-add{font-size:18px; color:var(--muted); flex:none}
+/* … et en vue Pedals : une étagère de pédales (maquette D) */
+.dbx.shelf, .dbx.solo{grid-template-columns:1fr}
+.dbx.solo .dbx-arch{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+.dbx.shelf .dbx-g{background:#2a2119; border-color:#4a3626}
+.dp-row{display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; padding:2px 2px 8px; border-bottom:8px solid #4a3626; border-radius:0 0 3px 3px}
+.dp{display:flex; flex-direction:column; align-items:center; gap:3px; width:78px; padding:0; border:0; background:transparent; color:var(--text); font:inherit}
+.dp.off{opacity:.4}
+.dp-svg{display:block; width:78px}
+.dp-svg svg{width:78px; height:auto; display:block}
+.dp-nm{font-size:10.5px; color:var(--muted); max-width:78px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .drawer.flat{width:320px}
 .drawer.flat .drawer-items{grid-template-columns:1fr}
 input.rig-lbl-in{background:transparent; border:none; border-bottom:1px dashed transparent; border-radius:0;
@@ -8264,3 +8302,22 @@ button.mode-live{background:transparent; cursor:pointer}
    tous cliquables — au lieu de disparaître. */
 .tb-slot .sys-tabs{min-width:0; flex:0 1 auto}
 .tb-slot .sys-tab{flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis}
+
+/* la VUE PÉDALIER du Designer (docs/designer-glyphs-pedals.md §2) : la chaîne dessinée par golem-fx, dans le cadre
+   de la chaîne ; un toucher = on/off dans la scène, un appui long = la feuille du bloc */
+.pv-stage{display:flex; justify-content:center; align-items:center; min-height:200px; padding:4px 0; touch-action:manipulation;
+  -webkit-user-select:none; user-select:none}
+.pv-stage > svg{width:100%; height:auto; max-height:330px; border-radius:10px}
+.pv-stage [data-idx], .pv-stage [data-branch]{cursor:pointer}
+.pv-msg{padding:40px 16px; text-align:center; color:var(--muted); font-size:13px}
+.view-btn b{font-weight:500; opacity:.55}
+.view-btn b.on{font-weight:700; opacity:1}
+
+/* /live ▸ « Pedals on the stomps » (maquette L1) : la pédale du bloc dans la case, le nom à côté ; l'état reste porté
+   par le fond, le contour et ON/OFF, comme sans pédale */
+.lpad .lst-main.with-pedal{flex-direction:row; align-items:center; gap:10px; padding-top:6px}
+.lpad .lst-pedal{flex:none; height:100%; max-height:118px; aspect-ratio:124/216; display:flex}
+.lpad .lst-pedal > svg{width:100%; height:100%; filter:drop-shadow(0 4px 6px rgba(0,0,0,.55))}
+.lpad .lst-main.with-pedal .lst-name{margin-top:0; white-space:normal; line-height:1.1}
+.lt-ck{display:inline-block; width:1.2em; text-align:center; font-weight:800}
+

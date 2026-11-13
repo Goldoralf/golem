@@ -34,6 +34,22 @@ export function useViewOverride(key) {
   return viewOverride(key);
 }
 
+// ── LES PÉDALES SUR LES STOMPS (docs/designer-glyphs-pedals.md, maquette L1) : chaque case de stomp du pédalier montre
+// la pédale de son bloc (dessinée par golem-fx). Une préférence de CET écran, retenue (localStorage) : un écran de scène
+// la garde d'un soir à l'autre ; jamais un réglage du preset ni du mode.
+const PKEY = 'golem.live.pedals';
+export const livePedals = () => { try { return localStorage.getItem(PKEY) === '1'; } catch { return false; } };
+export function setLivePedals(on) {
+  try { if (on) localStorage.setItem(PKEY, '1'); else localStorage.removeItem(PKEY); } catch { /* privé */ }
+  window.dispatchEvent(new Event('golem:live-pedals'));
+}
+export function useLivePedals() {
+  const [, bump] = useState(0);
+  useEffect(() => { const on = () => bump(x => x + 1); window.addEventListener('golem:live-pedals', on);
+    return () => window.removeEventListener('golem:live-pedals', on); }, []);
+  return livePedals();
+}
+
 // rec = { perfOn, on, toggle, title } — chaque vue garde sa façon d'enregistrer (et de dire un refus)
 export function useLiveTools({ rig, st, presetId, rec, view }) {
   const [panel, setPanel] = useState(null);                 // 'mixer' | 'assign' | 'customize' — l'accordeur, lui, est l'état du rack
@@ -87,6 +103,9 @@ export function useLiveTools({ rig, st, presetId, rec, view }) {
       ${menu ? html`<div class="lt-menu" role="menu" style=${'left:' + menu.x + 'px;top:' + menu.y + 'px'}>
         ${['pedalboard', 'rehearsal', 'timeline'].map(v => html`<button class=${cls('lt-mi', v === view && 'on')} role="menuitem" data-doc=${'live.view.' + v} onClick=${() => pickView(v)}>
           <${Icon} id=${VIEW_IC[v]} /><span>${PAGE_LABEL[v]}</span>${v === modeDefault ? html`<small>mode default</small>` : ''}</button>`)}
+        ${view === 'pedalboard' ? html`<button class=${cls('lt-mi', livePedals() && 'on')} role="menuitemcheckbox" aria-checked=${livePedals()}
+          data-doc="live.view.pedals" onClick=${() => { setMenu(false); setLivePedals(!livePedals()); }}
+          title="each stomp shows the pedal of its block — this screen only"><span class="lt-ck">${livePedals() ? '✓' : ''}</span><span>Pedals on the stomps</span></button>` : ''}
         <div class="lt-sep"></div>
         <button class="lt-mi lt-cust" role="menuitem" disabled=${view === 'pedalboard' || modeLocked}
           title=${modeLocked ? 'Locked by the mode' : view === 'pedalboard' ? 'the pedalboard page has no widgets' : 'choose the widgets of this page'}

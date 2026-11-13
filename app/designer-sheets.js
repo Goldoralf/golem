@@ -1243,7 +1243,7 @@ export function PresetSettings({ p, upd, onClose }) {
     </div>`;
   const stompPad = (n, i) => {
     const bs = blocks.filter(b => Number(b.foot) === n);
-    const icons = bs.slice(0, 3).map(b => ICON[b.type] || '•').join('');
+    const icons = bs.slice(0, 3).map(b => ICON[b.type] || '•');      // des nœuds (glyphes SVG), pas une chaîne
     const name = bs.length === 0 ? '—' : bs.length === 1 ? esc(bs[0].label || bs[0].type) : bs.length + ' fx';
     return pad(n, i, 'stomp', '#' + n, name, bs.length ? icons : '', bs.length === 0);
   };

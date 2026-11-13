@@ -406,12 +406,14 @@ export const toChain = guitar => {
 // Nouveau preset = UNE lane VIDE. Le bloc Volume (master lié à EXP) est un UTILITAIRE système garanti
 // côté bridge (store.ensure_volume) — jamais dans la chaîne du Designer, donc plus de tuile parasite.
 // Le reste se remplit à la main (+ bloc) ; la lane Keys naît vide (tap = Vital).
-export const blank = () => toLanesV2({ id: 'nouveau-preset', name: 'New preset', style: 'metal', bpm: 120,
+// La lane CONFIG passe par migrateConfig, comme tout document chargé : les blocs PERMANENTS (Rec, Click, Riff) y
+// naissent. Sans cela, un patch tout neuf montrait un onglet ⚙ vide jusqu'au rechargement de la page (2026-11-13).
+export const blank = () => toLanesV2(migrateConfig({ id: 'nouveau-preset', name: 'New preset', style: 'metal', bpm: 120,
   guitar: toChain({ chain: [] }),
   voice: { chain: [] },
   keys: { chain: [] },
   config: { gen: { blocks: [], out: '1-2' }, rec: { blocks: [], tap: 'post' } },
-  scenes: [{ id: 'A', name: 'base', blocks: {}, voice: true, levels: { guitar: -6 } }] });
+  scenes: [{ id: 'A', name: 'base', blocks: {}, voice: true, levels: { guitar: -6 } }] }));
 
 // ── LES LANES v2 (audit N lanes 2026-09-08, lot 3) ───────────────────────────────────────────
 // Le document que le Designer édite est une LISTE de lanes ; les trois clés d'origine (guitar /

@@ -143,3 +143,12 @@ test('les deux 5150 : la capture Peavey et la capture EVH ne se confondent pas',
   assert.equal(id('5150 III 50W'), '5150');
   assert.equal(id('Peavey 6505+'), 'peavey-6505');
 });
+
+test('un patch neuf naît avec Rec, Click et Riff dans sa lane config', () => {
+  // 2026-11-13 : blank() sautait migrateConfig — l'onglet ⚙ d'un patch voix tout neuf était vide
+  for (const role of ['guitar', 'voice', 'bass', 'keys', 'drums']) {
+    const types = fresh(role).config.rec.blocks.map(b => b.type);
+    assert.deepEqual(['rec', 'click', 'compo'].filter(t => types.includes(t)), ['rec', 'click', 'compo'], role);
+  }
+  assert.equal(blank().config.rec.blocks.find(b => b.type === 'click').bypass, true);   // le Click naît éteint
+});

@@ -1,0 +1,54 @@
+{
+ "id": "four-floor-duck",
+ "type": "killswitch",
+ "name": "Four-on-the-floor pump",
+ "desc": "Quarter-note ramp-up swell locked to the beat, 70 % deep: the sidechain duck of a kick, without a kick",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "french-house",
+  "progressive-house",
+  "dance-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Eric Prydz",
+   "song": "Call on Me",
+   "why": "the whole track pumps against the kick like a sidechain duck",
+   "verified": false
+  }
+ ],
+ "level_db": -3,
+ "sync": "1/4",
+ "tags": [
+  "modern"
+ ],
+ "params": {
+  "depth": 70,
+  "length": 95,
+  "sync": "1/4",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 2,
+  "shape": "Ramp Up",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Ramp Up drops at each beat and swells back, depth in dB so it sounds even; works on pads, bass, or a whole guitar bus",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

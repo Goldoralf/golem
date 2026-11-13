@@ -1,0 +1,45 @@
+{
+ "id": "acoustic-even",
+ "type": "comp",
+ "name": "Acoustic strum leveller",
+ "desc": "Gentle opto 3:1 with an 80 Hz sidechain cut: a piezo or mic'd acoustic stays even, body thumps don't duck it",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-folk",
+  "contemporary-folk",
+  "singer-songwriter"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -22,
+  "ratio": 3,
+  "makeup": 3,
+  "attack": 15,
+  "release": 250,
+  "character": "Opto",
+  "knee": 8,
+  "auto_release": true,
+  "sc_hpf": 80,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Slow-ish opto keeps the strum's attack; the sidechain cut stops a palm slap from pulling the whole level down",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

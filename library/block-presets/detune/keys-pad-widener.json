@@ -1,0 +1,35 @@
+{
+ "id": "keys-pad-widener",
+ "type": "detune",
+ "name": "Pad widener",
+ "desc": "Voices ±10 cents, 20 ms late, equal to the dry: synth pads and electric pianos spread wide",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "ambient",
+  "synthwave",
+  "new-age"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "detune": 0.4,
+  "wet": 0.6,
+  "dry": 0.6,
+  "delay": 20,
+  "voices": "2"
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

@@ -1,0 +1,54 @@
+{
+ "id": "space-bass-funk",
+ "type": "autowah",
+ "name": "Squelchy space bass",
+ "desc": "Low-pass envelope filter on bass that squelches upward on each note while the sub stays dry",
+ "inst": "bass",
+ "genres": [
+  "rnb"
+ ],
+ "subgenres": [
+  "p-funk",
+  "funk",
+  "boogie"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Bootsy Collins",
+   "why": "used the Mu-Tron III on his bass with Parliament/Funkadelic",
+   "source": "Premier Guitar, 2008",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.5,
+  "type": "Low-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 80,
+  "high": 1200,
+  "peak": 6,
+  "attack": 4,
+  "release": 180,
+  "response": "Opto",
+  "drive": 3,
+  "mix": 100,
+  "level": 0,
+  "bass_keep": 120,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "The crate's Bootsy start; bass keep 120 Hz (Linkwitz-Riley) keeps the bottom from thinning when the filter closes",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

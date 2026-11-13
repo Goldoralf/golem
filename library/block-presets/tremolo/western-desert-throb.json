@@ -1,0 +1,50 @@
+{
+ "id": "western-desert-throb",
+ "type": "tremolo",
+ "name": "Desert western throb",
+ "desc": "Slower, deep optical pulse for baritone-style twang and reverb-drenched western melodies",
+ "inst": "guitar",
+ "genres": [
+  "screen",
+  "rock"
+ ],
+ "subgenres": [
+  "spaghetti-western",
+  "film-score",
+  "desert-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Ennio Morricone",
+   "why": "the twangy, reverb-soaked western guitar this patch evokes",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dark",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "rate": 4.5,
+  "depth": 0.7,
+  "wave": "Sine",
+  "model": "Optical",
+  "sync": "Off",
+  "duty": 0.45,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0.2,
+  "stereo_phase": 0,
+  "level": 2
+ },
+ "notes": "A touch of duck lets the attack of each note ring through before the pulse takes over",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

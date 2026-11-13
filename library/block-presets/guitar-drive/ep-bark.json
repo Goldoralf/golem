@@ -1,0 +1,41 @@
+{
+ "id": "ep-bark",
+ "type": "guitar-drive",
+ "name": "Electric piano bark",
+ "desc": "Asymmetric low-gain overdrive: an electric piano barks on hard keystrokes, stays clean when soft",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "neo-soul",
+  "jazz-funk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "gain": 10,
+  "hardness": 2,
+  "ceiling": -10,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 0,
+  "asym": 25,
+  "sag": 10,
+  "blend": 20,
+  "bass_keep": 0
+ },
+ "notes": "Asymmetry gives the even-harmonic growl of an overdriven Rhodes; the velocity decides how much",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

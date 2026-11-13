@@ -1,0 +1,33 @@
+{
+ "id": "crunch-tightener",
+ "type": "shem",
+ "name": "Crunch tightener",
+ "desc": "Moderate Full-voice boost into a crunch amp: punchier palm mutes for punk and hard rock",
+ "inst": "guitar",
+ "genres": [
+  "punk",
+  "rock"
+ ],
+ "subgenres": [
+  "hardcore-punk",
+  "pop-punk",
+  "hard-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 4,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "grind": 8,
+  "voice": "Full",
+  "bright": 0
+ },
+ "notes": "Into a crunch amp it tightens and adds a little saturation; no clipping of its own",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

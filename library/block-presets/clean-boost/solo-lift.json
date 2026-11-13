@@ -1,0 +1,27 @@
+{
+ "id": "solo-lift",
+ "type": "clean-boost",
+ "name": "Solo lift +4 dB",
+ "desc": "Flat +4 dB after the amp: the solo gets louder without changing its tone",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "solo",
+ "refs": [],
+ "level_db": 4,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "gain": 4,
+  "polarity": false
+ },
+ "notes": "Place after the amp (or cab): no change in saturation, only level. Click-free on a footswitch",
+ "factory": true,
+ "golem_fx_seed": "gfx-boost",
+ "golem_fx": true
+}

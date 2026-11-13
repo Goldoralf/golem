@@ -1,14 +1,45 @@
 {
- "name": "Bass anchor",
+ "id": "bass-anchor",
  "type": "comp",
+ "name": "Anchored rock bass",
+ "desc": "FET 6:1, 35 ms attack, 120 Hz sidechain low cut: pick attack through, sustain locked, the low E doesn't pump",
  "inst": "bass",
- "factory": true,
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-metal",
+  "punk-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
  "params": {
   "thresh": -22,
   "ratio": 6,
-  "makeup": 4,
+  "makeup": 5,
   "attack": 35,
-  "release": 200
+  "release": 200,
+  "character": "FET",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 120,
+  "range": 60,
+  "drive": 20,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
  },
- "default": true
+ "notes": "golem's Bass anchor from the doc's bass row; drive 20 % adds the FET's odd harmonics for small-speaker audibility",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": false
 }

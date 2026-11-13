@@ -1,0 +1,67 @@
+{
+ "id": "vibe-slow-chorus",
+ "type": "phaser-js",
+ "name": "Slow lush vibe",
+ "desc": "The vibe's unequal stages swept slowly with a lazy lamp: a lush, breathing movement for slow clean or bluesy parts",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "psychedelic-rock",
+  "blues-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "why": "Uni-Vibe in David Gilmour's Dark Side of the Moon-era rig",
+   "source": "Guitar World, 2023",
+   "verified": true
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.7,
+  "low": 440,
+  "high": 1600,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Vibe",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 70,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 50,
+  "vibe_mode": "Chorus",
+  "tone": 45,
+  "bass_keep": 0
+ },
+ "notes": "Longer lamp lag smooths the sweep; tone 45 darkens the wet slightly",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

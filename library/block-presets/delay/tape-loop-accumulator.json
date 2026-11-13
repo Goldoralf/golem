@@ -1,0 +1,68 @@
+{
+ "id": "tape-loop-accumulator",
+ "type": "delay",
+ "name": "Long tape accumulator",
+ "desc": "Four-second tape loop with high feedback: phrases pile up into a slowly decaying drone",
+ "inst": "guitar",
+ "genres": [
+  "experimental",
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "tape-music",
+  "ambient",
+  "progressive-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Robert Fripp & Brian Eno",
+   "song": "The Heavenly Music Corporation",
+   "why": "two-Revox tape delay of several seconds, layered live",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "time": "Free",
+  "feedback": 85,
+  "mix": 60,
+  "model": "Tape",
+  "time_ms": 4000,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 120,
+  "high_cut": 6000,
+  "drive": 0,
+  "mod": 40,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 20,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Each layer fades over a minute or so; toggle Hold to freeze the loop and play over it",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

@@ -1,0 +1,52 @@
+{
+ "id": "metal-tight-boost",
+ "type": "guitar-drive",
+ "name": "Tight boost for high gain",
+ "desc": "Low-gain mid-hump boost with a 200 Hz pre-clip cut: tightens a high-gain amp's palm mutes",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "groove-metal",
+  "metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Kirk Hammett",
+   "song": "Master of Puppets",
+   "why": "a Tube Screamer in front of the Mesa Mark IIC+ rig",
+   "verified": false
+  },
+  {
+   "artist": "James Hetfield",
+   "why": "a TS-9 used to push and tighten his high-gain amps",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "gain": 6,
+  "hardness": 3,
+  "ceiling": -6,
+  "voice": "Overdrive",
+  "tight": 200,
+  "tone": 20,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "A boost, not a drive: the amp distorts, this only cuts the lows and lifts the mids. Keep it ON in high scenes",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

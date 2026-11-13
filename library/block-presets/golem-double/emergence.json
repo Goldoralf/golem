@@ -1,0 +1,55 @@
+{
+ "id": "emergence",
+ "type": "golem-double",
+ "name": "Emergence",
+ "desc": "Phase-locked double one octave below the voice, own formants, 6 dB under the lead, centred",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "progressive-metal",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Sleep Token",
+   "song": "Emergence",
+   "why": "an octave-below component follows the sung chorus line note for note, centred",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "shift": -12,
+  "formant": 0,
+  "voice1": -6,
+  "lpf": 6000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "The reference: formants kept so the double stays a voice; −6 dB is the listening-test setting of 2026-11-13. Put a de-esser and gate before it",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

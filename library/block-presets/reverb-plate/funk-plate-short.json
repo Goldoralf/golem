@@ -1,0 +1,61 @@
+{
+ "id": "funk-plate-short",
+ "type": "reverb-plate",
+ "name": "Short soul plate",
+ "desc": "A short, tight plate low in the mix: lift for funk and soul chops without blurring the groove",
+ "inst": "guitar",
+ "genres": [
+  "rnb"
+ ],
+ "subgenres": [
+  "funk",
+  "motown",
+  "classic-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "mix": 18,
+  "decay": 0.8,
+  "size": 24,
+  "predelay": 10,
+  "hicut": 8000,
+  "lowcut": 200,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Under a second so 16th-note scratches stay percussive",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

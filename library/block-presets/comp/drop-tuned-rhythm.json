@@ -1,0 +1,44 @@
+{
+ "id": "drop-tuned-rhythm",
+ "type": "comp",
+ "name": "Drop-tuned rhythm control",
+ "desc": "Clean 3:1 with a 150 Hz sidechain low cut: evens out low-tuned riffs without the low strings pumping the mix",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "nu-metal",
+  "post-grunge"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -20,
+  "ratio": 3,
+  "makeup": 2,
+  "attack": 20,
+  "release": 150,
+  "character": "Clean",
+  "knee": 6,
+  "auto_release": true,
+  "sc_hpf": 150,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "After the amp and cab. High-gain is already compressed: this only catches the open-string peaks",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

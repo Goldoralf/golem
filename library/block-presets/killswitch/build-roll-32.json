@@ -1,0 +1,49 @@
+{
+ "id": "build-roll-32",
+ "type": "killswitch",
+ "name": "Build-up 1/32 roll",
+ "desc": "Hard 1/32 chop locked to the bar on drums or a full mix: the stuttered roll before a drop",
+ "inst": "drums",
+ "genres": [
+  "electronic",
+  "pop",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "big-room-house",
+  "dubstep",
+  "trap-edm"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -3,
+ "sync": "1/32",
+ "tags": [
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "depth": 100,
+  "length": 50,
+  "sync": "1/32",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 0.5,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Put it on a scene for the last bar before the drop, or EXP on length to tighten the roll as the build rises",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

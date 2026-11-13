@@ -1,0 +1,35 @@
+{
+ "id": "in-ear-guard",
+ "type": "limiter",
+ "name": "In-ear and monitor guard",
+ "desc": "Clean limiter at −6 dBFS with a calm release on a monitor send: feedback squeals and dropped mics cannot spike the ears",
+ "inst": "any",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "threshold": -6,
+  "release": 80,
+  "gain": 0,
+  "style": "Clean",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 70,
+  "link": 100
+ },
+ "notes": "Zero latency matters on in-ears (comb with bone conduction); a soft clip handles the first cycle of a sudden spike",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

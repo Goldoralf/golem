@@ -1,0 +1,72 @@
+{
+ "id": "reverse-solo",
+ "type": "delay",
+ "name": "Backwards solo",
+ "desc": "Each phrase comes back reversed, wet only: the backwards-guitar solo without tape tricks",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "acid-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "The Jimi Hendrix Experience",
+   "song": "Are You Experienced?",
+   "why": "the reversed-tape guitar solo",
+   "verified": false
+  },
+  {
+   "artist": "The Beatles",
+   "song": "I'm Only Sleeping",
+   "why": "reversed guitar solo built from tape",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/2",
+ "tags": [
+  "extreme",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/2",
+  "feedback": 0,
+  "mix": 100,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 80,
+  "high_cut": 9000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Reverse",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": true,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Wet only, no feedback: one reversed copy per half-note window. Play legato; the swell of each window is the sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

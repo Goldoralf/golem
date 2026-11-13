@@ -1,0 +1,54 @@
+{
+ "id": "trance-gate",
+ "type": "killswitch",
+ "name": "Syncopated trance gate",
+ "desc": "1/16 gate on the pattern x.xx.x.xx.xx.xx., locked to the bar, soft 3 ms edges: chops a held pad into a riff",
+ "inst": "keys",
+ "genres": [
+  "electronic"
+ ],
+ "subgenres": [
+  "trance",
+  "uplifting-trance",
+  "progressive-house"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Mark'Oh",
+   "song": "Tears Don't Lie",
+   "why": "early stuttering gated synth chords on a mid-90s dance hit",
+   "verified": false
+  }
+ ],
+ "level_db": -4,
+ "sync": "1/16",
+ "tags": [
+  "modern",
+  "tight"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 70,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 3,
+  "shape": "Gate",
+  "pattern": 28077,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Pattern 28077 = steps 1,3,4,6,8,9,11,12,14,15; length 70 % lets steps that follow each other almost join",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

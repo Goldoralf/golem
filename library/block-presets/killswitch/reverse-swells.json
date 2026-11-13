@@ -1,0 +1,48 @@
+{
+ "id": "reverse-swells",
+ "type": "killswitch",
+ "name": "Reverse-like quarter swells",
+ "desc": "Full-depth ramp-up on each quarter note: every beat fades in from silence, like a tape played backwards",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "shoegaze",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": -5,
+ "sync": "1/4",
+ "tags": [
+  "dreamy"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 95,
+  "sync": "1/4",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 1,
+  "shape": "Ramp Up",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Best before a reverb or delay so the swells blur together; Engage restarts the cycle on the stomp",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "jungle-beat-pulse",
+ "type": "tremolo",
+ "name": "Jungle-beat pulse",
+ "desc": "Deep, fast, choppy tremolo that cuts chords in and out over a clave strum",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "rock-and-roll",
+  "chicago-blues"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Bo Diddley",
+   "song": "Bo Diddley",
+   "why": "the DeArmond trem's uneven warble trailing his clave rhythm",
+   "source": "Premier Guitar, 2013",
+   "verified": true
+  }
+ ],
+ "level_db": -1,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 6.5,
+  "depth": 0.95,
+  "wave": "Sine",
+  "model": "Neon",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 3
+ },
+ "notes": "Neon strike/extinguish gives the choppy, near-gated dips at full depth; 6.5 Hz sits around the beat's subdivisions without syncing",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

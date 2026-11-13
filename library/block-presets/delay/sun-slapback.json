@@ -1,0 +1,74 @@
+{
+ "id": "sun-slapback",
+ "type": "delay",
+ "name": "Sun studio slapback",
+ "desc": "One tape repeat about 135 ms behind the note: the rockabilly and early rock'n'roll slap",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "rockabilly",
+  "rock-and-roll",
+  "honky-tonk"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Scotty Moore",
+   "song": "Mystery Train",
+   "why": "the Sun-era tape slap on Elvis's early singles",
+   "verified": false
+  },
+  {
+   "artist": "Sam Phillips",
+   "why": "Sun's tape slapback measured at about 134 - 137 ms",
+   "source": "Tor Halmrast, Art of Record Production conference (via Joe Bennett), 2017",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "time": "Free",
+  "feedback": 8,
+  "mix": 45,
+  "model": "Tape",
+  "time_ms": 135,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 80,
+  "high_cut": 6000,
+  "drive": 0,
+  "mod": 35,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 15,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Feedback near zero: one slap, not an echo. Tape loses top and adds a touch of wow like the Ampex machines",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

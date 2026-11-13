@@ -1,0 +1,47 @@
+{
+ "id": "wall-of-fuzz",
+ "type": "guitar-drive",
+ "name": "Wall of fuzz",
+ "desc": "Saturated two-stage fuzz with a scooped, dark top: a dense wall for heavy alt-rock chords",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "shoegaze",
+  "grunge"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Smashing Pumpkins",
+   "song": "Siamese Dream",
+   "why": "the op-amp Big Muff layered into Marshall heads",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "extreme",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "gain": 38,
+  "hardness": 8,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 60,
+  "tone": -25,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Into a crunch amp the fuzz does the saturation and the amp the size; tight 60 Hz keeps stacked chords from booming",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

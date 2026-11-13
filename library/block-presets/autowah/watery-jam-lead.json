@@ -1,0 +1,55 @@
+{
+ "id": "watery-jam-lead",
+ "type": "autowah",
+ "name": "Watery jam-band lead",
+ "desc": "Band-pass with dry blended in and a lagging opto release: a liquid, vowel-like lead tone",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "jam-band",
+  "psychedelic-rock",
+  "acid-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Grateful Dead",
+   "song": "Shakedown Street",
+   "why": "Jerry Garcia made the Mu-Tron III part of his lead sound",
+   "source": "Premier Guitar, 2008",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.45,
+  "type": "Band-pass + Dry",
+  "poles": "2",
+  "direction": "Up",
+  "low": 300,
+  "high": 2000,
+  "peak": 4,
+  "attack": 6,
+  "release": 250,
+  "response": "Opto",
+  "drive": 0,
+  "mix": 100,
+  "level": 1,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Crate's Garcia start (BP + dry, opto, release 250 ms): the dry keeps note definition under the vowel",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

@@ -1,0 +1,42 @@
+{
+ "id": "chorus-from-vibrato",
+ "type": "vibrato",
+ "name": "Vibrato-chorus blend",
+ "desc": "Slow BBD vibrato mixed half and half with the dry: a classic warm chorus built from a pitch vibrato",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "new-wave",
+  "jangle-pop",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.35,
+  "speed": 1.5,
+  "model": "BBD",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 0.75,
+  "mix": 0.5,
+  "sync": "Off",
+  "stereo_phase": 90,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "README 'Chorus from a vibrato'; mix 0.5 is the vibrato/dry blend, stereo 90° spreads the two sides",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

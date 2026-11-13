@@ -1,0 +1,48 @@
+{
+ "id": "bass-as-guitar",
+ "type": "octaver",
+ "name": "Bass plays guitar",
+ "desc": "Polyphonic octave up loud on bass with the dry kept: one bass covers both the riff's guitar and low end",
+ "inst": "bass",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "stoner-rock",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Royal Blood",
+   "why": "Mike Kerr's octave-up bass split to guitar and bass amps",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "direct": 1,
+  "octave1": 0,
+  "octave2": 0,
+  "octave_up": 0.8,
+  "mode": "Poly",
+  "instrument": "Bass",
+  "sub_tone": 470,
+  "up_tone": 6000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Ideally on a split lane: octave voice to a guitar amp, dry to a bass amp. Poly so double-stops work",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

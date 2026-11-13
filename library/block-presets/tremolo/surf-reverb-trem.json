@@ -1,0 +1,49 @@
+{
+ "id": "surf-reverb-trem",
+ "type": "tremolo",
+ "name": "Surf instrumental shimmer",
+ "desc": "Fast, deep optical tremolo for twangy single-note melodies under spring reverb",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "surf-rock",
+  "instrumental-rock",
+  "rock-and-roll"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Link Wray",
+   "song": "Rumble",
+   "why": "menacing amp tremolo on sustained twangy chords",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "rate": 6,
+  "depth": 0.8,
+  "wave": "Sine",
+  "model": "Optical",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 2.5
+ },
+ "notes": "The crate's surf starting point (Optical 6 Hz, 0.8); pair with a drippy spring reverb after it",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

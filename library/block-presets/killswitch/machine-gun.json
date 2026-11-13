@@ -1,8 +1,26 @@
 {
- "name": "Machine Gun",
+ "id": "machine-gun",
  "type": "killswitch",
+ "name": "Machine-gun helicopter",
+ "desc": "Free-running 14 Hz chop with 40 % open steps: a helicopter or machine-gun rattle on held notes",
  "inst": "any",
- "factory": true,
+ "genres": [
+  "metal",
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "nu-metal",
+  "industrial-metal",
+  "industrial-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -4,
+ "tags": [
+  "extreme"
+ ],
  "params": {
   "depth": 100,
   "length": 40,
@@ -10,6 +28,20 @@
   "rate": 14,
   "trigger": "Engage",
   "sens": 50,
-  "smooth": 0.5
- }
+  "smooth": 0.5,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "golem's Machine Gun kept; free rate because the rattle should not lock to the song",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": false
 }

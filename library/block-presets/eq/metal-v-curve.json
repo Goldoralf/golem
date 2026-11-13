@@ -1,0 +1,59 @@
+{
+ "id": "metal-v-curve",
+ "type": "eq",
+ "name": "Deep V metal rhythm",
+ "desc": "Deep 7 dB cut at 750 Hz, lift at 90 Hz and 6 kHz, steep 9 kHz low-pass: the classic scooped thrash rhythm",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "heavy-metal",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Metallica",
+   "song": "Master of Puppets",
+   "why": "Mark IIC+ five-band graphic EQ set in a V, deepest cut near 750 Hz",
+   "verified": false
+  }
+ ],
+ "level_db": -1,
+ "tags": [
+  "aggressive",
+  "vintage"
+ ],
+ "params": {
+  "lowcut": 70,
+  "midgain": -7,
+  "midfreq": 750,
+  "highs": 2.5,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 2.5,
+  "lowfreq": 90,
+  "midq": 0.9,
+  "midprop": 50,
+  "mid2gain": 1.5,
+  "mid2freq": 2200,
+  "mid2q": 1.0,
+  "highfreq": 6000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 9000,
+  "highcut_slope": "24 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "Graphic-EQ V moved to bells; keeps 2.2 kHz pick attack so the scoop does not vanish in the band. Great alone, thin in a dense mix",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

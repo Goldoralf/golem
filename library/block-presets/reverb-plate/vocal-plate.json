@@ -1,12 +1,69 @@
 {
- "name": "Vocal plate",
+ "id": "vocal-plate",
  "type": "reverb-plate",
+ "name": "Vocal plate",
+ "desc": "A bright 1.4 s plate with 20 ms predelay and low cut: dense sheen behind a lead vocal",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "psychedelic-pop",
+  "classic-soul"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "why": "Abbey Road's EMT 140 plates behind mid-period vocals",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "vintage"
+ ],
+ "default": true,
  "params": {
-  "mix": 22,
+  "mix": 25,
   "decay": 1.4,
-  "predelay": 20
+  "size": 24,
+  "predelay": 20,
+  "hicut": 8000,
+  "lowcut": 150,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
  },
- "default": true
+ "notes": "Plate gives instant density; low cut 150 Hz and predelay keep consonants clear",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": false
 }

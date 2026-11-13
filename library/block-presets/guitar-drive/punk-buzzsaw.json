@@ -1,0 +1,40 @@
+{
+ "id": "punk-buzzsaw",
+ "type": "guitar-drive",
+ "name": "Punk buzzsaw",
+ "desc": "Hard, tight distortion with the low end trimmed before the clip: fast down-picked power chords",
+ "inst": "guitar",
+ "genres": [
+  "punk"
+ ],
+ "subgenres": [
+  "punk-rock",
+  "pop-punk",
+  "hardcore-punk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 5,
+ "tags": [
+  "aggressive",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "gain": 28,
+  "hardness": 8,
+  "ceiling": -18,
+  "voice": "Distortion",
+  "tight": 90,
+  "tone": 15,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "tight 90 Hz keeps fast chords from blurring; into a clean or barely crunchy amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

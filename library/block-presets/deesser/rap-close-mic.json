@@ -1,0 +1,40 @@
+{
+ "id": "rap-close-mic",
+ "type": "deesser",
+ "name": "Close-mic rap and speech",
+ "desc": "5.5 kHz shelf, 8:1, fast 40 ms release: dense, close-mic'd rap or speech de-essed word by word",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "other"
+ ],
+ "subgenres": [
+  "trap",
+  "boom-bap",
+  "spoken-word"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -27,
+  "freq": 5500,
+  "range": 10,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Shelf",
+  "focus": "Vocal",
+  "ratio": 8,
+  "release": 40,
+  "lookahead": 0
+ },
+ "notes": "Fast delivery leaves no gap between esses: the short release keeps the next vowel from being dulled",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

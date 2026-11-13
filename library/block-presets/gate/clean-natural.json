@@ -1,0 +1,46 @@
+{
+ "id": "clean-natural",
+ "type": "gate",
+ "name": "Natural clean expander",
+ "desc": "2:1 expander floored at −20 dB: lowers noise between clean funk stabs without ever fully closing",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "pop",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "disco",
+  "jazz-funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -60,
+  "attack": 3,
+  "hold": 20,
+  "release": 250,
+  "hpf": 0,
+  "lpf": 20000,
+  "hyst": 0,
+  "range": -20,
+  "ratio": 2,
+  "knee": 6,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "The doc's clean / funk row. Gentle enough for ghost notes and muted scratches to stay audible",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

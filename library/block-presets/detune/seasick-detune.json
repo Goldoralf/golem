@@ -1,0 +1,37 @@
+{
+ "id": "seasick-detune",
+ "type": "detune",
+ "name": "Seasick out-of-tune",
+ "desc": "Voices ±25 cents, loud against the dry: a sour, honky-tonk, broken-tape detune",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "lo-fi-indie",
+  "avant-garde",
+  "vaporwave"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "detune": 1,
+  "wet": 0.7,
+  "dry": 0.5,
+  "delay": 0,
+  "voices": "2"
+ },
+ "notes": "The full range: a quarter-tone spread each way reads as out of tune, on purpose",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

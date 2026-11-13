@@ -1,0 +1,62 @@
+{
+ "id": "vocal-throw",
+ "type": "delay",
+ "name": "Vocal quarter throw",
+ "desc": "Ping-pong quarter echoes on the voice, filtered and ducked so the words stay dry and clear",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "dance-pop",
+  "contemporary-r-and-b",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "modern",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "time": "1/4",
+  "feedback": 25,
+  "mix": 20,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 250,
+  "high_cut": 5000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 10,
+  "duck_thresh": -30,
+  "duck_release": 400,
+  "stereo": "Ping-Pong",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Mix-engineer convention: band-limited, ducked throws so the echo only speaks at line ends",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

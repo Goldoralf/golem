@@ -1,0 +1,59 @@
+{
+ "id": "sample-hold-steps",
+ "type": "phaser-js",
+ "name": "Stepped sample-and-hold phase",
+ "desc": "Eight resonant stages jumping to a new random position every eighth note, locked to tempo: robotic synth motion",
+ "inst": "any",
+ "genres": [
+  "electronic"
+ ],
+ "subgenres": [
+  "electro",
+  "idm",
+  "synthwave"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "sync": "1/8",
+ "tags": [
+  "modern",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.5,
+  "low": 200,
+  "high": 5000,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Classic",
+  "stages": "8",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Steps",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "1/8",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Sample-and-hold phase'; Steps is lightly smoothed so the jumps do not click",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

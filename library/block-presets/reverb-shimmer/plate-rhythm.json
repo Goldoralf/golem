@@ -1,0 +1,60 @@
+{
+ "id": "plate-rhythm",
+ "type": "reverb-shimmer",
+ "name": "Bright plate shimmer",
+ "desc": "Short, bright plate with some octave-up: tight shimmer that suits strummed rhythm parts",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "dream-pop",
+  "pop-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "mix": 25,
+  "decay": 2,
+  "shimmer": 35,
+  "pitch": 12,
+  "hicut": 8000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 250,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 10,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Plate",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 0,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "A 2 s plate gives only a few climbs before the tail dies: shimmer that keeps time",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

@@ -1,13 +1,48 @@
 {
- "name": "Standard",
+ "id": "standard",
  "type": "eq",
- "factory": true,
+ "name": "Standard",
+ "desc": "Flat EQ with an 80 Hz high-pass: removes rumble and handling noise, changes nothing else",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
  "params": {
+  "lowcut": 80,
   "midgain": 0,
   "midfreq": 800,
-  "lowcut": 80,
-  "highs": 0
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
  },
- "default": true,
- "inst": "any"
+ "notes": "golem's Standard preset kept as is: the neutral starting point a hand-placed EQ gets",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": false
 }

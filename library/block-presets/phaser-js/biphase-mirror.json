@@ -1,0 +1,65 @@
+{
+ "id": "biphase-mirror",
+ "type": "phaser-js",
+ "name": "Mirrored dual stereo phase",
+ "desc": "Two six-stage phasers, left and right, swept in opposite directions: a wide, three-dimensional phase wall",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "shoegaze",
+  "grunge"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Smashing Pumpkins",
+   "song": "Siamese Dream",
+   "why": "Butch Vig: guitars ran through a Mu-Tron Bi-Phase",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "wide",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.3,
+  "low": 200,
+  "high": 3200,
+  "feedback": -6,
+  "wet": 0,
+  "model": "Bi-Phase",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Reverse",
+  "rate2": 0.3,
+  "routing": "Parallel",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Bi-Phase stereo sweep'; Parallel = A left / B right, mirrored LFO; on a mono output both are averaged",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

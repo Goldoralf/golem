@@ -1,0 +1,40 @@
+{
+ "id": "tracks-true-peak",
+ "type": "limiter",
+ "name": "Backing tracks, transparent",
+ "desc": "2 ms lookahead, true-peak ceiling at −1 dBTP: playback and keys limited with no first-cycle shaping at all",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "electropop",
+  "house"
+ ],
+ "gain": "clean",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "threshold": -1,
+  "release": 80,
+  "gain": 0,
+  "style": "Clean",
+  "lookahead": "2 ms",
+  "true_peak": true,
+  "auto_release": true,
+  "clip": 50,
+  "link": 100
+ },
+ "notes": "Reports 2 ms of latency: fine for tracks and pads, avoid on a played instrument monitored in ears",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

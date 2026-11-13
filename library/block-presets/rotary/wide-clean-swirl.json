@@ -1,0 +1,62 @@
+{
+ "id": "wide-clean-swirl",
+ "type": "rotary",
+ "name": "Wide clean-chord swirl",
+ "desc": "Far, widely spaced mics at slow speed: lush stereo movement on clean guitar chords",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "dream-pop",
+  "psychedelic-pop"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "song": "Something",
+   "why": "Harrison's guitar fed through a rotating speaker",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "dreamy",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "speed": "slow",
+  "mic": 85,
+  "spacing": 85,
+  "depth": 60,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 15,
+  "balance": 60,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "The crate's wide-chords start: mic 85 adds reflections, spacing 85 opens the stereo",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

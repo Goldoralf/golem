@@ -1,0 +1,55 @@
+{
+ "id": "demon-voice",
+ "type": "golem-double",
+ "name": "Pitched-down alter ego",
+ "desc": "A double a fourth below with lowered, linked formants, louder than the lead: a menacing second persona",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "metal"
+ ],
+ "subgenres": [
+  "horrorcore",
+  "alternative-hip-hop",
+  "industrial-metal"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Tyler, the Creator",
+   "why": "a pitched-down voice as a second character in the verses",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": -5,
+  "formant": -3,
+  "voice1": 6,
+  "lpf": 8000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": true,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -45,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 50
+ },
+ "notes": "voice1 +6 dB lets the shifted persona dominate (the dry cannot be muted); −5 st avoids the octave so it sounds like another voice, not a double",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

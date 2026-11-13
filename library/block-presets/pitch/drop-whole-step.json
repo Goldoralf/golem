@@ -1,0 +1,41 @@
+{
+ "id": "drop-whole-step",
+ "type": "pitch",
+ "name": "Down a whole step",
+ "desc": "Polyphonic shifter, fully wet, two semitones down: D-standard without retuning",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-metal",
+  "pop-punk"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "shift": -2,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

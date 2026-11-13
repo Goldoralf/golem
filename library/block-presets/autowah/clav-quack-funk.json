@@ -1,0 +1,56 @@
+{
+ "id": "clav-quack-funk",
+ "type": "autowah",
+ "name": "Clavinet funk quack",
+ "desc": "Opto band-pass envelope filter on clavinet: every keystroke quacks upward, fast and percussive",
+ "inst": "keys",
+ "genres": [
+  "rnb"
+ ],
+ "subgenres": [
+  "funk",
+  "classic-soul",
+  "progressive-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Stevie Wonder",
+   "song": "Higher Ground",
+   "why": "his Clavinet riff played through a Mu-Tron III",
+   "source": "Premier Guitar, 2008",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "tight",
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.5,
+  "type": "Band-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 2500,
+  "peak": 5,
+  "attack": 2,
+  "release": 100,
+  "response": "Opto",
+  "drive": 2,
+  "mix": 100,
+  "level": 3,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Crate's keys/clav start; Opto mimics the Mu-Tron's LED/LDR lag; +3 dB makes up the band-pass level loss",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

@@ -1,0 +1,55 @@
+{
+ "id": "kick-low-trick",
+ "type": "eq",
+ "name": "Boost-and-cut low end",
+ "desc": "+4 dB low shelf at 60 Hz with a broad -2 dB dip at 200 Hz: deeper thump, less box, for kick, bass or drum loops",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "hip-hop",
+  "electronic"
+ ],
+ "subgenres": [
+  "boom-bap",
+  "house",
+  "hard-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "lowcut": 25,
+  "midgain": -2,
+  "midfreq": 200,
+  "highs": 0,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 4,
+  "lowfreq": 60,
+  "midq": 0.5,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "The passive-console trick of boosting and cutting next to each other; the 25 Hz high-pass stops the shelf from feeding subsonic energy",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

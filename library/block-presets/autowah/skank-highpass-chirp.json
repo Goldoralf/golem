@@ -1,0 +1,47 @@
+{
+ "id": "skank-highpass-chirp",
+ "type": "autowah",
+ "name": "Offbeat skank chirp",
+ "desc": "Fast high-pass envelope filter on offbeat chops: a thin, chirpy attack that stays out of the bass",
+ "inst": "guitar",
+ "genres": [
+  "caribbean"
+ ],
+ "subgenres": [
+  "reggae",
+  "dub",
+  "rocksteady"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "type": "High-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 300,
+  "high": 1800,
+  "peak": 4,
+  "attack": 1,
+  "release": 90,
+  "response": "Fast",
+  "drive": 0,
+  "mix": 100,
+  "level": 2,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "High-pass sweeps up on each chop then relaxes: the skank chirps and leaves the low mids to the bass",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

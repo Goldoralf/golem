@@ -1,0 +1,40 @@
+{
+ "id": "bass-keyed",
+ "type": "met",
+ "name": "Keyed metal bass",
+ "desc": "Keyed expansion for a distorted bass, slower 80 ms detector so low-B ripple never wobbles the gain",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -48,
+  "hold": 30,
+  "release": 120,
+  "ratio": 2.5,
+  "range": -90,
+  "smooth": 80,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 3000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "Key = bass DI. Low-pass on the key ignores fret clank; longer smoothing because a 31 Hz note's RMS ripples more",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

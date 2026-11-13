@@ -1,0 +1,81 @@
+{
+ "id": "watery-grunge",
+ "type": "chorus",
+ "name": "Watery grunge chorus",
+ "desc": "Deep, fairly fast BBD warble on a clean or edge-of-breakup riff: liquid, slightly seasick low strings",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-rock",
+  "post-grunge"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Nirvana",
+   "song": "Come As You Are",
+   "why": "Small Clone chorus with the depth switch in on the intro riff",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "profile": "Guitar Clean",
+  "mode": "Classic",
+  "rate": 1.3,
+  "depth": 7.0,
+  "warmth": 60,
+  "mix": 1.0,
+  "xover_custom": false,
+  "xover_on": false,
+  "xover_freq": 120,
+  "xover_slope": "24 dB",
+  "color_custom": false,
+  "engine": "BBD",
+  "interp": "Lagrange 5",
+  "drive": 25,
+  "bbd_chip": "1024",
+  "bbd_bw": 6600,
+  "emphasis": 100,
+  "compander": 0,
+  "noise": 15,
+  "wow": 0,
+  "flutter": 0,
+  "mod_custom": false,
+  "delay_base": 8,
+  "lfo_shape": "Triangle",
+  "voices": "1",
+  "voice_spread": 90,
+  "imperfection": 10,
+  "detune_lock": false,
+  "drift": 10,
+  "crossmix": 0,
+  "feedback": 0,
+  "sync": "Off",
+  "env_depth": 0,
+  "env_mix": 0,
+  "stereo_custom": false,
+  "stereo_phase": 90,
+  "width": 100,
+  "mono_safe": false,
+  "filter_custom": false,
+  "wet_hpf": 80,
+  "wet_lpf": 8000,
+  "mix_law": "Add",
+  "level_comp": true,
+  "output": 0
+ },
+ "notes": "Depth 7 ms and 1.3 Hz push past the CE-2 into a deeper, wetter warble; warmth 60 darkens the wet a touch",
+ "factory": true,
+ "golem_fx_seed": "gfx-chorus",
+ "golem_fx": true
+}

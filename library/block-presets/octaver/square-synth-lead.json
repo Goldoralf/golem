@@ -1,0 +1,44 @@
+{
+ "id": "square-synth-lead",
+ "type": "octaver",
+ "name": "Square-wave synth lead",
+ "desc": "Divider-locked square oscillator below plus a rectified octave up, little dry: a chiptune-style lead",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "chiptune",
+  "synthwave",
+  "math-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "direct": 0.3,
+  "octave1": 0.8,
+  "octave2": 0,
+  "octave_up": 0.4,
+  "mode": "Synth",
+  "instrument": "Guitar",
+  "sub_tone": 2000,
+  "up_tone": 6000,
+  "sensitivity": 50,
+  "glide": 15,
+  "shape": 100,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "sub_tone fully open lets the square's harmonics through; single notes on the neck pickup",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

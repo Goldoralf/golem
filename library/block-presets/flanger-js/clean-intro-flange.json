@@ -1,0 +1,51 @@
+{
+ "id": "clean-intro-flange",
+ "type": "flanger-js",
+ "name": "Slow clean intro flange",
+ "desc": "Slow, deep stereo flange on a clean picked intro: a wide, moving swirl before the heavy part enters",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "groove-metal",
+  "progressive-metal"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "wide",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "length": 8,
+  "feedback": -10,
+  "wet": -6,
+  "dry": 0,
+  "rate": 0.15,
+  "mode": "Mistress",
+  "manual": 0.5,
+  "depth": 80,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 180,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "Opposite L/R sweeps (180°) for width on a stereo clean channel",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

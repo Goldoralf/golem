@@ -1,0 +1,37 @@
+{
+ "id": "vocal-micropitch",
+ "type": "detune",
+ "name": "Vocal micro-pitch widener",
+ "desc": "Voices ±7 cents, 18 ms late, under the lead vocal: a wider, thicker voice without a chorus wobble",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "dance-pop",
+  "contemporary-r-and-b",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "wide",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "detune": 0.28,
+  "wet": 0.4,
+  "dry": 0.8,
+  "delay": 18,
+  "voices": "2"
+ },
+ "notes": "The H3000 micro-pitch vocal trick: ±7 ct and 15–20 ms per side (Splice blog, 2016). 0.28 × 25 = 7 ct",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

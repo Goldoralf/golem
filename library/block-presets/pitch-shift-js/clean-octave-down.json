@@ -1,0 +1,36 @@
+{
+ "id": "clean-octave-down",
+ "type": "pitch-shift-js",
+ "name": "Deglitched octave down",
+ "desc": "Two-head shifter an octave down with splice search, blended under the dry: a smooth lower double",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "alternative-rock",
+  "synth-pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "shift": -12,
+  "window": 60,
+  "overlap": 25,
+  "wet": -4,
+  "dry": 0,
+  "search": true
+ },
+ "notes": "Long window and splice search (the H3000 'deglitch' idea) remove most of the warble on single notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

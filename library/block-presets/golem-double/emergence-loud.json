@@ -1,0 +1,55 @@
+{
+ "id": "emergence-loud",
+ "type": "golem-double",
+ "name": "Emergence loud",
+ "desc": "The octave-below double as loud as the lead voice: a heavy, two-register chorus line",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "progressive-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Sleep Token",
+   "song": "Emergence",
+   "why": "the low octave carries the chorus as a full second register",
+   "verified": false
+  }
+ ],
+ "level_db": 3,
+ "tags": [
+  "modern",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": 0,
+  "voice1": 0,
+  "lpf": 6000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "0 dB = double RMS equal to the dry: the chorus scene of a heavy song. Raise thresh on a loud stage (see emergence-stage)",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

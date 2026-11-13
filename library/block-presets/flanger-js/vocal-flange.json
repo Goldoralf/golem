@@ -1,0 +1,51 @@
+{
+ "id": "vocal-flange",
+ "type": "flanger-js",
+ "name": "Psychedelic vocal flange",
+ "desc": "Subtle zero-latency flange on a vocal: a slow, airy phasey sweep on held words, intelligibility kept",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "neo-psychedelia",
+  "dream-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "length": 2,
+  "feedback": -40,
+  "wet": -8,
+  "dry": 0,
+  "rate": 0.2,
+  "mode": "Pseudo TZ",
+  "manual": 0.2,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 60,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 150,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "Wet -8 dB keeps the cancellation partial so words stay clear; short length keeps the notches in the upper mids and air",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

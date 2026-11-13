@@ -1,0 +1,58 @@
+{
+ "id": "post-punk-flange",
+ "type": "flanger-js",
+ "name": "Cold post-punk flange",
+ "desc": "Medium-rate BBD flange on bright clean guitar: a cold, glassy, hollow swirl under a repeating figure",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "post-punk",
+  "gothic-rock",
+  "deathrock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Cure",
+   "song": "A Forest",
+   "why": "Mike Hedges stacked several flangers on the guitar",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "length": 8,
+  "feedback": -14,
+  "wet": -5,
+  "dry": 0,
+  "rate": 0.4,
+  "mode": "Mistress",
+  "manual": 0.5,
+  "depth": 80,
+  "fb_polarity": "Inverted",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 120,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "Negative feedback gives hollow notches rather than metallic peaks: colder than the silver shimmer",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

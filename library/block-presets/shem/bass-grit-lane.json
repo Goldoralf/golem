@@ -1,0 +1,33 @@
+{
+ "id": "bass-grit-lane",
+ "type": "shem",
+ "name": "Bass high-lane push",
+ "desc": "Steep bass cut and push for the distorted lane of a split bass rig; the clean lane keeps the lows",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "metalcore"
+ ],
+ "gain": "high",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "grind": 6,
+  "voice": "Full",
+  "bright": 2
+ },
+ "notes": "Alone it thins a bass out: use it only on a lane that feeds a high-gain amp, with a parallel clean lane",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

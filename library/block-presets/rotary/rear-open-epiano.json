@@ -1,0 +1,55 @@
+{
+ "id": "rear-open-epiano",
+ "type": "rotary",
+ "name": "Airy rear-cab electric piano",
+ "desc": "Slow rotary heard from behind the open cabinet: soft, airy swirl on electric piano",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "neo-soul",
+  "jazz-funk",
+  "quiet-storm"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "dreamy",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "speed": "slow",
+  "mic": 90,
+  "spacing": 70,
+  "depth": 50,
+  "cabinet": "122 Rear",
+  "ramp": 100,
+  "drive": 10,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Rear cab and far mics trade bite for air, which suits tine pianos better than the front 122",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

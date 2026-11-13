@@ -1,0 +1,58 @@
+{
+ "id": "tape-through-zero",
+ "type": "flanger-js",
+ "name": "Tape through-zero phrase flange",
+ "desc": "Two-tape flanging: wet equals dry, the sweep passes through zero and cancels, no regen: the 60s psychedelic whoosh",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "freakbeat",
+  "psychedelic-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Small Faces",
+   "song": "Itchycoo Park",
+   "why": "Olympic's tape flanging on the bridge, credited to George Chkiantz",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "length": 3,
+  "feedback": -60,
+  "wet": 0,
+  "dry": 0,
+  "rate": 0.1,
+  "mode": "Tape TZ−",
+  "manual": 0.5,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README 'Tape flanging'; Tape TZ delays the dry 1 ms (reported latency); bass_keep is ignored in this mode",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

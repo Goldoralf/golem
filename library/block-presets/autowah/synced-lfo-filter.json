@@ -1,0 +1,48 @@
+{
+ "id": "synced-lfo-filter",
+ "type": "autowah",
+ "name": "Tempo-synced filter sweep",
+ "desc": "An LFO locked to quarter notes sweeps a resonant 4-pole low-pass: a pulsing synth-style filter",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "house",
+  "french-house",
+  "electronic-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.3,
+  "type": "Low-pass",
+  "poles": "4",
+  "direction": "Up",
+  "low": 200,
+  "high": 4000,
+  "peak": 7,
+  "attack": 5,
+  "release": 150,
+  "response": "Fast",
+  "drive": 3,
+  "mix": 100,
+  "level": 1,
+  "bass_keep": 0,
+  "source": "LFO",
+  "rate": 1,
+  "sync": "1/4"
+ },
+ "notes": "Crate's tempo-synced use; the LFO ignores playing dynamics, so it works on pads, loops and chords alike",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

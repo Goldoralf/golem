@@ -1,0 +1,41 @@
+{
+ "id": "stereo-micro-shift",
+ "type": "detune",
+ "name": "Stereo micro-shift",
+ "desc": "One voice 9 cents up left, one 9 cents down right, 12 ms late, under the dry: wide rhythm guitar",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "glam-metal",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Van Halen",
+   "why": "Eventide harmonizer pair detuned a few cents each way, blended with the dry",
+   "verified": false
+  }
+ ],
+ "level_db": 1.5,
+ "tags": [
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "detune": 0.36,
+  "wet": 0.5,
+  "dry": 0.7,
+  "delay": 12,
+  "voices": "2"
+ },
+ "notes": "detune × 25 ct: 0.36 = ±9 ct. The delay decorrelates the voices from the dry, so no chorus wobble; stereo lane needed",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

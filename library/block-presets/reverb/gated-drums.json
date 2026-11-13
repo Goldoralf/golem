@@ -1,0 +1,79 @@
+{
+ "id": "gated-drums",
+ "type": "reverb",
+ "name": "Eighties gated burst",
+ "desc": "A dense, flat burst cut dead on the eighth note: huge gated drums and stabs",
+ "inst": "drums",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "new-wave",
+  "art-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [
+  {
+   "artist": "Phil Collins",
+   "song": "In the Air Tonight",
+   "why": "compressed room mic gated about a second after each hit",
+   "source": "MusicTech (Hugh Padgham interview), 2019",
+   "verified": true
+  },
+  {
+   "artist": "Peter Gabriel",
+   "song": "Intruder",
+   "why": "the first gated-drum sound with Padgham and Collins",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/8",
+ "tags": [
+  "vintage",
+  "aggressive",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "mix": 60,
+  "decay": 1.3,
+  "size": 24,
+  "predelay": 0,
+  "hicut": 9000,
+  "algo": "Gated",
+  "lowcut": 120,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "1/8",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Played without cymbals, as Padgham asked Collins: the gate closes the burst on the grid. Also works on guitar stabs",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

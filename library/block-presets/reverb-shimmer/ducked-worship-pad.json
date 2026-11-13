@@ -1,0 +1,67 @@
+{
+ "id": "ducked-worship-pad",
+ "type": "reverb-shimmer",
+ "name": "Ducked swell pad",
+ "desc": "Octave shimmer that ducks while you play and blooms in the gaps: a pad that stays out of the way",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "ccm",
+  "christian-rock",
+  "urban-contemporary-gospel"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Hillsong United",
+   "why": "worship guitar pads of swells and octave shimmer under the band",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mix": 40,
+  "decay": 6,
+  "shimmer": 45,
+  "pitch": 12,
+  "hicut": 6000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 200,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 20,
+  "bloom": 60,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 50,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "duck 50 % + bloom 60 %: the wash fades in slowly and backs off under the pick",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

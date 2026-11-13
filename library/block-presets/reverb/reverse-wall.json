@@ -1,0 +1,71 @@
+{
+ "id": "reverse-wall",
+ "type": "reverb",
+ "name": "Reverse wall",
+ "desc": "Wet-only reverse reverb: every chord swells in backwards and melts, the dry guitar removed",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "shoegaze",
+  "dream-pop",
+  "noise-pop"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "My Bloody Valentine",
+   "song": "Loveless",
+   "why": "Kevin Shields: reverse reverb on an SPX90, no dry guitar signal",
+   "source": "Guitar World, March 1992",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "dreamy",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "mix": 100,
+  "decay": 1.3,
+  "size": 40,
+  "predelay": 0,
+  "hicut": 8000,
+  "algo": "Reverse",
+  "lowcut": 100,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "1/4",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": true,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Shields says he uses purely the reverb, none of the dry: kill dry on, mix 100 %. Pair with tremolo-arm bends",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

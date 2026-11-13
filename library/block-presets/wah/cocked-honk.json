@@ -1,0 +1,65 @@
+{
+ "id": "cocked-honk",
+ "type": "wah",
+ "name": "Parked-wah honk",
+ "desc": "Wah parked just past the middle: a fixed, nasal mid-boost that makes a driven amp snarl",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "glam-rock",
+  "hard-rock",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "David Bowie",
+   "song": "Moonage Daydream",
+   "why": "Mick Ronson's parked wah for a honking, aggressive lead tone",
+   "verified": false
+  },
+  {
+   "artist": "Queen",
+   "why": "Brian May's wah used in fixed positions as a tone filter",
+   "verified": false
+  },
+  {
+   "artist": "Dire Straits",
+   "song": "Money for Nothing",
+   "why": "Knopfler's riff through a partly-open, fixed wah",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.55,
+  "volume": 2,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 100,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 30,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "No EXP needed: the crate's parked-wah use (0.4 to 0.6); move wah to taste for more nasal (lower) or more cutting (higher)",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "octave-up-bends",
+ "type": "pitch",
+ "name": "Octave-wide bends",
+ "desc": "Mono shifter, fully wet, toe at an octave up: an expression pedal bends a held note a whole octave",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "art-rock",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "song": "Marooned",
+   "why": "Gilmour's octave-wide bends with a Whammy",
+   "source": "Guitar World, 1994",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "shift": 12,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Put the expression pedal on shift 0 → +12; glide 0 so the pedal is the bend. Single notes only",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

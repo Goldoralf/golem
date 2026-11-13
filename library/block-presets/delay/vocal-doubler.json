@@ -1,0 +1,66 @@
+{
+ "id": "vocal-doubler",
+ "type": "delay",
+ "name": "Tape double tracker",
+ "desc": "A 25 ms modulated copy, no feedback: artificial double tracking that thickens a single take",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "britpop",
+  "psychedelic-pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "why": "Abbey Road's ADT for Lennon's vocals instead of a second take",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "time": "Free",
+  "feedback": 0,
+  "mix": 80,
+  "model": "Tape",
+  "time_ms": 25,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 80,
+  "high_cut": 20000,
+  "drive": 0,
+  "mod": 60,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 70,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The README's ADT recipe: wow on the copy is what makes it read as a second take rather than a comb",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

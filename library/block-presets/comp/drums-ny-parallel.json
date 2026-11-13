@@ -1,0 +1,46 @@
+{
+ "id": "drums-ny-parallel",
+ "type": "comp",
+ "name": "Crushed parallel drums",
+ "desc": "FET 10:1 crushing the kit, blended 35 % with the dry: sustain and room come up, the transients stay dry",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "hip-hop",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "boom-bap",
+  "alternative-metal"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "aggressive",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -36,
+  "ratio": 10,
+  "makeup": 12,
+  "attack": 1,
+  "release": 60,
+  "character": "FET",
+  "knee": 0,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 25,
+  "mix": 35,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "New York-style parallel compression in one block; the coherent mix means no comb when blending",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

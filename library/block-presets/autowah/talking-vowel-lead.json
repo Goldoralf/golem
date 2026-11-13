@@ -1,0 +1,54 @@
+{
+ "id": "talking-vowel-lead",
+ "type": "autowah",
+ "name": "Talking vowel lead",
+ "desc": "Formant filter morphing a-e-i-o-u with picking strength: a talk-box-like vocal lead",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "arena-rock",
+  "funk"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Peter Frampton",
+   "song": "Show Me the Way",
+   "why": "talk-box vowels that this formant filter imitates",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.6,
+  "type": "Vowel",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 1200,
+  "peak": 4,
+  "attack": 8,
+  "release": 250,
+  "response": "Smooth",
+  "drive": 3,
+  "mix": 100,
+  "level": 2,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Crate's talk-box start (Vowel, up, sensitivity 0.6); slower attack lets the vowel 'speak' rather than click",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

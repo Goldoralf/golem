@@ -1,0 +1,40 @@
+{
+ "id": "lead-push",
+ "type": "limiter",
+ "name": "Louder lead, PA-safe",
+ "desc": "+6 dB into a punchy limiter at −3 dBFS: the solo jumps forward, pick attacks kept, the PA never clips",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "blues-rock"
+ ],
+ "gain": "any",
+ "use": "solo",
+ "refs": [],
+ "level_db": 3,
+ "tags": [
+  "aggressive"
+ ],
+ "default": true,
+ "params": {
+  "threshold": -3,
+  "release": 60,
+  "gain": 6,
+  "style": "Punchy",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 50,
+  "link": 100
+ },
+ "notes": "The doc's louder-lead row; envelope and soft clip share the work",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

@@ -1,0 +1,53 @@
+{
+ "id": "bass-finger-opto",
+ "type": "comp",
+ "name": "Fingerstyle bass, smooth opto",
+ "desc": "Opto 4:1, slow attack, two-stage release: fingerstyle notes even out, warm and unobtrusive",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "classic-soul",
+  "motown",
+  "soft-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Daft Punk",
+   "why": "mixer Mick Guzauski picks a slow LA-2A for smooth vocals and bass",
+   "source": "Universal Audio blog, 10 Questions with Mick Guzauski (undated)",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -22,
+  "ratio": 4,
+  "makeup": 4,
+  "attack": 20,
+  "release": 300,
+  "character": "Opto",
+  "knee": 6,
+  "auto_release": true,
+  "sc_hpf": 40,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Opto's release lengthens after long reduction, so a held note never swells back up audibly",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

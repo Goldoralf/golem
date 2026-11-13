@@ -1,0 +1,42 @@
+{
+ "id": "vocal-warble",
+ "type": "vibrato",
+ "name": "Lo-fi vocal warble",
+ "desc": "Light clean pitch vibrato with a random wander on a vocal: a detached, tape-like, slightly unreal voice",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "electronic"
+ ],
+ "subgenres": [
+  "bedroom-pop",
+  "hyperpop",
+  "vaporwave"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "depth": 0.12,
+  "speed": 3,
+  "model": "Clean",
+  "shape": "Random",
+  "rise": 0,
+  "tone": 0.85,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "12 cents of random wander reads as tape instability, not as a singer's vibrato; keep it subtle on a lead",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

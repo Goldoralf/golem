@@ -1,0 +1,48 @@
+{
+ "id": "bright-distortion-clean-amp",
+ "type": "guitar-drive",
+ "name": "Bright distortion into a clean amp",
+ "desc": "Hard-clipped distortion with a bright tilt, played into a clean channel as the dirty sound",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-rock",
+  "punk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Nirvana",
+   "song": "Smells Like Teen Spirit",
+   "why": "a Boss DS-1 into a clean amp channel as the dirty sound",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "bright",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 20,
+  "hardness": 7,
+  "ceiling": -18,
+  "voice": "Distortion",
+  "tight": 40,
+  "tone": 25,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "DS-1 territory: harder knee than the RAT preset, brighter tilt; the clean amp adds no gain of its own",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

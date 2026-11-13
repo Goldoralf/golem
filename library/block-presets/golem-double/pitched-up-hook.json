@@ -1,0 +1,62 @@
+{
+ "id": "pitched-up-hook",
+ "type": "golem-double",
+ "name": "Pitched-up hook double",
+ "desc": "Octave-above double with formants following the pitch: the sped-up, chipmunk vocal layer",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "hip-hop",
+  "electronic"
+ ],
+ "subgenres": [
+  "hyperpop",
+  "pop-rap",
+  "nightcore"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Kanye West",
+   "song": "Through the Wire",
+   "why": "sped-up soul vocal samples, timbre raised with the pitch",
+   "verified": false
+  },
+  {
+   "artist": "100 gecs",
+   "why": "pitched-up, formant-shifted vocal layers over the lead",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "bright",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": 12,
+  "formant": 0,
+  "voice1": -8,
+  "lpf": 12000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": true,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 150
+ },
+ "notes": "formant_link on is what makes it sound sped-up rather than a second singer",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

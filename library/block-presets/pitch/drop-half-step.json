@@ -1,0 +1,42 @@
+{
+ "id": "drop-half-step",
+ "type": "pitch",
+ "name": "Down a half step",
+ "desc": "Polyphonic shifter, fully wet, one semitone down: E-standard guitar plays in E-flat tuning",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "grunge",
+  "texas-blues"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "shift": -1,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Virtual capo for songs tuned down a half step; Fast tracking (6.6 ms) for feel. fine can match a slightly detuned record",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

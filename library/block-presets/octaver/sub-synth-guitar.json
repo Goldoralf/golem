@@ -1,0 +1,52 @@
+{
+ "id": "sub-synth-guitar",
+ "type": "octaver",
+ "name": "Guitar synth-bass line",
+ "desc": "Dry low, octave and two-octaves-down subs loud: a single-note guitar plays a glitchy-warm synth bass",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "dance-punk",
+  "electronic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The White Stripes",
+   "song": "Seven Nation Army",
+   "why": "a guitar riff dropped an octave to stand in for a bass",
+   "source": "Far Out Magazine, 2021",
+   "verified": true
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "direct": 0.4,
+  "octave1": 1,
+  "octave2": 0.6,
+  "octave_up": 0,
+  "mode": "Vintage",
+  "instrument": "Guitar",
+  "sub_tone": 470,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "golem's Sub synth. The record used a Whammy an octave down; the divider's ÷4 voice adds the synth-like floor",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

@@ -1,0 +1,40 @@
+{
+ "id": "singing-lead-od",
+ "type": "guitar-drive",
+ "name": "Singing overdrive lead",
+ "desc": "Mid-gain overdrive stacked on a crunchy amp: smooth sustain and a little presence for solos",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [],
+ "level_db": 7,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 20,
+  "hardness": 3,
+  "ceiling": -16,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 20,
+  "asym": 10,
+  "sag": 20,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "On a crunch amp it adds sustain rather than fizz; EXP on gain makes a level-matched solo swell",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

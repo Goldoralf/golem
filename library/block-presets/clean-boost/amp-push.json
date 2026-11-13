@@ -1,0 +1,31 @@
+{
+ "id": "amp-push",
+ "type": "clean-boost",
+ "name": "Amp push +8 dB",
+ "desc": "Flat +8 dB before the amp: more breakup and sustain from an amp that is already crunchy",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 8,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 8,
+  "polarity": false
+ },
+ "notes": "Before the amp it is a gain change, not a level change: the amp's own voice gets hotter",
+ "factory": true,
+ "golem_fx_seed": "gfx-boost",
+ "golem_fx": true
+}

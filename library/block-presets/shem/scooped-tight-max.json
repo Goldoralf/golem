@@ -1,0 +1,34 @@
+{
+ "id": "scooped-tight-max",
+ "type": "shem",
+ "name": "Scooped, tight, maximum push",
+ "desc": "Grind near the top: the most level into the amp, a scooped, aggressive feel with tight lows",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "deathcore",
+  "metalcore",
+  "nu-metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 17,
+ "tags": [
+  "extreme",
+  "aggressive",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "grind": 18,
+  "voice": "Focused",
+  "bright": 0
+ },
+ "notes": "Fortin's high travel: 'more scooped… feels like there is more gain'; the amp compresses harder",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

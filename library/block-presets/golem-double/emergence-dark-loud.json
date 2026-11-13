@@ -1,0 +1,54 @@
+{
+ "id": "emergence-dark-loud",
+ "type": "golem-double",
+ "name": "Emergence dark loud",
+ "desc": "Dark octave-below double at the lead's level: an inhuman low voice for the heaviest chorus",
+ "inst": "voice",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "progressive-metal",
+  "post-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Sleep Token",
+   "song": "Emergence",
+   "why": "the octave double pushed darker and louder for a climax scene",
+   "verified": false
+  }
+ ],
+ "level_db": 3,
+ "tags": [
+  "dark",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": -4,
+  "voice1": 0,
+  "lpf": 6000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

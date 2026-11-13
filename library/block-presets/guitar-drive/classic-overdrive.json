@@ -1,0 +1,40 @@
+{
+ "id": "classic-overdrive",
+ "type": "guitar-drive",
+ "name": "Classic mid-hump overdrive",
+ "desc": "Tube-Screamer-style overdrive: tight lows, mid hump, the clean signal summed under the clipping",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "classic-rock",
+  "electric-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 16,
+  "hardness": 4,
+  "ceiling": -18,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 0,
+  "asym": 0,
+  "sag": 10,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "The all-round first drive: into a clean amp it is the distortion, into a crunch amp it adds sustain",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

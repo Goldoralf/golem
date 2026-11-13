@@ -1,0 +1,49 @@
+{
+ "id": "breakdown-chop",
+ "type": "killswitch",
+ "name": "Breakdown rhythm chop",
+ "desc": "Hard 1/16 cuts on the pattern x.x..x.xx..x.x.., bar-locked: turns a held chord into a syncopated breakdown riff",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "metalcore",
+  "deathcore",
+  "djent"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -5,
+ "sync": "1/16",
+ "tags": [
+  "aggressive",
+  "tight",
+  "extreme"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 80,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 0.2,
+  "shape": "Gate",
+  "pattern": 10661,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Pattern 10661 = steps 1,3,6,8,9,12,14; length 80 % keeps each hit full like a palm-muted chug, near-hard edges",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

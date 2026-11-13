@@ -1,12 +1,53 @@
 {
- "name": "Mid scoop",
+ "id": "mid-scoop",
  "type": "eq",
+ "name": "Mid scoop",
+ "desc": "5 dB cut at 550 Hz with a 2 dB high shelf: a hollower, wider-sounding crunch rhythm",
  "inst": "guitar",
- "factory": true,
+ "genres": [
+  "punk",
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "skate-punk",
+  "pop-punk",
+  "grunge"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "bright"
+ ],
  "params": {
   "lowcut": 80,
-  "midfreq": 550,
   "midgain": -5,
-  "highs": 2
- }
+  "midfreq": 550,
+  "highs": 2,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "golem's Mid scoop kept as is; proportional Q narrows the cut as it deepens, so the 1 kHz bite survives",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": false
 }

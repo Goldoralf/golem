@@ -1,0 +1,49 @@
+{
+ "id": "chewy-driven-filter",
+ "type": "autowah",
+ "name": "Chewy saturated filter",
+ "desc": "Signal pushed into a resonant band-pass: a thick, chewy, slightly growling envelope quack",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "rnb",
+  "metal"
+ ],
+ "subgenres": [
+  "funk-rock",
+  "funk",
+  "funk-metal"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.45,
+  "type": "Band-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 2200,
+  "peak": 8,
+  "attack": 4,
+  "release": 160,
+  "response": "Fast",
+  "drive": 12,
+  "mix": 100,
+  "level": -1,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Crate's chewy start (drive 12 dB, peak 8): saturation inside the filter, as when a Q-Tron is driven hard",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

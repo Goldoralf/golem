@@ -1,0 +1,44 @@
+{
+ "id": "drop-tuned-tightener",
+ "type": "emet",
+ "name": "Drop-tuned tightener",
+ "desc": "Low-gain mid boost with an extra 120 Hz cut in the gain leg: keeps 7- and 8-string chugs defined",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Periphery",
+   "why": "a drive at low gain as a tight boost before high-gain amps",
+   "verified": false
+  }
+ ],
+ "level_db": 7,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "gain": 15,
+  "tone_stack": 45,
+  "level": 0,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 120,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The README's main use, with tight 120 Hz for low tunings. The amp clips, the pedal barely does: keep it ON in high",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

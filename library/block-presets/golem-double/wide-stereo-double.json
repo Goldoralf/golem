@@ -1,0 +1,50 @@
+{
+ "id": "wide-stereo-double",
+ "type": "golem-double",
+ "name": "Wide stereo double",
+ "desc": "Two drifting unison doubles, one centred and one far to the side, detuned 10 cents: a wide pop lead",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "ballad",
+  "contemporary-r-and-b",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "wide",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "formant": 0,
+  "voice1": -9,
+  "lpf": 10000,
+  "shift2": 0,
+  "voice2": -8,
+  "pan": 85,
+  "fine": 10,
+  "humanize": 70,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 100
+ },
+ "notes": "Needs a stereo lane; mirror with a second instance at pan −85 for symmetry. Humanize 70 % stops the comb a coherent unison would make",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

@@ -1,0 +1,45 @@
+{
+ "id": "808-blues-push",
+ "type": "emet",
+ "name": "808 blues push",
+ "desc": "TS knee, low gain, level full: a mid push that makes a cranked clean amp break up and sing",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "texas-blues",
+  "modern-electric-blues",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Stevie Ray Vaughan",
+   "why": "Tube Screamer with drive low and level high into cranked amps",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 15,
+  "tone_stack": 55,
+  "level": 0,
+  "headroom": -13,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Most of the drive comes from the amp; the pedal brings level and the mid hump",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

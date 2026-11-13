@@ -1,0 +1,45 @@
+{
+ "id": "classic-rock-crunch",
+ "type": "guitar-drive",
+ "name": "Classic rock crunch",
+ "desc": "Medium distortion, neutral tone: a cranked-stack crunch from a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock",
+  "arena-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Jeff Beck",
+   "why": "a ProCo RAT among the drives he used on stage",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "gain": 22,
+  "hardness": 5,
+  "ceiling": -16,
+  "voice": "Distortion",
+  "tight": 20,
+  "tone": 0,
+  "asym": 0,
+  "sag": 10,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "The README's classic crunch: slew-rounded highs, no fizz; back the guitar volume off for rhythm",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

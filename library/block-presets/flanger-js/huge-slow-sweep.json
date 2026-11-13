@@ -1,0 +1,51 @@
+{
+ "id": "huge-slow-sweep",
+ "type": "flanger-js",
+ "name": "Huge slow sweep",
+ "desc": "Very wide 35:1 BBD sweep at 0.08 Hz: the comb travels from bright fizz down to a deep throat over long phrases",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "space-rock",
+  "progressive-metal"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "extreme",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "length": 14,
+  "feedback": -6,
+  "wet": -3,
+  "dry": 0,
+  "rate": 0.08,
+  "mode": "A/DA",
+  "manual": 0.4,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 80,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README 'Huge slow sweep'; 0.4 – 14 ms restates the mode's span; loop low cut keeps long delays from booming",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

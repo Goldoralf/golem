@@ -1,0 +1,59 @@
+{
+ "id": "octave-halo-lead",
+ "type": "reverb-shimmer",
+ "name": "Octave halo, no climb",
+ "desc": "Shifter on the input only: the tail sits one octave up and never runs away, behind melodic leads",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "ccm",
+  "christian-rock",
+  "post-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "mix": 35,
+  "decay": 4,
+  "shimmer": 60,
+  "pitch": 12,
+  "hicut": 7000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 200,
+  "placement": "Input",
+  "size": 60,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 30,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Input placement does not climb (Strymon's Input mode): safe on busy leads; duck 30 % keeps notes clear",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

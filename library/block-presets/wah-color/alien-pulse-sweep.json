@@ -1,0 +1,49 @@
+{
+ "id": "alien-pulse-sweep",
+ "type": "wah-color",
+ "name": "Rhythmic LFO wah sweep",
+ "desc": "An LFO rocks the wah on its own at about two sweeps a second: a cycling, psychedelic wah",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "electronic",
+  "rnb"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "space-rock",
+  "p-funk"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "Jen",
+  "freq": 120,
+  "mix": 100,
+  "mode": "alien",
+  "q": 100,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 10,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "freq is the alien LFO in BPM (120 = 2 Hz), free-running, not host-synced: set it near the song tempo",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

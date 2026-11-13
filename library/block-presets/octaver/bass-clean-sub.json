@@ -1,0 +1,45 @@
+{
+ "id": "bass-clean-sub",
+ "type": "octaver",
+ "name": "Clean bass sub",
+ "desc": "Near-sine sub an octave below that follows the bass player's dynamics, under the full dry",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "rnb",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "neo-soul",
+  "synth-pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "direct": 1,
+  "octave1": 0.5,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Clean",
+  "instrument": "Bass",
+  "sub_tone": 250,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Clean mode: half-angle sub, 3rd harmonic under −50 dBc, no tracking glitches on decays. sub_tone 250 Hz keeps only the fundamental",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

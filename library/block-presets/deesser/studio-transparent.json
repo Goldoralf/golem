@@ -1,0 +1,41 @@
+{
+ "id": "studio-transparent",
+ "type": "deesser",
+ "name": "Transparent with lookahead",
+ "desc": "5 ms lookahead catches the very start of each 's': fully transparent de-essing for playback or recording",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "jazz",
+  "folk"
+ ],
+ "subgenres": [
+  "ballad",
+  "vocal-jazz",
+  "singer-songwriter"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -28,
+  "freq": 6000,
+  "range": 8,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Wide",
+  "focus": "Vocal",
+  "ratio": 6,
+  "release": 60,
+  "lookahead": 5
+ },
+ "notes": "Reports 5 ms of latency: not for a singer monitoring themselves in ears",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

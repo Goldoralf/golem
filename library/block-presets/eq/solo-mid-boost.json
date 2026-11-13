@@ -1,0 +1,53 @@
+{
+ "id": "solo-mid-boost",
+ "type": "eq",
+ "name": "Solo mid lift",
+ "desc": "+4 dB broad bell at 1.2 kHz and +2 dB output: the lead steps forward of the band without more gain",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues",
+  "metal"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "blues-rock",
+  "hard-rock"
+ ],
+ "gain": "any",
+ "use": "solo",
+ "refs": [],
+ "level_db": 3,
+ "tags": [
+  "warm"
+ ],
+ "params": {
+  "lowcut": 90,
+  "midgain": 4,
+  "midfreq": 1200,
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.8,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 2,
+  "auto_gain": false
+ },
+ "notes": "Mids carry a guitar through a mix far better than volume or treble; put it on the solo scene, after the amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

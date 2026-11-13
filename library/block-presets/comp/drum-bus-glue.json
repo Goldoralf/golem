@@ -1,0 +1,45 @@
+{
+ "id": "drum-bus-glue",
+ "type": "comp",
+ "name": "Drum bus glue",
+ "desc": "Bus 4:1, 30 ms attack, auto release: 2 – 4 dB on the kit, hits keep their crack, the kit sounds as one",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "pop",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "pop-rock",
+  "boom-bap"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -16,
+  "ratio": 4,
+  "makeup": 2,
+  "attack": 30,
+  "release": 100,
+  "character": "Bus",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 60,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Bus-console style settings; sidechain cut so the kick alone doesn't duck the cymbals",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

@@ -1,0 +1,59 @@
+{
+ "id": "tight-mid-push",
+ "type": "eq",
+ "name": "Tight mid push into the amp",
+ "desc": "Steep 140 Hz high-pass and +5 dB at 720 Hz, highs eased: tightens a high-gain amp's palm mutes from the front",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "progressive-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Periphery",
+   "why": "Misha Mansoor tightens his high-gain amps with an overdrive in front",
+   "verified": false
+  }
+ ],
+ "level_db": 3,
+ "tags": [
+  "tight",
+  "modern",
+  "aggressive"
+ ],
+ "params": {
+  "lowcut": 140,
+  "midgain": 5,
+  "midfreq": 720,
+  "highs": -2.5,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.8,
+  "midprop": 30,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 4000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 3,
+  "auto_gain": false
+ },
+ "notes": "Placed BEFORE the amp: an overdrive-pedal curve without the clipping. Less bass into the preamp = less flub; +3 dB out hits the input harder",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

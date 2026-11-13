@@ -1,0 +1,48 @@
+{
+ "id": "live-lead",
+ "type": "deesser",
+ "name": "Live lead vocal",
+ "desc": "Level-independent de-essing from 6 kHz, shelf cut up to 8 dB: holds when the singer backs off or a comp sits upstream",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "dance-pop",
+  "pop-rock",
+  "contemporary-r-and-b"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [
+  {
+   "artist": "DNCE",
+   "why": "FOH Brian Pomp puts a de-esser in the live lead vocal chain",
+   "source": "Vintage King, Brian Pomp FOH interview, 2017",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -28,
+  "freq": 6000,
+  "range": 8,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Shelf",
+  "focus": "Vocal",
+  "ratio": 6,
+  "release": 60,
+  "lookahead": 0
+ },
+ "notes": "The doc's live-lead row. Relative detection matters live: mic distance changes all night",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

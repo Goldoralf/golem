@@ -1,0 +1,49 @@
+{
+ "id": "vibe-vibrato",
+ "type": "vibrato",
+ "name": "Vibe-style pitch throb",
+ "desc": "The vibe's four unequal stages, wet only: a throbbing, liquid pitch vibrato in front of a driven amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "psychedelic-rock",
+  "electric-blues"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Robin Trower",
+   "song": "Bridge of Sighs",
+   "why": "Uni-Vibe swirl as the core of his lead sound",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.7,
+  "speed": 4,
+  "model": "Vibe",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 0.9,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "README 'Vibe vibrato'; for the vibe's chorus mode use gfx-phaser uni-vibe-throb, or mix 0.5 here",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

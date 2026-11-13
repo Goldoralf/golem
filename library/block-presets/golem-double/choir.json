@@ -1,0 +1,50 @@
+{
+ "id": "choir",
+ "type": "golem-double",
+ "name": "Choir",
+ "desc": "Octave below in the centre plus a softer octave above to one side, humanized: a three-register choir",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "symphonic-metal",
+  "progressive-metal",
+  "art-pop"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": 0,
+  "voice1": -6,
+  "lpf": 7000,
+  "shift2": 12,
+  "voice2": -10,
+  "pan": 60,
+  "fine": 0,
+  "humanize": 40,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "Humanize 40 % makes the doubles drift like separate singers; a second instance with pan −60 mirrors it in stereo",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

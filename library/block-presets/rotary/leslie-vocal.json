@@ -1,0 +1,62 @@
+{
+ "id": "leslie-vocal",
+ "type": "rotary",
+ "name": "Spinning-speaker vocal",
+ "desc": "A voice through a fast rotating cabinet: swirling, distant, otherworldly lead vocal",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "psychedelic-pop",
+  "neo-psychedelia"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "song": "Tomorrow Never Knows",
+   "why": "Lennon's vocal re-recorded through a Leslie cabinet",
+   "source": "Geoff Emerick, Here, There and Everywhere, 2006",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "speed": "fast",
+  "mic": 75,
+  "spacing": 70,
+  "depth": 60,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 10,
+  "balance": 65,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 120,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Horn-heavy balance keeps the voice intelligible; low drive avoids grit on sibilants",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

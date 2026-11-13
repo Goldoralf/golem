@@ -1,0 +1,47 @@
+{
+ "id": "breakdown-stop",
+ "type": "gate",
+ "name": "Breakdown stop-start",
+ "desc": "Very fast hard gate for stop-start breakdowns: 25 ms release, high sidechain cut, no follow, silence on every rest",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "deathcore",
+  "metalcore",
+  "beatdown-hardcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -40,
+  "attack": 0.2,
+  "hold": 5,
+  "release": 25,
+  "hpf": 150,
+  "lpf": 20000,
+  "hyst": -4,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Follow off on purpose: every stop is a hard stop. Too aggressive for sustained chords, use chug-tight there",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

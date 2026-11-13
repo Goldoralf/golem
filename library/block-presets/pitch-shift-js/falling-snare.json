@@ -1,0 +1,45 @@
+{
+ "id": "falling-snare",
+ "type": "pitch-shift-js",
+ "name": "Pitched-down snare",
+ "desc": "Snare or kit shifted down 5 semitones and blended with the dry: a deep, metallic, processed crack",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "art-rock",
+  "krautrock",
+  "post-punk"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "David Bowie",
+   "song": "Breaking Glass",
+   "why": "Visconti pitched the snare down through an H910 Harmonizer",
+   "source": "Red Bull Music Academy Daily, 2017",
+   "verified": true
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "lo-fi"
+ ],
+ "default": true,
+ "params": {
+  "shift": -5,
+  "window": 40,
+  "overlap": 15,
+  "wet": 0,
+  "dry": 0,
+  "search": false
+ },
+ "notes": "Low uses H910 feedback for a falling pitch; this block has no feedback, so place a short delay after it for the descent",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

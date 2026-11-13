@@ -1,8 +1,22 @@
 {
- "name": "Half Chop",
+ "id": "half-chop",
  "type": "killswitch",
+ "name": "Half-depth eighth chop",
+ "desc": "1/8 dips of 70 % instead of silence: a choppy pulse that keeps the sustain underneath",
  "inst": "any",
- "factory": true,
+ "genres": [
+  "rock",
+  "pop",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -2,
+ "sync": "1/8",
+ "tags": [
+  "subtle"
+ ],
  "params": {
   "depth": 70,
   "length": 60,
@@ -10,6 +24,20 @@
   "rate": 8,
   "trigger": "Engage",
   "sens": 50,
-  "smooth": 3
- }
+  "smooth": 3,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "golem's Half Chop kept",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": false
 }

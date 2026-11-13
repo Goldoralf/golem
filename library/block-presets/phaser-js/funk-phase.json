@@ -1,0 +1,60 @@
+{
+ "id": "funk-phase",
+ "type": "phaser-js",
+ "name": "Choppy funk rhythm phase",
+ "desc": "Faster smooth four-stage phase on clean single-note and chord stabs: movement that pulses with sixteenths",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "disco",
+  "jazz-funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "bright",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "rate": 1.6,
+  "low": 500,
+  "high": 2000,
+  "feedback": -3,
+  "wet": -1,
+  "model": "Script 90",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 40,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 55,
+  "bass_keep": 0
+ },
+ "notes": "Speed near the middle of a Phase 90's knob; range nudged up so the sweep lives in the funk guitar's 500 Hz – 2 kHz",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

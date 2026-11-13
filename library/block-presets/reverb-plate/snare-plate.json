@@ -1,0 +1,62 @@
+{
+ "id": "snare-plate",
+ "type": "reverb-plate",
+ "name": "Snare plate",
+ "desc": "A one-second bright plate for snare and toms: the classic drum plate",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "pop-rock",
+  "new-wave"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "mix": 25,
+  "decay": 1,
+  "size": 24,
+  "predelay": 5,
+  "hicut": 9000,
+  "lowcut": 150,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Plate programs were all over 80s drums (Sound On Sound, 2011, on the Lexicon 224); short decay keeps the groove",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

@@ -1,0 +1,56 @@
+{
+ "id": "bass-wah-solid",
+ "type": "wah-color",
+ "name": "Bass wah, lows kept",
+ "desc": "Bass-voiced wah blended with the dry: a talking sweep on the mids while the low end stays put",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "thrash-metal",
+  "funk-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Metallica",
+   "song": "(Anesthesia) Pulling Teeth",
+   "why": "Cliff Burton's distorted bass solo through a wah",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "Bass 105Q",
+  "freq": 24,
+  "mix": 70,
+  "mode": "manual",
+  "q": 100,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 10,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Crate's bass start: Bass 105Q voicing with mix 70 so the fundamental never disappears",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

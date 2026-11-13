@@ -1,0 +1,70 @@
+{
+ "id": "lead-hall-ducked",
+ "type": "reverb",
+ "name": "Ducked lead hall",
+ "desc": "A 2.2 s hall with 40 ms predelay that steps back while the solo plays and blooms in the gaps",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "blues-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "song": "Comfortably Numb",
+   "why": "David Gilmour's solo tone: delay into a moderate hall",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mix": 30,
+  "decay": 2.2,
+  "size": 30,
+  "predelay": 40,
+  "hicut": 6000,
+  "algo": "Hall",
+  "lowcut": 150,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 6,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Predelay keeps the attack dry and in front; 6 dB ducking stops the tail from washing out high-gain notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

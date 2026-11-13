@@ -1,0 +1,48 @@
+{
+ "id": "swung-slicer",
+ "type": "killswitch",
+ "name": "Swung eighth slicer",
+ "desc": "1/8 cuts with 30 % swing and soft edges: a shuffled, head-nodding chop on chords or samples",
+ "inst": "any",
+ "genres": [
+  "hip-hop",
+  "rnb",
+  "blues"
+ ],
+ "subgenres": [
+  "boom-bap",
+  "neo-soul",
+  "jump-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -3,
+ "sync": "1/8",
+ "tags": [
+  "warm"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 60,
+  "sync": "1/8",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 3,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 30,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Swing lengthens the on-beat eighth and shortens the off-beat one; 30 % sits near a triplet shuffle",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

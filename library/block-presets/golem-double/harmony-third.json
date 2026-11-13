@@ -1,0 +1,47 @@
+{
+ "id": "harmony-third",
+ "type": "golem-double",
+ "name": "Harmony third",
+ "desc": "A diatonic third above the voice in the song's key, 6 dB under the lead",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-folk",
+  "country-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [],
+ "default": false,
+ "params": {
+  "shift": 4,
+  "formant": 0,
+  "voice1": -6,
+  "lpf": 8000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 20,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Scale",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 80
+ },
+ "notes": "In Scale mode shift 4 = a third in the scale. golem sets key / scale per song; C major is only the placeholder",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

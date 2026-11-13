@@ -1,0 +1,45 @@
+{
+ "id": "lead-expander",
+ "type": "gate",
+ "name": "High-gain lead expander",
+ "desc": "3:1 soft-knee expander with tail damp: hiss fades first under a long lead note, the note's end is never chopped",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "progressive-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -55,
+  "attack": 2,
+  "hold": 30,
+  "release": 300,
+  "hpf": 0,
+  "lpf": 20000,
+  "hyst": -3,
+  "range": -60,
+  "ratio": 3,
+  "knee": 12,
+  "follow": true,
+  "damp": 60,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "From the doc's lead row. Expansion instead of switching keeps vibrato tails alive; damp 60 % takes 7 dB from the highs before the level moves",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

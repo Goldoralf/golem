@@ -1,0 +1,46 @@
+{
+ "id": "single-coil-hum",
+ "type": "gate",
+ "name": "Single-coil hum guard",
+ "desc": "Notches 50 Hz mains hum out of detection so the gate can sit 6 dB lower; gentle range keeps the playing natural",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "texas-blues",
+  "blues-rock",
+  "funk"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -56,
+  "attack": 2,
+  "hold": 30,
+  "release": 200,
+  "hpf": 0,
+  "lpf": 20000,
+  "hyst": -4,
+  "range": -40,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 40,
+  "hum": "50 Hz",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Set hum to 60 Hz in the Americas. Range −40 dB rather than silence: a strat's buzz is lowered, never pumping",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

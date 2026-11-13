@@ -1,0 +1,54 @@
+{
+ "id": "vocal-air",
+ "type": "eq",
+ "name": "Airy live vocal",
+ "desc": "100 Hz high-pass, -2.5 dB at 400 Hz, +3 dB air shelf at 12 kHz, de-ess around 6 kHz: open but never sharp",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "folk"
+ ],
+ "subgenres": [
+  "singer-songwriter",
+  "neo-soul",
+  "indie-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "modern"
+ ],
+ "params": {
+  "lowcut": 100,
+  "midgain": -2.5,
+  "midfreq": 400,
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.9,
+  "midprop": 50,
+  "mid2gain": 1.5,
+  "mid2freq": 3500,
+  "mid2q": 0.8,
+  "highfreq": 5000,
+  "air": 3,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 6500,
+  "harsh_thresh": -15,
+  "harsh_range": 5,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "Presence comes from the air shelf, not 3-5 kHz, so stage monitors feed back less; the dynamic band acts as a de-esser",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

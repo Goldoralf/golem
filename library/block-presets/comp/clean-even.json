@@ -1,0 +1,45 @@
+{
+ "id": "clean-even",
+ "type": "comp",
+ "name": "Even clean guitar",
+ "desc": "Transparent 4:1 with a 6 dB knee and dual-path release: strums sit at one level, no pumping between them",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-rock",
+  "neo-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -18,
+  "ratio": 4,
+  "makeup": 3,
+  "attack": 15,
+  "release": 150,
+  "character": "Clean",
+  "knee": 6,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "The doc's clean-guitar row, golem's Standard",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

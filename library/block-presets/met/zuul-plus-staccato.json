@@ -1,0 +1,48 @@
+{
+ "id": "zuul-plus-staccato",
+ "type": "met",
+ "name": "Keyed expander, hold and fade",
+ "desc": "Classic keyed expansion plus 20 ms hold and a 60 ms fade: short pauses in staccato riffs stay open, then close clean",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "progressive-metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Periphery",
+   "why": "staccato riffing that wants dead-silent stops between mutes",
+   "source": "Reverb.com, Misha Mansoor outlines the ultimate metal pedalboard (undated)",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -45,
+  "hold": 20,
+  "release": 60,
+  "ratio": 2.8,
+  "range": -90,
+  "smooth": 58,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "The doc's hold / release row, the two extra knobs of the plus version",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

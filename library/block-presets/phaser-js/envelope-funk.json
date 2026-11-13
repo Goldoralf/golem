@@ -1,0 +1,59 @@
+{
+ "id": "envelope-funk",
+ "type": "phaser-js",
+ "name": "Touch-sensitive auto-phase",
+ "desc": "Picking dynamics sweep a resonant four-stage phaser: each stab quacks up and settles back as it decays",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "p-funk",
+  "funk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "tight",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.5,
+  "low": 300,
+  "high": 3000,
+  "feedback": -6,
+  "wet": 0,
+  "model": "Classic",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 0,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "Envelope",
+  "env_sens": 60,
+  "env_att": 5,
+  "env_rel": 250,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Funk auto-phase'; manual 0 parks the rest position at Low so every attack sweeps upward",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

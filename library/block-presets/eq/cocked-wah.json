@@ -1,0 +1,64 @@
+{
+ "id": "cocked-wah",
+ "type": "eq",
+ "name": "Parked wah lead",
+ "desc": "Narrow +12 dB resonant peak at 900 Hz, lows trimmed: a wah left half-open, nasal and vocal (EXP on Mid Freq)",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Michael Schenker",
+   "why": "leads through a wah parked at one spot instead of rocked",
+   "verified": false
+  },
+  {
+   "artist": "Mick Ronson",
+   "why": "half-open wah colouring his Ziggy-era lead tone",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "params": {
+  "lowcut": 150,
+  "midgain": 12,
+  "midfreq": 900,
+  "highs": -3,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 4,
+  "midprop": 0,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 4000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": -5,
+  "auto_gain": false
+ },
+ "notes": "Constant Q (midprop 0) keeps the peak narrow; -5 dB output offsets the peak's added level. Assign EXP to midfreq to sweep it",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

@@ -1,0 +1,41 @@
+{
+ "id": "slap-double",
+ "type": "detune",
+ "name": "Mono doubletrack",
+ "desc": "One voice 4 cents up, 30 ms late: a mono artificial double-track for a voice or a guitar",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "britpop",
+  "psychedelic-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "why": "artificial double-tracking on lead vocals",
+   "verified": false
+  }
+ ],
+ "level_db": 1.5,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "detune": 0.15,
+  "wet": 0.6,
+  "dry": 0.7,
+  "delay": 30,
+  "voices": "1"
+ },
+ "notes": "One voice (up, on both sides): 30 ms is the longest offset, at the edge between a double and a slap",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

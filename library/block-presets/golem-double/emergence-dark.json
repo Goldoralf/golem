@@ -1,0 +1,56 @@
+{
+ "id": "emergence-dark",
+ "type": "golem-double",
+ "name": "Emergence dark",
+ "desc": "Octave-below double with formants lowered 4 st: a bigger, darker, less human low voice",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "progressive-metal",
+  "post-metal"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Sleep Token",
+   "song": "Emergence",
+   "why": "the same octave double, voiced darker as the heavier option",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "dark",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": -4,
+  "voice1": -6,
+  "lpf": 6000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "Formant −4 moves the double's envelope down by 2^(−4/12): bigger throat, same pitch. The mix cannot tell whether the record did this; the ear decides",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

@@ -1,0 +1,39 @@
+{
+ "id": "classic-808",
+ "type": "emet",
+ "name": "Classic 808 overdrive",
+ "desc": "Tube Screamer knee and mid hump at half gain: smooth overdrive from a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "classic-rock",
+  "electric-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 50,
+  "tone_stack": 50,
+  "level": -6,
+  "headroom": -13,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "headroom −13 dB puts the knee at a TS's silicon diodes: the 808 circuit, as it was",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

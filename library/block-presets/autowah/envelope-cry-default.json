@@ -1,0 +1,46 @@
+{
+ "id": "envelope-cry-default",
+ "type": "autowah",
+ "name": "Envelope Cry Baby",
+ "desc": "A Cry Baby resonance swept by picking dynamics: each attack opens the wah, the decay closes it",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "funk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.35,
+  "type": "Wah",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 1200,
+  "peak": 4,
+  "attack": 5,
+  "release": 150,
+  "response": "Fast",
+  "drive": 0,
+  "mix": 100,
+  "level": 0,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Keeps golem's autowah block sound (GxAutoWah, Wah type); sensitivity a touch above default for typical DI levels",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

@@ -1,0 +1,49 @@
+{
+ "id": "vocal-lead-clyde",
+ "type": "wah-color",
+ "name": "Vocal, throaty lead wah",
+ "desc": "Wide-range, moderately peaky wah voice: a throaty, talking sweep for expressive blues leads",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "electric-blues",
+  "modern-electric-blues",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 1,
+  "model": "Clyde",
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 110,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 20,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Clyde voicing (369 Hz to 2.37 kHz, Q 4.17 per Fractal) sweeps wider than the Cry Baby: more 'vowel' per inch",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

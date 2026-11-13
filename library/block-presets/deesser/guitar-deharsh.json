@@ -1,0 +1,41 @@
+{
+ "id": "guitar-deharsh",
+ "type": "deesser",
+ "name": "Overdrive fizz tamer",
+ "desc": "Allround high-frequency limiter, bell at 3.5 kHz: pick click and fizz of a driven guitar softened only when they spike",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "punk-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -24,
+  "freq": 3500,
+  "range": 6,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Bell",
+  "focus": "Allround",
+  "ratio": 4,
+  "release": 40,
+  "lookahead": 0
+ },
+ "notes": "The doc's de-harsh row. After amp and cab: a static EQ cut would dull the palm mutes too",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

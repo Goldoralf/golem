@@ -1,0 +1,44 @@
+{
+ "id": "harmonic-dream-shimmer",
+ "type": "tremolo",
+ "name": "Slow harmonic shimmer",
+ "desc": "Slow, wide harmonic tremolo that makes sustained chords swirl rather than pulse",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "dream-pop",
+  "shoegaze",
+  "ambient-pop"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "rate": 1.5,
+  "depth": 0.6,
+  "wave": "Sine",
+  "model": "Harmonic",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 600,
+  "blend": 0.85,
+  "drive": 0.2,
+  "duck": 0,
+  "stereo_phase": 90,
+  "level": 0.5
+ },
+ "notes": "Higher crossover moves the swirl into the mids; 90° stereo phase spreads it without becoming an auto-pan",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

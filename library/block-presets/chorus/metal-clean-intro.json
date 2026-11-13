@@ -1,0 +1,81 @@
+{
+ "id": "metal-clean-intro",
+ "type": "chorus",
+ "name": "Stereo clean intro chorus",
+ "desc": "Bright BBD chorus spread hard left-right on a clean arpeggio before the distorted section hits",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "heavy-metal",
+  "progressive-metal"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Metallica",
+   "song": "Welcome Home (Sanitarium)",
+   "why": "clean intro through a stereo amp chorus (JC-120 style)",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "profile": "Guitar Clean",
+  "mode": "Classic",
+  "rate": 0.6,
+  "depth": 4.0,
+  "warmth": 35,
+  "mix": 0.9,
+  "xover_custom": false,
+  "xover_on": false,
+  "xover_freq": 120,
+  "xover_slope": "24 dB",
+  "color_custom": false,
+  "engine": "BBD",
+  "interp": "Lagrange 5",
+  "drive": 25,
+  "bbd_chip": "1024",
+  "bbd_bw": 6600,
+  "emphasis": 100,
+  "compander": 0,
+  "noise": 15,
+  "wow": 0,
+  "flutter": 0,
+  "mod_custom": false,
+  "delay_base": 8,
+  "lfo_shape": "Triangle",
+  "voices": "1",
+  "voice_spread": 90,
+  "imperfection": 10,
+  "detune_lock": false,
+  "drift": 10,
+  "crossmix": 0,
+  "feedback": 0,
+  "sync": "Off",
+  "env_depth": 0,
+  "env_mix": 0,
+  "stereo_custom": true,
+  "stereo_phase": 180,
+  "width": 130,
+  "mono_safe": false,
+  "filter_custom": false,
+  "wet_hpf": 80,
+  "wet_lpf": 8000,
+  "mix_law": "Add",
+  "level_comp": true,
+  "output": 0
+ },
+ "notes": "Stereo Custom: opposite LFOs and 130 % wet width mimic a stereo amp chorus; warmth 35 keeps it bright like a solid-state clean",
+ "factory": true,
+ "golem_fx_seed": "gfx-chorus",
+ "golem_fx": true
+}

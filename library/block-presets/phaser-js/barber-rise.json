@@ -1,0 +1,58 @@
+{
+ "id": "barber-rise",
+ "type": "phaser-js",
+ "name": "Endless rising phase",
+ "desc": "Eight-stage barber-pole phaser: the notches climb forever with no audible reset, for builds and risers",
+ "inst": "any",
+ "genres": [
+  "electronic"
+ ],
+ "subgenres": [
+  "trance",
+  "techno",
+  "progressive-house"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "modern",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.2,
+  "low": 100,
+  "high": 6400,
+  "feedback": -6,
+  "wet": 0,
+  "model": "Barber ↑",
+  "stages": "8",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Endless rise'; two crossfaded sawtooth cascades",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

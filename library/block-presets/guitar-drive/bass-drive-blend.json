@@ -1,0 +1,46 @@
+{
+ "id": "bass-drive-blend",
+ "type": "guitar-drive",
+ "name": "Bass overdrive, clean lows",
+ "desc": "Bass overdrive on the mids with the lows under 150 Hz kept clean and 40 % clean blend",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "hard-rock",
+  "heavy-metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Lemmy",
+   "why": "mid-forward, overdriven bass that still holds the low end",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 16,
+  "hardness": 4,
+  "ceiling": -12,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 10,
+  "asym": 0,
+  "sag": 10,
+  "blend": 40,
+  "bass_keep": 150
+ },
+ "notes": "bass_keep keeps the fundamental mono-solid and phase-aligned; blend restores the attack. Into a clean bass amp or DI",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

@@ -1,0 +1,54 @@
+{
+ "id": "unison-double",
+ "type": "golem-double",
+ "name": "Unison double",
+ "desc": "Same-pitch double detuned 8 cents with slow pitch and timing drift: a double-tracked vocal live",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "pop-rock",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Beatles",
+   "why": "double-tracked lead vocals, the sound live doubling imitates",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "formant": 0,
+  "voice1": -3,
+  "lpf": 9000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 8,
+  "humanize": 60,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 80
+ },
+ "notes": "Humanize 60 % (±8 ct, ±10 ms drift) keeps the double from combing with the lead; fine 8 ct thickens without sounding out of tune",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

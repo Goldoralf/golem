@@ -1,0 +1,43 @@
+{
+ "id": "switchless-short-throw",
+ "type": "wah",
+ "name": "Switchless short-throw wah",
+ "desc": "Turns on when the pedal moves, off when parked at heel; shorter travel with an S taper",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "rnb",
+  "metal"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0,
+  "volume": 0,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 100,
+  "range": 100,
+  "taper": "S",
+  "heel": 10,
+  "toe": 85,
+  "drive": 10,
+  "auto_engage": true,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Crate's switchless and smaller-travel uses together: heel 10 / toe 85 avoid the extreme mud and shriek",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

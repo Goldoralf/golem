@@ -1,0 +1,56 @@
+{
+ "id": "whammy-voice",
+ "type": "golem-double",
+ "name": "Whammy voice",
+ "desc": "Octave-below double whose formants follow the interval: the slowed-tape, pitched-down voice",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "metal",
+  "electronic"
+ ],
+ "subgenres": [
+  "chopped-and-screwed",
+  "industrial-metal",
+  "witch-house"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "DJ Screw",
+   "why": "slowed, pitched-down voices where the timbre drops with the pitch",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "dark",
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": 0,
+  "voice1": -6,
+  "lpf": 5000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": true,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "formant_link on: the envelope moves with the octave like a pitch pedal or a slowed tape, the opposite of the Emergence presets",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

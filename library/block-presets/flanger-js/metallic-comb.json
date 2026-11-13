@@ -1,0 +1,52 @@
+{
+ "id": "metallic-comb",
+ "type": "flanger-js",
+ "name": "Robotic metallic resonator",
+ "desc": "A fixed 2 ms comb at near-maximum negative regen: a hollow, ringing robotic resonance on any source",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "metal",
+  "experimental"
+ ],
+ "subgenres": [
+  "industrial-electronic",
+  "industrial-metal",
+  "noise"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "length": 10,
+  "feedback": -2,
+  "wet": 0,
+  "dry": -6,
+  "rate": 0.3,
+  "mode": "Pedal",
+  "manual": 2.0,
+  "depth": 100,
+  "fb_polarity": "Inverted",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 30,
+  "fb_hpf": 60,
+  "fb_lpf": 8000,
+  "bass_keep": 0
+ },
+ "notes": "Negative feedback puts peaks at k/τ = 500 Hz multiples; loop drive and filters keep the -2 dB regen safe; EXP on manual retunes it",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

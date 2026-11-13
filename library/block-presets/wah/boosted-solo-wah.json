@@ -1,0 +1,47 @@
+{
+ "id": "boosted-solo-wah",
+ "type": "wah",
+ "name": "Boosted solo wah",
+ "desc": "Cry Baby with extra Q and a solo-level boost: the wah also lifts the lead over the band",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "blues-rock",
+  "southern-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [],
+ "level_db": 5,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 5,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 120,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 35,
+  "auto_engage": true,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Volume +5 dB covers a 535Q-style boost: engaging the wah (auto-engage) is also the solo boost",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

@@ -1,0 +1,73 @@
+{
+ "id": "ambient-wash",
+ "type": "delay",
+ "name": "Ambient echo wash",
+ "desc": "Long, diffused, dark repeats that melt into a stereo wash behind chords",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "shoegaze",
+  "ambient"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Slowdive",
+   "why": "washes of delay and reverb behind clean chords",
+   "verified": false
+  },
+  {
+   "artist": "Sigur Ros",
+   "why": "oceanic long-feedback delays under bowed guitar",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "dreamy",
+  "dark",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4",
+  "feedback": 60,
+  "mix": 35,
+  "model": "BBD",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 200,
+  "high_cut": 4000,
+  "drive": 0,
+  "mod": 65,
+  "diffusion": 60,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Diffusion 60 % turns echoes into a smear; the 200 Hz - 4 kHz loop band keeps the wash off the dry",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

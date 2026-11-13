@@ -1,0 +1,60 @@
+{
+ "id": "vocal-shimmer",
+ "type": "reverb-shimmer",
+ "name": "Vocal octave air",
+ "desc": "Light octave shimmer behind a voice, 80 ms predelay and ducked: an airy halo that keeps words clear",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "ballad",
+  "ccm",
+  "alternative-r-and-b"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "mix": 20,
+  "decay": 4,
+  "shimmer": 35,
+  "pitch": 12,
+  "hicut": 8000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 300,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 80,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 40,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Predelay and ducking keep consonants dry; lowcut 300 Hz keeps the chest of the voice out of the climb",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

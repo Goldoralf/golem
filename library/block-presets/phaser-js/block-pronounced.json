@@ -1,0 +1,59 @@
+{
+ "id": "block-pronounced",
+ "type": "phaser-js",
+ "name": "Pronounced four-stage phase",
+ "desc": "Four stages with the internal feedback resistor at 1 Hz: a sharper, more resonant, throatier swoosh",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "punk-rock",
+  "hard-rock",
+  "garage-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 1.0,
+  "low": 440,
+  "high": 1600,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Block 90",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Phase 90 block'; the feedback is fixed by the model (the Feedback control is ignored here)",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

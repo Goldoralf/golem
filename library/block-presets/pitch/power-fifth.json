@@ -1,0 +1,41 @@
+{
+ "id": "power-fifth",
+ "type": "pitch",
+ "name": "Fixed fifth stack",
+ "desc": "Mono shifter a fifth up at 45 %: single notes become power-chord dyads",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "stoner-rock",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": 7,
+  "mix": 45,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Fixed interval, so it stays parallel (not in key): right for riffs, wrong for melodic leads (see twin-lead-third)",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

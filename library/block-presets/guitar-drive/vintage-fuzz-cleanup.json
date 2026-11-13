@@ -1,0 +1,46 @@
+{
+ "id": "vintage-fuzz-cleanup",
+ "type": "guitar-drive",
+ "name": "Vintage fuzz that cleans up",
+ "desc": "Biased, saggy fuzz that cleans up when the guitar volume comes down: hairy chords, singing leads",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "classic-rock",
+  "acid-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Jimi Hendrix",
+   "song": "Fire",
+   "why": "a Fuzz Face into cranked Marshalls, volume knob for cleaner tones",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "gain": 22,
+  "hardness": 4,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": 10,
+  "asym": 40,
+  "sag": 30,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Moderate gain and asym/sag make it touch-sensitive: guitar volume at 6 gives a glassy crunch",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

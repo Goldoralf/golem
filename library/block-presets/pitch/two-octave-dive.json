@@ -1,0 +1,48 @@
+{
+ "id": "two-octave-dive",
+ "type": "pitch",
+ "name": "Two-octave dive",
+ "desc": "Mono shifter, fully wet, two octaves down reached over 600 ms: a dive-bomb growl from any note",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "nu-metal",
+  "rap-metal",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Rage Against the Machine",
+   "why": "Whammy settings from two octaves up to two down across the record",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "shift": -24,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 600,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Glide makes the scene change a dive; the 12 ms Whammy engine keeps the attack tight at −24",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

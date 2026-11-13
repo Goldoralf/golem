@@ -1,0 +1,50 @@
+{
+ "id": "octave-down-riff",
+ "type": "pitch",
+ "name": "Octave-down bass riff",
+ "desc": "Mono shifter, fully wet, one octave down: a single-note guitar riff turns into a bass line",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "blues-rock",
+  "indie-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The White Stripes",
+   "song": "Seven Nation Army",
+   "why": "the riff dropped an octave with a Whammy to sound like a bass",
+   "source": "Far Out Magazine, 2021",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Fully wet: the dry note would give it away. Neck pickup and single notes; off for the full chords of the chorus",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

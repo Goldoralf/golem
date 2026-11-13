@@ -1,0 +1,44 @@
+{
+ "id": "bass-metal-tight",
+ "type": "gate",
+ "name": "Down-tuned bass, tight",
+ "desc": "Faster bass gate that stops with the guitars' chugs; low-pass detection ignores pick clank and fret noise",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -45,
+  "attack": 1,
+  "hold": 15,
+  "release": 80,
+  "hpf": 40,
+  "lpf": 3000,
+  "hyst": -6,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": true,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Pair with chug-tight on the guitars so bass and guitars stop together",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

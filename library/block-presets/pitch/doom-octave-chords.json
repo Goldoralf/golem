@@ -1,0 +1,42 @@
+{
+ "id": "doom-octave-chords",
+ "type": "pitch",
+ "name": "Octave-down chords",
+ "desc": "Polyphonic shifter an octave down at half mix: whole chords gain a low octave, Stable window",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "sludge-metal",
+  "stoner-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "dark",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "mix": 50,
+  "engine": "Poly",
+  "tracking": "Stable",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Poly handles power chords and open chords; Stable (10 ms) keeps low partials on target",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

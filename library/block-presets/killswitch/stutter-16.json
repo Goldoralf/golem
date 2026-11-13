@@ -1,8 +1,22 @@
 {
- "name": "Stutter 1/16",
+ "id": "stutter-16",
  "type": "killswitch",
+ "name": "Engaged 1/16 stutter",
+ "desc": "Hard 1/16 cuts that start the moment the pedal is stomped, 45 % open: a fast stutter on a held chord",
  "inst": "guitar",
- "factory": true,
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -3,
+ "sync": "1/16",
+ "tags": [
+  "tight"
+ ],
  "params": {
   "depth": 100,
   "length": 45,
@@ -10,6 +24,20 @@
   "rate": 8,
   "trigger": "Engage",
   "sens": 50,
-  "smooth": 0.3
- }
+  "smooth": 0.3,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "golem's Stutter 1/16 kept",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": false
 }

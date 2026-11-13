@@ -1,0 +1,47 @@
+{
+ "id": "texas-blues-push",
+ "type": "guitar-drive",
+ "name": "Texas blues push",
+ "desc": "Drive nearly off, level up: a mid-forward clean push that makes a crunchy amp sing for solos",
+ "inst": "guitar",
+ "genres": [
+  "blues"
+ ],
+ "subgenres": [
+  "texas-blues",
+  "electric-blues",
+  "modern-electric-blues"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Stevie Ray Vaughan",
+   "song": "Pride and Joy",
+   "why": "TS9 with drive low and level near full into a cranked Fender",
+   "verified": false
+  }
+ ],
+ "level_db": 7,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 8,
+  "hardness": 2,
+  "ceiling": -3,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": -10,
+  "asym": 0,
+  "sag": 15,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Little clipping of its own: the high ceiling and summed clean make it a level-and-mids boost; the amp breaks up",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

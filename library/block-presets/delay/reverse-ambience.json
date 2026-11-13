@@ -1,0 +1,67 @@
+{
+ "id": "reverse-ambience",
+ "type": "delay",
+ "name": "Reverse halo",
+ "desc": "Reversed, diffused repeats behind the dry chord: swelling backwards ghosts of what was played",
+ "inst": "guitar",
+ "genres": [
+  "jazz",
+  "experimental",
+  "rock"
+ ],
+ "subgenres": [
+  "contemporary-jazz",
+  "free-improvisation",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Bill Frisell",
+   "why": "reverse delay and looping as part of his clean jazz palette",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4",
+  "feedback": 40,
+  "mix": 35,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 150,
+  "high_cut": 7000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 50,
+  "taps": "Single",
+  "direction": "Reverse",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Feedback 40 % keeps a few reversed passes; diffusion 50 % blurs the window seams into a wash",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

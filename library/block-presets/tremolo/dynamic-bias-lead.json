@@ -1,0 +1,42 @@
+{
+ "id": "dynamic-bias-lead",
+ "type": "tremolo",
+ "name": "Pulsing sustain lead",
+ "desc": "Bias tremolo that backs off while you pick and pulses in on the sustain of each note",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "electric-blues",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "rate": 5,
+  "depth": 0.7,
+  "wave": "Sine",
+  "model": "Bias",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.35,
+  "duck": 0.6,
+  "stereo_phase": 0,
+  "level": 1.5
+ },
+ "notes": "Dynamics 0.6 is the crate's 'depth that follows the playing': attacks stay solid, tails throb like a cooking tube amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

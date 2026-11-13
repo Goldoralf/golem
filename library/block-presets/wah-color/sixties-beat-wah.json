@@ -1,0 +1,49 @@
+{
+ "id": "sixties-beat-wah",
+ "type": "wah-color",
+ "name": "Sixties beat-group wah",
+ "desc": "Gentle, lower-Q vintage British wah voice: a soft, round sweep for crunchy 60s rhythm",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "beat-music",
+  "freakbeat",
+  "garage-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "Selmer",
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 90,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 10,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Selmer voicing with its linear pot law; Q 90 softens it further",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

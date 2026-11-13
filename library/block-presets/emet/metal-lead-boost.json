@@ -1,0 +1,37 @@
+{
+ "id": "metal-lead-boost",
+ "type": "emet",
+ "name": "Metal lead boost",
+ "desc": "Mid boost with presence and a few dB of level: solos jump out of a high-gain rhythm tone",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "power-metal",
+  "melodic-death-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "gain": 25,
+  "tone_stack": 65,
+  "level": -5,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 60,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Gain 25 % still sits mostly under the high knee; it is a level-and-presence boost for the lead scene",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

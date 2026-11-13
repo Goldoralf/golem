@@ -1,0 +1,52 @@
+{
+ "id": "singing-lead",
+ "type": "comp",
+ "name": "Singing lead sustain",
+ "desc": "Pedal-style compressor before a fuzz or drive: long notes hold and bloom, a hot front end for endless sustain",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "psychedelic-rock",
+  "art-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "song": "Comfortably Numb",
+   "why": "Gilmour's compressor pedal into a fuzz for the solo's sustain",
+   "source": "Guitar World feature, reprinted in Australian Guitar, 2021",
+   "verified": true
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -30,
+  "ratio": 6,
+  "makeup": 9,
+  "attack": 5,
+  "release": 400,
+  "character": "Pedal",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 15,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Long release so the gain rises slowly as the note decays: sustain without an audible swell",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

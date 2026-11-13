@@ -1,0 +1,44 @@
+{
+ "id": "eighth-gate-chop",
+ "type": "tremolo",
+ "name": "Tempo-locked eighth chop",
+ "desc": "Square tremolo synced to eighth notes, short-on duty: a rhythmic chop for pads and chords",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "house",
+  "synth-pop",
+  "electropop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -3,
+ "sync": "1/8",
+ "tags": [
+  "modern",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "rate": 5,
+  "depth": 0.9,
+  "wave": "Square",
+  "model": "Clean",
+  "sync": "1/8",
+  "duty": 0.4,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 3
+ },
+ "notes": "Phase follows the host position, so the chops land on the grid; Clean adds no distortion on synths",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

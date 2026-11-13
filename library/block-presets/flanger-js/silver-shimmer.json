@@ -1,0 +1,63 @@
+{
+ "id": "silver-shimmer",
+ "type": "flanger-js",
+ "name": "Silvery BBD flange shimmer",
+ "desc": "Gentle BBD flanger, moderate regen, 60 % sweep: a shimmering, almost chorus-like swirl on clean chords",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "new-wave",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Rush",
+   "song": "The Spirit of Radio",
+   "why": "Alex Lifeson's Electric Mistress shimmer on the clean arpeggios",
+   "verified": false
+  },
+  {
+   "artist": "The Police",
+   "song": "Walking on the Moon",
+   "why": "Andy Summers' flanger-like chord swirl (studio unit disputed)",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "length": 8,
+  "feedback": -12,
+  "wet": -6,
+  "dry": 0,
+  "rate": 0.3,
+  "mode": "Mistress",
+  "manual": 0.5,
+  "depth": 60,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README application 'Electric Mistress shimmer'; manual/length restate the mode's 0.5 – 8 ms span (they are not set by the mode)",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

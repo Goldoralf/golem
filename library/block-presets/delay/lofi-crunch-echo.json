@@ -1,0 +1,61 @@
+{
+ "id": "lofi-crunch-echo",
+ "type": "delay",
+ "name": "Crushed 8-bit echo",
+ "desc": "Early-digital echo whose repeats lose rate and bits each pass, grainier and grainier",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "rock",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "chiptune",
+  "lo-fi-indie",
+  "lo-fi-hip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/8",
+ "tags": [
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/8",
+  "feedback": 45,
+  "mix": 30,
+  "model": "Lo-Fi",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 80,
+  "high_cut": 8000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 60,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Degradation accumulates per repeat, so the first echo is close to clean and the tail turns to grit",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

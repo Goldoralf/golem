@@ -1,0 +1,48 @@
+{
+ "id": "triplet-bass-chop",
+ "type": "killswitch",
+ "name": "Triplet bass chop",
+ "desc": "1/16-triplet gate on every other step, bar-locked, hard edges: a rolling wobble-like chop on a sustained bass",
+ "inst": "bass",
+ "genres": [
+  "electronic",
+  "metal"
+ ],
+ "subgenres": [
+  "dubstep",
+  "drum-and-bass",
+  "nu-metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -4,
+ "sync": "1/16T",
+ "tags": [
+  "aggressive",
+  "modern"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 60,
+  "sync": "1/16T",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 1,
+  "shape": "Gate",
+  "pattern": 18761,
+  "steps": 12,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "12 steps of 1/16T = one bar; pattern 18761 opens steps 1,4,7,9,12 for a lopsided triplet roll (bits above 12 ignored)",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

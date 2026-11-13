@@ -1,0 +1,68 @@
+{
+ "id": "shimmer-delay",
+ "type": "delay",
+ "name": "Rising shimmer echo",
+ "desc": "Each repeat climbs an octave and blurs into a rising pad, with pick attacks swelled out",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ccm",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Explosions in the Sky",
+   "why": "octave-climbing ambient swells behind tremolo-picked leads",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4",
+  "feedback": 60,
+  "mix": 40,
+  "model": "BBD",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 200,
+  "high_cut": 5000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 60,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 12,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 200,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The README's Ice-style recipe: shifter plus diffusion in the loop; high cut 5 kHz keeps the octaves from turning shrill",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

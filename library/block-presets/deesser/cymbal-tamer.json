@@ -1,0 +1,42 @@
+{
+ "id": "cymbal-tamer",
+ "type": "deesser",
+ "name": "Cymbal and hi-hat tamer",
+ "desc": "Allround shelf from 8 kHz: harsh crashes and hats on overheads or a drum bus pulled down only when they ring",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "metal",
+  "pop"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "metalcore",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -24,
+  "freq": 8000,
+  "range": 6,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Shelf",
+  "focus": "Allround",
+  "ratio": 4,
+  "release": 80,
+  "lookahead": 0
+ },
+ "notes": "Allround: no zero-crossing weight, cymbals are noise-like and must be treated as a whole",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

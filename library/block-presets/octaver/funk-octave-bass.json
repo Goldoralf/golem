@@ -1,0 +1,54 @@
+{
+ "id": "funk-octave-bass",
+ "type": "octaver",
+ "name": "Funk octave-divider bass",
+ "desc": "Analog divider sub at 60 % on bass, a little rough: the 1970s octave-divided funk bass",
+ "inst": "bass",
+ "genres": [
+  "rnb"
+ ],
+ "subgenres": [
+  "funk",
+  "p-funk",
+  "disco"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Bootsy Collins",
+   "why": "a Mu-Tron Octave Divider in his bass rig",
+   "verified": false
+  },
+  {
+   "artist": "Larry Graham",
+   "why": "octave-divided funk bass lines",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "direct": 1,
+  "octave1": 0.6,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Vintage",
+  "instrument": "Bass",
+  "sub_tone": 400,
+  "up_tone": 4000,
+  "sensitivity": 45,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Pair with gfx-autowah after it for the envelope-filter funk sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

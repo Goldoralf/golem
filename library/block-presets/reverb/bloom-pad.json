@@ -1,0 +1,69 @@
+{
+ "id": "bloom-pad",
+ "type": "reverb",
+ "name": "Blooming pad",
+ "desc": "A reverb that fades in behind each note while the pick attack is removed: guitar becomes a pad",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "ccm",
+  "christian-rock",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Hillsong United",
+   "why": "worship pad guitars: volume-swelled notes into a huge blooming verb",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mix": 50,
+  "decay": 6,
+  "size": 30,
+  "predelay": 0,
+  "hicut": 6000,
+  "algo": "Bloom",
+  "lowcut": 200,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 60,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 400,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Bloom fades the tail in, swell removes the attacks from the wet: the dry still plays, the pad grows behind it",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

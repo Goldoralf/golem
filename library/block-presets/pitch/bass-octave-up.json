@@ -1,0 +1,41 @@
+{
+ "id": "bass-octave-up",
+ "type": "pitch",
+ "name": "Bass octave-up lead",
+ "desc": "Mono shifter an octave up at 60 % on bass: a fills and lead voice that cuts like a guitar",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "stoner-rock",
+  "funk-metal"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "shift": 12,
+  "mix": 60,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Single notes. For a bass that keeps its low end and adds a guitar-like octave, gfx-octaver's octave_up is the lower-latency option",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

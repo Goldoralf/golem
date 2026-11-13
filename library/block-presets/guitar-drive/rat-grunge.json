@@ -1,0 +1,46 @@
+{
+ "id": "rat-grunge",
+ "type": "guitar-drive",
+ "name": "Slew-rounded grunge distortion",
+ "desc": "Hard op-amp distortion with slew-rounded highs: thick, raw rhythm for a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-rock",
+  "post-grunge"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Dave Grohl",
+   "song": "Foo Fighters (1995)",
+   "why": "a ProCo RAT on the self-recorded debut",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 26,
+  "hardness": 6,
+  "ceiling": -18,
+  "voice": "Distortion",
+  "tight": 20,
+  "tone": -10,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "The Distortion voice's slew limit keeps 32 dB of gain from fizzing; tone slightly dark like a RAT's filter past noon",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

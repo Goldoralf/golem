@@ -1,0 +1,50 @@
+{
+ "id": "analog-octave-down",
+ "type": "octaver",
+ "name": "Analog octave down",
+ "desc": "Analog-style divider adds a sub one octave below at 70 % under the full dry: fatter single-note riffs",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "stoner-rock",
+  "blues-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Queens of the Stone Age",
+   "why": "octave-thickened single-note desert riffs",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "direct": 1,
+  "octave1": 0.7,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Vintage",
+  "instrument": "Guitar",
+  "sub_tone": 470,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "golem's OC-2 classic. Zero latency; single notes, neck pickup tracks best",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

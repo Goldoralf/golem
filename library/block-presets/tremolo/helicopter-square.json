@@ -1,0 +1,43 @@
+{
+ "id": "helicopter-square",
+ "type": "tremolo",
+ "name": "Helicopter chop",
+ "desc": "Full-depth square-wave tremolo at 10 Hz: the signal stutters on and off like rotor blades",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "alternative-metal",
+  "noise-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -3,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 10,
+  "depth": 1,
+  "wave": "Square",
+  "model": "Clean",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 3
+ },
+ "notes": "golem's old Helicopter; the 2 ms square edges never click; works on clean or high-gain sustained notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

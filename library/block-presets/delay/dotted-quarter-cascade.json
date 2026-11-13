@@ -1,0 +1,72 @@
+{
+ "id": "dotted-quarter-cascade",
+ "type": "delay",
+ "name": "Dotted plus quarter cascade",
+ "desc": "Two delays in one: dotted-eighth and quarter taps interlock into a shimmering 16th-note cascade",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "christian-rock",
+  "ccm",
+  "arena-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "U2",
+   "why": "the Edge stacks a dotted-eighth and a quarter delay for cascading parts",
+   "verified": false
+  },
+  {
+   "artist": "Hillsong United",
+   "why": "worship guitar convention: dotted-eighth plus quarter under swells",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4",
+  "feedback": 35,
+  "mix": 40,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 150,
+  "high_cut": 7000,
+  "drive": 0,
+  "mod": 40,
+  "diffusion": 0,
+  "taps": "Dotted + Quarter",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Ping-Pong",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The taps pattern gives both rhythms off one quarter-note time; low cut 150 Hz keeps the cascade off the bass",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

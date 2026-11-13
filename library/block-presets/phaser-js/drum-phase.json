@@ -1,0 +1,66 @@
+{
+ "id": "drum-phase",
+ "type": "phaser-js",
+ "name": "Phased drum bus",
+ "desc": "Slow six-stage phase across drums or a loop: cymbals and room swirl while the kick stays dry",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "big-beat",
+  "trip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Led Zeppelin",
+   "song": "Kashmir",
+   "why": "studio phasing on Bonham's drums",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.15,
+  "low": 300,
+  "high": 8000,
+  "feedback": -8,
+  "wet": 0,
+  "model": "Classic",
+  "stages": "6",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 55,
+  "bass_keep": 150
+ },
+ "notes": "High range up to 8 kHz so the cymbals carry the sweep; bass_keep 150 Hz keeps kick and floor tom solid",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

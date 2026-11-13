@@ -1,0 +1,33 @@
+{
+ "id": "pushed-mids",
+ "type": "shem",
+ "name": "Pushed mids, less gain",
+ "desc": "Grind low: the network's bass cut and mid lift with almost no level, the amp barely pushed",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "groove-metal",
+  "thrash-metal",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "subtle",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "grind": 2,
+  "voice": "Focused",
+  "bright": 0
+ },
+ "notes": "Fortin's low travel: 'pushed mids feel, tight bass… almost feels like the gain has reduced'",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

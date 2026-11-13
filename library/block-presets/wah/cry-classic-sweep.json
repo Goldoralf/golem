@@ -1,0 +1,54 @@
+{
+ "id": "cry-classic-sweep",
+ "type": "wah",
+ "name": "Classic rock pedal wah",
+ "desc": "The standard Cry Baby voice on the expression pedal: vocal heel-to-toe sweep for rock leads",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock",
+  "blues-rock"
+ ],
+ "gain": "any",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Guns N' Roses",
+   "song": "Sweet Child O' Mine",
+   "why": "Slash's stock Cry Baby on the Appetite-era solos",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 100,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 15,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "golem's wah block voice (GCB-95, 408 Hz to 2.25 kHz); a little resonance clipping for realism; EXP on wah",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

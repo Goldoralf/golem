@@ -1,0 +1,42 @@
+{
+ "id": "shoegaze-glide",
+ "type": "vibrato",
+ "name": "Slow detuned glide wash",
+ "desc": "Very slow, wide BBD pitch drift behind fuzz: chords bend in and out of tune like a held tremolo arm",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "shoegaze",
+  "dream-pop",
+  "nu-gaze"
+ ],
+ "gain": "high",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.5,
+  "speed": 0.6,
+  "model": "BBD",
+  "shape": "Random",
+  "rise": 0,
+  "tone": 0.6,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 45,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "Random shape at 0.6 Hz bends irregularly instead of cycling, closer to a hand on the bar; place after the fuzz",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

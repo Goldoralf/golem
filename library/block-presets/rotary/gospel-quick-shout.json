@@ -1,0 +1,53 @@
+{
+ "id": "gospel-quick-shout",
+ "type": "rotary",
+ "name": "Gospel quick-switch shout",
+ "desc": "Punchy cabinet with snappy speed changes and some preamp grit, for stabbing between slow and fast",
+ "inst": "keys",
+ "genres": [
+  "rnb"
+ ],
+ "subgenres": [
+  "traditional-black-gospel",
+  "urban-contemporary-gospel",
+  "southern-soul"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "speed": "fast",
+  "mic": 55,
+  "spacing": 60,
+  "depth": 70,
+  "cabinet": "145",
+  "ramp": 55,
+  "drive": 40,
+  "balance": 55,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 25,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Ramp 55 % makes the switch answer quickly for church-style speed stabs",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

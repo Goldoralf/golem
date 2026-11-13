@@ -2,6 +2,7 @@
 """La feuille golem FX (docs/golem-fx-sheet.md) : les réglages d'un bloc joué par golem-fx, tels que sa pédale les
 prévoit, fondus avec le catalogue — bridge/golem_fx.py, le compilateur et le plan du Golem Engine."""
 import json
+import os
 
 from bridge import golem_fx
 from bridge.engine import ardour_plan as P
@@ -74,7 +75,8 @@ def test_les_trois_pedales_ont_leur_feuille_et_leur_plugin():
     for t, front in (("met", ["thresh", "hold", "release"]), ("emet", ["gain", "tone_stack", "level"]), ("shem", ["grind"]),
                      ("golem-double", ["shift", "formant", "voice1", "lpf"])):
         params, sheet = golem_fx.merged(t, CAT[t]["params"])
-        assert sheet["front"] == front and sheet["groups"] and sheet["presets"], t
+        assert sheet["front"] == front and sheet["groups"], t
+        assert os.listdir(os.path.join(golem_fx.C.ROOT, "library", "block-presets", t)), t     # ses presets, semés
         assert plugins[table[t]["vst3"]]["reaper"] == CAT[t]["plugin"], t      # même nom des deux côtés
         assert all("engine_only" not in d for d in params if d["id"] in front), t
 
@@ -85,3 +87,42 @@ def test_golem_double_est_un_bloc_de_voix_dessine_par_la_pedale_golem():
     assert plugins[table["golem-double"]["vst3"]]["crate"] == "gfx-golem"
     e = CAT["golem-double"]
     assert e["roles"] == ["voice"] and e["category"] == "pitch"
+
+
+def test_un_preset_de_golem_fx_parle_le_vocabulaire_du_bloc():
+    # docs/golem-fx-sheet.md §5 : l'id de la feuille, une liste par son RANG, l'identité du type jamais écrite
+    params, bad = golem_fx.preset_params("rotary", {"speed": "Slow"}, CAT["rotary"]["params"])
+    assert not bad and params["speed"] == next(d for d in CAT["rotary"]["params"] if d["id"] == "speed")["options"][1]
+    params, bad = golem_fx.preset_params("reverb-plate", {"algo": "Plate", "mix": 25}, CAT["reverb-plate"]["params"])
+    assert not bad and "algo" not in params and params["mix"] == 25
+    _, bad = golem_fx.preset_params("reverb-plate", {"algo": "Hall"}, CAT["reverb-plate"]["params"])
+    assert bad                                            # une plaque reste une plaque
+    _, bad = golem_fx.preset_params("reverb", {"algo": "Spring"}, CAT["reverb"]["params"])
+    assert not bad                                        # la Reverb générique peut changer d'algorithme
+    hidden = {d["id"] for d in golem_fx.merged("wah", CAT["wah"]["params"])[0] if d.get("hidden")}
+    assert "model" in hidden                              # le Cry Baby ne change pas de modèle dans sa feuille
+
+
+def test_les_presets_semes_sont_a_jour_et_bien_formes():
+    import glob
+    seeded = []
+    for f in glob.glob(os.path.join(golem_fx.C.ROOT, "library", "block-presets", "*", "*.json")):
+        o = json.load(open(f, encoding="utf-8"))
+        if o.get("golem_fx_seed"):
+            seeded.append(o)
+            t = os.path.basename(os.path.dirname(f))
+            assert o["type"] == t and o["id"] == os.path.basename(f)[:-5] and o["factory"] is True, f
+            assert t in CAT and isinstance(o["params"], dict) and o["params"], f
+    assert len(seeded) > 300
+    defaults = [(o["type"], o.get("inst") or "any") for o in seeded if o.get("default")]
+    assert len(defaults) == len(set(defaults))            # un seul défaut par (type, instrument)
+
+
+def test_les_presets_de_golem_fx_ne_s_offrent_que_la_ou_golem_fx_joue(monkeypatch):
+    from bridge import rig, routes_content as R
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
+    ids = {p["id"] for p in R.block_presets_list("reverb")["presets"]}
+    assert "cathedral" in ids and "lush-clean-hall" not in ids          # le rack seul : ses presets à lui
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"reverb"})
+    ids = {p["id"] for p in R.block_presets_list("reverb")["presets"]}
+    assert {"cathedral", "lush-clean-hall"} <= ids

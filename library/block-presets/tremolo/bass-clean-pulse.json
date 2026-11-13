@@ -1,0 +1,44 @@
+{
+ "id": "bass-clean-pulse",
+ "type": "tremolo",
+ "name": "Clean bass pulse",
+ "desc": "Tempo-synced clean tremolo on bass: eighth-note pumping without adding grit",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "dance-punk",
+  "synthwave"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "sync": "1/8",
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "rate": 5,
+  "depth": 0.5,
+  "wave": "Sine",
+  "model": "Clean",
+  "sync": "1/8",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 1.5
+ },
+ "notes": "Clean model adds no distortion to the fundamental; synced so the pump stays with the drums",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

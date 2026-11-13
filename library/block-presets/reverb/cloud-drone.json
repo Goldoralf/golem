@@ -1,0 +1,76 @@
+{
+ "id": "cloud-drone",
+ "type": "reverb",
+ "name": "Endless cloud",
+ "desc": "A 30-second, heavily diffused cloud that turns any note into a slow drone, ducked under the playing",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "drone",
+  "ambient"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Sigur Ros",
+   "why": "bowed guitar into vast reverb, building walls of sound",
+   "verified": false
+  },
+  {
+   "artist": "Stars of the Lid",
+   "why": "endless drones of reverberated guitar and strings",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "extreme",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "mix": 50,
+  "decay": 30,
+  "size": 55,
+  "predelay": 0,
+  "hicut": 5500,
+  "algo": "Cloud",
+  "lowcut": 250,
+  "bass_mult": 0.7,
+  "bass_xover": 300,
+  "mod": 70,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 6,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "The README's post-rock wall: low cut and bass decay 0.7x keep 30 s of tail from turning into mud",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

@@ -1,0 +1,56 @@
+{
+ "id": "harmony-third-below",
+ "type": "golem-double",
+ "name": "Close harmony below",
+ "desc": "A diatonic third under the melody, humanized: the duet harmony of folk and country choruses",
+ "inst": "voice",
+ "genres": [
+  "folk",
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "americana",
+  "folk-rock",
+  "contemporary-country"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "The Everly Brothers",
+   "why": "close harmony a third away from the melody",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": -3,
+  "formant": 0,
+  "voice1": -6,
+  "lpf": 8000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 45,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Scale",
+  "key": "G",
+  "scale": "Major",
+  "hpf": 80
+ },
+ "notes": "Scale: shift −3 = a third below. Humanize 45 % so the harmony breathes like a second singer. Key placeholder G major",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

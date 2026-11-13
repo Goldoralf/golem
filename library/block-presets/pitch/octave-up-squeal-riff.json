@@ -1,0 +1,48 @@
+{
+ "id": "octave-up-squeal-riff",
+ "type": "pitch",
+ "name": "Octave-up squealing riff",
+ "desc": "Mono shifter, fully wet, an octave up on a high-gain riff: squealing, harmonic-like pitch jumps",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "groove-metal",
+  "thrash-metal",
+  "nu-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Pantera",
+   "song": "Becoming",
+   "why": "Dimebag's Whammy on the main riff for squealing jumps",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": 12,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Same voice as octave-up-bends, meant for a riff rocked on and off the toe with the expression pedal after the drive",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

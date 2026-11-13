@@ -1,0 +1,43 @@
+{
+ "id": "breakdown-hard",
+ "type": "met",
+ "name": "Hard gate for breakdowns",
+ "desc": "Near-switching 10:1 keyed expansion with a 30 ms fade: stop-start breakdowns cut to silence, still click-free",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "deathcore",
+  "metalcore",
+  "beatdown-hardcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -42,
+  "hold": 0,
+  "release": 30,
+  "ratio": 10,
+  "range": -90,
+  "smooth": 58,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "The doc's stop-start row; thresh a little higher than classic since the steep slope makes the knee obvious",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

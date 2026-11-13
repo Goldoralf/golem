@@ -1,0 +1,57 @@
+{
+ "id": "funk-wacka-rhythm",
+ "type": "wah-color",
+ "name": "Funk wacka rhythm",
+ "desc": "Narrow, peaky wah for muted 16th-note scratching: the 'wacka-wacka' chika rhythm",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "screen"
+ ],
+ "subgenres": [
+  "funk",
+  "classic-soul",
+  "soundtrack"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Isaac Hayes",
+   "song": "Theme from Shaft",
+   "why": "Skip Pitts' rhythmic wah-wah guitar intro",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "tight",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "Classic",
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 150,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 0,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Crate's funk start: Classic voice with Q 150 makes each rock of the foot a sharp vowel; rock in time with the 16ths",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

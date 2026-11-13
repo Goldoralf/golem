@@ -1,0 +1,42 @@
+{
+ "id": "gentle-pitch-wobble",
+ "type": "vibrato",
+ "name": "Gentle pitch wobble",
+ "desc": "Clean sine vibrato of about 15 cents at 5 Hz, wet only: a light, singing wobble on clean chords",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "indie-pop",
+  "indie-rock",
+  "dream-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "depth": 0.15,
+  "speed": 5,
+  "model": "Clean",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 1.0,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "README first application; depth is in cents on Clean (0.15 = 15 cents) and stays the same at any speed",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

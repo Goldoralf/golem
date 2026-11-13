@@ -1,0 +1,48 @@
+{
+ "id": "gated-sputter-fuzz",
+ "type": "guitar-drive",
+ "name": "Gated, sputtering fuzz",
+ "desc": "Heavily biased fuzz that sags and chokes on hard hits: squashed, gated noise-rock texture",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "experimental"
+ ],
+ "subgenres": [
+  "shoegaze",
+  "noise-rock",
+  "noise"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Kevin Shields",
+   "song": "Loveless",
+   "why": "stacked fuzzes for a squashed, heavily gated tone",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "gain": 29,
+  "hardness": 7,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": -10,
+  "asym": 60,
+  "sag": 50,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "The README's sputter recipe: asym 60 % and sag 50 %; notes choke as they decay. Great before reverse reverb",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

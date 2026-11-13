@@ -1,0 +1,53 @@
+{
+ "id": "high-gain-fizz-tamer",
+ "type": "eq",
+ "name": "High-gain fizz tamer",
+ "desc": "Dynamic cut around 3.5 kHz plus a steep 8.5 kHz low-pass: removes fizz on sustained chords, keeps mute attack",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "metalcore",
+  "death-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "tight",
+  "dark"
+ ],
+ "params": {
+  "lowcut": 80,
+  "midgain": 0,
+  "midfreq": 800,
+  "highs": 0,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": -2,
+  "mid2freq": 5500,
+  "mid2q": 1.5,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 8500,
+  "highcut_slope": "24 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": -18,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "The de-harsher is relative to the full band, so it reacts to fizz, not to loudness; the static 5.5 kHz dip handles cab-sim sizzle",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

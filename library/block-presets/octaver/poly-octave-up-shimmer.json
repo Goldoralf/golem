@@ -1,0 +1,43 @@
+{
+ "id": "poly-octave-up-shimmer",
+ "type": "octaver",
+ "name": "Polyphonic octave sparkle",
+ "desc": "Polyphonic octave up at half level over the dry: clean chords gain a 12-string, organ-like shine",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "jangle-pop",
+  "dream-pop",
+  "indie-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "direct": 1,
+  "octave1": 0,
+  "octave2": 0,
+  "octave_up": 0.5,
+  "mode": "Poly",
+  "instrument": "Guitar",
+  "sub_tone": 470,
+  "up_tone": 8000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Zero latency per-band doubling; gfx-pitch twelve-string adds detune but costs 6.6 ms",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

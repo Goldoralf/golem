@@ -1,0 +1,37 @@
+{
+ "id": "mid-push-crunch",
+ "type": "emet",
+ "name": "Mid-push crunch",
+ "desc": "Moderate gain into a crunch amp: thicker, more saturated rhythm chords without losing the lows",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-rock",
+  "southern-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 7,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 35,
+  "tone_stack": 50,
+  "level": -6,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The plugin default gain; level −6 dB keeps the scene from jumping when it engages",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

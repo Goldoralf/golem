@@ -1,0 +1,40 @@
+{
+ "id": "low-tuned-noisy",
+ "type": "met",
+ "name": "Noisy pickups, low tuning",
+ "desc": "Classic keyed expansion with the key band-limited to 80 Hz – 5 kHz: low-string thump and pickup hiss do not open it",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "nu-metal",
+  "deathcore",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -45,
+  "hold": 10,
+  "release": 50,
+  "ratio": 2.8,
+  "range": -90,
+  "smooth": 58,
+  "adaptive": true,
+  "hpf": 80,
+  "lpf": 5000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "The doc's noisy-pickups row. Use listen to check the key band before lowering thresh",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

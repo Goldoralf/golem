@@ -1,0 +1,45 @@
+{
+ "id": "keyed-after-amp",
+ "type": "gate",
+ "name": "Amp-hiss gate keyed from the DI",
+ "desc": "Gate after the amp listening to the clean DI: amp hiss is cut on the guitar's own timing, at any gain",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "progressive-metal",
+  "djent",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -45,
+  "attack": 0.5,
+  "hold": 10,
+  "release": 40,
+  "hpf": 80,
+  "lpf": 20000,
+  "hyst": -4,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "Needs golem to route the lane DI into the key bus; without it the gate falls back to the main input and the threshold is then too low",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

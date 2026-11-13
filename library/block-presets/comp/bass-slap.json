@@ -1,0 +1,53 @@
+{
+ "id": "bass-slap",
+ "type": "comp",
+ "name": "Slap and pop control",
+ "desc": "Fast feed-forward 8:1 with a 1 ms attack: thumb slaps and pops tamed so the ghost notes come up",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "jazz",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "jazz-funk",
+  "funk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Marcus Miller",
+   "why": "slap pioneer whose rack held a fast dbx 160X compressor",
+   "source": "Sound On Sound, Paul Tingen, 1999",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -20,
+  "ratio": 8,
+  "makeup": 5,
+  "attack": 1,
+  "release": 80,
+  "character": "Clean",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Clean = feed-forward like a VCA; the full-band detector is wanted here, pops are what must trigger it",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

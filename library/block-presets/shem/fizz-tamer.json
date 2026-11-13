@@ -1,0 +1,33 @@
+{
+ "id": "fizz-tamer",
+ "type": "shem",
+ "name": "Tight boost, fizz tamed",
+ "desc": "The tight boost with the 3 kHz shelf down 3 dB: for amps that already sound bright or fizzy",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "metalcore",
+  "melodic-death-metal",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 9,
+ "tags": [
+  "tight",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "grind": 10,
+  "voice": "Focused",
+  "bright": -3
+ },
+ "notes": "The README's 'too fizzy amp': presence trimmed, the bass tightening kept",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

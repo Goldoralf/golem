@@ -1,0 +1,60 @@
+{
+ "id": "post-metal-shimmer",
+ "type": "reverb-shimmer",
+ "name": "Heavy-wall shimmer",
+ "desc": "Ducked octave shimmer with a high low cut behind distorted guitars: a glowing halo over a wall of riffs",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "post-metal",
+  "blackgaze",
+  "shoegaze"
+ ],
+ "gain": "high",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "mix": 30,
+  "decay": 7,
+  "shimmer": 40,
+  "pitch": 12,
+  "hicut": 5000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 350,
+  "placement": "Regen",
+  "size": 80,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 35,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Distortion before shimmer climbs harsh fast: hicut 5 kHz and lowcut 350 Hz keep only the glow, duck lets the riff through",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

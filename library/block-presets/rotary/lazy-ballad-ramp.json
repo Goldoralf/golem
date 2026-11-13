@@ -1,0 +1,63 @@
+{
+ "id": "lazy-ballad-ramp",
+ "type": "rotary",
+ "name": "Lazy ballad spin-up",
+ "desc": "Slow cabinet with long, drawn-out speed changes: the swell to fast takes several bars",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "baroque-pop",
+  "classic-soul"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Procol Harum",
+   "song": "A Whiter Shade of Pale",
+   "why": "slow, churchy organ swirl carrying the ballad",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dreamy",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "speed": "slow",
+  "mic": 75,
+  "spacing": 65,
+  "depth": 55,
+  "cabinet": "122",
+  "ramp": 220,
+  "drive": 15,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 35,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Ramp 220 % stretches all four time constants: the drum takes ~9 s to reach full speed",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

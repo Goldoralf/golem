@@ -1,0 +1,50 @@
+{
+ "id": "seasick-bbd",
+ "type": "vibrato",
+ "name": "Seasick lo-fi warble",
+ "desc": "Slow, deep, darkened BBD vibrato: a woozy, out-of-tune warble like a stretched cassette",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "lo-fi-indie",
+  "slacker-rock",
+  "bedroom-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Mac DeMarco",
+   "song": "Salad Days",
+   "why": "Boss VB-2-type wet-only vibrato warble on clean guitar",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "dreamy",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.6,
+  "speed": 2,
+  "model": "BBD",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 0.5,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "README 'Seasick'; mix 1 (no dry) is what makes it vibrato rather than chorus",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

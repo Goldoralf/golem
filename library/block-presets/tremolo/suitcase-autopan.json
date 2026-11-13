@@ -1,0 +1,45 @@
+{
+ "id": "suitcase-autopan",
+ "type": "tremolo",
+ "name": "Electric-piano stereo pan",
+ "desc": "Sine auto-pan between L and R: the stereo vibrato of a suitcase electric piano",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "jazz",
+  "pop"
+ ],
+ "subgenres": [
+  "neo-soul",
+  "jazz-funk",
+  "adult-contemporary"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "warm",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "rate": 3.5,
+  "depth": 0.7,
+  "wave": "Sine",
+  "model": "Clean",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 180,
+  "level": 0
+ },
+ "notes": "180° = auto-pan: the summed level stays constant, so no makeup; Clean keeps the tines undistorted",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

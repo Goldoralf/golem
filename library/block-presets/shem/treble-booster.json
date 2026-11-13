@@ -1,0 +1,45 @@
+{
+ "id": "treble-booster",
+ "type": "shem",
+ "name": "Treble booster into crunch",
+ "desc": "Hard bass cut and a brighter top: a treble booster pushing a chiming, crunchy amp into lead",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock",
+  "glam-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Brian May",
+   "why": "Red Special into a Rangemaster treble booster into a Vox AC30",
+   "source": "Fryer Guitars, 2019",
+   "verified": true
+  },
+  {
+   "artist": "Rory Gallagher",
+   "why": "a treble booster sending his AC30 into thick overdrive",
+   "verified": false
+  }
+ ],
+ "level_db": 14,
+ "tags": [
+  "bright",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "grind": 14,
+  "voice": "Focused",
+  "bright": 4
+ },
+ "notes": "Not a Rangemaster circuit: the Focused network's steep bass cut plus bright +4 stands for it. The AC30 does the rest",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

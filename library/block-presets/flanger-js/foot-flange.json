@@ -1,0 +1,50 @@
+{
+ "id": "foot-flange",
+ "type": "flanger-js",
+ "name": "Expression-pedal flange",
+ "desc": "No LFO: the foot sweeps the comb through the EXP pedal on Manual, exponential so it moves evenly in pitch",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "psychedelic-rock",
+  "heavy-psych"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "length": 10,
+  "feedback": -6,
+  "wet": -3,
+  "dry": 0,
+  "rate": 0.3,
+  "mode": "Pedal",
+  "manual": 1.0,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 10,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "In Pedal mode the delay equals Manual (0.05 – 30 ms): map the EXP pedal to manual; 1 ms puts the first notch at 500 Hz",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

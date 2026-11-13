@@ -1,0 +1,42 @@
+{
+ "id": "bass-vibrato",
+ "type": "vibrato",
+ "name": "Bass wobble",
+ "desc": "Moderate BBD vibrato on bass, slightly darkened: a woozy pitch wobble for slow, sparse lines",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "neo-psychedelia",
+  "lo-fi-hip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "depth": 0.2,
+  "speed": 4,
+  "model": "BBD",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 0.7,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "20 cents keeps the bass in tune enough to anchor the harmony; there is no bass split here, so the lows move too",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

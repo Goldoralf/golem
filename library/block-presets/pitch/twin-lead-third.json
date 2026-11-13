@@ -1,0 +1,53 @@
+{
+ "id": "twin-lead-third",
+ "type": "pitch",
+ "name": "In-key twin lead",
+ "desc": "A diatonic third above every note, in the song's key, at half mix: one guitar plays twin harmony leads",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "nwobhm",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Thin Lizzy",
+   "song": "The Boys Are Back in Town",
+   "why": "twin guitar leads a third apart (played by two guitarists)",
+   "verified": false
+  },
+  {
+   "artist": "Iron Maiden",
+   "why": "harmonized twin-guitar melodies in thirds",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": 4,
+  "mix": 50,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Scale",
+  "key": "E",
+  "scale": "Minor"
+ },
+ "notes": "Scale: shift 4 = a third in the scale; golem sets key / scale per song (E minor is the placeholder). Single notes; bends hold the old interval",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

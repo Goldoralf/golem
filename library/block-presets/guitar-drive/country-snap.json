@@ -1,0 +1,46 @@
+{
+ "id": "country-snap",
+ "type": "guitar-drive",
+ "name": "Country chicken-pick snap",
+ "desc": "Barely-there overdrive with a bright tilt and clean blend: twang with a little hair on hard picks",
+ "inst": "guitar",
+ "genres": [
+  "folk"
+ ],
+ "subgenres": [
+  "contemporary-country",
+  "honky-tonk",
+  "bakersfield-sound"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Brad Paisley",
+   "why": "a low-gain signature overdrive into clean Dr. Z amps",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "bright",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "gain": 10,
+  "hardness": 2,
+  "ceiling": -6,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 35,
+  "asym": 0,
+  "sag": 0,
+  "blend": 35,
+  "bass_keep": 0
+ },
+ "notes": "Only the hardest picks clip; tone +35 % keeps a Tele's snap over the mid hump",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

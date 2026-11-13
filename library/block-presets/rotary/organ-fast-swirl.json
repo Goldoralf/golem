@@ -1,0 +1,62 @@
+{
+ "id": "organ-fast-swirl",
+ "type": "rotary",
+ "name": "Organ fast tremolo",
+ "desc": "Both rotors at full speed: the shimmering, warbling organ tone for climaxes and fills",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "memphis-soul",
+  "classic-rock",
+  "soul-jazz"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Booker T. & the M.G.'s",
+   "song": "Green Onions",
+   "why": "tonewheel organ riff with a spinning cabinet",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "speed": "fast",
+  "mic": 70,
+  "spacing": 60,
+  "depth": 65,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 25,
+  "balance": 55,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Slight horn bias (balance 55) and depth 65 bring the fast warble forward in a band mix",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

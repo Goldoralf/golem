@@ -1,0 +1,60 @@
+{
+ "id": "thrash-lead-wah",
+ "type": "wah",
+ "name": "High-gain lead wah",
+ "desc": "Cry Baby before a high-gain amp, slightly lower Q and a level push: screaming, cutting metal leads",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "heavy-metal",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Metallica",
+   "song": "Enter Sandman",
+   "why": "Hammett's Cry Baby lead break cutting over the riff",
+   "source": "Total Guitar, 2021",
+   "verified": true
+  },
+  {
+   "artist": "Zakk Wylde",
+   "why": "signature Cry Baby wah in his Black Label Society rig",
+   "source": "Premier Guitar, 2016",
+   "verified": true
+  }
+ ],
+ "level_db": 3,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 3,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 80,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 30,
+  "auto_engage": true,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "The crate's high-gain start: Q 80 tames fizz into the amp, +3 dB hits the preamp harder; auto-engage so the foot only rocks",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

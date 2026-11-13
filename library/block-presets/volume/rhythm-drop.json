@@ -1,0 +1,27 @@
+{
+ "id": "rhythm-drop",
+ "type": "volume",
+ "name": "Rhythm level −4 dB",
+ "desc": "Lowers the part by 4 dB: sits a rhythm scene under the lead or matches two lanes",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": -4,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "gain": -4,
+  "polarity": false
+ },
+ "notes": "Level-matching tool; exact dB, smoothed so a scene change never clicks",
+ "factory": true,
+ "golem_fx_seed": "gfx-boost",
+ "golem_fx": true
+}

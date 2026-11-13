@@ -1,0 +1,40 @@
+{
+ "id": "no-key",
+ "type": "met",
+ "name": "Expander on the lane, no key",
+ "desc": "Detects on its own input: a regular 2.2:1 expander with short hold and fade for rigs without a DI split",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "hard-rock",
+  "hardcore-punk"
+ ],
+ "gain": "high",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": false,
+ "params": {
+  "thresh": -50,
+  "hold": 30,
+  "release": 120,
+  "ratio": 2.2,
+  "range": -90,
+  "smooth": 58,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Place it before the amp when there is no key: post-amp, the noise floor follows the gain and the threshold must move with it",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

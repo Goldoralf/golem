@@ -1,0 +1,25 @@
+{
+ "id": "polarity-flip",
+ "type": "volume",
+ "name": "Polarity flip",
+ "desc": "Unity gain with the polarity inverted: fixes cancellation between two lanes or two mics",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": false,
+ "params": {
+  "gain": 0,
+  "polarity": true
+ },
+ "notes": "Use when a blended lane thins the low end; the 5 ms crossfade makes it switchable live",
+ "factory": true,
+ "golem_fx_seed": "gfx-boost",
+ "golem_fx": true
+}

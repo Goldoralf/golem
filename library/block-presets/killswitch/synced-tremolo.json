@@ -1,0 +1,49 @@
+{
+ "id": "synced-tremolo",
+ "type": "killswitch",
+ "name": "Tempo-locked sine tremolo",
+ "desc": "Smooth sine level wobble on 1/8 notes, 60 % deep, locked to the song: a tremolo that never drifts off tempo",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "surf-rock",
+  "indie-rock",
+  "dream-pop"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": -2,
+ "sync": "1/8",
+ "tags": [
+  "vintage",
+  "dreamy"
+ ],
+ "params": {
+  "depth": 60,
+  "length": 50,
+  "sync": "1/8",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 1,
+  "shape": "Sine",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "For an amp-style photocell or bias tremolo use gfx-tremolo; this one is for a tremolo that must stay on the grid",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "funk-guitar-quack",
+ "type": "autowah",
+ "name": "Funk guitar envelope quack",
+ "desc": "Level-independent band-pass envelope filter: the same quack on muted funk strums at any volume",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "p-funk",
+  "jazz-funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "type": "Band-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 2500,
+  "peak": 5,
+  "attack": 3,
+  "release": 150,
+  "response": "Opto",
+  "drive": 0,
+  "mix": 100,
+  "level": 3,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "The crate's Mu-Tron III guitar start: band-pass, up, 250 Hz to 2.5 kHz, peak 5",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

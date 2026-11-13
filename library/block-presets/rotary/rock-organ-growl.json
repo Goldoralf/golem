@@ -1,0 +1,66 @@
+{
+ "id": "rock-organ-growl",
+ "type": "rotary",
+ "name": "Overdriven rock organ",
+ "desc": "Close-miked cabinet with its tube preamp pushed: growling, gritty organ for hard rock",
+ "inst": "keys",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "southern-rock",
+  "progressive-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Deep Purple",
+   "song": "Highway Star",
+   "why": "Jon Lord's distorted, aggressive rock organ",
+   "verified": false
+  },
+  {
+   "artist": "The Allman Brothers Band",
+   "song": "Whipping Post",
+   "why": "Gregg Allman's gritty organ through a spinning cabinet",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "aggressive",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "speed": "fast",
+  "mic": 40,
+  "spacing": 50,
+  "depth": 65,
+  "cabinet": "147",
+  "ramp": 100,
+  "drive": 65,
+  "balance": 55,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": -1,
+  "mix": 100
+ },
+ "notes": "The crate's organ-growl start: 147 with drive 60+ before the crossover, mic close for more AM and bite",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

@@ -1,0 +1,44 @@
+{
+ "id": "keys-left-hand-sub",
+ "type": "octaver",
+ "name": "Keys left-hand sub",
+ "desc": "Polyphonic sub only under 200 Hz: a keyboard's left hand gets a clean octave below, the right hand untouched",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "rnb",
+  "electronic"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "neo-soul",
+  "deep-house"
+ ],
+ "gain": "clean",
+ "use": "utility",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "direct": 1,
+  "octave1": 0.5,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Poly",
+  "instrument": "Bass",
+  "sub_tone": 250,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 200,
+  "level": 0
+ },
+ "notes": "instrument Bass gives the 300 Hz input filter and slower trigger constants that suit sustained keyboard bass notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

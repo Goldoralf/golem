@@ -1,0 +1,47 @@
+{
+ "id": "bass-modern-grind",
+ "type": "guitar-drive",
+ "name": "Modern metal bass grind",
+ "desc": "Hard bass distortion on the mids only, lows under 100 Hz clean: the clanky modern-metal bass",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "metalcore"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Periphery",
+   "why": "split-band bass: clean lows under a distorted midrange",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "modern",
+  "tight",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 26,
+  "hardness": 7,
+  "ceiling": -14,
+  "voice": "Distortion",
+  "tight": 80,
+  "tone": 25,
+  "asym": 0,
+  "sag": 0,
+  "blend": 30,
+  "bass_keep": 100
+ },
+ "notes": "The bass rig is the amp here, so the class is any: a bass drive stays on in high-gain scenes",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

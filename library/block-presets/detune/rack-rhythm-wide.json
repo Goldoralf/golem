@@ -1,0 +1,42 @@
+{
+ "id": "rack-rhythm-wide",
+ "type": "detune",
+ "name": "Big rack rhythm",
+ "desc": "Voices ±12 cents, 15 ms late, nearly as loud as the dry: the huge stereo rhythm of a 1980s rack rig",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "glam-metal",
+  "hard-rock",
+  "arena-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Def Leppard",
+   "why": "wide, layered 1980s rhythm guitars",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "wide",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "detune": 0.5,
+  "wet": 0.55,
+  "dry": 0.65,
+  "delay": 15,
+  "voices": "2"
+ },
+ "notes": "0.5 = ±12.5 ct: obvious width, still in tune with the dry centred",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

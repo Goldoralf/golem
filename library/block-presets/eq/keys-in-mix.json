@@ -1,0 +1,54 @@
+{
+ "id": "keys-in-mix",
+ "type": "eq",
+ "name": "Keys out of the bass's way",
+ "desc": "120 Hz high-pass, -2 dB at 300 Hz, light lift at 2.5 kHz: piano or pad that sits above the bass and guitars",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "soft-rock",
+  "neo-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "lowcut": 120,
+  "midgain": -2,
+  "midfreq": 300,
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.8,
+  "midprop": 50,
+  "mid2gain": 1.5,
+  "mid2freq": 2500,
+  "mid2q": 0.8,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "A full-range piano left hand fights the bass; raise lowcut to 200 Hz in a dense band, lower it for solo piano",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

@@ -1,0 +1,59 @@
+{
+ "id": "bass-phase",
+ "type": "phaser-js",
+ "name": "Bass phase, lows untouched",
+ "desc": "Smooth four-stage phase on bass above 120 Hz: the growl and slap sweep while the fundamental stays solid",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "funk-rock",
+  "p-funk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.5,
+  "low": 300,
+  "high": 2000,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Script 90",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 120
+ },
+ "notes": "README 'Bass' application; bass_keep 120 Hz complementary split keeps the low end dry and mono",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

@@ -1,0 +1,75 @@
+{
+ "id": "classic-octave-shimmer",
+ "type": "reverb-shimmer",
+ "name": "Classic octave shimmer",
+ "desc": "Octave-up shifter in the hall's loop: each pass climbs an octave into a long, rolled-off halo",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "ambient",
+  "post-punk",
+  "art-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Brian Eno",
+   "song": "Apollo: Atmospheres and Soundtracks",
+   "why": "Eno and Lanois's octave-up shifter in a reverb feedback loop",
+   "source": "Valhalla DSP blog, 2010",
+   "verified": true
+  },
+  {
+   "artist": "U2",
+   "song": "The Unforgettable Fire",
+   "why": "the Eno/Lanois shimmer featured on the 1984 album",
+   "source": "Valhalla DSP blog, 2010",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "mix": 40,
+  "decay": 5,
+  "shimmer": 50,
+  "pitch": 12,
+  "hicut": 6000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 150,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 0,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "The recipe: +12 in the feedback, long decay, highs rolled off on the return (hicut 6 kHz) so the climb fades instead of hissing",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

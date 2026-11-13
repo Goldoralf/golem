@@ -92,20 +92,26 @@ def test_golem_rig_sait_poser_le_fichier_meme_hors_cache_jsfx():
 
 
 def test_les_presets_d_usine_ne_nomment_que_des_parametres_existants():
-    ids = {p["id"]: p for p in _entry()["params"]}
+    # les presets de golem-fx (docs/golem-fx-sheet.md §5) nomment AUSSI les réglages que seule la pédale a : la feuille
+    # golem FX (catalogue + pédale) est le vocabulaire ; les réglages du catalogue y sont tous
+    from bridge import golem_fx
+    cat_ids = {p["id"] for p in _entry()["params"]}
+    ids = {p["id"]: p for p in golem_fx.merged("killswitch", _entry()["params"])[0]}
     d = os.path.join(ROOT, "library", "block-presets", "killswitch")
     defaults = {}
     for fn in sorted(os.listdir(d)):
         bp = json.load(open(os.path.join(d, fn), encoding="utf-8"))
-        assert bp["type"] == "killswitch" and bp["factory"] is True and set(bp["params"]) == set(ids), fn
-        assert bp["inst"] in ("guitar", "bass", "voice", "any"), fn
+        assert bp["type"] == "killswitch" and bp["factory"] is True and cat_ids <= set(bp["params"]) <= set(ids), fn
+        assert bp["inst"] in ("guitar", "bass", "voice", "drums", "keys", "any"), fn      # routes_content._BP_INSTS
         for k, v in bp["params"].items():
             p = ids[k]
             if p.get("type") == "enum":
                 assert v in p["options"], (fn, k, v)
+            elif p.get("type") == "bool":
+                assert v in (True, False, 0, 1), (fn, k, v)
             else:
                 assert p["min"] <= v <= p["max"], (fn, k, v)
         if bp.get("default"):
             assert bp["inst"] not in defaults, fn
             defaults[bp["inst"]] = fn
-    assert defaults == {"any": "standard.json"}
+    assert defaults.get("any") == "standard.json"         # + un défaut par instrument (presets de golem-fx, 2026-11-13)

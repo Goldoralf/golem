@@ -1,0 +1,51 @@
+{
+ "id": "tempo-sweep",
+ "type": "flanger-js",
+ "name": "Two-bar tempo-locked sweep",
+ "desc": "Log-shaped BBD flange locked to the host: one full sweep every two bars, in phase with the song",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "house",
+  "nu-disco",
+  "french-house"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "sync": "2/1",
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "length": 6,
+  "feedback": -8,
+  "wet": -4,
+  "dry": 0,
+  "rate": 0.3,
+  "mode": "Grey",
+  "manual": 0.3,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "2/1",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README 'Tempo-locked sweep'; phase follows the host position so the peak lands on the same beat every time",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

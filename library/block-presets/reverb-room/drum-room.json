@@ -1,13 +1,62 @@
 {
- "name": "Drum room",
+ "id": "drum-room",
  "type": "reverb-room",
+ "name": "Live drum room",
+ "desc": "A 0.8 s room with strong early reflections: kit ambience for jazz, indie and rock drums",
  "inst": "drums",
- "factory": true,
+ "genres": [
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "garage-rock",
+  "hard-bop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "warm"
+ ],
+ "default": true,
  "params": {
-  "mix": 30,
-  "decay": 0.9,
-  "size": 16,
-  "hicut": 8000
+  "mix": 20,
+  "decay": 0.8,
+  "size": 14,
+  "predelay": 0,
+  "hicut": 8000,
+  "lowcut": 80,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 70,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
  },
- "default": true
+ "notes": "Early reflections at 70 % give the room mic sound; the tail stays short",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": false
 }

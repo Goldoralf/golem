@@ -1,0 +1,67 @@
+{
+ "id": "string-machine-phase",
+ "type": "phaser-js",
+ "name": "Phased string machine",
+ "desc": "Very slow, resonant OTA phase on string-machine or pad chords: a sweeping, cosmic 70s synth texture",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "berlin-school",
+  "space-rock",
+  "ambient"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Jean-Michel Jarre",
+   "song": "Oxygène",
+   "why": "string machine through a Small Stone-type phaser",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.15,
+  "low": 200,
+  "high": 3200,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Stone",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 75,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "Slower and more resonant than rhodes-phase; pairs with gfx-chorus string-ensemble before it",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

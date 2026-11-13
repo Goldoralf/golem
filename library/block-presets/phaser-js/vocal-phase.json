@@ -1,0 +1,59 @@
+{
+ "id": "vocal-phase",
+ "type": "phaser-js",
+ "name": "Psychedelic vocal phase",
+ "desc": "Gentle four-stage phase at a lower wet level on a vocal: slow, airy movement on sustained words",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "neo-psychedelia",
+  "psychedelic-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.25,
+  "low": 400,
+  "high": 4000,
+  "feedback": -12,
+  "wet": -6,
+  "model": "Classic",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 55,
+  "bass_keep": 150
+ },
+ "notes": "Wet -6 dB: partial notches keep the words intelligible; bass_keep 150 Hz holds the chest of the voice",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

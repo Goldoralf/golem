@@ -1,0 +1,48 @@
+{
+ "id": "emergence-stage",
+ "type": "golem-double",
+ "name": "Octave double, loud stage",
+ "desc": "The Emergence octave double with a higher level gate and stricter voicing: no bleed doubled between lines",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "metalcore",
+  "progressive-metal"
+ ],
+ "gain": "high",
+ "use": "utility",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": 0,
+  "voice1": -4,
+  "lpf": 6000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 35,
+  "thresh": -36,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 50
+ },
+ "notes": "thresh −36 dB sits above typical wedge / backline bleed in the vocal mic; sens 35 % follows only clean sung notes, so screams and breaths stay single. Set thresh at soundcheck from state",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

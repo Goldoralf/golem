@@ -1,0 +1,59 @@
+{
+ "id": "stone-swirl",
+ "type": "phaser-js",
+ "name": "Slow resonant OTA swirl",
+ "desc": "Four OTA stages at 0.3 Hz with the color switch's feedback in: a deep, liquid, resonant swirl",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "space-rock",
+  "classic-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.3,
+  "low": 300,
+  "high": 2400,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Stone",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 80,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Small Stone swirl'; on Stone the colour above 50 % is the feedback (the Feedback control is ignored)",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

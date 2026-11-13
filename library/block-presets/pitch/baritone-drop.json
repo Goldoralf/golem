@@ -1,0 +1,41 @@
+{
+ "id": "baritone-drop",
+ "type": "pitch",
+ "name": "Baritone drop",
+ "desc": "Polyphonic shifter, fully wet, a fourth down, Stable window: a six-string plays in B standard",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "metalcore",
+  "djent",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": -5,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Stable",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Stable for the low register; put it before the amp so the drive sees the low note",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

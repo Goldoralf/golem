@@ -1,0 +1,63 @@
+{
+ "id": "amp-in-room",
+ "type": "reverb-room",
+ "name": "Amp in a room",
+ "desc": "A 0.7 s room with dense early reflections: a dry amp sim sounds miked in a real space",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues",
+  "punk"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "indie-rock",
+  "punk-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "mix": 25,
+  "decay": 0.7,
+  "size": 12,
+  "predelay": 0,
+  "hicut": 7000,
+  "lowcut": 100,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "The README's room recipe; works on crunch and high gain where long tails smear",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

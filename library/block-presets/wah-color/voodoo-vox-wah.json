@@ -1,0 +1,63 @@
+{
+ "id": "voodoo-vox-wah",
+ "type": "wah-color",
+ "name": "Late-60s British wah",
+ "desc": "The original Italian-style wah voice: smooth, vocal sweep for psychedelic blues leads",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "blues-rock",
+  "british-blues"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Cream",
+   "song": "White Room",
+   "why": "Clapton named a Vox wah for the song's wah parts",
+   "source": "Guitar Player, 1970",
+   "verified": true
+  },
+  {
+   "artist": "The Jimi Hendrix Experience",
+   "song": "Voodoo Child (Slight Return)",
+   "why": "the scratched, muted wah intro and wah-soaked leads",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "Vox V847",
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 100,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 25,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Vox V847 with its own linear pot law (heel = low, fixed in this crate); drive 25 lets the peak clip into a fuzz",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

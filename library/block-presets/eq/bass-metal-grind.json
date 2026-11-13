@@ -1,0 +1,53 @@
+{
+ "id": "bass-metal-grind",
+ "type": "eq",
+ "name": "Metal bass clank",
+ "desc": "Tight low end, -3 dB at 400 Hz, +5 dB at 2.2 kHz: a pick-attack clank that cuts through high-gain guitars",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "djent",
+  "metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "aggressive",
+  "tight",
+  "modern"
+ ],
+ "params": {
+  "lowcut": 40,
+  "midgain": -3,
+  "midfreq": 400,
+  "highs": 0,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 2,
+  "lowfreq": 70,
+  "midq": 0.9,
+  "midprop": 50,
+  "mid2gain": 5,
+  "mid2freq": 2200,
+  "mid2q": 1.2,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 7000,
+  "highcut_slope": "24 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "Low mids are the guitars' space; the bass is heard as sub plus upper-mid clank. Use after a bass drive or on the DI branch",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

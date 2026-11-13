@@ -1,0 +1,42 @@
+{
+ "id": "tape-wow",
+ "type": "vibrato",
+ "name": "Tape wow",
+ "desc": "Slow random pitch drift on any source: the uneven wow of a worn tape machine, for loops and beats",
+ "inst": "any",
+ "genres": [
+  "hip-hop",
+  "electronic"
+ ],
+ "subgenres": [
+  "lo-fi-hip-hop",
+  "chillwave",
+  "vaporwave"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "depth": 0.2,
+  "speed": 0.8,
+  "model": "Clean",
+  "shape": "Random",
+  "rise": 0,
+  "tone": 0.8,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0.1,
+  "level": 0
+ },
+ "notes": "README 'Tape wow'; seeded random LFO so the drift replays the same way each time",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

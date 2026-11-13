@@ -1,0 +1,45 @@
+{
+ "id": "doom-sustain",
+ "type": "gate",
+ "name": "Doom sustain gate",
+ "desc": "Low threshold, long hold and an 800 ms decay-following fade: huge sustained chords ring, silence after they die",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "sludge-metal",
+  "stoner-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -60,
+  "attack": 3,
+  "hold": 200,
+  "release": 800,
+  "hpf": 40,
+  "lpf": 20000,
+  "hyst": -6,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": true,
+  "damp": 50,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Slow riffs leave long rests: follow decay lets a held chord fade on its own, damp removes the fizz first",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

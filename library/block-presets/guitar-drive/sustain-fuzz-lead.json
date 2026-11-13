@@ -1,0 +1,47 @@
+{
+ "id": "sustain-fuzz-lead",
+ "type": "guitar-drive",
+ "name": "Long-sustain fuzz lead",
+ "desc": "Two-stage fuzz with a darker tone: violin-like sustain for slow melodic solos",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "psychedelic-rock",
+  "art-rock"
+ ],
+ "gain": "clean",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "David Gilmour",
+   "song": "Comfortably Numb",
+   "why": "a Ram's Head Big Muff into a clean Hiwatt for the solos",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 30,
+  "hardness": 6,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": -15,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Pair with a long delay; the clean amp keeps the fuzz smooth rather than gated",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

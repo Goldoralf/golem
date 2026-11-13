@@ -1,0 +1,54 @@
+{
+ "id": "toggle-kill",
+ "type": "killswitch",
+ "name": "Hand-played kill switch",
+ "desc": "Passes audio untouched until the Kill footswitch is held, then mutes with a near-hard edge: a played toggle stutter",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "rap-metal",
+  "alternative-metal",
+  "rap-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Rage Against the Machine",
+   "why": "Tom Morello flicks between a dead and a live pickup to stutter notes",
+   "source": "The Tim Ferriss Show, 2022",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "params": {
+  "depth": 0,
+  "length": 95,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 0.3,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Depth 0: the pattern never cuts; only the momentary Kill (on a footswitch) mutes. Smooth 0.3 ms keeps the clack without a pop",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

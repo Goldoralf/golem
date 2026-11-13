@@ -1,0 +1,49 @@
+{
+ "id": "random-step-filter",
+ "type": "autowah",
+ "name": "Random stepped filter",
+ "desc": "Sample-and-hold jumps the band-pass to a new random frequency every sixteenth note",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "idm",
+  "techno",
+  "glitch"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/16",
+ "tags": [
+  "extreme",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.3,
+  "type": "Band-pass",
+  "poles": "2",
+  "direction": "Up",
+  "low": 300,
+  "high": 4000,
+  "peak": 8,
+  "attack": 5,
+  "release": 150,
+  "response": "Fast",
+  "drive": 0,
+  "mix": 100,
+  "level": 3,
+  "bass_keep": 0,
+  "source": "S&H",
+  "rate": 1,
+  "sync": "1/16"
+ },
+ "notes": "Crate's random-stepped use: the classic synth S&H 'computer' burble, synced to the host",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

@@ -1,0 +1,45 @@
+{
+ "id": "squash-blend",
+ "type": "comp",
+ "name": "Squash with the pick kept",
+ "desc": "Same pedal squash blended 60 % with the dry: sustain from the wet, the natural pick attack from the dry",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "americana",
+  "country-pop",
+  "pop-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -28,
+  "ratio": 8,
+  "makeup": 6,
+  "attack": 3,
+  "release": 80,
+  "character": "Pedal",
+  "knee": 0,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 0,
+  "mix": 60,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "The doc's parallel row; the blend-knob pedals' trick. Coherent mix means no comb at 60 %",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

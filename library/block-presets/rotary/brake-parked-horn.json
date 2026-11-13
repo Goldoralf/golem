@@ -1,0 +1,52 @@
+{
+ "id": "brake-parked-horn",
+ "type": "rotary",
+ "name": "Brake to a stop",
+ "desc": "Rotors coast to a halt with the horn parked at the mic: a dramatic stop to a static, boxy tone",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "soul-jazz"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "speed": "stop",
+  "mic": 70,
+  "spacing": 60,
+  "depth": 60,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 25,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 60,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Recall it from a moving speed: brake 60 coasts, stop angle 0° parks the horn facing the mic (brightest)",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

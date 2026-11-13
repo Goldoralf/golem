@@ -1,0 +1,62 @@
+{
+ "id": "halo-plate",
+ "type": "reverb-plate",
+ "name": "Octave halo plate",
+ "desc": "A two-second plate with a faint octave shimmer: a glow on clean arpeggios",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "dream-pop",
+  "indie-rock",
+  "ccm"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "mix": 28,
+  "decay": 2,
+  "size": 24,
+  "predelay": 10,
+  "hicut": 7000,
+  "lowcut": 120,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 25,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Shimmer 25 % is a colour, not the subject; the plate's instant density suits picked notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

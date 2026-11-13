@@ -1,0 +1,40 @@
+{
+ "id": "drop-tuning-boost",
+ "type": "shem",
+ "name": "Drop-tuning tight boost",
+ "desc": "+14 dB through the Focused network: low strings of 7- and 8-string guitars stay tight and clear",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "deathcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Meshuggah",
+   "song": "Bleed",
+   "why": "8-string polyrhythms that need a bass-tight boosted amp",
+   "verified": false
+  }
+ ],
+ "level_db": 13,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "grind": 14,
+  "voice": "Focused",
+  "bright": 0
+ },
+ "notes": "More level through the same EQ: Fortin's upper travel, 'feels like there is more gain'. Boost class: high",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

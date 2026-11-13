@@ -1,0 +1,40 @@
+{
+ "id": "tight-boost",
+ "type": "shem",
+ "name": "Tight boost",
+ "desc": "Clean +10 dB boost through the fixed bass-cut / presence network: tight, defined high-gain rhythm",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Meshuggah",
+   "why": "Hagström's usual booster is a Fortin 33 in front of the amp",
+   "source": "Guitar World, 2022",
+   "verified": true
+  }
+ ],
+ "level_db": 9,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "grind": 10,
+  "voice": "Focused",
+  "bright": 0
+ },
+ "notes": "A boost with no clipping: the amp does all the distortion. Keep it ON in high scenes; lower the amp's gain",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

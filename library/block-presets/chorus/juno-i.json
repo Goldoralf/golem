@@ -1,0 +1,83 @@
+{
+ "id": "juno-i",
+ "type": "chorus",
+ "name": "Synth chorus I",
+ "desc": "Two 256-stage BBD voices in anti-phase at 0.51 Hz: gentle stereo shimmer that widens pads and polysynth chords",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "electronic"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "synthwave",
+  "chillwave"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "a-ha",
+   "song": "Take On Me",
+   "why": "Juno-60 layer in the keyboard part, chorus mode on",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "wide",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "profile": "Keys",
+  "mode": "Dual I",
+  "rate": 0.513,
+  "depth": 3.7,
+  "warmth": 50,
+  "mix": 1.0,
+  "xover_custom": false,
+  "xover_on": false,
+  "xover_freq": 120,
+  "xover_slope": "24 dB",
+  "color_custom": false,
+  "engine": "BBD",
+  "interp": "Lagrange 5",
+  "drive": 25,
+  "bbd_chip": "1024",
+  "bbd_bw": 6600,
+  "emphasis": 100,
+  "compander": 0,
+  "noise": 15,
+  "wow": 0,
+  "flutter": 0,
+  "mod_custom": false,
+  "delay_base": 8,
+  "lfo_shape": "Triangle",
+  "voices": "1",
+  "voice_spread": 90,
+  "imperfection": 10,
+  "detune_lock": false,
+  "drift": 10,
+  "crossmix": 0,
+  "feedback": 0,
+  "sync": "Off",
+  "env_depth": 0,
+  "env_mix": 0,
+  "stereo_custom": false,
+  "stereo_phase": 90,
+  "width": 100,
+  "mono_safe": false,
+  "filter_custom": false,
+  "wet_hpf": 80,
+  "wet_lpf": 8000,
+  "mix_law": "Add",
+  "level_comp": true,
+  "output": 0
+ },
+ "notes": "Measured Juno-60 mode I rate and swing (pendragon-andyh); Keys profile keeps the hiss and drops emphasis like the original",
+ "factory": true,
+ "golem_fx_seed": "gfx-chorus",
+ "golem_fx": true
+}

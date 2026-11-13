@@ -1,0 +1,50 @@
+{
+ "id": "warbling-vocal",
+ "type": "tremolo",
+ "name": "Warbling psych vocal",
+ "desc": "Fast, deep tremolo on a voice: the sung line wobbles as if sung through a guitar amp",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "bubblegum",
+  "psychedelic-pop"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Tommy James and the Shondells",
+   "song": "Crimson and Clover",
+   "why": "the vocal sung through an amp's tremolo on the outro",
+   "verified": false
+  }
+ ],
+ "level_db": -1,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "rate": 7,
+  "depth": 0.75,
+  "wave": "Sine",
+  "model": "Bias",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.15,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 2.5
+ },
+ "notes": "Bias with low drive gives the amp's soft compression without audible distortion on the voice",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

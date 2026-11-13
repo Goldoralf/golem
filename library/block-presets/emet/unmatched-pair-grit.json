@@ -1,0 +1,37 @@
+{
+ "id": "unmatched-pair-grit",
+ "type": "emet",
+ "name": "Unmatched-pair grit",
+ "desc": "Asymmetric, lower knee: a gritty, even-harmonic overdrive into a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "garage-rock",
+  "alternative-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "gain": 45,
+  "tone_stack": 55,
+  "level": -8,
+  "headroom": -6,
+  "asym": 50,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "asym 50 % models a badly matched MOSFET pair, the 'irregular clipping' of the hardware",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

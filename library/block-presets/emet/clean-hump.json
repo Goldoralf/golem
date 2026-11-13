@@ -1,0 +1,38 @@
+{
+ "id": "clean-hump",
+ "type": "emet",
+ "name": "Clean mid hump",
+ "desc": "Gain at zero: a clean +8 dB mid boost that tightens and focuses a high-gain amp",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "progressive-metal",
+  "metalcore"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 3,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "gain": 0,
+  "tone_stack": 50,
+  "level": 0,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Fortin's 'Clean hump' setting. A boost, not a drive: the MOSFET knee is never reached, so keep it ON in high scenes",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

@@ -1,0 +1,44 @@
+{
+ "id": "subtle-chord-motion",
+ "type": "tremolo",
+ "name": "Gentle chord motion",
+ "desc": "Shallow, slow clean tremolo that adds movement to strummed or arpeggiated chords",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "folk",
+  "rock"
+ ],
+ "subgenres": [
+  "singer-songwriter",
+  "indie-folk",
+  "soft-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "rate": 3,
+  "depth": 0.3,
+  "wave": "Sine",
+  "model": "Clean",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 0.5
+ },
+ "notes": "The crate's 'subtle movement' start",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

@@ -1,0 +1,63 @@
+{
+ "id": "organ-chorale-122",
+ "type": "rotary",
+ "name": "Organ chorale, slow",
+ "desc": "Classic two-rotor cabinet at slow speed: gentle Doppler swirl, ready to ramp to fast by footswitch",
+ "inst": "keys",
+ "genres": [
+  "jazz",
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "soul-jazz",
+  "hard-bop",
+  "classic-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Jimmy Smith",
+   "song": "The Sermon!",
+   "why": "organ-trio tone: tonewheel organ through a spinning cabinet",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "speed": "slow",
+  "mic": 70,
+  "spacing": 60,
+  "depth": 60,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 20,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Stock 122 inertia (horn 0.16/0.32 s, drum 4.1/1.4 s): put speed on a footswitch, the slow-to-fast ramp is the sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

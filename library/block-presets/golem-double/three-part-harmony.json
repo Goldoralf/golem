@@ -1,0 +1,63 @@
+{
+ "id": "three-part-harmony",
+ "type": "golem-double",
+ "name": "Three-part in-key harmony",
+ "desc": "A diatonic third and fifth above in the song's key, spread left and centre: a stacked harmony choir",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "art-pop",
+  "indie-folk",
+  "indie-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Bon Iver",
+   "song": "715 - CRΣΣKS",
+   "why": "real-time harmonies generated from Vernon's single voice",
+   "source": "W Magazine, 2016",
+   "verified": true
+  },
+  {
+   "artist": "Imogen Heap",
+   "song": "Hide and Seek",
+   "why": "a harmonizer turning one voice into a chordal choir",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "shift": 4,
+  "formant": 0,
+  "voice1": -7,
+  "lpf": 9000,
+  "shift2": 7,
+  "voice2": -9,
+  "pan": -50,
+  "fine": 0,
+  "humanize": 30,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Scale",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 100
+ },
+ "notes": "Scale: shift 4 = a third, shift2 7 = a fifth above. The key is a placeholder golem replaces per song. Unlike those records, the intervals follow the scale, not a keyboard",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

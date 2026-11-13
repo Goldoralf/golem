@@ -1,12 +1,50 @@
 {
- "name": "Vocal clarity",
+ "id": "vocal-clarity",
  "type": "eq",
+ "name": "Vocal clarity",
+ "desc": "120 Hz high-pass, -2.5 dB of box at 400 Hz, +2.5 dB high shelf: a clearer, less muddy live vocal",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "bright"
+ ],
+ "default": true,
  "params": {
   "lowcut": 120,
-  "midfreq": 400,
   "midgain": -2.5,
-  "highs": 2.5
- }
+  "midfreq": 400,
+  "highs": 2.5,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "golem's Vocal clarity kept as is",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": false
 }

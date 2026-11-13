@@ -1,0 +1,43 @@
+{
+ "id": "stacked-octaves",
+ "type": "pitch",
+ "name": "Stacked octaves organ",
+ "desc": "Polyphonic octave down and octave up together at half mix: chords become an organ-like stack",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "ambient",
+  "synth-pop"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "warm",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "shift": -12,
+  "mix": 50,
+  "engine": "Poly",
+  "tracking": "Stable",
+  "glide": 0,
+  "shift2": 12,
+  "voice2": -6,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "Works on guitar chords too; the octave up 6 dB under the octave down keeps the stack warm",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

@@ -1,0 +1,51 @@
+{
+ "id": "sixteenth-twin-thrum",
+ "type": "tremolo",
+ "name": "Synced sixteenth thrum",
+ "desc": "Deep, choppy amp tremolo locked to sixteenths, slightly offset L/R like several amps at once",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "post-punk",
+  "alternative-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Smiths",
+   "song": "How Soon Is Now?",
+   "why": "Marr's rhythm re-amped through several Twins with tremolo on",
+   "source": "Radio X, 2025",
+   "verified": true
+  }
+ ],
+ "level_db": -1,
+ "sync": "1/16",
+ "tags": [
+  "wide",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 5,
+  "depth": 0.95,
+  "wave": "Sine",
+  "model": "Neon",
+  "sync": "1/16",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 60,
+  "level": 3
+ },
+ "notes": "Neon = blackface choppy; synced so it never drifts (the original had to be edited for that); 60° stereo offset mimics two amp pairs",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

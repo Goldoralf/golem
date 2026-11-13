@@ -1,0 +1,42 @@
+{
+ "id": "low-voice",
+ "type": "deesser",
+ "name": "Low voice, lower sibilance",
+ "desc": "Detection from 4.5 kHz with a shelf: a deep voice's duller, lower 's' and 'sh' caught without lisping",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "folk",
+  "blues"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "americana",
+  "soul-blues"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -28,
+  "freq": 4500,
+  "range": 7,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Shelf",
+  "focus": "Vocal",
+  "ratio": 5,
+  "release": 70,
+  "lookahead": 0
+ },
+ "notes": "Vocal focus's zero-crossing weight keeps bright vowels from triggering this lower band",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "swedish-chainsaw",
+ "type": "guitar-drive",
+ "name": "Chainsaw death metal",
+ "desc": "Maxed distortion, bass trimmed before the clip and highs pushed: the buzzing Swedish chainsaw",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "death-metal",
+  "melodic-death-metal",
+  "death-n-roll"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Entombed",
+   "song": "Left Hand Path",
+   "why": "the Boss HM-2 with every knob up, Stockholm death metal",
+   "verified": false
+  }
+ ],
+ "level_db": 7,
+ "tags": [
+  "extreme",
+  "aggressive",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "gain": 40,
+  "hardness": 9,
+  "ceiling": -18,
+  "voice": "Distortion",
+  "tight": 120,
+  "tone": 80,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "The pedal is the distortion: into a clean or lightly crunchy amp, not a high-gain one. Tone is a tilt, not the HM-2's EQ",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

@@ -1,0 +1,45 @@
+{
+ "id": "synth-bass-glide",
+ "type": "octaver",
+ "name": "Glide synth bass",
+ "desc": "Divider-locked oscillator, mostly square, gliding 40 ms between notes, dry muted: a bass becomes a synth",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "synth-funk",
+  "synthwave",
+  "electronic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "direct": 0,
+  "octave1": 1,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Synth",
+  "instrument": "Bass",
+  "sub_tone": 900,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 40,
+  "shape": 70,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Synth: phase-locked to the divider (zero latency), a YIN gate mutes uncertain input. Legato lines show off the glide",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

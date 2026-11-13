@@ -1,0 +1,49 @@
+{
+ "id": "twelve-string",
+ "type": "pitch",
+ "name": "Electric 12-string",
+ "desc": "Polyphonic octave up at 35 % with 5 cents of detune: a six-string strums like a 12-string",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "jangle-pop",
+  "folk-rock",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "The Byrds",
+   "song": "Mr. Tambourine Man",
+   "why": "the jangling 12-string sound this imitates on a six-string",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "bright",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": 12,
+  "mix": 35,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 5,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "fine +5 ct keeps the octave from fusing with the dry, as real octave strings drift",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

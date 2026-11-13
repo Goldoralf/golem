@@ -1,0 +1,71 @@
+{
+ "id": "dark-seventies-hall",
+ "type": "reverb",
+ "name": "Dark seventies hall",
+ "desc": "A warm, band-limited early-digital hall whose tail sits low and soft behind the band",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "progressive-rock",
+  "classic-soul"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Talking Heads",
+   "song": "Remain in Light",
+   "why": "the Lexicon 224 hall era of late-70s and early-80s records",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dark",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "mix": 25,
+  "decay": 2,
+  "size": 28,
+  "predelay": 15,
+  "hicut": 6000,
+  "algo": "Hall",
+  "lowcut": 80,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "70s",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 35,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "70s era runs the tail at 20 kHz with 10-bit input; the wet high shelf at 35 % darkens without shortening the decay",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

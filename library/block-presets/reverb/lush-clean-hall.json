@@ -1,0 +1,63 @@
+{
+ "id": "lush-clean-hall",
+ "type": "reverb",
+ "name": "Lush clean hall",
+ "desc": "A three-second modulated hall that wraps clean arpeggios without a metallic ring",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "dream-pop",
+  "indie-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "mix": 30,
+  "decay": 3,
+  "size": 32,
+  "predelay": 15,
+  "hicut": 6000,
+  "algo": "Hall",
+  "lowcut": 100,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 70,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "The README's clean-arpeggio recipe; mod 70 % keeps a long tail smooth, hicut 6 kHz keeps it behind the pick",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

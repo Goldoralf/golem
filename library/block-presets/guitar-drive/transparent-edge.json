@@ -1,0 +1,47 @@
+{
+ "id": "transparent-edge",
+ "type": "guitar-drive",
+ "name": "Transparent edge of breakup",
+ "desc": "Low-gain drive with 45 % clean blended back: adds hair and level, keeps the guitar's own voice",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "alternative-rock",
+  "americana"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Nels Cline",
+   "why": "a Klon Centaur on his Wilco pedalboard",
+   "source": "Premier Guitar Rig Rundown, 2012",
+   "verified": true
+  }
+ ],
+ "level_db": 7,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "gain": 16,
+  "hardness": 2,
+  "ceiling": -6,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": 10,
+  "asym": 0,
+  "sag": 0,
+  "blend": 45,
+  "bass_keep": 0
+ },
+ "notes": "The Klon recipe: soft knee plus clean blend; dynamics follow the pick. Good always-on into a clean amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

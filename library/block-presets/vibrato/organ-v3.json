@@ -1,0 +1,43 @@
+{
+ "id": "organ-v3",
+ "type": "vibrato",
+ "name": "Tonewheel organ deep vibrato",
+ "desc": "Scanner-type vibrato at its deepest setting, wet only: the shimmering, wavering organ vibrato",
+ "inst": "keys",
+ "genres": [
+  "jazz",
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "soul-jazz",
+  "classic-soul",
+  "progressive-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "depth": 1.0,
+  "speed": 6.9,
+  "model": "Scanner",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 1.0,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "Scanner depth 1 = V3 (taps up to 19 of the ladder), speed 6.9 Hz like the rotating capacitor, mix 1 = vibrato",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

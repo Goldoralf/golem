@@ -1,0 +1,53 @@
+{
+ "id": "funk-chop",
+ "type": "comp",
+ "name": "Funk chop, compressed clean",
+ "desc": "FET 4:1, 8 ms attack, fast release, 80 % wet: tight 16th-note scratches that pop out evenly without losing snap",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "pop",
+  "electronic"
+ ],
+ "subgenres": [
+  "funk",
+  "disco",
+  "french-house"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Chic",
+   "song": "Le Freak",
+   "why": "bright, even, mostly direct funk rhythm guitar",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -24,
+  "ratio": 4,
+  "makeup": 5,
+  "attack": 8,
+  "release": 100,
+  "character": "FET",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 60,
+  "drive": 0,
+  "mix": 80,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Accounts of Rodgers' chain disagree on compression; this is the sound in its spirit, not a documented setting",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "bass-flange",
+ "type": "flanger-js",
+ "name": "Bass flange, lows untouched",
+ "desc": "BBD flange on bass above 150 Hz only: the low end stays dry and mono while the growl and pick sweep",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "post-punk",
+  "funk-rock",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "length": 6,
+  "feedback": -10,
+  "wet": -6,
+  "dry": 0,
+  "rate": 0.25,
+  "mode": "Mistress",
+  "manual": 0.5,
+  "depth": 70,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 150
+ },
+ "notes": "README 'Bass' application: bass_keep 150 Hz complementary split",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

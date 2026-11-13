@@ -1,0 +1,42 @@
+{
+ "id": "bright-voice",
+ "type": "deesser",
+ "name": "Bright high voice",
+ "desc": "Narrow bell at 7.5 kHz: a high, bright voice's sharp 's' notched out while the air above stays",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "folk"
+ ],
+ "subgenres": [
+  "teen-pop",
+  "neo-soul",
+  "indie-folk"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -26,
+  "freq": 7500,
+  "range": 8,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Bell",
+  "focus": "Vocal",
+  "ratio": 6,
+  "release": 50,
+  "lookahead": 0
+ },
+ "notes": "The doc's bright-female row",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

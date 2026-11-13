@@ -1,0 +1,54 @@
+{
+ "id": "stoner-doom-fuzz",
+ "type": "guitar-drive",
+ "name": "Stoner doom fuzz",
+ "desc": "Maximum two-stage fuzz, very dark tone, full lows: slow, down-tuned riffs into a loud amp",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "stoner-metal",
+  "doom-metal",
+  "stoner-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Sleep",
+   "song": "Dopesmoker",
+   "why": "fuzz into walls of cranked Orange amps",
+   "verified": false
+  },
+  {
+   "artist": "Electric Wizard",
+   "why": "dark, saturated fuzz for down-tuned doom riffs",
+   "verified": false
+  }
+ ],
+ "level_db": 5,
+ "tags": [
+  "dark",
+  "extreme",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "gain": 40,
+  "hardness": 7,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": -45,
+  "asym": 10,
+  "sag": 20,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Lows left in on purpose (no tight): the riff should rumble. The amp only crunches; the fuzz is the sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

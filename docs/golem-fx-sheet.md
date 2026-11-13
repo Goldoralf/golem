@@ -94,7 +94,28 @@ lane are placed by their REAPER name; rig-check is clean, and `fxparams` reads t
 the plugin's ranges (Met Threshold −60 dB = 0.333, Emet Gain 20 % = 0.2, Shem Grind +6 dB = 0.5). Met shows 4 input
 pins on a 2-channel track; before the key was routed, its key pins read silent channels and it stayed on the main input.
 
-## 5. Open
+## 5. golem-fx's factory presets (golem-fx 0.2)
+
+golem-fx researched and annotated about 400 factory presets for its pedals (golem-fx/presets/, exported COMPLETE in
+`visuals/data/descriptors.json`). `tools/sync-golem-fx-presets.py` seeds them into
+`library/block-presets/<type>/<id>.json`, one file per preset: golem.fm's sync reads those files, and its AI refers to a
+preset as `<type>/<id>`. The id is stable forever. Rules decided with the maintainer on 2026-11-13:
+
+- **A preset is the whole sound.** Loading one on a block golem-fx plays sets every setting: each starts from its
+  default, then the preset on top. Nothing from the previous state survives (`page-designer.js` `onLoadPreset`).
+- **A preset wins over a value golem pins at insert, except the type's identity.** `identity` in the engine table:
+  reverb-plate is algo Plate, reverb-room is algo Room, wah (Cry Baby) is model GCB-95. Those settings are hidden from
+  the sheet and never written; a preset that contradicts them is refused by the seed. The generic Reverb may play
+  Spring, Chamber, Cloud… .
+- **The rack's own factory presets stay.** golem-fx's new presets (`golem_fx: true`) are offered only where golem-fx
+  plays the block, and their `default` wins over the rack's there; elsewhere, the rack's presets alone. An id the rack
+  already had (eq `standard`…) takes golem-fx's version and stays offered everywhere (`golem_fx: false`).
+- Params are written in the block's vocabulary (`golem_fx.preset_params`): the sheet's id, a list by its rank.
+- No `vendor` / `twin_of`: golem.fm's prompts advise golem-fx blocks from the list of types itself.
+
+`--check` says whether the files are current. The plugin table no longer carries the presets.
+
+## 6. Open
 
 - Only the Chorus has Custom switches and reference presets so far (golem-fx side).
 - The pedals in the Add-block shelf and on `/live` still draw golem-fx's defaults, not the block's values.

@@ -1,0 +1,78 @@
+{
+ "id": "octave-shimmer-hall",
+ "type": "reverb",
+ "name": "Octave shimmer hall",
+ "desc": "A long hall fed back through an octave-up shifter: each pass climbs into a glowing halo",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "ambient",
+  "post-rock",
+  "ccm"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Brian Eno & Daniel Lanois",
+   "song": "Apollo",
+   "why": "pitch shifter at +1 octave in a feedback loop with a long reverb",
+   "source": "Valhalla DSP blog (Eno/Lanois shimmer), 2010",
+   "verified": true
+  },
+  {
+   "artist": "U2",
+   "song": "The Unforgettable Fire",
+   "why": "the shimmer heard on The Unforgettable Fire",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mix": 40,
+  "decay": 7,
+  "size": 45,
+  "predelay": 20,
+  "hicut": 6000,
+  "algo": "Hall",
+  "lowcut": 150,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 60,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 40,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Shimmer 40 % with a 7 s decay: the octave grows audibly over a few seconds; for two voices and glide use gfx-shimmer",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

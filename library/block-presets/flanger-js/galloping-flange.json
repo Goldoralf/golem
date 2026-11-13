@@ -1,0 +1,57 @@
+{
+ "id": "galloping-flange",
+ "type": "flanger-js",
+ "name": "Galloping driven flange",
+ "desc": "Faster, resonant BBD flange on a driven, palm-muted gallop: the notes whoosh and growl as the sweep passes",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock",
+  "arena-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Heart",
+   "song": "Barracuda",
+   "why": "Roger Fisher's custom-built flanger on the galloping riff",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "length": 4,
+  "feedback": -5,
+  "wet": -3,
+  "dry": 0,
+  "rate": 0.45,
+  "mode": "Grey",
+  "manual": 0.2,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 20,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "Shorter length keeps the notches high and metallic; rate 0.45 Hz makes the sweep audible inside a bar",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

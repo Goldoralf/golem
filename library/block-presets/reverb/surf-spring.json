@@ -1,0 +1,76 @@
+{
+ "id": "surf-spring",
+ "type": "reverb",
+ "name": "Dripping surf spring",
+ "desc": "A hard-hit three-spring tank: the splashy drip of surf lead and twang",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "screen"
+ ],
+ "subgenres": [
+  "surf-rock",
+  "instrumental-rock",
+  "spaghetti-western"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Dick Dale",
+   "song": "Misirlou",
+   "why": "drenched spring reverb on staccato tremolo-picked surf leads",
+   "verified": false
+  },
+  {
+   "artist": "The Chantays",
+   "song": "Pipeline",
+   "why": "wet surf guitar drip",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "mix": 45,
+  "decay": 2.5,
+  "size": 24,
+  "predelay": 0,
+  "hicut": 7000,
+  "algo": "Spring",
+  "lowcut": 100,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 70,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 65,
+  "springs": "3",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Drive is dwell on Spring: 65 % hits the springs hard for the drip; mix high, as surf players set the tank near the top",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

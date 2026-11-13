@@ -1,0 +1,65 @@
+{
+ "id": "script-swirl",
+ "type": "phaser-js",
+ "name": "Smooth four-stage swirl",
+ "desc": "Four JFET-style stages, no feedback, slow sine sweep: a smooth, vocal swirl on clean or lightly driven guitar",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "progressive-rock",
+  "british-blues"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "why": "Gilmour moved from the Uni-Vibe to a Phase 90 around 1974",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.6,
+  "low": 440,
+  "high": 1600,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Script 90",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Phase 90 script'; wet = dry for the deepest notches (law dry + wet · phased); mono LFO like the pedal, before the amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

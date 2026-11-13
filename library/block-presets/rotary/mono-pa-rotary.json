@@ -1,0 +1,49 @@
+{
+ "id": "mono-pa-rotary",
+ "type": "rotary",
+ "name": "Mono-safe rotary",
+ "desc": "Slow/fast cabinet with coincident mics: exactly mono, no hollow sum on a mono PA",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "jazz"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "speed": "slow",
+  "mic": 70,
+  "spacing": 0,
+  "depth": 60,
+  "cabinet": "122",
+  "ramp": 100,
+  "drive": 20,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5.7,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 150,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "Spacing 0 = L equals R: the AM and Doppler survive mono summing on small venue PAs",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

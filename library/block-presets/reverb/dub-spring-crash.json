@@ -1,0 +1,75 @@
+{
+ "id": "dub-spring-crash",
+ "type": "reverb",
+ "name": "Dub spring crash",
+ "desc": "A dark, overdriven spring for dub: rimshots and skanks thrown into a crashing tank",
+ "inst": "any",
+ "genres": [
+  "caribbean",
+  "electronic"
+ ],
+ "subgenres": [
+  "dub",
+  "roots-reggae",
+  "dub-techno"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "King Tubby",
+   "why": "spring reverb slams and throws in the dub mix",
+   "verified": false
+  },
+  {
+   "artist": "Lee \"Scratch\" Perry",
+   "why": "Black Ark spring reverb alongside the Space Echo",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "mix": 40,
+  "decay": 3,
+  "size": 24,
+  "predelay": 0,
+  "hicut": 4500,
+  "algo": "Spring",
+  "lowcut": 250,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 50,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 80,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "High dwell makes the tank crash on transients; put mix on EXP for throws",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "parallel-fifth-chant",
+ "type": "golem-double",
+ "name": "Parallel fifth chant",
+ "desc": "A fifth below and an octave below, humanized: organum-like parallel chant from one voice",
+ "inst": "voice",
+ "genres": [
+  "classical",
+  "metal",
+  "world"
+ ],
+ "subgenres": [
+  "medieval",
+  "folk-metal",
+  "nordic-folk"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "dark",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": -7,
+  "formant": 0,
+  "voice1": -7,
+  "lpf": 6000,
+  "shift2": -12,
+  "voice2": -9,
+  "pan": 0,
+  "fine": 0,
+  "humanize": 35,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 40
+ },
+ "notes": "Fixed −7 / −12 (not Scale): parallel perfect intervals are the point of organum. Voice 2 centred",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

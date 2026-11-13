@@ -1,0 +1,41 @@
+{
+ "id": "octave-down-thickener",
+ "type": "pitch",
+ "name": "Octave-down riff thickener",
+ "desc": "Mono shifter an octave down mixed 40 % under the dry: heavier single-note riffs without a bass",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "stoner-rock",
+  "garage-rock",
+  "stoner-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "mix": 40,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "The dry is delayed by the 12 ms latency so the blend stays coherent. For a synth-like sub use gfx-octaver",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

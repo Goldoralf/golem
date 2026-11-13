@@ -1,0 +1,35 @@
+{
+ "id": "safety",
+ "type": "limiter",
+ "name": "End-of-lane safety",
+ "desc": "Inaudible zero-latency ceiling at −3 dBFS: untouched below it, catches only the odd runaway peak",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "metal"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "threshold": -3,
+  "release": 50,
+  "gain": 0,
+  "style": "Clean",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 50,
+  "link": 100
+ },
+ "notes": "The doc's safety row. threshold is the ceiling with no makeup: what you set is the peak you get",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

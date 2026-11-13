@@ -1,0 +1,63 @@
+{
+ "id": "bass-room-touch",
+ "type": "reverb-room",
+ "name": "Bass room touch",
+ "desc": "A half-second room on the highs only: space for bass without smearing the low end",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "jazz",
+  "rnb"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "jazz-fusion",
+  "funk"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "mix": 12,
+  "decay": 0.5,
+  "size": 10,
+  "predelay": 0,
+  "hicut": 6000,
+  "lowcut": 250,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 50,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Low cut 250 Hz into the reverb: only the attack and harmonics reverberate",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

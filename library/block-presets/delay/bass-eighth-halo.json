@@ -1,0 +1,67 @@
+{
+ "id": "bass-eighth-halo",
+ "type": "delay",
+ "name": "Bass eighth halo",
+ "desc": "Eighth-note repeats on the bass with the lows cut from the loop: melodic lines echo, the low end stays solid",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-punk",
+  "post-rock",
+  "dub-techno"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Joy Division",
+   "why": "Peter Hook's high melodic bass lines under echo and chorus",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/8",
+ "tags": [
+  "dark",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "time": "1/8",
+  "feedback": 25,
+  "mix": 22,
+  "model": "BBD",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 350,
+  "high_cut": 5000,
+  "drive": 0,
+  "mod": 40,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Low cut 350 Hz in the loop: only the mids and upper harmonics repeat, so the fundamental is never smeared",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

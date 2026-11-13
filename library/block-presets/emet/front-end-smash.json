@@ -1,0 +1,38 @@
+{
+ "id": "front-end-smash",
+ "type": "emet",
+ "name": "Front-end smash",
+ "desc": "Gain up, tone past half: a crushing mid-range push that drives an amp's front end hard",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "groove-metal",
+  "hard-rock",
+  "alternative-metal"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 17,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 70,
+  "tone_stack": 60,
+  "level": -6,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Fortin's 'Front end smash' (his level). It distorts by itself, so it is a drive: it turns a crunch amp into a heavy one and hits it far hotter than bypass",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

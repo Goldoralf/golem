@@ -2604,7 +2604,13 @@ export function DesignerPage({ rig, sub }) {
         onParam=${(pid, v) => setParam(sel, pid, v)} onBypass=${() => toggleBypass(sel)}
         onScene=${on => setSceneBlock(sel, on)} onModel=${mid => setModel(sel, mid)} onApplyAll=${() => applyParamsAllScenes(sel)}
         onLoadPreset=${ps => upd(n => { const b = blockAt(n, sel); if (!b.id) return;
-          b.params = { ...(b.params || {}), ...ps };                       // preset de bloc -> BASE
+          // UN PRESET EST TOUT LE SON (2026-11-13, docs/golem-fx-sheet.md §5) : sur un bloc que golem-fx joue, chaque
+          // réglage repart de son défaut, puis le preset par-dessus — rien de l'état d'avant ne survit (les presets de
+          // golem-fx sont complets ; un ancien preset partiel du rack sonne ainsi pareil quoi qu'il y avait avant).
+          // L'IDENTITÉ du type (Plate, Room, GCB-95) est cachée : jamais écrite.
+          const base = GOLEM_FX.has(b.type) ? Object.fromEntries(((fxDef(b.type) || {}).params || [])
+            .filter(pm => !pm.hidden && pm.default !== undefined && pm.default !== null).map(pm => [pm.id, pm.default])) : (b.params || {});
+          b.params = { ...base, ...ps };                                    // preset de bloc -> BASE
           n.scenes.forEach(s => { if (s.params) delete s.params[b.id]; }); // + purge overrides (global)
         })}
         onMove=${d => move(sel, d)} onRemove=${['rec', 'click', 'compo'].includes(selBlock.type) ? null : () => rmBlock(sel)}

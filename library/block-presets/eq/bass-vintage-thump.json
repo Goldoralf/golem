@@ -1,0 +1,61 @@
+{
+ "id": "bass-vintage-thump",
+ "type": "eq",
+ "name": "Vintage flatwound thump",
+ "desc": "Warm lift at 100 Hz, +2 dB at 700 Hz, highs rolled off from 4 kHz: an old P-bass with flats and tone down",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "rock",
+  "caribbean"
+ ],
+ "subgenres": [
+  "motown",
+  "classic-soul",
+  "roots-reggae"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "James Jamerson",
+   "why": "flatwound Precision with the tone rolled back on Motown sessions",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm",
+  "dark"
+ ],
+ "params": {
+  "lowcut": 40,
+  "midgain": 2,
+  "midfreq": 700,
+  "highs": -4,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 2,
+  "lowfreq": 100,
+  "midq": 0.7,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 2500,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 4000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "The 700 Hz bump is the note definition that a P-bass keeps in a mix even when its top is gone",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

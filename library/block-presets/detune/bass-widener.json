@@ -1,0 +1,36 @@
+{
+ "id": "bass-widener",
+ "type": "detune",
+ "name": "Bass micro-thickener",
+ "desc": "Voices ±5 cents, no offset, low in the mix: bass gains growl and size without losing focus",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "electronic",
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "synthwave",
+  "nu-metal"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0.5,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "detune": 0.2,
+  "wet": 0.3,
+  "dry": 0.85,
+  "delay": 0,
+  "voices": "2"
+ },
+ "notes": "Small and undelayed so the low end stays phase-coherent; the beating lives mostly in the upper harmonics",
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

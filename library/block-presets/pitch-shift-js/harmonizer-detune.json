@@ -1,0 +1,43 @@
+{
+ "id": "harmonizer-detune",
+ "type": "pitch-shift-js",
+ "name": "Early harmonizer thickener",
+ "desc": "Shifter 10 cents flat mixed 6 dB under the dry: the 1980s rack detune that fattens a rhythm guitar",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "glam-metal",
+  "arena-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Van Halen",
+   "why": "Eventide harmonizer detune mixed with the dry guitar",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "wide"
+ ],
+ "default": true,
+ "params": {
+  "shift": -0.1,
+  "window": 50,
+  "overlap": 20,
+  "wet": -6,
+  "dry": 0,
+  "search": false
+ },
+ "notes": "A tiny ratio makes the splices nearly inaudible; for a stereo ±cents pair, gfx-detune is the better tool",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

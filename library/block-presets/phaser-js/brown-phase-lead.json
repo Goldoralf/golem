@@ -1,0 +1,73 @@
+{
+ "id": "brown-phase-lead",
+ "type": "phaser-js",
+ "name": "Phased hot-rod lead",
+ "desc": "Feedback-free four-stage phaser in front of a cranked amp: a slow swoosh that adds bite and treble to riffs and solos",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "glam-metal",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Van Halen",
+   "song": "Eruption",
+   "why": "Eddie's MXR Phase 90 into a cranked amp",
+   "source": "Guitar World, 2014",
+   "verified": true
+  },
+  {
+   "artist": "Van Halen",
+   "song": "Ain't Talkin' 'bout Love",
+   "why": "Phase 90 on the main riff",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.45,
+  "low": 440,
+  "high": 1600,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Script 90",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 60,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "Place before the drive/amp: the sweep then shapes what distorts; color 60 adds a little more JFET saturation",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

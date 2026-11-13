@@ -1,0 +1,49 @@
+{
+ "id": "head-voice-anchor",
+ "type": "golem-double",
+ "name": "High-voice octave anchor",
+ "desc": "Octave-below double for soprano and head voice, High register: puts a chest-register line under it",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alt-pop",
+  "symphonic-metal",
+  "dream-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": -12,
+  "formant": -2,
+  "voice1": -5,
+  "lpf": 7000,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "High",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 60
+ },
+ "notes": "High register (150 Hz – 1.2 kHz) tracks head voice without octave errors; formant −2 makes the double read as a second, lower singer",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

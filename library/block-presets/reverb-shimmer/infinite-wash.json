@@ -1,0 +1,61 @@
+{
+ "id": "infinite-wash",
+ "type": "reverb-shimmer",
+ "name": "Infinite growing wash",
+ "desc": "Infinite hold: the shimmer pad never decays and every new note adds to it, for drones and outros",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "experimental",
+  "rock"
+ ],
+ "subgenres": [
+  "ambient",
+  "drone",
+  "post-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mix": 50,
+  "decay": 20,
+  "shimmer": 50,
+  "pitch": 12,
+  "hicut": 5000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 200,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Cloud",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 0,
+  "freeze": "Infinite",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Put freeze on a footswitch to release it. For a held chord that stops climbing, switch freeze to Freeze",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

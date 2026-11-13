@@ -1,0 +1,72 @@
+{
+ "id": "ducked-lead-quarter",
+ "type": "delay",
+ "name": "Ducked lead echo",
+ "desc": "Quarter-note repeats that duck under the solo and bloom in the gaps between phrases",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "progressive-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Dream Theater",
+   "why": "John Petrucci's lead patches with TC 2290 style dynamic delay",
+   "verified": false
+  },
+  {
+   "artist": "Steve Lukather",
+   "why": "80s studio lead sound: 2290 delay ducked under the line",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "modern",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4",
+  "feedback": 35,
+  "mix": 35,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 150,
+  "high_cut": 6500,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 10,
+  "duck_thresh": -30,
+  "duck_release": 350,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Ducking 10 dB keeps fast high-gain lines clear; high cut 6.5 kHz removes the fizz from the repeats",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

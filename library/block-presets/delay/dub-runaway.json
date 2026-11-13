@@ -1,0 +1,73 @@
+{
+ "id": "dub-runaway",
+ "type": "delay",
+ "name": "Dub runaway echo",
+ "desc": "Dark tape echo near self-oscillation: throws on a snare or a chord that swell into a roar",
+ "inst": "any",
+ "genres": [
+  "caribbean",
+  "electronic"
+ ],
+ "subgenres": [
+  "dub",
+  "roots-reggae",
+  "dub-techno"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "King Tubby",
+   "why": "live front-panel echo moves pushing the tape into runaway feedback",
+   "verified": false
+  },
+  {
+   "artist": "Lee \"Scratch\" Perry",
+   "why": "Black Ark Space Echo throws and pitch dives",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/4.",
+ "tags": [
+  "extreme",
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/4•",
+  "feedback": 72,
+  "mix": 45,
+  "model": "Tape",
+  "time_ms": 375,
+  "glide": "Glide",
+  "glide_ms": 400,
+  "low_cut": 180,
+  "high_cut": 3500,
+  "drive": 40,
+  "mod": 55,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 30,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Put feedback on EXP up to 110 % for self-oscillation (bounded); Glide makes time changes dive in pitch like a tape speed knob",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

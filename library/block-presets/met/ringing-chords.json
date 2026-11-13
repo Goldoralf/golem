@@ -1,0 +1,41 @@
+{
+ "id": "ringing-chords",
+ "type": "met",
+ "name": "Ringing chords, gentle slope",
+ "desc": "1:1.8 slope and slow 120 ms smoothing: sustained high-gain chords fade out naturally, hiss still goes",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "post-metal",
+  "progressive-metal",
+  "alternative-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -50,
+  "hold": 40,
+  "release": 200,
+  "ratio": 1.8,
+  "range": -90,
+  "smooth": 120,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "The doc's sustained-chords row with a little hold so let-ring arpeggios survive short gaps",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

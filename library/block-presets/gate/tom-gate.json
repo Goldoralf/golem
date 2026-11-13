@@ -1,0 +1,44 @@
+{
+ "id": "tom-gate",
+ "type": "gate",
+ "name": "Tom mic gate",
+ "desc": "Opens on tom hits, ignores cymbals through a 6 kHz detection cut; natural decay, bleed lowered by 40 dB",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "metal",
+  "pop"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": true,
+ "params": {
+  "thresh": -35,
+  "attack": 0.5,
+  "hold": 60,
+  "release": 180,
+  "hpf": 60,
+  "lpf": 6000,
+  "hyst": -6,
+  "range": -40,
+  "ratio": 100,
+  "knee": 0,
+  "follow": true,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Hysteresis −6 dB plus follow lets the drum's ring decay; detection band 60 Hz – 6 kHz rejects kick rumble and cymbal wash",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

@@ -1,0 +1,47 @@
+{
+ "id": "vocal-peaks",
+ "type": "limiter",
+ "name": "Vocal peak ceiling",
+ "desc": "Clean limiter at −4 dBFS with a 120 ms release after the vocal compressor: screams and plosives held",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "dance-pop",
+  "pop-rock",
+  "trap"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [
+  {
+   "artist": "DNCE",
+   "why": "FOH Brian Pomp ends the lead vocal chain on a limiter",
+   "source": "Vintage King, Brian Pomp FOH interview, 2017",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "threshold": -4,
+  "release": 120,
+  "gain": 0,
+  "style": "Clean",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 50,
+  "link": 100
+ },
+ "notes": "The doc's vocal row. A stage singer's peaks overshoot any compressor's attack: this is the last word",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

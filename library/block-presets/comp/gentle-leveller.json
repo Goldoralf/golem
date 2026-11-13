@@ -1,0 +1,45 @@
+{
+ "id": "gentle-leveller",
+ "type": "comp",
+ "name": "Gentle leveller, capped",
+ "desc": "Clean 2:1 with a wide knee and reduction capped at 6 dB: evens any source, can never squash it",
+ "inst": "any",
+ "genres": [
+  "pop",
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "adult-contemporary",
+  "soft-rock",
+  "vocal-jazz"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -24,
+  "ratio": 2,
+  "makeup": 2,
+  "attack": 20,
+  "release": 200,
+  "character": "Clean",
+  "knee": 10,
+  "auto_release": true,
+  "sc_hpf": 0,
+  "range": 6,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "The doc's range row, golem's Gentle",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

@@ -1,0 +1,83 @@
+{
+ "id": "fretless-sheen",
+ "type": "chorus",
+ "name": "Fretless studio chorus",
+ "desc": "Clean digital-style chorus wobble on fretless bass: singing, vocal-like slides with a firm, dry low end",
+ "inst": "bass",
+ "genres": [
+  "pop",
+  "jazz"
+ ],
+ "subgenres": [
+  "sophisti-pop",
+  "jazz-fusion",
+  "smooth-jazz"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Paul Young",
+   "song": "Wherever I Lay My Hat (That's My Home)",
+   "why": "Pino Palladino's fretless line, recorded with Eventide and AMS chorus",
+   "source": "Making Music, November 1986",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "profile": "Bass",
+  "mode": "Classic",
+  "rate": 0.9,
+  "depth": 3.0,
+  "warmth": 40,
+  "mix": 0.7,
+  "xover_custom": false,
+  "xover_on": false,
+  "xover_freq": 120,
+  "xover_slope": "24 dB",
+  "color_custom": true,
+  "engine": "Clean",
+  "interp": "Lagrange 5",
+  "drive": 0,
+  "bbd_chip": "1024",
+  "bbd_bw": 6600,
+  "emphasis": 100,
+  "compander": 0,
+  "noise": 0,
+  "wow": 0,
+  "flutter": 0,
+  "mod_custom": false,
+  "delay_base": 8,
+  "lfo_shape": "Triangle",
+  "voices": "1",
+  "voice_spread": 90,
+  "imperfection": 10,
+  "detune_lock": false,
+  "drift": 10,
+  "crossmix": 0,
+  "feedback": 0,
+  "sync": "Off",
+  "env_depth": 0,
+  "env_mix": 0,
+  "stereo_custom": false,
+  "stereo_phase": 90,
+  "width": 100,
+  "mono_safe": false,
+  "filter_custom": false,
+  "wet_hpf": 80,
+  "wet_lpf": 8000,
+  "mix_law": "Add",
+  "level_comp": true,
+  "output": 0
+ },
+ "notes": "Color Custom: clean engine for the 80s rack-digital character instead of BBD; lows still split at 200 Hz by the profile",
+ "factory": true,
+ "golem_fx_seed": "gfx-chorus",
+ "golem_fx": true
+}

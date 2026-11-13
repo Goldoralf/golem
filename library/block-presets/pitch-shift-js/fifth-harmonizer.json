@@ -1,0 +1,35 @@
+{
+ "id": "fifth-harmonizer",
+ "type": "pitch-shift-js",
+ "name": "Classic fifth harmony",
+ "desc": "A fixed fifth up with splice search, 4 dB under the dry: the old rack harmonizer on leads and synths",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "new-wave",
+  "synthwave"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": 7,
+  "window": 50,
+  "overlap": 20,
+  "wet": -4,
+  "dry": 0,
+  "search": true
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

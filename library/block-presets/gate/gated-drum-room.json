@@ -1,0 +1,60 @@
+{
+ "id": "gated-drum-room",
+ "type": "gate",
+ "name": "80s gated drum room",
+ "desc": "Hard gate on a crushed room mic or reverb: full ambience for a quarter second, then a sudden 40 ms cut",
+ "inst": "drums",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "adult-contemporary",
+  "art-rock",
+  "new-wave"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Phil Collins",
+   "song": "In the Air Tonight",
+   "why": "heavily compressed room mic gated to cut the big ambience short",
+   "source": "MusicTech, Hugh Padgham interview, 2019",
+   "verified": true
+  },
+  {
+   "artist": "Peter Gabriel",
+   "why": "Padgham found the gated room sound on Gabriel's third album at Townhouse",
+   "source": "MusicTech, Hugh Padgham interview, 2019",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -30,
+  "attack": 0.5,
+  "hold": 250,
+  "release": 40,
+  "hpf": 80,
+  "lpf": 20000,
+  "hyst": -6,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
+ },
+ "notes": "Put a heavy compressor before it on the room or reverb return. The effect is the abrupt all-to-nothing cut: hold sets the size, keep release short",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": true
+}

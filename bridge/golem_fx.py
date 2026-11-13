@@ -63,6 +63,7 @@ def merged(btype, catalog_params):
         if d["id"] not in absent:
             by_label.setdefault(labels.get(d["id"]) or d.get("name"), d)
     dparams = desc.get("params") or {}
+    identity = spec.get("identity") or {}                # ce que le type EST (Plate, Room, GCB-95) : ni montré ni réglé
     keys = {}                                            # id golem-fx -> id du bloc
     for gid, p in dparams.items():
         c = by_label.get(p.get("name"))
@@ -115,6 +116,9 @@ def merged(btype, catalog_params):
         if isinstance(dep, dict) and dep.get("param") in keys:
             d["depends"] = {keys[dep["param"]]: _equals_as_block(dep, dparams, cat, keys)}
         d["gfx"] = {"id": gid, "group": where.get(gid), "help": p.get("help")}
+        if gid in identity:
+            d["hidden"] = True
+            d["gfx"]["identity"] = identity[gid]
         out.append(d)
     used = {d["id"] for d in out}
     for d in cat:                                        # ce que le plugin n'a pas : gardé, caché (presets, autres moteurs)
@@ -124,10 +128,41 @@ def merged(btype, catalog_params):
              "groups": [{"id": g.get("id"), "name": g.get("name") or g.get("id"),
                          "custom": keys.get(g.get("custom")) if g.get("custom") else None,
                          "params": [keys[x] for x in (g.get("params") or []) if x in keys]} for g in groups],
-             "provisional": bool(desc.get("provisional")),
-             "presets": [{"name": pr.get("name"), "params": {keys.get(k, k): v for k, v in (pr.get("params") or {}).items()}}
-                         for pr in (desc.get("presets") or [])]}
+             "provisional": bool(desc.get("provisional"))}  # les presets : des fichiers (tools/sync-golem-fx-presets.py)
     return out, sheet
+
+
+def preset_params(btype, gparams, catalog_params):
+    """Les réglages d'un preset de golem-fx (ids et libellés du PLUGIN) dans le vocabulaire du BLOC : l'id que la feuille
+    montre, une liste par son RANG (le libellé du catalogue au même rang : « Slow » -> « slow »). Rend (params, refus) ;
+    un réglage d'IDENTITÉ du type (`identity`) n'est pas écrit — refusé s'il dit autre chose que ce que le type est."""
+    params, sheet = merged(btype, catalog_params)
+    if not sheet:
+        return {}, ["no golem-fx descriptor for this type"]
+    desc, spec = descriptor_for(btype)
+    dparams = desc.get("params") or {}
+    identity = spec.get("identity") or {}
+    by_gid = {d["gfx"]["id"]: d for d in params if d.get("gfx")}
+    out, bad = {}, []
+    for gid, v in (gparams or {}).items():
+        if gid in identity:
+            if v != identity[gid]:
+                bad.append(f"{gid}={v!r}: this type is {identity[gid]!r}")
+            continue
+        d, p = by_gid.get(gid), dparams.get(gid)
+        if not d or not p:
+            bad.append(f"{gid}: unknown parameter")
+            continue
+        if d.get("type") == "enum":
+            popts = p.get("options") or []
+            if v not in popts:
+                bad.append(f"{gid}={v!r}: not an option")
+                continue
+            i = popts.index(v)
+            opts = d.get("options") or []
+            v = opts[i] if i < len(opts) else v
+        out[d["id"]] = v
+    return out, bad
 
 
 def _equals_as_block(dep, dparams, cat, keys):

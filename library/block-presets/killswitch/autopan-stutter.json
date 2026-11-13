@@ -1,0 +1,48 @@
+{
+ "id": "autopan-stutter",
+ "type": "killswitch",
+ "name": "Ping-pong triplet stutter",
+ "desc": "1/8-triplet cuts alternating left and right at full width: the stutter bounces across the stereo field",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "idm",
+  "electropop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -2,
+ "sync": "1/8T",
+ "tags": [
+  "wide"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 50,
+  "sync": "1/8T",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 2,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 100,
+  "bypass": false
+ },
+ "notes": "Width needs the stereo layout: the right channel runs half a step behind, so one side opens as the other closes",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

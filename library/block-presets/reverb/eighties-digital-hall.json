@@ -1,0 +1,76 @@
+{
+ "id": "eighties-digital-hall",
+ "type": "reverb",
+ "name": "Eighties digital hall",
+ "desc": "A long, slightly grainy period hall with deep chorusing modulation for 80s ballads",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "album-oriented-rock",
+  "arena-rock",
+  "synth-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Rush",
+   "song": "Power Windows",
+   "why": "Lexicon-era big digital hall on synths and guitars",
+   "verified": false
+  },
+  {
+   "artist": "Peter Gabriel",
+   "song": "So",
+   "why": "early-digital hall reverbs across the album",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mix": 30,
+  "decay": 2.8,
+  "size": 38,
+  "predelay": 25,
+  "hicut": 7000,
+  "algo": "Hall",
+  "lowcut": 80,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 60,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "80s",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Era 80s: reduced bandwidth and converter grain of early digital units; the README's 80s ballad recipe",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

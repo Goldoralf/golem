@@ -1,0 +1,48 @@
+{
+ "id": "auto-envelope-quack",
+ "type": "wah-color",
+ "name": "Hands-free envelope wah",
+ "desc": "The wah voice swept by picking dynamics instead of the foot: quacks on each attack",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "funk-rock",
+  "jam-band"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 0,
+  "model": "GCB-95",
+  "freq": 24,
+  "mix": 100,
+  "mode": "auto",
+  "q": 110,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 0,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 60,
+  "env_att": 8,
+  "env_rel": 150
+ },
+ "notes": "Crate's auto-wah-without-a-pedal use; for a dedicated envelope filter prefer gfx-autowah",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

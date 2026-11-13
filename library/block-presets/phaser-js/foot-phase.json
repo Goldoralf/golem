@@ -1,0 +1,57 @@
+{
+ "id": "foot-phase",
+ "type": "phaser-js",
+ "name": "Expression-pedal phase",
+ "desc": "No LFO: six resonant stages swept by the EXP pedal on Manual, a wah-like but hollow vocal sweep",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "stoner-rock",
+  "heavy-psych"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.5,
+  "low": 250,
+  "high": 4000,
+  "feedback": -4,
+  "wet": 0,
+  "model": "Classic",
+  "stages": "6",
+  "spread": 20,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "Manual",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 55,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Phase with the foot': map the EXP pedal to manual (0 = Low, 100 = High), exponential and click-free",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

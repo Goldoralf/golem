@@ -1,0 +1,37 @@
+{
+ "id": "splice-stutter",
+ "type": "pitch-shift-js",
+ "name": "Splice stutter",
+ "desc": "A fourth up, fully wet, 100 ms windows with 1 ms crossfades: a choppy, stuttering repeat texture",
+ "inst": "any",
+ "genres": [
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "glitch",
+  "idm",
+  "sound-collage"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": 5,
+  "window": 100,
+  "overlap": 1,
+  "wet": 0,
+  "dry": -120,
+  "search": false
+ },
+ "notes": "Long windows repeat or skip whole fragments, and a 1 ms overlap clicks at each splice. Fully wet on purpose",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

@@ -1,8 +1,27 @@
 {
- "name": "Vocal gate",
+ "id": "vocal-gate",
  "type": "gate",
+ "name": "Live mic bleed reducer",
+ "desc": "Lowers stage bleed in a vocal mic by 15 dB between phrases; long hold and release never clip a word's tail",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "rock",
+  "pop",
+  "punk"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "pop-rock",
+  "punk-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
  "params": {
   "thresh": -48,
   "attack": 2,
@@ -10,7 +29,18 @@
   "release": 300,
   "hpf": 100,
   "lpf": 12000,
-  "hyst": -6
+  "hyst": -6,
+  "range": -15,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
  },
- "default": true
+ "notes": "golem's Vocal gate from the doc. Range −15 dB reduces bleed without the pumping ambience of a full close",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": false
 }

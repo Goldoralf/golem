@@ -1,0 +1,67 @@
+{
+ "id": "keys-ping-pong",
+ "type": "delay",
+ "name": "Synth ping-pong",
+ "desc": "Dotted-eighth ping-pong across the stereo field: arpeggios bounce left and right",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "synthwave",
+  "synth-pop",
+  "trance"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Vangelis",
+   "why": "wide, long echoes on CS-80 leads and arpeggios",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/8.",
+ "tags": [
+  "wide",
+  "modern"
+ ],
+ "default": true,
+ "params": {
+  "time": "1/8•",
+  "feedback": 40,
+  "mix": 30,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 150,
+  "high_cut": 8000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Ping-Pong",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Classic synth-pop dotted bounce; the 150 Hz loop low cut keeps bass notes mono and dry",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

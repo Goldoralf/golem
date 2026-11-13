@@ -1,0 +1,54 @@
+{
+ "id": "varistor-amp-vibrato",
+ "type": "vibrato",
+ "name": "Vintage amp pitch vibrato",
+ "desc": "Zero-latency phase-modulation vibrato strongest around 1 kHz: the lush true-pitch vibrato of late-50s amps",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "rock-and-roll",
+  "rockabilly",
+  "electric-blues"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Lonnie Mack",
+   "song": "Memphis",
+   "why": "Magnatone amp vibrato (some credit the Bigsby instead)",
+   "verified": false
+  },
+  {
+   "artist": "Buddy Holly",
+   "why": "played a Magnatone Custom 280 with true pitch vibrato",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.6,
+  "speed": 5.5,
+  "model": "Varistor",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 0.85,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0.2,
+  "level": 0
+ },
+ "notes": "README 'Magnatone amp vibrato'; drive 0.2 adds a little tube colour outside the modulation",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

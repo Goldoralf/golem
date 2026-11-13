@@ -1,0 +1,53 @@
+{
+ "id": "guitar-post-cab",
+ "type": "eq",
+ "name": "Post-cab guitar cleanup",
+ "desc": "High-pass 90 Hz, steep low-pass 7 kHz, -3 dB at 350 Hz and a de-harsher: a cab sim sitting in a band mix",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "lowcut": 90,
+  "midgain": 0,
+  "midfreq": 800,
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": -3,
+  "mid2freq": 350,
+  "mid2q": 1.0,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 7000,
+  "highcut_slope": "24 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": -16,
+  "harsh_range": 4,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "The two cuts every mixed guitar gets: lows go to the bass and kick, the fizz above 7 kHz is cab-sim air no mic hears",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

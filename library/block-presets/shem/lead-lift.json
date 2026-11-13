@@ -1,0 +1,32 @@
+{
+ "id": "lead-lift",
+ "type": "shem",
+ "name": "Tight lead lift",
+ "desc": "More level and a touch of top on the same high-gain channel: the solo cuts without more mud",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "progressive-metal",
+  "power-metal",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [],
+ "level_db": 15,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "grind": 16,
+  "voice": "Focused",
+  "bright": 2
+ },
+ "notes": "Same channel, more push: louder and more present, bass still cut",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

@@ -1,0 +1,49 @@
+{
+ "id": "organ-c3",
+ "type": "vibrato",
+ "name": "Tonewheel organ deep chorus",
+ "desc": "Scanner vibrato at its deepest blended half with the dry: the thick, animated organ chorus for grooves",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "memphis-soul",
+  "soul-jazz",
+  "southern-soul"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Booker T. & the M.G.'s",
+   "song": "Green Onions",
+   "why": "organ played with the C3 chorus-vibrato setting",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "depth": 1.0,
+  "speed": 6.9,
+  "model": "Scanner",
+  "shape": "Sine",
+  "rise": 0,
+  "tone": 1.0,
+  "mix": 0.5,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0.15,
+  "level": 0
+ },
+ "notes": "Scanner mix 0.5 = the C modes; pair with gfx-rotary on slow or fast for the full organ sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

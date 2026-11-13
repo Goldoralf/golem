@@ -1,0 +1,44 @@
+{
+ "id": "brownface-harmonic",
+ "type": "tremolo",
+ "name": "Brownface harmonic pulse",
+ "desc": "Highs and lows swell in opposition: a phaser-like, level-steady harmonic tremolo",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues",
+  "folk"
+ ],
+ "subgenres": [
+  "roots-rock",
+  "electric-blues",
+  "americana"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "rate": 3.5,
+  "depth": 0.8,
+  "wave": "Sine",
+  "model": "Harmonic",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 0.5
+ },
+ "notes": "The crate's brownface start: antiphase bands keep the level steady, so little makeup is needed",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

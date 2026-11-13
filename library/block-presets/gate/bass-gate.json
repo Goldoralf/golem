@@ -1,8 +1,25 @@
 {
- "name": "Bass gate",
+ "id": "bass-gate",
  "type": "gate",
+ "name": "Bass gate",
+ "desc": "Bass gate with a 40 ms close window (no chatter on a low B), 50 ms hold and a 250 ms fade",
  "inst": "bass",
- "factory": true,
+ "genres": [
+  "rock",
+  "metal",
+  "pop"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-metal",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": true,
  "params": {
   "thresh": -55,
   "attack": 5,
@@ -10,7 +27,18 @@
   "release": 250,
   "hpf": 30,
   "lpf": 8000,
-  "hyst": -4
+  "hyst": -4,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
  },
- "default": true
+ "notes": "golem's Bass gate from the doc. 5 ms attack keeps the low fundamental's first cycle clean; lpf 8 kHz ignores string noise",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": false
 }

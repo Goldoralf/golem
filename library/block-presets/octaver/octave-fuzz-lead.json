@@ -1,0 +1,52 @@
+{
+ "id": "octave-fuzz-lead",
+ "type": "octaver",
+ "name": "Octave-up fuzz lead",
+ "desc": "Rectifier octave up loud over half the dry, into a fuzz: a ringing, ring-mod-like octave lead",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "blues-rock",
+  "acid-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Jimi Hendrix",
+   "song": "Purple Haze",
+   "why": "the Octavia's octave-up on the solo",
+   "source": "Sound On Sound, 2021",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "direct": 0.5,
+  "octave1": 0,
+  "octave2": 0,
+  "octave_up": 1,
+  "mode": "Vintage",
+  "instrument": "Guitar",
+  "sub_tone": 470,
+  "up_tone": 5000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Place it before a fuzz; neck pickup above the 12th fret makes the octave bloom most",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

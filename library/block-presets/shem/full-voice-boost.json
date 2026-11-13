@@ -1,0 +1,34 @@
+{
+ "id": "full-voice-boost",
+ "type": "shem",
+ "name": "Full-voice boost",
+ "desc": "The wider shunt arm: less bass cut and 4.6 dB less push, for standard tuning and fuller rhythms",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "thrash-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 8,
+ "tags": [
+  "warm",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "grind": 12,
+  "voice": "Full",
+  "bright": 0
+ },
+ "notes": "Full keeps more lows than Focused; grind 12 lands near +7 dB at the plateau",
+ "factory": true,
+ "golem_fx_seed": "gfx-shem",
+ "golem_fx": true
+}

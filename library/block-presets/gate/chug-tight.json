@@ -1,15 +1,52 @@
 {
- "name": "Chug tight",
+ "id": "chug-tight",
  "type": "gate",
- "factory": true,
+ "name": "Tight chugs before the amp",
+ "desc": "Fast gate before a high-gain amp; 120 Hz sidechain low cut makes palm-mute stops snap shut in ~10 ms",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "metalcore",
+  "djent",
+  "groove-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Periphery",
+   "why": "staccato riffs with dead-silent stops between mutes, gate set for it",
+   "source": "Reverb.com, Misha Mansoor outlines the ultimate metal pedalboard (undated)",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
  "params": {
   "thresh": -38,
   "attack": 0.5,
   "hold": 8,
   "release": 60,
   "hpf": 120,
-  "lpf": 8000,
-  "hyst": -6
+  "lpf": 20000,
+  "hyst": -6,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": true,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
  },
- "inst": "guitar"
+ "notes": "golem's Chug-tight from the design doc. hpf 120 Hz shrinks the close window to 10 ms (tighter, not just less sensitive); follow keeps held chords",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": false
 }

@@ -1,0 +1,38 @@
+{
+ "id": "glitch-octave-up",
+ "type": "pitch-shift-js",
+ "name": "Glitchy octave up",
+ "desc": "Octave up with short windows and hard splices, no search: a warbling, buzzing lo-fi octave",
+ "inst": "any",
+ "genres": [
+  "experimental",
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "glitch",
+  "lo-fi-indie",
+  "noise-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": 12,
+  "window": 25,
+  "overlap": 4,
+  "wet": -2,
+  "dry": -3,
+  "search": false
+ },
+ "notes": "Short window and tiny overlap make every splice audible: here the artefact is the sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch-classic",
+ "golem_fx": true
+}

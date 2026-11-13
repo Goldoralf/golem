@@ -1,0 +1,42 @@
+{
+ "id": "optical-amp-standard",
+ "type": "tremolo",
+ "name": "Optical amp throb",
+ "desc": "Medium-speed photocell tremolo: rounded, lopsided dips like a 60s combo amp's built-in effect",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "electric-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "rate": 5.5,
+  "depth": 0.6,
+  "wave": "Sine",
+  "model": "Optical",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 1.5
+ },
+ "notes": "Lamp + LDR shapes the sine into long highs and short dips; depth 0.6 throbs without chopping; +1.5 dB makes up the average drop",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

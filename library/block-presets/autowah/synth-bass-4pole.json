@@ -1,0 +1,49 @@
+{
+ "id": "synth-bass-4pole",
+ "type": "autowah",
+ "name": "Synth-like 4-pole bass",
+ "desc": "Steep, resonant 4-pole low-pass opened by each note: bass that sounds like an analog mono synth",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "electronic",
+  "jazz"
+ ],
+ "subgenres": [
+  "synth-funk",
+  "electro",
+  "jazz-fusion"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.55,
+  "type": "Low-pass",
+  "poles": "4",
+  "direction": "Up",
+  "low": 60,
+  "high": 2500,
+  "peak": 10,
+  "attack": 1.5,
+  "release": 220,
+  "response": "Fast",
+  "drive": 6,
+  "mix": 100,
+  "level": 1,
+  "bass_keep": 80,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Crate's Moog-style start: 4 poles + peak 10 give the synth 'zap'; fast attack for slap and pick",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

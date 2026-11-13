@@ -1,8 +1,25 @@
 {
- "name": "Pick Stutter",
+ "id": "pick-stutter",
  "type": "killswitch",
+ "name": "Pick-restarted triplet stutter",
+ "desc": "1/16-triplet cuts that restart on every pick attack: each strum gets its own stutter, wherever it falls",
  "inst": "guitar",
- "factory": true,
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "post-hardcore",
+  "math-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -3,
+ "sync": "1/16T",
+ "tags": [],
  "params": {
   "depth": 100,
   "length": 50,
@@ -10,6 +27,20 @@
   "rate": 8,
   "trigger": "Pick",
   "sens": 50,
-  "smooth": 0.5
- }
+  "smooth": 0.5,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "golem's Pick Stutter kept; raise sens for light picking, lower it if low-string ripple retriggers",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": false
 }

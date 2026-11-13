@@ -1,0 +1,41 @@
+{
+ "id": "loud-clip",
+ "type": "limiter",
+ "name": "Loud and clipped",
+ "desc": "Pure alias-free soft clipping driven +9 dB: a dense, saturated wall for loud live leads and synths",
+ "inst": "any",
+ "genres": [
+  "metal",
+  "electronic",
+  "punk"
+ ],
+ "subgenres": [
+  "industrial-metal",
+  "hard-techno",
+  "hardcore-punk"
+ ],
+ "gain": "high",
+ "use": "texture",
+ "refs": [],
+ "level_db": 3,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "threshold": -3,
+  "release": 50,
+  "gain": 9,
+  "style": "Clip",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 30,
+  "link": 100
+ },
+ "notes": "The doc's loud row. Clip style lands up to 1.7 dB under the threshold (down-sampler headroom)",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

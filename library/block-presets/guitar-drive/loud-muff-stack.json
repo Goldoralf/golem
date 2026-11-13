@@ -1,0 +1,47 @@
+{
+ "id": "loud-muff-stack",
+ "type": "guitar-drive",
+ "name": "Fuzz into a loud stack",
+ "desc": "Big two-stage fuzz with a neutral tone, made to hit a loud, slightly driven stack",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "noise-rock",
+  "slacker-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "J Mascis",
+   "why": "his first Ram's Head Big Muff into Marshall Super Bass stacks",
+   "source": "Premier Guitar Rig Rundown, 2012",
+   "verified": true
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "vintage",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 32,
+  "hardness": 6,
+  "ceiling": -18,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": -5,
+  "asym": 0,
+  "sag": 10,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Loud and woolly; the crunch amp gives the roar. Works for chords and for fuzzed melodic leads",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

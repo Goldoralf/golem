@@ -1,14 +1,53 @@
 {
- "name": "Vocal opto",
+ "id": "vocal-opto",
  "type": "comp",
+ "name": "Smooth vocal leveller",
+ "desc": "Opto 3:1, 25 ms attack, two-stage release: a lead vocal levelled without audible grab, warm and forward",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "ballad",
+  "indie-rock",
+  "neo-soul"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Death Cab for Cutie",
+   "why": "mixer Carlos de la Garza starts every vocal on a Gray LA-2A",
+   "source": "Universal Audio blog, Carlos de la Garza interview (undated)",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": true,
  "params": {
   "thresh": -20,
   "ratio": 3,
-  "makeup": 3,
+  "makeup": 4,
   "attack": 25,
-  "release": 300
+  "release": 300,
+  "character": "Opto",
+  "knee": 6,
+  "auto_release": true,
+  "sc_hpf": 80,
+  "range": 60,
+  "drive": 0,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
  },
- "default": true
+ "notes": "The doc's voice row, golem's Vocal opto; sidechain cut keeps plosives and stage rumble from pumping it",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": false
 }

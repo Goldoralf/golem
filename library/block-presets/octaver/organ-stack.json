@@ -1,11 +1,52 @@
 {
- "name": "Organ stack",
+ "id": "organ-stack",
  "type": "octaver",
- "inst": "keys",
- "factory": true,
+ "name": "Polyphonic organ stack",
+ "desc": "Polyphonic octave down, two down and one up with the dry: chords and riffs turn into a pipe-organ stack",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "blues-rock",
+  "alternative-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "The White Stripes",
+   "song": "Blue Orchid",
+   "why": "Jack White's octave-layering POG for an organ-like guitar",
+   "source": "Total Guitar, 2007",
+   "verified": true
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
  "params": {
   "direct": 0.8,
   "octave1": 0.8,
-  "octave2": 0.5
- }
+  "octave2": 0.5,
+  "octave_up": 0.4,
+  "mode": "Poly",
+  "instrument": "Guitar",
+  "sub_tone": 600,
+  "up_tone": 6000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "golem's Organ stack, moved to Poly so chords work; range 1000 Hz octaves every note",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": false
 }

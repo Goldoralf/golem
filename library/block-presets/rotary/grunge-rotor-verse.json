@@ -1,0 +1,62 @@
+{
+ "id": "grunge-rotor-verse",
+ "type": "rotary",
+ "name": "Warbly grunge verse",
+ "desc": "Drum-rotor cabinet driven by a cranked amp: a woozy, slightly gritty warble on arpeggios",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-rock",
+  "alternative-metal"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Soundgarden",
+   "song": "Black Hole Sun",
+   "why": "verse guitar through a Leslie 16 powered by a Marshall",
+   "source": "Stereogum, 2024",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "speed": "fast",
+  "mic": 60,
+  "spacing": 55,
+  "depth": 70,
+  "cabinet": "Vibratone",
+  "ramp": 100,
+  "drive": 45,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 5,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 40,
+  "bass_keep": 120,
+  "level": -0.5,
+  "mix": 100
+ },
+ "notes": "Drum fast 5 Hz, a little under stock, gives the lazier warble; more wobble for the drifting feel",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

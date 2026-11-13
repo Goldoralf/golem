@@ -1,16 +1,44 @@
 {
- "name": "Standard",
+ "id": "standard",
  "type": "gate",
- "factory": true,
+ "name": "Pedalboard standard",
+ "desc": "Hard gate just above the guitar's idle noise: open in 1 ms, closes after a short hold with a 150 ms fade",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "punk-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": true,
  "params": {
   "thresh": -50,
-  "attack": 3,
+  "attack": 1,
   "hold": 20,
   "release": 150,
-  "hpf": 80,
-  "lpf": 12000,
-  "hyst": -3
+  "hpf": 0,
+  "lpf": 20000,
+  "hyst": -3,
+  "range": -90,
+  "ratio": 100,
+  "knee": 0,
+  "follow": false,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
  },
- "default": true,
- "inst": "guitar"
+ "notes": "golem's Standard gate kept; −3 dB hysteresis stops chatter on decaying notes without holding the noise open",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": false
 }

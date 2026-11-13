@@ -1,0 +1,38 @@
+{
+ "id": "presence-lead",
+ "type": "emet",
+ "name": "Presence lead drive",
+ "desc": "Mid-high gain with the tone past three-quarters: a singing, present lead over a crunchy amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal",
+  "glam-metal"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [],
+ "level_db": 8,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "gain": 55,
+  "tone_stack": 75,
+  "level": -12,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The README's 'Lead with presence': the tone above half gives the highs back that the hump took",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

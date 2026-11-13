@@ -1,0 +1,50 @@
+{
+ "id": "pseudo-tz-live",
+ "type": "flanger-js",
+ "name": "Zero-latency tape-style flange",
+ "desc": "Near-through-zero flange with the dry all-passed instead of delayed: the tape whoosh live, with no latency",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "neo-psychedelia",
+  "psychedelic-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "length": 3,
+  "feedback": -30,
+  "wet": 0,
+  "dry": 0,
+  "rate": 0.12,
+  "mode": "Pseudo TZ",
+  "manual": 0.1,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README 'Same, live, no latency'; wet = dry for the deepest cancellation",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

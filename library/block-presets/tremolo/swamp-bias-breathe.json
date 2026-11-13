@@ -1,0 +1,52 @@
+{
+ "id": "swamp-bias-breathe",
+ "type": "tremolo",
+ "name": "Swampy bias breathe",
+ "desc": "Slow-ish valve-bias tremolo that adds grit at the trough and softens when you dig in",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "swamp-rock",
+  "southern-rock",
+  "swamp-blues"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Creedence Clearwater Revival",
+   "song": "Born on the Bayou",
+   "why": "the swampy amp vibrato on Fogerty's E7 riff, from his Kustom amp",
+   "source": "American Songwriter, 2013",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "rate": 4,
+  "depth": 0.6,
+  "wave": "Sine",
+  "model": "Bias",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.4,
+  "duck": 0.3,
+  "stereo_phase": 0,
+  "level": 1.5
+ },
+ "notes": "Bias model: crossover grit near the trough, sag ducks the depth on hard strums; Fogerty calls it vibrato, the Kustom blended both",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

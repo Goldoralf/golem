@@ -1,0 +1,61 @@
+{
+ "id": "cinematic-fifths",
+ "type": "reverb-shimmer",
+ "name": "Cinematic fifths",
+ "desc": "Fifth and octave voices climbing in a cathedral: an open, heroic pad under slow chords",
+ "inst": "any",
+ "genres": [
+  "screen",
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "film-score",
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mix": 45,
+  "decay": 8,
+  "shimmer": 55,
+  "pitch": 7,
+  "hicut": 6000,
+  "pitch2": 12,
+  "voice2": 60,
+  "detune": 6,
+  "lowcut": 150,
+  "placement": "Regen",
+  "size": 80,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Cathedral",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 0,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Fifths climb fast through the harmonic series; keep the chords sparse or they turn to mush",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

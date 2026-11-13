@@ -1,0 +1,44 @@
+{
+ "id": "doom-sub-floor",
+ "type": "octaver",
+ "name": "Doom sub floor",
+ "desc": "Clean sub one and two octaves below the full dry: a riff gains a seismic floor under the drive",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "sludge-metal",
+  "stoner-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "direct": 1,
+  "octave1": 0.5,
+  "octave2": 0.5,
+  "octave_up": 0,
+  "mode": "Clean",
+  "instrument": "Guitar",
+  "sub_tone": 300,
+  "up_tone": 4000,
+  "sensitivity": 40,
+  "glide": 0,
+  "shape": 0,
+  "range": 1000,
+  "level": 0
+ },
+ "notes": "Place before the drive; Clean subs stay sine-like, so the amp's distortion adds the grit. sensitivity 40 % gates decays",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

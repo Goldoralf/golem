@@ -1,0 +1,44 @@
+{
+ "id": "poly-chord-sub",
+ "type": "octaver",
+ "name": "Sub on the bass note",
+ "desc": "Polyphonic sub only on notes under 150 Hz: chords keep their voicing, the root gets an octave below",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "metal"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "pop-rock",
+  "post-metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "direct": 1,
+  "octave1": 0.6,
+  "octave2": 0,
+  "octave_up": 0,
+  "mode": "Poly",
+  "instrument": "Guitar",
+  "sub_tone": 300,
+  "up_tone": 4000,
+  "sensitivity": 50,
+  "glide": 0,
+  "shape": 0,
+  "range": 150,
+  "level": 0
+ },
+ "notes": "range 150 Hz = the low strings only (the OC-5 'Lowest' idea), for a band without a bassist",
+ "factory": true,
+ "golem_fx_seed": "gfx-octaver",
+ "golem_fx": true
+}

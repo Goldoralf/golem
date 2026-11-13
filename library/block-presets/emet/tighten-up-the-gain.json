@@ -1,0 +1,37 @@
+{
+ "id": "tighten-up-the-gain",
+ "type": "emet",
+ "name": "Tighten up the gain",
+ "desc": "Gain low, tone a little under half: the classic Tube Screamer tightening, with more headroom",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "metalcore",
+  "groove-metal",
+  "thrash-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 3,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "gain": 10,
+  "tone_stack": 40,
+  "level": -3,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Fortin's 'Tighten up the gain' ('that classic TS thang'): still clean below the knee, so a boost for high scenes",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

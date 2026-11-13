@@ -1,0 +1,67 @@
+{
+ "id": "floating-solo-440",
+ "type": "delay",
+ "name": "Floating solo echo",
+ "desc": "A 440 ms tape-like echo with darker repeats that lifts sustained bends into a big space",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "blues-rock",
+  "psychedelic-rock"
+ ],
+ "gain": "crunch",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Pink Floyd",
+   "song": "Comfortably Numb",
+   "why": "David Gilmour's solo echo around 440 ms, often under a touch of reverb",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "time": "Free",
+  "feedback": 35,
+  "mix": 35,
+  "model": "Tape",
+  "time_ms": 440,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 120,
+  "high_cut": 5500,
+  "drive": 0,
+  "mod": 40,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 10,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Mono",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "440 ms is the fan-documented starting point, not a sourced setting; pair with a hall at about 2 s",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

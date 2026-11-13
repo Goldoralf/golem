@@ -1,0 +1,55 @@
+{
+ "id": "arcade-flutter",
+ "type": "killswitch",
+ "name": "Rapid button flutter",
+ "desc": "Hard 16 Hz on-off chop, free-running, no edge smoothing: a kill button tapped as fast as possible over legato runs",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock",
+  "experimental"
+ ],
+ "subgenres": [
+  "progressive-metal",
+  "experimental-rock",
+  "avant-garde-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Buckethead",
+   "song": "Jordan",
+   "why": "right hand on a hard-wired kill switch while the left hand taps legato",
+   "verified": false
+  }
+ ],
+ "level_db": -3,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "params": {
+  "depth": 100,
+  "length": 50,
+  "sync": "Free",
+  "rate": 16,
+  "trigger": "Engage",
+  "sens": 50,
+  "smooth": 0,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 0,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Smooth 0 is a true hard cut: the click is part of the sound. EXP on rate (1-30 Hz) plays the tapping speed by foot",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

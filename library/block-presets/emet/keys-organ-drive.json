@@ -1,0 +1,45 @@
+{
+ "id": "keys-organ-drive",
+ "type": "emet",
+ "name": "Driven organ",
+ "desc": "Input trimmed for line level, TS knee, warm tone: an organ or keys part pushed into overdrive",
+ "inst": "keys",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "progressive-rock",
+  "blues-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Deep Purple",
+   "why": "Jon Lord's Hammond pushed through Marshall amps",
+   "verified": false
+  }
+ ],
+ "level_db": 3,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 40,
+  "tone_stack": 40,
+  "level": -6,
+  "headroom": -6,
+  "asym": 0,
+  "tight": 20,
+  "input": -6,
+  "bass_keep": 0
+ },
+ "notes": "Keys arrive hotter than a pickup: input −6 dB, and a lower knee so it still clips",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

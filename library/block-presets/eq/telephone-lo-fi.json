@@ -1,0 +1,62 @@
+{
+ "id": "telephone-lo-fi",
+ "type": "eq",
+ "name": "Telephone band-pass",
+ "desc": "Steep high-pass 350 Hz and low-pass 3.4 kHz, +4 dB honk at 1.5 kHz: a voice through a phone or a tiny amp",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "hip-hop",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-punk-revival",
+  "garage-rock",
+  "trip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "The Strokes",
+   "song": "Is This It",
+   "why": "vocals sung through a small practice amp for a lo-fi, band-limited voice",
+   "verified": false
+  }
+ ],
+ "level_db": -2,
+ "tags": [
+  "lo-fi",
+  "vintage",
+  "extreme"
+ ],
+ "params": {
+  "lowcut": 350,
+  "midgain": 4,
+  "midfreq": 1500,
+  "highs": 0,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 1.0,
+  "midprop": 30,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 3400,
+  "highcut_slope": "24 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 4,
+  "auto_gain": false
+ },
+ "notes": "300 Hz-3.4 kHz is the phone line's band; the +4 dB output makes up most of the level the filters remove. Also works on drum loops",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

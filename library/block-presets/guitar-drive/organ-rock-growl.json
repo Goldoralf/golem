@@ -1,0 +1,47 @@
+{
+ "id": "organ-rock-growl",
+ "type": "guitar-drive",
+ "name": "Rock organ growl",
+ "desc": "Soft overdrive with a darker tone and some sag: an organ driven through a guitar stack",
+ "inst": "keys",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "progressive-rock",
+  "classic-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Jon Lord",
+   "song": "Highway Star",
+   "why": "his Hammond C3 driven straight into Marshall amps",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 16,
+  "hardness": 3,
+  "ceiling": -16,
+  "voice": "Overdrive",
+  "tight": 20,
+  "tone": -15,
+  "asym": 10,
+  "sag": 20,
+  "blend": 10,
+  "bass_keep": 0
+ },
+ "notes": "Keys have no amp scene of their own: gain any. Darker tone tames the drawbars' upper partials once clipped",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

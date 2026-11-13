@@ -1,0 +1,51 @@
+{
+ "id": "tz-jet-drums",
+ "type": "flanger-js",
+ "name": "Through-zero drum bus jet",
+ "desc": "Through-zero flange with a touch of regen on a drum bus or loop: cymbals and snare sweep in a jet-like whoosh",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "big-beat",
+  "breakbeat"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "length": 4,
+  "feedback": -12,
+  "wet": 0,
+  "dry": 0,
+  "rate": 0.12,
+  "mode": "Tape TZ+",
+  "manual": 0.4,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 30,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 150,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "TZ+ with regen: the zero crossing gives the jet's dramatic cancellation; loop low cut keeps the kick out of the feedback",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

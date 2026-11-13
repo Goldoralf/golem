@@ -1,0 +1,41 @@
+{
+ "id": "thrash-tremolo",
+ "type": "met",
+ "name": "Tremolo-picked thrash",
+ "desc": "Fast-detector keyed expansion that rides through tremolo picking and shuts within 20 ms of the stop",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "death-metal",
+  "melodic-death-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -42,
+  "hold": 5,
+  "release": 20,
+  "ratio": 3.5,
+  "range": -90,
+  "smooth": 30,
+  "adaptive": true,
+  "hpf": 60,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "At 16th-note tremolo the RMS never falls between picks, so a short smoothing is safe and makes the stops crisp",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

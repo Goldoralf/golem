@@ -1,15 +1,46 @@
 {
- "name": "Soft",
+ "id": "soft",
  "type": "gate",
- "factory": true,
+ "name": "Soft fade gate",
+ "desc": "Low threshold and a slow 400 ms fade with follow decay: hiss goes away, ringing chords are never cut",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues",
+  "pop"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "electric-blues",
+  "pop-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
  "params": {
-  "thresh": -58,
+  "thresh": -60,
   "attack": 5,
   "hold": 40,
-  "release": 300,
+  "release": 400,
   "hpf": 0,
   "lpf": 20000,
-  "hyst": -3
+  "hyst": -4,
+  "range": -90,
+  "ratio": 100,
+  "knee": 6,
+  "follow": true,
+  "damp": 0,
+  "hum": "Off",
+  "source": "Main",
+  "listen": false
  },
- "inst": "guitar"
+ "notes": "Follow decay stretches the release up to 4× on natural decays, so sustained crunch chords fade like an amp turned down",
+ "factory": true,
+ "golem_fx_seed": "gfx-gate",
+ "golem_fx": false
 }

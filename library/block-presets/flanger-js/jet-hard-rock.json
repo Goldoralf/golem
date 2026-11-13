@@ -1,0 +1,60 @@
+{
+ "id": "jet-hard-rock",
+ "type": "flanger-js",
+ "name": "Jet-plane hard rock flange",
+ "desc": "BBD flanger with a log sweep that lingers high and strong regen: the whooshing jet on a cranked riff",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "glam-metal",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Van Halen",
+   "song": "Unchained",
+   "why": "Eddie's MXR Flanger on the main riff",
+   "source": "Guitar World, 2014",
+   "verified": true
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "vintage",
+  "aggressive",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "length": 6,
+  "feedback": -4,
+  "wet": -3,
+  "dry": 0,
+  "rate": 0.2,
+  "mode": "Grey",
+  "manual": 0.3,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 15,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "README 'Jet flanger' starting point; log LFO from the Grey mode, a little loop drive so the regen peaks round off on distortion",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

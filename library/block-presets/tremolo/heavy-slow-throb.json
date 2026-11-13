@@ -1,0 +1,43 @@
+{
+ "id": "heavy-slow-throb",
+ "type": "tremolo",
+ "name": "Slow heavy throb",
+ "desc": "Slow, deep optical swell on distorted chords: a wall of fuzz that breathes in and out",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "stoner-metal",
+  "post-rock"
+ ],
+ "gain": "high",
+ "use": "texture",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "rate": 2.5,
+  "depth": 0.8,
+  "wave": "Triangle",
+  "model": "Optical",
+  "sync": "Off",
+  "duty": 0.5,
+  "xover": 400,
+  "blend": 1,
+  "drive": 0.3,
+  "duck": 0,
+  "stereo_phase": 0,
+  "level": 2.5
+ },
+ "notes": "Place after the drive: a compressed high-gain signal has no dynamics left, so the tremolo must do the pulsing",
+ "factory": true,
+ "golem_fx_seed": "gfx-tremolo",
+ "golem_fx": true
+}

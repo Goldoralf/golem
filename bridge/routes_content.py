@@ -1470,35 +1470,34 @@ def _bp_slug(s):
     return _BP_SAFE.sub("-", str(s or "").strip().lower()).strip("-")[:60] or "preset"
 
 
+def _gfx_plays(btype):
+    """golem-fx joue-t-il ce type ICI ? Ses presets d'usine (`golem_fx: true`, tools/sync-golem-fx-presets.py) ne sont
+    proposés que là : ailleurs ils viseraient des réglages que le plugin d'origine n'a pas (docs/golem-fx-sheet.md §5)."""
+    from . import rig
+    return btype in rig._engine_safe_types()
+
+
 @router.get("/api/block-presets/{btype}")
 def block_presets_list(btype: str):
     out = []
     d = os.path.join(_BP_DIR, _bp_slug(btype))
+    gfx = None
     if os.path.isdir(d):
         for fn in sorted(os.listdir(d)):
             if fn.endswith(".json"):
                 bp = _read_json(os.path.join(d, fn), None)
                 option_renames.apply(bp)
                 if isinstance(bp, dict) and isinstance(bp.get("params"), dict):
+                    if bp.get("golem_fx"):
+                        gfx = _gfx_plays(btype) if gfx is None else gfx
+                        if not gfx:
+                            continue
                     out.append({"id": fn[:-5], "name": bp.get("name") or fn[:-5],
                                 "params": bp["params"], "factory": bool(bp.get("factory")),
                                 "default": bool(bp.get("default")),
-                                "inst": bp.get("inst") or "any"})
-    out.extend(_golem_fx_presets(btype))
+                                "inst": bp.get("inst") or "any",
+                                "desc": bp.get("desc"), "golem_fx": bool(bp.get("golem_fx") or bp.get("golem_fx_seed"))})
     return {"presets": out}
-
-
-def _golem_fx_presets(btype):
-    """Les réglages de RÉFÉRENCE de golem-fx (descripteur, docs/golem-fx-sheet.md), en presets de bloc d'usine — là où
-    golem-fx joue le bloc seulement (ailleurs ils viseraient des réglages que le plugin d'origine n'a pas)."""
-    from . import golem_fx, rig
-    if btype not in rig._engine_safe_types():
-        return []
-    cat = next((e for e in _read_json(C.EFFECTS, {"effects": []}).get("effects", []) if e.get("type") == btype), {})
-    _params, sheet = golem_fx.merged(btype, cat.get("params"))
-    return [{"id": "gfx-" + _bp_slug(pr.get("name")), "name": pr.get("name") or "golem-fx", "params": pr.get("params") or {},
-             "factory": True, "default": False, "inst": "any", "golem_fx": True}
-            for pr in ((sheet or {}).get("presets") or [])]
 
 
 @router.get("/api/block-defaults")
@@ -1506,7 +1505,7 @@ def block_defaults():
     """{type: {inst: params}} des presets `default:true` — l'UI applique à l'AJOUT selon
     l'instrument de la lane : (type, lane) -> repli (type, any). Un bloc naît avec un
     réglage musical DE SON INSTRUMENT (comp voix ≠ comp basse)."""
-    out = {}
+    out, gfx_first = {}, {}
     if os.path.isdir(_BP_DIR):
         for btype in sorted(os.listdir(_BP_DIR)):
             d = os.path.join(_BP_DIR, btype)
@@ -1517,7 +1516,15 @@ def block_defaults():
                     bp = _read_json(os.path.join(d, fn), None)
                     option_renames.apply(bp)
                     if isinstance(bp, dict) and bp.get("default") and isinstance(bp.get("params"), dict):
-                        out.setdefault(btype, {})[bp.get("inst") or "any"] = bp["params"]
+                        inst = bp.get("inst") or "any"
+                        if bp.get("golem_fx"):
+                            # le défaut de golem-fx : là où golem-fx joue le type, il PASSE DEVANT celui du rack
+                            if _gfx_plays(btype):
+                                gfx_first.setdefault(btype, {})[inst] = bp["params"]
+                            continue
+                        out.setdefault(btype, {})[inst] = bp["params"]
+    for btype, by in gfx_first.items():
+        out.setdefault(btype, {}).update(by)
     return {"defaults": out}
 
 

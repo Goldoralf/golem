@@ -1,0 +1,48 @@
+{
+ "id": "downward-ow-sweep",
+ "type": "autowah",
+ "name": "Downward 'ow' sweep",
+ "desc": "Envelope sweeps down on loud notes: each attack starts bright and falls into an 'ow'",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "funk-rock",
+  "jazz-funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "type": "Band-pass",
+  "poles": "2",
+  "direction": "Down",
+  "low": 300,
+  "high": 2200,
+  "peak": 5,
+  "attack": 3,
+  "release": 200,
+  "response": "Smooth",
+  "drive": 0,
+  "mix": 100,
+  "level": 3,
+  "bass_keep": 0,
+  "source": "Envelope",
+  "rate": 1,
+  "sync": "Off"
+ },
+ "notes": "Direction Down mirrors the sweep (Mu-Tron drive down switch)",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

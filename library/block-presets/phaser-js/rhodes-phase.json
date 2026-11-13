@@ -1,0 +1,59 @@
+{
+ "id": "rhodes-phase",
+ "type": "phaser-js",
+ "name": "Electric piano phase",
+ "desc": "Slow resonant OTA phase on electric piano or clavinet: the 70s soul and jazz-funk keyboard swirl",
+ "inst": "keys",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "classic-soul",
+  "jazz-funk",
+  "neo-soul"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "rate": 0.4,
+  "low": 250,
+  "high": 2400,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Stone",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 60,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 100
+ },
+ "notes": "Stereo quadrature for keys; bass_keep 100 Hz so the left hand does not swirl",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

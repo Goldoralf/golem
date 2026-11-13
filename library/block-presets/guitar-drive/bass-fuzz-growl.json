@@ -1,0 +1,51 @@
+{
+ "id": "bass-fuzz-growl",
+ "type": "guitar-drive",
+ "name": "Bass fuzz growl",
+ "desc": "Two-stage fuzz on bass above 120 Hz, clean lows and some clean blend: huge, riff-carrying bass",
+ "inst": "bass",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "garage-rock",
+  "stoner-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Muse",
+   "song": "Hysteria",
+   "why": "Wolstenholme's fuzz with clean bass blended under it",
+   "verified": false
+  },
+  {
+   "artist": "Royal Blood",
+   "why": "fuzzed bass carrying the riffs of a two-piece band",
+   "verified": false
+  }
+ ],
+ "level_db": 6,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 34,
+  "hardness": 6,
+  "ceiling": -14,
+  "voice": "Fuzz",
+  "tight": 20,
+  "tone": -10,
+  "asym": 0,
+  "sag": 0,
+  "blend": 25,
+  "bass_keep": 120
+ },
+ "notes": "Without bass_keep a fuzz eats the fundamental; 120 Hz keeps the low E and below untouched",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "rise-swell",
+ "type": "vibrato",
+ "name": "Vibrato that grows on held notes",
+ "desc": "Clean vibrato fading in over 800 ms each time it is engaged: held notes start straight, then sing",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "minneapolis-sound",
+  "synth-funk",
+  "dance-pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Prince",
+   "why": "reportedly moved from a Boss CE-2 to a VB-2 vibrato after Purple Rain",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.3,
+  "speed": 6,
+  "model": "BBD",
+  "shape": "Sine",
+  "rise": 800,
+  "tone": 0.8,
+  "mix": 1.0,
+  "sync": "Off",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "README 'Vibrato that grows' (VB-2 rise time); engage by foot on the note; release ramps only once the bypass hook lands",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "accent-groove",
+ "type": "killswitch",
+ "name": "Accented 1/16 groove",
+ "desc": "1/16 chop where only beats 1-4 cut fully and other steps dip by 60 % of 70 %: a pulse with a downbeat",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "rnb",
+  "pop"
+ ],
+ "subgenres": [
+  "house",
+  "funk",
+  "synth-pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -2,
+ "sync": "1/16",
+ "tags": [
+  "subtle"
+ ],
+ "params": {
+  "depth": 70,
+  "length": 55,
+  "sync": "1/16",
+  "rate": 8,
+  "trigger": "Beat",
+  "sens": 50,
+  "smooth": 2,
+  "shape": "Gate",
+  "pattern": 65535,
+  "steps": 16,
+  "accent": 4369,
+  "swing": 0,
+  "offset": 0,
+  "kill": false,
+  "restart": false,
+  "width": 0,
+  "bypass": false
+ },
+ "notes": "Accent 4369 = steps 1,5,9,13 (the beats) at full depth; other steps cut at depth x 0.6, so the groove breathes instead of chopping",
+ "factory": true,
+ "golem_fx_seed": "gfx-killswitch",
+ "golem_fx": true
+}

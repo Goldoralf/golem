@@ -1,0 +1,49 @@
+{
+ "id": "british-fuzz-wah",
+ "type": "wah-color",
+ "name": "Fuzzy British wah",
+ "desc": "Sharp, aggressive vintage wah voice driven into clipping: snarling fuzz-wah for psych and stoner",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "heavy-psych",
+  "stoner-rock",
+  "stoner-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "aggressive",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 1,
+  "model": "Colorsound",
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 110,
+  "range": 100,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 100,
+  "drive": 45,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Colorsound keeps its inverted log pot law; drive 45 clips the resonance into a fuzz of its own",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

@@ -1,0 +1,40 @@
+{
+ "id": "bass-clean",
+ "type": "limiter",
+ "name": "Bass peaks, no low-E distortion",
+ "desc": "Clean limiter with a slow release and LF hold at −4 dBFS: slaps and low notes held without riding the waveform",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "rnb",
+  "pop"
+ ],
+ "subgenres": [
+  "funk-rock",
+  "funk",
+  "pop-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "threshold": -4,
+  "release": 100,
+  "gain": 0,
+  "style": "Clean",
+  "lookahead": "Off",
+  "true_peak": false,
+  "auto_release": true,
+  "clip": 50,
+  "link": 100
+ },
+ "notes": "The doc's bass row: auto release holds over one LF period, so the gain never tracks a 41 Hz cycle",
+ "factory": true,
+ "golem_fx_seed": "gfx-limiter",
+ "golem_fx": true
+}

@@ -1,0 +1,53 @@
+{
+ "id": "three-voice-harmony",
+ "type": "pitch",
+ "name": "Three-voice harmony lead",
+ "desc": "A diatonic third and fifth above the played note in key: a three-part harmonized lead",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "instrumental-rock",
+  "progressive-metal",
+  "neoclassical-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Steve Vai",
+   "why": "an H3000 harmonizer user who contributed its signature presets",
+   "source": "Performer Magazine, 2013",
+   "verified": true
+  },
+  {
+   "artist": "Queen",
+   "why": "Brian May's three-part guitar harmonies (multitracked)",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": 4,
+  "mix": 55,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 7,
+  "voice2": -4,
+  "fine": 0,
+  "harmony": "Scale",
+  "key": "E",
+  "scale": "Minor"
+ },
+ "notes": "Scale: shift 4 = third, shift2 7 = fifth above. Key placeholder; voice 2 −4 dB keeps the third as the main harmony",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

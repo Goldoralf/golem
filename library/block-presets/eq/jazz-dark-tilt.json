@@ -1,0 +1,54 @@
+{
+ "id": "jazz-dark-tilt",
+ "type": "eq",
+ "name": "Dark archtop warmth",
+ "desc": "-3 dB tilt around 1 kHz, gentle 6 kHz low-pass, loudness held by auto gain: a round, woody clean guitar",
+ "inst": "guitar",
+ "genres": [
+  "jazz",
+  "blues"
+ ],
+ "subgenres": [
+  "bebop",
+  "cool-jazz",
+  "jazz-blues"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "warm",
+  "vintage"
+ ],
+ "params": {
+  "lowcut": 60,
+  "midgain": 0,
+  "midfreq": 800,
+  "highs": 0,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": -3,
+  "highcut": 6000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": true
+ },
+ "notes": "The tone-knob-at-3 sound without the volume drop; auto gain is static, so nothing pumps",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

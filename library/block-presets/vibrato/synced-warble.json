@@ -1,0 +1,42 @@
+{
+ "id": "synced-warble",
+ "type": "vibrato",
+ "name": "Tempo-locked quarter warble",
+ "desc": "Rounded-triangle vibrato locked to quarter notes: the pitch dips in time with the beat on pads or leads",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "synthwave",
+  "chillwave",
+  "synth-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "depth": 0.35,
+  "speed": 5,
+  "model": "Clean",
+  "shape": "Rounded Triangle",
+  "rise": 0,
+  "tone": 1.0,
+  "mix": 1.0,
+  "sync": "1/4",
+  "stereo_phase": 0,
+  "drive": 0,
+  "level": 0
+ },
+ "notes": "Rounded triangle avoids the square-wave pitch of a plain triangle; speed is ignored while sync is on",
+ "factory": true,
+ "golem_fx_seed": "gfx-vibrato",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "envelope-lfo-wobble",
+ "type": "autowah",
+ "name": "Breathing envelope wobble",
+ "desc": "Playing dynamics plus a slow LFO move the filter together: notes quack and then keep swaying",
+ "inst": "keys",
+ "genres": [
+  "jazz",
+  "rnb"
+ ],
+ "subgenres": [
+  "jazz-fusion",
+  "jazz-funk",
+  "neo-soul"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.45,
+  "type": "Band-pass + Dry",
+  "poles": "2",
+  "direction": "Up",
+  "low": 250,
+  "high": 2000,
+  "peak": 4,
+  "attack": 5,
+  "release": 300,
+  "response": "Opto",
+  "drive": 0,
+  "mix": 100,
+  "level": 1,
+  "bass_keep": 0,
+  "source": "Envelope + LFO",
+  "rate": 0.4,
+  "sync": "Off"
+ },
+ "notes": "On electric piano: the LFO at 0.4 Hz keeps sustained chords moving after the envelope settles",
+ "factory": true,
+ "golem_fx_seed": "gfx-autowah",
+ "golem_fx": true
+}

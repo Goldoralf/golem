@@ -1,0 +1,60 @@
+{
+ "id": "subtle-sparkle",
+ "type": "reverb-shimmer",
+ "name": "Subtle sparkle",
+ "desc": "A little octave-up in a 3 s hall at 25 % mix: clean chords gain air without a wash",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "indie-pop",
+  "indie-rock",
+  "ccm"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "mix": 25,
+  "decay": 3,
+  "shimmer": 25,
+  "pitch": 12,
+  "hicut": 7000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 200,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 30,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 50,
+  "duck": 0,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Low shimmer share = few octave passes: shine, not a pad",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

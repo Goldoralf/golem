@@ -1,0 +1,42 @@
+{
+ "id": "doom-hiss-floor",
+ "type": "met",
+ "name": "Doom hiss floor",
+ "desc": "Mild 2:1 expansion floored at −25 dB with a slow fade: lowers fuzz hiss in rests without killing feedback swells",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "experimental"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "sludge-metal",
+  "drone"
+ ],
+ "gain": "high",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -55,
+  "hold": 100,
+  "release": 600,
+  "ratio": 2,
+  "range": -25,
+  "smooth": 150,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "The floor keeps the room alive; slow smoothing means held, decaying chords never flutter at the threshold",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

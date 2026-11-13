@@ -1,0 +1,60 @@
+{
+ "id": "deep-12-pad",
+ "type": "phaser-js",
+ "name": "Deep six-octave pad sweep",
+ "desc": "Twelve stages swept over six octaves at 0.1 Hz with feedback: six notches gliding slowly through a pad",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "ambient",
+  "berlin-school",
+  "drone"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 2,
+ "tags": [
+  "dreamy",
+  "extreme",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "rate": 0.1,
+  "low": 100,
+  "high": 6400,
+  "feedback": -6,
+  "wet": 0,
+  "model": "Deep 12",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 100,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Deep slow sweep'; 100 Hz – 6.4 kHz is exactly six octaves",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

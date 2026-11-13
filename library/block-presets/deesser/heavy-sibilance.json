@@ -1,0 +1,41 @@
+{
+ "id": "heavy-sibilance",
+ "type": "deesser",
+ "name": "Heavy sibilance, wide band",
+ "desc": "10:1 wide-band reduction up to 12 dB: a very sibilant singer or a bright condenser mic tamed hard",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "electropop",
+  "indie-rock",
+  "pop-punk"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -30,
+  "freq": 6000,
+  "range": 12,
+  "listen": false,
+  "detect": "Relative",
+  "shape": "Wide",
+  "focus": "Vocal",
+  "ratio": 10,
+  "release": 60,
+  "lookahead": 0
+ },
+ "notes": "The doc's heavy row with Wide, which ducks the whole voice briefly: the cleanest-sounding way on a solo vocal",
+ "factory": true,
+ "golem_fx_seed": "gfx-deesser",
+ "golem_fx": true
+}

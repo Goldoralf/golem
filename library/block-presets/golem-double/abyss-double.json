@@ -1,0 +1,49 @@
+{
+ "id": "abyss-double",
+ "type": "golem-double",
+ "name": "Two-octave abyss",
+ "desc": "A double two octaves below, dark and band-limited: a sub-human drone under chanted or clean lines",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "experimental"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "post-metal",
+  "drone"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": -24,
+  "formant": -2,
+  "voice1": -10,
+  "lpf": 3500,
+  "shift2": 12,
+  "voice2": -60,
+  "pan": 50,
+  "fine": 0,
+  "humanize": 0,
+  "formant_link": false,
+  "glide": 0,
+  "sens": 50,
+  "thresh": -50,
+  "register": "Mid",
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "hpf": 30
+ },
+ "notes": "−24 is PSOLA's hardest case (isolated grains, buzzy): low lpf hides it and −10 dB keeps it a shadow. Best on sustained notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-golem",
+ "golem_fx": true
+}

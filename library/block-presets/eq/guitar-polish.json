@@ -1,12 +1,53 @@
 {
- "name": "Guitar polish",
+ "id": "guitar-polish",
  "type": "eq",
+ "name": "Light guitar polish",
+ "desc": "High-pass 90 Hz, gentle 2 dB dip at 800 Hz, a touch of high shelf: a cleaner, slightly more open guitar",
  "inst": "guitar",
- "factory": true,
+ "genres": [
+  "rock",
+  "pop",
+  "folk"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "pop-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "bright"
+ ],
  "params": {
   "lowcut": 90,
-  "midfreq": 800,
   "midgain": -2,
-  "highs": 1.5
- }
+  "midfreq": 800,
+  "highs": 1.5,
+  "lowcut_slope": "12 dB/oct",
+  "lows": 0,
+  "lowfreq": 120,
+  "midq": 0.67,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 5000,
+  "air": 0,
+  "airfreq": 12000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 3500,
+  "harsh_thresh": 0,
+  "harsh_range": 6,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "golem's Guitar polish kept as is",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": false
 }

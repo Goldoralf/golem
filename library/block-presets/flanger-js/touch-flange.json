@@ -1,0 +1,51 @@
+{
+ "id": "touch-flange",
+ "type": "flanger-js",
+ "name": "Touch-sensitive funk flange",
+ "desc": "The pick sweeps the flanger: each strum jumps the comb up, it falls back as the note decays",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "p-funk",
+  "funk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "tight",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "length": 5,
+  "feedback": -10,
+  "wet": -4,
+  "dry": 0,
+  "rate": 0.3,
+  "mode": "Mistress",
+  "manual": 0.3,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "Envelope",
+  "env_sens": -25,
+  "env_att": 5,
+  "env_rel": 300,
+  "stereo_phase": 90,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "env_sens -25 dB: the sweep starts 30 dB below and tops out at -25 dBFS peaks; lower it for a quiet guitar",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

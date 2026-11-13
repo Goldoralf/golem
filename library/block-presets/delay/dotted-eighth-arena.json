@@ -1,0 +1,67 @@
+{
+ "id": "dotted-eighth-arena",
+ "type": "delay",
+ "name": "Dotted-eighth arena",
+ "desc": "Dotted-eighth digital repeats as loud as the pick, turning picked eighths into a 16th-note pulse",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "post-punk",
+  "arena-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "U2",
+   "song": "Where the Streets Have No Name",
+   "why": "the Edge's dotted-eighth echo over muted eighth-note picking",
+   "source": "Premier Guitar (Electric Etudes: U2's the Edge), 2015",
+   "verified": true
+  }
+ ],
+ "level_db": 0,
+ "sync": "1/8.",
+ "tags": [
+  "bright",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "time": "1/8•",
+  "feedback": 25,
+  "mix": 60,
+  "model": "Digital",
+  "time_ms": 375,
+  "glide": "Auto",
+  "glide_ms": 150,
+  "low_cut": 120,
+  "high_cut": 9000,
+  "drive": 0,
+  "mod": 50,
+  "diffusion": 0,
+  "taps": "Single",
+  "direction": "Forward",
+  "loop_pitch": 0,
+  "loop_shift": 50,
+  "age": 0,
+  "swell": 0,
+  "sweep": 0,
+  "duck": 0,
+  "duck_thresh": -30,
+  "duck_release": 300,
+  "stereo": "Stereo",
+  "ratio": 1.5,
+  "width": 100,
+  "kill_dry": false,
+  "hold": false,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Little feedback and wet about level with the dry, as the lesson describes: the rhythm comes from the echo, so the playing must stay in time",
+ "factory": true,
+ "golem_fx_seed": "gfx-delay",
+ "golem_fx": true
+}

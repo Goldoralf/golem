@@ -1,0 +1,61 @@
+{
+ "id": "drum-rotor-guitar",
+ "type": "rotary",
+ "name": "Guitar drum-rotor warble",
+ "desc": "Drum-only guitar rotary at fast speed: a thick, liquid warble on clean blues chords",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "texas-blues",
+  "modern-electric-blues",
+  "blues-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Stevie Ray Vaughan",
+   "song": "Cold Shot",
+   "why": "rotating-speaker cabinet on the clean rhythm part",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "speed": "fast",
+  "mic": 65,
+  "spacing": 50,
+  "depth": 65,
+  "cabinet": "Vibratone",
+  "ramp": 100,
+  "drive": 30,
+  "balance": 50,
+  "horn_slow": 0.8,
+  "horn_fast": 6.7,
+  "drum_slow": 0.67,
+  "drum_fast": 6,
+  "horn_accel": 0.16,
+  "horn_decel": 0.32,
+  "drum_accel": 4.1,
+  "drum_decel": 1.4,
+  "brake": 50,
+  "stop_angle": 0,
+  "counter": true,
+  "wobble": 30,
+  "bass_keep": 120,
+  "level": 0,
+  "mix": 100
+ },
+ "notes": "The crate's guitar-Leslie start; Vibratone = one rotor, full range, so balance does not matter",
+ "factory": true,
+ "golem_fx_seed": "gfx-rotary",
+ "golem_fx": true
+}

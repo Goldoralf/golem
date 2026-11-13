@@ -1,0 +1,72 @@
+{
+ "id": "uni-vibe-throb",
+ "type": "phaser-js",
+ "name": "Throbbing vibe chorus",
+ "desc": "Four unequal lamp-driven stages: the pulsing, throbbing, rotary-like vibe swirl in front of a driven amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "blues-rock",
+  "electric-blues"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Jimi Hendrix",
+   "song": "Machine Gun",
+   "why": "Uni-Vibe throb at the Fillmore East, Band of Gypsys",
+   "verified": false
+  },
+  {
+   "artist": "Robin Trower",
+   "song": "Bridge of Sighs",
+   "why": "Uni-Vibe with a cranked amp, middle pickup",
+   "verified": false
+  }
+ ],
+ "level_db": 2,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "rate": 1.2,
+  "low": 440,
+  "high": 1600,
+  "feedback": -3,
+  "wet": 0,
+  "model": "Vibe",
+  "stages": "4",
+  "spread": 0,
+  "fb_polarity": "+",
+  "dry": 0,
+  "manual": 50,
+  "depth": 80,
+  "shape": "Sine",
+  "skew": 50,
+  "sweep_src": "LFO",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "color": 50,
+  "lfo2": "Same",
+  "rate2": 0.3,
+  "routing": "Series",
+  "lamp_lag": 30,
+  "vibe_mode": "Chorus",
+  "tone": 50,
+  "bass_keep": 0
+ },
+ "notes": "README 'Uni-Vibe' application; place before the amp; the rate drifts up with depth like the original",
+ "factory": true,
+ "golem_fx_seed": "gfx-phaser",
+ "golem_fx": true
+}

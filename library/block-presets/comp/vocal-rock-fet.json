@@ -1,0 +1,46 @@
+{
+ "id": "vocal-rock-fet",
+ "type": "comp",
+ "name": "Upfront rock vocal",
+ "desc": "FET 6:1, 2 ms attack, fast release with a little drive: a shouted vocal pinned in front of loud guitars",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "punk",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "post-hardcore",
+  "alternative-metal"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -24,
+  "ratio": 6,
+  "makeup": 6,
+  "attack": 2,
+  "release": 80,
+  "character": "FET",
+  "knee": 2,
+  "auto_release": true,
+  "sc_hpf": 100,
+  "range": 60,
+  "drive": 15,
+  "mix": 100,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "FET shortens its times further on short peaks: every syllable stays at the front in a dense mix",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

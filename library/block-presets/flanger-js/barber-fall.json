@@ -1,0 +1,51 @@
+{
+ "id": "barber-fall",
+ "type": "flanger-js",
+ "name": "Endless falling flange",
+ "desc": "Barber-pole flanger falling forever: a sinking, disorienting sweep for breakdowns and transitions",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "techno",
+  "idm",
+  "drone"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "extreme",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "length": 8,
+  "feedback": -8,
+  "wet": -3,
+  "dry": 0,
+  "rate": 0.1,
+  "mode": "Barberpole ↓",
+  "manual": 0.3,
+  "depth": 100,
+  "fb_polarity": "Normal",
+  "shape": "Mode",
+  "sweep_src": "LFO",
+  "env_sens": -20,
+  "env_att": 10,
+  "env_rel": 300,
+  "stereo_phase": 0,
+  "sync": "Off",
+  "drive": 0,
+  "fb_hpf": 20,
+  "fb_lpf": 20000,
+  "bass_keep": 0
+ },
+ "notes": "Slower than the rise: a fall reads better at about 10 s per apparent cycle",
+ "factory": true,
+ "golem_fx_seed": "gfx-flanger",
+ "golem_fx": true
+}

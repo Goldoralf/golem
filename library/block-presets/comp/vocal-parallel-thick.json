@@ -1,0 +1,51 @@
+{
+ "id": "vocal-parallel-thick",
+ "type": "comp",
+ "name": "Thick parallel vocal",
+ "desc": "FET squeezed 7 – 10 dB and blended about 30 % under the dry vocal: thickness and punch, the dynamics stay",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "indie-pop",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "The Shins",
+   "why": "Chiccarelli tucked a heavily squeezed parallel 1176 under the lead vocal",
+   "source": "Vintage King, Five Sounds with Joe Chiccarelli, 2022",
+   "verified": true
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -32,
+  "ratio": 8,
+  "makeup": 9,
+  "attack": 10,
+  "release": 60,
+  "character": "FET",
+  "knee": 3,
+  "auto_release": true,
+  "sc_hpf": 80,
+  "range": 60,
+  "drive": 0,
+  "mix": 30,
+  "link": 100,
+  "sc_listen": false
+ },
+ "notes": "Slow-to-mid attack, fast-to-mid release as in the interview; mix 30 % stands for the parallel bus fader",
+ "factory": true,
+ "golem_fx_seed": "gfx-comp",
+ "golem_fx": true
+}

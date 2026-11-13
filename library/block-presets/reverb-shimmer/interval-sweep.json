@@ -1,0 +1,59 @@
+{
+ "id": "interval-sweep",
+ "type": "reverb-shimmer",
+ "name": "Interval-sweeping pad",
+ "desc": "Fifth-up shimmer with a 1 s pitch glide: a scene change to another interval sweeps the whole pad",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "screen"
+ ],
+ "subgenres": [
+  "ambient",
+  "film-score",
+  "progressive-electronic"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mix": 50,
+  "decay": 8,
+  "shimmer": 55,
+  "pitch": 7,
+  "hicut": 6000,
+  "pitch2": 7,
+  "voice2": 0,
+  "detune": 6,
+  "lowcut": 150,
+  "placement": "Regen",
+  "size": 60,
+  "predelay": 20,
+  "bloom": 70,
+  "moddepth": 25,
+  "character": "Grainy",
+  "space": "Hall",
+  "mod_rate": 50,
+  "swell": 0,
+  "voice_pan": 50,
+  "bass_mult": 1,
+  "tone": 50,
+  "glide": 1000,
+  "duck": 0,
+  "freeze": "Off",
+  "width": 100,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false,
+  "wet_level": 0
+ },
+ "notes": "Scenes set pitch +7 → +12 (or −12); glide 1 s turns the jump into a sweep",
+ "factory": true,
+ "golem_fx_seed": "gfx-shimmer",
+ "golem_fx": true
+}

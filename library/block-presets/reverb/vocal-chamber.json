@@ -1,0 +1,70 @@
+{
+ "id": "vocal-chamber",
+ "type": "reverb",
+ "name": "Classic vocal chamber",
+ "desc": "A warm 1.8 s chamber with a short predelay: the crooner's echo room",
+ "inst": "voice",
+ "genres": [
+  "jazz",
+  "pop"
+ ],
+ "subgenres": [
+  "vocal-jazz",
+  "traditional-pop",
+  "ballad"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Frank Sinatra",
+   "song": "In the Wee Small Hours",
+   "why": "Capitol Studios' underground echo chambers on his 50s ballads",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "mix": 25,
+  "decay": 1.8,
+  "size": 20,
+  "predelay": 20,
+  "hicut": 8000,
+  "algo": "Chamber",
+  "lowcut": 150,
+  "bass_mult": 1,
+  "bass_xover": 300,
+  "mod": 30,
+  "diffusion": 80,
+  "early": 50,
+  "width": 100,
+  "era": "Modern",
+  "mod_rate": 50,
+  "high_mult": 1,
+  "wet_low": 50,
+  "wet_high": 50,
+  "swell": 0,
+  "drive": 0,
+  "springs": "2",
+  "sync": "Off",
+  "shimmer": 0,
+  "shimmer_pitch": 12,
+  "duck": 0,
+  "duck_sens": 50,
+  "duck_release": 400,
+  "freeze": "Off",
+  "kill_dry": false,
+  "bypass": false,
+  "trails": true,
+  "dry": 0
+ },
+ "notes": "Chamber: dense early reflections and a smooth tail; low modulation keeps sustained vowels steady in pitch",
+ "factory": true,
+ "golem_fx_seed": "gfx-reverb",
+ "golem_fx": true
+}

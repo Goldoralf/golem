@@ -1,0 +1,65 @@
+{
+ "id": "bass-slap-scoop",
+ "type": "eq",
+ "name": "Scooped slap bass",
+ "desc": "Low shelf +3 dB at 80 Hz, -5 dB at 500 Hz, bright shelf and air: thumb thump and pop with the mids out",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "jazz",
+  "rock"
+ ],
+ "subgenres": [
+  "funk",
+  "jazz-funk",
+  "funk-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Marcus Miller",
+   "why": "both-pickup Jazz bass slap with the mids scooped and the top open",
+   "verified": false
+  },
+  {
+   "artist": "Red Hot Chili Peppers",
+   "why": "Flea's bright, percussive slap lines",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "modern"
+ ],
+ "params": {
+  "lowcut": 35,
+  "midgain": -5,
+  "midfreq": 500,
+  "highs": 4,
+  "lowcut_slope": "24 dB/oct",
+  "lows": 3,
+  "lowfreq": 80,
+  "midq": 0.8,
+  "midprop": 50,
+  "mid2gain": 0,
+  "mid2freq": 2500,
+  "mid2q": 0.7,
+  "highfreq": 3500,
+  "air": 2,
+  "airfreq": 10000,
+  "tilt": 0,
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "harsh_freq": 5000,
+  "harsh_thresh": -14,
+  "harsh_range": 4,
+  "output": 0,
+  "auto_gain": false
+ },
+ "notes": "The smile curve slap players dial; the de-harsher at 5 kHz catches the loudest pops so the bright shelf can stay up",
+ "factory": true,
+ "golem_fx_seed": "gfx-eq",
+ "golem_fx": true
+}

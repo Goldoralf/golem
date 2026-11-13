@@ -1,0 +1,55 @@
+{
+ "id": "dark-wide-grunge",
+ "type": "wah",
+ "name": "Dark, wide grunge wah",
+ "desc": "Cry Baby with a wider sweep and a toe stop short of the top: dark, squashed wah on heavy riffs",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-metal",
+  "sludge-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Alice in Chains",
+   "song": "Man in the Box",
+   "why": "Cantrell's dark, punchy wah woven through the riffs",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "dark",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "wah": 0.5,
+  "volume": 1,
+  "freq": 24,
+  "mix": 100,
+  "mode": "manual",
+  "q": 110,
+  "range": 120,
+  "taper": "Model",
+  "heel": 0,
+  "toe": 85,
+  "drive": 25,
+  "auto_engage": false,
+  "engage_pos": 3,
+  "engage_wait": 300,
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 100
+ },
+ "notes": "Range 120 widens the sweep downward; toe 85 keeps the top dark (the idea of a toe-trim pot)",
+ "factory": true,
+ "golem_fx_seed": "gfx-wah",
+ "golem_fx": true
+}

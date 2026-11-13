@@ -1,0 +1,41 @@
+{
+ "id": "lead-sustain",
+ "type": "met",
+ "name": "High-gain lead, open tails",
+ "desc": "Gentle 2:1 expansion with long hold and a 400 ms fade, floored at −40 dB: vibrato tails ring, hiss drops between phrases",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "power-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -55,
+  "hold": 80,
+  "release": 400,
+  "ratio": 2,
+  "range": -40,
+  "smooth": 100,
+  "adaptive": true,
+  "hpf": 0,
+  "lpf": 22000,
+  "source": "Key",
+  "listen": false
+ },
+ "notes": "Range −40 dB rather than silence: under delay and reverb a fully closed gate sounds like a mute",
+ "factory": true,
+ "golem_fx_seed": "gfx-met",
+ "golem_fx": true
+}

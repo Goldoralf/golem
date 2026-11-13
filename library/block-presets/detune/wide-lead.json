@@ -1,0 +1,41 @@
+{
+ "id": "wide-lead",
+ "type": "detune",
+ "name": "Wide solo halo",
+ "desc": "Voices ±15 cents, 8 ms late, behind a lead: the solo spreads to both sides around a centred note",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "instrumental-rock",
+  "progressive-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Steve Vai",
+   "why": "harmonizer-widened lead tones",
+   "verified": false
+  }
+ ],
+ "level_db": 1,
+ "tags": [
+  "wide",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "detune": 0.6,
+  "wet": 0.45,
+  "dry": 0.75,
+  "delay": 8,
+  "voices": "2"
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-detune",
+ "golem_fx": true
+}

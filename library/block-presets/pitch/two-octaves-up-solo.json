@@ -1,0 +1,50 @@
+{
+ "id": "two-octaves-up-solo",
+ "type": "pitch",
+ "name": "Two octaves up, crawling",
+ "desc": "Mono shifter, fully wet, two octaves up with a slow glide: a screaming, straining solo voice",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "rap-metal",
+  "alternative-metal",
+  "rap-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [
+  {
+   "artist": "Rage Against the Machine",
+   "song": "Killing in the Name",
+   "why": "Morello's solo with the Whammy set two octaves up",
+   "source": "Rolling Stone, 2023",
+   "verified": true
+  }
+ ],
+ "level_db": -1,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": 24,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 300,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major"
+ },
+ "notes": "glide 300 ms makes a scene switch crawl up to +24 rather than jump; with an expression pedal on shift, set glide 0",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

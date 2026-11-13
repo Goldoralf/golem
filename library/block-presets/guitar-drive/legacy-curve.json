@@ -1,0 +1,32 @@
+{
+ "id": "legacy-curve",
+ "type": "guitar-drive",
+ "name": "Legacy golem drive",
+ "desc": "golem's former JS drive curve at its defaults, now alias-free: old patches sound as before",
+ "inst": "any",
+ "genres": [
+  "rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 9,
+ "tags": [],
+ "default": false,
+ "params": {
+  "gain": 20,
+  "hardness": 6,
+  "ceiling": -12,
+  "voice": "Legacy",
+  "tight": 20,
+  "tone": 0,
+  "asym": 0,
+  "sag": 0,
+  "blend": 0,
+  "bass_keep": 0
+ },
+ "notes": "Compatibility only: the JS block's exact curve without its aliasing. New sounds should use another voice",
+ "factory": true,
+ "golem_fx_seed": "gfx-drive",
+ "golem_fx": true
+}

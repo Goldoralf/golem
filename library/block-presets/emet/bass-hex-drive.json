@@ -1,0 +1,38 @@
+{
+ "id": "bass-hex-drive",
+ "type": "emet",
+ "name": "Bass mid drive",
+ "desc": "808-style drive on bass above 120 Hz, the fundamental kept clean: growl that keeps the bottom",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-metal",
+  "stoner-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 6,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 40,
+  "tone_stack": 55,
+  "level": -9,
+  "headroom": 0,
+  "asym": 0,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 120
+ },
+ "notes": "The README's bass overdrive: bass_keep is phase-aligned, so no crossover ripple. Gain any: a bass drive stays on",
+ "factory": true,
+ "golem_fx_seed": "gfx-emet",
+ "golem_fx": true
+}

@@ -1,0 +1,30 @@
+{
+ "id": "hot-front-end",
+ "type": "clean-boost",
+ "name": "Hot front end +12 dB",
+ "desc": "The full +12 dB before the amp: turns a clean amp's edge into crunch, or a crunch into a lead",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "garage-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 12,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 12,
+  "polarity": false
+ },
+ "notes": "Flat boost: unlike a tight boost it also pushes the lows; for high-gain amps use gfx-shem instead",
+ "factory": true,
+ "golem_fx_seed": "gfx-boost",
+ "golem_fx": true
+}

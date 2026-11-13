@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // golem pedals: SVG renderers for every block golem can put on a lane, in three families.
 //
-//   gfx      "clay"     golem-fx's own effects: a matte cast body tinted by the block's colour, the
-//                       glyph cast into it as a rune that lights up when the pedal is on.
+//   gfx      "metal"    golem-fx's own effects, in one of two finishes: "anodized" (machined aluminium
+//                       in the family's colour, the motif engraved) or "thrash" (gloss lacquer, diamond
+//                       plate, the motif in yellow lined in black). By default ("auto") the finish
+//                       follows the family (finishFor); GolemPedals.setStyle or opts.style force one. Each effect has a motif saying what it does (MOTIF) and its glyph lit
+//                       as a rune when on. "clay", the first prototype, stays available.
 //   nam-*    "specimen" NAM captures: a steel pedal with a glass window (the captured circuit), and the
 //                       amp line: head, cab, head + cab (stack or combo), voiced by the amp's family.
 //   generic  "enamel"   every other golem block: a hammertone die-cast box, a jewel lamp, the glyph on
@@ -104,6 +107,19 @@
     <circle cx="1.5" cy="1.5" r=".7" fill="#000" fill-opacity=".55"/></pattern>
   <pattern id="gp-basket" width="8" height="8" patternUnits="userSpaceOnUse">
     <path d="M0 2h4M4 6h4" stroke="#000" stroke-opacity=".28" stroke-width="2"/><path d="M6 0v4M2 4v4" stroke="#fff" stroke-opacity=".12" stroke-width="2"/></pattern>
+  <linearGradient id="gp-flame" x1="0" y1="1" x2="0" y2="0">
+    <stop offset="0" stop-color="#ff3b00"/><stop offset=".55" stop-color="#ffa000"/><stop offset="1" stop-color="#ffe14a"/></linearGradient>
+  <linearGradient id="gp-anod-sheen" x1="0" y1="0" x2="1" y2=".25">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".36" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="gp-gloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".18" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>
+  <pattern id="gp-hazard" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="10" height="10" fill="#111"/><rect width="5" height="10" fill="#ffd400"/></pattern>
+  <pattern id="gp-plate" width="9" height="9" patternUnits="userSpaceOnUse">
+    <rect width="9" height="9" fill="#1a1a1c"/><path d="M1.3 3.9 3.9 1.3 5.2 2.3 2.6 4.9Z" fill="#4a4b50"/><path d="M1.3 3.9 3.9 1.3" stroke="#8a8c92" stroke-width=".35"/>
+    <path d="M5.8 8.4 8.4 5.8 9.7 6.8 7.1 9.4Z" fill="#4a4b50"/><path d="M5.8 8.4 8.4 5.8" stroke="#8a8c92" stroke-width=".35"/></pattern>
+  <pattern id="gp-knurl" width="2.4" height="10" patternUnits="userSpaceOnUse">
+    <rect width="1.2" height="10" fill="#000" opacity=".3"/><rect x="1.2" width=".5" height="10" fill="#fff" opacity=".22"/></pattern>
   <filter id="gp-clay" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>
     <feColorMatrix in="n" type="matrix" values="0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .5 0"/>
@@ -176,7 +192,7 @@
   }
 
   // a small pointer selector, one tick per option
-  function selectorClay(cx, cy, r, p, accent, inkOpacity) {
+  function selectorClay(cx, cy, r, p, accent, inkOpacity, ink) {
     const n = (p.options || []).length || 2;
     const idx = Math.round(p.value != null ? p.value : p.default);
     const sweep = Math.min(270, 30 * (n - 1));
@@ -192,15 +208,15 @@
   <circle cx="${cx}" cy="${cy + .8}" r="${r}" fill="#000" opacity=".35"/>
   <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-knob)"/>
   <path d="M${cx} ${cy}L${px.toFixed(2)} ${py.toFixed(2)}" stroke="#d8d0c4" stroke-width="1.6" stroke-linecap="round"/>
-  <text x="${cx}" y="${cy + r + 8}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.6" font-weight="600" fill="#000" fill-opacity="${inkOpacity || .62}">${esc(label.toLowerCase())}</text>
+  <text x="${cx}" y="${cy + r + 8}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.6" font-weight="600" fill="${ink || '#000'}" fill-opacity="${ink ? .9 : (inkOpacity || .62)}">${esc(label.toLowerCase())}</text>
 </g>`;
   }
 
-  function toggleClay(cx, cy, p) {
+  function toggleClay(cx, cy, p, ink) {
     const on = (p.value != null ? p.value : p.default) >= .5;
     return `<g class="gp-toggle"><rect x="${cx - 3.2}" y="${cy - 5}" width="6.4" height="10" rx="1.6" fill="#16120f"/>
   <circle cx="${cx}" cy="${on ? cy - 2.4 : cy + 2.4}" r="2.1" fill="url(#gp-chrome)"/>
-  <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.4" font-weight="600" fill="#000" fill-opacity=".6">${esc(shortLabel(p.name))}</text></g>`;
+  <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.4" font-weight="600" fill="${ink || '#000'}" fill-opacity="${ink ? .9 : .6}">${esc(shortLabel(p.name))}</text></g>`;
   }
 
   // side jacks (input left, output right: golem lanes read left to right)
@@ -223,7 +239,7 @@
   }
 
   // knob grid inside [x0, x1] starting at y0; returns {svg, bottom}
-  function knobGrid(knobs, x0, x1, y0, accent, kind) {
+  function knobGrid(knobs, x0, x1, y0, accent, kind, knobFn) {
     const n = knobs.length;
     if (!n) return { svg: '', bottom: y0 };
     const w = x1 - x0;
@@ -237,7 +253,7 @@
         const cx = x0 + w * (i + .5) / row.length;
         const dy = row.length === 3 && i === 1 ? 6 : 0;
         deepest = Math.max(deepest, y + dy);
-        svg += kind === 'enamel' ? knobEnamel(cx, y + dy, r, p) : knobClay(cx, y + dy, r, p, accent, shortLabel(p.name));
+        svg += knobFn ? knobFn(cx, y + dy, r, p) : kind === 'enamel' ? knobEnamel(cx, y + dy, r, p) : knobClay(cx, y + dy, r, p, accent, shortLabel(p.name));
       });
       last = deepest;
       if (ri < rows.length - 1) y += r * 2 + 12;
@@ -250,6 +266,9 @@
     opts = opts || {};
     const spec = typeof crateOrSpec === 'string' ? data().gfx[crateOrSpec] : crateOrSpec;
     if (!spec) return '';
+    let style = opts.style || api.style;
+    if (style === 'auto') style = finishFor(spec);
+    if (METAL_STYLES.includes(style)) return spec.shape === 'treadle' ? gfxTreadleMetal(spec, opts, style) : gfxPedalMetal(spec, opts, style);
     if (spec.shape === 'treadle') return gfxTreadle(spec, opts);
     const on = opts.on !== false;
     const hue = hueOf(spec.color, spec.category);
@@ -304,6 +323,326 @@ ${runeSvg}
 <circle cx="${W / 2}" cy="${bottom + 14}" r="2.4" fill="url(#gp-jewel)"/>
 ${stompSwitch(W / 2, H - 21, 8.5)}
 <text x="${W - 9}" y="${H - 6}" text-anchor="end" font-family="${FONT.gfx}" font-size="5.6" font-weight="700" fill="#000" fill-opacity=".45">golem fx</text>
+</svg>`;
+  }
+
+  // ---------- gfx: metal (anodized | thrash) ----------
+  // Two finishes for golem-fx's own pedals, both saturated (no grey mixed into the hue):
+  //   anodized  machined aluminium in the family's colour, the motif engraved in the metal;
+  //   thrash    gloss lacquer, a diamond-plate panel round the switch, the motif in yellow lined in black.
+  // Each effect carries a motif that says what it does (flames for the drive, echoes for the delay…).
+  const METAL_HUE = {
+    dynamics: '#4a5a6e', drive: '#e04a00', utility: '#f0a500', filter: '#00a8c0', eq: '#0058e0',
+    modulation: '#00a84f', delay: '#3a28f0', reverb: '#6a1fd1', pitch: '#c4148c',
+  };
+  const METAL_CRATE_HUE = { 'gfx-shimmer': '#8a3ff0', 'gfx-gapmeter': '#6b7480' };
+  const THRASH_HUE = { drive: '#c8160e' };
+  // the rune's light where the body's own hue would glow too dull
+  const RUNE_LIGHT = { dynamics: '#5fb0ff', 'gfx-gapmeter': '#d8dde3' };
+  const MOTIF = {
+    'gfx-drive': 'flames', 'gfx-boost': 'chevrons', 'gfx-gate': 'barbed', 'gfx-comp': 'clamp', 'gfx-limiter': 'clamp',
+    'gfx-deesser': 'clamp', 'gfx-wah': 'crescent', 'gfx-autowah': 'crescent', 'gfx-eq': 'curve', 'gfx-tremolo': 'pulse',
+    'gfx-vibrato': 'waves', 'gfx-chorus': 'waves', 'gfx-flanger': 'jet', 'gfx-phaser': 'spiral', 'gfx-rotary': 'swirl',
+    'gfx-killswitch': 'bolt', 'gfx-delay': 'echo', 'gfx-reverb': 'rays', 'gfx-shimmer': 'stars', 'gfx-octaver': 'diamonds',
+    'gfx-pitch': 'stairs', 'gfx-pitch-classic': 'stairs', 'gfx-detune': 'stairs', 'gfx-gapmeter': 'ticks',
+  };
+  const METAL_STYLES = ['anodized', 'thrash'];
+  // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
+  // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
+  const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash' };
+  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized' };
+  const finishFor = spec => CRATE_FINISH[spec.crate] || FAMILY_FINISH[spec.category] || 'anodized';
+  let metalCount = 0;
+  const f1 = v => (+v).toFixed(1);
+
+  function metalHue(spec, style) {
+    return (style === 'thrash' && THRASH_HUE[spec.category]) || METAL_CRATE_HUE[spec.crate] || METAL_HUE[spec.category] || hueOf(spec.color, spec.category);
+  }
+  const pill = (x, y, w, h) => { const r = h / 2; return `M${f1(x + r)} ${f1(y)}h${f1(w - h)}a${f1(r)} ${f1(r)} 0 0 1 0 ${f1(h)}h${f1(h - w)}a${f1(r)} ${f1(r)} 0 0 1 0 ${f1(-h)}Z`; };
+  const sine = (x0, x1, y, a, period, phase) => {
+    let d = '';
+    for (let x = x0; x <= x1 + .01; x += 2) d += (d ? 'L' : 'M') + f1(x) + ' ' + f1(y + a * Math.sin((x / period) * 2 * Math.PI + (phase || 0)));
+    return d;
+  };
+  const arcPath = (cx, cy, r, a0, a1) => {
+    const p = a => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)];
+    const [x0, y0] = p(a0), [x1, y1] = p(a1);
+    return `M${f1(x0)} ${f1(y0)}A${f1(r)} ${f1(r)} 0 ${Math.abs(a1 - a0) > 180 ? 1 : 0} 1 ${f1(x1)} ${f1(y1)}`;
+  };
+
+  // a motif as parts: {d, fill} paths in the pedal's own coordinates (g: the rune's centre and cartouche)
+  function motifParts(kind, W, H, g) {
+    const { x: cx, y: cy, cw, ch } = g, P = [];
+    const line = (d, op) => P.push({ d, op: op == null ? 1 : op });
+    const shape = (d, op, fill) => P.push({ d, op: op == null ? 1 : op, fill: fill || true });
+    switch (kind) {
+      case 'flames': {
+        const base = H - 36, top = cy + 2, n = 5, w = W / n;
+        let d = `M-2 ${H}L-2 ${f1(base)}`;
+        for (let i = 0; i < n; i++) {
+          const x0 = i * w, xm = x0 + w / 2, x1 = x0 + w, pk = top + (i % 2 ? 16 : 0) + (i === 2 ? -6 : 0);
+          d += `C${f1(x0 + w * .1)} ${f1(base - (base - pk) * .55)} ${f1(xm - w * .3)} ${f1(pk + 12)} ${f1(xm)} ${f1(pk)}` +
+               `C${f1(xm + w * .05)} ${f1(pk + 14)} ${f1(x1 - w * .2)} ${f1(base - (base - pk) * .35)} ${f1(x1)} ${f1(base - (base - pk) * .2)}`;
+        }
+        shape(d + `L${W + 2} ${H}Z`, 1, 'flame');
+        break;
+      }
+      case 'chevrons':
+        [W * .13, W * .87].forEach(x => { for (let k = 0; k < 3; k++) { const y = cy + 12 - k * 12; shape(`M${f1(x - 6)} ${f1(y + 4)}L${f1(x)} ${f1(y - 3)}L${f1(x + 6)} ${f1(y + 4)}L${f1(x + 6)} ${f1(y + 8)}L${f1(x)} ${f1(y + 1)}L${f1(x - 6)} ${f1(y + 8)}Z`, 1 - k * .25); } });
+        break;
+      case 'barbed':
+        [cy - ch / 2 - 5, cy + ch / 2 + 5].forEach(y => {
+          line(sine(0, W, y, 1.6, 9, 0)); line(sine(0, W, y, 1.6, 9, Math.PI));
+          for (let x = 9; x < W; x += 18) line(`M${f1(x - 3.5)} ${f1(y - 4)}L${f1(x + 3.5)} ${f1(y + 4)}M${f1(x + 3.5)} ${f1(y - 4)}L${f1(x - 3.5)} ${f1(y + 4)}`);
+        });
+        break;
+      case 'clamp':
+        P.push({ band: [cy - ch / 2 - 4, ch + 8] });
+        shape(`M2 ${f1(cy - 7)}L11 ${f1(cy)}L2 ${f1(cy + 7)}Z`); shape(`M${W - 2} ${f1(cy - 7)}L${W - 11} ${f1(cy)}L${W - 2} ${f1(cy + 7)}Z`);
+        break;
+      case 'crescent':
+        line(arcPath(cx, cy, W * .44, 200, 340)); line(arcPath(cx, cy, W * .53, 205, 335), .6);
+        line(arcPath(cx, cy, W * .44, 20, 160), .45);
+        break;
+      case 'curve':
+        for (let i = 1; i < 8; i++) line(`M${f1(W * i / 8)} ${f1(cy - ch)}V${f1(cy + ch)}`, .35);
+        line(`M0 ${f1(cy + ch * .7)}C${f1(W * .18)} ${f1(cy + ch * .7)} ${f1(W * .18)} ${f1(cy - ch * .95)} ${f1(W * .35)} ${f1(cy - ch * .95)}` +
+             `S${f1(W * .55)} ${f1(cy + ch * .95)} ${f1(W * .72)} ${f1(cy + ch * .95)}S${f1(W * .9)} ${f1(cy - ch * .5)} ${W} ${f1(cy - ch * .5)}`);
+        break;
+      case 'pulse': {
+        const a = ch * .75, per = 16;
+        let d = `M0 ${f1(cy + a)}`;
+        for (let x = 0; x < W; x += per) d += `H${f1(x + per / 2)}V${f1(cy - a)}H${f1(x + per)}V${f1(cy + a)}`;
+        line(d);
+        break;
+      }
+      case 'waves':
+        line(sine(0, W, cy - 4, ch * .7, 30, 0)); line(sine(0, W, cy + 4, ch * .7, 30, 1.4), .6);
+        break;
+      case 'jet':
+        [[-10, 30, 70], [0, 18, 90], [20, 4, 60], [-6, -10, 110], [30, -22, 80], [10, -36, 70], [40, 44, 60]].forEach(([x, dy, len], i) =>
+          line(`M${f1(x)} ${f1(cy + dy + len * .35)}L${f1(x + len)} ${f1(cy + dy - len * .25)}`, .45 + .08 * (i % 4)));
+        break;
+      case 'spiral':
+        [0, 1, 2].forEach(k => line(arcPath(cx, cy, ch / 2 + 7 + k * 9, -60 + k * 70, 190 + k * 70), 1 - k * .25));
+        break;
+      case 'swirl':
+        [0, 90, 180, 270].forEach(a0 => {
+          const p = (r, a) => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)];
+          const [x0, y0] = p(ch / 2 + 2, a0), [x1, y1] = p(ch / 2 + 20, a0 + 35), [x2, y2] = p(ch / 2 + 36, a0 + 85);
+          line(`M${f1(x0)} ${f1(y0)}Q${f1(x1)} ${f1(y1)} ${f1(x2)} ${f1(y2)}`);
+        });
+        break;
+      case 'bolt':
+        shape('M' + [[.88, .06], [.6, .38], [.72, .4], [.42, .66], [.54, .68], [.14, .95], [.36, .62], [.24, .6], [.48, .34], [.36, .32]]
+          .map(([x, y]) => f1(x * W) + ' ' + f1(y * H)).join('L') + 'Z');
+        break;
+      case 'echo':
+        [[.16, .65], [.32, .4], [.48, .2]].forEach(([dx, op]) => line(pill(cx - cw / 2 + W * dx, cy - ch / 2, cw, ch), op));
+        break;
+      case 'rays':
+        P.push({ rays: true });
+        break;
+      case 'stars':
+        [[.08, .55, 7], [.92, .47, 6], [.9, .7, 4.5], [.12, .72, 5], [.8, .32, 3.5], [.22, .36, 3.5]].forEach(([x, y, s]) => {
+          const X = x * W, Y = y * H;
+          shape(`M${f1(X)} ${f1(Y - s)}Q${f1(X)} ${f1(Y)} ${f1(X + s)} ${f1(Y)}Q${f1(X)} ${f1(Y)} ${f1(X)} ${f1(Y + s)}Q${f1(X)} ${f1(Y)} ${f1(X - s)} ${f1(Y)}Q${f1(X)} ${f1(Y)} ${f1(X)} ${f1(Y - s)}Z`);
+        });
+        break;
+      case 'diamonds':
+        [10, 20, 30].forEach((k, i) => { const v = ch / 2 + k, h = cw / 2 + k * 1.1; line(`M${f1(cx)} ${f1(cy - v)}L${f1(cx + h)} ${f1(cy)}L${f1(cx)} ${f1(cy + v)}L${f1(cx - h)} ${f1(cy)}Z`, 1 - i * .28); });
+        break;
+      case 'stairs': {
+        const n = 6, sw = W / n, y0 = cy + ch * .95, rise = ch * 1.9 / n;
+        let d = `M0 ${f1(y0)}`;
+        for (let i = 0; i < n; i++) d += `H${f1((i + 1) * sw)}V${f1(y0 - (i + 1) * rise)}`;
+        line(d);
+        break;
+      }
+      case 'ticks':
+        for (let y = 14; y < H - 40; y += 7) { const long = Math.round((y - 14) / 7) % 4 === 0; line(`M5 ${y}h${long ? 7 : 4}M${W - 5} ${y}h${long ? -7 : -4}`, long ? 1 : .6); }
+        break;
+    }
+    return P;
+  }
+
+  function motifSvg(kind, style, W, H, g, colors) {
+    if (!kind) return '';
+    const parts = motifParts(kind, W, H, g);
+    let out = '';
+    parts.forEach(p => {
+      if (p.rays) {
+        if (style === 'thrash') {
+          for (let i = 0; i < 12; i++) {
+            const a = (i * 30 + 15) * Math.PI / 180, h = 6 * Math.PI / 180, r0 = g.ch / 2 + 2, r1 = 260;
+            const pt = (ang, r) => f1(g.x + r * Math.sin(ang)) + ',' + f1(g.y - r * Math.cos(ang));
+            out += `<polygon points="${pt(a - h, r0)} ${pt(a - h, r1)} ${pt(a + h, r1)} ${pt(a + h, r0)}" fill="#000" opacity=".32"/>`;
+          }
+        } else {
+          let d = '';
+          for (let i = 0; i < 36; i++) { const a = (i * 10 + 5) * Math.PI / 180; d += `M${f1(g.x + (g.ch / 2 + 4) * Math.sin(a))} ${f1(g.y - (g.ch / 2 + 4) * Math.cos(a))}L${f1(g.x + 260 * Math.sin(a))} ${f1(g.y - 260 * Math.cos(a))}`; }
+          out += `<path d="${d}" stroke="${colors.engraveDark}" stroke-width="1.2" opacity=".5"/><path d="${d}" stroke="${colors.engraveLight}" stroke-width=".45" opacity=".35" transform="translate(.5 .5)"/>`;
+        }
+        return;
+      }
+      if (p.band) {
+        const [y, h] = p.band;
+        out += style === 'thrash'
+          ? `<rect x="-2" y="${f1(y)}" width="${W + 4}" height="${f1(h)}" fill="url(#gp-hazard)"/><path d="M-2 ${f1(y)}H${W + 2}M-2 ${f1(y + h)}H${W + 2}" stroke="#000" stroke-width="2"/>`
+          : `<rect x="-2" y="${f1(y)}" width="${W + 4}" height="${f1(h)}" fill="url(#gp-knurl)"/><path d="M-2 ${f1(y)}H${W + 2}M-2 ${f1(y + h)}H${W + 2}" stroke="${colors.engraveDark}" stroke-width="1.2" opacity=".7"/><path d="M-2 ${f1(y + .7)}H${W + 2}M-2 ${f1(y + h + .7)}H${W + 2}" stroke="${colors.engraveLight}" stroke-width=".45" opacity=".5"/>`;
+        return;
+      }
+      const op = p.op;
+      if (style === 'thrash') {
+        out += p.fill
+          ? `<path d="${p.d}" fill="${p.fill === 'flame' ? 'url(#gp-flame)' : '#ffd400'}" stroke="#000" stroke-width="1.6" stroke-linejoin="round" opacity="${op}"/>`
+          : `<path d="${p.d}" stroke="#000" stroke-width="3.4" opacity="${op}"/><path d="${p.d}" stroke="#ffd400" stroke-width="1.6" opacity="${op}"/>`;
+      } else {
+        out += `<path d="${p.d}" stroke="${colors.engraveDark}" stroke-width="${p.fill ? 1.6 : 1.8}" opacity="${f1(.6 * op)}"/>` +
+               `<path d="${p.d}" stroke="${colors.engraveLight}" stroke-width=".7" opacity="${f1(.75 * op)}" transform="translate(.6 .6)"/>`;
+      }
+    });
+    return `<g class="gp-motif gp-motif-${kind}" fill="none" stroke-linecap="round" stroke-linejoin="round">${out}</g>`;
+  }
+
+  function knobMetal(style, ink) {
+    return (cx, cy, r, p) => {
+      const a = angleOf(p);
+      const label = shortLabel(p.name).toUpperCase();
+      const lbl = `<text x="${cx}" y="${f1(cy + r + 8.5)}" text-anchor="middle" font-family="${FONT.nam}" font-size="6.6" font-weight="800" letter-spacing=".5" fill="${ink}">${esc(label)}</text>`;
+      if (style === 'thrash') {
+        const [qx, qy] = polar(cx, cy, r * .45, a), [px, py] = polar(cx, cy, r * .94, a);
+        return `<g class="gp-knob" data-param="${esc(p.id)}"><circle cx="${cx}" cy="${cy + 1.4}" r="${r + .6}" fill="#000" opacity=".5"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-knob)" stroke="#000" stroke-width="1.4"/>
+  <circle cx="${cx}" cy="${cy}" r="${f1(r * .42)}" fill="url(#gp-chrome)"/>
+  <path d="M${f1(qx)} ${f1(qy)}L${f1(px)} ${f1(py)}" stroke="#ffd400" stroke-width="${f1(Math.max(1.5, r / 6))}" stroke-linecap="round"/>${lbl}</g>`;
+      }
+      const [px, py] = polar(cx, cy, r * .85, a);
+      return `<g class="gp-knob" data-param="${esc(p.id)}"><circle cx="${cx}" cy="${cy + 1.3}" r="${r + .4}" fill="#000" opacity=".45"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-knob-alu)"/>
+  <circle cx="${cx}" cy="${cy}" r="${f1(r - .6)}" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="1.4" stroke-dasharray=".5 .9"/>
+  <circle cx="${cx}" cy="${cy}" r="${f1(r * .56)}" fill="url(#gp-knob-alu)" stroke="#000" stroke-opacity=".2" stroke-width=".4"/>
+  <path d="M${cx} ${cy}L${f1(px)} ${f1(py)}" stroke="#111" stroke-width="${f1(Math.max(1.3, r / 7))}" stroke-linecap="round"/>${lbl}</g>`;
+    };
+  }
+
+  function metalColors(spec, style) {
+    const hue = metalHue(spec, style);
+    const light = RUNE_LIGHT[spec.crate] || RUNE_LIGHT[spec.category] || mix(hue, '#fff', .3);
+    const darkInk = style === 'thrash' ? luma(hue) > .5 : luma(hue) > .38;
+    return {
+      hue, light,
+      top: mix(hue, '#fff', .22), bottom: mix(hue, '#000', .5), base: mix(hue, '#000', .78),
+      faceTop: mix(hue, '#000', .12), faceBottom: mix(hue, '#000', .38),
+      ink: darkInk ? mix(hue, '#000', .85) : (style === 'thrash' ? '#fff4ee' : mix(hue, '#fff', .9)),
+      rim: mix(hue, '#fff', .6),
+      engraveDark: mix(hue, '#000', .7), engraveLight: mix(hue, '#fff', .65),
+    };
+  }
+
+  function gfxPedalMetal(spec, opts, style) {
+    const on = opts.on !== false;
+    const c = metalColors(spec, style), id = 'gpm' + (++metalCount);
+    const knobs = spec.knobs || [], sels = spec.selectors || [], togs = spec.toggles || [];
+    const W = knobs.length <= 2 && !sels.length ? 92 : 112, H = 200;
+    const rx = style === 'thrash' ? 7 : 10;
+    const grid = knobGrid(knobs, 6, W - 6, 10, c.light, 'metal', knobMetal(style, c.ink));
+    let y = knobs.length ? grid.bottom : 22;
+    let svg = grid.svg;
+    const row = [...sels.map(p => ({ p, k: 's' })), ...togs.map(p => ({ p, k: 't' }))];
+    if (row.length) {
+      y += 10;
+      row.forEach((it, i) => {
+        const cx = W * (i + .5) / row.length;
+        svg += it.k === 's' ? selectorClay(cx, y, 6.5, it.p, style === 'thrash' ? '#ffd400' : c.light, null, c.ink) : toggleClay(cx, y, it.p, c.ink);
+      });
+      y += 15;
+    }
+    const top = y, bottom = 148;
+    const gy = (top + bottom - 6) / 2, gsize = Math.max(18, Math.min(38, bottom - top - 22));
+    const cw = Math.min(W - 26, gsize + 30), ch = gsize + 12;
+    const g = { x: W / 2, y: gy, cw, ch };
+
+    const body = style === 'thrash'
+      ? `<rect x="0" y="5" width="${W}" height="${H}" rx="${rx}" fill="${c.base}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#${id}-b)"/>`
+      : `<rect x="0" y="5" width="${W}" height="${H}" rx="${rx}" fill="${c.base}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#${id}-b)"/>
+  <rect x="4" y="4" width="${W - 8}" height="${H - 8}" rx="${rx - 3}" fill="url(#${id}-f)"/>
+  <rect x="4" y="4" width="${W - 8}" height="${H - 8}" rx="${rx - 3}" fill="url(#gp-brush-lines)"/>`;
+    const finish = style === 'thrash'
+      ? `<rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#gp-gloss)"/>
+<g stroke="#fff" stroke-opacity=".28" stroke-width=".45"><path d="M${f1(W * .1)} ${f1(H * .5)}l${f1(W * .28)} -6"/><path d="M${f1(W * .74)} ${f1(H * .14)}l${f1(W * .2)} 9"/><path d="M${f1(W * .2)} ${f1(H * .3)}l7 -6"/></g>
+<rect x="5" y="${H - 40}" width="${W - 10}" height="34" rx="3" fill="url(#gp-plate)" stroke="#000" stroke-width=".8"/>
+${[[9, H - 36], [W - 9, H - 36], [9, H - 10], [W - 9, H - 10]].map(([x, yy]) => `<circle cx="${x}" cy="${yy}" r="1.4" fill="url(#gp-chrome)"/>`).join('')}`
+      : `<rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#gp-anod-sheen)"/>
+<rect x=".6" y=".6" width="${W - 1.2}" height="${H - 1.2}" rx="${rx - .6}" fill="none" stroke="${c.rim}" stroke-opacity=".7" stroke-width="1"/>
+<rect x="4" y="4" width="${W - 8}" height="${H - 8}" rx="${rx - 3}" fill="none" stroke="${c.base}" stroke-opacity=".5" stroke-width=".8"/>`;
+
+    // the cartouche: a hexagon in black lacquer, or a dark pill with a light rim
+    const cart = style === 'thrash'
+      ? `<path d="M${f1(g.x - cw / 2)} ${f1(gy)}L${f1(g.x - cw / 2 + ch * .45)} ${f1(gy - ch / 2)}H${f1(g.x + cw / 2 - ch * .45)}L${f1(g.x + cw / 2)} ${f1(gy)}L${f1(g.x + cw / 2 - ch * .45)} ${f1(gy + ch / 2)}H${f1(g.x - cw / 2 + ch * .45)}Z" fill="#0b0707" stroke="#000" stroke-width="2"/>`
+      : `<path d="${pill(g.x - cw / 2, gy - ch / 2, cw, ch)}" fill="${mix(c.hue, '#000', .88)}" stroke="${c.rim}" stroke-opacity=".6" stroke-width="1"/>`;
+    const rune = cart + (on
+      ? glyphAt(spec.glyph, g.x, gy, gsize, c.light, 2.8, 'filter="url(#gp-glow)" opacity=".95"') + glyphAt(spec.glyph, g.x, gy, gsize, mix(c.light, '#fff', .75), 1.3)
+      : glyphAt(spec.glyph, g.x, gy, gsize, mix(c.hue, '#000', .45), 1.8));
+
+    const name = spec.name.toUpperCase(), fs = name.length > 10 ? 10 : name.length > 7 ? 12 : 14;
+    const nameSvg = style === 'thrash'
+      ? `<text x="${W / 2}" y="${bottom + 8}" text-anchor="middle" font-family="${FONT.nam}" font-size="${fs + 1}" font-weight="900" letter-spacing="1" fill="#fff" stroke="#000" stroke-width="1.8" paint-order="stroke" transform="rotate(-5 ${W / 2} ${bottom + 4})">${esc(name)}</text>`
+      : `<text x="${W / 2}" y="${bottom + 7}" text-anchor="middle" font-family="${FONT.nam}" font-size="${fs}" font-weight="900" letter-spacing="2.5" fill="${c.ink}">${esc(name)}</text>`;
+    const ledX = style === 'thrash' ? W - 22 : W / 2, ledY = style === 'thrash' ? H - 23 : bottom + 16;
+    const led = `<circle cx="${ledX}" cy="${ledY}" r="3" fill="#000" opacity=".7"/><circle cx="${ledX}" cy="${ledY}" r="2.3" fill="${on ? c.light : mix(c.hue, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>${on ? `<circle cx="${ledX}" cy="${ledY}" r="1.3" fill="#fff"/>` : ''}`;
+
+    return `<svg class="gp-pedal gp-gfx gp-${style}${on ? ' is-on' : ''}" viewBox="-6 -4 ${W + 12} ${H + 16}" width="${opts.width || W + 12}" ` +
+      `role="img" aria-label="${esc(spec.name)} — golem-fx ${esc(spec.crate)}" data-crate="${esc(spec.crate)}" data-style="${style}">
+<defs>
+  <linearGradient id="${id}-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.top}"/><stop offset=".48" stop-color="${c.hue}"/><stop offset="1" stop-color="${c.bottom}"/></linearGradient>
+  <linearGradient id="${id}-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.faceTop}"/><stop offset="1" stop-color="${c.faceBottom}"/></linearGradient>
+  <clipPath id="${id}-c"><rect x="${style === 'thrash' ? 0 : 4}" y="${style === 'thrash' ? 0 : 4}" width="${style === 'thrash' ? W : W - 8}" height="${style === 'thrash' ? H : H - 8}" rx="${style === 'thrash' ? rx : rx - 3}"/></clipPath>
+</defs>
+<g filter="url(#gp-shadow)">
+  ${jacks(W, 40)}
+  ${body}
+</g>
+<g clip-path="url(#${id}-c)">${motifSvg(MOTIF[spec.crate], style, W, H, g, c)}</g>
+${finish}
+${svg}
+${rune}
+${nameSvg}
+${led}
+${stompSwitch(W / 2, H - 21, 8.5)}
+<text x="${W - 8}" y="${H - 4}" text-anchor="end" font-family="${FONT.gfx}" font-size="5" font-weight="700" fill="${style === 'thrash' ? '#fff' : c.ink}" fill-opacity=".6">golem fx</text>
+</svg>`;
+  }
+
+  // the wah in metal: the same treadle, the body in the finish, the rune lit in the family's light
+  function gfxTreadleMetal(spec, opts, style) {
+    const on = opts.on !== false;
+    const c = metalColors(spec, style), id = 'gpm' + (++metalCount);
+    const W = 124, H = 228, rx = style === 'thrash' ? 8 : 12;
+    const knobs = spec.knobs || [], sels = spec.selectors || [];
+    let parts = '';
+    knobs.forEach((p, i) => { parts += knobMetal(style, c.ink)(26 + i * 22, H - 26, 7, Object.assign({}, p, { name: '' })); });
+    sels.forEach(p => { parts += selectorClay(W - 26, H - 26, 6, p, style === 'thrash' ? '#ffd400' : c.light, null, c.ink); });
+    return `<svg class="gp-pedal gp-gfx gp-treadle gp-${style}${on ? ' is-on' : ''}" viewBox="-6 -4 ${W + 12} ${H + 16}" width="${opts.width || W + 12}" role="img" aria-label="${esc(spec.name)} — golem-fx ${esc(spec.crate)}" data-crate="${esc(spec.crate)}" data-style="${style}">
+<defs><linearGradient id="${id}-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.top}"/><stop offset=".48" stop-color="${c.hue}"/><stop offset="1" stop-color="${c.bottom}"/></linearGradient></defs>
+<g filter="url(#gp-shadow)">
+  ${jacks(W, 150)}
+  <rect x="0" y="8" width="${W}" height="${H}" rx="${rx}" fill="${c.base}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#${id}-b)"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="${rx}" fill="url(#${style === 'thrash' ? 'gp-gloss' : 'gp-anod-sheen'})"/>
+</g>
+${style === 'thrash' ? `<rect x="6" y="${H - 44}" width="${W - 12}" height="38" rx="3" fill="url(#gp-plate)" stroke="#000" stroke-width=".8"/>` : `<rect x=".6" y=".6" width="${W - 1.2}" height="${H - 1.2}" rx="${rx - .6}" fill="none" stroke="${c.rim}" stroke-opacity=".7"/>`}
+<g filter="url(#gp-shadow-small)">
+  <path d="M12 14 Q${W / 2} 4 ${W - 12} 14 L${W - 9} ${H - 50} Q${W / 2} ${H - 44} 9 ${H - 50}Z" fill="${mix(c.hue, '#000', .55)}"/>
+  <rect x="22" y="22" width="${W - 44}" height="${H - 94}" rx="6" fill="#121212"/>
+  <rect x="22" y="22" width="${W - 44}" height="${H - 94}" rx="6" fill="url(#gp-grip)"/>
+</g>
+${on ? glyphAt(spec.glyph, W / 2, 86, 40, c.light, 2.8, 'filter="url(#gp-glow)"') + glyphAt(spec.glyph, W / 2, 86, 40, mix(c.light, '#fff', .75), 1.3) : glyphAt(spec.glyph, W / 2, 86, 40, mix(c.hue, '#000', .3), 2)}
+<text x="${W / 2}" y="${H - 56}" text-anchor="middle" font-family="${FONT.nam}" font-size="13" font-weight="900" letter-spacing="2.5" fill="${style === 'thrash' ? '#fff' : c.ink}"${style === 'thrash' ? ' stroke="#000" stroke-width="1.6" paint-order="stroke"' : ''}>${esc(spec.name.toUpperCase())}</text>
+<circle cx="${W / 2}" cy="${H - 44}" r="2.4" fill="${on ? c.light : mix(c.hue, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+${parts}
 </svg>`;
   }
 
@@ -715,9 +1054,13 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     }
   }
 
-  root.GolemPedals = {
+  // the golem-fx finish: 'auto' (by family, default), 'anodized', 'thrash'; 'clay' is the first prototype's
+  const api = {
     defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners },
+    style: 'auto', STYLES: ['auto'].concat(METAL_STYLES, 'clay'), MOTIF, METAL_HUE, FAMILY_FINISH, CRATE_FINISH, finishFor,
+    setStyle(s) { if (this.STYLES.includes(s)) this.style = s; return this.style; },
   };
+  root.GolemPedals = api;
 })(typeof window !== 'undefined' ? window : globalThis);

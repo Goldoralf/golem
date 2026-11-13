@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { blank, seatPatchLane, PATCH_REALM, swapVitalPreset, sameSound } from './designer-model.js';
+import { blank, seatPatchLane, PATCH_REALM, swapVitalPreset, sameSound, archOf } from './designer-model.js';
+import { readFileSync } from 'node:fs';
 
 // la carte d'entrées de le 2026-10-10 (Volt 276) : le micro 48 V sur IN 1, la guitare sur IN 2
 const IMAP = {
@@ -130,4 +131,15 @@ test('sameSound ignores the ids and switches a deposit changes, not the sound', 
   lane.pre[1].params.mix = 0.3;
   lane.post.push({ type: 'volume', id: 'vol' });
   assert.ok(!sameSound(patch, lane));                       // un bloc ajouté : retouché
+});
+
+// les deux 5150 (2026-11-13) : « Peavey 5150 II » tombait sur l'EVH 5150 (match « 5150 ») — le mot-clé le plus long
+// l'emporte, donc « peavey 5150 » / « 5150 ii » rangent le Peavey, et « 5150 iii » garde l'EVH devant « 5150 ii »
+test('les deux 5150 : la capture Peavey et la capture EVH ne se confondent pas', () => {
+  const amps = JSON.parse(readFileSync(new URL('../library/catalog/effects.json', import.meta.url))).amps;
+  const id = title => (archOf(amps, { amp: title }) || {}).id;
+  assert.equal(id('Peavey 5150 II'), 'peavey-6505');
+  assert.equal(id('EVH 5150 III Stealth'), '5150');
+  assert.equal(id('5150 III 50W'), '5150');
+  assert.equal(id('Peavey 6505+'), 'peavey-6505');
 });

@@ -2,7 +2,7 @@
 # prenait la dernière starlette, dont le client de test exige un paquet absent, et la suite ne tournait plus.
 # Monter une version = la changer ici, régénérer bridge/requirements.lock (commande dans provision/bridge-setup.sh),
 # relancer `pytest`, puis commiter les deux. L'installation Linux lit le VERROU, empreintes comprises.
-fastapi==0.138.2
+fastapi==0.162.4
 uvicorn[standard]==0.49.0
 python-osc==1.10.2
 python-rtmidi==1.5.8

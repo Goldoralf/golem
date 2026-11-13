@@ -778,6 +778,14 @@ is `engine_only: "golem"`: the compiler drops it under REAPER, whose JSFX has no
 four block presets moved to `flanger-js`.
 No factory patch used the Calf block. golem-fx retires GoleM FX Flanger Calf.
 
+**2026-11-13 — REAPER stall bench on the blocks golem.fm's AI may not propose yet (catalog v41).** The rack was
+switched to REAPER for the run, then back. A first run was void: a golem-fx Rust build in parallel (load 10, 152
+xruns) made plain JSFX "freeze" up to 500 ms. On a quiet machine, two passes (8 + 18 switch-ons per block):
+chorus-js, pitch-shift-js, guitar-drive and capture-module freeze nothing (≤ 4 ms) and lose `bench: pending`.
+flanger-js (REAPER's JS flanger) froze once in 26 (521 ms) and stays pending — the maintainer's call: no rerun under
+REAPER; the flag is settled when the Golem Engine becomes the default, where gfx-flanger plays it (stall-free); pitch-spectral is not installed on this
+machine, not measured. `check-block-stall.py` now warns when the load average is high.
+
 ## 8. Risks
 
 - **Scene latency.** REAPER's scene switch is tuned (union materialization, ≤ 40 ms). Ardour's bypass may

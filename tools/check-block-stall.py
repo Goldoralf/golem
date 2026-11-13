@@ -114,6 +114,15 @@ def main():
     print("piste : « %s » · %d allumages par durée · éteint %s s avant de rallumer\n" % (a.track, a.n, " / ".join("%g" % w for w in waits)))
     base = [abs(stall(lambda: None, 1.0)) for _ in range(3)]
     print("témoin (rien ne bouge) : %.0f ms\n" % max(base))
+    # une machine CHARGÉE fabrique des gels : le 2026-11-13, une compilation Rust en parallèle (charge 10) a fait
+    # « figer » de simples JSFX jusqu'à 500 ms ; machine au calme, les mêmes : 0 gel. Le dire avant de mesurer.
+    try:
+        load = os.getloadavg()[0]
+        if load > (os.cpu_count() or 4) / 3:
+            print("⚠ machine chargée (charge %.1f sur %d cœurs) : un gel mesuré peut venir d'ailleurs — "
+                  "refaire au calme avant de mettre un bloc en quarantaine\n" % (load, os.cpu_count() or 0), flush=True)
+    except (AttributeError, OSError):
+        pass
     verdicts = []
     stomp = lambda ids, on: write_command({"action": "stomp", "preset": pid, "ids": ids, "on": on, "_route": "rig_recall"})
     if a.rig:

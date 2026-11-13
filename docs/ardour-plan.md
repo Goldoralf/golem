@@ -786,8 +786,16 @@ Measured, buffer sizes: 192 → 100 % and xruns, 256 → 84 %, 384 → 77 %, no 
 **323 µs**, golem-fx reverb 204, delay 131, IR cabs ~90 each, the small golem-fx blocks 20–80. RT scheduling is fine
 (FIFO 78–80). The cause that dominates: **the CPU governor was `powersave`, the core at 0.67 GHz** — with
 `performance` (the Dashboard's ⚡ CPU boost) the load drops from 80 % to 31 %. REAPER hides it with anticipative FX
-processing; Ardour has to finish each 4 ms cycle. Open: stop computing a muted branch (needs the scene-gap bench
-before it ships).
+processing; Ardour has to finish each 4 ms cycle.
+**CODED, OFF by default 2026-11-13 — a muted branch sleeps.** A route mute leaves Ardour computing the branch's
+plugins (the muted branch's NAM cost as much as the playing one). With `config/golem-engine.json`
+`"sleep_muted_branches": true` (read at every scene), the watcher deactivates a muted branch's plugins AFTER the mute
+and the blocks' enable, and reactivates them BEFORE the unmute (`apply_state`, `RIG.asleep`; `dump` reports `asleep`
+per route and `active` per block). The engine bench turns it on and checks both directions (scene A: branch B asleep,
+even its gate that the scene keeps on; scene B: B awake, A asleep). **Open: the measure that decides the default** —
+`tools/check-scene-gap.py` on the Golem Engine, switch on and off: a gap or a click when a branch wakes (NAM and
+reverb tails restart cold) would keep it off. The probe plays a continuous test tone on the rack: the maintainer's go
+first.
 **CODED 2026-11-13 — the safety limiter is compiled.** The watcher puts golem-fx's `gfx-limiter` last on every route
 that goes to the card, set like `golem_safety.jsfx`: no lookahead (latency 0), threshold −1 dBFS, release 15 ms, style
 clean, fixed release. The Lua `golem Safety` stays as the fallback when the plugin is missing (logged). Measured on the

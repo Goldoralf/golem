@@ -39,6 +39,10 @@ def main():
     C.BRIDGE_OSC_RECV_PORT = free_udp_port()
     os.makedirs(C.PRESETS_DIR)
     os.makedirs(os.path.join(work, "library"))
+    # la branche muette ENDORMIE (2026-11-13) : allumée ici pour l'éprouver ; éteinte par défaut sur un rack
+    os.makedirs(os.path.join(work, "config"))
+    with open(os.path.join(work, "config", "golem-engine.json"), "w", encoding="utf-8") as f:
+        json.dump({"sleep_muted_branches": True}, f)
     os.symlink(os.path.join(ROOT, "library", "catalog"), os.path.join(work, "library", "catalog"))   # lu, jamais écrit
     from bridge import monitors
     monitors._WATCH_LOG = os.path.join(C.PRESETS_DIR, ".watch.log")
@@ -210,6 +214,10 @@ def rig_bench(eng, check, wait, acked):
           merge.get("safety") == "gfx-limiter" and not any(x.get("safety") for x in (pre, la, lb)), str(merge.get("safety")))
     blk = d.get("blocks") or {}
     check("scène A : branche B muette, A ouverte", lb.get("mute") is True and la.get("mute") is False)
+    check("scène A : la branche B muette est ENDORMIE (son gate, actif dans la scène, n'est pas calculé)",
+          lb.get("asleep") is True and (blk.get("gate-b") or {}).get("active") is False and la.get("asleep") is False
+          and (blk.get("amp-a") or {}).get("active") is True,
+          f"B asleep={lb.get('asleep')} gate-b active={(blk.get('gate-b') or {}).get('active')}")
     check("scène A : delay coupé, NAM A actif", (blk.get("dly") or {}).get("enabled") is False
           and (blk.get("amp-a") or {}).get("enabled") is True)
     check("paramètre posé (NAM A Output 3,7 dB)",
@@ -247,6 +255,10 @@ def rig_bench(eng, check, wait, acked):
     blk = d.get("blocks") or {}
     check("scène B sans rebuild : branche A muette, B ouverte",
           (tr.get("GoleM:bench/lane-a") or {}).get("mute") is True and (tr.get("GoleM:bench/lane-b") or {}).get("mute") is False)
+    check("scène B : la branche B RÉVEILLÉE (NAM et gate calculés), la A endormie",
+          (tr.get("GoleM:bench/lane-b") or {}).get("asleep") is False and (blk.get("amp-b") or {}).get("active") is True
+          and (blk.get("gate-b") or {}).get("active") is True and (tr.get("GoleM:bench/lane-a") or {}).get("asleep") is True,
+          f"amp-b active={(blk.get('amp-b') or {}).get('active')} gate-b active={(blk.get('gate-b') or {}).get('active')}")
     check("scène B : delay allumé, entrée du NAM B à +4 dB", (blk.get("dly") or {}).get("enabled") is True
           and abs(((blk.get("amp-b") or {}).get("params") or {}).get("Input Lvl", 0) - 4.0) < 0.01)
 

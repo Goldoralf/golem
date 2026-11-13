@@ -792,10 +792,14 @@ plugins (the muted branch's NAM cost as much as the playing one). With `config/g
 `"sleep_muted_branches": true` (read at every scene), the watcher deactivates a muted branch's plugins AFTER the mute
 and the blocks' enable, and reactivates them BEFORE the unmute (`apply_state`, `RIG.asleep`; `dump` reports `asleep`
 per route and `active` per block). The engine bench turns it on and checks both directions (scene A: branch B asleep,
-even its gate that the scene keeps on; scene B: B awake, A asleep). **Open: the measure that decides the default** —
-`tools/check-scene-gap.py` on the Golem Engine, switch on and off: a gap or a click when a branch wakes (NAM and
-reverb tails restart cold) would keep it off. The probe plays a continuous test tone on the rack: the maintainer's go
-first.
+even its gate that the scene keeps on; scene B: B awake, A asleep).
+**Measured 2026-11-13 — it stays OFF.** `check-scene-gap.py --seq A,B -n 5 --lane 2` on the rack (Golem Engine,
+Modern Metal, whose A and B swap the muted branch, screen and foot paths, 20 switches each run): switch **off**, 0 gaps
+and 1 dip (−8 dB) in 20; switch **on**, 0 gaps but a dip on almost every wake (9 of 10 switches toward the woken
+branch, −7 to −15 dB under the quieter scene). A reactivated NAM restarts cold: the level sags for a moment, which a
+player hears. The muted branch keeps being computed; the CPU boost covers its cost. Ways to revisit: wake the branch
+one cycle before the unmute, or keep the amp awake and put only the rest to sleep — each to be measured the same way.
+The same run showed the CPU boost switching itself on with the Golem Engine and off again back on REAPER.
 **CODED 2026-11-13 — the safety limiter is compiled.** The watcher puts golem-fx's `gfx-limiter` last on every route
 that goes to the card, set like `golem_safety.jsfx`: no lookahead (latency 0), threshold −1 dBFS, release 15 ms, style
 clean, fixed release. The Lua `golem Safety` stays as the fallback when the plugin is missing (logged). Measured on the

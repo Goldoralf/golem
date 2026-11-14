@@ -7,7 +7,7 @@
 // NB : distinct de page-pedals.js (panneau MIDI Whammy DT de Settings ▸ Pedalboard).
 import { html, useState, useEffect, useAsync, cls, esc, setTopAction, setSubToolbar, getCatalog, refreshCatalog, useRev } from './lib.js';
 import { CAT_COLOR, capText, archOf, GOLEM_FX } from './designer-model.js';
-import { useVisuals, Drawing, namPedalSvg, usePage, Pager, useAudition, PlayMark, AuditionNote, knobsOf, knobsSvg, takeOpen } from './tones-ui.js';
+import { useVisuals, Drawing, namPedalSvg, useAudition, PlayMark, AuditionNote, knobsOf, knobsSvg, takeOpen } from './tones-ui.js';
 import { pedalSvg } from './golem-visuals.js';
 import { T3kModal } from './t3k-modal.js';
 import { Detail as CaptureDetail, famOf } from './page-amps.js';
@@ -75,8 +75,6 @@ export function FxBlocksPage({ role, gears } = {}) {
   const [bcat, setBcat] = useState(null);
   const curCat = bcat && builtCats.includes(bcat) ? bcat : (builtCats.includes('drive') ? 'drive' : builtCats[0]);
   const built = fx.filter(e => e.category === curCat && isBuilt(e) && (!q || (e.name + ' ' + (e.short || '') + ' ' + e.type + ' ' + (e.plugin || '')).toLowerCase().includes(q)));
-  const per = 14;
-  const pg = usePage(mode === 'captured' ? boardShown.length : built.length, per, [mode, pfam, curCat, q, role]);
   const [opened] = useState(() => takeOpen('pedal'));
   useEffect(() => { if (opened && !selPed) { const p = board.find(b => b.key === opened); if (p) setSelPed(p); } }, [opened, board.length]);
 
@@ -104,13 +102,12 @@ export function FxBlocksPage({ role, gears } = {}) {
           : builtCats.map(c => html`<button class=${cls('chip', curCat === c && 'on')} onClick=${() => setBcat(c)}>${CAT_LABEL[c] || c}</button>`)}</div>
       </div>
       <div class="tn-board"><div class="tn-pedals">${mode === 'captured'
-        ? boardShown.slice(pg.from, pg.to).map(p => html`<button class=${cls('tn-tile tn-ped', !p.caps.length && 'ghost')} aria-label=${p.name} onClick=${() => setSelPed(p)}>
+        ? boardShown.map(p => html`<button class=${cls('tn-tile tn-ped', !p.caps.length && 'ghost')} aria-label=${p.name} onClick=${() => setSelPed(p)}>
             ${vis ? html`<${Drawing} svg=${namPedalSvg(p.arch, p.short, p.family === 'other' ? 'boost' : p.family, p.caps.length > 0)} />` : html`<div class="tn-draw"></div>`}
             <b>${p.name}</b><span>${p.caps.length ? `${p.caps.reduce((s, t) => s + (t.models || []).length, 0)} captures` : 'Find on TONE3000'}</span></button>`)
-        : built.slice(pg.from, pg.to).map(e => html`<button class="tn-tile tn-ped" aria-label=${e.name} onClick=${() => setSel(e)}>
+        : built.map(e => html`<button class="tn-tile tn-ped" aria-label=${e.name} onClick=${() => setSel(e)}>
             ${vis ? html`<${Drawing} svg=${pedalSvg({ type: e.type, title: e.short || e.name })} />` : html`<div class="tn-draw"></div>`}
             <b>${e.name}</b><span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '').split(/[ (]/)[0]}</span></button>`)}</div></div>
-      <${Pager} pg=${pg} />
     </div>
     ${t3k ? html`<${T3kModal} initGear="pedal" onClose=${() => setT3k(false)} onInstalled=${() => { refreshCatalog(); setCatTick(x => x + 1); }} />` : ''}
     </div>`;
@@ -124,8 +121,8 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
   for (const t of p.caps) for (const m of (t.models || [])) models.push({ t, m });
   const firstKnobs = Math.max(0, models.findIndex(x => knobsOf(x.m.name).length));
   const [selI, setSelI] = useState(firstKnobs);
-  const pg = usePage(models.length, 6, [p.key]);
-  useEffect(() => { pg.set(Math.floor(firstKnobs / 6)); }, [p.key]);
+  // la capture choisie à l'ouverture (la première qui dit ses potards) : la liste défile jusqu'à elle
+  useEffect(() => { const r = document.querySelector('.tn-rows .tn-row.cur'); if (r) r.scrollIntoView({ block: 'nearest' }); }, [p.key]);
   const cur = models[selI];
   const kn = cur ? knobsOf(cur.m.name) : [];
   const P = window.GolemPedals;
@@ -140,7 +137,7 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
     <section class="tn-caps">
       <header><b>Captured settings</b><em>${models.length}</em></header>
       ${models.length ? html`<div class="tn-split">
-        <div class="tn-rows">${models.slice(pg.from, pg.to).map((x, i) => { const k = pg.from + i; return html`
+        <div class="tn-rows">${models.map((x, i) => { const k = i; return html`
           <button class=${cls('tn-row', au.playing(x.t.id, x.m.id) && 'on', k === selI && 'cur')} onClick=${() => tap(k)}>
             <span class="nm">${x.m.name || 'model'}<small>${x.t.amp || x.t.title}</small></span>
             ${knobsOf(x.m.name).length ? html`<i class="t-gain">knobs</i>` : ''}
@@ -149,7 +146,6 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
           ? html`<div dangerouslySetInnerHTML=${{ __html: knobsSvg(kn, col) }}></div>`
           : html`<p class="muted">The settings are not written in this capture's name.</p>`}</div>
       </div>` : html`<div class="tn-rows"><p class="muted">No capture of this pedal on the rack yet.</p></div>`}
-      <${Pager} pg=${pg} />
       ${models.length ? html`<${AuditionNote} au=${au} />` : ''}
       <div class="tn-act"><button class="mini" onClick=${onT3k}>Find more on TONE3000</button><span class="grow"></span>
         ${cur ? html`<button class="mini" onClick=${() => onOpen(cur.t)}>Pack details</button>` : ''}</div>
@@ -160,7 +156,6 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
 function BuiltinPanel({ e, vis, onClose }) {
   const { data } = useAsync(() => fetch('/api/block-presets/' + encodeURIComponent(e.type)).then(r => r.json()), [e.type]);
   const presets = (data && data.presets) || [];
-  const pg = usePage(presets.length, 7, [e.type]);
   return html`<div class="tn-detail">
     <section class="tn-stage board"><button class="tn-back" onClick=${onClose}>‹ Pedals</button>
       <div class="tn-spot pedal">${vis ? html`<${Drawing} svg=${pedalSvg({ type: e.type, title: e.short || e.name })} align="xMidYMid" />` : ''}</div>
@@ -170,10 +165,9 @@ function BuiltinPanel({ e, vis, onClose }) {
     </section>
     <section class="tn-caps">
       <header><b>Factory presets</b><em>${presets.length}</em></header>
-      <div class="tn-rows">${presets.length ? presets.slice(pg.from, pg.to).map(bp => html`<div class="tn-row">
+      <div class="tn-rows">${presets.length ? presets.map(bp => html`<div class="tn-row">
           <span class="nm">${bp.name}${bp.desc ? html`<small>${bp.desc}</small>` : ''}</span>${bp.default ? html`<i>default</i>` : ''}</div>`)
         : html`<p class="muted">${e.note || 'No factory preset for this effect yet.'}</p>`}</div>
-      <${Pager} pg=${pg} />
       <div class="tn-act"><span class="muted">A built-in effect has no capture: its sound is its settings. Add it from the Designer ▸ + drawer.</span></div>
     </section></div>`;
 }

@@ -8346,7 +8346,7 @@ button.mode-live{background:transparent; cursor:pointer}
 .tn-sp em{font-style:normal; color:var(--muted); font-variant-numeric:tabular-nums}
 .tn-sp.on{background:color-mix(in srgb, var(--c) 45%, var(--panel))}
 .tn-sp.dim{opacity:.45}
-.tn-shelf{flex:1; min-height:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); grid-template-rows:repeat(2, minmax(0,1fr)); gap:0 12px; padding-top:6px}
+.tn-shelf{flex:1; min-height:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); grid-auto-rows:208px; align-content:start; gap:0 12px; padding-top:6px; overflow-y:auto}
 .tn-tile{display:flex; flex-direction:column; min-height:0; min-width:0; padding:6px 6px 8px; border:0; border-radius:10px; background:none; color:var(--text); cursor:pointer; text-align:left}
 .tn-tile:hover{background:rgba(255,255,255,.03)}
 .tn-tile .tn-draw{flex:1}
@@ -8369,15 +8369,17 @@ button.mode-live{background:transparent; cursor:pointer}
 .tn-seg em{font-style:normal; opacity:.65; margin-left:4px}
 .tn-board{position:relative; flex:1; min-height:0; border-radius:12px; padding:8px 12px;
   background:radial-gradient(ellipse at 50% 0%, #22262c, #121418 70%); box-shadow:inset 0 0 0 1px #2a3038, inset 0 8px 30px rgba(0,0,0,.6)}
-.tn-board::before,.tn-board::after{content:""; position:absolute; left:8px; right:8px; height:6px; border-radius:3px; background:linear-gradient(#5a616b, #2a2f36); opacity:.6}
+/* 2026-11-14 : le contenu de Tones défile (décision du mainteneur) — les rails sont dessinés sous chaque rangée par .tn-pedals */
+.tn-board::before,.tn-board::after{display:none; content:""; position:absolute; left:8px; right:8px; height:6px; border-radius:3px; background:linear-gradient(#5a616b, #2a2f36); opacity:.6}
 .tn-board::before{top:49%}
 .tn-board::after{bottom:10px}
-.tn-pedals{position:relative; z-index:1; height:100%; display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); grid-template-rows:repeat(2, minmax(0,1fr)); gap:0 8px}
+.tn-pedals{position:relative; z-index:1; height:100%; display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); grid-auto-rows:198px; align-content:start; gap:0 8px; overflow-y:auto;
+  background:repeating-linear-gradient(to bottom, transparent 0 188px, rgba(90,97,107,.6) 188px 194px, transparent 194px 198px); background-attachment:local}
 .tn-ped b,.tn-ped span{text-align:center}
 .tn-ped b{font-size:12.5px}
 .tn-ped.ghost .tn-draw{filter:grayscale(1) brightness(.5); opacity:.55}
 .tn-ped.ghost span{color:var(--sect, #2ecc71); font-weight:600}
-.tn-wall{flex:1; min-height:0; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); grid-template-rows:repeat(2, minmax(0,1fr)); gap:4px 12px}
+.tn-wall{flex:1; min-height:0; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); grid-auto-rows:200px; align-content:start; gap:4px 12px; overflow-y:auto}
 .tn-cab .tn-draw{padding:4px 6px 0}
 .tn-echo{color:#ff8a65}
 /* les fiches */
@@ -8398,7 +8400,7 @@ button.mode-live{background:transparent; cursor:pointer}
 .tn-caps header{display:flex; align-items:center; gap:8px; margin-bottom:8px}
 .tn-caps header b{font-family:'Big Shoulders Display','Arial Narrow',sans-serif; font-size:20px; font-weight:800; letter-spacing:1px; text-transform:uppercase}
 .tn-caps header em{font-style:normal; color:var(--muted)}
-.tn-rows{flex:1; min-height:0; display:flex; flex-direction:column; gap:4px; overflow:hidden}
+.tn-rows{flex:1; min-height:0; display:flex; flex-direction:column; gap:4px; overflow-y:auto}
 .tn-row{display:flex; align-items:center; gap:10px; padding:6px 10px; min-height:44px; border-radius:8px; background:var(--panel); border:1px solid transparent;
   color:var(--text); text-align:left; cursor:pointer; flex:none}
 .tn-row.on{border-color:var(--sect, #2ecc71); background:#14251b}

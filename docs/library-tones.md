@@ -8,7 +8,9 @@ Related: [designer-glyphs-pedals.md](designer-glyphs-pedals.md) (golem-fx's visu
 [library-loans.md](library-loans.md), [tone-import.md](tone-import.md).
 
 The four tabs of Library ▸ Tones show every capture **drawn** by golem-fx's renderers (`app/vendor/golem-visuals/`,
-`tools/sync-golem-visuals.py`), on pages that turn instead of scrolling (the 1024×600 rule). Each tab opens a detail
+`tools/sync-golem-visuals.py`). Amps, Pedals and Cabs **scroll** their content (the maintainer's decision, 2026-11-14,
+replacing the pages that turned): the screen stays 1024×600, only the grid and the detail lists scroll under fixed
+filters. Outboard keeps its rack as it is. Each tab opens a detail
 view in place, where touching a capture **plays it**. Shared code: `app/tones-ui.js`.
 
 ## 1. Amps: the backline
@@ -17,7 +19,7 @@ view in place, where touching a capture **plays it**. Shared code: `app/tones-ui
   `namStack`). The look follows the gain family (`clean`, `crunch`, `high-gain`, `bass`). A named amp's family wins
   (effects.json `amps[]`); otherwise keywords, then the style.
 - The brands are a rail on the left (10, then "+ N more"). The gain family is a **proportional bar** above the shelf:
-  its widths are the counts, and tapping a segment filters. 8 amps per page.
+  its widths are the counts, and tapping a segment filters. The shelf scrolls.
 - Detail: the amp on a stage; its captures as rows, with what their **names** say as tags (mic, gain, channel).
   "Pairs with" opens a cab of the same style in the Cabs tab. The family switch (Guitar/Bass), the source link
   and the delete flow (trash, per-preset dependencies) are kept from the old card.
@@ -27,7 +29,7 @@ view in place, where touching a capture **plays it**. Shared code: `app/tones-ui
 - Two worlds: **captured pedals** (NAM) and **built-in effects** (golem-fx in metal, the others in enamel).
 - Captured: one pedal per named pedal (effects.json `pedals[]`), its captures gathered under it, then the captures no
   named pedal claims. A named pedal with no capture stays on the board **greyed**, with "Find on TONE3000".
-  Family chips filter; 14 pedals per page.
+  Family chips filter; The board scrolls, a rail under each row.
 - Detail: when a capture's name writes its settings ("Drive 7 Tone 6 Level 9", "L8 B7 T5 G10"), **the knobs are drawn
   at that position** (`knobsOf`: two settings at least, values 0–10). The detail opens on the first capture that has
   them.
@@ -36,7 +38,7 @@ view in place, where touching a capture **plays it**. Shared code: `app/tones-ui
 ## 3. Cabs: the wall
 
 - The size is read from the name, then from the IR file names ("412 Mesa" counts as 4x12; `cabSize`), and drawn
-  with that many speakers. Chips filter by size; 10 cabs per page. A pack with a late echo keeps its "echo" mark.
+  with that many speakers. Chips filter by size; The wall scrolls. A pack with a late echo keeps its "echo" mark.
 - Detail, **where the mic was**: each IR whose name places the mic is a dot on the speaker cone (center/cap,
   cap edge, mid cone, edge, or "0.50in" from the center; a 45° slash when off-axis; `micPos`). IRs taken at the
   same spot gather into one dot (×3). When the name says which speaker (UL/UR/LL/LR), only that speaker's IRs are

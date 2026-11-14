@@ -3,7 +3,7 @@
 // Grille PAGINÉE (no-scroll). Recherche + filtres sur UNE ligne (selects compacts).
 // Photos : overlay library/catalog/images.json (tone id -> fichier sous /library/images/).
 import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCatalog, refreshCatalog, setTopAction, setSubToolbar, useRev, go } from './lib.js';
-import { useVisuals, Drawing, ampSvg, AMP_FAMILIES, usePage, Pager, useAudition, PlayMark, AuditionNote, captureTags, openLater, takeOpen } from './tones-ui.js';
+import { useVisuals, Drawing, ampSvg, AMP_FAMILIES, useAudition, PlayMark, AuditionNote, captureTags, openLater, takeOpen } from './tones-ui.js';
 import { capText, archOf as archMatch } from './designer-model.js';
 import { T3kModal } from './t3k-modal.js';
 
@@ -145,7 +145,6 @@ export function AmpsPage({ role, gears } = {}) {
   const [brandsAll, setBrandsAll] = useState(false);
   const inBrand = list.filter(t => brand === 'all' || brandOf(t) === brand);
   const shown = inBrand.filter(t => chr === 'all' || guessChar(t) === chr);
-  const pg = usePage(shown.length, 8, [brand, chr, rig, style, q, fam]);
   const vis = useVisuals(fxData);
   const [opened] = useState(() => takeOpen('amp'));
   useEffect(() => { if (opened) { const t = tones.find(x => String(x.id) === opened); if (t) setSel(t); } }, [opened, tones.length]);
@@ -194,13 +193,12 @@ export function AmpsPage({ role, gears } = {}) {
         <section class="tn-main">
           <div class="tn-spectrum" data-doc="tones.gain">${fams.map(([k, l, c, n]) => html`<button class=${cls('tn-sp', chr === k && 'on', chr !== 'all' && chr !== k && 'dim')}
               style=${`flex:${Math.max(n / tot, .14)};--c:${c}`} onClick=${() => setChr(chr === k ? 'all' : k)}><b>${l}</b><em>${n}</em></button>`)}</div>
-          ${shown.length ? html`<div class="tn-shelf">${shown.slice(pg.from, pg.to).map(t => html`
+          ${shown.length ? html`<div class="tn-shelf">${shown.map(t => html`
             <button class="tn-tile tn-amp" data-doc=${'tones.amp:' + t.id} aria-label=${ampName(t)} onClick=${() => setSel(t)}>
               ${vis ? html`<${Drawing} svg=${ampSvg(t, archOf(t), guessChar(t))} />` : html`<div class="tn-draw"></div>`}
               <b>${ampName(t)}</b>
               <span>${t.gear === 'amp' ? 'Head' : 'Head + cab'} · ${t.models.length} capture${t.models.length > 1 ? 's' : ''}${t.models.some(m => String(m.arch) === '2') ? html` <i class="a2-chip">A2</i>` : ''}${lent[String(t.id)] ? html` <i class="tn-lent">lent</i>` : ''}</span>
             </button>`)}</div>` : html`<div class="empty">No amps for these filters.</div>`}
-          <${Pager} pg=${pg} />
         </section>
       </div>
       ${t3k && html`<${T3kModal} initGear="amp-cab" onClose=${() => setT3k(false)} onInstalled=${() => setCatTick(x => x + 1)} />`}
@@ -213,7 +211,6 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
   const au = useAudition();
   const [del_, setDel] = useState(false);
   const [famv, setFamv] = useState(famOf(t));
-  const pg = usePage(t.models.length, 6, [t.id]);
   const setFamily = async f => {
     setFamv(f);
     await fetch('/api/amp/' + t.id + '/family', { method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -232,12 +229,11 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
     <section class="tn-caps">
       <header><b>Captures</b><em>${t.models.length}</em><span class="grow"></span>
         ${['guitar', 'bass'].map(f => html`<button class=${cls('chip', famv === f && 'on')} onClick=${() => setFamily(f)}>${f === 'bass' ? 'Bass' : 'Guitar'}</button>`)}</header>
-      <div class="tn-rows">${t.models.slice(pg.from, pg.to).map((m, i) => html`
+      <div class="tn-rows">${t.models.map((m, i) => html`
         <button class=${cls('tn-row', au.playing(t.id, m.id) && 'on')} onClick=${() => au.play(t.id, m.id)}>
-          <span class="num">${pg.from + i + 1}</span><span class="nm">${m.name || 'model'}</span>
+          <span class="num">${i + 1}</span><span class="nm">${m.name || 'model'}</span>
           <span class="tags">${captureTags(m.name).map(([c, x]) => html`<i class=${'t-' + c}>${x}</i>`)}</span>
           <${PlayMark} on=${au.playing(t.id, m.id)} busy=${au.loading(t.id, m.id)} /></button>`)}</div>
-      <${Pager} pg=${pg} />
       <${AuditionNote} au=${au} />
       <div class="tn-act">
         ${pairs.length ? html`<span class="tn-pairs">Pairs with ${pairs.map(c => html`<button class="mini" onClick=${() => { openLater('cab', c.id); go('library/tones/cabs'); }}>${c.amp || c.title}</button>`)}</span>` : ''}

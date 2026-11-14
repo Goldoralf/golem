@@ -7,7 +7,7 @@ import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCat
 import { T3kModal } from './t3k-modal.js';
 import { DeleteFlow, famOf } from './page-amps.js';
 import { archOf } from './designer-model.js';
-import { useVisuals, Drawing, cabSvg, cabSize, micPos, micOf, usePage, Pager, useAudition, PlayMark, AuditionNote, takeOpen } from './tones-ui.js';
+import { useVisuals, Drawing, cabSvg, cabSize, micPos, micOf, useAudition, PlayMark, AuditionNote, takeOpen } from './tones-ui.js';
 
 const irName = t => t.amp || t.title || 'IR';
 // « pack à écho » (2026-09-14) : le rack a LU les fichiers — une impulsion tardive répète chaque note.
@@ -85,7 +85,6 @@ export function IRPage({ role, gears } = {}) {
   const cabs = list.map(cabOf);
   const sizes = [...new Set(cabs.map(c => c.size))].sort();
   const shown = cabs.filter(c => size === 'all' || c.size === size);
-  const pg = usePage(shown.length, 10, [size, style, q, role]);
   const [opened] = useState(() => takeOpen('cab'));
   useEffect(() => { if (opened) { const t = tones.find(x => String(x.id) === opened); if (t) setSel(t); } }, [opened, tones.length]);
 
@@ -118,14 +117,13 @@ export function IRPage({ role, gears } = {}) {
           <button class=${cls('chip', size === 'all' && 'on')} onClick=${() => setSize('all')}>All sizes <em>${cabs.length}</em></button>
           ${sizes.map(s => html`<button class=${cls('chip', size === s && 'on')} onClick=${() => setSize(s)}>${s} <em>${cabs.filter(c => c.size === s).length}</em></button>`)}</div>
           <span class="grow"></span><span class="muted" style="font-size:12px">Size read from the name · mics from the IR files</span></div>
-        ${shown.length ? html`<div class="tn-wall">${shown.slice(pg.from, pg.to).map(c => html`
+        ${shown.length ? html`<div class="tn-wall">${shown.map(c => html`
           <button class="tn-tile tn-cab" aria-label=${irName(c.t)} onClick=${() => setSel(c.t)}>
             ${vis ? html`<${Drawing} svg=${cabSvg(c)} />` : html`<div class="tn-draw"></div>`}
             <b>${irName(c.t)}</b>
             <span>${(c.t.models || []).length} IR${(c.t.models || []).length > 1 ? 's' : ''}${c.mics.length ? ' · ' + c.mics.slice(0, 2).join(' + ') : ''}${c.t.echo ? html` · <i class="tn-echo" title=${echoTitle(c.t.echo)}>echo</i>` : ''}</span>
           </button>`)}</div>`
         : html`<div class="empty">No IRs — tap <b>+ Add</b> to import a <code>.wav</code> impulse response, or download cab IRs from TONE3000.</div>`}
-        <${Pager} pg=${pg} />
       </div>`}
       ${addMenuEl}
       ${t3k ? html`<${T3kModal} initGear="cab" onClose=${() => setT3k(false)} onInstalled=${reloadCat} />` : ''}
@@ -141,7 +139,6 @@ function CabPanel({ c, vis, onClose, onDeleted }) {
   const [del_, setDel] = useState(false);
   const irs = (t.models || []).map((m, i) => ({ i, m, p: micPos(m.name), mic: micOf(m.name) }));
   const [selI, setSelI] = useState(0);
-  const pg = usePage(irs.length, 7, [t.id]);
   const cur = irs[selI];
   const P = window.GolemPedals;
   const L = P ? P.cabLayout(c.size) : { cols: 2, rows: 2 };
@@ -178,12 +175,11 @@ function CabPanel({ c, vis, onClose, onDeleted }) {
             ${d.off ? html`<path d=${`M${d.x - 5} ${d.y + 5}L${d.x + 5} ${d.y - 5}`} stroke="#0d0f12" stroke-width="2"/>` : ''}
             ${d.n > 1 ? html`<text x=${d.x + 13} y=${d.y - 9} class="tn-kv" style="font-size:12px">×${d.n}</text>` : ''}</g>`)}
         </svg>` : ''}
-        <div class="tn-rows irs">${irs.slice(pg.from, pg.to).map(x => html`
+        <div class="tn-rows irs">${irs.map(x => html`
           <button class=${cls('tn-row', au.playing(t.id, x.m.id) && 'on', x.i === selI && 'cur')} onClick=${() => tap(x.i)}>
             <span class="nm">${x.m.name || 'IR'}<small>${x.p ? [x.p.label, x.p.dist, x.p.off ? '45° off-axis' : '', x.p.spk ? 'speaker ' + x.p.spk : ''].filter(Boolean).join(' · ') : 'Blend or unnamed position'}</small></span>
             ${x.mic ? html`<i class="t-mic">${x.mic}</i>` : ''}<${PlayMark} on=${au.playing(t.id, x.m.id)} busy=${au.loading(t.id, x.m.id)} /></button>`)}</div>
       </div>
-      <${Pager} pg=${pg} />
       <${AuditionNote} au=${au} />
       <div class="tn-act"><span class="grow"></span>
         ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}

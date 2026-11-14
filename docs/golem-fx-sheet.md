@@ -68,6 +68,14 @@ not `golem`: the product's name is not a block type (`golem:golem` in the FX nam
 vocabulary); golem-fx aligned its face, glyph and snapshot (56616d1). `/api/effects` also gives every golem-fx type its
 crate (`gfx_crates`), so the app draws the right pedal even for a type golem-fx's snapshot does not list yet. Put a de-esser and a gate before it.
 
+`glitch` (Glitch, modulation — catalogue v45, golem-fx aa7851f, the maintainer's go on 2026-11-14) is the same kind: a
+spectral glitch (the sound cut into spectral bins, then held, scattered or reshaped: 30 effects; Sustain makes a pad of
+what you play). Its front panel is Effect, Amount, Sustain, Mix. It is **stereo by nature** (2/2 first, it also plays
+1/1): put it on a stereo lane. The dry is never delayed; the wet trails by the analysis window (size + size/4: 2,560
+samples, 53 ms at 48 kHz, at the default size). The plugin reports no latency unless its expert `align` is on, which
+delays the dry to match: a **setup** setting, never a scene value. There is **no footswitch action** (no `foot_mode`,
+no trigger: you set it before playing), and 17 factory presets (golem-fx e2fbdd9, default "Ringing partials"; none turns `align` on), values tuned after the maintainer listens.
+
 Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
 

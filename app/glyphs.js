@@ -168,6 +168,11 @@ export const GLYPHS = {
 "uni": "⊓",
 "label": "Noise gate"
 },
+"glitch": {
+"svg": "<path d='M3 21v-7.5M10.5 21v-7.5M18 21v-7.5'/><path d='M6 10.5V5.5M13.5 10.5V2.5M21 10.5V8'/>",
+"uni": "▞",
+"label": "Spectral glitch (gfx)"
+},
 "golem-double": {
 "svg": "<path d='M3 8.5c1.5-2.5 3-2.5 4.5 0s3 2.5 4.5 0 3-2.5 4.5 0 3 2.5 4.5 0'/><path d='M3 16c3-4 6-4 9 0s6 4 9 0' opacity='.6'/>",
 "uni": "♫",

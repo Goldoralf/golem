@@ -64,7 +64,7 @@ def test_les_blocs_du_seul_golem_fx_ne_vivent_que_la_ou_golem_fx_joue(monkeypatc
     from bridge import rig
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
     q = rig.quarantined_types()
-    only = ("met", "emet", "shem", "golem-double")
+    only = ("met", "emet", "shem", "golem-double", "glitch")
     assert set(only) <= set(q) and all(q[t].startswith("golem-fx only") for t in only)
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: set(only))
     assert not set(only) & set(rig.quarantined_types())
@@ -87,6 +87,24 @@ def test_golem_double_est_un_bloc_de_voix_dessine_par_la_pedale_golem():
     assert plugins[table["golem-double"]["vst3"]]["crate"] == "gfx-golem"
     e = CAT["golem-double"]
     assert e["roles"] == ["voice"] and e["category"] == "pitch"
+
+
+def test_glitch_est_un_effet_spectral_sans_preset_ni_pied():
+    # v45 (golem-fx aa7851f) : sa face avant = Effect, Amount, Sustain, Mix ; aucune action au pied ; `align` (réglage de
+    # préparation, jamais une valeur de scène) reste un réglage expert, et aucun preset d'usine ne l'allume (e2fbdd9)
+    plugins, table = golem_fx._load()
+    assert plugins[table["glitch"]["vst3"]]["crate"] == "gfx-glitch"
+    assert plugins[table["glitch"]["vst3"]]["reaper"] == CAT["glitch"]["plugin"]
+    params, sheet = golem_fx.merged("glitch", CAT["glitch"]["params"])
+    assert sheet["front"] == ["fx_a", "amt_a", "sustain", "mix"] and sheet["groups"]
+    fx = next(d for d in params if d["id"] == "fx_a")
+    assert len(fx["options"]) == 30 and fx["default"] == "Ring Hold"
+    assert "align" in {d["gfx"]["id"] for d in params if d.get("gfx") and d["gfx"].get("group")}
+    d = os.path.join(golem_fx.C.ROOT, "library", "block-presets", "glitch")
+    presets = [json.load(open(os.path.join(d, f))) for f in sorted(os.listdir(d))]
+    assert [p["id"] for p in presets if p.get("default")] == ["ringing-partials"]
+    assert not any(p["params"].get("align") for p in presets)
+    assert "foot" not in CAT["glitch"] and "foot_mode" not in CAT["glitch"]
 
 
 def test_un_preset_de_golem_fx_parle_le_vocabulaire_du_bloc():

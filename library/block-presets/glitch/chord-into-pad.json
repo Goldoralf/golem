@@ -1,0 +1,77 @@
+{
+ "id": "chord-into-pad",
+ "type": "glitch",
+ "name": "Chord into pad",
+ "desc": "Each strum stacks into a steady pad that decays over six seconds; play single notes over it",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient",
+  "shoegaze"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [
+  {
+   "artist": "Hammock",
+   "why": "in the spirit of: chords swelling into long guitar pads",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "fx_a": "Ring Hold",
+  "amt_a": 60,
+  "sustain": 6000,
+  "mix": 50,
+  "size": "4096",
+  "window": "Smooth",
+  "trim": 0,
+  "cloud": 0,
+  "damp": 40,
+  "pitch": 0,
+  "spread": 0,
+  "drift": 0,
+  "lo_a": 0,
+  "hi_a": 10,
+  "fx_b": "Off",
+  "amt_b": 0,
+  "lo_b": 0,
+  "hi_b": 10,
+  "fx_c": "Off",
+  "amt_c": 0,
+  "lo_c": 0,
+  "hi_c": 10,
+  "density": 30,
+  "lfo_shape": "Sine",
+  "rate": 0.5,
+  "sync": "Off",
+  "lfo_depth": 0,
+  "lfo_dest": "Off",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 200,
+  "env_depth": 0,
+  "env_dest": "Off",
+  "wet": 0,
+  "hpf": 60,
+  "lpf": 8000,
+  "width": 70,
+  "align": false,
+  "trails": true,
+  "bypass": false
+ },
+ "notes": "4,096 points smooth the pad; damp 40 % lets the top fade first, density +30 % evens the chord out",
+ "factory": true,
+ "golem_fx_seed": "gfx-glitch",
+ "golem_fx": true
+}

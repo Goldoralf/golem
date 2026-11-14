@@ -224,6 +224,9 @@
   },
   "golem-double": {
    "unsupported": "golem-fx only (catalogue v44): golem-fx has no macOS build yet, and no original plugin plays this block"
+  },
+  "glitch": {
+   "unsupported": "golem-fx only (catalogue v45): golem-fx has no macOS build yet, and no original plugin plays this block"
   }
  },
  "unmapped": {

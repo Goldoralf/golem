@@ -434,6 +434,11 @@
    "vst3": "476F6C654D4678476F6C656D30303031",
    "golem_fx": true,
    "status": "testing"
+  },
+  "glitch": {
+   "vst3": "476F6C654D4678476C69746368303031",
+   "golem_fx": true,
+   "status": "testing"
   }
  }
 }

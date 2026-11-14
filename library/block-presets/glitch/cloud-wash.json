@@ -1,0 +1,76 @@
+{
+ "id": "cloud-wash",
+ "type": "glitch",
+ "name": "Cloud wash",
+ "desc": "A long analysis with random phases: everything played turns into a slowly evolving, blurred wash",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "ambient",
+  "drone"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [
+  {
+   "artist": "Stars of the Lid",
+   "why": "in the spirit of: guitar dissolved into slow drones",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "fx_a": "Blur",
+  "amt_a": 30,
+  "sustain": 4000,
+  "mix": 50,
+  "size": "16384",
+  "window": "Smooth",
+  "trim": 0,
+  "cloud": 80,
+  "damp": 30,
+  "pitch": 0,
+  "spread": 0,
+  "drift": 0,
+  "lo_a": 0,
+  "hi_a": 10,
+  "fx_b": "Off",
+  "amt_b": 0,
+  "lo_b": 0,
+  "hi_b": 10,
+  "fx_c": "Off",
+  "amt_c": 0,
+  "lo_c": 0,
+  "hi_c": 10,
+  "density": 0,
+  "lfo_shape": "Sine",
+  "rate": 0.5,
+  "sync": "Off",
+  "lfo_depth": 0,
+  "lfo_dest": "Off",
+  "env_sens": 50,
+  "env_att": 10,
+  "env_rel": 200,
+  "env_depth": 0,
+  "env_dest": "Off",
+  "wet": 0,
+  "hpf": 60,
+  "lpf": 9000,
+  "width": 70,
+  "align": false,
+  "trails": true,
+  "bypass": false
+ },
+ "notes": "The wet arrives ~0.4 s late at this size: a wash, not an echo. Cloud 80 % removes every transient",
+ "factory": true,
+ "golem_fx_seed": "gfx-glitch",
+ "golem_fx": true
+}

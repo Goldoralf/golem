@@ -88,6 +88,13 @@ function patchRenderers() {
   P.pedalFor = (item, opts) => {
     const it = typeof item === 'string' ? { type: item } : item;
     const b = P.blockByType(it.type);
+    // UNE CAPTURE D'OUTBOARD sur le sol du pédalier (docs/library-tones.md §6) : un module vertical façon série 500, à
+    // l'empreinte d'une pédale — ses commandes au réglage que le nom de la capture écrit ; le rack reste dans la Library
+    if ((it.type === 'preamp-nam' || it.type === 'comp-nam') && P.namModule) {
+      const label = it.label || it.title || '';
+      return P.namModule(Object.assign({}, opts || {}, { label, title: it.title || label, kind: it.type === 'comp-nam' ? 'comp' : 'preamp',
+        on: it.on !== false && (opts || {}).on !== false }));
+    }
     if (b && b.family === 'gfx' && !GOLEM_FX.has(it.type)) return P.genericPedal(b, Object.assign({}, opts || {}, it));
     // LES VRAIS RÉGLAGES sur la pédale (docs/golem-fx-sheet.md) : la face de golem-fx, ses commandes à la valeur du bloc
     if (b && b.family === 'gfx' && it.values) {
@@ -151,8 +158,15 @@ export function stageSvg(chain, laneState, opts, values) {
   const S = window.GolemStage;
   if (!S) return '';
   const o = Object.assign({ floor: 'stage', guitar: true }, opts || {});
+  // le libellé d'une capture d'outboard (« BAE 1073 ») : fromGolem ne le passe pas, le module série 500 en a besoin
+  const labels = {};
+  const scan = x => { if (Array.isArray(x)) x.forEach(scan); else if (x && typeof x === 'object') {
+    if (x.id != null && (x.type === 'preamp-nam' || x.type === 'comp-nam')) labels[x.id] = x.label || '';
+    Object.values(x).forEach(v => { if (v && typeof v === 'object') scan(v); }); } };
+  scan(chain);
   const withVals = it => {
     if (!it || typeof it !== 'object') return it;
+    if (it.id != null && labels[it.id] != null && !it.split) it = Object.assign({}, it, { label: labels[it.id] });
     if (it.split) return Object.assign({}, it, { split: Object.assign({}, it.split, { branches: (it.split.branches || []).map(br =>
       Array.isArray(br) ? br.map(withVals) : Object.assign({}, br, { items: (br.items || []).map(withVals) })) }) });
     return values && it.id != null && values[it.id] ? Object.assign({}, it, { values: values[it.id] }) : it;

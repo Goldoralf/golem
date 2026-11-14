@@ -725,6 +725,67 @@ def get_catalog():
     return d
 
 
+# ── ÉCOUTER UNE CAPTURE DEPUIS LA LIBRARY (docs/library-tones.md §4, bridge/audition.py) ─────────────────────────
+_AUDITION = {"ref": None, "model": None, "base": None, "info": None}
+
+
+def _audition_live():
+    from . import recall as recall_mod
+    return recall_mod._LAST_EMIT.get("pid") == "audition"
+
+
+def _audition_status():
+    on = _audition_live() and _AUDITION["ref"] is not None
+    if not on:
+        _AUDITION.update(ref=None, model=None, base=None, info=None)   # un rappel (pied, écran) l'a déjà remplacée
+    return {"on": on, "ref": _AUDITION["ref"], "model": _AUDITION["model"], "base": _AUDITION["base"],
+            "info": _AUDITION["info"]}
+
+
+@router.get("/api/library/audition")
+def library_audition_status():
+    return _audition_status()
+
+
+@router.post("/api/library/audition")
+async def library_audition(body: dict):
+    """Fait entendre une capture dans le patch qui joue (une copie, rien n'est écrit). body = {ref, model?}."""
+    from .state import state
+    from . import recall as recall_mod
+    from . import audition
+    if ((state.mode or {}).get("ui") or {}).get("locked"):
+        return JSONResponse({"error": "The rack is locked in this mode: unlock it to try captures."}, status_code=409)
+    if (state.perf or {}).get("recording"):
+        return JSONResponse({"error": "A take is recording: stop it before trying a capture."}, status_code=409)
+    cat = _read_json(C.CATALOG, {"tones": []}).get("tones") or []
+    tones = cat.values() if isinstance(cat, dict) else cat
+    tone = next((t for t in tones if str(t.get("id")) == str(body.get("ref"))), None)
+    if tone is None:
+        return JSONResponse({"error": "This capture is not on the rack."}, status_code=404)
+    base = state.preset_id
+    try:
+        doc, info = audition.build(load_preset(base) if base else None, state.scene_id, tone, body.get("model"))
+    except audition.AuditionError as e:
+        return JSONResponse({"error": str(e)}, status_code=409)
+    err = await recall_mod.emit_preset_async(doc, state.scene_id)
+    if err:
+        return JSONResponse({"error": err}, status_code=409)
+    _AUDITION.update(ref=str(tone.get("id")), model=info["model"], base=base, info=info)
+    return {"ok": True, **_audition_status()}
+
+
+@router.post("/api/library/audition/stop")
+async def library_audition_stop():
+    """Fin de l'écoute : le patch courant revient tel qu'il est (un rebuild : le rig de l'écoute avait un autre id)."""
+    from .state import state
+    from . import recall as recall_mod
+    was = _audition_live()
+    _AUDITION.update(ref=None, model=None, base=None, info=None)
+    if was and state.preset_id:
+        await recall_mod.recall_async(state.preset_id, state.scene_id)
+    return {"ok": True, "restored": bool(was and state.preset_id)}
+
+
 @router.post("/api/vst-host/capture/module/import")
 async def import_capture_module(request: Request):
     from . import capture_module as CM

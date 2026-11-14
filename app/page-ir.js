@@ -6,6 +6,8 @@
 import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCatalog, refreshCatalog, setTopAction, setSubToolbar, useRev } from './lib.js';
 import { T3kModal } from './t3k-modal.js';
 import { DeleteFlow, famOf } from './page-amps.js';
+import { archOf } from './designer-model.js';
+import { useVisuals, Drawing, cabSvg, cabSize, micPos, micOf, usePage, Pager, useAudition, PlayMark, AuditionNote, takeOpen } from './tones-ui.js';
 
 const irName = t => t.amp || t.title || 'IR';
 // « pack à écho » (2026-09-14) : le rack a LU les fichiers — une impulsion tardive répète chaque note.
@@ -68,20 +70,27 @@ export function IRPage({ role, gears } = {}) {
   const brands = [...new Set(list.map(brandOf))].sort((a, b) => a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b));
   const byBrand = b => list.filter(t => brandOf(t) === b).sort((x, y) => irName(x).localeCompare(irName(y)));
 
-  const Card = t => html`
-    <div class=${cls('card syn', sel && String(sel.id) === String(t.id) && 'on')} onClick=${() => setSel(t)}
-      style=${'--sc:' + styleColor(t.style)}>
-      <div class="fxb-icon">◨</div>
-      <div class="syn-body">
-        <h3>${esc(irName(t))}</h3>
-        <div class="gear muted">${esc(t.creator || t.brand || '—')}${t.models ? ' · ' + t.models.length + ' IR' : ''}${t.style ? ' · ' + esc(t.style) : ''}</div>
-        ${t.echo ? html`<span class="echo-chip" title=${echoTitle(t.echo)}>⚠ echo</span>` : ''}
-      </div>
-    </div>`;
+  // LE MUR DE BAFFLES (docs/library-tones.md §3) : la taille lue dans le nom (puis dans les IR), dessinée avec le
+  // bon nombre de haut-parleurs ; filtre par taille ; 10 baffles par page
+  const fxDoc = useAsync(() => fetch('/api/effects').then(r => r.json()), []).data || null;
+  const vis = useVisuals(fxDoc);
+  const [size, setSize] = useState('all');
+  const cabOf = t => { const sz = cabSize(t) || '4x12';
+    const a = archOf((fxDoc && fxDoc.cabs) || [], t);
+    const all = irName(t) + ' ' + (t.models || []).map(m => m.name).join(' ');
+    const mics = [...new Set((all.match(/sm ?-?57|sm ?58|sm7b|r-?121|origin|u67|md ?421/ig) || []).map(m => m.replace(/[\s-]/g, '').toUpperCase().replace('ORIGIN', 'Origin')))];
+    return { t, size: sz, mics, look: t.style === 'metal' ? 'high-gain' : t.style === 'bass' ? 'bass' : 'crunch',
+      title: (a ? String(a.short || a.name).replace(/\s*\(.*\)/, '') : brandOf(t) !== 'Other' ? brandOf(t) : irName(t).split(/[\s-]/)[0]).slice(0, 12) }; };
+  const cabs = list.map(cabOf);
+  const sizes = [...new Set(cabs.map(c => c.size))].sort();
+  const shown = cabs.filter(c => size === 'all' || c.size === size);
+  const pg = usePage(shown.length, 10, [size, style, q, role]);
+  const [opened] = useState(() => takeOpen('cab'));
+  useEffect(() => { if (opened) { const t = tones.find(x => String(x.id) === opened); if (t) setSel(t); } }, [opened, tones.length]);
 
   useEffect(() => {
     setSubToolbar(html`
-      <input class="search" type="search" placeholder="Search cab / creator…"
+      <input class="search" type="search" placeholder="Search cabs"
         onInput=${e => setQ(e.target.value.trim().toLowerCase())} />
       <select class="flt-sel" value=${style} onChange=${e => setStyle(e.target.value)} title="Style">
         <option value="all">Style · all</option>
@@ -93,47 +102,91 @@ export function IRPage({ role, gears } = {}) {
 
   if (!roleCanLoad) return html`<div class="library"><div class="empty">A <b>${esc(role)}</b> lane has no cab — see <b>Outboard</b>.</div></div>`;
 
+  const addMenuEl = addMenu ? html`<div class="add-scrim" onClick=${() => setAddMenu(false)}>
+    <div class="add-menu" onClick=${e => e.stopPropagation()}>
+      <button class="row-btn" onClick=${() => { setAddMenu(false); setT3k(true); }}>⬇ From TONE3000 <small>cab IRs</small></button>
+      <button class="row-btn" onClick=${() => { setAddMenu(false); document.getElementById('ir-file-input')?.click(); }}>⬆ Upload a <code>.wav</code></button>
+    </div></div>` : '';
   return html`
-    <div class="library">
+    <div class="library tn-page">
       <input id="ir-file-input" ref=${fileRef} type="file" accept=".wav,audio/wav" multiple
         style="display:none" onChange=${e => { uploadFiles(e.target.files); e.target.value = ''; }} />
-      <div class="lib-grid">
-        ${list.length ? brands.map(b => html`
-          <div class="syn-pack">
-            <div class="syn-pack-hd">${esc(b)} <span class="muted">${byBrand(b).length}</span></div>
-            <div class="grid gsyn">${byBrand(b).map(Card)}</div>
-          </div>`)
-        : html`<div class="empty">No IRs — tap <b>+ Add</b> to import a <code>.wav</code> impulse response,
-            or download cab IRs from TONE3000.</div>`}
-      </div>
-
-      ${addMenu ? html`<div class="add-scrim" onClick=${() => setAddMenu(false)}>
-        <div class="add-menu" onClick=${e => e.stopPropagation()}>
-          <button class="row-btn" onClick=${() => { setAddMenu(false); setT3k(true); }}>⬇ From TONE3000 <small>cab IRs</small></button>
-          <button class="row-btn" onClick=${() => { setAddMenu(false); document.getElementById('ir-file-input')?.click(); }}>⬆ Upload a <code>.wav</code></button>
-        </div></div>` : ''}
-      ${sel ? html`<${Detail} t=${sel} onClose=${() => setSel(null)}
-        onDeleted=${() => { setSel(null); reloadCat(); }} />` : ''}
+      ${sel ? html`<${CabPanel} c=${cabOf(sel)} vis=${vis} onClose=${() => setSel(null)} onDeleted=${() => { setSel(null); reloadCat(); }} />`
+      : html`<div class="tn-col">
+        <div class="tn-bar"><div class="chips">
+          <button class=${cls('chip', size === 'all' && 'on')} onClick=${() => setSize('all')}>All sizes <em>${cabs.length}</em></button>
+          ${sizes.map(s => html`<button class=${cls('chip', size === s && 'on')} onClick=${() => setSize(s)}>${s} <em>${cabs.filter(c => c.size === s).length}</em></button>`)}</div>
+          <span class="grow"></span><span class="muted" style="font-size:12px">Size read from the name · mics from the IR files</span></div>
+        ${shown.length ? html`<div class="tn-wall">${shown.slice(pg.from, pg.to).map(c => html`
+          <button class="tn-tile tn-cab" onClick=${() => setSel(c.t)}>
+            ${vis ? html`<${Drawing} svg=${cabSvg(c)} />` : html`<div class="tn-draw"></div>`}
+            <b>${irName(c.t)}</b>
+            <span>${(c.t.models || []).length} IR${(c.t.models || []).length > 1 ? 's' : ''}${c.mics.length ? ' · ' + c.mics.slice(0, 2).join(' + ') : ''}${c.t.echo ? html` · <i class="tn-echo" title=${echoTitle(c.t.echo)}>echo</i>` : ''}</span>
+          </button>`)}</div>`
+        : html`<div class="empty">No IRs — tap <b>+ Add</b> to import a <code>.wav</code> impulse response, or download cab IRs from TONE3000.</div>`}
+        <${Pager} pg=${pg} />
+      </div>`}
+      ${addMenuEl}
       ${t3k ? html`<${T3kModal} initGear="cab" onClose=${() => setT3k(false)} onInstalled=${reloadCat} />` : ''}
     </div>`;
 }
 
-function Detail({ t, onClose, onDeleted }) {
+// LA FICHE D'UN BAFFLE (docs/library-tones.md §3) : OÙ ÉTAIT LE MICRO — chaque IR placée est un point sur le cône
+// (lu dans son nom : centre, cap edge, mi-cône, bord ; « 0.50in » ; 45° hors axe) ; les IR prises au même endroit se
+// regroupent ; sur le baffle, le haut-parleur capté (UL/UR/LL/LR) est entouré. Toucher une IR la fait entendre.
+function CabPanel({ c, vis, onClose, onDeleted }) {
+  const t = c.t;
+  const au = useAudition();
   const [del_, setDel] = useState(false);
-  return html`<div class="detail" onClick=${e => e.target.classList.contains('detail') && onClose()}>
-    <div class="detail-card" style=${'--sc:' + styleColor(t.style)}>
-      <button class="close" onClick=${onClose}>×</button>
-      <button class="mini danger amp-del" title="delete this IR (trash)" onClick=${() => setDel(true)}>🗑</button>
-      ${del_ ? html`<${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} />` : ''}
-      <span class="badge" style=${'background:' + styleColor(t.style)}>${esc(t.style || 'ir')}</span>
-      <h2>◨ ${esc(irName(t))}</h2>
-      <div class="sub">${esc(t.creator || t.brand || 'unknown')}${t.models ? ' · ' + t.models.length + ' IR file(s)' : ''}
-        ${t.downloads ? ' · ⬇ ' + t.downloads : ''}</div>
-      ${t.echo ? html`<p class="echo-note"><span class="echo-chip">⚠ echo</span> ${echoTitle(t.echo)}</p>` : ''}
-      ${(t.makes || []).length ? html`<div class="kv"><strong>Cab:</strong> ${(t.makes || []).map(m => html`<span class="tag">${esc(m)}</span>`)}</div>` : ''}
-      ${(t.tags || []).length ? html`<div class="kv"><strong>Tags:</strong> ${(t.tags || []).map(m => html`<span class="tag">${esc(m)}</span>`)}</div>` : ''}
-      <div class="models"><strong>Files:</strong>${(t.models || []).map(m => html`<div><span>${esc(m.name || 'IR')}</span><span class="muted">${esc(m.size || '')}</span></div>`)}</div>
-      <p class="muted" style="margin-top:14px">Assign this IR to a <b>Cab</b> block in the Designer (pick it from the <b>+</b> drawer).</p>
-      ${t.url ? html`<p style="margin-top:10px"><a href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a></p>` : ''}
-    </div></div>`;
+  const irs = (t.models || []).map((m, i) => ({ i, m, p: micPos(m.name), mic: micOf(m.name) }));
+  const [selI, setSelI] = useState(0);
+  const pg = usePage(irs.length, 7, [t.id]);
+  const cur = irs[selI];
+  const P = window.GolemPedals;
+  const L = P ? P.cabLayout(c.size) : { cols: 2, rows: 2 };
+  const spk = cur && cur.p && cur.p.spk;
+  const ring = cur && cur.p ? (spk ? [spk[1] === 'R' ? Math.min(1, L.cols - 1) : 0, spk[0] === 'L' ? L.rows - 1 : 0] : [0, 0]) : null;
+  const groups = [];
+  for (const x of irs.filter(x => x.p && (!spk || x.p.spk === spk))) {
+    const g = groups.find(g => Math.abs(g.r - x.p.r) < .02 && g.off === x.p.off);
+    if (g) g.items.push(x); else groups.push({ r: x.p.r, off: x.p.off, items: [x] });
+  }
+  const R = 108, cx = 130, cy = 130;
+  const dots = groups.map((g, k) => { const a = (-60 + k * (300 / Math.max(groups.length, 1))) * Math.PI / 180, rr = Math.max(g.r, .12);
+    return { i: g.items[0].i, n: g.items.length, on: cur && g.items.some(x => x.i === cur.i), off: g.off, x: cx + Math.cos(a) * rr * R, y: cy + Math.sin(a) * rr * R }; });
+  const tap = i => { setSelI(i); au.play(t.id, irs[i].m.id); };
+  const placed = irs.filter(x => x.p).length;
+  return html`<div class="tn-detail">
+    <section class="tn-stage narrow"><button class="tn-back" onClick=${onClose}>‹ Cabs</button>
+      <div class="tn-spot">${vis ? html`<${Drawing} svg=${cabSvg(c, ring)} />` : ''}</div>
+      <h2>${irName(t)}</h2>
+      <div class="tn-meta"><span class="fam" style="--c:#1ab7b0">${c.size}</span>${c.mics.map(m => html`<span>${m}</span>`)}<span>${irs.length} IR${irs.length > 1 ? 's' : ''}</span></div>
+    </section>
+    <section class="tn-caps">
+      <header><b>Where the mic was</b><span class="grow"></span><span class="muted" style="font-size:12px">${placed} placed · ${irs.length - placed} blends</span></header>
+      ${t.echo ? html`<div class="tn-note ko" title=${echoTitle(t.echo)}>Late echo in ${t.echo.bad} of ${t.echo.files} files: played cut before the echo.</div>` : ''}
+      <div class="tn-split">
+        ${placed ? html`<svg class="tn-cone" viewBox="0 0 260 270" role="img" aria-label="mic positions on the speaker">
+          <defs><radialGradient id="tn-cg" cx="50%" cy="45%"><stop offset="0" stop-color="#4a4f57"/><stop offset=".25" stop-color="#1d2026"/><stop offset=".26" stop-color="#2a2e35"/><stop offset="1" stop-color="#0e1013"/></radialGradient></defs>
+          <circle cx=${cx} cy=${cy} r=${R + 14} fill="#08090b" stroke="#2a2f37"/><circle cx=${cx} cy=${cy} r=${R} fill="url(#tn-cg)"/>
+          ${[.33, .55, .8].map(f => html`<circle cx=${cx} cy=${cy} r=${R * f} fill="none" stroke="#fff" stroke-opacity=".06"/>`)}
+          <circle cx=${cx} cy=${cy} r=${R * .26} fill="#3b4048"/>
+          ${spk ? html`<text x=${cx} y="12" text-anchor="middle" class="tn-kl">SPEAKER ${spk}</text>` : ''}
+          <text x=${cx} y=${cy + R + 34} text-anchor="middle" class="tn-kl">CENTER ← → EDGE</text>
+          ${dots.map(d => html`<g class=${cls('tn-dot', d.on && 'on')} onClick=${() => tap(d.i)}><circle cx=${d.x} cy=${d.y} r=${d.on ? 11 : 8}/>
+            ${d.off ? html`<path d=${`M${d.x - 5} ${d.y + 5}L${d.x + 5} ${d.y - 5}`} stroke="#0d0f12" stroke-width="2"/>` : ''}
+            ${d.n > 1 ? html`<text x=${d.x + 13} y=${d.y - 9} class="tn-kv" style="font-size:12px">×${d.n}</text>` : ''}</g>`)}
+        </svg>` : ''}
+        <div class="tn-rows irs">${irs.slice(pg.from, pg.to).map(x => html`
+          <button class=${cls('tn-row', au.playing(t.id, x.m.id) && 'on', x.i === selI && 'cur')} onClick=${() => tap(x.i)}>
+            <span class="nm">${x.m.name || 'IR'}<small>${x.p ? [x.p.label, x.p.dist, x.p.off ? '45° off-axis' : '', x.p.spk ? 'speaker ' + x.p.spk : ''].filter(Boolean).join(' · ') : 'Blend or unnamed position'}</small></span>
+            ${x.mic ? html`<i class="t-mic">${x.mic}</i>` : ''}<${PlayMark} on=${au.playing(t.id, x.m.id)} busy=${au.loading(t.id, x.m.id)} /></button>`)}</div>
+      </div>
+      <${Pager} pg=${pg} />
+      <${AuditionNote} au=${au} />
+      <div class="tn-act"><span class="grow"></span>
+        ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
+        <button class="mini danger" onClick=${() => setDel(true)}>Delete</button></div>
+      ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
+    </section></div>`;
 }

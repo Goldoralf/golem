@@ -2,7 +2,8 @@
 // Onglet Amps (hub Library) — parcours des amplis (centré ampli, jamais le contributeur).
 // Grille PAGINÉE (no-scroll). Recherche + filtres sur UNE ligne (selects compacts).
 // Photos : overlay library/catalog/images.json (tone id -> fichier sous /library/images/).
-import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCatalog, refreshCatalog, setTopAction, setSubToolbar, useRev } from './lib.js';
+import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCatalog, refreshCatalog, setTopAction, setSubToolbar, useRev, go } from './lib.js';
+import { useVisuals, Drawing, ampSvg, AMP_FAMILIES, usePage, Pager, useAudition, PlayMark, AuditionNote, captureTags, openLater, takeOpen } from './tones-ui.js';
 import { capText, archOf as archMatch } from './designer-model.js';
 import { T3kModal } from './t3k-modal.js';
 
@@ -35,7 +36,6 @@ export function AmpsPage({ role, gears } = {}) {
   const { data } = useAsync(getCatalog, [catTick, libRev]);
   const { data: fxData } = useAsync(() => fetch('/api/effects').then(r => r.json()), []);
   const ampArch = (fxData && fxData.amps) || [];         // amplis nommés (archétypes)
-  const [selArch, setSelArch] = useState(null);
   const lent = useLent();
   const { data: imgs } = useAsync(() => fetch('/library/catalog/images.json').then(r => r.ok ? r.json() : {}), []);
   const tones = (data && data.tones) || [];
@@ -122,13 +122,14 @@ export function AmpsPage({ role, gears } = {}) {
   // ── rattachement capture -> MODÈLE nommé : règle unique partagée (designer-model.archOf) ──
   const archOf = t => archMatch(ampArch, t);
   const GENERIC = /^(other|divers|unknown|amp|amps|\-|)$/i;
-  const brandOf = t => { const b = (t.brand || '').trim(); if (b && !GENERIC.test(b)) return b;
+  const brandOf = t => { const a = archOf(t); if (a && a.brand) return a.brand;
+    const b = (t.brand || '').trim(); if (b && !GENERIC.test(b)) return b;
     const m = (t.makes || []).find(x => x && !GENERIC.test(x)); return m || 'Other'; };
 
-  // caractère de gain : les MODÈLES le portent (family effects.json) ; une capture rattachée hérite
-  // de son modèle (le modèle caché cache ses captures) ; une capture hors-modèle = heuristique
-  // mots-clés puis style. Les basses sont hors-axe (le segmenté Family s'en charge).
+  // caractère de gain : le MODÈLE nommé le porte (family effects.json) ; une capture hors-modèle = heuristique
+  // mots-clés puis style. Les basses ont leur famille (le dessin aussi : tolex bleu).
   const guessChar = t => { if (famOf(t) === 'bass') return 'bass';
+    const a = archOf(t); if (a && a.family && !ampIsBass(a)) return a.family;
     const txt = capText(t);
     if (/high.?gain|hi.?gain|djent|modern metal|lead|distort|fuzz|muff/.test(txt)) return 'high-gain';
     if (/clean/.test(txt)) return 'clean';
@@ -136,110 +137,117 @@ export function AmpsPage({ role, gears } = {}) {
     return t.style === 'metal' ? 'high-gain'
       : (t.style === 'blues' || t.style === 'jazz' || t.style === 'funk') ? 'clean' : 'crunch'; };
 
-  // FUSION par MARQUE : tous les modèles du marché (même sans capture) + les captures rattachées ;
-  // les captures qui ne matchent aucun modèle restent visibles, à la suite, dans leur marque.
-  const models = ampArch.filter(a => (fam === 'all' || (fam === 'bass') === ampIsBass(a))
-    && (chr === 'all' || (!ampIsBass(a) && (a.family || 'crunch') === chr))
-    && (!q || (a.name + ' ' + (a.short || '') + ' ' + (a.match || '')).toLowerCase().includes(q)));
-  const capsByArch = {}, unmatched = [];
-  for (const t of list) {
-    const a = (t.gear === 'amp' || t.gear === 'amp-cab') ? archOf(t) : null;
-    if (a) (capsByArch[a.id] = capsByArch[a.id] || []).push(t); else unmatched.push(t);
-  }
-  // filtre Heads|+Cab actif -> les modèles SANS capture du type demandé sont masqués
-  // (on cherche des captures ; les « no capture yet » ne sont que du bruit ici)
-  const shownModels = rig === 'all' ? models : models.filter(a => (capsByArch[a.id] || []).length);
-  const shownUm = unmatched.filter(t => chr === 'all' || guessChar(t) === chr);
-  const brandOfArch = a => a.brand || a.name.split(' ')[0];
-  const brands = [...new Set([...shownModels.map(brandOfArch), ...shownUm.map(brandOf)])]
-    .sort((a, b) => a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b));
+  // LE BACKLINE (docs/library-tones.md §1) : les marques en rail, le spectre de gain, 8 amplis dessinés par page
+  const [brand, setBrand] = useState('all');
+  const brandCount = {};
+  for (const t of list) { const b = brandOf(t); brandCount[b] = (brandCount[b] || 0) + 1; }
+  const brands = Object.entries(brandCount).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]));
+  const [brandsAll, setBrandsAll] = useState(false);
+  const inBrand = list.filter(t => brand === 'all' || brandOf(t) === brand);
+  const shown = inBrand.filter(t => chr === 'all' || guessChar(t) === chr);
+  const pg = usePage(shown.length, 8, [brand, chr, rig, style, q, fam]);
+  const vis = useVisuals(fxData);
+  const [opened] = useState(() => takeOpen('amp'));
+  useEffect(() => { if (opened) { const t = tones.find(x => String(x.id) === opened); if (t) setSel(t); } }, [opened, tones.length]);
+  useEffect(() => { if (brand !== 'all' && !brandCount[brand]) setBrand('all'); }, [list.length]);
 
-  // card MODÈLE : le nom court + ses captures (3 max inline, le reste au tap -> ArchDetail)
-  const ModelCard = a => { const caps = capsByArch[a.id] || [];
-    return html`
-    <div class=${cls('card cpt', !caps.length && 'empty-cap')} data-doc=${'tones.amp:' + a.id} onClick=${() => setSelArch(a)} style=${'--sc:#ff5a3c'}>
-      <h3>${a.glyph || '▦'} ${esc(a.short || a.name)}</h3>
-      ${caps.length ? html`<div class="amp-caps">
-          ${caps.slice(0, 3).map(t => html`<div class="amp-cap-line">${esc(ampName(t))}</div>`)}
-          ${caps.length > 3 ? html`<div class="amp-cap-line muted">+ ${caps.length - 3} more…</div>` : ''}
-        </div>` : html`<div class="gear muted">no capture yet</div>`}
-    </div>`; };
-  // card CAPTURE hors modèle (reste cliquable -> Detail, avec photo dans le modal)
-  const CapCard = t => html`
-    <div class=${'card cpt style-' + t.style} onClick=${() => setSel(t)}>
-      <h3>${esc(ampName(t))}${t.pack ? html` <span class="pk">PACK</span>` : ''}</h3>
-      ${lent[String(t.id)] ? html`<div class="gear lent-tag">${esc(lentLabel(lent[String(t.id)]))}</div>` : ''}
-      <div class="gear">${GEAR_LABEL[t.gear] || t.gear} · ${t.models.length} mdl${t.models.some(m => String(m.arch) === '2') ? html` · <span class="a2-chip">A2</span>` : ''}</div>
-    </div>`;
-
-  // recherche + filtres sur UNE ligne : selects (gain de place vs rangées de chips)
+  // recherche + filtres sur UNE ligne
   const Filter = (val, set, opts, label) => html`
     <select class="flt-sel" value=${val} onChange=${e => set(e.target.value)} title=${label}>
       <option value="all">${label} · all</option>
       ${opts.map(([v, l]) => html`<option value=${v} selected=${v === val}>${l}</option>`)}
     </select>`;
-  // toolbar compacte (search + filtres) dans la barre de sous-onglets (remplace .lib-head).
-  // La famille (Guitar|Bass) n'est plus ici : c'est le segment de RÔLE du groupe Tones (15/09).
   useEffect(() => {
     setSubToolbar(html`
-      <input class="search" type="search" placeholder="Search…" onInput=${e => setQ(e.target.value.trim().toLowerCase())} />
+      <input class="search" type="search" placeholder="Search amps" onInput=${e => setQ(e.target.value.trim().toLowerCase())} />
       <div class="tb-seg" data-doc="tones.type" title="Capture type — head only (add a cab after) vs full rig (cab included)">
         <button class=${cls(rig !== 'amp-cab' && 'on')} onClick=${() => setRig(rig === 'all' ? 'amp-cab' : 'all')}>Heads</button>
         <button class=${cls(rig !== 'amp' && 'on')} onClick=${() => setRig(rig === 'all' ? 'amp' : 'all')}>+Cab</button>
       </div>
-      ${Filter(chr, setChr, [['clean', 'Clean'], ['crunch', 'Crunch'], ['high-gain', 'High-gain']], 'Gain')}
       ${Filter(style, setStyle, STYLES.filter(s => tones.some(t => t.style === s)).map(s => [s, s]), 'Style')}`);
     return () => setSubToolbar(null);
-  }, [fam, rig, chr, style, tones.length]);
+  }, [fam, rig, style, tones.length]);
 
   if (!roleCanLoad) return html`<div class="library"><div class="empty">A <b>${esc(role)}</b> lane can't load an amp — see <b>Outboard</b> for captured preamps and compressors.</div></div>`;
 
-  return html`
-    <div class="library">
-      ${imp ? ImportSheet() : ''}
-      <div class="lib-grid">
-        ${brands.length ? html`<div class="syn-pack" data-doc="tones.amps">
-          ${brands.map(b => { const ms = shownModels.filter(a => brandOfArch(a) === b);
-            const um = shownUm.filter(t => brandOf(t) === b).sort((x, y) => ampName(x).localeCompare(ampName(y)));
-            const n = ms.reduce((s, a) => s + (capsByArch[a.id] || []).length, 0) + um.length;
-            return html`<div class="np-fam">
-              <div class="np-fam-hd muted">${esc(b)} <span>${n ? n + ' capture' + (n > 1 ? 's' : '') : '—'}</span></div>
-              <div class="grid gcpt">${ms.map(ModelCard)}${um.map(CapCard)}</div>
-            </div>`; })}
-        </div>` : html`<div class="empty">No amps for these filters.</div>`}
-      </div>
+  if (sel) {
+    const a = archOf(sel);
+    return html`<div class="library tn-page">
+      <${AmpPanel} t=${sel} arch=${a} family=${guessChar(sel)} vis=${vis} lent=${lent[String(sel.id)]}
+        pairs=${tones.filter(c => c.gear === 'cab' && c.style === sel.style).slice(0, 3)}
+        onClose=${() => setSel(null)} onDeleted=${() => { setSel(null); refreshCatalog(); setCatTick(x => x + 1); }} />
+    </div>`;
+  }
 
-      ${sel && html`<${Detail} t=${sel} img=${imgOf(sel)} onClose=${() => setSel(null)}
-        onDeleted=${() => { setSel(null); refreshCatalog(); setCatTick(x => x + 1); }} />`}
-      ${selArch && html`<${ArchDetail} a=${selArch}
-        caps=${capsByArch[selArch.id] || []}
-        onCap=${t => { setSelArch(null); setSel(t); }}
-        onClose=${() => setSelArch(null)} onT3k=${() => { setSelArch(null); setT3k(true); }} />`}
+  const fams = AMP_FAMILIES.map(([k, l, c]) => [k, l, c, inBrand.filter(t => guessChar(t) === k).length]).filter(f => f[3]);
+  const tot = fams.reduce((s, f) => s + f[3], 0) || 1;
+  const railBrands = brandsAll ? brands : brands.slice(0, 10);
+  return html`
+    <div class="library tn-page">
+      ${imp ? ImportSheet() : ''}
+      <div class="tn-amps">
+        <aside class="tn-rail" data-doc="tones.brands"><h6>Brands</h6>
+          ${[['all', 'All amps', list.length], ...railBrands].map(([k, n]) => html`<button class=${cls('tn-rb', brand === k && 'on')}
+            onClick=${() => setBrand(k)}>${k === 'all' ? 'All amps' : k}<em>${k === 'all' ? list.length : n}</em></button>`)}
+          ${brands.length > 10 ? html`<button class="tn-rb more" onClick=${() => setBrandsAll(!brandsAll)}>${brandsAll ? 'Fewer' : `+ ${brands.length - 10} more`}</button>` : ''}
+        </aside>
+        <section class="tn-main">
+          <div class="tn-spectrum" data-doc="tones.gain">${fams.map(([k, l, c, n]) => html`<button class=${cls('tn-sp', chr === k && 'on', chr !== 'all' && chr !== k && 'dim')}
+              style=${`flex:${Math.max(n / tot, .14)};--c:${c}`} onClick=${() => setChr(chr === k ? 'all' : k)}><b>${l}</b><em>${n}</em></button>`)}</div>
+          ${shown.length ? html`<div class="tn-shelf">${shown.slice(pg.from, pg.to).map(t => html`
+            <button class="tn-tile tn-amp" data-doc=${'tones.amp:' + t.id} onClick=${() => setSel(t)}>
+              ${vis ? html`<${Drawing} svg=${ampSvg(t, archOf(t), guessChar(t))} />` : html`<div class="tn-draw"></div>`}
+              <b>${ampName(t)}</b>
+              <span>${t.gear === 'amp' ? 'Head' : 'Head + cab'} · ${t.models.length} capture${t.models.length > 1 ? 's' : ''}${t.models.some(m => String(m.arch) === '2') ? html` <i class="a2-chip">A2</i>` : ''}${lent[String(t.id)] ? html` <i class="tn-lent">lent</i>` : ''}</span>
+            </button>`)}</div>` : html`<div class="empty">No amps for these filters.</div>`}
+          <${Pager} pg=${pg} />
+        </section>
+      </div>
       ${t3k && html`<${T3kModal} initGear="amp-cab" onClose=${() => setT3k(false)} onInstalled=${() => setCatTick(x => x + 1)} />`}
     </div>`;
 }
 
-// détail d'un AMPLI NOMMÉ (archétype) : ce que c'est + comment l'ajouter (tiroir Designer, picker
-// de capture TONE3000 pré-filtré). Pas un fichier installé -> pas de suppression ici.
-function ArchDetail({ a, caps, onCap, onClose, onT3k }) {
-  const lent = useLent();
-  const bass = (a.roles || ['guitar']).includes('bass');
-  return html`<div class="detail" onClick=${e => e.target.classList.contains('detail') && onClose()}>
-    <div class="detail-card" data-doc="tones.amp-detail" style="--sc:#ff5a3c">
-      <button class="close" onClick=${onClose}>×</button>
-      <span class="badge" style="background:#ff5a3c">${esc(a.family)}${bass ? ' · bass' : ''}</span>
-      <h2>${a.glyph || '▦'} ${esc(a.name)}</h2>
-      <div class="sub">Named amp · ${bass ? 'bass' : 'guitar'} · ${(caps || []).length} capture(s) on the rack</div>
-      ${(caps || []).length ? html`<div class="models" style="margin-top:12px"><strong>Your captures:</strong>
-        ${caps.map(t => html`<div class="arch-cap" onClick=${() => onCap(t)} title="open this capture">
-          <span>${esc(t.amp || t.title)}${t.gear === 'amp-cab' ? html` <span class="tag">+CAB</span>` : ''}${lent[String(t.id)] ? html` <span class="tag lent-tag" title=${lentLabel(lent[String(t.id)])}>LENT</span>` : ''}</span>
-          <span class="muted">${esc(t.brand || t.creator || '')}${(t.models || []).some(m => String(m.arch) === '2') ? ' · A2' : ''} · ⬇ ${t.downloads || 0}</span>
-        </div>`)}
-      </div>` : html`<p class="muted" style="margin-top:12px">No capture on the rack yet.</p>`}
-      <p class="muted" style="margin-top:12px">Add it from the <b>Designer ▸ +</b> drawer (${bass ? 'a Bass' : 'the'} input's
-        Amp section) — the picker opens pre-filtered on <b>${esc(a.match || a.name)}</b> captures. Or download more below.</p>
-      <p style="margin-top:12px"><button class="chip" onClick=${onT3k}>⬇ Browse TONE3000 captures</button></p>
-    </div></div>`;
+// LA FICHE D'UN AMPLI (docs/library-tones.md §1) : l'ampli en grand sous un projecteur ; ses captures en lignes, ce que
+// leur nom dit en étiquettes ; toucher une ligne la fait entendre dans le patch chargé.
+function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
+  const au = useAudition();
+  const [del_, setDel] = useState(false);
+  const [famv, setFamv] = useState(famOf(t));
+  const pg = usePage(t.models.length, 6, [t.id]);
+  const setFamily = async f => {
+    setFamv(f);
+    await fetch('/api/amp/' + t.id + '/family', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ family: f }) }).catch(() => {});
+    refreshCatalog();
+  };
+  const fam = AMP_FAMILIES.find(f => f[0] === family) || AMP_FAMILIES[1];
+  return html`<div class="tn-detail" data-doc="tones.amp-detail">
+    <section class="tn-stage">
+      <button class="tn-back" onClick=${onClose}>‹ Amps</button>
+      <div class="tn-spot">${vis ? html`<${Drawing} svg=${ampSvg(t, arch, family)} />` : ''}</div>
+      <h2>${ampName(t)}</h2>
+      <div class="tn-meta"><span class="fam" style=${'--c:' + fam[2]}>${fam[1]}</span><span>${t.gear === 'amp' ? 'Head only' : 'Head + cab'}</span>
+        <span>${t.brand || 'Other'}</span><span>⬇ ${(t.downloads || 0).toLocaleString('en')}</span>${lent ? html`<span class="tn-lent">${lentLabel(lent)}</span>` : ''}</div>
+    </section>
+    <section class="tn-caps">
+      <header><b>Captures</b><em>${t.models.length}</em><span class="grow"></span>
+        ${['guitar', 'bass'].map(f => html`<button class=${cls('chip', famv === f && 'on')} onClick=${() => setFamily(f)}>${f === 'bass' ? 'Bass' : 'Guitar'}</button>`)}</header>
+      <div class="tn-rows">${t.models.slice(pg.from, pg.to).map((m, i) => html`
+        <button class=${cls('tn-row', au.playing(t.id, m.id) && 'on')} onClick=${() => au.play(t.id, m.id)}>
+          <span class="num">${pg.from + i + 1}</span><span class="nm">${m.name || 'model'}</span>
+          <span class="tags">${captureTags(m.name).map(([c, x]) => html`<i class=${'t-' + c}>${x}</i>`)}</span>
+          <${PlayMark} on=${au.playing(t.id, m.id)} busy=${au.loading(t.id, m.id)} /></button>`)}</div>
+      <${Pager} pg=${pg} />
+      <${AuditionNote} au=${au} />
+      <div class="tn-act">
+        ${pairs.length ? html`<span class="tn-pairs">Pairs with ${pairs.map(c => html`<button class="mini" onClick=${() => { openLater('cab', c.id); go('library/tones/cabs'); }}>${c.amp || c.title}</button>`)}</span>` : ''}
+        <span class="grow"></span>
+        ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
+        <button class="mini danger" title="delete this amp (trash)" onClick=${() => setDel(true)}>Delete</button>
+      </div>
+      ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
+    </section>
+  </div>`;
 }
 
 // Exporté : Pedals (page-fxblocks) rouvre le MÊME modal pour ses captures installées.

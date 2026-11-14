@@ -9,6 +9,7 @@
 import { html, useState, useEffect, useAsync, cls, esc, post, del, setTopAction, setSubToolbar, useRev } from './lib.js';
 import { useVisuals, Drawing } from './tones-ui.js';
 import { keysSvg, macrosOf, useClip, Mark, ClipBar, dur } from './keys-ui.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 
 // l'état de la démo, en un signe à côté du nom : ▶ prête, ◌ au prochain repos du rack, rien sinon
 const mark = s => s.status === 'ready' ? html`<i class="ky-dm ok" title=${(s.phrase || 'demo') + ' · ' + dur(s)}>▶</i>`
@@ -107,7 +108,14 @@ function Detail({ p, vis, cl, onClose, onDeleted }) {
     } catch (e) { setErr(String(e.message || e)); setBusy(false); }
   };
   const named = (p.macros || []).filter(m => !/^macro \d$/i.test(m));
+  // Play it (docs/library-play.md) : le preset seul, joué du clavier branché ; ses macros se tournent EN DIRECT
+  const item = { sound: p.sound };
+  const pi = usePlayIt(item);
+  const [mv, setMv] = useState(() => (p.macro_vals || []).slice(0, 4));
+  const turn = (i, v) => { setMv(a => { const b = [...a]; b[i] = v; return b; });
+    post('/api/library/try/param', { param: 'macro' + (i + 1), value: v }).catch(() => {}); };
   return html`<div class="tn-col ky-col">
+    <${PlayBanner} pi=${pi} />
     <div class="ky-detail">
       <div class="ky-left wide">
         <button class="tn-back" onClick=${onClose}>‹ Synths</button>
@@ -126,11 +134,13 @@ function Detail({ p, vis, cl, onClose, onDeleted }) {
           <div class=${p.comments ? '' : 'muted'}>${p.comments ? esc(p.comments) : 'No comment in this preset.'}</div>
         </div>
         <div class="ky-card">
-          <h6 class="ky-h6">Macros</h6>
-          <div class="ky-macros">${(p.macros || []).map((m, i) => html`<div class=${cls('ky-mac', !named.includes(m) && 'dim')}>
+          <h6 class="ky-h6">Macros${pi.st.on ? ' · turn them while you play' : ''}</h6>
+          <div class="ky-macros">${(p.macros || []).map((m, i) => pi.st.on
+            ? html`<label class=${cls('ky-mac', !named.includes(m) && 'dim')}><span>${esc(m)}</span>
+                <input type="range" min="0" max="1" step="0.01" value=${mv[i] || 0} onInput=${e => turn(i, +e.target.value)} /></label>`
+            : html`<div class=${cls('ky-mac', !named.includes(m) && 'dim')}>
             <span>${esc(m)}</span><i><b style=${'width:' + Math.round(100 * ((p.macro_vals || [])[i] || 0)) + '%'}></b></i></div>`)}</div>
         </div>
-        <div class="muted ky-how">Use it in the <b>Designer ▸ Keys</b> lane: the Preset knob picks one Vital sound per scene.</div>
         <div class="del-foot">
           <span class="flash-ko">${err}</span><span class="grow"></span>
           ${isFactory ? html`<span class="muted">factory seed — protected</span>`
@@ -138,6 +148,8 @@ function Detail({ p, vis, cl, onClose, onDeleted }) {
         </div>
       </div>
     </div>
+    <${ActionBar} pi=${pi} item=${item} onListen=${p.status === 'ready' ? () => { if (pi.st.on) pi.stop(); cl.play({ ...p, title: p.name }); } : null}
+      listening=${cl.playing(p)} />
     <${ClipBar} cl=${cl} />
   </div>`;
 }

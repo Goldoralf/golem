@@ -12,6 +12,7 @@ import { html, useState, useRef, useAsync, cls, esc, setTopAction, setSubToolbar
 import { DrumImportSheet } from './drums-import.js';
 import { useVisuals, Drawing, GP } from './tones-ui.js';
 import { useClip, Mark, ClipBar, dur } from './keys-ui.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 
 const kitSvg = (k, opts) => { const P = GP(); if (!P || !P.drumKit) return '';
   return k.type === 'pads'
@@ -95,6 +96,10 @@ export function KitsPage() {
 
 function KitDetail({ k, vis, cl, all, onClose, onChanged }) {
   const pads = k.type === 'pads';
+  // Play it / Add to… (docs/library-play.md) : le kit joué des pads ou de la batterie électronique branchés
+  const item = { kit: k.id };
+  const pi = usePlayIt(item);
+  const rock = clipOf(k, 'drums/rock');
   const { data: gd } = useAsync(() => pads ? Promise.resolve(null) : fetch('/api/grooves').then(r => r.json()), [k.id]);
   const [gq, setGq] = useState('');
   const [tempo, setTempo] = useState('patch');
@@ -155,11 +160,12 @@ function KitDetail({ k, vis, cl, all, onClose, onChanged }) {
             ? html`<button class=${cls('mini', armDel && 'arm')} onClick=${del}>${armDel ? 'Tap again: delete it and its samples' : 'Delete'}</button>`
             : html`<a class="mini" href=${'/api/kit/' + encodeURIComponent(k.id) + '/export'} onClick=${saveClick('/api/kit/' + encodeURIComponent(k.id) + '/export')}>Export</a>
               <button class=${cls('mini', armDel && 'arm')} onClick=${del}>${armDel ? 'Tap again to delete' : 'Delete'}</button>`}
-          <span class="grow"></span>
-          ${pads ? '' : html`<button class="primary" disabled=${k.available === false} onClick=${() => openInDesigner(null, 'cfg', { kind: 'drums-kit', kit: k.id })}>Use this kit</button>`}
         </div>
       </div>
     </div>
+    <${PlayBanner} pi=${pi} />
+    <${ActionBar} pi=${pi} item=${item} onListen=${rock ? () => { if (pi.st.on) pi.stop(); cl.play(rock); } : null} listening=${rock && cl.playing(rock)}
+      extra=${pads ? '' : html`<button class="la-btn" disabled=${k.available === false} onClick=${() => openInDesigner(null, 'cfg', { kind: 'drums-kit', kit: k.id })}>Use in my drum machine</button>`} />
     <${ClipBar} cl=${cl} hint=${pads ? 'Touch a pad to hear its sample.' : 'Touch a phrase or a groove to hear it on this kit.'} />
   </div>`;
 }

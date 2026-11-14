@@ -7,6 +7,7 @@
 // NB : distinct de page-pedals.js (panneau MIDI Whammy DT de Settings ▸ Pedalboard).
 import { html, useState, useEffect, useAsync, cls, esc, setTopAction, setSubToolbar, getCatalog, refreshCatalog, useRev } from './lib.js';
 import { CAT_COLOR, capText, archOf, GOLEM_FX } from './designer-model.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 import { useVisuals, Drawing, namPedalSvg, useAudition, PlayMark, AuditionNote, knobsOf, knobsSvg, takeOpen } from './tones-ui.js';
 import { pedalSvg } from './golem-visuals.js';
 import { T3kModal } from './t3k-modal.js';
@@ -127,7 +128,10 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
   const kn = cur ? knobsOf(cur.m.name) : [];
   const P = window.GolemPedals;
   const col = ((P && P.NAM_VOICE && P.NAM_VOICE[p.family]) || { glow: '#ffb03a' }).glow;
-  const tap = i => { setSelI(i); au.play(models[i].t.id, models[i].m.id); };
+  // Play it / Add to… (docs/library-play.md) : la capture choisie ; pendant l'essai, toucher la remplace sous les doigts
+  const item = cur ? { capture: cur.t.id, model: cur.m.id } : null;
+  const pi = usePlayIt(item);
+  const tap = i => { setSelI(i); if (pi.st.on) pi.play({ capture: models[i].t.id, model: models[i].m.id }); else au.play(models[i].t.id, models[i].m.id); };
   return html`<div class="tn-detail">
     <section class="tn-stage board"><button class="tn-back" onClick=${onClose}>‹ Pedals</button>
       <div class="tn-spot pedal">${vis ? html`<${Drawing} svg=${namPedalSvg(p.arch, p.short, p.family === 'other' ? 'boost' : p.family, true)} align="xMidYMid" />` : ''}</div>
@@ -146,9 +150,11 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
           ? html`<div dangerouslySetInnerHTML=${{ __html: knobsSvg(kn, col) }}></div>`
           : html`<p class="muted">The settings are not written in this capture's name.</p>`}</div>
       </div>` : html`<div class="tn-rows"><p class="muted">No capture of this pedal on the rack yet.</p></div>`}
-      ${models.length ? html`<${AuditionNote} au=${au} />` : ''}
+      <${PlayBanner} pi=${pi} />
+      ${models.length && !pi.st.on ? html`<${AuditionNote} au=${au} />` : ''}
       <div class="tn-act"><button class="mini" onClick=${onT3k}>Find more on TONE3000</button><span class="grow"></span>
         ${cur ? html`<button class="mini" onClick=${() => onOpen(cur.t)}>Pack details</button>` : ''}</div>
+      ${item ? html`<${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(cur.t.id, cur.m.id); }} listening=${au.playing(cur.t.id, cur.m.id)} />` : ''}
     </section></div>`;
 }
 

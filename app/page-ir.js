@@ -7,6 +7,7 @@ import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCat
 import { T3kModal } from './t3k-modal.js';
 import { DeleteFlow, famOf } from './page-amps.js';
 import { archOf } from './designer-model.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 import { useVisuals, Drawing, cabSvg, cabSize, micPos, micOf, useAudition, PlayMark, AuditionNote, takeOpen } from './tones-ui.js';
 
 const irName = t => t.amp || t.title || 'IR';
@@ -152,7 +153,11 @@ function CabPanel({ c, vis, onClose, onDeleted }) {
   const R = 108, cx = 130, cy = 130;
   const dots = groups.map((g, k) => { const a = (-60 + k * (300 / Math.max(groups.length, 1))) * Math.PI / 180, rr = Math.max(g.r, .12);
     return { i: g.items[0].i, n: g.items.length, on: cur && g.items.some(x => x.i === cur.i), off: g.off, x: cx + Math.cos(a) * rr * R, y: cy + Math.sin(a) * rr * R }; });
-  const tap = i => { setSelI(i); au.play(t.id, irs[i].m.id); };
+  // Play it / Add to… (docs/library-play.md) : l'IR choisie ; pendant l'essai, toucher la remplace sous les doigts
+  const sel = irs[selI] || irs[0];
+  const item = sel ? { capture: t.id, model: sel.m.id } : null;
+  const pi = usePlayIt(item);
+  const tap = i => { setSelI(i); if (pi.st.on) pi.play({ capture: t.id, model: irs[i].m.id }); else au.play(t.id, irs[i].m.id); };
   const placed = irs.filter(x => x.p).length;
   return html`<div class="tn-detail">
     <section class="tn-stage narrow"><button class="tn-back" onClick=${onClose}>‹ Cabs</button>
@@ -180,10 +185,12 @@ function CabPanel({ c, vis, onClose, onDeleted }) {
             <span class="nm">${x.m.name || 'IR'}<small>${x.p ? [x.p.label, x.p.dist, x.p.off ? '45° off-axis' : '', x.p.spk ? 'speaker ' + x.p.spk : ''].filter(Boolean).join(' · ') : 'Blend or unnamed position'}</small></span>
             ${x.mic ? html`<i class="t-mic">${x.mic}</i>` : ''}<${PlayMark} on=${au.playing(t.id, x.m.id)} busy=${au.loading(t.id, x.m.id)} /></button>`)}</div>
       </div>
-      <${AuditionNote} au=${au} />
+      <${PlayBanner} pi=${pi} />
+      ${pi.st.on ? '' : html`<${AuditionNote} au=${au} />`}
       <div class="tn-act"><span class="grow"></span>
         ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
         <button class="mini danger" onClick=${() => setDel(true)}>Delete</button></div>
+      ${item ? html`<${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(t.id, sel.m.id); }} listening=${au.playing(t.id, sel.m.id)} />` : ''}
       ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
     </section></div>`;
 }

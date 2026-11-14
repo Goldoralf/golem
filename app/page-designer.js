@@ -8,7 +8,7 @@ import { ArrangementPage } from './designer-arrangement.js';
 // tuner/les services ne sont pas du son. (docs/arrangement.md §3 bis)
 const ARR_NEVER = ['volume', 'tuner'];
 import { defaultModel } from './capture-gain.js';
-import { applyDrumsAction, sortLanes, drumsetsOf, drumsetLanes, laneIdFor, ROLE_ICON, patchDraft, PATCH_REALM, SCENE_IDS, LANE_LETTER, MAX_BLOCKS, blkColor, ICON, bid, isV2, toChain, toVoice, toKeys, blank, needsModel, hydrateBlockMeta, migrateConfig, resolveStarts, STARTS_TYPES, SPECIAL_CAT, blockContent, CONTENT_PARAM, toLanesV2, normLanes, laneBlocks, sameSound, newLaneId, inOptsOf, MIDI_ROLES, CONFIG_SERVICE_TYPES, CONFIG_GEN_TYPES, CONFIG_REC_TYPES, CONFIG_ARR_TYPES, renumberScenes, ensureHeadCabs, pinWhammyFirst, lanesByPerson, patchLaneFix, seatPatchLane, alignBoundInputs, refKey, swapVitalPreset } from './designer-model.js';
+import { applyDrumsAction, applyLibraryBlock, sortLanes, drumsetsOf, drumsetLanes, laneIdFor, ROLE_ICON, patchDraft, PATCH_REALM, SCENE_IDS, LANE_LETTER, MAX_BLOCKS, blkColor, ICON, bid, isV2, toChain, toVoice, toKeys, blank, needsModel, hydrateBlockMeta, migrateConfig, resolveStarts, STARTS_TYPES, SPECIAL_CAT, blockContent, CONTENT_PARAM, toLanesV2, normLanes, laneBlocks, sameSound, newLaneId, inOptsOf, MIDI_ROLES, CONFIG_SERVICE_TYPES, CONFIG_GEN_TYPES, CONFIG_REC_TYPES, CONFIG_ARR_TYPES, renumberScenes, ensureHeadCabs, pinWhammyFirst, lanesByPerson, patchLaneFix, seatPatchLane, alignBoundInputs, refKey, swapVitalPreset } from './designer-model.js';
 import { Icon, FOOTSW } from './icons.js';
 import { menuEntry as startupEntry } from './startup-model.mjs';   // l'accueil au démarrage (menu ⋯)
 import { CategoryDrawer, AmpPicker } from './designer-drawer.js';
@@ -100,7 +100,9 @@ export function DesignerPage({ rig, sub }) {
     if (act === 'drumset') { setDsPick(null); setDsPlan([]); setDsOpen(true); }
     // la Library ▸ Drums : un groove pour le Drum Machine, un kit (docs/drums-library.md §5) — appliqué quand le
     // document est là (après la restauration du brouillon), par l'effet ci-dessous
-    if (act && typeof act === 'object') libAct.current = act;
+    // un patch ou un morceau à OUVRIR d'abord (« Add to… ▸ a patch or a song ») : l'action attend que son document
+    // ait remplacé celui de l'écran (_wait = le document de maintenant)
+    if (act && typeof act === 'object') libAct.current = { ...act, _wait: pending ? _dstate.p || initialP.current : null };
     if (pending) { restoring.current = false;
       if (tab) setInTab(tab);                  // « + Sampler » depuis une ligne de setlist -> l'onglet ⚙
       // un DOC = draft à auditionner (patch ouvert depuis Songs ▸ Patches) ; un id = fichier
@@ -549,8 +551,16 @@ export function DesignerPage({ rig, sub }) {
   // est là, le bloc Drum Machine la reçoit et sa fiche s'ouvre dans l'onglet ⚙ — l'édition auditionne comme toute autre
   useEffect(() => {
     const a = libAct.current;
-    if (!a || restoring.current) return;
+    if (!a || restoring.current || (a._wait && p === a._wait)) return;
     libAct.current = null;
+    if (a.kind === 'block') {                       // « Add to… » : un son dans une lane (docs/library-play.md)
+      const ref = applyLibraryBlock(structuredClone(p), a);
+      if (!ref) return;
+      upd(n => { applyLibraryBlock(n, a); });
+      pickInTab(ref.lane, true);
+      setSel(ref);
+      return;
+    }
     const i = applyDrumsAction(structuredClone(p), a);
     if (i < 0) return;
     upd(n => { applyDrumsAction(n, a); });

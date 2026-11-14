@@ -9,6 +9,7 @@ import { html, useState, useEffect, useAsync, cls, esc, safeHref, getCatalog, re
 import { T3kModal } from './t3k-modal.js';
 import { DeleteFlow } from './page-amps.js';
 import { orderModels, describe } from './capture-gain.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 import { useVisuals, Drawing, rackSvg, irPrograms, usePage, Pager, useAudition, PlayMark, AuditionNote } from './tones-ui.js';
 
 const nameOf = t => t.amp || t.title || 'Outboard';
@@ -101,8 +102,11 @@ function UnitPanel({ t, vis, onClose, onDeleted }) {
   const sorted = k => vals(k).sort((x, y) => (typeof x === 'number' && typeof y === 'number') ? x - y : String(x).localeCompare(String(y)));
   const find = (cv, rv, pk) => caps.find(c => (!colKey || c.s[colKey] === cv) && (!rowKey || !!c.s.hard === rv)
     && selKeys.every(k => c.s[k] === pk[k]));
-  const tap = c => { if (!c) return; setCur(c); au.play(t.id, c.m.id); };
   const shown = cur || caps.find(c => selKeys.every(k => c.s[k] === pick[k])) || caps[0];
+  // Play it / Add to… (docs/library-play.md) : le réglage montré ; pendant l'essai, toucher le remplace sous les doigts
+  const item = shown ? { capture: t.id, model: shown.m.id } : null;
+  const pi = usePlayIt(item);
+  const tap = c => { if (!c) return; setCur(c); if (pi.st.on) pi.play({ capture: t.id, model: c.m.id }); else au.play(t.id, c.m.id); };
   const grid = colKey || rowKey || selKeys.length;
   const pg = usePage(caps.length, 6, [t.id]);
   return html`<div class="tn-unitd">
@@ -122,10 +126,12 @@ function UnitPanel({ t, vis, onClose, onDeleted }) {
     </div>` : html`<div class="tn-list">${caps.slice(pg.from, pg.to).map(c => html`<button class=${cls('tn-row', au.playing(t.id, c.m.id) && 'on')} onClick=${() => tap(c)}>
         <span class="nm">${c.m.name || 'setting'}<small>${describe(c.g)}</small></span><${PlayMark} on=${au.playing(t.id, c.m.id)} busy=${au.loading(t.id, c.m.id)} /></button>`)}
       <${Pager} pg=${pg} /></div>`}
-    <${AuditionNote} au=${au} />
+    <${PlayBanner} pi=${pi} />
+    ${pi.st.on ? '' : html`<${AuditionNote} au=${au} />`}
     <div class="tn-act"><span class="muted" style="font-size:12px">${caps.length} capture${caps.length > 1 ? 's' : ''} · ${t.brand || t.creator || ''}</span><span class="grow"></span>
       ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
       <button class="mini danger" onClick=${() => setDel(true)}>Delete</button></div>
+    ${item ? html`<${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(t.id, shown.m.id); }} listening=${au.playing(t.id, shown.m.id)} />` : ''}
     ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
   </div>`;
 }
@@ -134,7 +140,11 @@ function UnitPanel({ t, vis, onClose, onDeleted }) {
 // « Reverb 1…3 ») en grille ; toucher un programme le fait entendre, joué entier par le bloc ir-fx en fin de chaîne
 function IrUnit({ t, vis, au, onClose, onDel, del_, onDone, onCancel }) {
   const groups = irPrograms(t.models);
-  const cur = (t.models || []).find(m => au.playing(t.id, m.id));
+  const [sel, setSel] = useState((t.models || [])[0] || null);
+  const item = sel ? { capture: t.id, model: sel.id } : null;
+  const pi = usePlayIt(item);
+  const touch = m => { setSel(m); if (pi.st.on) pi.play({ capture: t.id, model: m.id }); else au.play(t.id, m.id); };
+  const cur = (t.models || []).find(m => au.playing(t.id, m.id)) || (pi.st.on ? sel : null);
   return html`<div class="tn-unitd">
     <button class="tn-back" onClick=${onClose}>‹ Outboard</button>
     <div class="tn-ubig">${vis ? html`<${Drawing} svg=${rackSvg(nameOf(t), null, true, { format: 'ir', program: cur ? cur.name : '' })} align="xMidYMid" />` : ''}</div>
@@ -142,12 +152,14 @@ function IrUnit({ t, vis, au, onClose, onDel, del_, onDone, onCancel }) {
     <div class="tn-matrix"><h6>Impulse responses · ${(t.models || []).length} programs · played whole, in stereo</h6>
       ${groups.map(([g, items]) => html`<div class="tn-mrow"><span>${g[0].toUpperCase() + g.slice(1)}</span>
         ${items.map(({ n, m }) => { const on = au.playing(t.id, m.id);
-          return html`<button class=${cls('tn-cell has', on && 'on')} title=${m.name} onClick=${() => au.play(t.id, m.id)}>${au.loading(t.id, m.id) ? '…' : on ? '● ' + n : n}</button>`; })}</div>`)}
+          return html`<button class=${cls('tn-cell has', (on || (pi.st.on && sel === m)) && 'on')} title=${m.name} onClick=${() => touch(m)}>${au.loading(t.id, m.id) ? '…' : on ? '● ' + n : n}</button>`; })}</div>`)}
     </div>
-    <${AuditionNote} au=${au} />
+    <${PlayBanner} pi=${pi} />
+    ${pi.st.on ? '' : html`<${AuditionNote} au=${au} />`}
     <div class="tn-act"><span class="muted" style="font-size:12px">An impulse response gives the unit's echoes and tails as recorded: no feedback control, no tape wow.</span><span class="grow"></span>
       ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
       <button class="mini danger" onClick=${onDel}>Delete</button></div>
+    ${item ? html`<${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(t.id, sel.id); }} listening=${au.playing(t.id, sel.id)} />` : ''}
     ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${onDone} onCancel=${onCancel} /></div></div>` : ''}
   </div>`;
 }

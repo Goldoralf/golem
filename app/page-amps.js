@@ -3,6 +3,7 @@
 // Grille PAGINÉE (no-scroll). Recherche + filtres sur UNE ligne (selects compacts).
 // Photos : overlay library/catalog/images.json (tone id -> fichier sous /library/images/).
 import { html, useState, useEffect, useRef, useAsync, cls, esc, safeHref, getCatalog, refreshCatalog, setTopAction, setSubToolbar, useRev, go } from './lib.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 import { useVisuals, Drawing, ampSvg, AMP_FAMILIES, useAudition, PlayMark, AuditionNote, captureTags, openLater, takeOpen } from './tones-ui.js';
 import { capText, archOf as archMatch } from './designer-model.js';
 import { T3kModal } from './t3k-modal.js';
@@ -209,6 +210,12 @@ export function AmpsPage({ role, gears } = {}) {
 // leur nom dit en étiquettes ; toucher une ligne la fait entendre dans le patch chargé.
 function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
   const au = useAudition();
+  // Play it / Add to… (docs/library-play.md) : la capture choisie en dernier ; pendant l'essai, toucher une capture
+  // la remplace sous les doigts au lieu de la faire écouter dans le patch
+  const [cur, setCur] = useState(t.models[0] && t.models[0].id);
+  const item = { capture: t.id, model: cur };
+  const pi = usePlayIt(item);
+  const touch = m => { setCur(m.id); if (pi.st.on) pi.play({ capture: t.id, model: m.id }); else au.play(t.id, m.id); };
   const [del_, setDel] = useState(false);
   const [famv, setFamv] = useState(famOf(t));
   const setFamily = async f => {
@@ -230,17 +237,19 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
       <header><b>Captures</b><em>${t.models.length}</em><span class="grow"></span>
         ${['guitar', 'bass'].map(f => html`<button class=${cls('chip', famv === f && 'on')} onClick=${() => setFamily(f)}>${f === 'bass' ? 'Bass' : 'Guitar'}</button>`)}</header>
       <div class="tn-rows">${t.models.map((m, i) => html`
-        <button class=${cls('tn-row', au.playing(t.id, m.id) && 'on')} onClick=${() => au.play(t.id, m.id)}>
+        <button class=${cls('tn-row', (au.playing(t.id, m.id) || (pi.st.on && cur === m.id)) && 'on', cur === m.id && 'cur')} onClick=${() => touch(m)}>
           <span class="num">${i + 1}</span><span class="nm">${m.name || 'model'}</span>
           <span class="tags">${captureTags(m.name).map(([c, x]) => html`<i class=${'t-' + c}>${x}</i>`)}</span>
           <${PlayMark} on=${au.playing(t.id, m.id)} busy=${au.loading(t.id, m.id)} /></button>`)}</div>
-      <${AuditionNote} au=${au} />
+      <${PlayBanner} pi=${pi} />
+      ${pi.st.on ? '' : html`<${AuditionNote} au=${au} />`}
       <div class="tn-act">
         ${pairs.length ? html`<span class="tn-pairs">Pairs with ${pairs.map(c => html`<button class="mini" onClick=${() => { openLater('cab', c.id); go('library/tones/cabs'); }}>${c.amp || c.title}</button>`)}</span>` : ''}
         <span class="grow"></span>
         ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
         <button class="mini danger" title="delete this amp (trash)" onClick=${() => setDel(true)}>Delete</button>
       </div>
+      <${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(t.id, cur); }} listening=${au.playing(t.id, cur)} />
       ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
     </section>
   </div>`;

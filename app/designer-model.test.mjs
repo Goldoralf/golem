@@ -170,3 +170,23 @@ test('la Library ajoute un groove au Drum Machine, le crée au besoin, sans doub
   assert.equal(empty.config.gen.blocks[0].type, 'drums');
   assert.equal(applyDrumsAction({}, { kind: 'other' }), -1);
 });
+
+import { applyLibraryBlock } from './designer-model.js';
+test('« Add to… » pose un son à sa place : ampli remplacé, pédale devant, instrument remplacé, rien sans lane', () => {
+  const n = { lanes: [{ id: 'guitar-1', role: 'guitar', chain: { pre: [{ id: 'gate', type: 'gate' }, { id: 'head', type: 'amp-nam', foot: 6 }, { id: 'v30', type: 'cab' }], post: [] } },
+    { id: 'keys-1', role: 'keys', chain: { pre: [{ id: 'ep', type: 'ep' }, { id: 'verb', type: 'reverb' }], post: [] } }] };
+  const amp = { type: 'amp', ref: '9', model: '91', params: {} };
+  let r = applyLibraryBlock(n, { kind: 'block', role: 'guitar', block: amp });
+  assert.deepEqual(r, { lane: 'guitar-1', z: 'pre', i: 1 });
+  assert.equal(n.lanes[0].chain.pre[1].type, 'amp');
+  assert.equal(n.lanes[0].chain.pre[1].id, 'head');                 // les scènes qui le nomment le gardent
+  assert.equal(n.lanes[0].chain.pre[1].foot, 6);
+  r = applyLibraryBlock(n, { kind: 'block', role: 'guitar', block: { type: 'pedal-nam', ref: '1', model: '11' } });
+  assert.deepEqual(n.lanes[0].chain.pre.map(b => b.type), ['gate', 'pedal-nam', 'amp', 'cab']);
+  r = applyLibraryBlock(n, { kind: 'block', role: 'keys', block: { type: 'vital', params: { preset: 'X' } } });
+  assert.deepEqual(n.lanes[1].chain.pre.map(b => b.type), ['vital', 'reverb']);
+  assert.equal(applyLibraryBlock(n, { kind: 'block', role: 'drums', block: { type: 'drumkit' } }), null);
+  // une capture de basse sans lane basse : la lane guitare
+  r = applyLibraryBlock(n, { kind: 'block', role: 'bass', block: { type: 'cab', ref: '2', model: '21' } });
+  assert.equal(r.lane, 'guitar-1');
+});

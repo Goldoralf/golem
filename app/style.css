@@ -8654,3 +8654,49 @@ button.mode-live{background:transparent; cursor:pointer}
 .gr-msg{font-size:12px; color:#ff8a65}
 .gr-add{margin-top:auto; min-height:44px; flex:none}
 .gr-hear .ky-row{flex:none}
+
+/* ── Listen · Play it · Add to… (docs/library-play.md, maquette du 2026-11-15) ── */
+.la-banner{display:flex; align-items:center; gap:12px; flex:none; min-height:42px; padding:0 12px; border-radius:8px; background:#14251b;
+  border:1px solid #23633f; font-size:13.5px}
+.la-banner.ko{background:#1d1714; border-color:#7a3a28; color:#ff8a65}
+.la-banner .la-stop{margin-left:auto; min-height:34px; border-radius:8px; border:0; background:var(--text); color:#0d0f12; font:inherit; font-weight:700; padding:0 14px; cursor:pointer}
+.la-bar{display:flex; align-items:center; gap:10px; flex:none; min-height:56px; border-top:1px solid var(--line)}
+.la-btn{min-height:44px; display:inline-flex; align-items:center; gap:6px; border-radius:10px; border:1px solid var(--line); background:var(--panel2);
+  color:var(--text); font:inherit; font-size:14px; font-weight:600; padding:0 14px; cursor:pointer}
+.la-btn.on{border-color:var(--sect, #2ecc71); background:#14251b}
+.la-btn.off{border-style:dashed; color:var(--muted); cursor:default}
+.la-hint{flex:1; min-width:0; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.la-add{min-height:44px; padding:0 18px}
+.la-sheet-bg{position:fixed; inset:0; z-index:40; background:rgba(8,10,12,.6); display:flex; align-items:flex-end}
+.la-sheet{width:100%; box-sizing:border-box; max-height:430px; display:flex; flex-direction:column; gap:12px; padding:16px 20px; background:var(--panel);
+  border-top:1px solid var(--line); border-radius:16px 16px 0 0}
+.la-sheet.tall{height:520px; max-height:520px}
+.la-sheet-hd{display:flex; align-items:center; gap:12px}
+.la-sheet-hd b{font-size:17px}
+.la-sheet-hd .search{margin-left:auto; width:240px}
+.la-x{margin-left:auto; width:40px; height:40px; border-radius:20px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-size:18px; cursor:pointer}
+.la-sheet-hd .search + .la-x{margin-left:0}
+.la-back{position:static; padding:4px 0}
+.la-dests{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px}
+.la-dest{display:flex; flex-direction:column; gap:8px; text-align:left; padding:16px; min-height:170px; border-radius:12px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); font:inherit; cursor:pointer}
+.la-dest small{font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted)}
+.la-dest b{font-size:17px}
+.la-dest span{font-size:13px; color:#c9ced6; line-height:1.45}
+.la-dest.on:not(:disabled){border-color:var(--sect, #2ecc71); background:#14251b}
+.la-dest:disabled{opacity:.5; cursor:default}
+.la-foot{font-size:12px}
+.la-pick{flex:1; min-height:0; display:flex; gap:14px}
+.la-list{width:360px; flex:none; overflow-y:auto; display:flex; flex-direction:column; gap:5px}
+.la-item{min-height:46px; display:flex; flex-direction:column; justify-content:center; text-align:left; padding:0 12px; border-radius:8px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); font:inherit; cursor:pointer}
+.la-item b{font-size:13.5px}
+.la-item small{font-size:11px; color:var(--muted)}
+.la-item.on,.la-lane.on{border-color:var(--sect, #2ecc71); background:#14251b}
+.la-where{flex:1; min-width:0; display:flex; flex-direction:column; gap:8px; padding:14px; border-radius:12px; background:#12161b; border:1px solid var(--line); overflow-y:auto}
+.la-lane{min-height:52px; display:flex; align-items:center; gap:12px; text-align:left; padding:0 14px; border-radius:10px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); font:inherit; cursor:pointer}
+.la-lane b{flex:1; font-size:14px}
+.la-lane span{font-size:12px; color:var(--muted)}
+.la-open{margin-top:auto; min-height:48px; font-size:15px}
+.ky-mac input[type=range]{width:100%; accent-color:var(--sect, #2ecc71)}

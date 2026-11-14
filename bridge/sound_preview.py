@@ -339,6 +339,8 @@ def push_user(sound):
     r = push(sound)
     if r:
         log.info(f"clips envoyés à golem.fm : {sound[:24]}")
+    else:
+        log.warning(f"clips NON envoyés à golem.fm : {sound[:24]} (injoignable ou pas appairé ; réessai au repos)")
     return r
 
 

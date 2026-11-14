@@ -811,6 +811,59 @@ async def library_audition_stop():
     return {"ok": True, "restored": bool(was and state.preset_id)}
 
 
+# ── « Play it » et « Add to… » (docs/library-play.md) : le son brut sous les doigts, puis où le mettre ──────────────
+@router.get("/api/library/try")
+def library_try_status():
+    from . import try_sound
+    return try_sound.status()
+
+
+@router.post("/api/library/try/check")
+def library_try_check(body: dict):
+    """Ce son, avec quel instrument ? {item} -> {role, ok, name, why} — sans rien jouer (le bouton s'allume ou le dit)."""
+    from . import try_sound
+    try:
+        role, _b, name = try_sound.resolve((body or {}).get("item"))
+    except try_sound.TryError as e:
+        return {"ok": False, "why": str(e)}
+    return {"role": role, "sound": name, **try_sound.device(role)}
+
+
+@router.post("/api/library/try")
+async def library_try(body: dict):
+    """Joue le son brut avec l'instrument branché : {item: {capture, model} | {sound} | {kit}}. Le patch est mis de côté."""
+    from . import try_sound
+    try:
+        return {"ok": True, **await try_sound.start((body or {}).get("item"))}
+    except try_sound.TryError as e:
+        return JSONResponse({"error": str(e)}, status_code=409)
+
+
+@router.post("/api/library/try/stop")
+async def library_try_stop():
+    from . import try_sound
+    return await try_sound.stop()
+
+
+@router.post("/api/library/try/param")
+def library_try_param(body: dict):
+    """Un potard du son essayé, en direct (les macros d'un preset Vital) : {param, value}."""
+    from . import try_sound
+    ok = try_sound.set_param(str((body or {}).get("param") or ""), (body or {}).get("value") or 0)
+    return {"ok": ok}
+
+
+@router.post("/api/library/patch-doc")
+def library_patch_doc(body: dict):
+    """« Add to… ▸ A new patch » : le patch d'une lane qui ne porte que ce son ; le Designer l'ouvre en brouillon."""
+    from . import try_sound
+    try:
+        role, block, name = try_sound.resolve((body or {}).get("item"))
+    except try_sound.TryError as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+    return {"doc": try_sound.patch_doc(role, block, name), "block": block, "role": role, "name": name}
+
+
 @router.post("/api/vst-host/capture/module/import")
 async def import_capture_module(request: Request):
     from . import capture_module as CM

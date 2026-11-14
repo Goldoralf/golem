@@ -8,6 +8,7 @@
 import { html, useState, useAsync, cls, esc } from './lib.js';
 import { useVisuals, Drawing } from './tones-ui.js';
 import { keysSvg, useClip, Mark, ClipBar, dur } from './keys-ui.js';
+import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 
 const j = u => fetch(u).then(r => r.json());
 const ENGINE = { piano: 'sfizz', ep: 'dexed', organ: 'b3' };
@@ -19,6 +20,12 @@ export function KeysInstrumentsPage() {
   const [ep, setEp] = useState(false);
   const ins = (data && data.instruments) || [];
   const by = t => ins.find(i => i.type === t) || {};
+  // Play it / Add to… (docs/library-play.md) : le dernier son touché (le piano à l'arrivée)
+  const [last, setLast] = useState(null);
+  const firstSound = ((by('piano').sounds || [])[0] || (by('organ').sounds || [])[0] || {}).sound;
+  const item = (last || firstSound) ? { sound: last || firstSound } : null;
+  const pi = usePlayIt(item);
+  const hear = (s, title) => { setLast(s.sound); if (pi.st.on) pi.play({ sound: s.sound }); else cl.play({ ...s, title }); };
   if (ep) return html`<div class="library tn-page"><${EPiano} ins=${by('ep')} vis=${vis} cl=${cl} onClose=${() => setEp(false)} /></div>`;
 
   const pianos = by('piano').sounds || [];
@@ -26,7 +33,7 @@ export function KeysInstrumentsPage() {
   const epReady = banks.flatMap(b => b.programs.filter(p => p.status === 'ready').map(p => ({ ...p, bank: b.bank })));
   const organ = (by('organ').sounds || [])[0];
   const row = (s, label) => html`<button class=${cls('ky-row', cl.playing(s) && 'on')} disabled=${s.status !== 'ready'}
-      onClick=${() => cl.play({ ...s, title: label })}>
+      onClick=${() => hear(s, label)}>
     <${Mark} on=${cl.playing(s)} s=${s} /><span class="nm">${label}</span><em>${dur(s)}</em></button>`;
   const Tile = ({ kind, title, name, sub, children }) => html`<div class="ky-inst">
     <div class="ky-art">${vis ? html`<${Drawing} svg=${keysSvg({ kind, title })} align="xMidYMid" />` : ''}</div>
@@ -44,11 +51,13 @@ export function KeysInstrumentsPage() {
       <${Tile} kind="epiano" title="E.Piano 1" name="E-Piano"
         sub=${`${banks.length} DX7 banks · ${banks.reduce((n, b) => n + b.programs.length, 0)} sounds · ${epReady.length} to hear`}>
         <div class="ky-chips">${epReady.slice(0, 4).map(s => html`<button class=${cls('ky-chip', cl.playing(s) && 'on')}
-            onClick=${() => cl.play({ ...s, title: s.name })}><${Mark} on=${cl.playing(s)} s=${s} /> ${esc(s.name)}</button>`)}
+            onClick=${() => hear(s, s.name)}><${Mark} on=${cl.playing(s)} s=${s} /> ${esc(s.name)}</button>`)}
           <button class="ky-more" onClick=${() => setEp(true)}>All ${banks.reduce((n, b) => n + b.programs.length, 0)} ›</button></div></${Tile}>
       <${Tile} kind="organ" title="Tonewheel" name="Organ" sub="Tonewheel · drawbars and Leslie are block knobs, per scene">
         <div class="ky-rows">${organ ? row(organ, 'Tonewheel') : ''}</div></${Tile}>
     </div>
+    <${PlayBanner} pi=${pi} />
+    ${item ? html`<${ActionBar} pi=${pi} item=${item} />` : ''}
     <${ClipBar} cl=${cl} />
   </div></div>`;
 }
@@ -61,7 +70,9 @@ function EPiano({ ins, vis, cl, onClose }) {
   const bank = banks[bi] || { programs: [] };
   const [sel, setSel] = useState(() => bank.programs.find(p => p.status === 'ready') || bank.programs[0]);
   const cur = sel && bank.programs.includes(sel) ? sel : bank.programs[0];
-  const pick = p => { setSel(p); if (p.status === 'ready') cl.play({ ...p, title: p.name }); };
+  const item = cur ? { sound: cur.sound } : null;
+  const pi = usePlayIt(item);
+  const pick = p => { setSel(p); if (pi.st.on) pi.play({ sound: p.sound }); else if (p.status === 'ready') cl.play({ ...p, title: p.name }); };
   return html`<div class="tn-col ky-col">
     <div class="ky-detail">
       <div class="ky-left">
@@ -76,6 +87,8 @@ function EPiano({ ins, vis, cl, onClose }) {
           title=${p.status === 'ready' ? 'hear it' : 'no demo for this sound: pick it in the E-Piano block to play it'} onClick=${() => pick(p)}>
           <${Mark} on=${cl.playing(p)} s=${p} /><span>${p.n + 1} · ${esc(p.name)}</span></button>`)}</div>
     </div>
-    <${ClipBar} cl=${cl} hint="▶ marks the sounds that have a demo. The others play in the E-Piano block of a Keys lane." />
+    <${PlayBanner} pi=${pi} />
+    ${item ? html`<${ActionBar} pi=${pi} item=${item} onListen=${cur.status === 'ready' ? () => { if (pi.st.on) pi.stop(); cl.play({ ...cur, title: cur.name }); } : null} listening=${cl.playing(cur)} />` : ''}
+    <${ClipBar} cl=${cl} hint="▶ marks the sounds that have a demo. Play it plays any of them from your keyboard." />
   </div>`;
 }

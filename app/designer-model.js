@@ -282,6 +282,45 @@ export const toKeys = keys => ({
 // il ne prend aucune entrée, il en fabrique une (piano + walking bass depuis une grille).
 export const CONFIG_GEN_TYPES = ['looper', 'backing-track', 'sample', 'drums', 'standard'];
 
+// « ADD TO… » DEPUIS LA LIBRARY (docs/library-play.md, 2026-11-15) : un son (capture, instrument clavier, kit) posé
+// dans une lane du document — la lane demandée, sinon la première de son rôle (une capture de basse va sur une lane
+// guitare s'il n'y a pas de basse). Sa place suit sa nature, comme l'écoute (bridge/audition.py) : un ampli remplace
+// le premier ampli, un baffle le premier baffle (ou se pose après l'ampli), une pédale ou un préampli se pose devant
+// l'ampli, un compresseur en tête, un IR d'effet en fin de chaîne, un instrument remplace l'instrument de la lane.
+// Le bloc remplacé laisse son id (les scènes qui le nomment le gardent) et son switch. Rend la référence du bloc posé
+// ({lane, z, bi, i}) pour en ouvrir la fiche, ou null (pas de lane de ce rôle).
+const LIB_AMPS = ['amp', 'amp-nam', 'capture-module'];
+const LIB_INSTR = ['piano', 'ep', 'organ', 'vital', 'drumkit', 'pads', 'dexed', 'sampler-keys'];
+export function applyLibraryBlock(n, act) {
+  if (!n || !act || act.kind !== 'block' || !act.block) return null;
+  const lanes = n.lanes || [];
+  const roleOf = L => L.role || L.in_role;
+  const L = (act.lane && lanes.find(x => x.id === act.lane)) || lanes.find(x => roleOf(x) === act.role)
+    || (act.role === 'bass' ? lanes.find(x => roleOf(x) === 'guitar') : null);
+  if (!L) return null;
+  const ch = L.chain = L.chain || { pre: [], post: [] };
+  ch.pre = ch.pre || []; ch.post = ch.post || [];
+  const brs = (ch.split && ch.split.branches) || [];
+  const path = [['pre', null, ch.pre], ...brs.map((b, bi) => ['br', bi, b.blocks = b.blocks || []]), ['post', null, ch.post]];
+  const find = types => { for (const [, , lst] of path) { const i = lst.findIndex(b => b && types.includes(b.type)); if (i >= 0) return [lst, i]; } return [null, -1]; };
+  const used = new Set();
+  const walk = x => { if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === 'object') { if (x.type && x.id) used.add(x.id); Object.values(x).forEach(walk); } };
+  walk(n.lanes); walk(n.config);
+  const blk = JSON.parse(JSON.stringify(act.block));
+  let id = blk.type, k = 2; while (used.has(id)) id = blk.type + '-' + k++;
+  blk.id = id;
+  const put = (lst, i, replace) => { if (replace) { const old = lst[i]; blk.id = old.id; if (old.foot != null) blk.foot = old.foot; lst[i] = blk; } else lst.splice(i, 0, blk); };
+  const t = blk.type;
+  const [same, si] = find(LIB_AMPS.includes(t) ? LIB_AMPS : LIB_INSTR.includes(t) ? LIB_INSTR : [t]);
+  if (same) put(same, si, true);
+  else if (t === 'cab') { const [al, ai] = find(LIB_AMPS); al ? put(al, ai + 1) : ch.pre.push(blk); }
+  else if (t === 'pedal-nam' || t === 'preamp-nam') { const [al, ai] = find(LIB_AMPS); al ? put(al, ai) : ch.pre.push(blk); }
+  else if (t === 'comp-nam' || LIB_INSTR.includes(t)) put(ch.pre, 0);
+  else ch.post.push(blk);
+  for (const [z, bi, lst] of path) { const i = lst.indexOf(blk); if (i >= 0) return { lane: L.id, z, ...(bi != null ? { bi } : {}), i }; }
+  return null;
+}
+
 // DEPUIS LA LIBRARY ▸ DRUMS (docs/drums-library.md §5, 2026-11-14) : « Add to my drum machine » sur un groove,
 // « Use this kit » sur un kit. Le Designer arrive avec l'action ; elle touche le bloc Drum Machine du document (la
 // config `gen`), le crée s'il n'y en a pas, et rend son index pour en ouvrir la fiche. Un groove n'est jamais ajouté

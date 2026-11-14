@@ -1795,13 +1795,16 @@ ${r.svg}
   }
 
   // ---------- kits: drum sets and pad kits ----------
-  // A drum set seen from the front, one layout per kind of kit, never a maker's livery; the finish (a hue and
-  // a wrap) is picked from the title when not given, so two kits never look the same.
+  // A drum set seen from the drummer's throne, raised, looking down and forward across the kit: each piece
+  // is placed in metres and projected through one camera, so heads, cymbals and stands are in true
+  // perspective. One layout per kind of kit, never a maker's livery; the finish (a hue and a wrap) is picked
+  // from the title when not given, so two kits never look the same.
   const KIT_TYPES = ['rock', 'jazz', 'metal', 'vintage', 'electronic', 'hybrid'];
   const KIT_HUES = ['#b3121f', '#1f4fa3', '#2b2b2e', '#e8e2d0', '#2f7a3a', '#6e3aa0', '#c47a1c', '#7a4a26', '#0f6f7a', '#8a1e4a'];
   const KIT_WRAPS = ['gloss', 'sparkle', 'pearl', 'wood', 'satin'];
   const KIT_PIECES = ['kick', 'snare', 'hats', 'ride', 'crash', 'toms'];
   let kitCount = 0;
+  const LIT = '#ffd27a';
   const hashOf = s => { let h = 2166136261; for (const c of String(s || '')) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
   // opts.finish: a hex hue, a wrap name, or {hue, wrap}; else from the title (and the type's taste)
   function kitFinish(type, title, finish) {
@@ -1812,156 +1815,241 @@ ${r.svg}
     return { hue: f.hue || huePref[h % huePref.length], wrap: KIT_WRAPS.includes(f.wrap) ? f.wrap : wrapPref[(h >>> 8) % wrapPref.length] };
   }
 
+  // ---- the camera: eye behind the throne, raised, pitched down. World: x right, y forward, z up (metres)
+  const CAM = { x: 0.08, y: -0.62, z: 1.62, pitch: 40 * Math.PI / 180 };
+  function proj(p) {
+    const dx = p[0] - CAM.x, dy = p[1] - CAM.y, dz = p[2] - CAM.z, c = Math.cos(CAM.pitch), s = Math.sin(CAM.pitch);
+    const depth = dy * c - dz * s, up = dy * s + dz * c;
+    return [dx / depth, -up / depth, depth];
+  }
+  const N_CIRC = 40;
+  // a circle of radius r centred on c, in the plane normal to n (unit), as projected points
+  function circle(c, r, n, k) {
+    k = k || N_CIRC;
+    // a basis of the plane: e1 ⟂ n (prefer x), e2 = n × e1
+    let e1 = Math.abs(n[0]) < .9 ? [1, 0, 0] : [0, 1, 0];
+    const d = e1[0] * n[0] + e1[1] * n[1] + e1[2] * n[2];
+    e1 = [e1[0] - d * n[0], e1[1] - d * n[1], e1[2] - d * n[2]];
+    const l = Math.hypot(...e1); e1 = e1.map(v => v / l);
+    const e2 = [n[1] * e1[2] - n[2] * e1[1], n[2] * e1[0] - n[0] * e1[2], n[0] * e1[1] - n[1] * e1[0]];
+    return Array.from({ length: k }, (_, i) => { const a = 2 * Math.PI * i / k, ca = Math.cos(a), sa = Math.sin(a);
+      return proj([c[0] + r * (ca * e1[0] + sa * e2[0]), c[1] + r * (ca * e1[1] + sa * e2[1]), c[2] + r * (ca * e1[2] + sa * e2[2])]); });
+  }
+  // the convex hull of projected points (monotone chain): the silhouette of a cylinder
+  function hull(pts) {
+    const p = pts.map(q => [q[0], q[1]]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const lo = [], up = [];
+    for (const q of p) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+    for (let i = p.length - 1; i >= 0; i--) { const q = p[i]; while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+    return lo.slice(0, -1).concat(up.slice(0, -1));
+  }
+  const tilted = t => [0, -Math.sin(t), Math.cos(t)]; // a head's normal, leaning towards the drummer by t
+  const add = (a, b, k) => [a[0] + b[0] * k, a[1] + b[1] * k, a[2] + b[2] * k];
+
+  // ---- the scene: pieces in world units, each a list of shapes {d: points, ...} with a depth for sorting
+  function kitScene(type, o) {
+    const pieces = [], lit = p => o.on && o.lit.has(p), detail = !o.compact;
+    const head = o.heads;
+    const shadow = (c, r) => ({ kind: 'shadow', pts: circle([c[0], c[1], 0.002], r, [0, 0, 1], 24) });
+    // a drum on its axis: top head centre `c`, normal `n`, radius r, shell depth h
+    const drum = (c, r, h, n, o2) => {
+      const bot = add(c, n, -h), top = circle(c, r, n), btm = circle(bot, r, n);
+      const lugs = [];
+      if (detail && !o2.mesh) {
+        const mid = add(c, n, -h / 2), ring = circle(mid, r * 1.02, n, 10);
+        const ctr = proj(mid);
+        ring.forEach((q, i) => { if (q[2] < ctr[2]) { const a = 2 * Math.PI * i / 10; lugs.push(i); } });
+      }
+      const sh = [shadow([c[0], c[1] - h * n[1]], r * 1.05)];
+      sh.push({ kind: 'shell', pts: hull(top.concat(btm)), finish: o2.finish, mesh: o2.mesh });
+      if (lugs.length) {
+        const mid = add(c, n, -h / 2), up = add(mid, n, h * .22), dn = add(mid, n, -h * .22);
+        const ringU = circle(up, r * 1.03, n, 10), ringD = circle(dn, r * 1.03, n, 10);
+        lugs.forEach(i => sh.push({ kind: 'lug', pts: [ringU[i], ringD[i]] }));
+      }
+      sh.push({ kind: 'head', pts: top, head: o2.mesh ? 'mesh' : o2.head || head, lit: o2.lit });
+      sh.push({ kind: 'hoop', pts: top });
+      return { depth: proj(c)[2], shapes: sh };
+    };
+    const stand = (base, topZ, legs) => {
+      const s = [{ kind: 'stand', bg: true, pts: [proj([base[0], base[1], topZ]), proj([base[0], base[1], 0.06])] }];
+      for (let i = 0; i < 3; i++) { const a = Math.PI / 2 + i * 2 * Math.PI / 3; s.push({ kind: 'stand', bg: true, pts: [proj([base[0], base[1], 0.12]), proj([base[0] + .22 * Math.cos(a), base[1] + .22 * Math.sin(a), 0.005])], thin: true }); }
+      return s;
+    };
+    const cymbal = (c, r, tilt, o2) => {
+      const n = tilted(tilt), sh = [shadow([c[0], c[1]], r * .7)].concat(stand([c[0], c[1] - .05], c[2] - .02));
+      sh.push({ kind: o2.rubber ? 'pad-cym' : o2.china ? 'china' : 'cymbal', pts: circle(c, r, n), rings: detail && !o2.rubber ? [.32, .5, .66, .8, .92].map(k => circle(c, r * k, n, 32)) : [],
+        bell: circle(add(c, n, .012), r * .17, n, 24), ring: o2.ring, lit: o2.lit });
+      return { depth: proj(c)[2] - 0.3, shapes: sh };
+    };
+    const hats = (c, r, o2) => {
+      const n = tilted(.05), sh = [shadow([c[0], c[1]], r * .7)].concat(stand([c[0], c[1]], c[2] - .02));
+      sh.push({ kind: o2.rubber ? 'pad-cym' : 'cymbal', pts: circle(add(c, [0, 0, 1], -.025), r, n), rings: [], bell: [], ring: o2.ring });
+      sh.push({ kind: o2.rubber ? 'pad-cym' : 'cymbal', pts: circle(c, r, n), rings: detail && !o2.rubber ? [.35, .6, .85].map(k => circle(c, r * k, n, 28)) : [], bell: circle(add(c, n, .01), r * .17, n, 24), ring: o2.ring, lit: o2.lit });
+      return { depth: proj(c)[2] - 0.2, shapes: sh };
+    };
+    // the kick: a horizontal shell, batter head towards the drummer, front head away
+    const kick = (x, r, y0, len, o2) => {
+      const n = [0, -1, 0], near = [x, y0, r + .01], far = [x, y0 + len, r + .01];
+      const a = circle(near, r, n), b = circle(far, r, n), sh = [{ kind: 'shadow', pts: hull(circle([x, y0, .002], r, [0, 0, 1], 16).concat(circle([x, y0 + len, .002], r, [0, 0, 1], 16))) }];
+      sh.push({ kind: 'shell', pts: hull(a.concat(b)), finish: o2.finish, mesh: o2.mesh });
+      sh.push({ kind: 'hoop', pts: b, far: true });
+      sh.push({ kind: 'head', pts: a, head: o2.mesh ? 'mesh' : o2.head || 'coated', lit: o2.lit });
+      if (detail) sh.push({ kind: 'ring', pts: circle(near, r * .86, n) });
+      sh.push({ kind: 'hoop', pts: a });
+      // the pedal and its beater against the batter head
+      sh.push({ kind: 'pedal', pts: [proj([x, y0 - .3, .01]), proj([x, y0 - .02, .06]), proj([x, y0 - .03, r * .8])] });
+      return { depth: proj([x, y0 + len / 2, r])[2] + .2, shapes: sh };
+    };
+    const tomMount = (from, to) => ({ depth: 9, shapes: [{ kind: 'stand', pts: [proj(from), proj(to)] }] });
+    const F = o.finish, snareFin = { hue: '#b9bfc6', wrap: 'gloss' };
+    const tomHead = head === 'black' ? 'clear' : head;
+    if (type === 'electronic') {
+      const mesh = { mesh: true }, ring = mix(F.hue, '#fff', .3);
+      pieces.push({ depth: 3, shapes: [{ kind: 'rack', pts: [proj([-.62, .55, .72]), proj([.72, .55, .72])] }, { kind: 'rack', pts: [proj([-.62, .55, .72]), proj([-.62, .55, 0])] }, { kind: 'rack', pts: [proj([.72, .55, .72]), proj([.72, .55, 0])] }] });
+      pieces.push(drum([-.24, .24, .62], .16, .05, tilted(.18), Object.assign({ lit: lit('snare') }, mesh)));
+      pieces.push(drum([-.12, .55, .8], .13, .05, tilted(.3), Object.assign({ lit: lit('toms') }, mesh)), drum([.2, .57, .8], .13, .05, tilted(.3), Object.assign({ lit: lit('toms') }, mesh)));
+      pieces.push(drum([.5, .32, .64], .16, .05, tilted(.2), Object.assign({ lit: lit('toms') }, mesh)));
+      pieces.push({ depth: proj([.05, .5, .3])[2], shapes: [{ kind: 'shadow', pts: circle([.05, .52, .002], .14, [0, 0, 1], 16) },
+        { kind: 'tower', pts: hull([[-.08, .44, 0], [.18, .44, 0], [-.08, .44, .42], [.18, .44, .42], [-.08, .6, .42], [.18, .6, .42]].map(proj)), face: [[-.06, .43, .12], [.16, .43, .12], [.16, .43, .38], [-.06, .43, .38]].map(proj), lit: lit('kick') },
+        { kind: 'pedal', pts: [proj([.05, .1, .01]), proj([.05, .38, .06]), proj([.05, .42, .26])] }] });
+      pieces.push(hats([-.55, .32, .9], .16, { rubber: true, ring, lit: lit('hats') }));
+      pieces.push(cymbal([-.36, .72, 1.18], .19, .25, { rubber: true, ring, lit: lit('crash') }));
+      pieces.push(cymbal([.6, .62, 1.02], .22, .2, { rubber: true, ring, lit: lit('ride') }));
+      pieces.push({ depth: proj([.68, .5, .95])[2] - .1, shapes: [{ kind: 'module', pts: hull([[.6, .48, .86], [.82, .48, .86], [.6, .5, 1.0], [.82, .5, 1.0]].map(proj)), screen: [[.63, .47, .93], [.79, .47, .93], [.79, .47, .985], [.63, .47, .985]].map(proj) }] });
+      return pieces;
+    }
+    const L = {
+      rock: { kick: [[.06, .28]], toms: [[-.1, .56, .78, .15, .2], [.2, .58, .8, .16, .22]], floor: [[.52, .3, .56, .2, .42]], snare: [-.26, .24, .62, .178, .14], hats: [-.57, .3, .9, .178], crash: [[-.36, .74, 1.24, .23]], ride: [.64, .66, 1.06, .28], china: [] },
+      jazz: { kick: [[.06, .23]], toms: [[.06, .52, .7, .15, .2]], floor: [[.48, .3, .54, .18, .36]], snare: [-.24, .24, .6, .178, .13], hats: [-.55, .3, .88, .178], crash: [[-.34, .72, 1.16, .2]], ride: [.58, .7, .98, .3], china: [] },
+      vintage: { kick: [[.06, .28]], toms: [[.06, .54, .78, .16, .22]], floor: [[.5, .3, .56, .2, .4]], snare: [-.25, .24, .62, .178, .14], hats: [-.56, .3, .9, .178], crash: [[-.36, .74, 1.2, .22]], ride: [.62, .68, 1.04, .28], china: [] },
+      metal: { kick: [[-.18, .28], [.3, .28]], toms: [[-.26, .62, .86, .13, .2], [.04, .66, .9, .14, .22], [.32, .64, .88, .15, .22]], floor: [[.58, .28, .56, .2, .42], [.84, .42, .56, .18, .38]], snare: [-.3, .22, .62, .178, .14], hats: [-.62, .28, .9, .178], crash: [[-.5, .82, 1.3, .24], [.48, .9, 1.36, .24]], ride: [.76, .62, 1.08, .28], china: [[.98, .78, 1.24, .24]] },
+    };
+    const k = L[type === 'hybrid' ? 'rock' : type] || L.rock;
+    const kickHead = type === 'metal' ? 'black' : 'coated';
+    k.kick.forEach(([x, r], i) => pieces.push(kick(x, r, .34, .46, { finish: F, head: kickHead, lit: lit('kick'), badge: i === 0 ? o.title : '' })));
+    k.toms.forEach(([x, y, z, r, h]) => { pieces.push(drum([x, y, z], r, h, tilted(.28), { finish: F, head: tomHead, lit: lit('toms') }));
+      pieces.push(tomMount([x * .6 + k.kick[0][0] * .4, .52, k.kick[0][1] * 2 + .02], [x, y + .05, z - h * .5])); });
+    k.floor.forEach(([x, y, z, r, h]) => {
+      const legs = [0, 1, 2].map(i => { const a = -Math.PI / 2 + i * 2 * Math.PI / 3; return { kind: 'stand', pts: [proj([x + r * 1.05 * Math.cos(a), y + r * 1.05 * Math.sin(a), z - h * .6]), proj([x + r * 1.25 * Math.cos(a), y + r * 1.25 * Math.sin(a), 0.005])] }; });
+      const d = drum([x, y, z], r, h, tilted(.04), { finish: F, head: tomHead, lit: lit('toms') }); d.shapes.unshift(...legs); pieces.push(d); });
+    const [sx, sy, sz, sr, shh] = k.snare;
+    const sd = drum([sx, sy, sz], sr, shh, tilted(.12), { finish: snareFin, head: 'coated', lit: lit('snare') });
+    sd.shapes.splice(1, 0, ...stand([sx, sy], sz - shh - .02)); pieces.push(sd);
+    pieces.push(hats([k.hats[0], k.hats[1], k.hats[2]], k.hats[3], { lit: lit('hats') }));
+    k.crash.forEach(([x, y, z, r]) => pieces.push(cymbal([x, y, z], r, .26, { lit: lit('crash') })));
+    k.china.forEach(([x, y, z, r]) => pieces.push(cymbal([x, y, z], r, .22, { china: true, lit: lit('crash') })));
+    pieces.push(cymbal([k.ride[0], k.ride[1], k.ride[2]], k.ride[3], .18, { lit: lit('ride') }));
+    if (type === 'hybrid') {
+      pieces.push(drum([-.5, .58, .78], .1, .04, tilted(.35), { mesh: true, lit: lit('snare') }), drum([.86, .4, .8], .1, .04, tilted(.35), { mesh: true, lit: lit('toms') }));
+      pieces.push({ depth: proj([.86, .62, .95])[2] - .1, shapes: [{ kind: 'module', pts: hull([[.78, .62, .9], [.98, .62, .9], [.78, .64, 1.02], [.98, .64, 1.02]].map(proj)), screen: [[.81, .61, .96], [.95, .61, .96], [.95, .61, 1.0], [.81, .61, 1.0]].map(proj) }] });
+    }
+    return pieces;
+  }
+
   function kitDefs(id, F) {
     const sparkle = Array.from({ length: 14 }, (_, i) => `<circle cx="${(i * 37) % 23 + .5}" cy="${(i * 53) % 19 + .5}" r="${.5 + (i % 3) * .35}" fill="#fff" opacity="${.35 + (i % 4) * .15}"/>`).join('');
     return `<defs>
-  <linearGradient id="${id}-shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".32" stop-color="#fff" stop-opacity=".16"/><stop offset=".55" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
-  <radialGradient id="${id}-cym" cx=".42" cy=".35" r=".75"><stop offset="0" stop-color="#f6dc8c"/><stop offset=".55" stop-color="#d0a447"/><stop offset="1" stop-color="#8a6420"/></radialGradient>
+  <linearGradient id="${id}-shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".3" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></linearGradient>
+  <radialGradient id="${id}-cym" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#f8e2a0"/><stop offset=".35" stop-color="#d8ac52"/><stop offset=".8" stop-color="#a87a2c"/><stop offset="1" stop-color="#6e4c18"/></radialGradient>
+  <radialGradient id="${id}-coated" cx=".4" cy=".32" r=".8"><stop offset="0" stop-color="#fbf8f0"/><stop offset=".7" stop-color="#e6dfcd"/><stop offset="1" stop-color="#c9c0aa"/></radialGradient>
+  <radialGradient id="${id}-clear" cx=".4" cy=".32" r=".8"><stop offset="0" stop-color="#e9eef2" stop-opacity=".85"/><stop offset=".6" stop-color="#9ea7b0" stop-opacity=".55"/><stop offset="1" stop-color="#5a636c" stop-opacity=".7"/></radialGradient>
+  <radialGradient id="${id}-black" cx=".4" cy=".32" r=".8"><stop offset="0" stop-color="#4a4d52"/><stop offset=".6" stop-color="#1c1d20"/><stop offset="1" stop-color="#0c0c0e"/></radialGradient>
   <radialGradient id="${id}-pearl" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".5" stop-color="${mix(F.hue, '#fff', .6)}" stop-opacity=".55"/><stop offset="1" stop-color="${F.hue}" stop-opacity="0"/></radialGradient>
+  <radialGradient id="${id}-rug" cx=".5" cy=".7" r=".55"><stop offset="0" stop-color="${mix(F.hue, '#2a2420', .82)}"/><stop offset="1" stop-color="#121214"/></radialGradient>
   <pattern id="${id}-sparkle" width="23" height="19" patternUnits="userSpaceOnUse">${sparkle}</pattern>
-  <pattern id="${id}-mesh" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0L4 4M4 0L0 4" stroke="#000" stroke-opacity=".5" stroke-width=".6"/></pattern>
+  <pattern id="${id}-mesh" width="3" height="3" patternUnits="userSpaceOnUse"><path d="M0 0L3 3M3 0L0 3" stroke="#000" stroke-opacity=".55" stroke-width=".5"/></pattern>
+  <filter id="${id}-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+  <clipPath id="${id}-frame"><rect x="0" y="0" width="${F.W}" height="${F.H}" rx="8"/></clipPath>
 </defs>`;
   }
-  // the wrap on a shell's body
-  function wrapFill(id, F, x, y, w, h, rx) {
-    const r = `x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx || 0}"`;
-    const over = { sparkle: `<rect ${r} fill="url(#${id}-sparkle)"/>`, pearl: `<rect ${r} fill="url(#${id}-pearl)"/>`,
-      wood: `<rect ${r} fill="url(#gp-brush-lines)" opacity=".55"/>`, satin: '', gloss: `<rect ${r} fill="url(#gp-gloss)" opacity=".35"/>` }[F.wrap] || '';
-    return `<rect ${r} fill="${F.wrap === 'wood' ? mix(F.hue, '#6b3e1e', .55) : F.hue}"/>${over}<rect ${r} fill="url(#${id}-shade)"/>`;
-  }
-  const LIT = '#ffd27a';
-  // the stroke of a hoop or a pad: its own, or the lit gold one (never both: an attribute twice is invalid XML)
-  const litStroke = (on, lit, stroke, width) => on && lit ? ` stroke="${LIT}" stroke-width="2.4" filter="url(#gp-glow-soft)"`
-    : stroke ? ` stroke="${stroke}" stroke-width="${width}"` : '';
 
-  // a shell seen slightly from above: body w × h under its top head
-  function shell(id, F, cx, top, w, h, o) {
-    o = o || {};
-    const ry = w * .17, x = cx - w / 2, head = o.mesh ? '#3a3d42' : (o.head || '#ece6d6');
-    const nl = Math.max(3, Math.round(w / 22));
-    const lugs = o.detail && !o.mesh ? Array.from({ length: nl }, (_, i) => {
-      const lx = x + w * (i + .5) / nl; return `<rect x="${(lx - 1.6).toFixed(1)}" y="${(top + h * .3).toFixed(1)}" width="3.2" height="${(h * .4).toFixed(1)}" rx="1.2" fill="url(#gp-chrome)"/>`; }).join('') : '';
-    return `<g class="gp-drum">${o.mesh ? `<rect x="${x}" y="${top}" width="${w}" height="${h}" fill="#1b1c1f"/><rect x="${x}" y="${top}" width="${w}" height="${h}" fill="url(#${id}-shade)"/>` : wrapFill(id, F, x, top, w, h)}
-  <ellipse cx="${cx}" cy="${top + h}" rx="${w / 2}" ry="${ry}" fill="#000" opacity=".25"/>${lugs}
-  <ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="${head}"/>${o.mesh ? `<ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="url(#${id}-mesh)"/>` : ''}
-  <ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="none"${litStroke(o.on, o.lit, 'url(#gp-chrome)', o.detail ? 2.6 : 1.8)}/></g>`;
-  }
-  function cymbal(id, cx, cy, rx, o) {
-    o = o || {};
-    const ry = Math.max(3, rx * (o.china ? .2 : .14)), floor = o.floor;
-    const stand = floor ? `<path d="M${cx} ${cy}V${floor - 10}M${cx} ${floor - 10}l-${rx * .35} 10M${cx} ${floor - 10}l${rx * .35} 10" stroke="#7d838a" stroke-width="1.6" fill="none"/>` : '';
-    const body = o.rubber ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#1c1d20"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * .82}" ry="${ry * .78}" fill="none" stroke="${o.ring || '#5ec8e0'}" stroke-width="1.4" opacity=".8"/>`
-      : o.china ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id}-cym)"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * .78}" ry="${ry * .7}" fill="#8a6420" opacity=".55"/><path d="M${cx - rx} ${cy}q${rx * .08} ${-ry * 1.1} ${rx * .2} ${-ry * .5}M${cx + rx} ${cy}q${-rx * .08} ${-ry * 1.1} ${-rx * .2} ${-ry * .5}" stroke="#d0a447" stroke-width="1.6" fill="none"/>`
-        : `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id}-cym)"/><ellipse cx="${cx}" cy="${cy - ry * .2}" rx="${rx * .18}" ry="${ry * .45}" fill="#f6dc8c"/>`;
-    const lit = o.on && o.lit ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx + 3}" ry="${ry + 2}" fill="none" stroke="${LIT}" stroke-width="2" filter="url(#gp-glow-soft)"/>` : '';
-    return `<g class="gp-cymbal">${stand}${body}${lit}</g>`;
-  }
-  function hats(id, cx, cy, rx, o) {
-    o = o || {};
-    return `<g class="gp-hats">${cymbal(id, cx, cy + 4, rx, { floor: o.floor, rubber: o.rubber, ring: o.ring })}${cymbal(id, cx, cy, rx, { rubber: o.rubber, ring: o.ring, on: o.on, lit: o.lit })}</g>`;
-  }
-  // the kick from the front: the resonant head carries the title
-  function kickFront(id, F, cx, cy, r, title, o) {
-    o = o || {};
-    const metal = o.type === 'metal', vint = o.type === 'vintage';
-    const head = metal ? '#141416' : vint ? '#efe6cf' : '#ece6d6', ink = metal ? '#e9edf1' : vint ? mix(F.hue, '#2a1a10', .55) : '#202226';
-    const t = String(title || '').slice(0, 14), fs = Math.min(r * .34, (1.62 * r) / Math.max(4, t.length) * 1.25);
-    const lugs = o.detail ? Array.from({ length: 10 }, (_, i) => { const [lx, ly] = polar(cx, cy, r + 2, i * 36);
-      return `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.2" fill="url(#gp-chrome)"/>`; }).join('') : '';
-    const spurs = `<path d="M${cx - r * .8} ${cy + r * .5}l-${r * .25} ${r * .5}M${cx + r * .8} ${cy + r * .5}l${r * .25} ${r * .5}" stroke="url(#gp-chrome)" stroke-width="2.4"/>`;
-    const port = metal && o.detail ? `<circle cx="${cx + r * .42}" cy="${cy + r * .42}" r="${r * .16}" fill="#000"/><circle cx="${cx + r * .42}" cy="${cy + r * .42}" r="${r * .16}" fill="none" stroke="#555"/>` : '';
-    return `<g class="gp-kick">${spurs}<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="${F.wrap === 'wood' ? mix(F.hue, '#6b3e1e', .55) : F.hue}"/>
-  ${F.wrap === 'sparkle' ? `<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="url(#${id}-sparkle)"/>` : F.wrap === 'pearl' ? `<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="url(#${id}-pearl)"/>` : ''}
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="${head}"/>${lugs}
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-sheen)" opacity=".35"/>
-  ${vint ? `<circle cx="${cx}" cy="${cy}" r="${r * .62}" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".6"/>` : ''}${port}
-  <text x="${cx}" y="${cy + fs * .36}" text-anchor="middle" font-family="${vint ? FONT.enamel : FONT.nam}" font-size="${fs.toFixed(1)}" font-weight="800" letter-spacing="${vint ? .5 : 1.4}" fill="${ink}">${esc(vint ? t : t.toUpperCase())}</text>
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="none"${litStroke(o.on, o.lit, 'url(#gp-chrome)', o.detail ? 3 : 2)}/></g>`;
-  }
-  // an electronic kit's kick tower
-  function kickTower(id, cx, base, w, h, title, o) {
-    o = o || {};
-    return `<g class="gp-kick"><rect x="${cx - w / 2}" y="${base - h}" width="${w}" height="${h}" rx="4" fill="#1b1c1f"/>
-  <rect x="${cx - w * .38}" y="${base - h + 6}" width="${w * .76}" height="${w * .76}" rx="3" fill="#3a3d42"/><rect x="${cx - w * .38}" y="${base - h + 6}" width="${w * .76}" height="${w * .76}" rx="3" fill="url(#${id}-mesh)"${litStroke(o.on, o.lit)}/>
-  <text x="${cx}" y="${base - 8}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${Math.min(9, w / 6)}" font-weight="700" letter-spacing="1" fill="#cfd3d8">${esc(String(title || '').toUpperCase().slice(0, 10))}</text></g>`;
-  }
-  function kitModule(cx, cy, w, title, on, hue) {
-    const h = w * .62;
-    return `<g class="gp-module"><path d="M${cx} ${cy + h / 2}V${cy + h / 2 + 60}" stroke="#7d838a" stroke-width="1.6"/>
-  <rect x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="3" fill="#202226"/>
-  <rect x="${cx - w * .4}" y="${cy - h * .34}" width="${w * .8}" height="${h * .34}" rx="1.5" fill="${on ? mix(hue, '#05070a', .55) : '#0a0c0e'}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
-  <text x="${cx}" y="${cy - h * .1}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${(h * .2).toFixed(1)}" font-weight="700" fill="${on ? '#eef0f2' : '#4a4f56'}">${esc(String(title || '').toUpperCase().slice(0, 9))}</text>
-  ${[0, 1, 2].map(i => `<circle cx="${cx - w * .25 + i * w * .25}" cy="${cy + h * .25}" r="${w * .07}" fill="#3a3d42"/>`).join('')}</g>`;
-  }
-
-  // layouts on a 600 × 340 floor plan (floor at y 322); `s` scales them for the compact tile
-  function kitBody(id, type, F, title, o) {
-    const on = o.on, d = !o.compact, L = new Set([].concat(o.lit || []).filter(p => KIT_PIECES.includes(p)));
-    const lit = p => on && L.has(p), floor = 322, ring = mix(F.hue, '#fff', .3);
-    const parts = [];
-    const stand = (x, y) => `<path d="M${x} ${y}V${floor - 12}M${x} ${floor - 12}l-12 12M${x} ${floor - 12}l12 12" stroke="#7d838a" stroke-width="1.6" fill="none"/>`;
-    const floorTom = (cx, top, w, h) => `<path d="M${cx - w * .42} ${top + h}l-6 ${floor - top - h}M${cx + w * .42} ${top + h}l6 ${floor - top - h}" stroke="url(#gp-chrome)" stroke-width="2.2"/>` + shell(id, F, cx, top, w, h, { detail: d, on, lit: lit('toms') });
-    if (type === 'electronic') {
-      parts.push(`<path d="M120 196H520M140 196V${floor}M500 196V${floor}" stroke="#3a3d42" stroke-width="6" stroke-linecap="round"/>`);
-      parts.push(hats(id, 66, 150, 40, { floor, rubber: true, ring, on, lit: lit('hats') }));
-      parts.push(cymbal(id, 178, 74, 46, { floor, rubber: true, ring, on, lit: lit('crash') }));
-      parts.push(cymbal(id, 462, 88, 52, { floor, rubber: true, ring, on, lit: lit('ride') }));
-      parts.push(shell(id, F, 240, 150, 62, 12, { mesh: true, on, lit: lit('toms') }), shell(id, F, 340, 150, 62, 12, { mesh: true, on, lit: lit('toms') }));
-      parts.push(shell(id, F, 462, 196, 72, 14, { mesh: true, on, lit: lit('toms') }));
-      parts.push(shell(id, F, 160, 210, 76, 14, { mesh: true, on, lit: lit('snare') }));
-      parts.push(kickTower(id, 300, floor, 70, 96, title, { on, lit: lit('kick') }));
-      parts.push(kitModule(552, 214, 62, title, on, F.hue));
-      return parts.join('');
-    }
-    const T = {
-      rock: { kick: [300, 246, 72], toms: [[250, 118, 64, 46], [348, 118, 64, 46]], floor: [[484, 176, 88, 92]], snare: [154, 186, 84, 32], hats: [66, 150, 40], crash: [[168, 70, 52]], ride: [474, 96, 60], china: [] },
-      jazz: { kick: [300, 262, 56], toms: [[300, 152, 56, 40]], floor: [[452, 196, 80, 82]], snare: [176, 204, 80, 28], hats: [74, 164, 38], crash: [[178, 92, 44]], ride: [438, 84, 72], china: [] },
-      vintage: { kick: [300, 248, 70], toms: [[300, 126, 62, 46]], floor: [[478, 180, 86, 90]], snare: [158, 190, 82, 32], hats: [66, 154, 40], crash: [[172, 76, 50]], ride: [470, 92, 62], china: [] },
-      metal: { kick: [[238, 258, 60], [362, 258, 60]], toms: [[218, 116, 54, 42], [300, 104, 56, 44], [382, 116, 54, 42]], floor: [[490, 172, 82, 92], [560, 196, 56, 72]], snare: [130, 194, 80, 30], hats: [52, 152, 36], crash: [[146, 62, 50], [454, 50, 52]], ride: [536, 112, 50], china: [[64, 92, 40]] },
+  // shapes → SVG, after fitting the projected scene into the box (x0, y0, w, h)
+  function kitSvg(id, pieces, box, F, o) {
+    const all = [];
+    pieces.forEach(p => p.shapes.forEach(s => { (s.pts || []).forEach(q => all.push(q)); if (s.at) all.push(s.at); }));
+    const xs = all.map(q => q[0]), ys = all.map(q => q[1]);
+    const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+    const sc = Math.min(box.w / (x1 - x0), box.h / (y1 - y0));
+    const ox = box.x + (box.w - (x1 - x0) * sc) / 2 - x0 * sc, oy = box.y + (box.h - (y1 - y0) * sc) / 2 - y0 * sc;
+    const P = q => `${(q[0] * sc + ox).toFixed(1)} ${(q[1] * sc + oy).toFixed(1)}`;
+    const path = pts => `M${pts.map(P).join('L')}Z`;
+    const line = pts => `M${pts.map(P).join('L')}`;
+    const bbox = pts => { const X = pts.map(q => q[0] * sc + ox), Y = pts.map(q => q[1] * sc + oy); return [Math.min(...X), Math.min(...Y), Math.max(...X) - Math.min(...X), Math.max(...Y) - Math.min(...Y)]; };
+    const shellFill = (pts, fin, mesh) => {
+      const d = path(pts);
+      if (mesh) return `<path d="${d}" fill="#1b1c1f"/><path d="${d}" fill="url(#${id}-shade)"/>`;
+      const base = fin.wrap === 'wood' ? mix(fin.hue, '#6b3e1e', .55) : fin.hue;
+      const over = { sparkle: `<path d="${d}" fill="url(#${id}-sparkle)"/>`, pearl: `<path d="${d}" fill="url(#${id}-pearl)"/>`,
+        wood: `<path d="${d}" fill="url(#gp-brush-lines)" opacity=".55"/>`, gloss: `<path d="${d}" fill="url(#gp-gloss)" opacity=".35"/>`, satin: '' }[fin.wrap] || '';
+      return `<path d="${d}" fill="${base}"/>${over}<path d="${d}" fill="url(#${id}-shade)"/>`;
     };
-    const k = T[type === 'hybrid' ? 'rock' : type] || T.rock;
-    // stands first, cymbals last (on top), drums between, back to front
-    k.crash.forEach(([x, y]) => parts.push(stand(x, y)));
-    parts.push(stand(k.ride[0], k.ride[1]));
-    (k.china || []).forEach(([x, y]) => parts.push(stand(x, y)));
-    k.floor.forEach(([x, t, w, h]) => parts.push(floorTom(x, t, w, h)));
-    const kicks = Array.isArray(k.kick[0]) ? k.kick : [k.kick];
-    k.toms.forEach(([x, t, w, h]) => parts.push(shell(id, F, x, t, w, h, { detail: d, on, lit: lit('toms') })));
-    kicks.forEach(([x, y, r]) => parts.push(kickFront(id, F, x, y, r, title, { detail: d, type, on, lit: lit('kick') })));
-    const [sx, st, sw, sh] = k.snare;
-    parts.push(`<path d="M${sx} ${st + sh}V${floor - 12}M${sx} ${floor - 12}l-12 12M${sx} ${floor - 12}l12 12" stroke="#7d838a" stroke-width="1.6" fill="none"/>`);
-    parts.push(shell(id, { hue: '#b9bfc6', wrap: 'gloss' }, sx, st, sw, sh, { detail: d, on, lit: lit('snare') }));
-    parts.push(hats(id, k.hats[0], k.hats[1], k.hats[2], { floor, on, lit: lit('hats') }));
-    k.crash.forEach(([x, y, r]) => parts.push(cymbal(id, x, y, r, { on, lit: lit('crash') })));
-    (k.china || []).forEach(([x, y, r]) => parts.push(cymbal(id, x, y, r, { china: true, on, lit: lit('crash') })));
-    parts.push(cymbal(id, k.ride[0], k.ride[1], k.ride[2], { on, lit: lit('ride') }));
-    if (type === 'hybrid') {
-      parts.push(shell(id, F, 96, 230, 48, 10, { mesh: true, on, lit: lit('snare') }), shell(id, F, 556, 248, 48, 10, { mesh: true, on, lit: lit('toms') }));
-      parts.push(kitModule(556, 202, 54, title, on, F.hue));
-    }
-    return parts.join('');
+    const lw = Math.max(.6, sc * .006);
+    const layer = (pick) => pieces.slice().sort((a, b) => b.depth - a.depth).map(p => p.shapes.filter(pick).map(s => {
+      switch (s.kind) {
+        case 'shadow': return `<path d="${path(s.pts)}" fill="#000" opacity=".5" filter="url(#${id}-blur)"/>`;
+        case 'stand': return `<path d="${line(s.pts)}" stroke="#8d939a" stroke-width="${(s.thin ? .8 : 1.3) * lw * 1.6}" stroke-linecap="round" fill="none"/>`;
+        case 'rack': return `<path d="${line(s.pts)}" stroke="#3a3d42" stroke-width="${lw * 6}" stroke-linecap="round" fill="none"/>`;
+        case 'shell': return shellFill(s.pts, s.finish, s.mesh);
+        case 'lug': return `<path d="${line(s.pts)}" stroke="url(#gp-chrome)" stroke-width="${lw * 2.4}" stroke-linecap="round"/>`;
+        case 'head': {
+          const d = path(s.pts), fill = s.head === 'mesh' ? '#2e3136' : `url(#${id}-${s.head})`;
+          return `<path d="${d}" fill="${fill}"/>${s.head === 'mesh' ? `<path d="${d}" fill="url(#${id}-mesh)"/>` : ''}${s.lit ? `<path d="${d}" fill="${LIT}" opacity=".5" filter="url(#gp-glow-soft)"/>` : ''}`;
+        }
+        case 'ring': return `<path d="${path(s.pts)}" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="${lw * 2}"/>`;
+        case 'hoop': return `<path d="${path(s.pts)}" fill="none" stroke="url(#gp-chrome)" stroke-width="${lw * (s.far ? 2 : 3)}"/>`;
+        case 'cymbal': case 'china': {
+          const d = path(s.pts), rings = (s.rings || []).map(r => `<path d="${path(r)}" fill="none" stroke="#7a5418" stroke-opacity=".35" stroke-width="${lw * .7}"/>`).join('');
+          const bell = s.bell && s.bell.length ? `<path d="${path(s.bell)}" fill="#f2d48a"/><path d="${path(s.bell)}" fill="none" stroke="#8a6420" stroke-opacity=".5" stroke-width="${lw * .6}"/>` : '';
+          const china = s.kind === 'china' ? `<path d="${path(s.pts)}" fill="none" stroke="#6e4c18" stroke-width="${lw * 3}" opacity=".7"/>` : '';
+          const [bx, by, bw, bh] = bbox(s.pts);
+          const glint = `<ellipse cx="${(bx + bw * .34).toFixed(1)}" cy="${(by + bh * .4).toFixed(1)}" rx="${(bw * .16).toFixed(1)}" ry="${(bh * .1).toFixed(1)}" fill="#fff" opacity=".35" transform="rotate(-18 ${(bx + bw * .34).toFixed(1)} ${(by + bh * .4).toFixed(1)})"/>`;
+          return `<path d="${d}" fill="url(#${id}-cym)"/>${rings}${china}${bell}${glint}${s.lit ? `<path d="${d}" fill="${LIT}" opacity=".45" filter="url(#gp-glow-soft)"/>` : ''}`;
+        }
+        case 'pad-cym': {
+          const d = path(s.pts);
+          return `<path d="${d}" fill="#1c1d20"/><path d="${d}" fill="none" stroke="${s.ring || '#5ec8e0'}" stroke-width="${lw * 1.6}" opacity=".85"${s.lit ? ' filter="url(#gp-glow-soft)"' : ''}/>${s.lit ? `<path d="${d}" fill="${LIT}" opacity=".35"/>` : ''}`;
+        }
+        case 'pedal': return `<path d="${line(s.pts)}" stroke="#9aa0a7" stroke-width="${lw * 2.4}" stroke-linecap="round" fill="none"/><circle cx="${(s.pts[2][0] * sc + ox).toFixed(1)}" cy="${(s.pts[2][1] * sc + oy).toFixed(1)}" r="${(lw * 3.5).toFixed(1)}" fill="#e6e1d4"/>`;
+        case 'badge': {
+          const x = s.at[0] * sc + ox, y = s.at[1] * sc + oy, t = String(s.text || '').toUpperCase().slice(0, 16), fs = Math.max(6, sc * .03);
+          const w = t.length * fs * .62 + 10;
+          return `<rect x="${(x - w / 2).toFixed(1)}" y="${(y - fs * .9).toFixed(1)}" width="${w.toFixed(1)}" height="${(fs * 1.5).toFixed(1)}" rx="${(fs * .3).toFixed(1)}" fill="#0e0f11" stroke="url(#gp-chrome)" stroke-width="1"/>
+  <text x="${x.toFixed(1)}" y="${(y + fs * .2).toFixed(1)}" text-anchor="middle" font-family="${o.vintage ? FONT.enamel : FONT.nam}" font-size="${fs.toFixed(1)}" font-weight="800" letter-spacing="${o.vintage ? .3 : 1}" fill="#e9dcc4">${esc(o.vintage ? String(s.text).slice(0, 16) : t)}</text>`;
+        }
+        case 'tower': return `<path d="${path(s.pts)}" fill="#1b1c1f"/><path d="${path(s.face)}" fill="#2e3136"/><path d="${path(s.face)}" fill="url(#${id}-mesh)"/>${s.lit ? `<path d="${path(s.face)}" fill="${LIT}" opacity=".45" filter="url(#gp-glow-soft)"/>` : ''}`;
+        case 'module': return `<path d="${path(s.pts)}" fill="#202226"/><path d="${path(s.screen)}" fill="${o.on ? mix(F.hue, '#05070a', .5) : '#0a0c0e'}"${o.on ? ' filter="url(#gp-glow-soft)"' : ''}/>`;
+        default: return '';
+      }
+    }).join('')).join('\n');
+    const out = layer(s => s.kind === 'shadow') + layer(s => s.bg) + layer(s => s.kind !== 'shadow' && !s.bg);
+    // the rug under the kit, wider than the view
+    const rug = [[-2.2, -.4, 0], [2.4, -.4, 0], [2.4, 2.6, 0], [-2.2, 2.6, 0]].map(proj);
+    return `<path d="${path(rug)}" fill="url(#${id}-rug)"/>\n${out}`;
   }
 
-  // a drum set. opts: type ('rock' · 'jazz' · 'metal' · 'vintage' · 'electronic' · 'hybrid'), title (on
-  // the kick head), finish (a hex hue, a wrap 'gloss' · 'sparkle' · 'pearl' · 'wood' · 'satin', or {hue,
-  // wrap}; from the title when absent), lit (a piece or a list: kick, snare, hats, ride, crash, toms — lit
-  // when on), on, compact (a 300-wide tile for a wall), width
+  // a drum set, seen from the throne. opts: type ('rock' · 'jazz' · 'metal' · 'vintage' · 'electronic' ·
+  // 'hybrid'), title (in the strip, and on a badge on the kick's shell), finish (a hex hue, a wrap 'gloss' ·
+  // 'sparkle' · 'pearl' · 'wood' · 'satin', or {hue, wrap}; from the title when absent), lit (a piece or a
+  // list: kick, snare, hats, ride, crash, toms — lit from above when on), on, compact (a 300-wide tile for
+  // a wall), width
   function drumKit(opts) {
     opts = opts || {};
     const type = KIT_TYPES.includes(opts.type) ? opts.type : 'rock';
     const title = opts.title || { rock: 'Rock', jazz: 'Jazz', metal: 'Metal', vintage: 'Vintage', electronic: 'E-Kit', hybrid: 'Hybrid' }[type];
     const on = opts.on !== false, F = kitFinish(type, title, opts.finish), id = 'gpk' + (++kitCount);
-    const compact = !!opts.compact, W = compact ? 300 : 600, H = compact ? 186 : 340;
-    const body = kitBody(id, type, F, title, { on, lit: opts.lit, compact });
-    const s = compact ? .5 : 1, dy = compact ? 2 : 0;
-    const bg = compact ? `<rect x="0" y="0" width="${W}" height="${H}" rx="7" fill="#17181b"/><rect x="0" y="${H - 22}" width="${W}" height="22" fill="#0e0f11"/>
-  <text x="10" y="${H - 7}" font-family="${FONT.nam}" font-size="12" font-weight="800" letter-spacing="1.2" fill="#e2e6ea">${esc(String(title).toUpperCase().slice(0, 22))}</text>
-  <text x="${W - 10}" y="${H - 7}" text-anchor="end" font-family="${FONT.gfx}" font-size="8" font-weight="700" letter-spacing="1.4" fill="${mix(F.hue, '#fff', .45)}">${type.toUpperCase()}</text>`
-      : `<rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="#17181b"/><rect x="0" y="${H - 18}" width="${W}" height="18" rx="0" fill="#0e0f11"/>
-  <ellipse cx="${W / 2}" cy="${H - 18}" rx="${W * .46}" ry="12" fill="${mix(F.hue, '#000', .7)}" opacity=".6"/>`;
+    const compact = !!opts.compact, W = compact ? 300 : 600, H = compact ? 186 : 380, strip = compact ? 22 : 26;
+    const heads = type === 'metal' ? 'clear' : 'coated';
+    const pieces = kitScene(type, { on, lit: new Set([].concat(opts.lit || []).filter(p => KIT_PIECES.includes(p))), compact, finish: F, heads, title });
+    const scene = kitSvg(id, pieces, { x: compact ? 6 : 14, y: compact ? 4 : 10, w: W - (compact ? 12 : 28), h: H - strip - (compact ? 8 : 18) }, F, { on, vintage: type === 'vintage' });
     return `<svg class="gp-kit gp-kit-${type}${compact ? ' gp-kit-compact' : ''}${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${H + 8}" width="${opts.width || W + 8}" role="img" aria-label="drum kit — ${esc(title)}" data-type="${type}" data-wrap="${F.wrap}">
-${kitDefs(id, F)}${bg}
-<g transform="translate(0 ${dy}) scale(${s})">${body}</g>
+${kitDefs(id, Object.assign({ W, H }, F))}
+<rect x="0" y="0" width="${W}" height="${H}" rx="${compact ? 7 : 9}" fill="#121214"/>
+<g clip-path="url(#${id}-frame)">${scene}</g>
+<rect x="0" y="${H - strip}" width="${W}" height="${strip}" fill="#0b0c0e" opacity=".92"/>
+<text x="${compact ? 10 : 16}" y="${H - strip / 2 + (compact ? 4 : 5)}" font-family="${type === 'vintage' ? FONT.enamel : FONT.nam}" font-size="${compact ? 12 : 15}" font-weight="800" letter-spacing="${type === 'vintage' ? .4 : 1.4}" fill="#e2e6ea">${esc(type === 'vintage' ? String(title).slice(0, 24) : String(title).toUpperCase().slice(0, 24))}</text>
+<text x="${W - (compact ? 10 : 16)}" y="${H - strip / 2 + (compact ? 3 : 4)}" text-anchor="end" font-family="${FONT.gfx}" font-size="${compact ? 8 : 10}" font-weight="700" letter-spacing="1.6" fill="${mix(F.hue, '#fff', .45)}">${type.toUpperCase()}</text>
 </svg>`;
   }
 

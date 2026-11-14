@@ -137,6 +137,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [golem-fx-sheet.md](golem-fx-sheet.md) | CODED | The golem FX block sheet: each pedal's front panel and expert groups, from golem-fx's descriptors |
 | [library-loans.md](library-loans.md) | CODED | Sounds lent to a band by a band mate |
 | [library-tones.md](library-tones.md) | CODED | Library ▸ Tones drawn: the backline, the pedalboard, the cab wall, the 19" rack, and touch = listen |
+| [library-play.md](library-play.md) | CODED | Library: Listen, Play it (your instrument on the raw sound, both engines) and Add to… (a patch or a song, through the Designer) |
 | [card-setups-exchange.md](card-setups-exchange.md) | CODED (rack side) | A card's setup shared across the user's racks |
 | [diagnostics.md](diagnostics.md) | CODED | Whitelisted, scrubbed usage and bug reports |
 | [rack-mcp.md](rack-mcp.md) | CODED | A read-only MCP server on `POST /mcp` |

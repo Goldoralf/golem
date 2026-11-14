@@ -10,7 +10,7 @@ Règles des références : courtes, en MI (comme les DI, pour comparer les patch
 dernier coup LAISSÉ SONNER (la fin de piste tombe une mesure après : les queues de reverb et de delay s'entendent).
 Pas de tempo imposé au patch : la référence garde le sien.
 
-Claviers (canal 1) : piano · epiano · organ · pad · lead — la pédale de sustain (CC64) sur les pianos, la molette
+Claviers (canal 1) : piano · epiano · organ · pad · lead · bass (une basse de synthé, mi1–mi2) — la pédale de sustain (CC64) sur les pianos, la molette
 (CC1) qui monte sur le pad et sur la note tenue du lead, un bend d'un ton sur le lead.
 Batterie (canal 10) : rock · funk · jazz · metal — General MIDI, et seulement les notes qui ont le même sens sur les
 kits du rack (même liste que les grooves) : deux mesures de groove, une variation, un break, puis le crash final.
@@ -149,6 +149,18 @@ def lead():
     vib = [(13 + i * 0.25, 1, min(110, i * 8)) for i in range(17)]
     return smf(n, 6, 100, cc=vib + [(17.9, 1, 0)], bend=bend)
 
+def bass():
+    """Basse de synthé (2026-11-14, pour un preset Vital « Bass » écouté seul) : une ligne monophonique en mi, grave
+    (mi1–mi2), croches liées et notes piquées, des sauts d'octave, une glissade, puis la fondamentale tenue."""
+    n = []
+    riff = [(0, 0.75, 28, 104), (0.75, 0.25, 28, 72), (1, 0.5, 40, 96), (1.5, 0.5, 28, 80), (2, 0.75, 31, 98),
+            (2.75, 0.25, 33, 76), (3, 1, 35, 100)]
+    for b, shift in enumerate((0, 0, -4, -2)):                                 # mi, mi, do, ré
+        n += [(b * 4 + t, d, p + shift, v) for t, d, p, v in riff]
+    n += [(16, 4, 28, 108)]
+    bend = [(15.5 + i * 0.05, int(-4096 * (1 - min(1, i / 6)))) for i in range(7)]   # glisse d'un ton vers le mi
+    return smf(n, 6, 100, cc=[(0, 1, 0)], bend=bend)
+
 # ── BATTERIE (canal 10) ─────────────────────────────────────────────────────────────────────────────────────
 
 
@@ -235,6 +247,7 @@ REFS = {
     "keys/organ":  (organ, "Gospel organ", "held legato chords, drawbars, rotary speaker"),
     "keys/pad":    (pad, "Slow pad", "overlapping chords, filter opened by the mod wheel, long release"),
     "keys/lead":   (lead, "Synth lead", "legato, pitch bend, vibrato on the mod wheel, delay tails"),
+    "keys/bass":   (bass, "Synth bass", "low end, octave jumps, staccato and legato, glide into the root"),
     "drums/rock":  (d_rock, "Rock beat", "kick and snare body, hi-hat, toms, crash"),
     "drums/funk":  (d_funk, "Funk beat", "ghost notes, open hi-hat, tight snare"),
     "drums/jazz":  (d_jazz, "Jazz swing", "ride, feathered kick, cross-stick, brushes or sticks"),

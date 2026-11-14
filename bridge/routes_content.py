@@ -1996,13 +1996,15 @@ async def preview_batch(request: Request):
         return JSONResponse({"error": "a take is recording — try after it"}, status_code=409)
     ids = (body or {}).get("ids")
     if ids is not None and not (isinstance(ids, list) and all(isinstance(i, str) for i in ids)):
-        return JSONResponse({"error": "ids: a list of patch ids"}, status_code=400)
+        return JSONResponse({"error": "ids: a list of patch ids (\"preset:<id>/<lane>\", \"sound:<sound id>\")"}, status_code=400)
     _preview_thread = _threading.Thread(
         target=preview_mod.batch, kwargs={"ids": ids, "force": bool((body or {}).get("force")),
                                           "seq_of": lambda: next(_preview_seq)}, daemon=True)
     _preview_thread.start()
+    from . import sound_preview
     return {"ok": True, "total": len(ids) if ids else
-            len(preview_mod.factory_patch_ids()) + len(preview_mod._preset_lanes(preview_mod.factory_preset_ids()))}
+            len(preview_mod.factory_patch_ids()) + len(preview_mod._preset_lanes(preview_mod.factory_preset_ids()))
+            + len(sound_preview.factory_sounds())}
 
 
 @router.get("/api/preview/batch")

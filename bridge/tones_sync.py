@@ -340,13 +340,26 @@ def build_packs(cache):
             blob_map[sha] = path
             assets.append({"sha256": sha, "filename": fn, "name": fn[:-6].replace("_", " "),
                            "bytes": os.path.getsize(path), "format": "vital",
-                           "extra": {"rel": _wire_rel(C.rel(path))}})
+                           "extra": {"rel": _wire_rel(C.rel(path)), "meta": _vital_meta(path)}})
         if assets:
             packs.append({"uid": f"local:synth-vital-{label}", "kind": "synth",
                           "title": f"Vital presets ({label})", "brand": "Vital",
                           "creator": "user", "url": "", "tags": ["synth", "vital", label],
                           "style": "", "extra": {}, "assets": assets})
     return packs, blob_map
+
+
+def _vital_meta(path):
+    """Ce que le .vital dit de lui (docs/preset-preview.md §9, demande golem.fm 2026-11-14) : golem.fm ne lit le contenu
+    que des presets importés chez lui ; il lit ceux-ci ici plutôt que de deviner. {preset_name, style, author, comments,
+    macros: [4 noms]} ; un champ que le fichier ne donne pas reste vide."""
+    from . import vital
+    name, author, style, macros, _vals = vital._meta(path, os.path.basename(path)[:-6].replace("_", " "))
+    try:
+        comments = str((json.load(open(path, encoding="utf-8")) or {}).get("comments") or "")
+    except (OSError, ValueError, AttributeError):
+        comments = ""
+    return {"preset_name": name, "style": style, "author": author, "comments": comments, "macros": list(macros)}
 
 
 def _doc_hash(pack):

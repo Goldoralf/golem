@@ -278,9 +278,12 @@ def keys_instruments():
     import glob
     out = []
     try:
-        sfz = sorted(glob.glob(os.path.join(C.ROOT, "library", "sfz", "**", "*.sfz"), recursive=True))
+        # les variantes du PIANO seulement (2026-11-14) : library/sfz/ range aussi la guitare pompe des Standards et
+        # Shinyguitar, qui partaient ici comme des pianos — et `piano:<item>` est l'adresse d'un son chez golem.fm
+        from .sound_preview import piano_variants
+        sfz = list(piano_variants())
         out.append({"type": "piano", "name": "Piano", "engine": "sfizz", "factory": True, "count": len(sfz),
-                    "items": [os.path.splitext(os.path.basename(f))[0] for f in sfz]})
+                    "items": sfz})
         from .store import _read_json
         banks = []
         for f in sorted(glob.glob(os.path.join(C.ROOT, "library", "dx7", "*.syx"))):
@@ -617,6 +620,9 @@ def light(with_modes=False):
         st["classifier_version"] = classifier_version()
         st["captures"] = captures()
         st["keys_instruments"] = keys_instruments()
+        # les démos des sons de clavier rendues ici (docs/preset-preview.md §9) : un clip envoyé -> la fiche de son son
+        from .sound_preview import rendered as _keys_previews
+        st["keys_previews"] = _keys_previews()
         st["drum_kits"] = drum_kits()             # docs/drums-kit.md : ce que `params.kit` d'un drumkit peut valoir
     except Exception as e:
         log.warning(f"captures/catalogue absents du push : {e}")

@@ -89,7 +89,8 @@ Every field (any probe that fails is simply absent — the push still leaves):
 | `catalog_version` | integer of `library/catalog/effects.json` (the catalogue itself never rides the heartbeat) |
 | `classifier_version` | version of `tools/classify.py` |
 | `captures` | installed captures `[{ref, type: nam|ir, family, name, gear, models, echo?}]`, max 500 (`rigstatus.captures`). One row per tone of the local catalogue with **at least one file on disk**; `ref` = the **catalog id** a block carries in `ref` (never the pack uid `t3k:<id>`); `type` = `ir` when `gear` is `cab`, else `nam`; `family` = `guitar`/`bass`; `models` = number of files actually present. `[]` means "this rack has no capture at all"; an absent field means "not reported" |
-| `keys_instruments` | factory keys instruments `[{type, name, engine, factory, count, items[], sounds?}]` |
+| `keys_instruments` | factory keys instruments `[{type, name, engine, factory, count, items[], sounds?}]`; piano `items` = the piano sfz variants only (since 2026-11-14) |
+| `keys_previews` | keys sounds rendered alone on this rack `[{sound, ref, fingerprint, clips: {ref: {sha256, seconds}}}]`, `sound` = `piano:<stem>` · `ep:<bank>/<program>` · `organ:b3` · `vital:<sha256>` ([`preset-preview.md`](preset-preview.md) §9) |
 | `drum_kits` | `[{id, name, engine, playable}]`; `playable` = the kit's engine can be mounted on a lane (`avldrums`, `drumgizmo`) — only those are valid values of a `drumkit` block's `kit` (`rigstatus.drum_kits`) |
 | `engine` | what the audio engine really opened (`rigstatus.engine_doc`), or `null`. Linux: `{mode: "ALSA", device, samplerate: null, bsize, latency_ms, latency_source}`. Windows/macOS (from REAPER): `{mode, device, samplerate, bsize, inputs, outputs, input_names[], output_names[], latency_ms, latency_source}` |
 | `health` | `{cpu_pct, ram_used_pct, ram_total_mb, temp_c, xruns_total}` |

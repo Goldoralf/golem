@@ -106,7 +106,7 @@ envelope carries `preview_fingerprint` so golem.fm can show a demo as possibly s
 
 ## 6. Not built
 
-- the bass and voice reference DIs (to record);
+- the bass and voice reference DIs (to record; the synth bass MIDI reference `keys/bass` exists since 2026-11-14);
 - a demo per lane for the user's own presets from the Presets page (the batch covers the factory ones; the per-input
   « Listen » button renders a user preset);
 - a stale-demo badge on the rack (only golem.fm compares fingerprints).
@@ -210,3 +210,37 @@ envelope carries `preview_fingerprint` so golem.fm can show a demo as possibly s
   skipped), stopped by a take. It shares the demos' lock: never at the same time as a demo render.
 - **Known limit.** The keys' arpeggiator (`midi_arp`) follows the **project** tempo, not the preset's: a block with
   `arp` set renders at the wrong arpeggio rate when the two differ. No factory standard block uses it today.
+
+## 9. A keys sound alone
+
+> **Status: CODED 2026-11-14, not rendered on the rig yet** — asked by golem.fm (a detail page per keys sound,
+> `/library/keys/:id`, with a Listen card), the shape approved by the maintainer the same day. A NAM capture can be
+> re-amped in a browser; a piano, a DX7, the organ or a Vital preset only play on golem, so the rack renders.
+> golem.fm wires it at the next resync.
+
+- **A sound has an id**, which is the golem.fm page id: `piano:<sfz stem>` · `ep:<DX7 bank>/<program 0–31>` ·
+  `organ:b3` · `vital:<sha256 of the .vital>` (`bridge/sound_preview.py`, `describe`).
+- **Rendered alone.** A throw-away patch of one keys lane holding **only the instrument** (no chain, dry, stereo) is
+  played offline by a MIDI reference — the engine of the patch demos (`preview.generate`, `in_key: "k"`), no
+  hardware output. One clip per (sound, reference).
+- **The reference by nature.** piano → `keys/piano`; DX7 → `keys/epiano` (`keys/piano` for an acoustic piano or a
+  harpsichord, `keys/organ` for an organ, read from the program's name); organ → `keys/organ`; Vital by its
+  `preset_style`: Pad/Ambient/Strings/Experiment → pad, Lead/Pluck/Arp/Sequence → lead, Keys → piano, **Bass →
+  `keys/bass`** (a synth bass line composed for it in `tools/make-midi-refs.py`, E1–E2). Percussion, SFX: no phrase
+  fits — no clip, and the reason is said (`why`).
+- **Stored like the patch demos.** `library/previews/sound-<kind>-<id>/<ref leaf>.opus` + `preview.json`
+  `{sound, name, engine, ref, refs, fingerprint, generated, clips: {ref: {file, seconds, sha256}}}`. The fingerprint is
+  the .vital's sha256, or for a built-in instrument (engine, file sha256, program): a clip is stale when it changes.
+- **Factory first.** The factory demo batch (§7) renders, after the patches and the preset lanes, every factory sound
+  (`factory_sounds`): the piano variants (all of them when there are 3 or fewer, otherwise the main one), a
+  **curated dozen DX7 programs** (`CURATED_EP` — the detail page lists all 192, only these have Listen), the organ,
+  every factory Vital preset. Resumable like the rest: an up-to-date sound is skipped. One sound alone:
+  `POST /api/preview/batch {ids: ["sound:ep:rom1a/10"]}`.
+- **To golem.fm.** The heartbeat carries `keys_previews: [{sound, ref, fingerprint, clips: {ref: {sha256, seconds}}}]`,
+  and `sound_preview.push(sound)` uploads a sound's clips to the blob store (`POST /api/ext/tones/assets`, the patch
+  demos' path) — never automatically.
+- **What golem.fm reads instead of guessing.** Each asset of the `local:synth-vital-*` packs in the tones manifest
+  carries `extra.meta = {preset_name, style, author, comments, macros: [4 names]}`.
+- **Not built.** User presets **on demand**: a `sound-preview {sound, refs?}` job from golem.fm (refused in Gig or
+  locked mode and during a take, deferred while someone plays), ack `{sound, preview: {ref, fingerprint, clips}}` —
+  `push` already returns that shape. Never at import or install.

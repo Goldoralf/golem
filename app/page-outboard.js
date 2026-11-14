@@ -18,7 +18,8 @@ export function OutboardPage() {
   const libRev = useRev('library_rev');   // golem.fm a posé quelque chose : on recharge (bridge/arrivals.py)
   const { data } = useAsync(getCatalog, [catTick, libRev]);
   const tones = (data && data.tones) || [];
-  const packs = tones.filter(t => t.gear === 'outboard' && t.format !== 'ir');
+  // TOUT l'outboard installé, NAM ou IR : un pack que golem ne joue pas encore se montre, marqué (docs/library-tones.md §7)
+  const packs = tones.filter(t => t.gear === 'outboard');
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(null);
   const [t3k, setT3k] = useState(false);
@@ -45,18 +46,19 @@ export function OutboardPage() {
   const slots = list.slice(0, 6);
   const usedU = slots.reduce((s, t) => s + uOf(t), 0);
 
-  if (sel) return html`<div class="library tn-page"><${UnitPanel} t=${sel} vis=${vis} onClose=${() => setSel(null)}
+  if (sel) return html`<div class="library tn-page"><${UnitPanel} key=${sel.id} t=${sel} vis=${vis} onClose=${() => setSel(null)}
     onDeleted=${() => { setSel(null); reloadCat(); }} /></div>`;
   return html`<div class="library tn-page">
     <div class="tn-rackv">
       <div class="tn-rack">
-        ${slots.map(t => html`<button class="tn-unit" style=${`height:${uOf(t) * 46}px`} onClick=${() => setSel(t)} title=${nameOf(t)}>
-          ${vis ? html`<${Drawing} svg=${rackSvg(nameOf(t), null, true)} align="xMidYMid" />` : html`<div class="tn-draw"></div>`}</button>`)}
+        ${slots.map(t => html`<button class=${cls('tn-unit', t.playable === false && 'off')} style=${`height:${uOf(t) * 46}px`} onClick=${() => setSel(t)} title=${t.why || nameOf(t)} aria-label=${nameOf(t)}>
+          ${vis ? html`<${Drawing} svg=${rackSvg(nameOf(t), null, t.playable !== false)} align="xMidYMid" />` : html`<div class="tn-draw"></div>`}
+          ${t.playable === false ? html`<span class="tn-unit-tag">${t.format === 'ir' ? 'IR · ' : ''}not playable yet</span>` : ''}</button>`)}
         <button class="tn-blank" onClick=${() => setT3k(true)}><span>+ Add outboard</span><small>Preamps, compressors, EQs captured on TONE3000</small></button>
         ${usedU < 8 ? html`<div class="tn-vent"></div>` : ''}${usedU < 5 ? html`<div class="tn-vent"></div>` : ''}
       </div>
       <aside class="tn-legend"><h6>In the rack</h6>
-        ${list.map(t => html`<button class="tn-rb" onClick=${() => setSel(t)}>${nameOf(t)}<em>${(t.models || []).length}</em></button>`)}
+        ${list.map(t => html`<button class=${cls('tn-rb', t.playable === false && 'off')} onClick=${() => setSel(t)}>${nameOf(t)}<em>${t.playable === false ? 'not playable' : (t.models || []).length}</em></button>`)}
         <p>${list.length ? 'Each unit is one capture pack. Tap a unit to see the settings it was captured at, and hear them.'
           : 'No captured outboard yet. A voice lane loads them as Preamp and Compressor (NAM capture) blocks.'}</p>
       </aside>
@@ -73,6 +75,18 @@ const AX_LABEL = { gain: g => g + ' dB', ratio: r => r + ':1', time: x => String
 function UnitPanel({ t, vis, onClose, onDeleted }) {
   const au = useAudition();
   const [del_, setDel] = useState(false);
+  if (t.playable === false) return html`<div class="tn-unitd">
+    <button class="tn-back" onClick=${onClose}>‹ Outboard</button>
+    <div class="tn-ubig">${vis ? html`<${Drawing} svg=${rackSvg(nameOf(t), null, false)} align="xMidYMid" />` : ''}</div>
+    <h2>${nameOf(t)}</h2>
+    <div class="tn-matrix"><h6>${t.format === 'ir' ? `Impulse responses · ${(t.models || []).length} files` : 'Captures'}</h6>
+      <p class="tn-note ko">${t.why}</p>
+      <p class="muted" style="font-size:12.5px; margin:0">${(t.models || []).map(m => m.name).join(' · ')}</p></div>
+    <div class="tn-act"><span class="grow"></span>
+      ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
+      <button class="mini danger" onClick=${() => setDel(true)}>Delete</button></div>
+    ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
+  </div>`;
   const P = vis ? window.GolemPedals : null;
   const rows = orderModels(t.models || []);
   const caps = rows.map(r => ({ m: r.m, g: r.g, s: (P && P.outboardSetting ? P.outboardSetting(r.m.name) : {}) || {} }));

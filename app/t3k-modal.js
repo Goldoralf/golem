@@ -4,6 +4,9 @@
 // avec progression (poll /api/t3k/status) ; à la fin le catalogue local est invalidé (refreshCatalog).
 import { html, useState, useEffect, useRef, post, cls, esc, go, refreshCatalog } from './lib.js';
 
+// LE FORMAT SE DIT (docs/library-tones.md §7) : TONE3000 range sous la même nature des modèles NAM et des réponses
+// impulsionnelles (« outboard » : un préampli NAM ou les IR d'un écho) — vécu le 2026-11-14, le RE-301
+const fmtLabel = t => (t.format === 'ir' ? 'IR' : 'NAM') + (t.count ? ` · ${t.count} ${t.format === 'ir' ? 'file' : 'capture'}${t.count > 1 ? 's' : ''}` : '');
 const GEARS = [['', 'All'], ['amp', 'Heads'], ['amp-cab', 'Heads+Cab'], ['cab', 'Cabs/IR'], ['pedal', 'Pedals'], ['outboard', 'Outboard']];
 
 export function T3kModal({ onClose, onInstalled, initGear = '' }) {
@@ -76,9 +79,10 @@ export function T3kModal({ onClose, onInstalled, initGear = '' }) {
             : res.error ? html`<div class="muted pad">✗ ${esc(String(res.error).replace(/ — (sign in|reconnect it|set it) .*$/, ''))}
                 <button class="chip" onClick=${() => { onClose && onClose(); go('system/connect/tone3000'); }}>Connect TONE3000 ›</button></div>`
             : !res.tones.length ? html`<div class="muted pad">No result.</div>`
-            : res.tones.map(t => html`<button class=${cls('t3k-row', t.installed && 'have')} onClick=${() => openTone(t)}>
+            : res.tones.map(t => html`<button class=${cls('t3k-row', t.installed && 'have', t.playable === false && 'off')} onClick=${() => openTone(t)}>
                 <b>${esc(t.title)}</b>
-                <span class="t3k-meta">${esc(t.gear)} · ⬇ ${t.downloads} · ♥ ${t.favorites} · ${esc(t.creator)}</span>
+                <span class="t3k-meta">${esc(t.gear)} · ${fmtLabel(t)} · ⬇ ${t.downloads} · ♥ ${t.favorites} · ${esc(t.creator)}</span>
+                ${t.playable === false ? html`<span class="t3k-badge no" title=${t.why || ''}>golem can't play this yet</span>` : ''}
                 ${t.a2 ? html`<span class="t3k-badge a2">A2</span>` : ''}
                 ${t.installed ? html`<span class="t3k-badge">installed</span>` : ''}
               </button>`)}
@@ -87,7 +91,7 @@ export function T3kModal({ onClose, onInstalled, initGear = '' }) {
       : html`
         <button class="mini" onClick=${() => { setSel(null); setInst(null); }} disabled=${nInst}>‹ back</button>
         <h3 class="t3k-ttl">${esc(sel.title)} ${sel.installed ? html`<span class="t3k-badge">installed — reinstall replaces</span>` : ''}</h3>
-        <div class="muted">${esc(sel.gear)} · ⬇ ${sel.downloads} · ♥ ${sel.favorites} · by ${esc(sel.creator)}
+        <div class="muted">${esc(sel.gear)} · ${fmtLabel(sel)} · ⬇ ${sel.downloads} · ♥ ${sel.favorites} · by ${esc(sel.creator)}
           ${sel.makes && sel.makes.length ? ' · ' + esc(sel.makes.slice(0, 3).join(', ')) : ''}</div>
         <div class="t3k-models">
           ${(sel.models || []).map((m, i) => html`<label class=${cls('t3k-mdl', i >= 8 && !checked[m.id] && 'over')}>
@@ -100,8 +104,9 @@ export function T3kModal({ onClose, onInstalled, initGear = '' }) {
         <div class="t3k-foot">
           ${inst ? html`<span class=${cls('t3k-st', inst.phase === 'error' && 'ko', inst.phase === 'done' && 'ok')}>
               ${inst.phase === 'download' ? `⬇ ${inst.done}/${inst.total} ` : ''}${esc(inst.msg || inst.phase)}</span>` : ''}
+          ${sel.playable === false && !inst ? html`<span class="t3k-st ko">${esc(sel.why)}</span>` : ''}
           <span class="grow"></span>
-          <button class="primary big" disabled=${nInst} onClick=${install}>
+          <button class="primary big" disabled=${nInst || sel.playable === false} onClick=${install}>
             ${nInst ? '⏳ Installing…' : '⬇ Add to golem'}</button>
         </div>`}
     </div></div>`;

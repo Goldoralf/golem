@@ -22,7 +22,8 @@ export function IRPage({ role, gears } = {}) {
   const { data } = useAsync(getCatalog, [catTick, libRev]);
   const tones = (data && data.tones) || [];
   const roleCanLoad = !gears || gears.has('cab');
-  const irs = tones.filter(t => (t.gear === 'cab' || t.format === 'ir') && (!role || role === 'voice' || famOf(t) === role));
+  // une IR d'OUTBOARD (l'écho, la réverbe d'un appareil) n'est pas un baffle : elle vit dans Outboard (docs/library-tones.md §7)
+  const irs = tones.filter(t => (t.gear === 'cab' || t.format === 'ir') && t.gear !== 'outboard' && t.playable !== false && (!role || role === 'voice' || famOf(t) === role));
   const [q, setQ] = useState('');
   const [style, setStyle] = useState('all');
   const [sel, setSel] = useState(null);
@@ -118,7 +119,7 @@ export function IRPage({ role, gears } = {}) {
           ${sizes.map(s => html`<button class=${cls('chip', size === s && 'on')} onClick=${() => setSize(s)}>${s} <em>${cabs.filter(c => c.size === s).length}</em></button>`)}</div>
           <span class="grow"></span><span class="muted" style="font-size:12px">Size read from the name · mics from the IR files</span></div>
         ${shown.length ? html`<div class="tn-wall">${shown.slice(pg.from, pg.to).map(c => html`
-          <button class="tn-tile tn-cab" onClick=${() => setSel(c.t)}>
+          <button class="tn-tile tn-cab" aria-label=${irName(c.t)} onClick=${() => setSel(c.t)}>
             ${vis ? html`<${Drawing} svg=${cabSvg(c)} />` : html`<div class="tn-draw"></div>`}
             <b>${irName(c.t)}</b>
             <span>${(c.t.models || []).length} IR${(c.t.models || []).length > 1 ? 's' : ''}${c.mics.length ? ' · ' + c.mics.slice(0, 2).join(' + ') : ''}${c.t.echo ? html` · <i class="tn-echo" title=${echoTitle(c.t.echo)}>echo</i>` : ''}</span>

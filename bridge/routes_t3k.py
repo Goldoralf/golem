@@ -59,12 +59,18 @@ def _installed_ids():
     return {str(t.get("id")) for t in d.get("tones", [])}
 
 
-def search_tones(q, gears="", page=1):
+def search_tones(q, gears="", page=1, fmt=None):
     """Recherche TONE3000 -> liste de captures normalisées (réutilisée par l'endpoint ET le créateur IA).
-    Lève sur erreur d'API/auth. gears = amp_amp-cab_cab_pedal (underscore)."""
+    Lève sur erreur d'API/auth. gears = amp_amp-cab_cab_pedal (underscore). `fmt` (nam | ir) filtre le FORMAT ;
+    absent, il suit ce que golem sait jouer pour ces natures (bridge/playable.py : « outboard » -> nam seulement).
+    Chaque résultat porte son format et son verdict (`playable`, `why`)."""
+    from . import playable as PL
     qs = {"query": q, "page": str(page), "page_size": "24"}
     if gears:
         qs["gears"] = gears
+    fmt = fmt if fmt in PL.FORMATS else PL.formats_for(gears)
+    if fmt:
+        qs["format"] = fmt
     st, res = _t3k.api_get("/api/v1/tones/search?" + urllib.parse.urlencode(qs))
     if st == 401:
         raise RuntimeError("auth TONE3000 expirée — relancer ./tools/t3k.py auth")
@@ -78,7 +84,16 @@ def search_tones(q, gears="", page=1):
              "downloads": t.get("downloads_count", 0), "favorites": t.get("favorites_count", 0),
              "creator": (t.get("user") or {}).get("username", ""),
              "a2": bool(t.get("a2_models_count")),
+             "format": t.get("format") or "nam",
+             "count": t.get("irs_count") if (t.get("format") == "ir") else t.get("models_count"),
+             **_verdict(t.get("gear") or ",".join(t.get("gears") or []), t.get("format")),
              "installed": str(t.get("id")) in have} for t in items]
+
+
+def _verdict(gear, fmt):
+    from . import playable as PL
+    ok, why = PL.verdict(gear, fmt or "nam")
+    return {"playable": ok, "why": why}
 
 
 def _t3k_error(e):
@@ -98,10 +113,11 @@ def _t3k_error(e):
 
 
 @router.get("/api/t3k/search")
-def t3k_search(q: str = "", gears: str = "", page: int = 1):
-    """Recherche TONE3000 (max 25/page). gears = amp_amp-cab_cab_pedal (underscore)."""
+def t3k_search(q: str = "", gears: str = "", page: int = 1, format: str = ""):
+    """Recherche TONE3000 (max 25/page). gears = amp_amp-cab_cab_pedal (underscore) ; format = nam | ir (sinon ce
+    que golem sait jouer pour ces natures)."""
     try:
-        return {"tones": search_tones(q, gears, page), "page": page}
+        return {"tones": search_tones(q, gears, page, format or None), "page": page}
     except SystemExit as e:                     # t3k sys.exit si clé absente / session morte
         return JSONResponse({"error": _t3k_error(e)}, status_code=401)
     except Exception as e:
@@ -194,6 +210,7 @@ def t3k_tone(tid: int):
             "tags": [x.get("name") for x in (meta.get("tags") or []) if isinstance(x, dict)],
             "makes": [m.get("name") for m in (meta.get("makes") or [])],
             "downloads": meta.get("downloads_count", 0), "favorites": meta.get("favorites_count", 0),
+            "format": meta.get("format") or "nam", **_verdict(meta.get("gear"), meta.get("format")),
             "installed": str(tid) in _installed_ids(),
             "models": [{"id": m.get("id"), "name": m.get("name"), "size": m.get("size"),
                         "arch": m.get("architecture_version")} for m in models if m.get("model_url")]}
@@ -319,6 +336,10 @@ def _install_worker(tid, model_ids):
         creator = (meta.get("user") or {}).get("username", "unknown")
         gear = meta.get("gear", "amp")
         fmt = meta.get("format", "nam")
+        from . import playable as PL
+        ok, why = PL.verdict(gear, fmt)
+        if not ok:                                  # docs/library-tones.md §7 : rien n'entre sans bloc pour le jouer
+            raise RuntimeError(why)
         slug = _blib.slugify(title)
         sub = "irs" if fmt == "ir" else "models"
         reldir = os.path.join("assets", sub, creator, f"{tid}_{slug}")

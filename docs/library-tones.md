@@ -81,3 +81,63 @@ drawn as an **API 500-series-style vertical module** at a pedal's footprint (`Go
 63bf60c, the maintainer's choice on 2026-11-14). Its narrow column shows the capture's setting first (gain, hard,
 channel, ratio), read from the block's label like the rack unit. `app/golem-visuals.js` passes the block's label,
 which golem-fx's `fromGolem` does not carry.
+
+## 7. What golem can play
+
+> **Status: CODED** (lot A, 2026-11-14). The trigger: "+ Add outboard" installed the Roland RE-301. TONE3000 files
+> its 13 echo and reverb impulse responses under "outboard", like the NAM preamps. The modal did not show the
+> format, and the install checked nothing.
+
+One rule, `bridge/playable.py`, crosses a capture's **nature** (TONE3000 `gear`) with its **format** (`nam`, a neural
+model; `ir`, an impulse response) and names the block that plays it:
+
+| | nam | ir |
+|---|---|---|
+| amp | `amp-nam` | `cab` |
+| amp-cab | `amp` | `cab` |
+| cab | — | `cab` |
+| pedal | `pedal-nam` | `cab` (lot B: by the IR's length) |
+| outboard | `preamp-nam` / `comp-nam` | none yet (lot B: `ir-fx`) |
+
+It is applied everywhere a capture comes in or shows:
+- **Search** (`/api/t3k/search`): each result carries its `format`, its count (captures or files) and its verdict
+  (`playable`, `why`). A search filtered on natures only asks TONE3000 for the formats golem can install there
+  (`format=nam` for Outboard).
+- **The modal** shows "NAM · 12 captures" or "IR · 13 files". A pack golem cannot play stays visible, greyed, with
+  its sentence, and "Add to golem" is disabled.
+- **The install** refuses it, with the same sentence, before any download.
+- **The catalogue** (`/api/catalog`) marks an installed pack golem cannot play (`playable: false`, `why`): packs that
+  came another way (golem.fm, a backup, an install from before the rule). Such a pack leaves Cabs and shows in its tab
+  as "not playable yet", with Delete.
+
+Not every IR filed as "pedal" is a cab simulator: TONE3000 also has reverb pedals (Boss RV-6) as IRs. Lot B decides
+by the IR's measured length.
+
+## 8. The IR effect block (lot B)
+
+> **Status: PROPOSED** (2026-11-14). The maintainer chose to make outboard IRs playable (springs, echoes).
+
+A block `ir-fx` plays an impulse response **whole**: no echo cut, stereo. It covers the outboard IR packs (on
+TONE3000: mostly spring reverbs, a few echoes such as the RE-301) and the long IRs filed as "pedal" (reverb pedals).
+
+- **Plugin.** The same convolver as the Cab block, golem's zeroconvolv build, in its stereo variant
+  (`x42 - IR Convolver Stereo`, `zeroconvolv#CfgStereo`). It runs under REAPER (Linux) and in the Golem Engine. Its
+  controls: Dry and Wet levels (dB). `buffered` adds latency; the block runs unbuffered, and the bench checks the CPU
+  cost of a 1.5 s stereo IR. Windows and macOS mark the block unsupported until a stereo convolver is mapped there.
+- **Files.** `rig.CAPTURE_TYPES` and `CAPTURE_EXT` gain `ir-fx` (.wav). The compile's IR guard
+  (`compile_rig._ir_guard`, which cuts a cab IR before a late impulse) must **not** run on it: the echo is the sound.
+- **REAPER.** A cab is baked into the track's core chain (`templates/cab-x42.RfxChain`). `ir-fx` sits anywhere in a
+  chain, so it is added by name. Its IR is then written into the LV2 state (`P …zeroconvolv#ir <path> 3`, the format
+  the cab template proves). `golem_rig.lua` inserts that line today for a NAM model only, so the IR case is added.
+  The no-bypass rule of convolvers applies (it switches through its `Enable` port).
+  Checked with `tests/test_rig_lua.py`, then `tools/check-rig-materialize.py` (its own REAPER, nothing on the rack).
+- **Golem Engine.** One table entry (`CfgStereo`, file property `#ir`), as for the cab.
+- **What plays it.** `playable` gains `(outboard, ir) → ir-fx`. For `(pedal, ir)`, the IR's **measured length**
+  decides at install: a short IR is a cab simulator (Cab block), a long one is an effect (`ir-fx`). The catalogue entry
+  records the result.
+- **Library.** An IR unit takes its place in the rack (golem-fx draws an IR variant of the rack unit and of the
+  500-series module). Its files become programs (Delay 1–10, Reverb 1–3). Touching one plays it: the audition puts
+  `ir-fx` at the end of the lane's chain (or replaces the one already there).
+- **Designer.** The model picker of `ir-fx` lists the IR packs whose block is `ir-fx`.
+- **Limits, said in the block's note.** A static IR gives an echo's repeats as recorded: no feedback control, no tape
+  wow. A spring reverb, on the other hand, is what an IR renders well.

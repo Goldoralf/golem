@@ -8477,3 +8477,13 @@ button.mode-live{background:transparent; cursor:pointer}
 .tn-act a.mini,.tn-act button{white-space:nowrap}
 .tn-pairs button{max-width:150px; overflow:hidden; text-overflow:ellipsis}
 .tn-row.cur{border-color:#3a4350}
+/* un pack que golem ne sait pas jouer (docs/library-tones.md §7) : visible, grisé, son verdict dit en clair */
+.t3k-row.off{opacity:.6}
+.t3k-badge.no{position:static; display:inline-block; margin-top:4px; color:#ff8a65; border-color:#ff8a6566}
+.tn-unit{position:relative}
+.tn-unit.off .tn-draw{filter:grayscale(.8) brightness(.6)}
+.tn-unit-tag{position:absolute; right:40px; top:50%; transform:translateY(-50%); font-size:12px; font-weight:800; color:#ff8a65;
+  background:rgba(13,15,18,.85); border:1px solid #ff8a6566; border-radius:6px; padding:2px 8px}
+.tn-rb.off em{color:#ff8a65}
+.t3k-foot .primary{white-space:nowrap}
+.t3k-foot .primary[disabled]{opacity:.35; cursor:not-allowed}

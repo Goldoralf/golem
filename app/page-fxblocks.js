@@ -104,10 +104,10 @@ export function FxBlocksPage({ role, gears } = {}) {
           : builtCats.map(c => html`<button class=${cls('chip', curCat === c && 'on')} onClick=${() => setBcat(c)}>${CAT_LABEL[c] || c}</button>`)}</div>
       </div>
       <div class="tn-board"><div class="tn-pedals">${mode === 'captured'
-        ? boardShown.slice(pg.from, pg.to).map(p => html`<button class=${cls('tn-tile tn-ped', !p.caps.length && 'ghost')} onClick=${() => setSelPed(p)}>
+        ? boardShown.slice(pg.from, pg.to).map(p => html`<button class=${cls('tn-tile tn-ped', !p.caps.length && 'ghost')} aria-label=${p.name} onClick=${() => setSelPed(p)}>
             ${vis ? html`<${Drawing} svg=${namPedalSvg(p.arch, p.short, p.family === 'other' ? 'boost' : p.family, p.caps.length > 0)} />` : html`<div class="tn-draw"></div>`}
             <b>${p.name}</b><span>${p.caps.length ? `${p.caps.reduce((s, t) => s + (t.models || []).length, 0)} captures` : 'Find on TONE3000'}</span></button>`)
-        : built.slice(pg.from, pg.to).map(e => html`<button class="tn-tile tn-ped" onClick=${() => setSel(e)}>
+        : built.slice(pg.from, pg.to).map(e => html`<button class="tn-tile tn-ped" aria-label=${e.name} onClick=${() => setSel(e)}>
             ${vis ? html`<${Drawing} svg=${pedalSvg({ type: e.type, title: e.short || e.name })} />` : html`<div class="tn-draw"></div>`}
             <b>${e.name}</b><span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '').split(/[ (]/)[0]}</span></button>`)}</div></div>
       <${Pager} pg=${pg} />

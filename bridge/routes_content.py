@@ -711,7 +711,13 @@ def get_catalog():
     irq = ir_quality.load()                                  # « pack à écho » (2026-09-14) : lu, jamais déclaré
     tones = d.get("tones") or []
     it = tones.values() if isinstance(tones, dict) else tones
+    from . import playable as PL
     for t in it:
+        # ce que golem sait jouer (docs/library-tones.md §7) : un pack entré par un autre chemin (golem.fm, une
+        # sauvegarde, une install d'avant la règle) le dit à l'écran au lieu de se faire passer pour un baffle
+        ok, why = PL.verdict(t.get("gear"), t.get("format") or "nam")
+        if not ok:
+            t["playable"], t["why"] = False, why
         if str(t.get("gear") or "") == "cab":
             e = ir_quality.echo_of(t.get("id"), irq)
             if e:

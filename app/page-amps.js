@@ -195,7 +195,7 @@ export function AmpsPage({ role, gears } = {}) {
           <div class="tn-spectrum" data-doc="tones.gain">${fams.map(([k, l, c, n]) => html`<button class=${cls('tn-sp', chr === k && 'on', chr !== 'all' && chr !== k && 'dim')}
               style=${`flex:${Math.max(n / tot, .14)};--c:${c}`} onClick=${() => setChr(chr === k ? 'all' : k)}><b>${l}</b><em>${n}</em></button>`)}</div>
           ${shown.length ? html`<div class="tn-shelf">${shown.slice(pg.from, pg.to).map(t => html`
-            <button class="tn-tile tn-amp" data-doc=${'tones.amp:' + t.id} onClick=${() => setSel(t)}>
+            <button class="tn-tile tn-amp" data-doc=${'tones.amp:' + t.id} aria-label=${ampName(t)} onClick=${() => setSel(t)}>
               ${vis ? html`<${Drawing} svg=${ampSvg(t, archOf(t), guessChar(t))} />` : html`<div class="tn-draw"></div>`}
               <b>${ampName(t)}</b>
               <span>${t.gear === 'amp' ? 'Head' : 'Head + cab'} · ${t.models.length} capture${t.models.length > 1 ? 's' : ''}${t.models.some(m => String(m.arch) === '2') ? html` <i class="a2-chip">A2</i>` : ''}${lent[String(t.id)] ? html` <i class="tn-lent">lent</i>` : ''}</span>

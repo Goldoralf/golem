@@ -1382,6 +1382,621 @@ ${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'pream
 </svg>`;
   }
 
+  // ---------- keys: golem's instruments and synth presets ----------
+  // A period and a material per family, never a maker's livery: a black-lacquer upright piano, an
+  // 80s FM keyboard in graphite, a walnut tonewheel organ with drawbars, a synth whose panel takes the
+  // preset's style colour and shows its four macros.
+  const KEYS_STYLE_HUE = {
+    pad: '#7a6cf0', lead: '#ff5a3c', keys: '#e0b23a', bass: '#3d9be9', pluck: '#2ecc71',
+    arp: '#00a8c0', sfx: '#e06ac0', drone: '#5a7cff', experiment: '#72c000',
+    sequence: '#18c4a8', percussion: '#f08a24',
+  };
+
+  // a keybed at (x, y), w x h; `held` lists the white-key indices pressed (a chord when on)
+  function keybed(x, y, w, h, opts) {
+    opts = opts || {};
+    const n = Math.max(8, Math.round(w / (opts.keyW || 17)));
+    const kw = w / n, held = new Set(opts.held || []), tint = opts.tint || '#ffd27a';
+    const black = new Set([0, 1, 3, 4, 5]); // after C, D, F, G, A
+    let whites = '', blacks = '';
+    for (let i = 0; i < n; i++) {
+      const kx = x + i * kw, down = held.has(i);
+      const nat = opts.reverse ? '#2a1d14' : opts.ivory || '#f6f1e4';
+      whites += `<rect x="${kx.toFixed(2)}" y="${y}" width="${(kw - .8).toFixed(2)}" height="${h - (down ? 0 : 1.5)}" rx="1.6" fill="${down ? mix(nat, tint, .35) : nat}" stroke="#000" stroke-opacity=".25" stroke-width=".6"/>`;
+      if (!down) whites += `<rect x="${kx.toFixed(2)}" y="${y + h - 4}" width="${(kw - .8).toFixed(2)}" height="2.5" fill="#000" opacity=".12"/>`;
+      if (black.has(i % 7) && i < n - 1) {
+        const bw = kw * .6, bx = kx + kw - bw / 2 - .4;
+        blacks += `<rect x="${bx.toFixed(2)}" y="${y}" width="${bw.toFixed(2)}" height="${(h * .6).toFixed(1)}" rx="1.2" fill="${opts.reverse ? '#efe6d2' : '#141416'}"/>
+  <rect x="${(bx + bw * .18).toFixed(2)}" y="${y + 1}" width="${(bw * .64).toFixed(2)}" height="${(h * .6 - 5).toFixed(1)}" rx="1" fill="${opts.reverse ? '#fffaf0' : '#3a3b40'}" opacity=".55"/>`;
+      }
+    }
+    return `<g class="gp-keybed"><rect x="${x - 1}" y="${y - 2}" width="${w + 2}" height="${h + 3}" fill="#0b0b0c"/>${whites}${blacks}
+  <rect x="${x - 1}" y="${y - 2}" width="${w + 2}" height="4" fill="${opts.rail || '#5a1d1d'}"/></g>`;
+  }
+  // a C major triad (C, E, G) in the keybed's middle octave
+  const triad = n => { const c = Math.max(0, Math.floor(n / 14) * 7); return [c, c + 2, c + 4]; };
+
+  function keysLamp(cx, cy, col, on) {
+    return `<circle cx="${cx}" cy="${cy}" r="4.6" fill="#1a1b1d"/><circle cx="${cx}" cy="${cy}" r="3.2" fill="${on ? col : mix(col, '#000', .72)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/><circle cx="${cx}" cy="${cy}" r="3.2" fill="url(#gp-jewel)"/>`;
+  }
+  function keysText(x, y, s, size, fill, opts) {
+    opts = opts || {};
+    return `<text x="${x}" y="${y}" text-anchor="${opts.anchor || 'middle'}" font-family="${opts.font || FONT.nam}" font-size="${size}" font-weight="${opts.weight || 800}" letter-spacing="${opts.ls != null ? opts.ls : 1.4}" fill="${fill}"${opts.opacity ? ` opacity="${opts.opacity}"` : ''}>${esc(s)}</text>`;
+  }
+
+  function keysPiano(W, title, on) {
+    const H = 236, K = 70, ky = H - K - 10, cheek = 26;
+    const kn = Math.round((W - 2 * cheek) / 17), held = on ? triad(kn) : [];
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="#111214"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="url(#gp-gloss)" opacity=".55"/>
+  <rect x="0" y="0" width="${W}" height="14" rx="5" fill="#1d1e21"/>
+  <rect x="18" y="26" width="${W - 36}" height="${ky - 74}" rx="4" fill="#0c0d0e" stroke="#2a2b2f"/>
+  <rect x="34" y="38" width="${(W - 84) / 2}" height="${ky - 98}" rx="3" fill="none" stroke="#2c2d31" stroke-width="1.4"/>
+  <rect x="${W / 2 + 8}" y="38" width="${(W - 84) / 2}" height="${ky - 98}" rx="3" fill="none" stroke="#2c2d31" stroke-width="1.4"/>
+  <rect x="18" y="26" width="${W - 36}" height="${ky - 74}" rx="4" fill="url(#gp-sheen)" opacity=".35"/>
+</g>
+  <rect x="${cheek - 6}" y="${ky - 42}" width="${W - 2 * cheek + 12}" height="34" rx="3" fill="#0e0f10" stroke="#2c2d31"/>
+  <rect x="${cheek - 6}" y="${ky - 42}" width="${W - 2 * cheek + 12}" height="34" rx="3" fill="url(#gp-gloss)" opacity=".4"/>
+  ${keysText(W / 2, ky - 20, String(title).toUpperCase().slice(0, 22), 14, '#d9c08a', { ls: 4 })}
+  ${on ? `<rect x="${W / 2 - 60}" y="${ky - 15}" width="120" height="1.2" fill="#d9c08a" opacity=".6"/>` : ''}
+  <rect x="${cheek - 6}" y="${ky - 6}" width="${W - 2 * cheek + 12}" height="6" fill="#1b1c1f"/>
+  ${keybed(cheek, ky, W - 2 * cheek, K, { held, rail: '#7a1414', tint: '#d9c08a' })}
+  <path d="M0 ${ky - 44}h${cheek - 6}v${K + 54}H6a6 6 0 0 1-6-6Z" fill="#17181b"/><path d="M${W} ${ky - 44}h-${cheek - 6}v${K + 54}h${cheek - 12}a6 6 0 0 0 6-6Z" fill="#17181b"/>
+  <path d="M2 ${ky - 44}h${cheek - 8}" stroke="#2f3035"/><path d="M${W - 2} ${ky - 44}h-${cheek - 8}" stroke="#2f3035"/>
+  ${glyphAt('piano', cheek + 14, ky - 25, 10, '#d9c08a', 2)}` };
+  }
+
+  function keysEpiano(W, title, on) {
+    const H = 196, K = 74, ky = H - K - 10, cheek = 14, panel = '#2b2c2f', ink = '#cfd3d8';
+    const kn = Math.round((W - 2 * cheek) / 15), held = on ? triad(kn) : [];
+    // membrane buttons: two banks, one coral accent row
+    let btn = '';
+    const bx0 = 238, cols = 16, bw = (W - bx0 - 34) / cols;
+    for (let r = 0; r < 2; r++) for (let i = 0; i < cols; i++) {
+      const fill = r === 0 ? (i < 6 ? '#c96a52' : i < 12 ? '#5f7f86' : '#8b8f95') : '#4a4d52';
+      btn += `<rect x="${(bx0 + i * bw).toFixed(1)}" y="${26 + r * 28}" width="${(bw - 4).toFixed(1)}" height="14" rx="1.2" fill="${fill}" opacity="${r === 1 ? .9 : .95}"/>
+  <text x="${(bx0 + i * bw + (bw - 4) / 2).toFixed(1)}" y="${48 + r * 28}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.6" font-weight="700" fill="${ink}" opacity=".55">${r * cols + i + 1}</text>`;
+    }
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="${panel}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-brush-lines)" opacity=".25"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-sheen)" opacity=".4"/>
+</g>
+  <rect x="0" y="${ky - 22}" width="${W}" height="3" fill="#c96a52" opacity=".85"/>
+  <rect x="22" y="22" width="118" height="34" rx="2" fill="#0d1314" stroke="#000"/>
+  <rect x="26" y="26" width="110" height="26" rx="1" fill="${on ? '#5fd4c4' : '#1f3b38'}" opacity="${on ? .9 : 1}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  ${keysText(31, 37, String(title).toUpperCase().slice(0, 16), 8.4, on ? '#0b2522' : '#2f5a55', { anchor: 'start', font: FONT.gfx, weight: 700, ls: .8 })}
+  ${keysText(31, 48, 'FM  E.PIANO', 7, on ? '#0b2522' : '#2f5a55', { anchor: 'start', font: FONT.gfx, weight: 600, ls: 1 })}
+  <rect x="160" y="22" width="12" height="52" rx="2" fill="#151618"/><rect x="157" y="${on ? 36 : 54}" width="18" height="9" rx="1.5" fill="#9aa0a7"/>
+  ${keysText(166, 86, 'DATA', 6, ink, { font: FONT.gfx, weight: 700, ls: 1 })}
+  <rect x="190" y="26" width="30" height="14" rx="1.2" fill="#5f7f86"/><rect x="190" y="54" width="30" height="14" rx="1.2" fill="#5f7f86"/>
+  ${btn}
+  ${keysText(22, 86, 'FREQUENCY MODULATION', 6.4, ink, { anchor: 'start', font: FONT.gfx, weight: 700, ls: 1.8, opacity: .75 })}
+  ${keysLamp(W - 22, 18, '#ff3b2a', on)}
+  ${keybed(cheek, ky, W - 2 * cheek, K, { keyW: 15, held, rail: '#1a1b1d', tint: '#5fd4c4' })}
+  ${glyphAt('ep', W - 44, 18, 9, ink, 2)}` };
+  }
+
+  // drawbars: 9 pulls, opts.drawbars = '888000000' (0 = in, 8 = fully out)
+  function keysOrgan(W, title, on, opts) {
+    const H = 260, K = 52, cheek = 30, ky2 = H - K - 14, ky1 = ky2 - K - 8;
+    const wood = '#5b3a22', woodDark = '#3a2414';
+    const reg = String(opts.drawbars || '888000000').replace(/\D/g, '').padEnd(9, '0').slice(0, 9).split('').map(Number);
+    const tips = ['#5a3418', '#5a3418', '#f1ece0', '#f1ece0', '#141414', '#f1ece0', '#141414', '#141414', '#f1ece0'];
+    const feet = ["16'", "5⅓'", "8'", "4'", "2⅔'", "2'", "1⅗'", "1⅓'", "1'"];
+    const dx0 = W / 2 - 4.5 * 26, dy = 22;
+    const bars = reg.map((v, i) => {
+      const x = dx0 + i * 26 + 13, len = 8 + v * 6.2;
+      return `<rect x="${x - 3.2}" y="${dy}" width="6.4" height="${len}" fill="url(#gp-chrome)"/>
+  <rect x="${x - 8}" y="${dy + len}" width="16" height="16" rx="3" fill="${tips[i]}" stroke="#000" stroke-opacity=".45"/>
+  <rect x="${x - 6}" y="${dy + len + 2}" width="12" height="4" rx="2" fill="#fff" opacity=".18"/>
+  <text x="${x}" y="${dy + len + 12}" text-anchor="middle" font-family="Arial,'DejaVu Sans',sans-serif" font-size="5.4" font-weight="700" fill="${tips[i] === '#f1ece0' ? '#222' : '#ddd'}">${feet[i]}</text>`;
+    }).join('');
+    const tabs = ['perc', 'soft', 'fast', '3rd'].map((l, i) => `<rect x="${44 + i * 22}" y="40" width="16" height="26" rx="2" fill="${i === 0 && on ? '#f1ece0' : '#d8d0bf'}"/><rect x="${44 + i * 22}" y="${i === 0 && on ? 40 : 53}" width="16" height="13" rx="2" fill="#000" opacity=".12"/>
+  ${keysText(52 + i * 22, 78, l.toUpperCase(), 5.6, '#e9dcc4', { font: FONT.gfx, weight: 700, ls: .6 })}`).join('');
+    const kn = Math.round((W - 2 * cheek) / 16);
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="${wood}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-brush-lines)" opacity=".5"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-sheen)" opacity=".45"/>
+  <rect x="0" y="0" width="${W}" height="10" rx="4" fill="${woodDark}"/>
+</g>
+  <rect x="${cheek}" y="16" width="${W - 2 * cheek}" height="${ky1 - 30}" rx="3" fill="#1a120b" opacity=".55"/>
+  ${tabs}${bars}
+  ${keysText(W - 104, 52, String(title).toUpperCase().slice(0, 16), 10, '#e9dcc4', { ls: 1.2 })}
+  ${keysText(W - 104, 64, 'TONEWHEEL', 6.4, '#e9dcc4', { font: FONT.gfx, weight: 600, ls: 2, opacity: .75 })}
+  <path d="M${W - 120} 78a10 10 0 0 1 20 0Z" fill="#d8d0bf"/><path d="M${W - 110} 78L${W - 110 + (on ? 7 : -7)} 70" stroke="#3a2414" stroke-width="2.2" stroke-linecap="round"/>
+  ${keysText(W - 110, 88, 'SLOW · FAST', 5.4, '#e9dcc4', { font: FONT.gfx, weight: 700, ls: .6 })}
+  ${keysLamp(W - 60, 76, '#ff3b2a', on)}
+  ${keybed(cheek, ky1, W - 2 * cheek, K, { keyW: 16, rail: '#1a120b', held: [] })}
+  <rect x="${cheek}" y="${ky1 + K + 1}" width="${W - 2 * cheek}" height="7" fill="${woodDark}"/>
+  ${keybed(cheek, ky2, W - 2 * cheek, K, { keyW: 16, rail: '#1a120b', held: on ? triad(kn) : [], tint: '#ffb03a' })}
+  <rect x="0" y="${ky1 - 6}" width="${cheek}" height="${H - ky1 + 6}" fill="${woodDark}"/><rect x="${W - cheek}" y="${ky1 - 6}" width="${cheek}" height="${H - ky1 + 6}" fill="${woodDark}"/>
+  ${glyphAt('organ', 34, 20, 10, '#e9dcc4', 2)}` };
+  }
+
+  // the style's wave on the screen
+  function styleWave(style, x, y, w, h) {
+    const N = 48, pts = [];
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, ph = t * Math.PI * 2 * 2.5;
+      let v;
+      switch (style) {
+        case 'lead': v = ((t * 5) % 1) * 2 - 1; break;
+        case 'bass': v = Math.sin(ph) > 0 ? .85 : -.85; break;
+        case 'pluck': v = Math.sin(ph * 2) * Math.exp(-t * 4); break;
+        case 'arp': v = [-.6, .1, .7, .1][Math.floor(t * 8) % 4]; break;
+        case 'sequence': v = [-.7, -.2, .5, -.2, .8, .2, -.4, .3][Math.floor(t * 16) % 8] * (((t * 16) % 1) < .6 ? 1 : .15); break;
+        case 'percussion': { const k = (t * 4) % 1; v = Math.sin(k * 45) * Math.exp(-k * 7) * .95; break; }
+        case 'sfx': v = Math.sin(ph * 3.3 + Math.sin(ph * 7.1) * 2) * .9; break;
+        case 'drone': v = Math.sin(ph * .4) * .7; break;
+        case 'experiment': v = Math.sin(ph * 1.7) * Math.cos(ph * 4.3) ; break;
+        case 'keys': v = (Math.sin(ph) + .35 * Math.sin(ph * 3)) * .75; break;
+        default: v = (Math.sin(ph) * .6 + Math.sin(ph * 1.5) * .3);
+      }
+      pts.push(`${(x + t * w).toFixed(1)} ${(y + h / 2 - v * h * .42).toFixed(1)}`);
+    }
+    return `M${pts.join('L')}`;
+  }
+
+  function keysSynth(W, title, on, opts) {
+    const style = synthStyle(opts.style);
+    const hue = KEYS_STYLE_HUE[style] || '#8a94a3';
+    const H = 214, K = 66, ky = H - K - 10, cheek = 22, wheels = 46;
+    const panel = mix(hue, '#16181b', .72), ink = mix(hue, '#ffffff', .65);
+    const macros = (opts.macros && opts.macros.length ? opts.macros : [1, 2, 3, 4].map(i => ({ name: `macro ${i}`, value: .5 }))).slice(0, 4);
+    const sx = cheek + 18, sy = 20, sw = 176, sh = 58;
+    const kx0 = sx + sw + 34, kx1 = W - cheek - 46, step = (kx1 - kx0) / 4;
+    const knobs = macros.map((m, i) => {
+      const v = Math.max(0, Math.min(1, +m.value || 0)), cx = kx0 + step * (i + .5), cy = 48, r = 15;
+      const a = -135 + 270 * v, arc = (from, to) => { const [ax, ay] = polar(cx, cy, r + 5, from), [bx, by] = polar(cx, cy, r + 5, to);
+        return `M${ax.toFixed(1)} ${ay.toFixed(1)}A${r + 5} ${r + 5} 0 ${to - from > 180 ? 1 : 0} 1 ${bx.toFixed(1)} ${by.toFixed(1)}`; };
+      return `<path d="${arc(-135, 135)}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
+  ${v > .005 ? `<path d="${arc(-135, a)}" fill="none" stroke="${on ? hue : mix(hue, '#000', .5)}" stroke-width="3" stroke-linecap="round"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>` : ''}
+  ${knobAlu(cx, cy, r, { min: 0, max: 1, default: v }, '', ink).replace('</g>', '')}</g>
+  ${keysText(cx, cy + r + 17, String(m.name || `macro ${i + 1}`).toUpperCase().slice(0, 12), 6.8, ink, { font: FONT.gfx, weight: 700, ls: .8 })}`;
+    }).join('');
+    const kn = Math.round((W - 2 * cheek - wheels) / 16);
+    const wheel = (x, pos) => `<rect x="${x}" y="${ky + 6}" width="13" height="${K - 14}" rx="3" fill="#0b0c0d"/><rect x="${x + 2}" y="${ky + 8 + pos}" width="9" height="16" rx="2" fill="#3a3d42"/><path d="M${x + 3} ${ky + 16 + pos}h7" stroke="#6a6f75"/>`;
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="${panel}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="url(#gp-brush-lines)" opacity=".35"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="url(#gp-sheen)" opacity=".45"/>
+</g>
+  <rect x="${sx - 4}" y="${sy - 4}" width="${sw + 8}" height="${sh + 8}" rx="4" fill="#07080a"/>
+  <rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="2" fill="${on ? mix(hue, '#05070a', .82) : '#0a0c0e'}"/>
+  <path d="${styleWave(style, sx + 8, sy + 22, sw - 16, sh - 26)}" fill="none" stroke="${on ? mix(hue, '#fff', .25) : mix(hue, '#000', .55)}" stroke-width="1.6"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  ${keysText(sx + 8, sy + 14, String(title).toUpperCase().slice(0, 22), 9, on ? '#eef0f2' : '#5a5f66', { anchor: 'start', font: FONT.gfx, weight: 700, ls: .8 })}
+  ${keysText(sx + sw - 8, sy + 14, style.toUpperCase(), 6.6, on ? hue : mix(hue, '#000', .5), { anchor: 'end', font: FONT.gfx, weight: 700, ls: 1.4 })}
+  <rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="2" fill="url(#gp-glass-glare)"/>
+  ${knobs}
+  ${keysLamp(W - cheek - 20, 26, hue, on)}
+  ${keysText(W - cheek - 20, 46, 'SYNTH', 6, ink, { font: FONT.gfx, weight: 700, ls: 1.2, opacity: .7 })}
+  <rect x="${cheek}" y="${ky - 8}" width="${W - 2 * cheek}" height="3" fill="${hue}" opacity="${on ? .9 : .4}"/>
+  <rect x="${cheek}" y="${ky - 2}" width="${wheels}" height="${K + 3}" fill="#141518"/>
+  ${wheel(cheek + 6, 18)}${wheel(cheek + 25, 30)}
+  ${keybed(cheek + wheels, ky, W - 2 * cheek - wheels, K, { keyW: 16, held: on ? triad(kn) : [], rail: '#0b0c0d', tint: hue })}
+  <rect x="0" y="0" width="${cheek}" height="${H}" rx="6" fill="#4a3020"/><rect x="${W - cheek}" y="0" width="${cheek}" height="${H}" rx="6" fill="#4a3020"/>
+  <rect x="0" y="0" width="${cheek}" height="${H}" rx="6" fill="url(#gp-brush-lines)" opacity=".5"/><rect x="${W - cheek}" y="0" width="${cheek}" height="${H}" rx="6" fill="url(#gp-brush-lines)" opacity=".5"/>
+  ${glyphAt('piano', sx + sw + 16, 20, 8, ink, 2)}` };
+  }
+
+  // the electric-piano families a program falls into, from its title (golem's curated FM programs:
+  // "TINE E.PNO", "WURLI/TREM", "CLAVINET 1", "HARPSICH 2", "VIBE 1"…); 'fm' when none fits
+  const EP_FAMILIES = ['fm', 'tine', 'reed', 'clav', 'harpsichord', 'mallet'];
+  function keysFamily(title) {
+    const t = String(title || '').toLowerCase();
+    if (/harpsi|cemb/.test(t)) return 'harpsichord';
+    if (/clav/.test(t)) return 'clav';
+    if (/wurl|reed/.test(t)) return 'reed';
+    if (/vibe|vibra|marimba|xylo|mallet|glock|celest/.test(t)) return 'mallet';
+    if (/rhodes|tine|suitcase|stage/.test(t)) return 'tine';
+    return 'fm';
+  }
+  // golem's Vital `preset_style` names that differ from ours
+  const STYLE_ALIAS = { sequence: 'sequence', seq: 'sequence', percussion: 'percussion', perc: 'percussion', arpeggio: 'arp' };
+  const synthStyle = s => { s = String(s || '').toLowerCase().trim(); s = STYLE_ALIAS[s] || s; return KEYS_STYLE_HUE[s] ? s : 'synth'; };
+
+  // a tolex-covered body (the tine piano's case)
+  const tolexRect = (x, y, w, h, rx, fill) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#fff" filter="url(#gp-tolex)" opacity=".5"/>`;
+  const smallKnob = (cx, cy, r, v, label, ink, cap) => {
+    const a = -135 + 270 * v, [px, py] = polar(cx, cy, r * .82, a);
+    return `<circle cx="${cx}" cy="${cy + 1}" r="${r}" fill="#000" opacity=".35"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="${cap || '#17191b'}"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-sheen)" opacity=".45"/>
+  <path d="M${cx} ${cy}L${px.toFixed(1)} ${py.toFixed(1)}" stroke="${luma(cap || '#17191b') > .5 ? '#222' : '#eee'}" stroke-width="1.4" stroke-linecap="round"/>
+  ${label ? keysText(cx, cy + r + 9, label.toUpperCase(), 5.8, ink, { font: FONT.gfx, weight: 700, ls: .8 }) : ''}`;
+  };
+
+  function keysTine(W, title, on) {
+    const H = 206, K = 72, ky = H - K - 12, cheek = 18;
+    const kn = Math.round((W - 2 * cheek) / 16);
+    return { H, svg: `<g filter="url(#gp-shadow-small)">${tolexRect(0, 0, W, H, 9, '#1c1c1e')}
+  <rect x="0" y="0" width="${W}" height="${H}" rx="9" fill="url(#gp-sheen)" opacity=".35"/></g>
+  <rect x="${cheek}" y="16" width="${W - 2 * cheek}" height="${ky - 40}" rx="3" fill="url(#gp-brushed)"/>
+  <rect x="${cheek}" y="16" width="${W - 2 * cheek}" height="${ky - 40}" rx="3" fill="url(#gp-brush-lines)" opacity=".6"/>
+  ${keysText(cheek + 18, 16 + (ky - 40) / 2 + 6, String(title).toUpperCase().slice(0, 18), 16, '#202226', { anchor: 'start', ls: 3 })}
+  ${smallKnob(W - 190, 16 + (ky - 40) / 2 - 3, 10, .7, 'volume', '#202226')}${smallKnob(W - 150, 16 + (ky - 40) / 2 - 3, 10, .45, 'bass', '#202226')}
+  ${smallKnob(W - 110, 16 + (ky - 40) / 2 - 3, 10, on ? .35 : 0, 'vibrato', '#202226')}
+  ${keysLamp(W - 60, 16 + (ky - 40) / 2 - 3, '#ff3b2a', on)}
+  <rect x="${cheek}" y="${ky - 14}" width="${W - 2 * cheek}" height="10" fill="#0e0e0f"/>
+  ${keybed(cheek, ky, W - 2 * cheek, K, { keyW: 16, held: on ? triad(kn) : [], rail: '#7a1414', tint: '#ffb03a' })}
+  ${glyphAt('ep', W - 38, 32, 9, '#202226', 2)}` };
+  }
+
+  function keysReed(W, title, on) {
+    const H = 214, K = 70, ky = H - K - 12, cheek = 24, body = '#d6c6a3', ink = '#4a3622';
+    const kn = Math.round((W - 2 * cheek) / 16);
+    const grille = Array.from({ length: 6 }, (_, r) => Array.from({ length: 9 }, (_, c) =>
+      `<circle cx="${cheek + 22 + c * 7 + (r % 2) * 3.5}" cy="${34 + r * 7}" r="1.8" fill="#2a2016" opacity=".7"/>`).join('')).join('');
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <path d="M0 ${ky - 6}V40Q0 6 40 6H${W - 40}Q${W} 6 ${W} 40V${H - 6}a6 6 0 0 1-6 6H6a6 6 0 0 1-6-6Z" fill="${body}"/>
+  <path d="M0 ${ky - 6}V40Q0 6 40 6H${W - 40}Q${W} 6 ${W} 40V${H - 6}a6 6 0 0 1-6 6H6a6 6 0 0 1-6-6Z" fill="url(#gp-sheen)" opacity=".55"/></g>
+  <path d="M10 ${ky - 30}H${W - 10}" stroke="#b9a681" stroke-width="2"/>
+  ${grille}
+  <rect x="${W / 2 - 110}" y="34" width="220" height="30" rx="4" fill="url(#gp-chrome)"/>
+  ${keysText(W / 2, 54, String(title).toUpperCase().slice(0, 18), 14, ink, { ls: 3 })}
+  ${smallKnob(W - 120, 50, 9, .6, 'volume', ink, '#f1ece0')}${smallKnob(W - 84, 50, 9, on ? .5 : 0, 'vibrato', ink, '#f1ece0')}
+  ${keysLamp(W - 48, 50, '#ff5a3c', on)}
+  <rect x="${cheek - 4}" y="${ky - 8}" width="${W - 2 * cheek + 8}" height="8" fill="#2a2016"/>
+  ${keybed(cheek, ky, W - 2 * cheek, K, { keyW: 16, held: on ? triad(kn) : [], rail: '#2a2016', tint: '#ff5a3c' })}
+  ${glyphAt('ep', cheek + 100, 52, 9, ink, 2)}` };
+  }
+
+  function keysClav(W, title, on) {
+    const H = 196, K = 66, ky = H - K - 12, cheek = 22, wood = '#a8743f';
+    const kn = Math.round((W - 2 * cheek) / 16);
+    const tabs = ['brill', 'treble', 'medium', 'soft', 'a·b', 'c·d'].map((l, i) => {
+      const x = W - 300 + i * 34, down = on ? i === 0 || i === 4 : false;
+      return `<rect x="${x}" y="30" width="24" height="30" rx="2" fill="${i < 4 ? '#e9dcc4' : '#c9452e'}"/><rect x="${x}" y="${down ? 30 : 45}" width="24" height="15" rx="2" fill="#000" opacity=".16"/>
+  ${keysText(x + 12, 72, l.toUpperCase(), 5.6, '#e9dcc4', { font: FONT.gfx, weight: 700, ls: .5 })}`;
+    }).join('');
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="${wood}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-brush-lines)" opacity=".55"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="url(#gp-sheen)" opacity=".4"/></g>
+  <rect x="${cheek}" y="16" width="${W - 2 * cheek}" height="${ky - 30}" rx="3" fill="#18181a"/>
+  ${keysText(cheek + 18, 52, String(title).toUpperCase().slice(0, 16), 14, '#e9dcc4', { anchor: 'start', ls: 2.6 })}
+  ${tabs}
+  <rect x="${W - 82}" y="36" width="6" height="34" rx="3" fill="#0b0b0c"/><rect x="${W - 86}" y="${on ? 40 : 58}" width="14" height="9" rx="2" fill="#9aa0a7"/>
+  ${keysText(W - 79, 82, 'MUTE', 5.6, '#e9dcc4', { font: FONT.gfx, weight: 700, ls: .6 })}
+  ${keysLamp(W - 48, 44, '#ff3b2a', on)}
+  ${keybed(cheek, ky, W - 2 * cheek, K, { keyW: 16, held: on ? triad(kn) : [], rail: '#18181a', tint: '#c9452e' })}
+  ${glyphAt('ep', cheek + 12, 28, 8, '#e9dcc4', 2)}` };
+  }
+
+  function keysHarpsichord(W, title, on) {
+    const H = 236, K = 62, ky = H - K - 14, cheek = 30, wood = '#6b4226', gold = '#d9b25a';
+    const kn = Math.round((W - 2 * cheek) / 15);
+    const strings = Array.from({ length: 28 }, (_, i) => { const x = cheek + 16 + i * ((W - 2 * cheek - 32) / 27);
+      return `<path d="M${x.toFixed(1)} ${ky - 22}L${(x + 30 - i * 1.6).toFixed(1)} 30" stroke="${gold}" stroke-width=".6" opacity="${on ? .7 : .4}"/>`; }).join('');
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="4" fill="${wood}"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="4" fill="url(#gp-brush-lines)" opacity=".5"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="4" fill="url(#gp-sheen)" opacity=".4"/></g>
+  <rect x="6" y="6" width="${W - 12}" height="${H - 12}" rx="3" fill="none" stroke="${gold}" stroke-width="1.2" opacity=".8"/>
+  <path d="M${cheek} ${ky - 18}L${cheek + 40} 22H${W - cheek - 40}L${W - cheek} ${ky - 18}Z" fill="#c9a77a"/>
+  <path d="M${cheek} ${ky - 18}L${cheek + 40} 22H${W - cheek - 40}L${W - cheek} ${ky - 18}Z" fill="url(#gp-brush-lines)" opacity=".4"/>
+  ${strings}
+  <rect x="${W / 2 - 100}" y="${ky - 50}" width="200" height="22" rx="2" fill="#2a1a10" stroke="${gold}" stroke-width=".8"/>
+  ${keysText(W / 2, ky - 34, String(title).toUpperCase().slice(0, 20), 11, gold, { ls: 3 })}
+  <rect x="${cheek - 4}" y="${ky - 14}" width="${W - 2 * cheek + 8}" height="12" fill="#3a2414"/>
+  ${keybed(cheek, ky, W - 2 * cheek, K, { keyW: 15, held: on ? triad(kn) : [], rail: '#3a2414', tint: gold, reverse: true })}
+  ${glyphAt('ep', W - cheek - 20, ky - 39, 8, gold, 2)}` };
+  }
+
+  // a vibraphone: graduated bars over resonators, in keyboard order
+  function malletBars(x, y, w, h, n, on, accent) {
+    const bw = w / n, held = on ? new Set(triad(n)) : new Set();
+    const black = new Set([0, 1, 3, 4, 5]);
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const len = h * (1 - .38 * i / n), bx = x + i * bw, by = y + h * .42 + (h - len) / 2;
+      s += `<rect x="${(bx + bw * .3).toFixed(1)}" y="${(by + len).toFixed(1)}" width="${(bw * .4).toFixed(1)}" height="${(h * .32).toFixed(1)}" fill="#55595f" opacity=".6"/>
+  <rect x="${(bx + 1).toFixed(1)}" y="${(by).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${(len * .55).toFixed(1)}" rx="1.5" fill="${held.has(i) ? mix('#cfd3d8', accent, .45) : '#c9ced4'}"${held.has(i) ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  <rect x="${(bx + 1).toFixed(1)}" y="${(by).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${(len * .55).toFixed(1)}" rx="1.5" fill="url(#gp-brush-lines)" opacity=".5"/>`;
+      if (black.has(i % 7) && i < n - 1) {
+        const ax = bx + bw * .55, alen = len * .45;
+        s += `<rect x="${ax.toFixed(1)}" y="${(y + (h * .42 - alen) / 2).toFixed(1)}" width="${(bw * .9).toFixed(1)}" height="${alen.toFixed(1)}" rx="1.5" fill="#b8bec5"/>
+  <rect x="${ax.toFixed(1)}" y="${(y + (h * .42 - alen) / 2).toFixed(1)}" width="${(bw * .9).toFixed(1)}" height="${alen.toFixed(1)}" rx="1.5" fill="url(#gp-brush-lines)" opacity=".5"/>`;
+      }
+    }
+    return `<g class="gp-bars"><path d="M${x} ${y + h * .2}H${x + w}M${x} ${y + h * .62}H${x + w}" stroke="#8a2a1a" stroke-width="1.2" opacity=".7"/>${s}</g>`;
+  }
+  function keysMallet(W, title, on) {
+    const H = 200, cheek = 18, top = 46;
+    return { H, svg: `<g filter="url(#gp-shadow-small)">
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="#26282c"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="url(#gp-sheen)" opacity=".4"/></g>
+  ${keysText(cheek + 8, 30, String(title).toUpperCase().slice(0, 18), 13, '#e2e6ea', { anchor: 'start', ls: 2.6 })}
+  <circle cx="${W - 92}" cy="25" r="11" fill="#17181a" stroke="#55595f"/>
+  <path d="M${W - 92} 25l${on ? 7 : 0} ${on ? -6 : -9}M${W - 92} 25l${on ? -8 : 0} ${on ? 3 : 9}" stroke="#9aa0a7" stroke-width="2" stroke-linecap="round"/>
+  ${keysText(W - 92, 44, 'MOTOR', 5.6, '#9aa0a7', { font: FONT.gfx, weight: 700, ls: .8 })}
+  ${keysLamp(W - 48, 25, '#ffb03a', on)}
+  ${malletBars(cheek, top, W - 2 * cheek, H - top - 10, 30, on, '#ffb03a')}
+  ${glyphAt('ep', cheek + 4, 14, 7, '#e2e6ea', 2)}` };
+  }
+
+  // ---------- compact: a tile for a wall of sounds (~230 px wide) ----------
+  const KEYS_COMPACT = {
+    piano: { body: '#111214', panel: '#0c0d0e', ink: '#d9c08a', rail: '#7a1414' },
+    fm: { body: '#2b2c2f', panel: '#1d1e20', ink: '#cfd3d8', rail: '#c96a52', lcd: '#5fd4c4' },
+    tine: { body: '#1c1c1e', panel: 'url(#gp-brushed)', ink: '#202226', rail: '#7a1414', tolex: true },
+    reed: { body: '#d6c6a3', panel: '#e6d9bd', ink: '#4a3622', rail: '#2a2016' },
+    clav: { body: '#a8743f', panel: '#18181a', ink: '#e9dcc4', rail: '#18181a', wood: true },
+    harpsichord: { body: '#6b4226', panel: '#2a1a10', ink: '#d9b25a', rail: '#3a2414', wood: true, reverse: true },
+    mallet: { body: '#26282c', panel: '#26282c', ink: '#e2e6ea', rail: '#26282c' },
+    organ: { body: '#5b3a22', panel: '#1a120b', ink: '#e9dcc4', rail: '#1a120b', wood: true },
+  };
+  function keysCompact(kind, family, title, on, opts) {
+    const W = 300, H = 176, K = 58, ky = H - K - 8, side = 10;
+    let M = KEYS_COMPACT[kind === 'epiano' ? family : kind] || KEYS_COMPACT.fm, hue = null, style = null;
+    if (kind === 'synth') {
+      style = synthStyle(opts.style); hue = KEYS_STYLE_HUE[style] || '#8a94a3';
+      M = { body: mix(hue, '#16181b', .72), panel: '#07080a', ink: mix(hue, '#fff', .65), rail: '#0b0c0d', wood: false };
+    }
+    const T = String(title).toUpperCase().slice(0, 16);
+    const py = 10, ph = ky - 18;
+    let emblem = '';
+    if (kind === 'synth') {
+      emblem = `<rect x="${side + 6}" y="${py + 4}" width="${W - 2 * side - 12}" height="${ph - 8}" rx="3" fill="${on ? mix(hue, '#05070a', .82) : '#0a0c0e'}"/>
+  <path d="${styleWave(style, side + 150, py + 12, W - 2 * side - 166, ph - 24)}" fill="none" stroke="${on ? mix(hue, '#fff', .25) : mix(hue, '#000', .55)}" stroke-width="1.8"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  ${keysText(side + 16, py + 26, T, 15, on ? '#eef0f2' : '#5a5f66', { anchor: 'start', ls: 1.2 })}
+  ${keysText(side + 16, py + 42, style.toUpperCase(), 9, on ? hue : mix(hue, '#000', .5), { anchor: 'start', font: FONT.gfx, weight: 700, ls: 1.6 })}
+  ${(opts.macros || []).slice(0, 4).map((m, i) => { const v = Math.max(0, Math.min(1, +m.value || 0));
+    return `<rect x="${side + 16 + i * 30}" y="${py + ph - 22}" width="24" height="4" rx="2" fill="#000" opacity=".5"/><rect x="${side + 16 + i * 30}" y="${py + ph - 22}" width="${(24 * v).toFixed(1)}" height="4" rx="2" fill="${on ? hue : mix(hue, '#000', .5)}"/>`; }).join('')}`;
+    } else if (kind === 'organ') {
+      const reg = String(opts.drawbars || '888000000').replace(/\D/g, '').padEnd(9, '0').slice(0, 9).split('').map(Number);
+      const tips = ['#5a3418', '#5a3418', '#f1ece0', '#f1ece0', '#141414', '#f1ece0', '#141414', '#141414', '#f1ece0'];
+      emblem = keysText(side + 14, py + 28, T, 15, M.ink, { anchor: 'start', ls: 1.4 }) + reg.map((v, i) => { const x = W - side - 128 + i * 13, len = 4 + v * 4.2;
+        return `<rect x="${x - 1.6}" y="${py + 6}" width="3.2" height="${len}" fill="url(#gp-chrome)"/><rect x="${x - 4.5}" y="${py + 6 + len}" width="9" height="9" rx="2" fill="${tips[i]}"/>`; }).join('');
+    } else if (kind === 'epiano' && family === 'fm') {
+      emblem = `<rect x="${side + 8}" y="${py + 8}" width="${W - 2 * side - 70}" height="${ph - 18}" rx="2" fill="#0d1314"/>
+  <rect x="${side + 12}" y="${py + 12}" width="${W - 2 * side - 78}" height="${ph - 26}" rx="1" fill="${on ? M.lcd : '#1f3b38'}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  ${keysText(side + 20, py + 12 + (ph - 26) / 2 + 5, T, 14, on ? '#0b2522' : '#2f5a55', { anchor: 'start', font: FONT.gfx, weight: 700, ls: .8 })}
+  ${[0, 1, 2].map(i => `<rect x="${W - side - 52 + i * 15}" y="${py + 12}" width="11" height="8" rx="1" fill="${['#c96a52', '#5f7f86', '#8b8f95'][i]}"/>`).join('')}`;
+    } else if (kind === 'epiano' && family === 'clav') {
+      emblem = keysText(side + 14, py + 30, T, 14, M.ink, { anchor: 'start', ls: 1.2 }) + [0, 1, 2, 3, 4, 5].map(i => `<rect x="${W - side - 98 + i * 15}" y="${py + 12}" width="11" height="18" rx="1.5" fill="${i < 4 ? '#e9dcc4' : '#c9452e'}"/>`).join('');
+    } else {
+      emblem = keysText(W / 2, py + ph / 2 + 6, T, 16, M.ink, { ls: 2.4 });
+    }
+    const lamp = keysLamp(W - side - 12, py + ph - 10, hue || '#ff3b2a', on);
+    const lower = kind === 'epiano' && family === 'mallet'
+      ? malletBars(side, ky - 4, W - 2 * side, K + 4, 18, on, '#ffb03a')
+      : keybed(side, ky, W - 2 * side, K, { keyW: 14, held: on ? triad(Math.round((W - 2 * side) / 14)) : [], rail: M.rail, tint: hue || '#ffd27a', reverse: M.reverse });
+    const panelFill = M.panel;
+    return { W, H, svg: `<g filter="url(#gp-shadow-small)">${M.tolex ? tolexRect(0, 0, W, H, 7, M.body) : `<rect x="0" y="0" width="${W}" height="${H}" rx="7" fill="${M.body}"/>`}
+  ${M.wood ? `<rect x="0" y="0" width="${W}" height="${H}" rx="7" fill="url(#gp-brush-lines)" opacity=".5"/>` : ''}
+  <rect x="0" y="0" width="${W}" height="${H}" rx="7" fill="url(#gp-sheen)" opacity=".4"/></g>
+  <rect x="${side}" y="${py}" width="${W - 2 * side}" height="${ph}" rx="3" fill="${panelFill}"/>
+  ${kind === 'piano' ? `<rect x="${side}" y="${py}" width="${W - 2 * side}" height="${ph}" rx="3" fill="url(#gp-gloss)" opacity=".4"/>` : ''}
+  ${emblem}${lamp}${lower}` };
+  }
+
+  // a keys sound: golem's built-in instruments and synth presets. opts: kind ('piano' | 'epiano' |
+  // 'organ' | 'synth'), title (the name on the panel), family (epiano: 'fm' · 'tine' · 'reed' · 'clav' ·
+  // 'harpsichord' · 'mallet'; found from the title by keysFamily when absent), style (synth: pad, lead,
+  // keys, bass, pluck, arp, sequence, percussion, sfx, drone, experiment, golem's Vital preset_style
+  // names included; empty or unknown = a neutral synth), macros ([{name, value 0..1}], up to 4, synth),
+  // drawbars ('888000000', organ), compact (a 300-wide tile for a wall of sounds), on, width
+  function keysUnit(opts) {
+    opts = opts || {};
+    const kind = ['piano', 'epiano', 'organ', 'synth'].includes(opts.kind) ? opts.kind : 'synth';
+    const on = opts.on !== false;
+    const family = kind === 'epiano' ? (EP_FAMILIES.includes(opts.family) ? opts.family : keysFamily(opts.title)) : '';
+    const title = opts.title || { piano: 'Grand', epiano: 'E-Piano', organ: 'Tonewheel', synth: 'Synth' }[kind];
+    let r, W = 600;
+    if (opts.compact) { r = keysCompact(kind, family, title, on, opts); W = r.W; }
+    else if (kind === 'epiano') r = { fm: keysEpiano, tine: keysTine, reed: keysReed, clav: keysClav, harpsichord: keysHarpsichord, mallet: keysMallet }[family](W, title, on);
+    else r = kind === 'piano' ? keysPiano(W, title, on) : kind === 'organ' ? keysOrgan(W, title, on, opts) : keysSynth(W, title, on, opts);
+    const data = kind === 'synth' ? ` data-style="${esc(synthStyle(opts.style))}"` : kind === 'epiano' ? ` data-family="${family}"` : '';
+    return `<svg class="gp-keys gp-keys-${kind}${opts.compact ? ' gp-keys-compact' : ''}${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${r.H + 10}" width="${opts.width || W + 8}" role="img" aria-label="${esc(kind)} — ${esc(title)}" data-kind="${kind}"${data}>
+${r.svg}
+</svg>`;
+  }
+
+  // ---------- kits: drum sets and pad kits ----------
+  // A drum set seen from the front, one layout per kind of kit, never a maker's livery; the finish (a hue and
+  // a wrap) is picked from the title when not given, so two kits never look the same.
+  const KIT_TYPES = ['rock', 'jazz', 'metal', 'vintage', 'electronic', 'hybrid'];
+  const KIT_HUES = ['#b3121f', '#1f4fa3', '#2b2b2e', '#e8e2d0', '#2f7a3a', '#6e3aa0', '#c47a1c', '#7a4a26', '#0f6f7a', '#8a1e4a'];
+  const KIT_WRAPS = ['gloss', 'sparkle', 'pearl', 'wood', 'satin'];
+  const KIT_PIECES = ['kick', 'snare', 'hats', 'ride', 'crash', 'toms'];
+  let kitCount = 0;
+  const hashOf = s => { let h = 2166136261; for (const c of String(s || '')) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
+  // opts.finish: a hex hue, a wrap name, or {hue, wrap}; else from the title (and the type's taste)
+  function kitFinish(type, title, finish) {
+    const h = hashOf(title);
+    const f = typeof finish === 'string' ? (finish[0] === '#' ? { hue: finish } : { wrap: finish }) : (finish || {});
+    const wrapPref = { vintage: ['pearl', 'sparkle', 'wood'], jazz: ['wood', 'satin', 'gloss'], metal: ['gloss', 'satin', 'sparkle'] }[type] || KIT_WRAPS;
+    const huePref = type === 'metal' ? ['#2b2b2e', '#8a1e4a', '#b3121f', '#1f4fa3'] : KIT_HUES;
+    return { hue: f.hue || huePref[h % huePref.length], wrap: KIT_WRAPS.includes(f.wrap) ? f.wrap : wrapPref[(h >>> 8) % wrapPref.length] };
+  }
+
+  function kitDefs(id, F) {
+    const sparkle = Array.from({ length: 14 }, (_, i) => `<circle cx="${(i * 37) % 23 + .5}" cy="${(i * 53) % 19 + .5}" r="${.5 + (i % 3) * .35}" fill="#fff" opacity="${.35 + (i % 4) * .15}"/>`).join('');
+    return `<defs>
+  <linearGradient id="${id}-shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".32" stop-color="#fff" stop-opacity=".16"/><stop offset=".55" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
+  <radialGradient id="${id}-cym" cx=".42" cy=".35" r=".75"><stop offset="0" stop-color="#f6dc8c"/><stop offset=".55" stop-color="#d0a447"/><stop offset="1" stop-color="#8a6420"/></radialGradient>
+  <radialGradient id="${id}-pearl" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".5" stop-color="${mix(F.hue, '#fff', .6)}" stop-opacity=".55"/><stop offset="1" stop-color="${F.hue}" stop-opacity="0"/></radialGradient>
+  <pattern id="${id}-sparkle" width="23" height="19" patternUnits="userSpaceOnUse">${sparkle}</pattern>
+  <pattern id="${id}-mesh" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0L4 4M4 0L0 4" stroke="#000" stroke-opacity=".5" stroke-width=".6"/></pattern>
+</defs>`;
+  }
+  // the wrap on a shell's body
+  function wrapFill(id, F, x, y, w, h, rx) {
+    const r = `x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx || 0}"`;
+    const over = { sparkle: `<rect ${r} fill="url(#${id}-sparkle)"/>`, pearl: `<rect ${r} fill="url(#${id}-pearl)"/>`,
+      wood: `<rect ${r} fill="url(#gp-brush-lines)" opacity=".55"/>`, satin: '', gloss: `<rect ${r} fill="url(#gp-gloss)" opacity=".35"/>` }[F.wrap] || '';
+    return `<rect ${r} fill="${F.wrap === 'wood' ? mix(F.hue, '#6b3e1e', .55) : F.hue}"/>${over}<rect ${r} fill="url(#${id}-shade)"/>`;
+  }
+  const LIT = '#ffd27a';
+  // the stroke of a hoop or a pad: its own, or the lit gold one (never both: an attribute twice is invalid XML)
+  const litStroke = (on, lit, stroke, width) => on && lit ? ` stroke="${LIT}" stroke-width="2.4" filter="url(#gp-glow-soft)"`
+    : stroke ? ` stroke="${stroke}" stroke-width="${width}"` : '';
+
+  // a shell seen slightly from above: body w × h under its top head
+  function shell(id, F, cx, top, w, h, o) {
+    o = o || {};
+    const ry = w * .17, x = cx - w / 2, head = o.mesh ? '#3a3d42' : (o.head || '#ece6d6');
+    const nl = Math.max(3, Math.round(w / 22));
+    const lugs = o.detail && !o.mesh ? Array.from({ length: nl }, (_, i) => {
+      const lx = x + w * (i + .5) / nl; return `<rect x="${(lx - 1.6).toFixed(1)}" y="${(top + h * .3).toFixed(1)}" width="3.2" height="${(h * .4).toFixed(1)}" rx="1.2" fill="url(#gp-chrome)"/>`; }).join('') : '';
+    return `<g class="gp-drum">${o.mesh ? `<rect x="${x}" y="${top}" width="${w}" height="${h}" fill="#1b1c1f"/><rect x="${x}" y="${top}" width="${w}" height="${h}" fill="url(#${id}-shade)"/>` : wrapFill(id, F, x, top, w, h)}
+  <ellipse cx="${cx}" cy="${top + h}" rx="${w / 2}" ry="${ry}" fill="#000" opacity=".25"/>${lugs}
+  <ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="${head}"/>${o.mesh ? `<ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="url(#${id}-mesh)"/>` : ''}
+  <ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${ry}" fill="none"${litStroke(o.on, o.lit, 'url(#gp-chrome)', o.detail ? 2.6 : 1.8)}/></g>`;
+  }
+  function cymbal(id, cx, cy, rx, o) {
+    o = o || {};
+    const ry = Math.max(3, rx * (o.china ? .2 : .14)), floor = o.floor;
+    const stand = floor ? `<path d="M${cx} ${cy}V${floor - 10}M${cx} ${floor - 10}l-${rx * .35} 10M${cx} ${floor - 10}l${rx * .35} 10" stroke="#7d838a" stroke-width="1.6" fill="none"/>` : '';
+    const body = o.rubber ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#1c1d20"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * .82}" ry="${ry * .78}" fill="none" stroke="${o.ring || '#5ec8e0'}" stroke-width="1.4" opacity=".8"/>`
+      : o.china ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id}-cym)"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * .78}" ry="${ry * .7}" fill="#8a6420" opacity=".55"/><path d="M${cx - rx} ${cy}q${rx * .08} ${-ry * 1.1} ${rx * .2} ${-ry * .5}M${cx + rx} ${cy}q${-rx * .08} ${-ry * 1.1} ${-rx * .2} ${-ry * .5}" stroke="#d0a447" stroke-width="1.6" fill="none"/>`
+        : `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id}-cym)"/><ellipse cx="${cx}" cy="${cy - ry * .2}" rx="${rx * .18}" ry="${ry * .45}" fill="#f6dc8c"/>`;
+    const lit = o.on && o.lit ? `<ellipse cx="${cx}" cy="${cy}" rx="${rx + 3}" ry="${ry + 2}" fill="none" stroke="${LIT}" stroke-width="2" filter="url(#gp-glow-soft)"/>` : '';
+    return `<g class="gp-cymbal">${stand}${body}${lit}</g>`;
+  }
+  function hats(id, cx, cy, rx, o) {
+    o = o || {};
+    return `<g class="gp-hats">${cymbal(id, cx, cy + 4, rx, { floor: o.floor, rubber: o.rubber, ring: o.ring })}${cymbal(id, cx, cy, rx, { rubber: o.rubber, ring: o.ring, on: o.on, lit: o.lit })}</g>`;
+  }
+  // the kick from the front: the resonant head carries the title
+  function kickFront(id, F, cx, cy, r, title, o) {
+    o = o || {};
+    const metal = o.type === 'metal', vint = o.type === 'vintage';
+    const head = metal ? '#141416' : vint ? '#efe6cf' : '#ece6d6', ink = metal ? '#e9edf1' : vint ? mix(F.hue, '#2a1a10', .55) : '#202226';
+    const t = String(title || '').slice(0, 14), fs = Math.min(r * .34, (1.62 * r) / Math.max(4, t.length) * 1.25);
+    const lugs = o.detail ? Array.from({ length: 10 }, (_, i) => { const [lx, ly] = polar(cx, cy, r + 2, i * 36);
+      return `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.2" fill="url(#gp-chrome)"/>`; }).join('') : '';
+    const spurs = `<path d="M${cx - r * .8} ${cy + r * .5}l-${r * .25} ${r * .5}M${cx + r * .8} ${cy + r * .5}l${r * .25} ${r * .5}" stroke="url(#gp-chrome)" stroke-width="2.4"/>`;
+    const port = metal && o.detail ? `<circle cx="${cx + r * .42}" cy="${cy + r * .42}" r="${r * .16}" fill="#000"/><circle cx="${cx + r * .42}" cy="${cy + r * .42}" r="${r * .16}" fill="none" stroke="#555"/>` : '';
+    return `<g class="gp-kick">${spurs}<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="${F.wrap === 'wood' ? mix(F.hue, '#6b3e1e', .55) : F.hue}"/>
+  ${F.wrap === 'sparkle' ? `<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="url(#${id}-sparkle)"/>` : F.wrap === 'pearl' ? `<circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="url(#${id}-pearl)"/>` : ''}
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="${head}"/>${lugs}
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-sheen)" opacity=".35"/>
+  ${vint ? `<circle cx="${cx}" cy="${cy}" r="${r * .62}" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".6"/>` : ''}${port}
+  <text x="${cx}" y="${cy + fs * .36}" text-anchor="middle" font-family="${vint ? FONT.enamel : FONT.nam}" font-size="${fs.toFixed(1)}" font-weight="800" letter-spacing="${vint ? .5 : 1.4}" fill="${ink}">${esc(vint ? t : t.toUpperCase())}</text>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="none"${litStroke(o.on, o.lit, 'url(#gp-chrome)', o.detail ? 3 : 2)}/></g>`;
+  }
+  // an electronic kit's kick tower
+  function kickTower(id, cx, base, w, h, title, o) {
+    o = o || {};
+    return `<g class="gp-kick"><rect x="${cx - w / 2}" y="${base - h}" width="${w}" height="${h}" rx="4" fill="#1b1c1f"/>
+  <rect x="${cx - w * .38}" y="${base - h + 6}" width="${w * .76}" height="${w * .76}" rx="3" fill="#3a3d42"/><rect x="${cx - w * .38}" y="${base - h + 6}" width="${w * .76}" height="${w * .76}" rx="3" fill="url(#${id}-mesh)"${litStroke(o.on, o.lit)}/>
+  <text x="${cx}" y="${base - 8}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${Math.min(9, w / 6)}" font-weight="700" letter-spacing="1" fill="#cfd3d8">${esc(String(title || '').toUpperCase().slice(0, 10))}</text></g>`;
+  }
+  function kitModule(cx, cy, w, title, on, hue) {
+    const h = w * .62;
+    return `<g class="gp-module"><path d="M${cx} ${cy + h / 2}V${cy + h / 2 + 60}" stroke="#7d838a" stroke-width="1.6"/>
+  <rect x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="3" fill="#202226"/>
+  <rect x="${cx - w * .4}" y="${cy - h * .34}" width="${w * .8}" height="${h * .34}" rx="1.5" fill="${on ? mix(hue, '#05070a', .55) : '#0a0c0e'}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  <text x="${cx}" y="${cy - h * .1}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${(h * .2).toFixed(1)}" font-weight="700" fill="${on ? '#eef0f2' : '#4a4f56'}">${esc(String(title || '').toUpperCase().slice(0, 9))}</text>
+  ${[0, 1, 2].map(i => `<circle cx="${cx - w * .25 + i * w * .25}" cy="${cy + h * .25}" r="${w * .07}" fill="#3a3d42"/>`).join('')}</g>`;
+  }
+
+  // layouts on a 600 × 340 floor plan (floor at y 322); `s` scales them for the compact tile
+  function kitBody(id, type, F, title, o) {
+    const on = o.on, d = !o.compact, L = new Set([].concat(o.lit || []).filter(p => KIT_PIECES.includes(p)));
+    const lit = p => on && L.has(p), floor = 322, ring = mix(F.hue, '#fff', .3);
+    const parts = [];
+    const stand = (x, y) => `<path d="M${x} ${y}V${floor - 12}M${x} ${floor - 12}l-12 12M${x} ${floor - 12}l12 12" stroke="#7d838a" stroke-width="1.6" fill="none"/>`;
+    const floorTom = (cx, top, w, h) => `<path d="M${cx - w * .42} ${top + h}l-6 ${floor - top - h}M${cx + w * .42} ${top + h}l6 ${floor - top - h}" stroke="url(#gp-chrome)" stroke-width="2.2"/>` + shell(id, F, cx, top, w, h, { detail: d, on, lit: lit('toms') });
+    if (type === 'electronic') {
+      parts.push(`<path d="M120 196H520M140 196V${floor}M500 196V${floor}" stroke="#3a3d42" stroke-width="6" stroke-linecap="round"/>`);
+      parts.push(hats(id, 66, 150, 40, { floor, rubber: true, ring, on, lit: lit('hats') }));
+      parts.push(cymbal(id, 178, 74, 46, { floor, rubber: true, ring, on, lit: lit('crash') }));
+      parts.push(cymbal(id, 462, 88, 52, { floor, rubber: true, ring, on, lit: lit('ride') }));
+      parts.push(shell(id, F, 240, 150, 62, 12, { mesh: true, on, lit: lit('toms') }), shell(id, F, 340, 150, 62, 12, { mesh: true, on, lit: lit('toms') }));
+      parts.push(shell(id, F, 462, 196, 72, 14, { mesh: true, on, lit: lit('toms') }));
+      parts.push(shell(id, F, 160, 210, 76, 14, { mesh: true, on, lit: lit('snare') }));
+      parts.push(kickTower(id, 300, floor, 70, 96, title, { on, lit: lit('kick') }));
+      parts.push(kitModule(552, 214, 62, title, on, F.hue));
+      return parts.join('');
+    }
+    const T = {
+      rock: { kick: [300, 246, 72], toms: [[250, 118, 64, 46], [348, 118, 64, 46]], floor: [[484, 176, 88, 92]], snare: [154, 186, 84, 32], hats: [66, 150, 40], crash: [[168, 70, 52]], ride: [474, 96, 60], china: [] },
+      jazz: { kick: [300, 262, 56], toms: [[300, 152, 56, 40]], floor: [[452, 196, 80, 82]], snare: [176, 204, 80, 28], hats: [74, 164, 38], crash: [[178, 92, 44]], ride: [438, 84, 72], china: [] },
+      vintage: { kick: [300, 248, 70], toms: [[300, 126, 62, 46]], floor: [[478, 180, 86, 90]], snare: [158, 190, 82, 32], hats: [66, 154, 40], crash: [[172, 76, 50]], ride: [470, 92, 62], china: [] },
+      metal: { kick: [[238, 258, 60], [362, 258, 60]], toms: [[218, 116, 54, 42], [300, 104, 56, 44], [382, 116, 54, 42]], floor: [[490, 172, 82, 92], [560, 196, 56, 72]], snare: [130, 194, 80, 30], hats: [52, 152, 36], crash: [[146, 62, 50], [454, 50, 52]], ride: [536, 112, 50], china: [[64, 92, 40]] },
+    };
+    const k = T[type === 'hybrid' ? 'rock' : type] || T.rock;
+    // stands first, cymbals last (on top), drums between, back to front
+    k.crash.forEach(([x, y]) => parts.push(stand(x, y)));
+    parts.push(stand(k.ride[0], k.ride[1]));
+    (k.china || []).forEach(([x, y]) => parts.push(stand(x, y)));
+    k.floor.forEach(([x, t, w, h]) => parts.push(floorTom(x, t, w, h)));
+    const kicks = Array.isArray(k.kick[0]) ? k.kick : [k.kick];
+    k.toms.forEach(([x, t, w, h]) => parts.push(shell(id, F, x, t, w, h, { detail: d, on, lit: lit('toms') })));
+    kicks.forEach(([x, y, r]) => parts.push(kickFront(id, F, x, y, r, title, { detail: d, type, on, lit: lit('kick') })));
+    const [sx, st, sw, sh] = k.snare;
+    parts.push(`<path d="M${sx} ${st + sh}V${floor - 12}M${sx} ${floor - 12}l-12 12M${sx} ${floor - 12}l12 12" stroke="#7d838a" stroke-width="1.6" fill="none"/>`);
+    parts.push(shell(id, { hue: '#b9bfc6', wrap: 'gloss' }, sx, st, sw, sh, { detail: d, on, lit: lit('snare') }));
+    parts.push(hats(id, k.hats[0], k.hats[1], k.hats[2], { floor, on, lit: lit('hats') }));
+    k.crash.forEach(([x, y, r]) => parts.push(cymbal(id, x, y, r, { on, lit: lit('crash') })));
+    (k.china || []).forEach(([x, y, r]) => parts.push(cymbal(id, x, y, r, { china: true, on, lit: lit('crash') })));
+    parts.push(cymbal(id, k.ride[0], k.ride[1], k.ride[2], { on, lit: lit('ride') }));
+    if (type === 'hybrid') {
+      parts.push(shell(id, F, 96, 230, 48, 10, { mesh: true, on, lit: lit('snare') }), shell(id, F, 556, 248, 48, 10, { mesh: true, on, lit: lit('toms') }));
+      parts.push(kitModule(556, 202, 54, title, on, F.hue));
+    }
+    return parts.join('');
+  }
+
+  // a drum set. opts: type ('rock' · 'jazz' · 'metal' · 'vintage' · 'electronic' · 'hybrid'), title (on
+  // the kick head), finish (a hex hue, a wrap 'gloss' · 'sparkle' · 'pearl' · 'wood' · 'satin', or {hue,
+  // wrap}; from the title when absent), lit (a piece or a list: kick, snare, hats, ride, crash, toms — lit
+  // when on), on, compact (a 300-wide tile for a wall), width
+  function drumKit(opts) {
+    opts = opts || {};
+    const type = KIT_TYPES.includes(opts.type) ? opts.type : 'rock';
+    const title = opts.title || { rock: 'Rock', jazz: 'Jazz', metal: 'Metal', vintage: 'Vintage', electronic: 'E-Kit', hybrid: 'Hybrid' }[type];
+    const on = opts.on !== false, F = kitFinish(type, title, opts.finish), id = 'gpk' + (++kitCount);
+    const compact = !!opts.compact, W = compact ? 300 : 600, H = compact ? 186 : 340;
+    const body = kitBody(id, type, F, title, { on, lit: opts.lit, compact });
+    const s = compact ? .5 : 1, dy = compact ? 2 : 0;
+    const bg = compact ? `<rect x="0" y="0" width="${W}" height="${H}" rx="7" fill="#17181b"/><rect x="0" y="${H - 22}" width="${W}" height="22" fill="#0e0f11"/>
+  <text x="10" y="${H - 7}" font-family="${FONT.nam}" font-size="12" font-weight="800" letter-spacing="1.2" fill="#e2e6ea">${esc(String(title).toUpperCase().slice(0, 22))}</text>
+  <text x="${W - 10}" y="${H - 7}" text-anchor="end" font-family="${FONT.gfx}" font-size="8" font-weight="700" letter-spacing="1.4" fill="${mix(F.hue, '#fff', .45)}">${type.toUpperCase()}</text>`
+      : `<rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="#17181b"/><rect x="0" y="${H - 18}" width="${W}" height="18" rx="0" fill="#0e0f11"/>
+  <ellipse cx="${W / 2}" cy="${H - 18}" rx="${W * .46}" ry="12" fill="${mix(F.hue, '#000', .7)}" opacity=".6"/>`;
+    return `<svg class="gp-kit gp-kit-${type}${compact ? ' gp-kit-compact' : ''}${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${H + 8}" width="${opts.width || W + 8}" role="img" aria-label="drum kit — ${esc(title)}" data-type="${type}" data-wrap="${F.wrap}">
+${kitDefs(id, F)}${bg}
+<g transform="translate(0 ${dy}) scale(${s})">${body}</g>
+</svg>`;
+  }
+
+  // a 4 × 4 pad kit. opts: title, pads ([{label, hue}], up to 16, bottom-left = pad 1 as on hardware), lit
+  // (a pad index 0–15, or a list), on, compact, width
+  function padKit(opts) {
+    opts = opts || {};
+    const on = opts.on !== false, compact = !!opts.compact, title = opts.title || 'Pads';
+    const W = compact ? 300 : 600, H = compact ? 186 : 340, id = 'gpp' + (++kitCount);
+    const pads = (opts.pads || []).slice(0, 16), lit = new Set([].concat(opts.lit == null ? [] : opts.lit));
+    const accent = KIT_HUES[hashOf(title) % KIT_HUES.length];
+    const gx = compact ? 128 : 236, gy = compact ? 12 : 22, cell = compact ? 40 : 74, gap = compact ? 3.5 : 6;
+    const grid = Array.from({ length: 16 }, (_, i) => {
+      const row = 3 - Math.floor(i / 4), col = i % 4, p = pads[i] || {}, x = gx + col * (cell + gap), y = gy + row * (cell + gap);
+      const hue = p.hue || accent, isLit = on && lit.has(i), glow = on ? (isLit ? .95 : .28) : .08;
+      return `<g class="gp-pad"><rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${cell * .1}" fill="#2a2c30"/>
+  <rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${cell * .1}" fill="${hue}" opacity="${glow}"${isLit ? ' filter="url(#gp-glow-soft)"' : ''}/>
+  <rect x="${x + 2}" y="${y + 2}" width="${cell - 4}" height="${cell * .35}" rx="${cell * .08}" fill="#fff" opacity=".07"/>
+  ${p.label && (!compact || cell > 30) ? `<text x="${x + cell / 2}" y="${y + cell - (compact ? 5 : 9)}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${compact ? 6.4 : 10}" font-weight="700" fill="${isLit ? '#111' : '#d9dde2'}" opacity="${on ? .9 : .5}">${esc(String(p.label).toUpperCase().slice(0, compact ? 6 : 9))}</text>` : ''}</g>`;
+    }).join('');
+    const sw = compact ? 104 : 190, sx = compact ? 12 : 26;
+    const knobs = [0, 1, 2, 3].map(i => { const cx = sx + sw * (i + .5) / 4, cy = compact ? 108 : 196, r = compact ? 8 : 14;
+      return knobAlu(cx, cy, r, { min: 0, max: 1, default: [.6, .3, .75, .5][i] }, '', '#d9dde2'); }).join('');
+    return `<svg class="gp-padkit${compact ? ' gp-kit-compact' : ''}${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${H + 8}" width="${opts.width || W + 8}" role="img" aria-label="pad kit — ${esc(title)}">
+<g filter="url(#gp-shadow-small)"><rect x="0" y="0" width="${W}" height="${H}" rx="${compact ? 8 : 12}" fill="#1c1d20"/>
+<rect x="0" y="0" width="${W}" height="${H}" rx="${compact ? 8 : 12}" fill="url(#gp-brush-lines)" opacity=".25"/></g>
+<rect x="${sx}" y="${gy}" width="${sw}" height="${compact ? 52 : 96}" rx="3" fill="#07080a"/>
+<rect x="${sx + 3}" y="${gy + 3}" width="${sw - 6}" height="${(compact ? 52 : 96) - 6}" rx="2" fill="${on ? mix(accent, '#05070a', .7) : '#0a0c0e'}"/>
+<text x="${sx + 9}" y="${gy + (compact ? 22 : 36)}" font-family="${FONT.nam}" font-size="${compact ? 13 : 22}" font-weight="800" letter-spacing="1.2" fill="${on ? '#eef0f2' : '#4a4f56'}">${esc(String(title).toUpperCase().slice(0, compact ? 9 : 10))}</text>
+<text x="${sx + 9}" y="${gy + (compact ? 38 : 64)}" font-family="${FONT.gfx}" font-size="${compact ? 7.5 : 11}" font-weight="700" letter-spacing="1.4" fill="${on ? mix(accent, '#fff', .4) : '#3a3f46'}">${pads.length || 16} PADS</text>
+${knobs}
+${grid}
+</svg>`;
+  }
+
   // ---------- block mode ----------
   function blockTile(block, opts) {
     opts = opts || {};
@@ -1426,8 +2041,8 @@ ${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'pream
 
   // the golem-fx finish: 'auto' (by family, default), 'anodized', 'thrash'; 'clay' is the first prototype's
   const api = {
-    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, outboardSetting, blockTile, pedalFor,
-    blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE, RACK_LOOK, RACK_GENERIC,
+    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, outboardSetting, blockTile, pedalFor,
+    blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE, RACK_LOOK, RACK_GENERIC, KEYS_STYLE_HUE, EP_FAMILIES, KIT_TYPES, KIT_PIECES,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners, rackKnob, rackControl },
     layout: 'fixed', rune: 'engraved',
     style: 'auto', STYLES: ['auto'].concat(METAL_STYLES, 'blackwork', 'clay'), MOTIF, METAL_HUE, FAMILY_FINISH, CRATE_FINISH, finishFor,

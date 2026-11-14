@@ -985,6 +985,9 @@ async def _startup():
     # status rig -> golem.fm (Addendum 13) : push léger ~5 min (versions + disque), silencieux sinon
     from . import rigstatus
     rigstatus.start_pusher()
+    # les démos des presets claviers de l'utilisateur, rendues quand le rack est au repos (docs/preset-preview.md §9.2)
+    from . import sound_preview
+    sound_preview.start_idle()
     # golem.fm/connect : le rack dit où le trouver (case « Let golem.fm find this rack », silencieux sinon)
     with contextlib.suppress(Exception):
         from . import connect as _connect

@@ -874,6 +874,14 @@ def vital_rescan():
             "presets": [{k: v for k, v in p.items() if k != "file"} for p in ps]}
 
 
+@router.get("/api/keys/sounds")
+def keys_sounds():
+    """Library ▸ Keys (docs/preset-preview.md §9.1) : chaque son clavier — piano, E-Piano par banque et programme,
+    orgue, presets Vital — avec son identifiant, de quoi le dessiner et sa démo (prête, en attente du repos, aucune)."""
+    from . import sound_preview
+    return sound_preview.catalog()
+
+
 @router.delete("/api/vital/preset/{pid}")
 def vital_delete(pid: str):
     """Supprime un preset Vital (corbeille). Le pack factory/ (seed) est protégé."""
@@ -1679,7 +1687,10 @@ def block_presets_delete(btype: str, slug: str):
 def grooves_list():
     """Grooves MIDI de la lib (Library ▸ Grooves) + songs (arrangements golem.fm, Addendum 12)."""
     from . import grooves
-    return {"grooves": grooves.list_grooves(), "songs": grooves.list_songs()}
+    return {"grooves": grooves.list_grooves(), "songs": grooves.list_songs(),
+            # ce qu'une note inconnue peut devenir (fiche d'un groove) et le nom des pièces connues
+            "targets": [{"note": n, "name": nm} for n, nm in grooves.MAP_TARGETS],
+            "pieces": {str(n): nm for n, nm in grooves.KIT_NOTES.items()}}
 
 
 def _smf_notes(path, max_notes=2000):
@@ -1798,6 +1809,57 @@ def groove_download(gid: str):
     if not os.path.isfile(path):
         return JSONResponse({"error": "unknown groove"}, status_code=404)
     return FileResponse(path, media_type="audio/midi", filename=gid + ".mid")
+
+
+# ── Library ▸ Drums (docs/drums-library.md) : les kits dessinés et entendus, un groove sur un kit, son usage ───────
+@router.get("/api/drums/kits")
+def drums_kits():
+    """Chaque kit (batteries et pads) : son type de dessin (drumKit/padKit de golem-fx), son origine, ses démos."""
+    from . import drum_preview
+    return drum_preview.catalog()
+
+
+@router.post("/api/groove/{gid}/hear")
+def groove_hear(gid: str, body: dict):
+    """Entendre un groove sur un kit : {kit, tempo: file|half|patch}. Rendu hors ligne au premier toucher (quelques
+    secondes, le moteur est pris puis rendu), gardé ensuite. Refusé pendant une prise et quand un groove joue."""
+    from . import drum_preview, preview as preview_mod
+    from .state import state
+    if (state.perf or {}).get("recording"):
+        return JSONResponse({"error": "A take is recording: listen after it."}, status_code=409)
+    busy = preview_mod.live_players_busy()
+    if busy:
+        return JSONResponse({"error": busy}, status_code=409)
+    kit = str((body or {}).get("kit") or "")
+    mode = (body or {}).get("tempo") or "file"
+    patch_bpm = None
+    if mode == "patch":
+        from .store import load_preset
+        patch_bpm = (load_preset(state.preset_id) or {}).get("bpm") if state.preset_id else None
+    bpm = drum_preview.tempo_of(gid, mode, patch_bpm)
+    return {**drum_preview.hear(gid, kit, bpm, next(_preview_seq)), "bpm": bpm}
+
+
+@router.get("/api/groove-hear")
+def groove_hear_status():
+    from . import drum_preview
+    return drum_preview.gok_status()
+
+
+@router.post("/api/groove/{gid}/use")
+def groove_use(gid: str, body: dict):
+    """L'usage d'un groove : loop · oneshot · fill · intro · end (ce que « Add to my drum machine » en fait)."""
+    from . import grooves
+    r = grooves.set_use(gid, (body or {}).get("use"))
+    return r if r.get("ok") else JSONResponse(r, status_code=400)
+
+
+@router.post("/api/groove/{gid}/remap")
+def groove_remap(gid: str, body: dict):
+    """Une note qu'aucun kit ne joue, associée à une pièce : {mapping: {note: note}} ; {} rend l'original."""
+    from . import grooves
+    r = grooves.remap(gid, (body or {}).get("mapping") or {})
+    return r if r.get("ok") else JSONResponse(r, status_code=400)
 
 
 @router.delete("/api/groove/{gid}")
@@ -2001,10 +2063,10 @@ async def preview_batch(request: Request):
         target=preview_mod.batch, kwargs={"ids": ids, "force": bool((body or {}).get("force")),
                                           "seq_of": lambda: next(_preview_seq)}, daemon=True)
     _preview_thread.start()
-    from . import sound_preview
+    from . import sound_preview, drum_preview
     return {"ok": True, "total": len(ids) if ids else
             len(preview_mod.factory_patch_ids()) + len(preview_mod._preset_lanes(preview_mod.factory_preset_ids()))
-            + len(sound_preview.factory_sounds())}
+            + len(sound_preview.factory_sounds()) + len(drum_preview.factory_kits())}
 
 
 @router.get("/api/preview/batch")

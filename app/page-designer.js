@@ -8,7 +8,7 @@ import { ArrangementPage } from './designer-arrangement.js';
 // tuner/les services ne sont pas du son. (docs/arrangement.md §3 bis)
 const ARR_NEVER = ['volume', 'tuner'];
 import { defaultModel } from './capture-gain.js';
-import { sortLanes, drumsetsOf, drumsetLanes, laneIdFor, ROLE_ICON, patchDraft, PATCH_REALM, SCENE_IDS, LANE_LETTER, MAX_BLOCKS, blkColor, ICON, bid, isV2, toChain, toVoice, toKeys, blank, needsModel, hydrateBlockMeta, migrateConfig, resolveStarts, STARTS_TYPES, SPECIAL_CAT, blockContent, CONTENT_PARAM, toLanesV2, normLanes, laneBlocks, sameSound, newLaneId, inOptsOf, MIDI_ROLES, CONFIG_SERVICE_TYPES, CONFIG_GEN_TYPES, CONFIG_REC_TYPES, CONFIG_ARR_TYPES, renumberScenes, ensureHeadCabs, pinWhammyFirst, lanesByPerson, patchLaneFix, seatPatchLane, alignBoundInputs, refKey, swapVitalPreset } from './designer-model.js';
+import { applyDrumsAction, sortLanes, drumsetsOf, drumsetLanes, laneIdFor, ROLE_ICON, patchDraft, PATCH_REALM, SCENE_IDS, LANE_LETTER, MAX_BLOCKS, blkColor, ICON, bid, isV2, toChain, toVoice, toKeys, blank, needsModel, hydrateBlockMeta, migrateConfig, resolveStarts, STARTS_TYPES, SPECIAL_CAT, blockContent, CONTENT_PARAM, toLanesV2, normLanes, laneBlocks, sameSound, newLaneId, inOptsOf, MIDI_ROLES, CONFIG_SERVICE_TYPES, CONFIG_GEN_TYPES, CONFIG_REC_TYPES, CONFIG_ARR_TYPES, renumberScenes, ensureHeadCabs, pinWhammyFirst, lanesByPerson, patchLaneFix, seatPatchLane, alignBoundInputs, refKey, swapVitalPreset } from './designer-model.js';
 import { Icon, FOOTSW } from './icons.js';
 import { menuEntry as startupEntry } from './startup-model.mjs';   // l'accueil au démarrage (menu ⋯)
 import { CategoryDrawer, AmpPicker } from './designer-drawer.js';
@@ -79,6 +79,7 @@ export function DesignerPage({ rig, sub }) {
     if (quiet.current && quiet.current === raw) quiet.current = out;    // un réalignement garde sa marque (voir alignBoundInputs)
     return out; });
   const restoring = useRef(!_dstate.p);           // page FRAÎCHE (reload/reboot) : restaurer le buffer serveur
+  const libAct = useRef(null);                    // une action venue de la Library, en attente du document
   const baseRev = useRef(_dstate.rev);             // LOT D : révision du brouillon sur laquelle cet écran travaille
   const takeover = useRef(!!_dstate.takeover);     // LOT D : prochain envoi = geste explicite (force)
   const initialP = useRef(null);
@@ -97,6 +98,9 @@ export function DesignerPage({ rig, sub }) {
     // « ＋ Add ▸ Drums » depuis Songs ▸ Patches arrive ici : le tiroir de kit s'ouvre comme si on
     // avait créé le patch depuis le Designer. Le geste est le même, la porte ne doit pas décider.
     if (act === 'drumset') { setDsPick(null); setDsPlan([]); setDsOpen(true); }
+    // la Library ▸ Drums : un groove pour le Drum Machine, un kit (docs/drums-library.md §5) — appliqué quand le
+    // document est là (après la restauration du brouillon), par l'effet ci-dessous
+    if (act && typeof act === 'object') libAct.current = act;
     if (pending) { restoring.current = false;
       if (tab) setInTab(tab);                  // « + Sampler » depuis une ligne de setlist -> l'onglet ⚙
       // un DOC = draft à auditionner (patch ouvert depuis Songs ▸ Patches) ; un id = fichier
@@ -541,6 +545,18 @@ export function DesignerPage({ rig, sub }) {
     setInTab(k); setSel(null); setDrawer(null); setOutPick(null);
     if (!quiet && !p.__patch) go('designer' + ((TAB_SUB[k] !== undefined ? TAB_SUB[k] : k) ? '/' + (TAB_SUB[k] !== undefined ? TAB_SUB[k] : k) : ''));
   };
+  // la Library ▸ Drums est arrivée avec une action (« Add to my drum machine », « Use this kit ») : quand le document
+  // est là, le bloc Drum Machine la reçoit et sa fiche s'ouvre dans l'onglet ⚙ — l'édition auditionne comme toute autre
+  useEffect(() => {
+    const a = libAct.current;
+    if (!a || restoring.current) return;
+    libAct.current = null;
+    const i = applyDrumsAction(structuredClone(p), a);
+    if (i < 0) return;
+    upd(n => { applyDrumsAction(n, a); });
+    pickInTab('cfg', true);
+    setSel({ cg: i });
+  }, [p]);
   // l'URL change (retour arrière, lien depuis une autre page) : l'onglet suit, sans réécrire l'URL
   useEffect(() => { const t = tabOfSub(sub); if (t !== inTab) pickInTab(t, true); }, [sub]);
   // ── MODE PATCH (docs/patches.md §13) : le draft ouvert depuis Songs ▸ Patches porte

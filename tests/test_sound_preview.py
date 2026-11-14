@@ -12,9 +12,9 @@ from bridge import sound_preview as S
 
 @pytest.fixture(autouse=True)
 def _no_sync_state_write(monkeypatch):
-    # les sha256 se mémoïsent dans l'état de la synchro des tones : un test ne l'écrit pas sur le vrai rack
+    # garde : rien ici n'écrit l'état de la synchro des tones (les sha256 se mémoïsent en mémoire, 2026-11-14)
     from bridge import tones_sync
-    monkeypatch.setattr(tones_sync, "_save_state", lambda st: None)
+    monkeypatch.setattr(tones_sync, "_save_state", lambda st: (_ for _ in ()).throw(AssertionError("sync state written")))
 
 
 def test_the_piano_is_its_variants_never_the_guitar_sfz():
@@ -87,3 +87,56 @@ def test_vital_assets_carry_what_the_preset_says(tmp_path):
     m = tones_sync._vital_meta(str(p))
     assert m == {"preset_name": "Lead", "style": "Lead", "author": "me", "comments": "bright",
                  "macros": ["Cutoff", "Macro 2", "Macro 3", "Macro 4"]}
+
+
+def test_the_keys_catalogue_lists_every_sound_with_its_demo_state(monkeypatch, tmp_path):
+    monkeypatch.setattr(C, "PREVIEWS_DIR", str(tmp_path))                 # aucune démo rendue
+    c = S.catalog()
+    kinds = {i["type"]: i for i in c["instruments"]}
+    assert set(kinds) == {"piano", "ep", "organ"}
+    progs = [p for b in kinds["ep"]["banks"] for p in b["programs"]]
+    assert len(progs) == 32 * len(kinds["ep"]["banks"])
+    # seuls les programmes choisis ATTENDENT une démo ; les autres n'en auront pas
+    assert {p["sound"] for p in progs if p["status"] == "pending"} == {f"ep:{b}/{n}" for b, n in S.CURATED_EP}
+    assert all(s["status"] in ("pending", "none") and s["clip"] is None for s in c["synths"])
+    assert all(s["sound"].startswith("vital:") and len(s["sound"]) == 70 for s in c["synths"])
+    assert all(s["why"] for s in c["synths"] if s["status"] == "none")
+
+
+def test_the_idle_renderer_waits_for_a_free_rack_and_never_retries_a_failure(monkeypatch):
+    from bridge import reamp, preview as PV
+    monkeypatch.setattr(reamp, "busy_reason", lambda: "in use (screen, 12 s ago)")
+    assert S.idle_tick(lambda: 1) == "in use (screen, 12 s ago)"
+    assert S.idle_status()["waiting_for"] == "in use (screen, 12 s ago)"
+    monkeypatch.setattr(reamp, "busy_reason", lambda: None)
+    monkeypatch.setattr(PV, "rendering", lambda: False)
+    monkeypatch.setattr(S, "_next_pending", lambda: "vital:abc")
+    monkeypatch.setattr(S, "render", lambda s, seq: {"status": "failed", "reason": "boom"})
+    S._IDLE["failed"].clear()
+    assert S.idle_tick(lambda: 1) is None
+    assert S._IDLE["failed"] == {"vital:abc": "boom"}
+    S._IDLE["failed"].clear()
+
+
+def test_the_idle_renderer_is_off_in_the_test_suite():
+    assert os.environ.get("GOLEM_KEYS_IDLE_RENDER") == "0"
+
+
+def test_only_the_users_clips_go_to_golem_fm_once(monkeypatch, tmp_path):
+    from bridge import preview as PV
+    monkeypatch.setattr(C, "PREVIEWS_DIR", str(tmp_path))
+    monkeypatch.setattr(C, "ROOT", "/")
+    owners = {"aaa": {"id": "Mine", "pack": "user"}, "fff": {"id": "Factory", "pack": "factory"}}
+    monkeypatch.setattr(S, "vital_by_sha", lambda sha: owners.get(sha))
+    sent = []
+    monkeypatch.setattr(PV, "push_clip", lambda pid, sc, rel: sent.append(pid) or {"sha256": "s1", "duration": 9.0})
+    for sha in owners:
+        d = tmp_path / f"sound-vital-{sha}"
+        d.mkdir()
+        (d / "pad.opus").write_bytes(b"x")
+        json.dump({"sound": f"vital:{sha}", "clips": {"keys/pad": {"file": str(d / "pad.opus"), "sha256": "s1"}}},
+                  open(d / "preview.json", "w"))
+    assert S.unpushed() == "vital:aaa"                          # l'usine n'est jamais à envoyer
+    assert S.push_user("vital:fff") is None and not sent
+    assert S.push_user("vital:aaa") and sent == ["sound-vital-aaa"]
+    assert S.unpushed() is None                                  # marqué : il ne repart pas

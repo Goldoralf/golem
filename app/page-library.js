@@ -45,8 +45,8 @@ const GROUPS = [
     { id: 'instruments', label: 'Instruments', Page: KeysInstrumentsPage },
   ] },
   { id: 'drums', label: 'Drums', subs: [
-    { id: 'drums', label: 'Drums', Page: p => html`<${KitsPage} mode="drums" />` },
-    { id: 'kits', label: 'Kits', Page: p => html`<${KitsPage} mode="kits" />` },
+    // batteries et kits de pads dans UN onglet (docs/drums-library.md, 2026-11-14) ; l'ancienne adresse « drums » y mène
+    { id: 'kits', alias: 'drums', label: 'Kits', Page: KitsPage },
     { id: 'grooves', label: 'Grooves', Page: GroovesPage },
   ] },
   // Samples = un groupe à part (2026-09-15, aligné sur golem.fm) : deux natures d'un même fichier

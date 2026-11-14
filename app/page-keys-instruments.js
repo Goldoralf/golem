@@ -1,59 +1,81 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Onglet Instruments (hub Library ▸ Keys) — ce que le rack LIVRE pour la lane Keys, en lecture seule
-// (décision 2026-09-15, même règle que Drums ▸ Drums) : le piano SFZ (sfizz, Salamander Grand,
-// 714 Mo posés par provision/fetch-assets.sh), l'e-piano FM (Dexed, banques SysEx DX7 de
-// library/dx7/) et l'orgue à roues phoniques (setBfree, tout est dans le plugin). Ni ajout, ni
-// suppression : un nouvel instrument arrive par une mise à jour du rack. Les presets Vital, seul
-// contenu clavier que l'utilisateur ajoute, restent dans Synths.
-import { html, useAsync, esc, setSubToolbar, useEffect, useState } from './lib.js';
+// Onglet Instruments (hub Library ▸ Keys) — ce que le rack LIVRE pour la lane Keys, en lecture seule (décision
+// 2026-09-15) : le piano SFZ (sfizz, Salamander Grand), l'e-piano FM (Dexed, banques DX7 de library/dx7/) et l'orgue
+// à roues phoniques (setBfree). Un nouvel instrument arrive par une mise à jour du rack.
+// 2026-11-14 (maquette validée, docs/preset-preview.md §9.1) : les trois instruments DESSINÉS par golem-fx, côte à
+// côte, et chaque son qui a une démo s'ENTEND au toucher ; la fiche E-Piano montre les 32 sons d'une banque (une
+// douzaine choisis ont leur démo, le dessin suit la famille du son : tine, reed, clav, clavecin, mallet, FM).
+import { html, useState, useAsync, cls, esc } from './lib.js';
+import { useVisuals, Drawing } from './tones-ui.js';
+import { keysSvg, useClip, Mark, ClipBar, dur } from './keys-ui.js';
 
 const j = u => fetch(u).then(r => r.json());
+const ENGINE = { piano: 'sfizz', ep: 'dexed', organ: 'b3' };
 
 export function KeysInstrumentsPage() {
-  const { data: sfz } = useAsync(() => j('/api/sfz').catch(() => ({})), []);
-  const { data: dx7 } = useAsync(() => j('/api/dx7').catch(() => ({})), []);
-  const { data: fx } = useAsync(() => j('/api/effects').catch(() => ({})), []);
-  const [q, setQ] = useState('');
-  useEffect(() => {
-    setSubToolbar(html`<input class="search" type="search" placeholder="Search instrument…" onInput=${e => setQ(e.target.value.trim().toLowerCase())} />`);
-    return () => setSubToolbar(null);
-  }, []);
-  const def = t => ((fx && fx.effects) || []).find(e => e.type === t) || {};
-  const pianos = (sfz && sfz.instruments) || [];
-  const banks = (dx7 && dx7.banks) || [];
-  const cards = [
-    { type: 'piano', glyph: '🎹', name: def('piano').name || 'Piano', engine: 'sfizz',
-      meta: pianos.length ? `${pianos.length} SFZ instrument(s)` : 'no SFZ instrument on disk',
-      lines: pianos.map(p => ({ name: p.name, sub: p.id.split('/').pop() })),
-      note: pianos.length ? 'Sampled piano (sfizz). Pick the variant in the Piano block of a Keys lane — the sound is on this rack, nothing to download.'
-        // un texte de MUSICIEN (2026-10-22) : il nommait un script de provision/ — le pack est un choix de l'installeur
-        : 'The Salamander Grand Piano is not installed on this golem. It comes with the golem installer, as an optional pack (714 MB).' },
-    { type: 'ep', glyph: '🎛', name: def('ep').name || 'E-Piano', engine: 'dexed',
-      meta: banks.length ? `${banks.length} DX7 bank(s) · ${banks.reduce((n, b) => n + ((b.patches || []).length), 0)} sounds` : 'no DX7 bank on disk',
-      lines: banks.map(b => ({ name: b.name, sub: (b.patches || []).length + ' sounds' })),
-      note: 'FM electric piano (Dexed, a DX7). Bank and sound are chosen per scene in the E-Piano block.' },
-    { type: 'organ', glyph: '🪗', name: def('organ').name || 'Organ', engine: 'b3',
-      meta: 'tonewheel engine', lines: [],
-      note: 'Tonewheel organ (setBfree) — drawbars, Leslie and percussion are block knobs, per scene. There is no file: the sound is the engine.' },
-  ].filter(c => !q || c.name.toLowerCase().includes(q) || c.lines.some(l => l.name.toLowerCase().includes(q)));
+  const vis = useVisuals();
+  const { data } = useAsync(() => j('/api/keys/sounds').catch(() => null), []);
+  const cl = useClip();
+  const [ep, setEp] = useState(false);
+  const ins = (data && data.instruments) || [];
+  const by = t => ins.find(i => i.type === t) || {};
+  if (ep) return html`<div class="library tn-page"><${EPiano} ins=${by('ep')} vis=${vis} cl=${cl} onClose=${() => setEp(false)} /></div>`;
 
-  const Card = c => html`<div class="rec-card">
-    <div class="rec-head">
-      <span class="rec-glyph">${c.glyph}</span>
-      <span class="rec-title">
-        <span class="rec-name">${esc(c.name)}</span>
-        <span class=${'kit-badge e-' + c.engine}>${c.engine}</span>
-        <span class="rec-ctx">${esc(c.meta)}</span>
-      </span>
-      <span class="kit-factory" title="ships with the rack — a new instrument comes with a rack update; not deletable">Rack instruments</span>
-    </div>
-    <div class="rec-body">
-      ${c.lines.length ? html`<div class="ki-lines">${c.lines.map(l => html`<div class="ki-line"><span>${esc(l.name)}</span><span class="muted">${esc(l.sub)}</span></div>`)}</div>` : ''}
-      <div class="rec-meta muted">${esc(c.note)}</div>
-    </div>
-  </div>`;
+  const pianos = by('piano').sounds || [];
+  const banks = by('ep').banks || [];
+  const epReady = banks.flatMap(b => b.programs.filter(p => p.status === 'ready').map(p => ({ ...p, bank: b.bank })));
+  const organ = (by('organ').sounds || [])[0];
+  const row = (s, label) => html`<button class=${cls('ky-row', cl.playing(s) && 'on')} disabled=${s.status !== 'ready'}
+      onClick=${() => cl.play({ ...s, title: label })}>
+    <${Mark} on=${cl.playing(s)} s=${s} /><span class="nm">${label}</span><em>${dur(s)}</em></button>`;
+  const Tile = ({ kind, title, name, sub, children }) => html`<div class="ky-inst">
+    <div class="ky-art">${vis ? html`<${Drawing} svg=${keysSvg({ kind, title })} align="xMidYMid" />` : ''}</div>
+    <div class="ky-body">
+      <div class="ky-hd"><b>${name}</b><span class=${'kit-badge e-' + ENGINE[kind === 'epiano' ? 'ep' : kind]}>${ENGINE[kind === 'epiano' ? 'ep' : kind]}</span></div>
+      <div class="ky-sub">${sub}</div>
+      ${children}
+    </div></div>`;
 
-  return html`<div class="library"><div class="lib-grid">
-    <div class="rec-day"><div class="rec-grid">${cards.map(Card)}</div></div>
+  return html`<div class="library tn-page"><div class="tn-col ky-col">
+    <div class="ky-stand">
+      <${Tile} kind="piano" title="Grand" name="Piano"
+        sub=${pianos.length ? `Salamander Grand · ${pianos.length} variant${pianos.length > 1 ? 's' : ''}` : 'Not installed: it comes with the golem installer, as an optional pack (714 MB).'}>
+        <div class="ky-rows">${pianos.map(s => row(s, s.name))}</div></${Tile}>
+      <${Tile} kind="epiano" title="E.Piano 1" name="E-Piano"
+        sub=${`${banks.length} DX7 banks · ${banks.reduce((n, b) => n + b.programs.length, 0)} sounds · ${epReady.length} to hear`}>
+        <div class="ky-chips">${epReady.slice(0, 4).map(s => html`<button class=${cls('ky-chip', cl.playing(s) && 'on')}
+            onClick=${() => cl.play({ ...s, title: s.name })}><${Mark} on=${cl.playing(s)} s=${s} /> ${esc(s.name)}</button>`)}
+          <button class="ky-more" onClick=${() => setEp(true)}>All ${banks.reduce((n, b) => n + b.programs.length, 0)} ›</button></div></${Tile}>
+      <${Tile} kind="organ" title="Tonewheel" name="Organ" sub="Tonewheel · drawbars and Leslie are block knobs, per scene">
+        <div class="ky-rows">${organ ? row(organ, 'Tonewheel') : ''}</div></${Tile}>
+    </div>
+    <${ClipBar} cl=${cl} />
   </div></div>`;
+}
+
+/** la fiche E-Piano : une banque à la fois, ses 32 sons ; le dessin suit le son choisi */
+function EPiano({ ins, vis, cl, onClose }) {
+  const banks = ins.banks || [];
+  const first = banks.findIndex(b => b.programs.some(p => p.status === 'ready'));
+  const [bi, setBi] = useState(Math.max(0, first));
+  const bank = banks[bi] || { programs: [] };
+  const [sel, setSel] = useState(() => bank.programs.find(p => p.status === 'ready') || bank.programs[0]);
+  const cur = sel && bank.programs.includes(sel) ? sel : bank.programs[0];
+  const pick = p => { setSel(p); if (p.status === 'ready') cl.play({ ...p, title: p.name }); };
+  return html`<div class="tn-col ky-col">
+    <div class="ky-detail">
+      <div class="ky-left">
+        <button class="tn-back" onClick=${onClose}>‹ Instruments</button>
+        <div class="ky-art big">${vis && cur ? html`<${Drawing} svg=${keysSvg({ kind: 'epiano', title: cur.name })} align="xMidYMid" />` : ''}</div>
+        <div class="ky-title"><b>${cur ? cur.name : ''}</b><span>${esc(bank.bank || '')} · sound ${cur ? cur.n + 1 : ''}${cur && cur.status === 'ready' ? ' · ' + (cur.phrase || '') : ''}</span></div>
+        <h6 class="ky-h6">Bank</h6>
+        <div class="ky-banks">${banks.map((b, i) => { const n = b.programs.filter(p => p.status === 'ready').length;
+          return html`<button class=${cls('ky-bank', i === bi && 'on')} onClick=${() => { setBi(i); setSel(null); }}>${b.bank}${n ? html` <em>· ${n}</em>` : ''}</button>`; })}</div>
+      </div>
+      <div class="ky-progs">${bank.programs.map(p => html`<button class=${cls('ky-pg', p.status === 'ready' && 'has', cur === p && 'sel', cl.playing(p) && 'on')}
+          title=${p.status === 'ready' ? 'hear it' : 'no demo for this sound: pick it in the E-Piano block to play it'} onClick=${() => pick(p)}>
+          <${Mark} on=${cl.playing(p)} s=${p} /><span>${p.n + 1} · ${esc(p.name)}</span></button>`)}</div>
+    </div>
+    <${ClipBar} cl=${cl} hint="▶ marks the sounds that have a demo. The others play in the E-Piano block of a Keys lane." />
+  </div>`;
 }

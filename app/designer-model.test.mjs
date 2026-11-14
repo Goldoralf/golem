@@ -152,3 +152,21 @@ test('un patch neuf naît avec Rec, Click et Riff dans sa lane config', () => {
   }
   assert.equal(blank().config.rec.blocks.find(b => b.type === 'click').bypass, true);   // le Click naît éteint
 });
+
+import { applyDrumsAction } from './designer-model.js';
+test('la Library ajoute un groove au Drum Machine, le crée au besoin, sans doublon ; un fill va dans Fills', () => {
+  const n = { config: { gen: { blocks: [{ type: 'looper', id: 'looper' }] } } };
+  const i = applyDrumsAction(n, { kind: 'drums-groove', file: 'library/grooves/a.mid', list: 'patterns' });
+  assert.equal(i, 1);
+  assert.deepEqual(n.config.gen.blocks[1].params.patterns, ['library/grooves/a.mid']);
+  applyDrumsAction(n, { kind: 'drums-groove', file: 'library/grooves/a.mid', list: 'patterns' });
+  applyDrumsAction(n, { kind: 'drums-groove', file: 'library/grooves/f.mid', list: 'fills' });
+  assert.deepEqual(n.config.gen.blocks[1].params.patterns, ['library/grooves/a.mid']);
+  assert.deepEqual(n.config.gen.blocks[1].params.fills, ['library/grooves/f.mid']);
+  assert.equal(applyDrumsAction(n, { kind: 'drums-kit', kit: 'drums-black-pearl' }), 1);
+  assert.equal(n.config.gen.blocks[1].params.kit, 'drums-black-pearl');
+  const empty = {};
+  assert.equal(applyDrumsAction(empty, { kind: 'drums-kit', kit: 'k' }), 0);
+  assert.equal(empty.config.gen.blocks[0].type, 'drums');
+  assert.equal(applyDrumsAction({}, { kind: 'other' }), -1);
+});

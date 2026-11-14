@@ -696,8 +696,10 @@ def batch(ids=None, force=False, seq_of=None):
     from .state import state
     from . import sound_preview as SP
     # les patchs d'usine, puis les lanes des presets d'usine, puis les SONS de clavier seuls (§9, 2026-11-14)
+    from . import drum_preview as DP
     ids = list(ids) if ids else (factory_patch_ids() + _preset_lanes(factory_preset_ids())
-                                 + [SP.PREFIX + s for s in SP.factory_sounds()])
+                                 + [SP.PREFIX + s for s in SP.factory_sounds()]
+                                 + [DP.PREFIX + k for k in DP.factory_kits()])
     _batch_stop.clear()
     _BATCH.update(running=True, total=len(ids), done=0, current=None, stopped=None, ended=None,
                   started=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -710,9 +712,16 @@ def batch(ids=None, force=False, seq_of=None):
             if (state.perf or {}).get("recording"):
                 _BATCH["stopped"] = "a take started — run it again after, it resumes"; break
             _BATCH["current"] = patch_id
+            if patch_id.startswith(DP.PREFIX):           # les démos d'un kit de batterie (docs/drums-library.md)
+                item.update(DP.render_kit(patch_id[len(DP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(20000): next(c)), force))
+                _BATCH["done"] = n + 1
+                log.info(f"lot de démos : {patch_id} → {item['status']}" + (f" ({item.get('reason')})" if item.get("reason") else ""))
+                continue
             if patch_id.startswith(SP.PREFIX):
                 # un seq NEUF par clip : golem_preview dédoublonne sur (seq, scène) et chaque référence rend la scène A
                 item.update(SP.render(patch_id[len(SP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(10000): next(c)), force))
+                if item.get("status") == "rendered":
+                    SP.push_user(patch_id[len(SP.PREFIX):])  # un preset de l'utilisateur va à golem.fm ; l'usine, non
                 _BATCH["done"] = n + 1
                 log.info(f"lot de démos : {patch_id} → {item['status']}" + (f" ({item.get('reason')})" if item.get("reason") else ""))
                 continue

@@ -238,9 +238,47 @@ envelope carries `preview_fingerprint` so golem.fm can show a demo as possibly s
   `POST /api/preview/batch {ids: ["sound:ep:rom1a/10"]}`.
 - **To golem.fm.** The heartbeat carries `keys_previews: [{sound, ref, fingerprint, clips: {ref: {sha256, seconds}}}]`,
   and `sound_preview.push(sound)` uploads a sound's clips to the blob store (`POST /api/ext/tones/assets`, the patch
-  demos' path) — never automatically.
+  demos' path). **The user's presets go up automatically** (the maintainer's decision, 2026-11-14): each new clip of a
+  user Vital preset right after it renders (idle renderer, batch), then any clip that could not go (golem.fm
+  unreachable, not paired) is retried at idle, one per step; a sent clip is marked (`pushed` = its sha256) and never
+  sent twice. golem.fm serves it to its owner only. **Factory** clips are never pushed: golem.fm copies them from the
+  maintainer's rack and serves them to everyone.
 - **What golem.fm reads instead of guessing.** Each asset of the `local:synth-vital-*` packs in the tones manifest
   carries `extra.meta = {preset_name, style, author, comments, macros: [4 names]}`.
-- **Not built.** User presets **on demand**: a `sound-preview {sound, refs?}` job from golem.fm (refused in Gig or
-  locked mode and during a take, deferred while someone plays), ack `{sound, preview: {ref, fingerprint, clips}}` —
-  `push` already returns that shape. Never at import or install.
+- **Rendered on the rig 2026-11-14**: 31 factory clips (2 pianos, 12 DX7, the organ, 16 Vital presets; Hardcore Kick
+  and Sci-Fi Computer have no fitting phrase), none silent, 19.7–25.9 s, about 8 MB.
+- **Not built.** A `sound-preview {sound, refs?}` job from golem.fm ("render this one now"), ack
+  `{sound, preview: {ref, fingerprint, clips}}` — `push` already returns that shape. Idle rendering (§9.2) makes it
+  optional.
+
+### 9.1 Library ▸ Keys
+
+> **Status: CODED 2026-11-14** — the mockup was approved by the maintainer the same day.
+
+`GET /api/keys/sounds` (`sound_preview.catalog`) returns every keys sound with its id, what golem-fx needs to draw it,
+and its demo: `{instruments: [{type: piano, sounds}, {type: ep, banks: [{bank, programs}]}, {type: organ, sounds}],
+synths: [{sound, id, name, author, style, pack, macros, macro_vals, comments, why}], idle}`, each sound with
+`status` (`ready` · `pending` · `none`), `clip`, `seconds`, `ref`, `phrase`. The drawings are golem-fx's `keysUnit`
+(vendored at 047d733): an upright piano, the FM keyboard and its families picked from the program's name (tine,
+reed, clav, harpsichord, mallet, fm), the tonewheel organ, a synth in its style's colour with its four macros —
+`compact` on the Synths wall. One clip plays at a time (`app/keys-ui.js`); a bar at the bottom says what plays.
+
+- **Instruments**: the three instruments side by side, their sounds that have a demo touchable on the tile; the
+  E-Piano opens a page of its 32 sounds per bank — ▶ on the curated dozen, the drawing follows the sound picked.
+- **Synths**: a wall that **scrolls** (the maintainer's decision, 2026-11-14: find a preset fast), six small presets
+  per row, factory first; style chips with their counts filter in one touch, search and upload and rescan as before;
+  ▶ next to a name = its demo is ready, ◌ = it renders at the rack's next idle time. Touching a preset plays its demo and opens its page: the large drawing, the demo, the comment
+  the sound designer left in the .vital, the macros, delete for the user's own.
+- **Not built**: playing a sound live through the plugin (put it on the Keys lane, turn the macros and hear them,
+  play it on the keyboard) — the maintainer's choice: a second step.
+
+### 9.2 Your presets' demos, when the rack is idle
+
+> **Status: CODED 2026-11-14** — decided by the maintainer the same day; it replaces "on demand only".
+
+The user's Vital presets get their demo with no gesture, but only when nobody uses the rack: the re-amp rule
+(`reamp.busy_reason`: 10 minutes without a gesture or a signal, never in Gig or a locked mode, during a take, a song,
+a load, or another render — the factory batch included). A watcher started with the bridge (`sound_preview.start_idle`,
+every 60 s; `GOLEM_KEYS_IDLE_RENDER=0` turns it off, as the test suite does) renders **one** pending preset, gives the
+engine back, reads the rule again before the next. A failed render is not retried until the bridge restarts.
+`idle` in `/api/keys/sounds` says what it does: `{current, waiting_for, rendered, failed}`.

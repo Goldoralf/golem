@@ -281,6 +281,33 @@ export const toKeys = keys => ({
 // `standard` (docs/standards.md) est un GÉNÉRATEUR au même titre que la boîte à rythmes :
 // il ne prend aucune entrée, il en fabrique une (piano + walking bass depuis une grille).
 export const CONFIG_GEN_TYPES = ['looper', 'backing-track', 'sample', 'drums', 'standard'];
+
+// DEPUIS LA LIBRARY ▸ DRUMS (docs/drums-library.md §5, 2026-11-14) : « Add to my drum machine » sur un groove,
+// « Use this kit » sur un kit. Le Designer arrive avec l'action ; elle touche le bloc Drum Machine du document (la
+// config `gen`), le crée s'il n'y en a pas, et rend son index pour en ouvrir la fiche. Un groove n'est jamais ajouté
+// deux fois ; un fill va dans « Fills ». Rien ne joue : le Drum Machine attend son pied.
+export function applyDrumsAction(n, act) {
+  if (!n || !act || !['drums-groove', 'drums-kit'].includes(act.kind)) return -1;
+  n.config = n.config || {};
+  n.config.gen = n.config.gen || { blocks: [] };
+  const bl = n.config.gen.blocks = n.config.gen.blocks || [];
+  let i = bl.findIndex(b => b && b.type === 'drums');
+  if (i < 0) {
+    const used = new Set(bl.map(b => b && b.id));
+    let id = 'drums', k = 2;
+    while (used.has(id)) id = 'drums-' + k++;
+    bl.push({ type: 'drums', id, params: { patterns: [], fills: [] } });
+    i = bl.length - 1;
+  }
+  const pm = bl[i].params = bl[i].params || {};
+  if (act.kind === 'drums-kit' && act.kit) pm.kit = act.kit;
+  if (act.kind === 'drums-groove' && act.file) {
+    const list = act.list === 'fills' ? 'fills' : 'patterns';
+    const cur = Array.isArray(pm[list]) ? pm[list] : [];
+    if (!cur.includes(act.file)) pm[list] = [...cur, act.file];
+  }
+  return i;
+}
 export const CONFIG_REC_TYPES = ['rec', 'click', 'compo'];   // Recorder lane : magnétophone + métronome (le guide sonore Preview
 // n'est PLUS un bloc — il se génère depuis Library « Listen to your preset », DI auto par style/rôle).
 // lane `arr` — le CHEF D'ORCHESTRE (docs/arrangement.md §7) : sans audio, il commande les autres.

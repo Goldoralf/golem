@@ -410,13 +410,14 @@ def test_les_bonnes_associations_passent():
     assert rig._wrong_kind({"type": "comp-nam"}, "/x/1176LN - Inp0.nam") is None
 
 
-def test_les_six_blocs_a_capture_sont_les_memes_partout():
-    """UNE liste, quatre maisons (rig, export, jobs, patches) : un type ajouté d'un côté et
-    oublié de l'autre est exactement le silence de septembre (un bloc que rien n'attend)."""
-    from bridge import patches, preset_export, rig, tones_jobs
-    six = {"amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam"}
-    assert set(rig.CAPTURE_TYPES) == six == set(rig.CAPTURE_EXT) == set(preset_export.CAP_TYPES) \
-        == set(tones_jobs.CAPTURE_TYPES) == set(patches.BLOCK_GEARS)
+def test_les_blocs_a_capture_sont_les_memes_partout():
+    """UNE liste, cinq maisons (rig, export, jobs, patches, usine) : un type ajouté d'un côté et
+    oublié de l'autre est exactement le silence de septembre (un bloc que rien n'attend).
+    v46 : ir-fx, l'IR d'un appareil jouée entière (docs/library-tones.md §8)."""
+    from bridge import factory, patches, preset_export, rig, tones_jobs
+    seven = {"amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam", "ir-fx"}
+    assert set(rig.CAPTURE_TYPES) == seven == set(rig.CAPTURE_EXT) == set(preset_export.CAP_TYPES) \
+        == set(tones_jobs.CAPTURE_TYPES) == set(patches.BLOCK_GEARS) == set(factory._CAP_TYPES)
     assert patches.BLOCK_GEARS["preamp-nam"] == patches.BLOCK_GEARS["comp-nam"] == ("outboard",)
 
 

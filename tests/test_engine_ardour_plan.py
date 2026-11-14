@@ -144,6 +144,15 @@ def test_le_piano_joue_sfizz_avec_son_fichier():
     assert blk["loaded_output"] == "Number of regions"            # sfizz ne renvoie pas son fichier : ce témoin le dit
 
 
+def test_l_ir_fx_joue_le_convolveur_stereo_avec_son_ir():
+    # docs/library-tones.md §8 : la variante stéréo du convolveur du baffle, son IR en propriété de fichier
+    blk, sk = P.plan_block({"id": "re301", "type": "ir-fx", "file": "/x/echo.wav", "params": {"wet": -6, "dry": 0}},
+                           P.load_catalog(), P.load_table())
+    assert blk["plugin"] == {"lv2": "http://gareus.org/oss/lv2/zeroconvolv#CfgStereo"}, sk
+    assert blk["files"] == {"http://gareus.org/oss/lv2/zeroconvolv#ir": "/x/echo.wav"}
+    assert {"pid": "wet", "label": "Wet Signal Level", "value": -6} in blk["params"]
+
+
 def test_la_vraie_table_et_le_vrai_catalogue_se_lisent():
     table, cat = P.load_table(), P.load_catalog()
     assert {"amp-nam", "cab", "volume"} <= set(table)

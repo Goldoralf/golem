@@ -1,6 +1,7 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 45,
+ "catalog_version": 46,
+ "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
  "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER on Linux with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
@@ -6058,6 +6059,57 @@
    ],
    "note": "golem-fx spectral glitch: it slices the sound into spectral bins and holds, scatters or reshapes them (30 effects); Sustain turns what you play into a pad. Stereo by nature: put it on a stereo lane (it also plays mono). The dry is never delayed; the wet trails by the analysis window (2,048 + 512 samples at the default size, 53 ms at 48 kHz). Its `align` setting (expert, setup only, never a scene value) delays the dry to match. Set it before playing: no footswitch action. Expert: two more effect slots, cloud, pitch, LFO, envelope, filters.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "ir-fx",
+   "name": "IR Effect",
+   "category": "reverb",
+   "engine": "plugin",
+   "plugin": "x42 - IR Convolver Stereo",
+   "short": "IR FX",
+   "color": "#3d9be9",
+   "icon": "◰",
+   "glyph": "◨",
+   "loads": [
+    "ir_fx"
+   ],
+   "roles": [
+    "guitar",
+    "bass",
+    "keys",
+    "voice"
+   ],
+   "params": [
+    {
+     "id": "wet",
+     "name": "Wet Signal Level",
+     "label": "Wet",
+     "min": -30,
+     "max": 6,
+     "default": -6,
+     "unit": "dB",
+     "fmt": 1,
+     "map": {
+      "mode": "raw"
+     },
+     "exp": true
+    },
+    {
+     "id": "dry",
+     "name": "Dry Signal Level",
+     "label": "Dry",
+     "min": -60,
+     "max": 6,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "map": {
+      "mode": "raw"
+     }
+    }
+   ],
+   "note": "Plays a captured studio unit's impulse response WHOLE, in stereo: a spring tank, an echo, a reverb box (TONE3000 outboard IR packs). Unlike the Cab block, the IR is never cut before a late echo: the echo is the sound. Dry stays at unity (an insert); Wet sets the effect. A static IR gives an echo's repeats as recorded: no feedback control and no tape wow. Put it on a stereo lane.",
    "bench": "pending"
   },
   {

@@ -496,3 +496,32 @@ def test_la_cle_du_gate_entend_le_di_de_la_lane(tmp_path, monkeypatch):
     assert not any("keytap" in f["name"].lower() for f in merge["fx"])
     # les autres envois de l'entrée (vers les branches) restent sur 1/2 : la clé ne descend pas dans le son
     assert all(x["I_DSTCHAN"] == 0 and x["I_SRCCHAN"] == 0 for x in sends if x is not key[0] and x["I_DSTCHAN"] != 2)
+
+
+def test_le_bloc_ir_fx_recoit_son_ir_entiere_dans_l_etat_du_convolveur(tmp_path, monkeypatch):
+    # docs/library-tones.md §8 : posé par son nom (x42 IR Convolver Stereo), son IR écrite dans l'état LV2 (la ligne
+    # #ir du gabarit du baffle) — et c'est la copie ENTIÈRE : la garde du baffle couperait l'écho
+    import copy
+    import struct
+    import wave
+    from bridge import compile_rig
+    ir = tmp_path / "echo.wav"
+    with wave.open(str(ir), "wb") as w:                      # une impulsion, puis un écho à 300 ms : ce que la garde coupe
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(48000)
+        frames = [0] * 24000
+        frames[0], frames[14400] = 30000, 15000
+        w.writeframes(b"".join(struct.pack("<h", v) for v in frames))
+    monkeypatch.setattr(compile_rig, "_resolve", lambda ref, comps=None, model=None: str(ir))
+    monkeypatch.setattr(compile_rig, "ASSET_CACHE", str(tmp_path / "cache"))
+    lab = Lab(tmp_path)
+    patch = copy.deepcopy(PATCH)
+    patch["lanes"][0]["chain"]["post"].append({"id": "re301", "type": "ir-fx", "ref": "101878", "model": "1",
+                                               "params": {"wet": -6, "dry": 0}})
+    lab.compile(patch)
+    rig_json = json.loads(next((lab.root / "reaper/FXChains").glob("ci-engine*.rig.json")).read_text(encoding="utf-8"))
+    files = [b.get("file") for p in rig_json["paths"] for t in p["tracks"] for b in t["blocks"] if b.get("type") == "ir-fx"]
+    assert files and "_whole_" in files[0], files          # la copie entière, pas la copie coupée du baffle
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = next(f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name == "golem:re301")
+    assert "IR Convolver Stereo" in fx.name, lab.log()
+    assert ("zeroconvolv#ir " + files[0]) in (fx.state or ""), lab.log()[-2000:]

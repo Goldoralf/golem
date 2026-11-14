@@ -715,9 +715,10 @@ def get_catalog():
     for t in it:
         # ce que golem sait jouer (docs/library-tones.md §7) : un pack entré par un autre chemin (golem.fm, une
         # sauvegarde, une install d'avant la règle) le dit à l'écran au lieu de se faire passer pour un baffle
-        ok, why = PL.verdict(t.get("gear"), t.get("format") or "nam")
+        ok, why = PL.verdict(t.get("gear"), t.get("format") or "nam", t.get("ir_kind"))
         if not ok:
             t["playable"], t["why"] = False, why
+        t["plays"] = PL.plays(t)                             # les blocs qui la jouent : le sélecteur du Designer filtre dessus
         if str(t.get("gear") or "") == "cab":
             e = ir_quality.echo_of(t.get("id"), irq)
             if e:

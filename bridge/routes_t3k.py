@@ -365,6 +365,8 @@ def _install_worker(tid, model_ids):
         entry["pack"] = _clf.is_pack(makes, title, tid)
         entry["amp"] = title.strip() if entry["pack"] else _clf.clean_amp_name(makes, title, gear, entry["brand"])
 
+        if fmt == "ir":                             # une IR longue (réverbe, écho) n'est pas un baffle : mesurée ici
+            entry["ir_kind"] = PL.ir_kind_of([os.path.join(C.ROOT, m["file"]) for m in entry["models"] if m.get("file")])
         d = _read_json(INDEX, {"tones": []}) or {"tones": []}
         d["tones"] = [t for t in d["tones"] if str(t.get("id")) != str(tid)]   # ré-install = remplace
         d["tones"].append(entry)

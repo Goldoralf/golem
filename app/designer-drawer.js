@@ -387,7 +387,7 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
           ${pick.ped ? html`<${PedalPicker} archetype=${pick.ped} allowEmpty=${true} fam=${fam} initialRig=${rigF}
               onPick=${t => onAddPedal(pick.ped.id, t)} onEmpty=${() => onAddPedal(pick.ped.id, null)} />`
           : html`${pick.macro ? html`<div class="sim-hint">Choose the amp head — 2 empty cabs (L/R) are added on OUT 1 & OUT 2. Pick each IR after.</div>` : ''}
-            <${SimList} gears=${MODEL_GEARS[pick.type]} onPick=${t => pick.macro ? onAddStereo(t) : onAdd(pick.type, t)} />`}
+            <${SimList} gears=${MODEL_GEARS[pick.type]} type=${pick.macro ? 'amp-nam' : pick.type} onPick=${t => pick.macro ? onAddStereo(t) : onAdd(pick.type, t)} />`}
         </div>` : ''}
       </div>
     </div></div>`;
@@ -493,7 +493,7 @@ const toggleIn = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : [...ar
 
 // liste de sims (captures TONE3000) filtrée par gear + facettes (marque, caractère, style, multi-micros),
 // recherche + tri. Partagée par le tiroir d'ajout et le « changer de modèle » du panneau de réglages.
-export function SimList({ gears, current, onPick }) {
+export function SimList({ gears, type, current, onPick }) {
   const { data } = useAsync(getCatalog, []);
   const [q, setQ] = useState('');
   const [sort, setSort] = useState('pop');
@@ -507,7 +507,9 @@ export function SimList({ gears, current, onPick }) {
   const famOf = t => t.family || (((t.tags || []).includes('bass') || t.style === 'bass') ? 'bass' : 'guitar');
   const set = new Set(gears || []);
   const outboard = set.has('outboard');                                       // préampli/compresseur capturé : un modèle = un RÉGLAGE, pas un micro
-  const pool = ((data && data.tones) || []).filter(t => set.has(t.gear));   // captures du bon type de bloc
+  // captures du bon type de bloc : la nature, ET le bloc qui la joue (catalogue `plays`, bridge/playable.py) — sinon un
+  // préampli NAM s'offrait à l'ir-fx, ou l'IR d'un écho au préampli (docs/library-tones.md §7)
+  const pool = ((data && data.tones) || []).filter(t => set.has(t.gear) && (!type || !t.plays || t.plays.includes(type)));
   const brandOpts = [...new Set(pool.map(t => t.brand).filter(Boolean))].sort();
   const styleOpts = [...new Set(pool.map(t => t.style).filter(Boolean))].sort();
 
@@ -628,12 +630,13 @@ export function AmpPicker({ type, current, onPick, onClose, archetype }) {
   const gears = MODEL_GEARS[type] || ['amp', 'amp-cab'];
   const title = archetype ? archetype.name : type === 'cab' ? 'Choose a cab (IR)' : type === 'amp-nam' ? 'Choose a head (NAM)'
     : type === 'pedal-nam' ? 'Choose a pedal (NAM capture)' : type === 'preamp-nam' ? 'Choose a preamp (NAM capture)'
-    : type === 'comp-nam' ? 'Choose a compressor (NAM capture)' : 'Choose a head+cab (NAM)';
+    : type === 'comp-nam' ? 'Choose a compressor (NAM capture)' : type === 'ir-fx' ? 'Choose an impulse response (spring, echo, reverb)'
+    : 'Choose a head+cab (NAM)';
   return html`<div class="detail" onClick=${e => e.target.classList.contains('detail') && onClose()}>
     <div class="detail-card">
       <button class="close" onClick=${onClose}>×</button>
       <h2>${esc(title)}</h2>
       ${archetype ? html`<${PedalPicker} archetype=${archetype} allowEmpty=${false} onPick=${onPick} onEmpty=${onClose} />`
-        : html`<${SimList} gears=${gears} current=${current} onPick=${onPick} />`}
+        : html`<${SimList} gears=${gears} type=${type} current=${current} onPick=${onPick} />`}
     </div></div>`;
 }

@@ -69,7 +69,7 @@ export function FxBlocksPage({ role, gears } = {}) {
   ].filter(p => !q || (p.name + ' ' + p.short + ' ' + p.caps.map(capText).join(' ')).toLowerCase().includes(q))
    .sort((x, y) => (y.caps.length > 0) - (x.caps.length > 0) || y.caps.length - x.caps.length || x.name.localeCompare(y.name));
   const boardShown = board.filter(p => pfam === 'all' || p.family === pfam);
-  const CAPTURE_TYPES = new Set(['pedal-nam', 'preamp-nam', 'comp-nam', 'capture-module']);
+  const CAPTURE_TYPES = new Set(['pedal-nam', 'preamp-nam', 'comp-nam', 'capture-module', 'ir-fx']);
   const isBuilt = e => !e.loads && !CAPTURE_TYPES.has(e.type) && e.category !== 'amp' && e.category !== 'cab';
   const builtCats = cats.filter(c => fx.some(e => e.category === c && isBuilt(e)));
   const [bcat, setBcat] = useState(null);

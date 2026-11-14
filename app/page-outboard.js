@@ -9,7 +9,7 @@ import { html, useState, useEffect, useAsync, cls, esc, safeHref, getCatalog, re
 import { T3kModal } from './t3k-modal.js';
 import { DeleteFlow } from './page-amps.js';
 import { orderModels, describe } from './capture-gain.js';
-import { useVisuals, Drawing, rackSvg, usePage, Pager, useAudition, PlayMark, AuditionNote } from './tones-ui.js';
+import { useVisuals, Drawing, rackSvg, irPrograms, usePage, Pager, useAudition, PlayMark, AuditionNote } from './tones-ui.js';
 
 const nameOf = t => t.amp || t.title || 'Outboard';
 
@@ -88,6 +88,8 @@ function UnitPanel({ t, vis, onClose, onDeleted }) {
     ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
   </div>`;
   const P = vis ? window.GolemPedals : null;
+  if (t.format === 'ir') return html`<${IrUnit} t=${t} vis=${vis} au=${au} onClose=${onClose} onDel=${() => setDel(true)} del_=${del_}
+    onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} />`;
   const rows = orderModels(t.models || []);
   const caps = rows.map(r => ({ m: r.m, g: r.g, s: (P && P.outboardSetting ? P.outboardSetting(r.m.name) : {}) || {} }));
   const vals = k => [...new Set(caps.map(c => c.s[k]).filter(v => v != null))];
@@ -125,5 +127,27 @@ function UnitPanel({ t, vis, onClose, onDeleted }) {
       ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
       <button class="mini danger" onClick=${() => setDel(true)}>Delete</button></div>
     ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
+  </div>`;
+}
+
+// UNE UNITÉ D'IR (docs/library-tones.md §8) : rien à tourner — ses fichiers sont des PROGRAMMES (« Delay 1…10 »,
+// « Reverb 1…3 ») en grille ; toucher un programme le fait entendre, joué entier par le bloc ir-fx en fin de chaîne
+function IrUnit({ t, vis, au, onClose, onDel, del_, onDone, onCancel }) {
+  const groups = irPrograms(t.models);
+  const cur = (t.models || []).find(m => au.playing(t.id, m.id));
+  return html`<div class="tn-unitd">
+    <button class="tn-back" onClick=${onClose}>‹ Outboard</button>
+    <div class="tn-ubig">${vis ? html`<${Drawing} svg=${rackSvg(nameOf(t), null, true, { format: 'ir', program: cur ? cur.name : '' })} align="xMidYMid" />` : ''}</div>
+    <h2>${nameOf(t)}</h2>
+    <div class="tn-matrix"><h6>Impulse responses · ${(t.models || []).length} programs · played whole, in stereo</h6>
+      ${groups.map(([g, items]) => html`<div class="tn-mrow"><span>${g[0].toUpperCase() + g.slice(1)}</span>
+        ${items.map(({ n, m }) => { const on = au.playing(t.id, m.id);
+          return html`<button class=${cls('tn-cell has', on && 'on')} title=${m.name} onClick=${() => au.play(t.id, m.id)}>${au.loading(t.id, m.id) ? '…' : on ? '● ' + n : n}</button>`; })}</div>`)}
+    </div>
+    <${AuditionNote} au=${au} />
+    <div class="tn-act"><span class="muted" style="font-size:12px">An impulse response gives the unit's echoes and tails as recorded: no feedback control, no tape wow.</span><span class="grow"></span>
+      ${safeHref(t.url) ? html`<a class="mini" href=${safeHref(t.url)} target="_blank" rel="noopener">Source ↗</a>` : ''}
+      <button class="mini danger" onClick=${onDel}>Delete</button></div>
+    ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${onDone} onCancel=${onCancel} /></div></div>` : ''}
   </div>`;
 }

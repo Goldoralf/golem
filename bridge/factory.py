@@ -353,7 +353,7 @@ def _groove_meta(ids):
 # Les patches d'usine nomment leurs captures (`ref` = id TONE3000, `model` = le modèle précis). Le golem ne les livre
 # pas : il les télécharge avec le compte TONE3000 de l'UTILISATEUR (OAuth, Settings ▸ Connect ▸ TONE3000), par le pipeline du « + New »
 # (routes_t3k._install_worker). Un tone déjà au catalogue garde ses modèles : on demande l'UNION, jamais moins.
-_CAP_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam")
+_CAP_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam", "ir-fx")
 _DL = {"phase": "idle", "done": 0, "total": 0, "current": None, "failed": [], "installed": []}
 _dl_lock = __import__("threading").Lock()
 

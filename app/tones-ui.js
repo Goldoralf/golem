@@ -47,10 +47,26 @@ export const cabSvg = (c, ring) => {
   }
   return s;
 };
-export const rackSvg = (label, setting, on) => {
+export const rackSvg = (label, setting, on, extra) => {
   const P = GP(); if (!P || !P.namRack) return '';
-  return P.namRack({ label, title: label, setting: setting || undefined, on: on !== false });
+  // `extra` : { format: 'ir', program } pour une unité d'IR (golem-fx dessine sa variante IR quand il la connaît)
+  return P.namRack(Object.assign({ label, title: label, setting: setting || undefined, on: on !== false }, extra || {}));
 };
+/** les PROGRAMMES d'un pack d'IR (docs/library-tones.md §8) : ses fichiers regroupés par nom sans leur numéro
+ *  (« delay 1…10 », « reverb 1…3 ») : [[nom du groupe, [{n, m}]]] dans l'ordre du pack */
+export function irPrograms(models) {
+  const groups = [];
+  for (const m of models || []) {
+    const name = String(m.name || '').trim();
+    const k = /^(.*?)[\s_-]*(\d+)$/.exec(name);
+    const g = k ? k[1].trim() || 'Program' : name, n = k ? k[2] : '·';
+    let row = groups.find(x => x[0].toLowerCase() === g.toLowerCase());
+    if (!row) { row = [g, []]; groups.push(row); }
+    row[1].push({ n, m });
+  }
+  for (const row of groups) row[1].sort((a, b) => (+a.n || 0) - (+b.n || 0));
+  return groups;
+}
 
 // ── ce qu'un NOM de capture dit (seulement quand le créateur l'a écrit) ─────────────────────────────────────────
 const MIC = /(sm ?-?57|sm ?58|sm7b|akg ?414|c414|r-?121|u67|md ?421|e ?906|origin|ra-1142)/ig;

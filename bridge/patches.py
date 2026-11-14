@@ -187,7 +187,7 @@ def orphan_scene_keys(shape, scenes):
 # Ce que chaque bloc à capture sait porter (miroir de MODEL_GEARS côté app — UNE table, deux
 # maisons : cf. docs/archive/preset-schema.md « quatre blocs portent une capture »).
 BLOCK_GEARS = {"amp": ("amp-cab",), "amp-nam": ("amp",), "cab": ("cab",), "pedal-nam": ("pedal",),
-               "preamp-nam": ("outboard",), "comp-nam": ("outboard",)}
+               "preamp-nam": ("outboard",), "comp-nam": ("outboard",), "ir-fx": ("outboard", "pedal")}
 _TOK = re.compile(r"[a-z0-9]+")
 # « MK III » / « MKIII » / « Mk-3 » nomment le même ampli — et « Mark IV » aussi (Mesa). Sans
 # ça, « Revv Generator 120 MKIII » (le patch) contre « Revv Generator 120 MK III » (le rack)

@@ -115,29 +115,40 @@ by the IR's measured length.
 
 ## 8. The IR effect block (lot B)
 
-> **Status: PROPOSED** (2026-11-14). The maintainer chose to make outboard IRs playable (springs, echoes).
+> **Status: CODED** (2026-11-14), catalogue v46. The maintainer chose to make outboard IRs playable (springs,
+> echoes). Measured on the isolated REAPER bench (`tools/check-rig-materialize.py --render`, the same amp with and
+> without the RE-301's "delay 1", wet −3 dB): the render is 4.6 dB louder and its tail 3.4 times longer, so the
+> convolver loads and plays the whole IR. Not yet heard by the maintainer; golem-fx's IR drawings are pending.
 
 A block `ir-fx` plays an impulse response **whole**: no echo cut, stereo. It covers the outboard IR packs (on
 TONE3000: mostly spring reverbs, a few echoes such as the RE-301) and the long IRs filed as "pedal" (reverb pedals).
 
 - **Plugin.** The same convolver as the Cab block, golem's zeroconvolv build, in its stereo variant
   (`x42 - IR Convolver Stereo`, `zeroconvolv#CfgStereo`). It runs under REAPER (Linux) and in the Golem Engine. Its
-  controls: Dry and Wet levels (dB). `buffered` adds latency; the block runs unbuffered, and the bench checks the CPU
-  cost of a 1.5 s stereo IR. Windows and macOS mark the block unsupported until a stereo convolver is mapped there.
-- **Files.** `rig.CAPTURE_TYPES` and `CAPTURE_EXT` gain `ir-fx` (.wav). The compile's IR guard
-  (`compile_rig._ir_guard`, which cuts a cab IR before a late impulse) must **not** run on it: the echo is the sound.
+  controls: Dry and Wet levels (dB); Dry stays at unity (an insert), Wet defaults to −6 dB. Like the Cab block it
+  keeps the convolver's default `buffered` mode. Windows and macOS mark the block unsupported until a stereo convolver
+  is mapped there, and `playable` then refuses its packs on those machines.
+- **Files.** `rig.CAPTURE_TYPES` and `CAPTURE_EXT` gain `ir-fx` (.wav), as do the other lists of capture blocks
+  (patches, export, factory, golem.fm jobs). The compile's IR guard (`compile_rig._ir_guard`, which cuts a cab IR
+  before a late impulse) does **not** run on it: `rig._prep_block` asks the resolver for the whole file
+  (`whole=True`), cached under its own name.
 - **REAPER.** A cab is baked into the track's core chain (`templates/cab-x42.RfxChain`). `ir-fx` sits anywhere in a
   chain, so it is added by name. Its IR is then written into the LV2 state (`P …zeroconvolv#ir <path> 3`, the format
   the cab template proves). `golem_rig.lua` inserts that line today for a NAM model only, so the IR case is added.
-  The no-bypass rule of convolvers applies (it switches through its `Enable` port).
+  The no-bypass rule of convolvers applies (it switches through its `Enable` port). No guessed "file" key is tried
+  first: one that answered true without loading would leave the convolver empty.
   Checked with `tests/test_rig_lua.py`, then `tools/check-rig-materialize.py` (its own REAPER, nothing on the rack).
 - **Golem Engine.** One table entry (`CfgStereo`, file property `#ir`), as for the cab.
 - **What plays it.** `playable` gains `(outboard, ir) → ir-fx`. For `(pedal, ir)`, the IR's **measured length**
-  decides at install: a short IR is a cab simulator (Cab block), a long one is an effect (`ir-fx`). The catalogue entry
-  records the result.
-- **Library.** An IR unit takes its place in the rack (golem-fx draws an IR variant of the rack unit and of the
-  500-series module). Its files become programs (Delay 1–10, Reverb 1–3). Touching one plays it: the audition puts
-  `ir-fx` at the end of the lane's chain (or replaces the one already there).
+  decides at install (`ir_kind_of`: energy above −60 dB under the peak past 250 ms): a short IR is a cab simulator
+  (Cab block), a long one is an effect (`ir-fx`). The catalogue entry records it (`ir_kind`). `/api/catalog` gives each
+  pack the blocks that play it (`plays`), and the Designer's capture picker filters on it: a NAM preamp is never
+  offered to `ir-fx`, nor an echo IR to a preamp. The audition routes by the same rule (a short pedal IR goes to the
+  Cab block).
+- **Library.** An IR unit takes its place in the rack. Its files become **programs**, grouped by name without their
+  number (`irPrograms`: Delay 1–10, Reverb 1–3), in a grid. Touching one plays it: the audition puts `ir-fx` at the
+  end of the lane's chain (or replaces the one already there). The drawing asks golem-fx for its IR variant
+  (`format: 'ir'`, `program`); until golem-fx draws it, the generic unit shows.
 - **Designer.** The model picker of `ir-fx` lists the IR packs whose block is `ir-fx`.
 - **Limits, said in the block's note.** A static IR gives an echo's repeats as recorded: no feedback control, no tape
   wow. A spring reverb, on the other hand, is what an IR renders well.

@@ -714,6 +714,8 @@ local ADD_ALIAS = {
   amp     = { "neural_amp_modeler", "Neural Amp Modeler", "NAM" },
   ["amp-nam"] = { "neural_amp_modeler", "Neural Amp Modeler", "NAM" },
   cab     = { "x42 - IR Convolver Mono", "IR Convolver", "zeroconvolv" },
+  -- un IR d'effet joué ENTIER, en stéréo (bloc ir-fx, docs/library-tones.md §8) : le même convolveur, variante stéréo
+  ["ir-fx"] = { "x42 - IR Convolver Stereo", "IR Convolver Stereo" },
   volume  = { "Volume Adjustment", "JS: Volume Adjustment", "utility/volume" },
   ["clean-boost"] = { "Volume Adjustment", "JS: Volume Adjustment", "utility/volume" },
   vital   = { "VST3i:Vital", "VST3i:Vitalium", "Vitalium" },   -- lane Keys : Vital officiel d'abord, Vitalium en secours (état .vital : vst_chunk en VST3, chunk de piste en LV2 — chunk_set_vitalium)
@@ -1824,8 +1826,13 @@ local function chunk_set_lv2_file(track, fx, slot, file)
   -- instance FRAÎCHE sans ligne de modèle (NAM ajouté par AddByName, ex. bloc pedal-nam) :
   -- on INSÈRE la ligne P DANS le sous-bloc <STATE (présent mais vide sur une instance neuve).
   -- Format observé au chunkdump : chemin NON quoté, flag 3 — on réplique à l'identique.
-  if not want_ir then
-    local pline = "P http://github.com/mikeoliphant/neural-amp-modeler-lv2#model " .. file .. " 3"
+  -- Même geste pour l'IR d'un convolveur x42 posé par AddByName (bloc ir-fx, docs/library-tones.md §8) : sa ligne
+  -- `P …zeroconvolv#ir <chemin> 3` est celle que le gabarit du baffle prouve (bridge/templates/cab-x42.RfxChain).
+  local hdr = (lines[start_i] or ""):lower()
+  local zconv = want_ir and (hdr:find("zeroconvolv", 1, true) or hdr:find("ir convolver", 1, true))
+  if not want_ir or zconv then
+    local pline = zconv and ("P http://gareus.org/oss/lv2/zeroconvolv#ir " .. file .. " 3")
+                  or ("P http://github.com/mikeoliphant/neural-amp-modeler-lv2#model " .. file .. " 3")
     log("    (chirurgie) bloc FX #" .. fx .. " lignes " .. start_i .. "-" .. end_i)
     for k = start_i, end_i do
       if lines[k]:gsub("\r", ""):match("^%s*<STATE") then
@@ -1946,9 +1953,11 @@ local function load_block_file(track, fx, block, plugin)
   end
   -- amp-nam / cab (plugins SÉPARÉS) : chargement non résolu (à débloquer en étape B via templates).
   if not block.file then return end
-  local slot = (block.type == "cab") and "ir" or "model"
+  local slot = (block.type == "cab" or block.type == "ir-fx") and "ir" or "model"
   log("  fichier '" .. tostring(block.file) .. "' -> " .. tostring(plugin) .. " (slot " .. slot .. ")")
-  if try_named_file(track, fx, plugin, slot, block.file) then
+  -- ir-fx : droit à la chirurgie PROUVÉE (la ligne #ir du gabarit du baffle) — une clé « file » devinée qui rend
+  -- true sans rien charger laisserait un convolveur vide, donc muet sur sa part traitée
+  if block.type ~= "ir-fx" and try_named_file(track, fx, plugin, slot, block.file) then
     log("    (SetNamedConfigParm a renvoyé true — À VÉRIFIER au rig)")
     return
   end

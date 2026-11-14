@@ -23,6 +23,7 @@ def _preset():
 
 
 def _tone(gear, tid="99", name="Test Amp", models=("991", "992"), **kw):
+    kw.setdefault("format", "ir" if gear == "cab" else "nam")        # comme le catalogue : un baffle est une IR
     return {"id": tid, "gear": gear, "amp": name, "models": [{"id": m, "name": m} for m in models], **kw}
 
 
@@ -119,3 +120,13 @@ def test_no_patch_or_no_lane_is_said_in_plain_words():
     p["lanes"] = [p["lanes"][1]]
     with pytest.raises(A.AuditionError, match="no guitar lane"):
         A.build(p, "A", _tone("amp"))
+
+
+def test_an_ir_is_routed_by_the_common_rule_not_by_its_gear():
+    # une IR de pédale (simulateur de baffle) va au baffle ; une IR d'outboard (un écho) en fin de chaîne, entière
+    doc, info = A.build(_preset(), "B", _tone("pedal", format="ir", ir_kind="cab"))
+    assert info["block"] == "v30"
+    doc, info = A.build(_preset(), "B", _tone("outboard", name="Roland Re-301", format="ir"))
+    post = doc["lanes"][0]["chain"]["post"]
+    assert post[-1]["type"] == "ir-fx" and post[-1]["id"] == info["block"]
+    assert doc["scenes"][1]["blocks"][info["block"]] is True

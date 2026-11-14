@@ -543,7 +543,7 @@ def _patch_preview(job):
 # Blocs dont le SON vient d'un fichier : sans capture ils s'instancient VIDES, donc muets — et
 # rien ne les attend, donc rien ne les vérifie (rig-check ne contrôle que ce qui a une ligne
 # fichier à charger). C'est le silence qu'on a mis une soirée à nommer, le 2026-09-11.
-CAPTURE_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam")
+CAPTURE_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam", "ir-fx")
 
 
 def _manifest_tones():

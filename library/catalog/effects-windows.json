@@ -238,6 +238,9 @@
   },
   "glitch": {
    "unsupported": "golem-fx only (catalogue v45): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "ir-fx": {
+   "unsupported": "catalogue v46: no stereo convolver is mapped on Windows yet (the Cab block's convolver is mono there)"
   }
  },
  "unmapped": {

@@ -108,7 +108,7 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
   const hwModes = (hwmap && hwmap.modes) || [];
   const hwTreadle = hwmap && ((hwmap.treadle || {}).cc || hwmap.treadle_cc);
   const isAmpCab = ['amp', 'amp-nam', 'cab'].includes(block.type);
-  const hasCapture = isAmpCab || ['pedal-nam', 'preamp-nam', 'comp-nam'].includes(block.type);   // pedal-nam / outboard ont AUSSI une capture (le nom réel de l'appareil)
+  const hasCapture = isAmpCab || ['pedal-nam', 'preamp-nam', 'comp-nam', 'ir-fx'].includes(block.type);   // pedal-nam / outboard ont AUSSI une capture (le nom réel de l'appareil)
   const tone = hasCapture && block.ref ? (tones || []).find(t => String(t.id) === refKey(block.ref)) : null;
   const captureControls = tone?.capture_module?.controls;
   const params0 = captureControls ? [] : (def.params || []);

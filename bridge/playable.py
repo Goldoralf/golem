@@ -8,7 +8,7 @@ sous « outboard » comme les préamplis NAM. Le modal ne montrait pas le format
 est entré sans bloc pour le jouer (le bloc Cab l'aurait coupé avant son premier écho). UNE règle, ici, sert la
 recherche (filtre et verdict par résultat), l'installation (refus), le catalogue (`playable` par pack) et l'écran."""
 
-# (nature, format) -> type du bloc qui la joue
+# (nature, format) -> type du bloc qui la joue (le premier de PLAYS)
 BLOCK = {
     ("amp", "nam"): "amp-nam",
     ("amp-cab", "nam"): "amp",
@@ -19,11 +19,14 @@ BLOCK = {
     ("pedal", "ir"): "cab",
     ("amp", "ir"): "cab",
     ("amp-cab", "ir"): "cab",
+    ("outboard", "ir"): "ir-fx",                # lot B (docs/library-tones.md §8) : l'IR d'un appareil, jouée ENTIÈRE
 }
-WHY = {
-    ("outboard", "ir"): "This is a set of impulse responses of a studio unit (an echo, a reverb): "
-                        "no golem block plays a full-length impulse response yet.",
-}
+# tous les blocs qui savent la jouer (le sélecteur de capture du Designer filtre dessus)
+PLAYS = {("outboard", "nam"): ("preamp-nam", "comp-nam")}
+WHY = {}
+# une IR « pedal » LONGUE est une réverbe ou un écho (Boss RV-6 en IR), pas un simulateur de baffle : sa longueur
+# MESURÉE à l'install (ir_kind) la donne à ir-fx ; courte, le bloc Cab la joue
+EFFECT_IR_MS = 250
 FORMATS = ("nam", "ir")
 
 
@@ -31,9 +34,11 @@ def _gears(gear):
     return [g.strip() for g in str(gear or "").split(",") if g.strip()]
 
 
-def block_for(gear, fmt):
-    """Le type du bloc qui joue cette capture ici, ou None."""
+def block_for(gear, fmt, ir_kind=None):
+    """Le type du bloc qui joue cette capture ici, ou None. `ir_kind` = « effect » pour une IR mesurée longue."""
     fmt = str(fmt or "nam").lower()
+    if fmt == "ir" and ir_kind == "effect":
+        return "ir-fx"
     for g in _gears(gear) or [""]:
         b = BLOCK.get((g, fmt))
         if b:
@@ -41,10 +46,44 @@ def block_for(gear, fmt):
     return None
 
 
-def verdict(gear, fmt):
-    """(jouable, phrase pour le musicien — vide si jouable)."""
-    if block_for(gear, fmt):
-        return True, ""
+def plays(tone):
+    """Les types de blocs qui jouent cette entrée du catalogue (vide = aucun)."""
+    fmt = str(tone.get("format") or "nam").lower()
+    b = block_for(tone.get("gear"), fmt, tone.get("ir_kind"))
+    if not b:
+        return []
+    for g in _gears(tone.get("gear")):
+        if (g, fmt) in PLAYS and b == BLOCK.get((g, fmt)):
+            return list(PLAYS[(g, fmt)])
+    return [b]
+
+
+def ir_kind_of(files):
+    """« effect » si une des IR dure (énergie au-dessus de -60 dB sous la crête) plus de EFFECT_IR_MS, sinon « cab ».
+    Lit les fichiers ; un fichier illisible ne compte pas."""
+    from .compile_rig import _read_wav_mono
+    for f in files:
+        try:
+            x, sr = _read_wav_mono(f)
+        except (OSError, ValueError):
+            continue
+        peak = max((abs(v) for v in x), default=0.0)
+        if peak <= 0:
+            continue
+        floor = peak * 0.001                                    # -60 dB
+        last = next((i for i in range(len(x) - 1, -1, -1) if abs(x[i]) >= floor), 0)
+        if 1000.0 * last / sr > EFFECT_IR_MS:
+            return "effect"
+    return "cab"
+
+
+def verdict(gear, fmt, ir_kind=None):
+    """(jouable, phrase pour le musicien — vide si jouable). Un bloc en quarantaine SUR CETTE MACHINE (ir-fx sous
+    Windows et macOS : pas de convolveur stéréo mappé) ne joue rien ici."""
+    b = block_for(gear, fmt, ir_kind)
+    if b:
+        q = _quarantined().get(b)
+        return (False, f"golem cannot play this here yet: {q}") if q else (True, "")
     fmt = str(fmt or "nam").lower()
     for g in _gears(gear):
         if (g, fmt) in WHY:
@@ -61,3 +100,11 @@ def formats_for(gears):
         return None
     ok = {f for g in gl for f in FORMATS if (g, f) in BLOCK}
     return next(iter(ok)) if len(ok) == 1 else None
+
+
+def _quarantined():
+    try:
+        from . import rig
+        return rig.quarantined_types() or {}
+    except Exception:
+        return {}

@@ -28,7 +28,7 @@ from . import config as C
 from . import store, tones_sync, inputmap as _inputmap
 
 SCHEMA_VERSION = 1
-CAP_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam")
+CAP_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam", "ir-fx")
 
 
 # la `source` d'un asset servi par le store golem.fm (accord golem.fm du 2026-10-15) : on écrit `golemfm` ; `maestrium`,

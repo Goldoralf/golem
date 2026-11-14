@@ -397,18 +397,19 @@ def _ir_guard(src, dst):
     return late
 
 
-def _safe_asset(path):
+def _safe_asset(path, guard=True):
     """Copie `path` sous assets/.cache/ avec un nom SANS espace ni '#' (le format LV2 `P … <chemin> 3`
     est non-quoté -> un chemin à espaces casse). Idempotent (recopie si source plus récente).
-    Un .wav (IR) passe par la GARDE D'IR : une impulsion tardive est coupée dans la copie."""
+    Un .wav (IR) passe par la GARDE D'IR : une impulsion tardive est coupée dans la copie — sauf `guard=False`
+    (bloc ir-fx, docs/library-tones.md §8 : l'IR d'un écho EST ses répétitions), copie entière sous un autre nom."""
     if not path or not os.path.exists(path):
         return path
     base = re.sub(r"[^A-Za-z0-9._-]", "_", os.path.basename(path))
-    dst = os.path.join(ASSET_CACHE, hashlib.md5(path.encode()).hexdigest()[:8] + "_" + base)
+    dst = os.path.join(ASSET_CACHE, hashlib.md5(path.encode()).hexdigest()[:8] + ("_whole_" if not guard else "_") + base)
     if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(path) or (
-            path.lower().endswith(".wav") and os.path.getmtime(dst) < _IR_GUARD_SINCE):
+            guard and path.lower().endswith(".wav") and os.path.getmtime(dst) < _IR_GUARD_SINCE):
         os.makedirs(ASSET_CACHE, exist_ok=True)
-        if path.lower().endswith(".wav"):
+        if guard and path.lower().endswith(".wav"):
             _ir_guard(path, dst)
         else:
             shutil.copy2(path, dst)
@@ -540,7 +541,7 @@ def plan_preset(preset: dict, comps=None):
     fait AVANT d'engager quoi que ce soit (patch-try écrit la sandbox et rappelle seulement si ça passe)."""
     comps = comps if comps is not None else _components()
     out_count, mono = _io()
-    return rig.build_plan(preset, out_count, resolve=lambda ref, model=None: _safe_asset(_resolve(ref, comps, model)),
+    return rig.build_plan(preset, out_count, resolve=lambda ref, model=None, whole=False: _safe_asset(_resolve(ref, comps, model), guard=not whole),
                           mono_fallback=mono, strict_out=False)   # sandbox : sorties sommées, pas d'unicité exigée
 
 

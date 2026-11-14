@@ -15,7 +15,9 @@ Le choix du bloc, dans la chaîne de la lane (pre, la branche que la scène cour
   - baffle (cab)             -> le premier `cab` prend l'IR ; sans lui, un `cab` est posé après l'ampli ;
   - pédale (pedal)           -> le premier `pedal-nam`, sinon posée devant l'ampli ;
   - outboard                 -> `comp-nam` (compresseurs) ou `preamp-nam` (le reste), le premier de ce type,
-                                 sinon posé en tête de chaîne (comp) ou devant l'ampli (préampli).
+                                 sinon posé en tête de chaîne (comp) ou devant l'ampli (préampli) ;
+  - IR d'effet (ir-fx)       -> le premier `ir-fx`, sinon posé en fin de chaîne.
+Le bloc se déduit de la nature ET du format (bridge/playable.py) : une IR de pédale courte va au baffle.
 Le bloc touché est forcé ALLUMÉ dans la scène courante (un TS éteint à la scène A ne s'entendrait pas)."""
 import copy
 import re
@@ -104,7 +106,12 @@ def build(preset, scene_id, tone, model_id=None):
         if model_id is not None or not models:
             raise AuditionError("This capture has no such model on the rack.")
         m = models[0]
-    gear = tone.get("gear")
+    from . import playable as PL
+    # le BLOC qui la joue, par la règle commune (docs/library-tones.md §7) : une IR de pédale courte est un baffle, une
+    # IR d'outboard (ou de pédale longue) un ir-fx — jamais déduit de la seule nature
+    btype = PL.block_for(tone.get("gear"), tone.get("format") or "nam", tone.get("ir_kind"))
+    gear = {"amp-nam": "amp", "amp": "amp-cab", "cab": "cab", "pedal-nam": "pedal", "preamp-nam": "outboard",
+            "ir-fx": "ir-fx"}.get(btype)
     doc = copy.deepcopy(preset)
     scenes = doc.get("scenes") or []
     scene = next((s for s in scenes if s.get("id") == scene_id), scenes[0] if scenes else None)
@@ -166,6 +173,9 @@ def build(preset, scene_id, tone, model_id=None):
         else:
             al, ai = _find(path, AMP_TYPES)
             blk = put(al, ai, bt, False) if al is not None else put(path[0], len(path[0]), bt, False)
+    elif gear == "ir-fx":                                 # un ressort, un écho : en fin de chaîne (ou celui qui y est)
+        lst, i = _find(path, ("ir-fx",))
+        blk = put(lst, i, "ir-fx", True) if lst is not None else put(path[-1], len(path[-1]), "ir-fx", False)
     else:
         raise AuditionError("This capture cannot be heard from the Library.")
     _force(doc, scene, lane, blk["id"], True)

@@ -377,7 +377,7 @@ def _drop_quarantined(blocks):
 # ÉTEIGNENT. Même liste que _prep_block.
 # + les captures d'OUTBOARD (2026-09-14, TONE3000 gear=outboard) : préampli et compresseur capturés,
 # même plugin NAM, même fichier .nam, même silence si la capture manque.
-CAPTURE_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam")
+CAPTURE_TYPES = ("amp", "amp-nam", "cab", "pedal-nam", "preamp-nam", "comp-nam", "ir-fx")
 
 # Gain de sommation d'un split quand le document n'en porte pas. UNE convention, écrite partout
 # ailleurs (écran du Designer, chemin legacy de scene_bake, preset-schema.md) — ce chemin-ci
@@ -396,7 +396,7 @@ MERGE_GAIN_DEFAULT = -3
 # pire que pas de test — il le rend invisible à la relecture suivante.
 CAPTURE_EXT = {"amp": (".nam",), "amp-nam": (".nam",), "pedal-nam": (".nam",),
                "preamp-nam": (".nam",), "comp-nam": (".nam",),
-               "cab": (".wav", ".flac")}
+               "cab": (".wav", ".flac"), "ir-fx": (".wav", ".flac")}
 CAB_EXT = CAPTURE_EXT["cab"]
 
 
@@ -602,7 +602,13 @@ def _prep_block(b, resolve):
     b = dict(b)
     if resolve:
         if b.get("type") in CAPTURE_TYPES and b.get("ref"):
-            f = resolve(b["ref"], b.get("model"))     # model = variante épinglée dans le pack (mic, A2…)
+            if b.get("type") == "ir-fx":              # l'IR ENTIÈRE (docs/library-tones.md §8) : jamais la copie coupée du baffle
+                try:
+                    f = resolve(b["ref"], b.get("model"), whole=True)
+                except TypeError:                      # un resolver qui ne connaît pas `whole` (tests, outils)
+                    f = resolve(b["ref"], b.get("model"))
+            else:
+                f = resolve(b["ref"], b.get("model"))     # model = variante épinglée dans le pack (mic, A2…)
             if f:
                 # GARDE de format (doctrine « repli jamais silencieux », docs/input-map.md §7) :
                 # un bloc NAM nourri d'un .wav (ex. ref pointant un pack d'IRs — bug voix

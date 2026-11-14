@@ -540,7 +540,9 @@ export const inOptsOf = (patch, cur) => [
 // outboard (2026-09-14) : préampli et compresseur CAPTURÉS (TONE3000 gear=outboard, .nam) — deux
 // types, une nature ; un pack outboard au format IR n'entre dans aucun bloc (v2, convolveur dédié).
 export const MODEL_GEARS = { amp: ['amp-cab'], 'amp-nam': ['amp'], cab: ['cab'], 'pedal-nam': ['pedal'],
-                             'preamp-nam': ['outboard'], 'comp-nam': ['outboard'] };
+                             'preamp-nam': ['outboard'], 'comp-nam': ['outboard'],
+                             // un IR d'effet joué entier (docs/library-tones.md §8) : outboard IR, pédale de réverbe en IR
+                             'ir-fx': ['outboard', 'pedal'] };
 export const needsModel = type => !!MODEL_GEARS[type];
 
 // ── rattachement capture -> archétype nommé (ampli/pédale d'effects.json) — RÈGLE UNIQUE,

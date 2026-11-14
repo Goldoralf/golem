@@ -539,6 +539,7 @@
   "a | Live",
   "a | Settings",
   "a | Songs",
+  "button | Add to…",
   "button | All # ›",
   "button | Drums",
   "button | Instruments",
@@ -548,7 +549,8 @@
   "button | Tones",
   "button | Tonewheel",
   "button | Tracks",
-  "button | ⇅ I/O"
+  "button | ⇅ I/O",
+  "button | ◉ Play it"
  ],
  "#/library/drums/drums": [
   "a | Designer",

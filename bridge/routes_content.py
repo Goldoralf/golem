@@ -745,8 +745,11 @@ def _audition_status():
     on = _audition_live() and _AUDITION["ref"] is not None
     if not on:
         _AUDITION.update(ref=None, model=None, base=None, info=None)   # un rappel (pied, écran) l'a déjà remplacée
+    from . import preview as preview_mod
+    if not on:
+        preview_mod.audition_forget()
     return {"on": on, "ref": _AUDITION["ref"], "model": _AUDITION["model"], "base": _AUDITION["base"],
-            "info": _AUDITION["info"]}
+            "info": _AUDITION["info"], "demo": preview_mod.audition_status()}
 
 
 @router.get("/api/library/audition")
@@ -778,6 +781,19 @@ async def library_audition(body: dict):
     if err:
         return JSONResponse({"error": err}, status_code=409)
     _AUDITION.update(ref=str(tone.get("id")), model=info["model"], base=base, info=info)
+    # sans guitare il n'y a rien à entendre : la phrase DI de référence passe hors ligne dans ce rig, la page joue le
+    # clip (docs/library-tones.md §9). Les tags du patch choisissent la DI, comme pour sa démo.
+    from . import preview as preview_mod
+    if preview_mod._BATCH["running"]:
+        preview_mod.audition_forget()
+    else:
+        tags = doc.get("tags")
+        if not tags and str(base or "").startswith("patch:"):
+            from . import patches as P
+            tags = (P.get_patch(str(base)[6:]) or {}).get("tags") or []
+        mine = (str(tone.get("id")), info["model"])
+        preview_mod.audition_demo(doc, info["lane"], tags, next(_preview_seq),
+                                  lambda: _audition_live() and (_AUDITION["ref"], _AUDITION["model"]) == mine)
     return {"ok": True, **_audition_status()}
 
 
@@ -786,8 +802,10 @@ async def library_audition_stop():
     """Fin de l'écoute : le patch courant revient tel qu'il est (un rebuild : le rig de l'écoute avait un autre id)."""
     from .state import state
     from . import recall as recall_mod
+    from . import preview as preview_mod
     was = _audition_live()
     _AUDITION.update(ref=None, model=None, base=None, info=None)
+    preview_mod.audition_forget()
     if was and state.preset_id:
         await recall_mod.recall_async(state.preset_id, state.scene_id)
     return {"ok": True, "restored": bool(was and state.preset_id)}

@@ -1398,3 +1398,110 @@ def batch_blocks(pids=None, force=False, seq_of=None):
     finally:
         _BLOCKS.update(running=False, current=None, ended=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
         _gen_lock.release()
+
+
+# ── L'ÉCOUTE D'UNE CAPTURE DEPUIS LA LIBRARY (docs/library-tones.md §9, 2026-11-14) ───────────────────────────────
+# « toucher = écouter » demandait de JOUER : la capture entre dans le patch qui joue, et sans guitare il n'y a rien à
+# entendre (le RE-301, 2026-11-14 : « je n'ai pas à jouer pour entendre le son ? »). Ici, en plus, la phrase DI de
+# référence passe HORS LIGNE dans le rig de l'écoute (le même clone que les démos : aucune sortie matérielle, rien qui
+# sonne dans REAPER) et la page joue le clip. Le rig n'est ni posé ni rendu : il EST déjà celui de l'écoute.
+# Un clip par (son de l'écoute, entrée, DI) : retoucher la même capture le rejoue sans rendu. Cache borné (disque).
+AUDITION_DIR = os.path.join(C.PREVIEWS_DIR, "audition")
+AUDITION_KEEP = 24
+AUDITION_SETTLE_S = 3.0             # le rebuild de l'écoute vient d'être écrit : le rig se construit, NAM/IR chargent
+_AUD = {"phase": "idle", "gen": 0, "key": None, "clip": None, "ref": None, "error": None}
+
+
+def audition_status():
+    return {k: _AUD[k] for k in ("phase", "clip", "ref", "error")}
+
+
+def audition_input(doc, lane_id):
+    """L'entrée de la lane de l'écoute ('1', '2'…) ; None si elle ne se lie à rien sur cette carte."""
+    for L in (doc or {}).get("lanes") or []:
+        if L.get("id") == lane_id:
+            sel = str(L.get("in_sel") or L.get("input") or "").strip()
+            return sel if sel and sel.upper() != "NONE" and not L.get("midi") else None
+    return None
+
+
+def audition_key(doc, in_key, ref):
+    from . import preset_export
+    raw = json.dumps([preset_export.fingerprint(doc), str(in_key), ref], sort_keys=True)
+    return hashlib.sha1(raw.encode()).hexdigest()[:16]
+
+
+def _prune_auditions():
+    clips = sorted(glob.glob(os.path.join(AUDITION_DIR, "*.opus")), key=os.path.getmtime, reverse=True)
+    for p in clips[AUDITION_KEEP:]:
+        with __import__("contextlib").suppress(OSError):
+            os.remove(p)
+
+
+def audition_demo(doc, lane_id, tags, seq, still_live):
+    """Lance le clip de l'écoute (thread) ou le rend tout de suite s'il existe. `still_live()` : l'écoute qu'on rend
+    est-elle toujours celle qui joue (un autre toucher, Stop, un rappel au pied l'ont peut-être remplacée) ?"""
+    _AUD["gen"] += 1
+    gen = _AUD["gen"]
+    in_key = audition_input(doc, lane_id)
+    if not in_key:
+        _AUD.update(phase="error", key=None, clip=None, ref=None, error="no input of this card plays this lane")
+        return
+    ref, di = resolve_di(dict(doc, tags=doc.get("tags") or tags or []), None, in_key=in_key)
+    if not di:
+        _AUD.update(phase="error", key=None, clip=None, ref=ref, error=f"reference DI missing: {ref}")
+        return
+    key = audition_key(doc, in_key, ref)
+    opus = os.path.join(AUDITION_DIR, key + ".opus")
+    if os.path.isfile(opus):
+        os.utime(opus)                                        # le plus récent reste dans le cache
+        _AUD.update(phase="ready", key=key, clip=C.rel_posix(opus), ref=ref, error=None)
+        return
+    _AUD.update(phase="render", key=key, clip=None, ref=ref, error=None)
+    threading.Thread(target=_render_audition, args=(gen, key, in_key, di, opus, seq, still_live), daemon=True).start()
+
+
+def _render_audition(gen, key, in_key, di, opus, seq, still_live):
+    def fail(msg):
+        if _AUD["gen"] == gen:
+            _AUD.update(phase="error", clip=None, error=msg)
+    if not _gen_lock.acquire(blocking=False):
+        return fail("a demo is already rendering")
+    try:
+        time.sleep(AUDITION_SETTLE_S)
+        if _AUD["gen"] != gen or not still_live():
+            return                                            # remplacée entre-temps : rien à rendre
+        os.makedirs(AUDITION_DIR, exist_ok=True)
+        wav = os.path.join(AUDITION_DIR, key + ".wav")
+        scene = f"audition-{gen}"                             # golem_preview dédoublonne sur (seq, scene)
+        with __import__("contextlib").suppress(OSError):
+            os.remove(C.PREVIEW_FILE)
+        write_command({"action": "preview", "seq": seq, "op": "render", "scene": scene, "di": di, "out": wav,
+                       "tail": 4.0, "chain": "Sandbox #Input " + str(in_key), "tree": True,
+                       "settle": CLONE_SETTLE_S, "_route": "preview"})
+        got = _poll_scene(seq, scene, timeout=90)
+        if not got or not os.path.isfile(got):
+            return fail("the demo did not render (check REAPER)")
+        pk = _peak_db(got)
+        if pk is not None and pk < SILENT_DB:
+            with __import__("contextlib").suppress(OSError):
+                os.remove(got)
+            return fail(f"the demo rendered silence ({pk:.0f} dBFS)")
+        ok = _encode_opus(got, opus)
+        with __import__("contextlib").suppress(OSError):
+            os.remove(got)
+        if not ok:
+            return fail("the demo could not be encoded")
+        _prune_auditions()
+        if _AUD["gen"] == gen:
+            _AUD.update(phase="ready", clip=C.rel_posix(opus), error=None)
+    except Exception as e:                                    # un clip raté ne casse jamais l'écoute
+        log.error(f"écoute : rendu de la démo : {e}")
+        fail(str(e))
+    finally:
+        _gen_lock.release()
+
+
+def audition_forget():
+    _AUD["gen"] += 1
+    _AUD.update(phase="idle", key=None, clip=None, ref=None, error=None)

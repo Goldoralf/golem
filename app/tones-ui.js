@@ -135,38 +135,78 @@ export const Pager = ({ pg }) => pg.pages <= 1 ? html`<div class="tn-pager"></di
 // Une écoute à la fois ; quitter la fiche (ou la page) rend le patch tel qu'il était.
 const NOTE = { no_cab: 'No cab after this amp in the patch: you hear the head alone.',
   amp_has_cab: 'The amp in the patch already has its cab: you hear two cabs.' };
+// « toucher = écouter » (docs/library-tones.md §4 et §9) : la capture entre dans le patch qui joue (on peut jouer
+// à travers), ET une phrase DI de référence y passe hors ligne — la page joue ce clip : on entend sans guitare.
+let _clipAudio = null;
+const clipAudio = () => (_clipAudio = _clipAudio || new Audio());
 export function useAudition() {
-  const [st, setSt] = useState({ on: false, ref: null, model: null, busy: false, err: '', notes: [] });
+  const [st, setSt] = useState({ on: false, ref: null, model: null, busy: false, err: '', notes: [], demo: null, hearing: false });
   const live = useRef(false);
-  useEffect(() => () => { if (live.current) post('/api/library/audition/stop', {}).catch(() => {}); }, []);
+  const poll = useRef(null);
+  const halt = () => { if (poll.current) { clearInterval(poll.current); poll.current = null; }
+    const a = _clipAudio; if (a) { a.pause(); a.onended = null; } };
+  useEffect(() => () => { halt(); if (live.current) post('/api/library/audition/stop', {}).catch(() => {}); }, []);
+  const hear = clip => {
+    const a = clipAudio(); a.pause(); a.src = '/' + String(clip).replace(/^\/*/, ''); a.currentTime = 0;
+    a.onended = () => setSt(s => ({ ...s, hearing: false }));
+    a.play().then(() => setSt(s => ({ ...s, hearing: true }))).catch(() => setSt(s => ({ ...s, hearing: false })));
+  };
+  const follow = (ref, model) => {
+    poll.current = setInterval(async () => {
+      const r = await api('/api/library/audition').catch(() => null);
+      if (!r) return;
+      const same = r.on && String(r.ref) === String(ref) && String(r.model) === String(model);
+      const d = r.demo || {};
+      if (!same || d.phase !== 'render') { clearInterval(poll.current); poll.current = null; }
+      if (!same) return;
+      setSt(s => ({ ...s, demo: d }));
+      if (d.phase === 'ready' && d.clip) hear(d.clip);
+    }, 800);
+  };
   const play = async (ref, model) => {
     if (st.busy) return;
     if (st.on && String(st.ref) === String(ref) && String(st.model) === String(model)) return stop();
-    setSt(s => ({ ...s, busy: true, err: '', ref: String(ref), model: String(model) }));
+    halt();
+    setSt(s => ({ ...s, busy: true, err: '', ref: String(ref), model: String(model), demo: null, hearing: false }));
     try {
       const r = await post('/api/library/audition', { ref, model });
       live.current = true;
-      setSt({ on: true, ref: String(ref), model: String(model), busy: false, err: '', notes: ((r.info || {}).notes || []).map(k => NOTE[k] || k) });
+      const d = r.demo || {};
+      setSt({ on: true, ref: String(ref), model: String(model), busy: false, err: '', hearing: false, demo: d,
+        notes: ((r.info || {}).notes || []).map(k => NOTE[k] || k) });
+      if (d.phase === 'ready' && d.clip) hear(d.clip);
+      else if (d.phase === 'render') follow(ref, model);
     } catch (e) {
-      setSt({ on: false, ref: null, model: null, busy: false, err: (e.body && e.body.error) || 'Could not reach golem: the capture was not played.', notes: [] });
+      setSt({ on: false, ref: null, model: null, busy: false, err: (e.body && e.body.error) || 'Could not reach golem: the capture was not played.', notes: [], demo: null, hearing: false });
     }
   };
   const stop = async () => {
     live.current = false;
-    setSt({ on: false, ref: null, model: null, busy: true, err: '', notes: [] });
+    halt();
+    setSt({ on: false, ref: null, model: null, busy: true, err: '', notes: [], demo: null, hearing: false });
     await post('/api/library/audition/stop', {}).catch(() => {});
     setSt(s => ({ ...s, busy: false }));
   };
+  const replay = () => { const d = st.demo || {}; if (d.clip) hear(d.clip); };
   const playing = (ref, model) => st.on && String(st.ref) === String(ref) && String(st.model) === String(model);
-  const loading = (ref, model) => st.busy && String(st.ref) === String(ref) && String(st.model) === String(model);
-  return { st, play, stop, playing, loading };
+  const loading = (ref, model) => (st.busy || (st.demo || {}).phase === 'render') && String(st.ref) === String(ref) && String(st.model) === String(model);
+  return { st, play, stop, replay, playing, loading };
 }
-/** l'indicateur d'une ligne : ▶ à l'arrêt, « … » pendant l'émission, l'égaliseur animé quand elle joue */
+/** l'indicateur d'une ligne : ▶ à l'arrêt, « … » pendant l'émission et le rendu, l'égaliseur animé quand elle joue */
 export const PlayMark = ({ on, busy }) => html`<span class="tn-play">${busy ? '…' : on ? html`<b class="tn-eq"><i></i><i></i><i></i></b>` : '▶'}</span>`;
+// le texte dit ce qui se passe VRAIMENT : un clip qui se prépare, un clip qui joue, et toujours « jouez à travers »
+const demoLine = st => {
+  const d = st.demo || {};
+  if (d.phase === 'render') return 'Rendering a guitar phrase through it…';
+  if (d.phase === 'ready') return st.hearing ? 'Hearing a reference guitar phrase through it.' : 'Reference phrase played.';
+  if (d.phase === 'error') return `No demo phrase (${d.error}).`;
+  return '';
+};
 export const AuditionNote = ({ au }) => au.st.err ? html`<div class="tn-note ko">${au.st.err}</div>`
-  : au.st.notes.length ? html`<div class="tn-note">${au.st.notes.join(' ')}</div>`
-  : au.st.on ? html`<div class="tn-note on">Playing in the patch that is loaded. Nothing is saved.<button class="mini" onClick=${au.stop}>Stop</button></div>`
-  : html`<div class="tn-note muted">Tap a capture to hear it in the patch that is loaded. Nothing is saved.</div>`;
+  : au.st.on ? html`<div class="tn-note on"><span>${demoLine(au.st)} Play your guitar to hear it with yours: it is in your patch now. Nothing is saved.${au.st.notes.length ? ' ' + au.st.notes.join(' ') : ''}</span>
+      ${(au.st.demo || {}).phase === 'ready' && !au.st.hearing ? html`<button class="mini" onClick=${au.replay}>Replay</button>` : ''}
+      <button class="mini" onClick=${au.stop}>Stop</button></div>`
+  : html`<div class="tn-note muted">Tap a capture to hear it: a guitar phrase plays through your patch with it. Nothing is saved.</div>`;
 
 // ── ouvrir une fiche d'un autre onglet (« Pairs with » d'un ampli ouvre le baffle) ─────────────────────────────
 let _open = null;

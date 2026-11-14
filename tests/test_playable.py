@@ -92,3 +92,13 @@ def test_the_catalog_marks_a_pack_golem_cannot_play(monkeypatch, tmp_path):
     tones = {t["id"]: t for t in RC.get_catalog()["tones"]}
     assert tones[1]["playable"] is False and tones[1]["why"]
     assert "playable" not in tones[2]
+
+
+def test_ir_fx_writes_its_dry_and_wet_even_when_the_patch_names_neither():
+    # le 2026-11-14 : écoute du RE-301 depuis la Library, bloc posé sans potards -> le convolveur gardait SES défauts
+    # (direct à -60 dB) : la guitare disparaissait derrière l'IR. Les défauts du catalogue s'écrivent à la compile.
+    from bridge import compile_rig as CR
+    CR._FX_DEFS = None
+    blocks = [{"id": "ir-fx", "type": "ir-fx", "params": {}}]
+    CR._fill_compile_defaults(blocks)
+    assert blocks[0]["params"] == {"dry": 0, "wet": -6}

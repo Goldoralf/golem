@@ -130,3 +130,29 @@ def test_an_ir_is_routed_by_the_common_rule_not_by_its_gear():
     post = doc["lanes"][0]["chain"]["post"]
     assert post[-1]["type"] == "ir-fx" and post[-1]["id"] == info["block"]
     assert doc["scenes"][1]["blocks"][info["block"]] is True
+
+
+def test_the_demo_phrase_is_rendered_on_the_lane_input_and_reused(monkeypatch, tmp_path):
+    # « je n'ai pas à jouer pour entendre le son ? » (2026-11-14) : une phrase DI passe hors ligne dans le rig de
+    # l'écoute ; le même son déjà rendu se rejoue sans rendu
+    from bridge import preview as P
+    monkeypatch.setattr(P, "AUDITION_DIR", str(tmp_path))
+    monkeypatch.setattr(P, "resolve_di", lambda doc, block, in_key="1", ref_override=None: ("guitar/clean", "/di.wav"))
+    started = []
+    monkeypatch.setattr(P.threading, "Thread", lambda target, args, daemon: type("T", (), {"start": lambda s: started.append(args)})())
+    doc, info = A.build(_preset(), "B", _tone("amp"))
+    doc["lanes"][0]["in_sel"] = "2"
+    assert P.audition_input(doc, "guitar-1") == "2"
+    P.audition_demo(doc, "guitar-1", [], 1, lambda: True)
+    assert P.audition_status()["phase"] == "render" and started and started[0][2] == "2"
+    key = P.audition_key(doc, "2", "guitar/clean")
+    (tmp_path / (key + ".opus")).write_bytes(b"x")
+    started.clear()
+    P.audition_demo(doc, "guitar-1", [], 2, lambda: True)
+    st = P.audition_status()
+    assert st["phase"] == "ready" and st["clip"].endswith(key + ".opus") and not started
+    doc["lanes"][0]["in_sel"] = "NONE"                          # aucune entrée de ce rôle sur la carte
+    P.audition_demo(doc, "guitar-1", [], 3, lambda: True)
+    assert P.audition_status()["phase"] == "error"
+    P.audition_forget()
+    assert P.audition_status()["phase"] == "idle"

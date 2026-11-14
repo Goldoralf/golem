@@ -6110,7 +6110,8 @@
     }
    ],
    "note": "Plays a captured studio unit's impulse response WHOLE, in stereo: a spring tank, an echo, a reverb box (TONE3000 outboard IR packs). Unlike the Cab block, the IR is never cut before a late echo: the echo is the sound. Dry stays at unity (an insert); Wet sets the effect. A static IR gives an echo's repeats as recorded: no feedback control and no tape wow. Put it on a stereo lane.",
-   "bench": "pending"
+   "bench": "pending",
+   "defaults": "compile"
   },
   {
    "type": "spectral-comp",

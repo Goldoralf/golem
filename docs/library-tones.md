@@ -152,3 +152,27 @@ TONE3000: mostly spring reverbs, a few echoes such as the RE-301) and the long I
 - **Designer.** The model picker of `ir-fx` lists the IR packs whose block is `ir-fx`.
 - **Limits, said in the block's note.** A static IR gives an echo's repeats as recorded: no feedback control, no tape
   wow. A spring reverb, on the other hand, is what an IR renders well.
+- **Its levels are written at every build** (`defaults: compile`). The convolver's own defaults are dry −60 dB and
+  wet 0 dB: an audition, which places the block without settings, cut the guitar behind the IR (2026-11-14).
+
+## 9. Hearing without playing: the demo phrase
+
+> **Status: CODED** (2026-11-14). The maintainer, on the RE-301: "I don't have to sing or play guitar to hear the
+> sound, right?" Touching a capture put it in the patch, but with nothing on the input nothing could be heard, and
+> the screen did not say so.
+
+- **The note says it.** While an audition plays: "Play your guitar to hear it with yours: it is in your patch now.
+  Nothing is saved." Before a touch: "Tap a capture to hear it: a guitar phrase plays through your patch with it."
+- **A reference phrase plays through it.** After the audition's rebuild (3 s to settle), the reference guitar DI
+  (`library/di-refs`, chosen by the patch's tags like its demo) is rendered **offline** through the audition's lane,
+  by the same clone as the patch demos (`preview.audition_demo`, `golem_preview` `op: render`, `tree`): no hardware
+  output, nothing sounds in REAPER, the live rig is not touched. The page plays the clip (`Audio`), with Replay and
+  Stop. Measured on the rig: about 11 s from the touch to the clip (RE-301 Delay 1, Modern Metal).
+- **Cached.** One clip per (sound of the audition, input, DI): `library/previews/audition/<key>.opus`, the 24 most
+  recent kept. Touching the same capture in the same patch again plays at once.
+- **Status.** `GET /api/library/audition` carries `demo: {phase: idle|render|ready|error, clip, ref, error}`. A demo
+  that cannot render says why (no input of this card for the lane, no reference DI, another demo rendering, a silent
+  render) and the audition still plays for the guitar. The factory demo batch running: no demo phrase.
+- **Not done.** Bass and voice reference DIs are not recorded: a bass capture on a bass lane has no phrase.
+  A render during someone's playing has not been tried for xruns (same open point as the demos, §7 of
+  [preset-preview.md](preset-preview.md)).

@@ -90,7 +90,8 @@ def test_les_quatorze_pedales_v47_ont_leur_feuille_leur_plugin_et_leurs_presets(
     plugins, table = golem_fx._load()
     for t in V47:
         e = CAT[t]
-        assert e["quarantine"].startswith("golem-fx only") and e["bench"] == "pending", t
+        # banc de gel passé le 2026-11-15 (12 allumages chacun sous REAPER, 4 ms au pire) : plus de `bench`
+        assert e["quarantine"].startswith("golem-fx only") and "bench" not in e, t
         params, sheet = golem_fx.merged(t, e["params"])
         assert sheet["front"] == [p["id"] for p in e["params"]], t                # la face avant = le catalogue
         assert plugins[table[t]["vst3"]]["reaper"] == e["plugin"], t

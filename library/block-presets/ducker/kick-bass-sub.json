@@ -16,7 +16,7 @@
  "tags": [
   "tight"
  ],
- "default": true,
+ "default": false,
  "params": {
   "mode": "Trigger",
   "thresh": -40,

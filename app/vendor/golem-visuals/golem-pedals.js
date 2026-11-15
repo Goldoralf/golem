@@ -2651,6 +2651,232 @@ ${grid}
 </svg>`;
   }
 
+  const { featureUnit, isFeature, FEATURE_TYPES } = (() => {
+  // ---------- golem feature units (Console) ----------
+  // golem's service blocks (rec, tuner, click, backing-track, looper, compo, drums, standard, arrangement,
+  // sample) are golem's own devices, not effects: a graphite unit with a light bar, a screen that shows
+  // what the feature is doing, and a ribbed rubber pad. The block's catalogue colour is its only colour.
+  // Same 112 × 200 footprint as a pedal. The maintainer chose this look (A · Console) on 2026-11-15.
+  const FEATURE_TYPES = ['rec', 'tuner', 'click', 'backing-track', 'looper', 'compo', 'drums', 'standard', 'arrangement', 'sample'];
+  const FEATURE_NAME = { rec: 'Rec', tuner: 'Tuner', click: 'Click', 'backing-track': 'Backing', looper: 'Looper', compo: 'Riff',
+    drums: 'Drums', standard: 'Standard', arrangement: 'Arrange', sample: 'Sample' };
+  const FEATURE_COLOR = { rec: '#ff4136', tuner: '#3ddc2e', click: '#e0b23a', 'backing-track': '#1ab7b0', looper: '#2ecc71',
+    compo: '#ff7a45', drums: '#7fd4a8', standard: '#9ad9be', arrangement: '#c98a2e', sample: '#5fce8f' };
+  let featureCount = 0;
+  // the catalogue colour, except a grey one (the tuner's would read as "off"): then this table's
+  const featureColor = (type, block) => {
+    const col = block && block.color;
+    if (col) { const [r, g, b] = hex(col); if (Math.max(r, g, b) - Math.min(r, g, b) >= 34) return col; }
+    return FEATURE_COLOR[type] || '#8a94a3';
+  };
+  const W = 112, H = 200;
+  const f1 = v => (Math.round(v * 10) / 10).toString();
+  const txt = (x, y, s, size, fill, o) => `<text x="${f1(x)}" y="${f1(y)}" font-family="${(o && o.font) || FONT.lcd}" font-size="${size}"` +
+    ` fill="${fill}"${o && o.anchor ? ` text-anchor="${o.anchor}"` : ''}${o && o.weight ? ` font-weight="${o.weight}"` : ''}` +
+    `${o && o.ls ? ` letter-spacing="${o.ls}"` : ''}${o && o.op ? ` fill-opacity="${o.op}"` : ''}>${esc(s)}</text>`;
+  const isFeature = t => FEATURE_TYPES.includes(t);
+
+  // ---------- the screen: what the feature is doing, in a few strokes ----------
+  // (x, y, w, h): the screen's inner box; ink: lit colour; dim: unlit segments; on: the feature runs
+  function featureScreen(type, x, y, w, h, ink, dim, on) {
+    const cx = x + w / 2, s = [];
+    const r = (rx, ry, rw, rh, fill, op) => `<rect x="${f1(rx)}" y="${f1(ry)}" width="${f1(rw)}" height="${f1(rh)}" rx=".6" fill="${fill}"${op ? ` fill-opacity="${op}"` : ''}/>`;
+    const line = (d, col, sw, op) => `<path d="${d}" fill="none" stroke="${col}" stroke-width="${sw || 1}" stroke-linecap="round" stroke-linejoin="round"${op ? ` stroke-opacity="${op}"` : ''}/>`;
+    const head = (label, right) => txt(x + 4, y + 9, label, 7, ink, { ls: .8 }) + (right ? txt(x + w - 4, y + 9, right, 7, ink, { anchor: 'end', op: .75 }) : '');
+    switch (type) {
+      case 'rec': {
+        s.push(`<circle cx="${f1(x + 7)}" cy="${f1(y + 6.6)}" r="2.6" fill="${on ? '#ff3b2a' : dim}"/>`);
+        s.push(txt(x + 12, y + 9, on ? 'REC' : 'STBY', 7, ink, { ls: .8 }), txt(x + w - 4, y + 9, 'ALL', 7, ink, { anchor: 'end', op: .75 }));
+        s.push(txt(cx, y + h * .6, on ? '02:41' : '00:00', 15, ink, { anchor: 'middle' }));
+        // input meters: the lanes being taken
+        for (let i = 0; i < 4; i++) {
+          const lv = on ? [.82, .55, .7, .3][i] : 0;
+          s.push(r(x + 4, y + h - 13 + i * 2.6, w - 8, 1.6, dim), lv ? r(x + 4, y + h - 13 + i * 2.6, (w - 8) * lv, 1.6, ink) : '');
+        }
+        break;
+      }
+      case 'tuner': {
+        const R = h * .62, oy = y + h - 3;
+        for (let k = -5; k <= 5; k++) {
+          const a = (k / 5) * .9, x1 = cx + Math.sin(a) * R, y1 = oy - Math.cos(a) * R, l = k % 5 === 0 ? 5 : 3;
+          s.push(line(`M${f1(x1)} ${f1(y1)}L${f1(cx + Math.sin(a) * (R - l))} ${f1(oy - Math.cos(a) * (R - l))}`, k === 0 ? ink : dim, 1));
+        }
+        const a = on ? .12 : 0;
+        s.push(line(`M${f1(cx)} ${f1(oy)}L${f1(cx + Math.sin(a) * (R - 2))} ${f1(oy - Math.cos(a) * (R - 2))}`, ink, 1.2));
+        s.push(txt(x + 4, y + 9, on ? 'A' : '—', 9, ink, { weight: 700 }), txt(x + w - 4, y + 9, on ? '+3¢' : '440', 7, ink, { anchor: 'end', op: .75 }));
+        break;
+      }
+      case 'click': {
+        s.push(head('CLICK', '4/4'));
+        s.push(txt(cx, y + h * .62, '120', 17, ink, { anchor: 'middle' }), txt(cx, y + h * .62 + 7, 'BPM', 5.5, ink, { anchor: 'middle', op: .7, ls: 1 }));
+        for (let i = 0; i < 4; i++) {
+          const lit = on && i === 0;
+          s.push(`<circle cx="${f1(x + w * (i + .5) / 4)}" cy="${f1(y + h - 5)}" r="${i === 0 ? 2.4 : 1.9}" fill="${lit ? ink : dim}"/>`);
+        }
+        break;
+      }
+      case 'backing-track': {
+        s.push(head(on ? '▶ PLAY' : '■ STOP', '3:12'));
+        const n = 30, bw = (w - 8) / n, mid = y + h * .55;
+        for (let i = 0; i < n; i++) {
+          const a = (.25 + .75 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * .43))) * h * .26;
+          s.push(r(x + 4 + i * bw, mid - a / 2, bw * .62, a, i < n * .38 && on ? ink : dim));
+        }
+        s.push(r(x + 4, y + h - 6, w - 8, 1.6, dim), r(x + 4, y + h - 6, (w - 8) * (on ? .38 : 0), 1.6, ink));
+        break;
+      }
+      case 'looper': {
+        s.push(head(on ? 'OVERDUB' : 'LOOP', '8 BARS'));
+        const R = h * .3, cy = y + h * .6, frac = on ? .62 : 0;
+        s.push(`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(R)}" fill="none" stroke="${dim}" stroke-width="2.4"/>`);
+        if (frac) {
+          const a = frac * 2 * Math.PI, ex = cx + Math.sin(a) * R, ey = cy - Math.cos(a) * R;
+          s.push(`<path d="M${f1(cx)} ${f1(cy - R)}A${f1(R)} ${f1(R)} 0 ${frac > .5 ? 1 : 0} 1 ${f1(ex)} ${f1(ey)}" fill="none" stroke="${ink}" stroke-width="2.4" stroke-linecap="round"/>`);
+        }
+        s.push(txt(cx, cy + 3, on ? '5.2' : '0', 9, ink, { anchor: 'middle' }));
+        break;
+      }
+      case 'compo': {
+        s.push(head(on ? 'TAKE ●' : 'RIFF', on ? '0:07' : 'ARMED'));
+        const t0 = y + 14, gap = (h - 19) / 5;
+        for (let i = 0; i < 6; i++) s.push(line(`M${f1(x + 4)} ${f1(t0 + i * gap)}H${f1(x + w - 4)}`, dim, .6));
+        const notes = [[0, 5, '0'], [1, 5, '3'], [2, 4, '2'], [3, 4, '5'], [4, 3, '2'], [5, 5, '3'], [6, 4, '5']];
+        notes.forEach(([k, str, fr]) => {
+          const nx = x + 9 + k * (w - 18) / 6, ny = t0 + str * gap;
+          s.push(r(nx - 2.4, ny - 3, 4.8, 6, mix(dim, '#000', .55)), txt(nx, ny + 2.3, fr, 6, on || k < 3 ? ink : dim, { anchor: 'middle' }));
+        });
+        break;
+      }
+      case 'drums': {
+        s.push(head('PATTERN A', 'FILL'));
+        const rows = [[1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1]];
+        const gx = x + 4, gw = (w - 8) / 16, gy = y + 14, gh = (h - 18) / 3, step = on ? 5 : -1;
+        rows.forEach((row, ri) => row.forEach((v, i) => {
+          const fill = i === step ? ink : v ? mix(ink, dim, .35) : dim;
+          s.push(r(gx + i * gw + .4, gy + ri * gh + .6, gw - .8, gh - 1.4, fill, v || i === step ? null : .55));
+        }));
+        break;
+      }
+      case 'standard': {
+        s.push(head('Am · SWING', '♩=132'));
+        const ch = ['Am7', 'D7', 'G△', 'C△', 'F♯ø', 'B7', 'Em', 'Em'], cw = (w - 8) / 4, rh = (h - 16) / 2;
+        ch.forEach((c, i) => {
+          const bx = x + 4 + (i % 4) * cw, by = y + 13 + Math.floor(i / 4) * rh, cur = on && i === 1;
+          s.push(`<rect x="${f1(bx + .5)}" y="${f1(by + .5)}" width="${f1(cw - 1)}" height="${f1(rh - 1)}" rx=".8" fill="${cur ? mix(ink, '#000', .55) : 'none'}" stroke="${dim}" stroke-width=".6"/>`);
+          s.push(txt(bx + cw / 2, by + rh / 2 + 2.6, c, 7, cur ? ink : mix(ink, dim, .3), { anchor: 'middle' }));
+        });
+        break;
+      }
+      case 'arrangement': {
+        s.push(head(on ? 'CHORUS 2' : 'INTRO', 'BAR 3/8'));
+        const parts = [['I', 1], ['V', 2], ['C', 2], ['V', 2], ['C', 2], ['B', 1], ['C', 2], ['O', 1]], tot = 13, sw = w - 8;
+        let px = x + 4; const by = y + h * .42, bh = h * .32;
+        parts.forEach(([p, len], i) => {
+          const pw = sw * len / tot, cur = on ? i === 4 : i === 0;
+          s.push(`<rect x="${f1(px + .5)}" y="${f1(by)}" width="${f1(pw - 1)}" height="${f1(bh)}" rx=".8" fill="${cur ? ink : p === 'C' ? mix(dim, ink, .25) : dim}"/>`);
+          s.push(txt(px + pw / 2, by + bh / 2 + 2.4, p, 6.5, cur ? '#000' : mix(ink, dim, .25), { anchor: 'middle' }));
+          px += pw;
+        });
+        s.push(r(x + 4, y + h - 6, sw, 1.6, dim), r(x + 4, y + h - 6, sw * (on ? .55 : .03), 1.6, ink));
+        break;
+      }
+      case 'sample': {
+        s.push(head('SAMPLE', 'PAD 2'));
+        const pw = (w - 8 - 9) / 4, py = y + 13, ph = h - 17;
+        for (let i = 0; i < 4; i++) {
+          const px = x + 4 + i * (pw + 3), hit = on && i === 1;
+          s.push(`<rect x="${f1(px)}" y="${f1(py)}" width="${f1(pw)}" height="${f1(ph)}" rx="1.4" fill="${hit ? ink : 'none'}" stroke="${hit ? ink : dim}" stroke-width=".8"/>`);
+          s.push(txt(px + pw / 2, py + ph / 2 + 2.5, String(i + 1), 7, hit ? '#000' : mix(ink, dim, .3), { anchor: 'middle' }));
+        }
+        break;
+      }
+      default: s.push(head(String(type).toUpperCase()));
+    }
+    return s.join('');
+  }
+
+  // Realistic pass: grained polymer with a bevelled edge, four torx screws, a USB-C port on the top edge,
+  // a diffused light bar that spills onto the body, a recessed screen behind glass (inner shadow, glow
+  // on the lit segments, scan lines, a diagonal reflection), and a ribbed rubber pad standing in a well
+  // ringed by a light pipe.
+  function featureUnit(item, opts) {
+    const it = typeof item === 'string' ? { type: item } : (item || {});
+    opts = Object.assign({}, opts || {}, it);
+    const type = it.type, block = blockByType(type) || {};
+    const on = opts.on !== false, c = featureColor(type, block), id = 'gpf' + (++featureCount);
+    const name = String(opts.title || FEATURE_NAME[type] || block.short || block.name || type);
+    const body = '#25282d', ink = mix(c, '#fff', .35), dim = mix(c, '#0b0d10', .82);
+    const sx = 11, sy = 23, sw = W - 22, sh = 62;
+    const well = { x: 13, y: 118, w: W - 26, h: 66 }, pad = { x: 18, y: 122, w: W - 36, h: 56 };
+    const ribs = Array.from({ length: 6 }, (_, i) => pad.y + 13 + i * 6.4);
+    const screw = (x, y) => `<g><circle cx="${x}" cy="${y}" r="2.6" fill="#101214"/><circle cx="${x}" cy="${y}" r="2.1" fill="url(#${id}-scr)"/>` +
+      `<path d="M${x} ${y - 1.1}V${y + 1.1}M${x - .95} ${y - .55}L${x + .95} ${y + .55}M${x - .95} ${y + .55}L${x + .95} ${y - .55}" stroke="#1d2024" stroke-width=".55" stroke-linecap="round"/></g>`;
+    return `<svg class="gp-pedal gp-feature gp-feature-console${on ? ' is-on' : ''}" viewBox="-6 -8 ${W + 12} ${H + 20}" width="${opts.width || W + 12}" role="img" aria-label="${esc(block.name || name)}" data-type="${esc(type)}">
+<defs>
+<linearGradient id="${id}-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(body, '#fff', .09)}"/><stop offset=".5" stop-color="${body}"/><stop offset="1" stop-color="${mix(body, '#000', .3)}"/></linearGradient>
+<linearGradient id="${id}-bev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".06" stop-color="#fff" stop-opacity=".06"/><stop offset=".94" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></linearGradient>
+<filter id="${id}-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="7" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<radialGradient id="${id}-scr" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9aa1a8"/><stop offset=".6" stop-color="#555b62"/><stop offset="1" stop-color="#2b2f34"/></radialGradient>
+<linearGradient id="${id}-bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${c}" stop-opacity=".35"/><stop offset=".15" stop-color="${mix(c, '#fff', .25)}"/><stop offset=".85" stop-color="${mix(c, '#fff', .25)}"/><stop offset="1" stop-color="${c}" stop-opacity=".35"/></linearGradient>
+<radialGradient id="${id}-spill" cx=".5" cy="0" r=".9"><stop offset="0" stop-color="${c}" stop-opacity=".22"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>
+<linearGradient id="${id}-in" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset=".22" stop-color="#000" stop-opacity="0"/></linearGradient>
+<radialGradient id="${id}-lcd" cx=".5" cy=".45" r=".75"><stop offset="0" stop-color="${on ? mix(c, '#0b0f12', .93) : '#0b0d0f'}"/><stop offset="1" stop-color="#050607"/></radialGradient>
+<pattern id="${id}-scan" width="2" height="1.4" patternUnits="userSpaceOnUse"><rect width="2" height=".55" fill="#000" opacity=".28"/></pattern>
+<linearGradient id="${id}-refl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".11"/><stop offset=".45" stop-color="#fff" stop-opacity=".025"/><stop offset=".46" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="${id}-glow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="${on ? .9 : 0}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="${id}-bloom" x="-40%" y="-200%" width="180%" height="500%"><feGaussianBlur stdDeviation="3"/></filter>
+<linearGradient id="${id}-pad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43474e"/><stop offset=".35" stop-color="#2c2f34"/><stop offset="1" stop-color="#17191c"/></linearGradient>
+<radialGradient id="${id}-sheen" cx=".35" cy=".1" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="${id}-well" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050607"/><stop offset="1" stop-color="#15171a"/></linearGradient>
+<clipPath id="${id}-sc"><rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="3"/></clipPath>
+</defs>
+<rect x="${W / 2 - 9}" y="-5.5" width="18" height="7" rx="2" fill="#0d0e10"/>
+<rect x="${W / 2 - 6.5}" y="-4" width="13" height="4" rx="2" fill="#2a2d31"/><rect x="${W / 2 - 4}" y="-2.6" width="8" height="1.3" rx=".6" fill="#8b9097"/>
+<g filter="url(#gp-shadow)">
+  <rect x="0" y="5" width="${W}" height="${H}" rx="14" fill="#0e0f11"/>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="14" fill="url(#${id}-b)"/>
+</g>
+<rect x="0" y="0" width="${W}" height="${H}" rx="14" fill="#fff" filter="url(#${id}-grain)"/>
+<rect x="0" y="0" width="${W}" height="${H}" rx="14" fill="url(#gp-side)"/>
+<rect x=".6" y=".6" width="${W - 1.2}" height="${H - 1.2}" rx="13.4" fill="none" stroke="url(#${id}-bev)" stroke-width="1.2"/>
+${on ? `<rect x="6" y="9" width="${W - 12}" height="34" fill="url(#${id}-spill)"/>` : ''}
+<rect x="9" y="6" width="${W - 18}" height="6" rx="3" fill="#0a0b0d"/>
+${on ? `<rect x="12" y="7.2" width="${W - 24}" height="3.6" rx="1.8" fill="${c}" opacity=".9" filter="url(#${id}-bloom)"/>` : ''}
+<rect x="10.5" y="7.2" width="${W - 21}" height="3.6" rx="1.8" fill="${on ? `url(#${id}-bar)` : mix(c, '#101214', .78)}"/>
+<rect x="10.5" y="7.2" width="${W - 21}" height="1.3" rx=".65" fill="#fff" opacity="${on ? .35 : .06}"/>
+<rect x="${sx - 3.5}" y="${sy - 3.5}" width="${sw + 7}" height="${sh + 7}" rx="6" fill="#0b0c0e"/>
+<rect x="${sx - 3.5}" y="${sy - 3.5}" width="${sw + 7}" height="${sh + 7}" rx="6" fill="none" stroke="#000" stroke-opacity=".6" stroke-width=".8"/>
+<path d="M${sx - 3} ${sy + sh + 3.2}H${sx + sw + 3}" stroke="#fff" stroke-opacity=".09" stroke-width=".8"/>
+<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="3" fill="url(#${id}-lcd)"/>
+<g clip-path="url(#${id}-sc)">
+  <g opacity="${on ? 1 : .5}" filter="url(#${id}-glow)">${featureScreen(type, sx, sy, sw, sh, ink, dim, on)}</g>
+  <rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" fill="url(#${id}-scan)"/>
+  <rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" fill="url(#${id}-in)"/>
+  <rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" fill="url(#${id}-refl)"/>
+</g>
+${glyphAt(type, 20, 101, 13, on ? ink : mix(c, '#000', .35), 1.9)}
+${txt(31, 105.5, name.toUpperCase().slice(0, 10), 11, '#dfe2e5', { font: FONT.gfx, weight: 700, ls: 1.4 })}
+<rect x="${well.x}" y="${well.y}" width="${well.w}" height="${well.h}" rx="15" fill="url(#${id}-well)"/>
+<rect x="${well.x}" y="${well.y}" width="${well.w}" height="${well.h}" rx="15" fill="none" stroke="#fff" stroke-opacity=".07" stroke-width=".8"/>
+${on ? `<rect x="${well.x + 1.5}" y="${well.y + 1.5}" width="${well.w - 3}" height="${well.h - 3}" rx="13.5" fill="none" stroke="${c}" stroke-width="3.2" opacity=".55" filter="url(#${id}-bloom)"/>` : ''}
+<rect x="${well.x + 1.5}" y="${well.y + 1.5}" width="${well.w - 3}" height="${well.h - 3}" rx="13.5" fill="none" stroke="${on ? mix(c, '#fff', .3) : '#24272b'}" stroke-width="1.3"/>
+<rect x="${pad.x}" y="${pad.y + 3.5}" width="${pad.w}" height="${pad.h}" rx="11" fill="#08090a"/>
+<rect x="${pad.x}" y="${pad.y}" width="${pad.w}" height="${pad.h}" rx="11" fill="url(#${id}-pad)"/>
+<rect x="${pad.x}" y="${pad.y}" width="${pad.w}" height="${pad.h}" rx="11" fill="#fff" filter="url(#${id}-grain)" opacity=".7"/>
+${ribs.map(y => `<path d="M${pad.x + 10} ${f1(y)}H${pad.x + pad.w - 10}" stroke="#0c0d0f" stroke-opacity=".8" stroke-width="1.7" stroke-linecap="round"/>` +
+      `<path d="M${pad.x + 10} ${f1(y + 1.5)}H${pad.x + pad.w - 10}" stroke="#fff" stroke-opacity=".09" stroke-width=".8" stroke-linecap="round"/>`).join('')}
+<rect x="${pad.x}" y="${pad.y}" width="${pad.w}" height="${pad.h}" rx="11" fill="url(#${id}-sheen)"/>
+<rect x="${pad.x + .5}" y="${pad.y + .5}" width="${pad.w - 1}" height="${pad.h - 1}" rx="10.5" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width=".7"/>
+${screw(6.5, 6.5)}${screw(W - 6.5, 6.5)}${screw(6.5, H - 6.5)}${screw(W - 6.5, H - 6.5)}
+${txt(W / 2, H - 4.4, 'golem', 7, '#fff', { font: FONT.gfx, anchor: 'middle', weight: 700, ls: 2.2, op: .07 })}
+${txt(W / 2, H - 5, 'golem', 7, '#0b0c0e', { font: FONT.gfx, anchor: 'middle', weight: 700, ls: 2.2, op: .75 })}
+</svg>`;
+  }
+
+  return { featureUnit, isFeature, FEATURE_TYPES };
+  })();
+
   // ---------- block mode ----------
   function blockTile(block, opts) {
     opts = opts || {};
@@ -2683,6 +2909,7 @@ ${grid}
     const b = blockByType(it.type) || (gfxOf(it.type) ? { type: it.type, family: 'gfx', gfx: gfxOf(it.type).crate }
       : { type: it.type, name: it.type, color: '#8a94a3', family: 'generic', params: [] });
     const o = Object.assign({}, opts || {}, it);
+    if (isFeature(it.type)) return featureUnit(it.type, o);
     switch (b.family) {
       case 'gfx': return gfxPedal(b.gfx, o);
       case 'nam-pedal': return namPedal(b.type, o);
@@ -2695,7 +2922,7 @@ ${grid}
 
   // the golem-fx finish: 'auto' (by family, default), 'anodized', 'thrash'; 'clay' is the first prototype's
   const api = {
-    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, outboardSetting, blockTile, pedalFor,
+    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, featureUnit, isFeature, FEATURE_TYPES, outboardSetting, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE, RACK_LOOK, RACK_GENERIC, KEYS_STYLE_HUE, EP_FAMILIES, KIT_TYPES, KIT_PIECES, KIT_SPOTS, kitAssets: api_assets,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners, rackKnob, rackControl },
     layout: 'fixed', rune: 'engraved',

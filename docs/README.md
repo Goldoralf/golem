@@ -135,6 +135,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [designer-glyphs-pedals.md](designer-glyphs-pedals.md) | CODED | golem-fx's glyphs everywhere, the clay fill of golem FX blocks, the Add-block rows and pedal shelf, the Designer pedal view, pedals on the /live stomps |
 | [golem-fx-reaper.md](golem-fx-reaper.md) | CODED | golem-fx blocks under REAPER: the engine table, the plugin ranges, installed-or-original |
 | [golem-fx-sheet.md](golem-fx-sheet.md) | CODED | The golem FX block sheet: each pedal's front panel and expert groups, from golem-fx's descriptors |
+| [golem-fx-migration.md](golem-fx-migration.md) | FIXED | golem-fx replaces the open-source effects: the rule, what stays out of scope, the progress table (`tools/golem-fx-progress.py`) |
 | [library-loans.md](library-loans.md) | CODED | Sounds lent to a band by a band mate |
 | [library-tones.md](library-tones.md) | CODED | Library ▸ Tones drawn: the backline, the pedalboard, the cab wall, the 19" rack, and touch = listen |
 | [library-play.md](library-play.md) | CODED | Library: Listen, Play it (your instrument on the raw sound, both engines) and Add to… (a patch or a song, through the Designer) |

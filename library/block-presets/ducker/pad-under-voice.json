@@ -16,7 +16,7 @@
  "tags": [
   "subtle"
  ],
- "default": true,
+ "default": false,
  "params": {
   "mode": "Follow",
   "thresh": -35,

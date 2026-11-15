@@ -77,7 +77,7 @@ delays the dry to match: a **setup** setting, never a scene value. There is **no
 no trigger: you set it before playing), and 17 factory presets (golem-fx e2fbdd9, default "Ringing partials"; none turns `align` on), values tuned after the maintainer listens.
 
 **Catalogue v47** (golem-fx 9c573f0, the maintainer's go on 2026-11-15) adds fourteen blocks of the same kind, golem-fx
-only, `bench: pending`, status `testing`; their params are the descriptor's front panel and their factory presets are
+only, status `testing`; the engine-stall bench passed under REAPER on 2026-11-15 (12 switch-ons each, 4 ms at worst); their params are the descriptor's front panel and their factory presets are
 seeded (223 files):
 
 | Type | Name | Category | Roles | What golem must know |
@@ -99,7 +99,7 @@ seeded (223 files):
 
 `transient`, `ducker`, `tape` and `radio` join `role_blocks.drums`. Not done yet: a momentary footswitch (Ducker
 `force`, Swell `fire`: the foot chip sends no release), values written from context (Bass DI `low_note`, Fuzz `pickup`,
-Radio `mains`), the latency re-sync when a preset changes a setup setting, and the stall bench.
+Radio `mains`) and the latency re-sync when a preset changes a setup setting.
 
 Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.

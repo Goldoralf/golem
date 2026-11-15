@@ -929,7 +929,8 @@
    "transient",
    "ducker",
    "tape",
-   "radio"
+   "radio",
+   "morph"
   ]
  },
  "role_categories": {
@@ -4952,7 +4953,7 @@
   {
    "type": "bitcrusher",
    "name": "Bitcrusher",
-   "category": "utility",
+   "category": "lofi",
    "engine": "plugin",
    "plugin": "MDA Degrade",
    "params": [
@@ -6245,14 +6246,16 @@
   {
    "type": "widener",
    "name": "Stereo Widener",
-   "category": "utility",
+   "category": "modulation",
    "engine": "plugin",
    "plugin": "VST3: GoleM FX Widener (GoleM)",
    "short": "Wide",
    "color": "#c0e0f8",
    "roles": [
     "guitar",
-    "bass"
+    "bass",
+    "voice",
+    "keys"
    ],
    "params": [
     {
@@ -6735,7 +6738,10 @@
    "short": "Morph",
    "color": "#9a0d2a",
    "roles": [
-    "voice"
+    "voice",
+    "guitar",
+    "drums",
+    "keys"
    ],
    "note": "golem-fx live vocal mangler (gfx-morph, catalogue v49): a guard against stage bleed, a de-fizz, A/B dirt you sweep with Morph, a physical object the voice sings into (Object: tin can, bucket, pipe, bottle…; Box sets how much), then a comp, a post filter and a slap echo. Expects the voice lane at about −18 dBFS RMS. Prefer it to Grit when the voice must stay intelligible while turning monstrous.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
@@ -6809,7 +6815,8 @@
    "short": "Formant",
    "roles": [
     "voice",
-    "guitar"
+    "guitar",
+    "bass"
    ],
    "note": "golem-fx formant shifter (gfx-formant, catalogue v50): moves the voice's formants without moving its pitch — a darker, bigger or smaller voice, a growl, a vowel. Engine Live has no latency (or the Lookahead you set); Grain sounds smoother but adds about 9 to 21 ms by Register. Engine, Register and Lookahead are setup settings: the block's base only, never per scene or on the pedal. Put the de-esser and any gate BEFORE it on a voice lane.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",

@@ -111,7 +111,8 @@ def get_effects():
 # plugins ») : un plugin que le catalogue joue déjà comme bloc est marqué `block` — le tiroir le range à part et propose
 # le bloc golem (ses réglages, ses presets) au lieu d'un VST brut. Les plugins DE golem (éditeur « golem » : Freeze, le
 # plugin de capture) ne se proposent jamais. Repérage par le nom nu (sans « VST3: » ni « (Éditeur) »), toutes les tables.
-_GOLEM_OWN = re.compile(r"\(\s*golem\s*\)\s*$", re.I)
+# REAPER suffixe une variante (« (mono) ») APRÈS l'éditeur : les 36 plugins golem-fx passaient (2026-11-15)
+_GOLEM_OWN = re.compile(r"\(\s*golem\s*\)(\s*\([^()]*\))*\s*$", re.I)
 
 
 def _bare_plugin(name):

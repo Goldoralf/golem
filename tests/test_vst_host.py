@@ -224,7 +224,8 @@ def test_la_liste_marque_ce_que_golem_joue_deja_et_cache_les_plugins_de_golem():
     from bridge.store import _read_json as real_read
     plugins = [{"name": "CLAP: Dragonfly Plate Reverb (Michael Willis)"}, {"name": "VST3: Surge XT Effects (Surge Synth Team)"},
                {"name": "CLAP: Surge XT (Surge Synth Team)"}, {"name": "CLAP: GoleM Freeze (GoleM)"},
-               {"name": "CLAP: golem Capture (golem)"}, {"name": "VST: ReaPitch (Cockos)"}, {"name": "CLAP: Dexed (Digital Suburban)"}]
+               {"name": "CLAP: golem Capture (golem)"}, {"name": "VST: ReaPitch (Cockos)"}, {"name": "CLAP: Dexed (Digital Suburban)"},
+               {"name": "VST3: GoleM FX Chorus (GoleM) (mono)"}]
     fake = lambda path, default=None: ({"seq": "90", "plugins": plugins} if str(path).endswith(".vst-host-list.json")  # noqa: E731
                                        else real_read(path, default))
     with (patch.object(content.sys, "platform", "linux"),
@@ -232,6 +233,7 @@ def test_la_liste_marque_ce_que_golem_joue_deja_et_cache_les_plugins_de_golem():
           patch.object(content, "_read_json", side_effect=fake)):
         got = {p["name"]: p for p in content.vst_host_plugins()["plugins"]}
     assert "CLAP: GoleM Freeze (GoleM)" not in got and "CLAP: golem Capture (golem)" not in got     # les plugins de golem
+    assert "VST3: GoleM FX Chorus (GoleM) (mono)" not in got                    # une variante de golem-fx : c'est un bloc
     assert "VST: ReaPitch (Cockos)" not in got                                                        # quarantaine
     assert got["CLAP: Dragonfly Plate Reverb (Michael Willis)"]["block"].startswith("reverb")
     assert got["VST3: Surge XT Effects (Surge Synth Team)"]["block"].startswith("surge-")     # le ressort est retiré (v48)

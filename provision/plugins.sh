@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Plugins neuraux non packagés (releases GitHub) → ~/.lv2
-# Le cœur de GoleM. Versions épinglées (reproductibilité) ; bump volontaire.
+# Plugins non packagés (releases GitHub) → ~/.lv2, ~/.vst3 (NAM, Dexed).
+# Versions épinglées (reproductibilité) ; bump volontaire.
 # Vérifier les versions : https://github.com/<repo>/releases/latest
 set -euo pipefail
 LV2="${HOME}/.lv2"; VST3="${HOME}/.vst3"
@@ -51,25 +51,11 @@ else
     "https://github.com/mikeoliphant/neural-amp-modeler-lv2/releases/download/${NAM_VER}/neural_amp_modeler_lv2_linux_x64v3.tgz"
 fi
 
-# --- AIDA-X (AidaDSP) -------------------------------------------------------
-AIDA_VER="1.1.0"
-install_lv2 "AIDA-X" \
-  "https://github.com/AidaDSP/AIDA-X/releases/download/${AIDA_VER}/AIDA-X-${AIDA_VER}-linux-x86_64.tar.xz"
-
-# --- Ratatouille.lv2 (brummer10) — le cœur (2 NAM + 2 IR) -------------------
-RATA_VER="v0.9.11"
-install_lv2 "Ratatouille" \
-  "https://github.com/brummer10/Ratatouille.lv2/releases/download/${RATA_VER}/Ratatouille.lv2-${RATA_VER}-linux-x86_64.tar.xz"
-
-# --- Aether (Dougal-s) — reverb algorithmique moderne, luxuriante ----------
-AETHER_VER="v1.2.1"
-install_lv2 "Aether" \
-  "https://github.com/Dougal-s/Aether/releases/download/${AETHER_VER}/Aether-${AETHER_VER}-Linux.tar.xz"
+# AIDA-X, Ratatouille et Aether : RETIRÉS de l'install (2026-11-15) — aucun bloc ne s'en sert plus (le bloc amp
+# joue NAM). Le désinstallateur garde leurs entrées : une install plus ancienne les a posés.
 
 # --- À scripter au prochain bump (VST3, pas de .lv2 simple) -----------------
 echo "  ℹ ChowDSP (Chow Centaur/Tape/Phaser) : VST3 depuis chowdsp.com → $VST3"
-echo "  ℹ Airwindows (Airwin2rack) : VST3/CLAP/LV2 depuis github baconpaul/airwin2rack"
-echo "  ℹ GuitarML (TS-M1N3, Proteus) : VST3 depuis guitarml.com → $VST3"
 echo "  ℹ GxPlugins/OD : couverts par 'guitarix' (apt) ou releases brummer10"
 
 echo

@@ -34,20 +34,23 @@ Related: [blocks-doctrine.md](blocks-doctrine.md) (catalogue, quarantine) ·
 
 | Script | What it installs | Where |
 |---|---|---|
-| `packages.txt` (apt) | LSP, Calf, x42-plugins, Dragonfly, Guitarix + GxPlugins, ZamPlugins, mda-lv2… | system |
-| `install-plugins.sh` (sudo) | the LV2 set the catalogue needs (Calf, x42, Dragonfly, guitarix, zam, mda, BYOD, avldrums, DrumGizmo…) | system |
-| `plugins.sh` | pinned GitHub releases, checked against `downloads.sha256` (`lib-fetch.sh` `fetch_verified`): NAM LV2 v0.2.2 (base only, see §3), AIDA-X, Ratatouille, Aether, Dexed VST3 | `~/.lv2`, `~/.vst3` |
-| `plugins-deb.sh` | pinned `.deb`: GuitarML Proteus, ChowDSP BYOD | system |
+| `packages.txt` (apt) | Calf, x42-plugins, Dragonfly, Guitarix + GxPlugins, ZamPlugins, mda-lv2… | system |
+| `install-plugins.sh` (sudo) | the LV2 set the catalogue needs (Calf, x42, Dragonfly, guitarix, zam, mda, avldrums, DrumGizmo…) | system |
+| `plugins.sh` | pinned GitHub releases, checked against `downloads.sha256` (`lib-fetch.sh` `fetch_verified`): NAM LV2 v0.2.2 (base only, see §3), Dexed VST3 | `~/.lv2`, `~/.vst3` |
 | `install-zconvo.sh` | **patched** IR convolver (§3) | `~/.lv2/zeroconvo.lv2` |
 | `install-nam.sh` | **patched** NAM LV2 (§3) | `~/.lv2/neural_amp_modeler.lv2` |
-| `airwindows.py` | Airwindows TapeDelay2 (VST2, MIT): fingerprint of the **extracted file** pinned (the archives change at the same URL); no admin rights | `~/.vst/airwindows` (Linux), `%LOCALAPPDATA%\Programs\Common\VST3\GoleM` (Windows) |
 | `install-sfizz.sh` | sfizz (piano block, SFZ kits) from the sfztools OBS repository, falling back to the repository's `.deb` files if its key expired; never leaves a broken `sources.list.d` behind | system |
 | `install-prisma.sh` | Prisma (Grit block), compiled from source at a pinned commit, free variant | `~/.vst3/Prisma.vst3` |
-| `install-spectral.sh` | Spectral Compressor (nih-plug), PaulXStretch, and our own **GoleM Freeze** (`plugins/golem_freeze`, Rust/nih-plug), compiled from pinned sources, no JACK | `~/.clap`, `~/.vst3` |
+| `install-spectral.sh` | Spectral Compressor (nih-plug) and PaulXStretch, compiled from pinned sources, no JACK | `~/.clap`, `~/.vst3` |
 
 Every optional step is non-fatal: on failure `install.sh` prints which block will stay struck and where
 to see it (System ▸ Licences ▸ Libraries). Scripts run with `sudo` install system headers but build and
 place user plugins as the calling user (`$SUDO_USER`), otherwise REAPER would never see them.
+
+**Left the install on 2026-11-15** (no block uses them any more; the uninstaller still removes what older installs
+placed): AIDA-X, Ratatouille, Aether (`plugins.sh`), Proteus and BYOD (`plugins-deb.sh`, deleted), LSP
+(`packages.txt`), Airwindows TapeDelay2 (`airwindows.py`, deleted), GoleM Freeze (`install-spectral.sh`, and its
+`plugins/` source). See `docs/golem-fx-migration.md`.
 
 ## 3. Plugins we compile and patch
 
@@ -88,19 +91,18 @@ and installs over it since 2026-10-22 ([platforms.md](platforms.md) §5.2).
 
 | Family | Plugins | Blocks |
 |---|---|---|
-| Neural capture | **NAM LV2** (A1 and A2; `quality_scale` port = A2 quality scaling), AIDA-X, Ratatouille (unused by the pipeline: no A2), GuitarML Proteus (knob-driven models), ChowDSP BYOD | amp/pedal/outboard capture blocks |
+| Neural capture | **NAM LV2** (A1 and A2; `quality_scale` port = A2 quality scaling) | amp/pedal/outboard capture blocks |
 | Convolution | **zeroconvo.lv2** (fixed build), ir.lv2 | `cab` |
-| Reverb | Dragonfly (Hall/Room/Plate/Early), Aether, Calf Reverb, a-Reverb | reverbs |
-| Delay | ReaDelay (REAPER), Calf Vintage Delay, Airwindows TapeDelay2, LSP, a-Delay | delays |
-| Dynamics / EQ | LSP (EQ, comp, gate, limiter, de-esser), Calf, ZamPlugins, x42 (dpl limiter, fil4 EQ), ReaGate/ReaEQ/ReaComp/ReaXcomp | dynamics, eq, voice chain |
-| Drive / amp sims | Guitarix + GxPlugins, BYOD | drives, wah, octave… |
+| Reverb | Dragonfly (Hall/Room/Plate/Early), Calf Reverb, a-Reverb | reverbs |
+| Delay | ReaDelay (REAPER), Calf Vintage Delay, a-Delay | delays |
+| Dynamics / EQ | Calf, ZamPlugins, x42 (dpl limiter, fil4 EQ), ReaGate/ReaEQ/ReaComp/ReaXcomp | dynamics, eq, voice chain |
+| Drive / amp sims | Guitarix + GxPlugins | drives, wah, octave… |
 | Pitch | x42 fat1 (pitch correction), REAPER JSFX | `pitch-correct`, pitch blocks |
-| Spectral / lofi | Spectral Compressor, PaulXStretch, GoleM Freeze, Prisma | `spectral-comp`, `stretch`, `freeze`, `grit` |
+| Spectral / lofi | Spectral Compressor, PaulXStretch, Prisma | `spectral-comp`, `stretch`, `grit` |
 | Instruments | Vital / Vitalium, Dexed, setBfree, sfizz, RS5k, avldrums, DrumGizmo | keys and drum blocks |
 | GoleM JSFX | `reaper/Effects/` (`golem_killswitch`, `golem_deesser`, `golem_click`, `golem_drumseq`, `golem_sample_trig`, `golem_super8` looper, `golem_tuner`…) | service and utility blocks |
 
-Not used: Airwin2rack (only a VCV Rack build is released), individual ChowDSP plugins (covered by
-BYOD), TAP/rev-plugins (LADSPA only), commercial "AI" plugins.
+Not used: Airwin2rack (only a VCV Rack build is released), individual ChowDSP plugins, TAP/rev-plugins (LADSPA only), commercial "AI" plugins.
 
 **Quarantine is data, not a missing plugin.** Some installed plugins are removed from every compile
 because they freeze or crash REAPER (GxEchoCat, ReaPitch, GxDetune): `effects.json` `quarantine`,

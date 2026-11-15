@@ -54,15 +54,17 @@ def test_switches_follow_the_pins(monkeypatch):
     assert ("--avldrums" in sw) == ("avldrums" in pins)
     assert ("--vitalium" in sw) == ("pawpaw" in pins)
     assert ("--sfizz" in sw) == ("sfizz" in pins)                  # le lecteur SFZ : piano Keys + kits importés
-    # les réverbes et le boost que effects-macos.json nomme (2026-11-04 : muets, rien ne les posait)
-    assert "--dragonfly" in sw and "--proteus" in sw
+    # les réverbes que effects-macos.json nomme (2026-11-04 : muettes, rien ne les posait) ; plus de Proteus
+    # (2026-11-15 : le bloc boost est retiré, catalogue v48)
+    assert "--dragonfly" in sw and "--proteus" not in sw
 
 
 def test_system_script_knows_every_switch():
     sh = open(os.path.join(ROOT, "provision", "macos", "install-system.sh"), encoding="utf-8").read()
     assert sh.startswith("#!/bin/bash\n") and "\r" not in sh
-    for sw in ("--log", "--reaper", "--nam", "--avldrums", "--sfizz", "--vitalium", "--dragonfly", "--proteus"):
+    for sw in ("--log", "--reaper", "--nam", "--avldrums", "--sfizz", "--vitalium", "--dragonfly"):
         assert re.search(rf"^\s*{sw}\)", sh, re.M), sw
+    assert not re.search(r"^\s*--proteus\)", sh, re.M)            # retiré le 2026-11-15
 
 
 def test_manual_installs_are_listed_on_the_last_page():
@@ -71,7 +73,10 @@ def test_manual_installs_are_listed_on_the_last_page():
     assert u["vital"] is True and u["vital_installer"] == "macOS installer"
     names = [m[0] for m in u["manual"]]
     assert "Surge XT" in names and not any(n.startswith("Vital") for n in names)
-    assert "Dragonfly Reverb" not in names and "Proteus" not in names          # posés par l'étape system
+    assert "Dragonfly Reverb" not in names                                     # posé par l'étape system
+    # plus de blocs pour eux (catalogue v48) : ni Proteus, ni Spectral Shift, ni TapeDelay2, ni l'EQ x42
+    assert not {"Proteus", "Spectral Shift", "Airwindows TapeDelay2"} & set(names)
+    assert not any("EQ" in n for n in names)
     assert all(url and url.startswith("https://") for _, _, url in u["manual"])
 
 
@@ -83,16 +88,18 @@ def test_only_the_pythons_the_bridge_lock_installs_are_accepted():
     assert "(3, 12) <= sys.version_info[:2] <= (3, 13)" in cmd
 
 
-def test_the_pinned_reverbs_and_boost_are_the_plugins_the_macos_table_names():
+def test_the_pinned_reverbs_are_the_plugins_the_macos_table_names():
     table = open(os.path.join(ROOT, "library", "catalog", "effects-macos.json"), encoding="utf-8").read()
     sh = open(os.path.join(ROOT, "provision", "macos", "install-system.sh"), encoding="utf-8").read()
-    # catalogue v48 : le bloc boost (Proteus) est retiré — Proteus reste posé par l'installateur jusqu'à son ménage
+    # catalogue v48 : le bloc boost (Proteus) est retiré — l'installateur ne pose plus Proteus (2026-11-15)
     for plugin in ("Dragonfly Hall Reverb", "Dragonfly Plate Reverb", "Dragonfly Room Reverb"):
         assert plugin in table
-    for bundle in ("DragonflyHallReverb", "DragonflyPlateReverb", "DragonflyRoomReverb", "Proteus.vst3"):
+    for bundle in ("DragonflyHallReverb", "DragonflyPlateReverb", "DragonflyRoomReverb"):
         assert bundle in sh
+    assert "Proteus.vst3" not in sh
     pins = M.pins(ROOT)
-    for key in ("dragonfly", "proteus"):
+    assert "proteus" not in pins
+    for key in ("dragonfly",):
         assert re.fullmatch(r"[0-9a-f]{64}", pins[key]["sha256"]) and pins[key]["url"].endswith(".dmg")
 
 

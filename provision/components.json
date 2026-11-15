@@ -69,119 +69,6 @@
       "mb": 5
     },
     {
-      "id": "aida-x",
-      "name": "AIDA-X",
-      "by": "AidaDSP",
-      "what": "neural amp models, the second capture format",
-      "license": "GPL-3.0",
-      "url": "https://github.com/AidaDSP/AIDA-X",
-      "kind": "plugin",
-      "version": "1.1.0",
-      "check": {
-        "glob": [
-          "~/.lv2/AIDA-X.lv2"
-        ]
-      },
-      "mb": 10
-    },
-    {
-      "id": "ratatouille",
-      "name": "Ratatouille.lv2",
-      "by": "brummer10",
-      "what": "2 NAM + 2 IR in one block",
-      "license": "BSD-0-Clause",
-      "url": "https://github.com/brummer10/Ratatouille.lv2",
-      "kind": "plugin",
-      "version": "v0.9.11",
-      "check": {
-        "glob": [
-          "~/.lv2/Ratatouille.lv2"
-        ]
-      },
-      "mb": 5
-    },
-    {
-      "id": "aether",
-      "name": "Aether",
-      "by": "Dougal-s",
-      "what": "modern algorithmic reverb",
-      "license": "GPL-3.0",
-      "url": "https://github.com/Dougal-s/Aether",
-      "kind": "plugin",
-      "version": "v1.2.1",
-      "check": {
-        "glob": [
-          "~/.lv2/Aether.lv2",
-          "~/.lv2/aether.lv2"
-        ]
-      },
-      "mb": 3
-    },
-    {
-      "id": "proteus",
-      "name": "Proteus",
-      "by": "GuitarML",
-      "what": "neural pedal/amp captures (knob-controllable)",
-      "license": "GPL-3.0",
-      "url": "https://github.com/GuitarML/Proteus",
-      "kind": "plugin",
-      "version": "1.2",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/Proteus.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/Proteus.vst3"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/Proteus.vst3"
-        ]
-      },
-      "check": {
-        "dpkg": [
-          "proteus"
-        ],
-        "glob": [
-          "/usr/lib/vst3/Proteus.vst3",
-          "/usr/local/lib/vst3/Proteus.vst3",
-          "~/.vst3/Proteus.vst3"
-        ]
-      },
-      "mb": 20
-    },
-    {
-      "id": "byod",
-      "name": "BYOD",
-      "by": "Chowdhury DSP",
-      "what": "modular distortion pedalboard",
-      "license": "GPL-3.0",
-      "url": "https://github.com/Chowdhury-DSP/BYOD",
-      "kind": "plugin",
-      "version": "1.3.0",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/BYOD.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/BYOD.vst3"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/BYOD.vst3"
-        ]
-      },
-      "check": {
-        "dpkg": [
-          "byod"
-        ],
-        "glob": [
-          "/usr/lib/vst3/BYOD.vst3",
-          "/usr/local/lib/vst3/BYOD.vst3",
-          "~/.vst3/BYOD.vst3"
-        ]
-      },
-      "mb": 30
-    },
-    {
       "id": "x42",
       "name": "x42-plugins",
       "by": "Robin Gareus",
@@ -468,21 +355,6 @@
       }
     },
     {
-      "id": "golem-freeze",
-      "name": "GoleM Freeze",
-      "by": "golem",
-      "what": "our spectral freeze block (plugins/golem_freeze, nih-plug — built from source)",
-      "license": "GPL-3.0-or-later",
-      "url": "https://golem.fm",
-      "kind": "plugin",
-      "check": {
-        "glob": [
-          "~/.clap/GoleM Freeze.clap",
-          "~/.vst3/GoleM Freeze.vst3"
-        ]
-      }
-    },
-    {
       "id": "spectral-compressor",
       "name": "Spectral Compressor",
       "by": "Robbert van der Helm",
@@ -523,46 +395,6 @@
         "dpkg": [
           "guitarix-lv2",
           "guitarix"
-        ]
-      }
-    },
-    {
-      "id": "lsp",
-      "name": "LSP Plugins",
-      "by": "Linux Studio Plugins",
-      "what": "gates, compressors, dynamics of the FX pack",
-      "license": "LGPL-3.0",
-      "url": "https://lsp-plug.in",
-      "kind": "plugin",
-      "check": {
-        "dpkg": [
-          "lsp-plugins-lv2",
-          "lsp-plugins"
-        ]
-      }
-    },
-    {
-      "id": "airwindows",
-      "name": "Airwindows TapeDelay2",
-      "by": "Chris Johnson (Airwindows)",
-      "what": "tape echo — the Tape Delay (Airwindows) block, the same on Linux and Windows",
-      "license": "MIT",
-      "url": "https://www.airwindows.com/tapedelay2/",
-      "kind": "plugin",
-      "check_mac": {
-        "glob": [
-          "~/Library/Audio/Plug-Ins/VST/TapeDelay2.vst",
-          "/Library/Audio/Plug-Ins/VST/TapeDelay2.vst"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%LOCALAPPDATA%/Programs/Common/VST3/GoleM/TapeDelay264.dll"
-        ]
-      },
-      "check": {
-        "glob": [
-          "~/.vst/airwindows/TapeDelay2.so"
         ]
       }
     },

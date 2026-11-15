@@ -39,38 +39,29 @@ run_as_user() { sudo -u "$USER_NAME" -H bash -c "export PATH=\"$USER_HOME/.cargo
 
 # ── PRÉCOMPILÉS d'abord (Goldoralf/golem-binaries, mêmes commits) : sans eux, ni toolchain ni Rust à poser (~10 min)
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib-prebuilt.sh"
-# Freeze est NOTRE code : le binaire de la release n'est bon que pour la source qui l'a produit. Empreinte de cette
-# source (Cargo.lock, Cargo.toml, golem_freeze/) au moment de linux-plugins-v1 (inchangée en v2) ; si plugins/ a bougé, on compile.
-FREEZE_SRC_SHA="0873e47fcbb9af477d303e0d166b358503b15466832a32d8e69620ad66de10bc"
-PLUGINS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins"
-freeze_src_sha() { (cd "$PLUGINS_DIR" && cat Cargo.lock Cargo.toml golem_freeze/Cargo.toml golem_freeze/src/*.rs | sha256sum | cut -c1-64); }
+# GoleM Freeze (plugins/golem_freeze) : RETIRÉ de l'install (2026-11-15) — le bloc freeze est retiré (devenu granular,
+# catalogue v48). Le désinstallateur garde son entrée : une install plus ancienne l'a posé.
 pre() {   # pre <asset> <dossier> <bundle> — posé et noté au reçu, ou 1
   local ex; ex=$(receipt_existed "$2/$3")
   prebuilt "$1" "$2" "$3" || return 1
   receipt_add "$2/$3" dir plugins $ex
 }
-NEED_SC=1; NEED_PXS=1; NEED_FREEZE=1
+NEED_SC=1; NEED_PXS=1
 pre Spectral-Compressor.clap "$USER_HOME/.clap" "Spectral Compressor.clap" \
   && pre Spectral-Compressor.vst3 "$USER_HOME/.vst3" "Spectral Compressor.vst3" && NEED_SC=0
 if pre PaulXStretch.vst3 "$USER_HOME/.vst3" PaulXStretch.vst3; then
   NEED_PXS=0
   pre PaulXStretch.clap "$USER_HOME/.clap" PaulXStretch.clap || true      # le CLAP est un bonus, comme à la compilation
 fi
-if [ "$(freeze_src_sha)" = "$FREEZE_SRC_SHA" ]; then
-  pre GoleM-Freeze.clap "$USER_HOME/.clap" "GoleM Freeze.clap" \
-    && pre GoleM-Freeze.vst3 "$USER_HOME/.vst3" "GoleM Freeze.vst3" && NEED_FREEZE=0
-else
-  echo "  → plugins/ a changé depuis linux-plugins-v1/v2 : GoleM Freeze sera compilé"
-fi
 # les bibliothèques que ces binaires chargent (readelf NEEDED) — sans les -dev de la compilation
 runtime_libs libfftw3-single3 libasound2t64 libfreetype6 libgl1 libx11-6 libx11-xcb1 libxcb1 libxcb-icccm4
-if [ "$NEED_SC$NEED_PXS$NEED_FREEZE" = 000 ]; then
-  echo "✓ Spectral Compressor, PaulXStretch et GoleM Freeze posés (précompilés, GPL-3)"
+if [ "$NEED_SC$NEED_PXS" = 00 ]; then
+  echo "✓ Spectral Compressor et PaulXStretch posés (précompilés, GPL-3)"
   exit 0
 fi
 
-# toolchain + Rust 182 s, Spectral Compressor 85, PaulXStretch 140, Freeze 25 (mesurés en VM)
-compiling $((182 + 85 * NEED_SC + 140 * NEED_PXS + 25 * NEED_FREEZE))
+# toolchain + Rust 182 s, Spectral Compressor 85, PaulXStretch 140 (mesurés en VM)
+compiling $((182 + 85 * NEED_SC + 140 * NEED_PXS))
 echo "== 1. Toolchain + en-têtes (apt) =="
 # une seule liste : celle qu'on demande à apt est celle que le reçu note comme explicite (apt.requested)
 APT_PKGS=(cmake build-essential git pkg-config curl
@@ -84,7 +75,7 @@ receipt apt-requested "${APT_PKGS[@]}"
 apt-get -o DPkg::Lock::Timeout=300 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold install -y "${APT_PKGS[@]}"
 receipt apt-snapshot after
 
-if [ "$NEED_SC$NEED_FREEZE" != 00 ]; then
+if [ "$NEED_SC" = 1 ]; then
 echo "== 2. Rust (rustup, profil minimal, chez $USER_NAME, sans toucher au shell) =="
 # reçu : Rust n'est « à nous » que si c'est nous qui l'installons (le premier passage gagne)
 if ! run_as_user "command -v cargo >/dev/null"; then
@@ -146,15 +137,5 @@ fi
 echo "✓ PaulXStretch posé (.vst3 + .clap, GPL-3)"
 fi
 
-if [ "$NEED_FREEZE" = 1 ]; then
-echo "== 5. GoleM Freeze (notre bloc, plugins/golem_freeze — nih-plug, même toolchain) =="
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-run_as_user "cd '$HERE/plugins' && cargo xtask bundle golem_freeze --release"
-place "$USER_HOME/.clap/GoleM Freeze.clap" \
-  "rm -rf '$USER_HOME/.clap/GoleM Freeze.clap' && cp -r '$HERE/plugins/target/bundled/GoleM Freeze.clap' '$USER_HOME/.clap/'"
-place "$USER_HOME/.vst3/GoleM Freeze.vst3" \
-  "rm -rf '$USER_HOME/.vst3/GoleM Freeze.vst3' && cp -r '$HERE/plugins/target/bundled/GoleM Freeze.vst3' '$USER_HOME/.vst3/'"
-echo "✓ GoleM Freeze posé (.clap + .vst3, GPL-3)"
-fi
 echo "  Puis : redémarrer Reaper (Settings ▸ System ▸ Reaper restart, ou POST /api/system/reaper-restart),"
 echo "  et valider : check-block-stall.py, fxparams, deux reconstructions — AVANT de l'offrir à l'IA."

@@ -162,11 +162,9 @@ log "Reaper"
 
 # --- 4. Plugins (GitHub releases) -------------------------------------------
 mark phase plugins
-log "Plugins LV2 (releases GitHub : NAM, AIDA-X, Ratatouille, Aether)"
+log "Plugins (releases GitHub : NAM, Dexed)"
 "$HERE/plugins.sh"
-
-log "Plugins .deb neuraux (Proteus, ChowDSP BYOD)"
-"$HERE/plugins-deb.sh"
+# plugins-deb.sh (Proteus, ChowDSP BYOD) : RETIRÉ (2026-11-15) — aucun bloc ne s'en sert plus.
 
 # SWS : RETIRÉ de l'install (2026-09-22). Il était posé « requis par les scènes » — faux : le moteur
 # de scènes est golem_rig (union materialization), LiveConfigs n'a jamais servi (audit 2026-09-21), et
@@ -179,7 +177,7 @@ log "Plugins .deb neuraux (Proteus, ChowDSP BYOD)"
 # second dev) : une machine fraîchement provisionnée démarrait donc SANS les effets des blocs
 # ni le sampler des claviers. Un script d'install qui laisse la moitié du rig dehors n'est pas
 # un script d'install.
-log "Plugins LV2 des blocs FX (Calf, x42, guitarix, ZamAudio, mda, BYOD…)"
+log "Plugins LV2 des blocs FX (Calf, x42, guitarix, ZamAudio, mda…)"
 sudo "$HERE/install-plugins.sh"
 bash "$HERE/install-capture.sh"
 # Vital / Vitalium : AUCUN paquet ne l'installe (install-plugins.sh, étape 4) — l'écran le dit, au lieu d'une ligne
@@ -234,11 +232,7 @@ else
     "No golem window: Chromium could not be installed, so golem opens in a browser tab. Install Chromium, then start golem again."
 fi
 
-log "Airwindows TapeDelay2 (bloc Tape Delay (Airwindows) — le même que sous Windows)"
-# SANS sudo : le plugin va dans ~/.vst de l'utilisateur, que REAPER parcourt. Empreinte du FICHIER
-# épinglée (provision/airwindows.py) ; non fatal comme toute source tierce.
-python3 "$HERE/airwindows.py" || soft_fail airwindows "TapeDelay2 NON installé — le bloc Tape Delay (Airwindows) restera barré (Settings ▸ Licences ▸ Libraries)" \
-  "Airwindows TapeDelay2 could not be installed — the Tape Delay (Airwindows) block stays unavailable."
+# Airwindows TapeDelay2 : RETIRÉ (2026-11-15) — le bloc Tape Delay (Airwindows) est retiré (catalogue v48).
 
 log "sfizz (sampler SFZ — bloc piano de la lane Keys)"
 # ⚠ NON FATAL (validation VM du 2026-09-09) : la clé du dépôt OBS de sfizz a expiré en amont, apt
@@ -279,9 +273,9 @@ log "Prisma (bloc Grit) et les blocs spectraux (Spectral Comp, Stretch) — comp
 # (trouvé le 2026-09-25) : un rack neuf n'avait pas de bloc Grit, et rien ne le disait.
 sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-prisma.sh" || soft_fail prisma "Prisma NON installé — le bloc Grit restera muet (Settings ▸ Licences ▸ Libraries)" \
   "Prisma could not be built — the Grit block stays silent."
-mark sub "Spectral blocks (Spectral Comp, Stretch, Freeze) — 4 of 4"
+mark sub "Spectral blocks (Spectral Comp, Stretch) — 4 of 4"
 sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-spectral.sh" || soft_fail spectral "blocs spectraux NON installés — Spectral Comp et Stretch resteront muets (Settings ▸ Licences ▸ Libraries)" \
-  "The spectral blocks could not be built — Spectral Comp, Stretch and Freeze stay silent."
+  "The spectral blocks could not be built — Spectral Comp and Stretch stay silent."
 
 # --- 5. Config Reaper : symlinks + OSC + device audio -----------------------
 mark phase golem

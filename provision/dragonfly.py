@@ -6,7 +6,7 @@ dev : les trois réverbes manquaient, et avec elles 45 objets d'usine sur 47 jou
 officielle win64 (VST2, VST3, LV2, CLAP, standalone) est épinglée à son empreinte ; on n'en tire que les trois
 bundles VST3 que la table nomme.
 
-Pas de droits d'administrateur : comme provision/airwindows.py, les bundles vont dans le dossier VST3 par
+Pas de droits d'administrateur : comme provision/surge.py, les bundles vont dans le dossier VST3 par
 utilisateur que REAPER parcourt déjà (%LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM).
 
     python provision/dragonfly.py            # pose les trois réverbes là où REAPER les trouve
@@ -45,7 +45,7 @@ def installed():
 
 def _record(paths, existed):
     """Reçu d'install (docs/uninstall.md §9.2) : chaque bundle posé, dans un reçu qui EXISTE seulement (comme
-    airwindows). Jamais d'exception — un reçu raté ne casse pas l'installation."""
+    surge). Jamais d'exception — un reçu raté ne casse pas l'installation."""
     try:
         import importlib.util
         spec = importlib.util.spec_from_file_location("golem_receipt", Path(__file__).with_name("receipt.py"))

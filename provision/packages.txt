@@ -12,8 +12,7 @@ alsa-utils
 qpwgraph?
 
 # --- Plugins packagés dans les dépôts Ubuntu (universe) ---
-lsp-plugins?
-lsp-plugins-lv2?
+# NB: lsp-plugins retiré (2026-11-15) : aucun bloc ne s'en servait.
 calf-plugins?
 guitarix?
 zam-plugins?

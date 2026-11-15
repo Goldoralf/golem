@@ -261,12 +261,14 @@ tape delay too (0.0071). The wah family bench below was written against that tra
 **Installed for these mappings (2026-10-22):** until then nothing installed the Dragonfly reverbs or Proteus on
 Windows although the table named them — on the dev box 45 of the 47 factory objects lacked a reverb. The Windows setup
 now installs Dragonfly Hall, Plate and Room (VST3, per user, `provision/dragonfly.py`), the installer's elevated step
-installs Proteus (`install-system.ps1 -Proteus`). On macOS the elevated step installs both since 2026-11-04 (`install-system.sh --dragonfly --proteus`, pinned in
-`provision/macos/pins.json`): the first real Mac test found the reverb silent on ~45 factory presets without them.
+installed Proteus (`install-system.ps1 -Proteus`). On macOS the elevated step installs Dragonfly since 2026-11-04 (`install-system.sh --dragonfly`, pinned in
+`provision/macos/pins.json`): the first real Mac test found the reverb silent on ~45 factory presets without it.
+**2026-11-15:** Proteus and Airwindows TapeDelay2 left the installers on all three OS — their blocks (`boost`,
+`delay-tape-aw`) were retired in catalog v48 (`docs/golem-fx-migration.md`).
 
-**Mapped on both:** `boost` (Proteus), the NAM-based `pedal-nam`, `preamp-nam`, `comp-nam`, the
-Dragonfly reverbs, `granular` (ZamGrains), `pitch-spectral`, `spectral-comp`, `stretch`, the MDA
-`ringmod`, `bitcrusher`, `rezfilter`, and `delay-tape-aw` (Airwindows TapeDelay2).
+**Mapped on both:** the NAM-based `pedal-nam`, `preamp-nam`, `comp-nam`, the
+Dragonfly reverbs, `granular` (ZamGrains), `spectral-comp`, `stretch`, and the MDA
+`ringmod`, `bitcrusher`, `rezfilter` (`boost`, `pitch-spectral` and `delay-tape-aw` were retired in catalog v48).
 
 ## 6. The VST Host block
 

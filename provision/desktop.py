@@ -463,17 +463,13 @@ def setup():
                 if sys.platform == "win32" else "")
         raise RuntimeError(f"python-rtmidi is installed but does not load ({why}): "
                            f"the pedalboard and MIDI output would stay silent.{hint}")
-    # le tape delay Airwindows : même plugin que sous Linux, sans droits d'admin. Non fatal — une source
-    # tierce qui casse ne bloque pas l'installation, le bloc reste barré et l'onglet Libraries le dit.
+    # les plugins posés sans droits d'admin. Non fatal — une source tierce qui casse ne bloque pas l'installation,
+    # le bloc reste barré et l'onglet Libraries le dit. Airwindows TapeDelay2 n'en est plus (2026-11-15) : le bloc
+    # Tape Delay (Airwindows) est retiré (catalogue v48).
     if sys.platform == "win32":
-        step("desktop plugins: Airwindows, Dragonfly Reverb, Surge XT Effects")
-        try:
-            from provision import airwindows
-            airwindows.install()
-        except Exception as exc:
-            print(f"⚠ Airwindows TapeDelay2 not installed ({exc}) — its block stays unavailable.")
+        step("desktop plugins: Dragonfly Reverb, Surge XT Effects")
         # les réverbes Dragonfly (2026-10-22) : la table Windows les nommait, rien ne les posait — sans elles
-        # presque toute l'usine jouait sans réverbe. Même règle : sans droits d'admin, non fatal.
+        # presque toute l'usine jouait sans réverbe.
         try:
             from provision import dragonfly
             dragonfly.install()

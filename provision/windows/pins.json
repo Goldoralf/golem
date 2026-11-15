@@ -41,12 +41,6 @@
   "url": "https://github.com/DISTRHO/PawPaw/releases/download/v1.1/PawPaw-win64-v1.1.0.exe",
   "sha256": "ad1ec07d6265441904db831f8260f80a4a0c10c5d87fca50684757e3e2155c9a"
  },
- "proteus": {
-  "_comment": "GuitarML Proteus (GPL-3, VST3) : le bloc boost — effects-windows.json le nommait sans que rien l'installe (2026-10-22). Installeur Inno Setup NON signé : l'empreinte est le seul contrôle. Pose Proteus.vst3 dans Common Files/VST3.",
-  "version": "1.2.0",
-  "url": "https://github.com/GuitarML/Proteus/releases/download/v1.2/Proteus-Win-1.2.0.exe",
-  "sha256": "f63f39d4f38113c6efb93e4440fb3de84c1397c1cc52294c4922a14f393309c6"
- },
  "vcredist": {
   "_comment": "Microsoft ne publie pas d'adresse figée : on télécharge la dernière et on vérifie sa SIGNATURE (Authenticode, éditeur Microsoft Corporation) au lieu d'une empreinte.",
   "url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",

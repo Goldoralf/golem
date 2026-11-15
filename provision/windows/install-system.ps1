@@ -20,7 +20,7 @@
 # ce qui a déjà été posé) ; le prochain passage de receipt.py le verse. Sans -Receipt : rien n'est noté.
 param(
     [Parameter(Mandatory = $true)][string]$Log,
-    [switch]$Vcredist, [switch]$Reaper, [switch]$Nam, [switch]$Firewall, [switch]$Avldrums, [switch]$Sfizz, [switch]$Vitalium, [switch]$Proteus,
+    [switch]$Vcredist, [switch]$Reaper, [switch]$Nam, [switch]$Firewall, [switch]$Avldrums, [switch]$Sfizz, [switch]$Vitalium,
     # le Python qui fait tourner le bridge (celui du venv n'est qu'un relais : c'est le Python de base
     # qui ouvre le port) — la règle « GoleM ouvert au réseau » vise CE programme sur CE port
     [string]$BridgePython = '', [int]$Port = 8770,
@@ -417,24 +417,8 @@ try {
         }
     }
 
-    # ── Proteus (GuitarML, GPL-3, VST3) : le bloc boost (2026-10-22) — la table Windows le nommait, rien ne
-    # l'installait. Inno Setup NON signé : l'empreinte épinglée est le seul contrôle. Pose Proteus.vst3.
-    if ($Proteus) {
-        Say "▶ Proteus $($pins.proteus.version) (the Boost block)"
-        $vst = Join-Path $env:CommonProgramFiles 'VST3\Proteus.vst3'
-        if (Test-Path $vst) {
-            Say "→ already installed — kept as is ($vst)"
-            Rcpt-Program 'proteus' $false $vst $null $null
-        } else {
-            $pr = Fetch $pins.proteus.url ([IO.Path]::GetFileName($pins.proteus.url))
-            CheckSha $pr $pins.proteus.sha256
-            $before = UninstallKeys
-            Install $pr @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-') 'Proteus' @(0) | Out-Null
-            Rcpt-Program 'proteus' $true $vst $pins.proteus.version (UninstallEntry $before '*Proteus*' 'inno')
-            if (-not (Test-Path $vst)) { throw 'Proteus.vst3 missing after install' }
-            Say "✓ Proteus in $(Split-Path $vst)"
-        }
-    }
+    # Proteus (le bloc boost) : RETIRÉ (2026-11-15) — le bloc est retiré du catalogue (v48) ; uninstall_win.py
+    # garde son entrée pour les installs plus anciennes.
 
     # ── le synthé du bloc vital : Vitalium (DISTRHO, GPL, LV2), livré par PawPaw ──
     # 2026-10-03 : le Vital officiel ne se télécharge qu'avec un compte — pas d'installation automatique

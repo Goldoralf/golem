@@ -32,7 +32,7 @@ PRIVILEGE = "uac"                       # une autorisation du SYSTÈME, pas un m
 
 STEPS = [
     ("source", "Copy golem to its folder"),
-    ("system", "macOS permission, once: Reaper, NAM plugin, drum kits, Vitalium synth, reverbs, boost"),
+    ("system", "macOS permission, once: Reaper, NAM plugin, drum kits, Vitalium synth, reverbs"),
     ("bridge", "golem bridge: Python environment, Reaper scripts and settings"),
     ("sounds", "Sounds"),
     ("profile", "golem apps in your Applications folder"),
@@ -88,7 +88,7 @@ def ui():
         "connect": "form",
         "finish": "Open golem",
         "permission": [
-            "Installing needs macOS' permission, once: a macOS window asks for an administrator's password to install Reaper in /Applications and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb, Proteus) in /Library/Audio/Plug-Ins. Approve it when it appears.",
+            "Installing needs macOS' permission, once: a macOS window asks for an administrator's password to install Reaper in /Applications and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb) in /Library/Audio/Plug-Ins. Approve it when it appears.",
             "That is the only part that runs as administrator. golem itself is copied to your folder and always runs as you; golem never sees nor keeps the password — macOS asks for it."],
         "next": [
             ["", "Settings ▸ Soundcard", ": pick your audio interface (Core Audio) — until then golem uses the Mac's default input and output."],
@@ -96,7 +96,7 @@ def ui():
             ["warn", "A2 amp captures", " don't play on macOS yet: the official NAM plugin cannot read that format. golem marks those blocks and offers a non-A2 capture."],
         ],
         "first_run": "golem starts when you close the installer below. The first start takes a minute or two (Reaper scans your plugins). Until Reaper is licensed, it shows its evaluation window at every start — close it; golem keeps running behind it. macOS may ask once whether Python may control « System Events » (to hide Reaper): allow it.",
-        "done_note": "Only Reaper (in /Applications) and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb, Proteus, in /Library/Audio/Plug-Ins) were installed with administrator rights. golem itself runs as you, in its folder.",
+        "done_note": "Only Reaper (in /Applications) and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb, in /Library/Audio/Plug-Ins) were installed with administrator rights. golem itself runs as you, in its folder.",
         "vital": True,
         "vital_installer": "macOS installer",
         "manual": _manual(src),
@@ -381,8 +381,6 @@ def system_switches(src):
         sw.append("--sfizz")
     if "dragonfly" in p:                               # les trois réverbes (2026-11-04 : muettes sans elles)
         sw.append("--dragonfly")
-    if "proteus" in p:                                 # le bloc boost
-        sw.append("--proteus")
     if not reaper_detect(src)["found"]:
         sw.append("--reaper")
     return sw

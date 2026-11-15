@@ -78,8 +78,7 @@ def phases(S):
 
 # le ↻ Try again d'un manque non fatal (`soft_fail <id>` dans provision/install.sh) : le script qui l'installe, seul
 RETRY = {"zconvo": ("sudo", "install-zconvo.sh"), "nam": ("sudo", "install-nam.sh"), "sfizz": ("sudo", "install-sfizz.sh"),
-         "prisma": ("sudo", "install-prisma.sh"), "spectral": ("sudo", "install-spectral.sh"),
-         "airwindows": ("python", "airwindows.py")}
+         "prisma": ("sudo", "install-prisma.sh"), "spectral": ("sudo", "install-spectral.sh")}
 
 
 def run_retry(rid, ctx):
@@ -265,7 +264,7 @@ def sizes(src, target_dir):
     fixed = {"system": 900, "reaper": 40, "plugins": plugins + 250, "bridge": 350, "repo": 60}
     return {"fixed": fixed, "packs": packs, "required_packs": required, "free_mb": free_mb(target_dir),
             "fixed_labels": [["system", "System packages (audio, plugins, tools)"], ["reaper", "Reaper"],
-                             ["plugins", "Neural plugins (NAM, AIDA-X, Ratatouille…)"], ["bridge", "golem bridge (Python)"],
+                             ["plugins", "Plugins (NAM, Dexed…)"], ["bridge", "golem bridge (Python)"],
                              ["repo", "golem code"]],
             "pack_labels": PACK_LABELS, "packs_unavailable": {}}
 

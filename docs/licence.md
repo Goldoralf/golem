@@ -13,7 +13,7 @@ Related: [`CONTRIBUTING.md`](../CONTRIBUTING.md) (how contributions are signed),
 
 | Part | Licence | Where it is declared |
 |---|---|---|
-| Everything not listed below: `bridge/`, `app/`, `reaper/Scripts/`, `provision/`, `tools/`, `plugins/` (Rust), tests, configs | **GPL-3.0-or-later** | `LICENSE`; `SPDX-License-Identifier: GPL-3.0-or-later` in each source file (`#`, `--` or `//` comment), `license = "GPL-3.0-or-later"` in `plugins/Cargo.toml` |
+| Everything not listed below: `bridge/`, `app/`, `reaper/Scripts/`, `provision/`, `tools/`, tests, configs | **GPL-3.0-or-later** | `LICENSE`; `SPDX-License-Identifier: GPL-3.0-or-later` in each source file (`#`, `--` or `//` comment), `license = "GPL-3.0-or-later"` in `plugins/Cargo.toml` |
 | The in-house JSFX, the interchange-format specifications and the `.golem` parser module (§2) | **MIT** | [`LICENSE.MIT`](../LICENSE.MIT), copied as `reaper/Effects/LICENSE`, lists the paths; `// SPDX-License-Identifier: MIT` on line 2 of each JSFX and at the top of `bridge/golemfile.py` |
 | Factory presets, patches and drum grooves (§5 bis) | **CC0 1.0** | This page |
 | `reaper/Effects/golem_super8` | **LGPL-2.0-or-later**, same terms as its upstream (§3) | Its header (`// SPDX-License-Identifier: LGPL-2.0-or-later`) |
@@ -115,8 +115,8 @@ the upstream URL and the licence file next to it.
 
 - **REAPER** is proprietary and keeps its own licence. golem installs it (`provision/install-reaper.sh`,
   `provision/desktop.py`); it does not redistribute it.
-- **Plugins** (NAM, Vital, Surge XT, sfizz, guitarix, Calf, x42, ZamAudio, BYOD, DrumGizmo,
-  Airwindows…) each keep their own licence. None is in the repository: the installer downloads or
+- **Plugins** (NAM, Vital, Surge XT, sfizz, guitarix, Calf, x42, ZamAudio, DrumGizmo,
+  Dragonfly…) each keep their own licence. None is in the repository: the installer downloads or
   builds them from pinned sources. **Settings ▸ About** in the app lists the embedded components
   and their licences (`app/page-licenses.js`, `GET /api/system/libraries` from
   `provision/components.json`).

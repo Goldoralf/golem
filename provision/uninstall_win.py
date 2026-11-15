@@ -947,7 +947,7 @@ def build_plan(ctx):
                       "uninstall" if exe else "manual", _exe=exe, _args=_with_silent(exe, args, family) if exe else [],
                       _probes=present))
 
-    # ── plugins : TapeDelay2 (provision/airwindows.py, sans droits) ──
+    # ── plugins : TapeDelay2 (posé par provision/airwindows.py jusqu'au 2026-11-15, sans droits) ──
     td = os.path.join(ctx.localappdata, "Programs", "Common", "VST3", "GoleM")
     if os.path.isdir(td):
         o, rid = origin_of([td] + [os.path.join(td, n) for n in os.listdir(td)])

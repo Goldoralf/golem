@@ -143,7 +143,7 @@ def main():
             lines("@@phase packages", "▶ Paquets apt", "→ 38 packages (dry)",
                   "@@phase realtime", "▶ Temps-réel : groupe audio + limits",
                   "@@phase reaper", "▶ Reaper", "→ already installed",
-                  "@@phase plugins", "▶ Plugins LV2 (releases GitHub : NAM, AIDA-X, Ratatouille, Aether)",
+                  "@@phase plugins", "▶ Plugins (releases GitHub : NAM, Dexed)",
                   "▶ Plugins LV2 des blocs FX", "▶ sfizz",
                   *(["@@warn |Vital is missing — the synth of the Keys lane stays silent. It needs a free vital.audio "
                      "account: get it from vital.audio, golem finds it at its next start."] if "vital" in warn else []),
@@ -151,7 +151,7 @@ def main():
                   "@@sub NAM fix (amp and pedal blocks) — 2 of 4",
                   *(["  ⚠ NAM corrigé NON installé (dry)", "@@warn nam|The NAM fix could not be built — amps play with the "
                      "standard NAM, which can stop the engine on very fast patch changes."] if "nam" in warn else []),
-                  "@@sub Prisma (Grit block) — 3 of 4", "@@sub Spectral blocks (Spectral Comp, Stretch, Freeze) — 4 of 4",
+                  "@@sub Prisma (Grit block) — 3 of 4", "@@sub Spectral blocks (Spectral Comp, Stretch) — 4 of 4",
                   "@@phase golem", "▶ Config Reaper (OSC + device audio)", "▶ Bridge Python (venv + dépendances)",
                   "@@phase sounds", "▶ Sons : NAM / IR + piano Salamander (dry)",
                   "@@sub Piano (Salamander) — 1 of 2", "@@progress 0 1058", "@@progress 300 1058", "@@progress 707 1058",

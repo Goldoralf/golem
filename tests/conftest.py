@@ -183,6 +183,6 @@ def _pas_le_vrai_dossier_surveille(monkeypatch, tmp_path_factory):
 @pytest.fixture(autouse=True)
 def _pas_le_vrai_recu(monkeypatch, tmp_path_factory):
     """Aucun test n'écrit le VRAI reçu d'installation (~/.local/share/golem/install-receipt.json, 2026-10-15) :
-    provision/airwindows.py, reaper-ini-setup.py et le bridge y notent ce qu'ils posent. Un fichier à part par
+    provision/dragonfly.py, reaper-ini-setup.py et le bridge y notent ce qu'ils posent. Un fichier à part par
     test, qui n'existe pas tant que le test ne le crée pas."""
     monkeypatch.setenv("GOLEM_RECEIPT", str(tmp_path_factory.mktemp("receipt") / "install-receipt.json"))

@@ -160,16 +160,15 @@ apart from **steps** — what the server runs (`installer/phases.py`):
   failure), and it now targets `library/di-refs/`, where the bridge reads them (it was `library/di/`). Windows and
   macOS (`desktop_steps._sound_di`) do the same, and check the archive's pinned hash, which they did not.
 - **Prebuilt plugins (2026-10-23).** The plugins golem used to compile at every install — the IR convolver and NAM
-  with our crash fixes, Prisma, Spectral Compressor, PaulXStretch, GoleM Freeze — are built once by a GitHub Action in
+  with our crash fixes, Prisma, Spectral Compressor, PaulXStretch — are built once by a GitHub Action in
   the **public** repository [`Goldoralf/golem-binaries`](https://github.com/Goldoralf/golem-binaries) (same pinned
   commits and patches, `-march=x86-64-v3` at most, no AVX-512) and published as release `linux-plugins-v2` (v1 until 2026-11-03). Each
   `install-*.sh` first runs `provision/fetch-prebuilt.sh` (archive pinned in `downloads.sha256`; the patch marker is
   checked as for a local build; the libraries the binaries load are installed by name, `lib-prebuilt.sh
   runtime_libs`), and compiles only if that fails or `GOLEM_BUILD_FROM_SOURCE=1`. The phase "Plugins built for
   golem" then takes ~30 s instead of ~12 min; a script that must compile says so (`@@est-add`, its measured time)
-  and the countdown grows accordingly. GoleM Freeze is golem's own code: its prebuilt binary is used only while
-  `plugins/` hashes to `FREEZE_SRC_SHA` (`install-spectral.sh`), else it is compiled — a change to the block needs a
-  new `linux-plugins-vN` release. The same repository hosts `nam-0.7.15-golem` (Windows, macOS) and
+  and the countdown grows accordingly. (GoleM Freeze, golem's own Rust plugin, left the installer on 2026-11-15
+  with its block; its `plugins/` source went with it.) The same repository hosts `nam-0.7.15-golem` (Windows, macOS) and
   `sfizz-1.2.3-golem`: a release of the private golem repository answers 404 to an installer not signed in to GitHub.
 - The NAM fix fetches Eigen from gitlab.com, which refuses "due to load" at times (2 VM installs out of 3):
   `install-nam.sh` retries the submodules 4 times (0, 20, 60, 120 s). Git checks the pinned commits, so a retry
@@ -186,7 +185,7 @@ apart from **steps** — what the server runs (`installer/phases.py`):
 | Linux | Windows | macOS |
 |---|---|---|
 | **source** — clone (or `git pull --ff-only` over an existing install) from the installer's copy, `origin` reset to the public repository; an extracted archive is copied with `rsync`, then linked to the repository once git is installed ([`update.md`](update.md) §2) | **source** — copy into the chosen folder (`~\golem`); over an existing install the code is updated and **local state is never overwritten** (`presets`, `sets`, `mappings`, `config`, `setlists`, `recordings`, `assets`) | **source** — same as Windows |
-| **system** — `provision/install.sh` (`--light` when no pack is chosen, `GOLEM_PACKS=<list>`) | **system** — **one UAC prompt** for `provision/windows/install-system.ps1`: Visual C++ runtime (without it `python-rtmidi` does not load: no foot controller, no MIDI), REAPER if missing, NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw), Proteus (the Boost block), firewall rules; the bridge setup then adds, without admin rights, Airwindows TapeDelay2 and the Dragonfly Hall, Plate and Room reverbs (`provision/airwindows.py`, `provision/dragonfly.py`) | **system** — **one administrator prompt** (`osascript … with administrator privileges`) for `provision/macos/install-system.sh`: REAPER (`.dmg`), NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw, Rosetta first), the Dragonfly Hall, Plate and Room reverbs, Proteus (the Boost block) |
+| **system** — `provision/install.sh` (`--light` when no pack is chosen, `GOLEM_PACKS=<list>`) | **system** — **one UAC prompt** for `provision/windows/install-system.ps1`: Visual C++ runtime (without it `python-rtmidi` does not load: no foot controller, no MIDI), REAPER if missing, NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw), firewall rules; the bridge setup then adds, without admin rights, the Dragonfly Hall, Plate and Room reverbs (`provision/dragonfly.py`) | **system** — **one administrator prompt** (`osascript … with administrator privileges`) for `provision/macos/install-system.sh`: REAPER (`.dmg`), NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw, Rosetta first), the Dragonfly Hall, Plate and Room reverbs, Proteus (the Boost block) |
 | — | **bridge** — `python -m provision.desktop setup` | **bridge** — same |
 | — | **sounds** — reference DIs, and the `guitar` pack (Shinyguitar, the Standard block's pompe) when chosen, checked against `provision/downloads.sha256` (both non-fatal) | **sounds** — same |
 | **profile** — `config/engine.json`, `provision/install-desktop.sh` (icons, `golem` command: desktop and server, always both — no autostart, no hardening) | **profile** — `golem.cmd` (console launcher for troubleshooting) and shortcuts "golem", "golem server" (Desktop, Start menu) and "Stop golem" (Start menu) | **profile** — golem.app, golem server.app, Stop golem.app in `~/Applications` |
@@ -196,7 +195,7 @@ apart from **steps** — what the server runs (`installer/phases.py`):
 `provision/macos/pins.json` (version, URL, sha256 — read with `plutil` on macOS). The Microsoft
 runtime has no fixed URL: its **signature** is checked instead. A component already present is left
 as is (never downgrade someone's REAPER) and is judged after installation. Unsigned third-party
-installers (AVL, sfizz, PawPaw, Proteus) and the Dragonfly archive are trusted only through their pinned hash.
+installers (AVL, sfizz, PawPaw) and the Dragonfly archive are trusted only through their pinned hash.
 
 ### Privileges
 
@@ -439,7 +438,7 @@ nothing.
 - **`golem update`** from the installer (same screens, steps "source" and "system --light").
 - Uninstall on Windows and macOS (the Linux one is coded: [`uninstall.md`](uninstall.md) §4).
 - Windows: ffmpeg (preview encoding) is not installed; block plugins other than the core, AVL, sfizz,
-  Vitalium, Proteus, Dragonfly and TapeDelay2 are not installed (blocks say "plugin not installed on this
+  Vitalium, Dragonfly and Surge XT Effects are not installed (blocks say "plugin not installed on this
   machine"); a block whose plugin has no Windows build says "only available on a Linux golem" unless a golem
   JSFX plays it ([platforms.md](platforms.md) §5).
 - macOS: signing / notarisation.

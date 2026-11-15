@@ -270,7 +270,7 @@ def test_bootstrap_depose_le_fragment_python():
 
 # ── le script élevé (lu, pas exécuté) ────────────────────────────────────────────────────────────
 COMPONENTS = {"vcredist": "burn", "reaper": "nsis", "nam_vst3": "inno", "avldrums": "nsis", "sfizz": "inno",
-              "pawpaw": "inno", "proteus": "inno"}
+              "pawpaw": "inno"}            # Proteus : plus posé depuis le 2026-11-15 (bloc boost retiré)
 
 
 def test_script_eleve_recoit_le_recu_en_parametre():
@@ -518,31 +518,7 @@ def test_autostart_note_le_lien(D, R, tmp_path, monkeypatch):
     assert any(it["path"] == R.tilde(str(link)) and it["group"] == "golem" for it in _data(R)["items"])
 
 
-# ── TapeDelay2 et le plan d'alimentation ─────────────────────────────────────────────────────────
-def _fake_zip(A, plat, data):
-    import io
-    import zipfile
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w") as z:
-        z.writestr(A.PINS[plat]["member"], data)
-    return buf.getvalue()
-
-
-def test_tapedelay_note_sous_windows_seulement_dans_un_recu_existant(R, tmp_path, monkeypatch):
-    import hashlib
-    from provision import airwindows as A
-    data = b"fake TapeDelay264"
-    monkeypatch.setitem(A.PINS["win32"], "sha256", hashlib.sha256(data).hexdigest())
-    monkeypatch.setattr(A, "dest_dir", lambda platform=None: tmp_path / "VST3" / "GoleM")
-    A.install("win32", fetch=lambda url: _fake_zip(A, "win32", data), log=lambda *a: None)
-    assert not R.exists()                                     # pas de reçu : on n'en crée pas
-    (tmp_path / "VST3" / "GoleM" / "TapeDelay264.dll").unlink()
-    R.set_root("/x")
-    dest = A.install("win32", fetch=lambda url: _fake_zip(A, "win32", data), log=lambda *a: None)
-    it = next(i for i in _data(R)["items"] if i["path"] == R.tilde(str(dest)))
-    assert it["group"] == "plugins" and it["by"] == "provision/airwindows.py"
-
-
+# ── le plan d'alimentation (TapeDelay2 n'est plus posé depuis le 2026-11-15 : provision/airwindows.py est retiré) ──
 def test_le_plan_d_alimentation_d_avant_va_au_recu(monkeypatch, tmp_path):
     from bridge import config as C
     from bridge import desktop_power as P

@@ -453,8 +453,8 @@ def run_step(sid, ctx):
         # demande un compte vital.audio : l'écran Done le propose, on ne peut pas le télécharger pour toi)
         # -Sfizz (2026-10-11) : le lecteur SFZ — le piano Keys ET les kits de batterie importés (VST3, lu par
         # l'état VST3 : docs/drums-kit.md §8) ; l'interrupteur existait sans que l'installeur le passe
-        # -Proteus (2026-10-22) : le bloc boost — la table Windows le nommait, rien ne l'installait
-        switches = ["-Vcredist", "-Nam", "-Avldrums", "-Vitalium", "-Sfizz", "-Proteus", "-Firewall",
+        # -Proteus : plus passé (2026-11-15) — le bloc boost est retiré (catalogue v48)
+        switches = ["-Vcredist", "-Nam", "-Avldrums", "-Vitalium", "-Sfizz", "-Firewall",
                     "-BridgePython", bridge_python()]
         # OÙ EST REAPER, dit au script élevé (il ne regardait que Program Files) : le pare-feu vise CE reaper.exe,
         # et une installation demandée ici va dans le dossier choisi à l'écran

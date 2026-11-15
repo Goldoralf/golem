@@ -45,17 +45,10 @@ def test_windows_et_aliases():
     assert re.search(r'^\s*\["phaser-js"\]\s*=\s*\{[^}\n]*\},', src, re.M)
 
 
-def test_le_plugin_est_epingle_par_son_fichier(tmp_path, monkeypatch):
-    import hashlib, io, zipfile
-    from provision import airwindows as A
-    data = b"fake TapeDelay2"
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w") as z:
-        z.writestr(A.PINS["linux"]["member"], data)
-    monkeypatch.setattr(A, "dest_dir", lambda platform=None: tmp_path)
-    import pytest
-    with pytest.raises(RuntimeError, match="changed upstream"):   # un binaire recompilé n'est pas posé
-        A.install("linux", fetch=lambda url: buf.getvalue(), log=lambda *a: None)
-    assert not list(tmp_path.iterdir())
-    monkeypatch.setitem(A.PINS["linux"], "sha256", hashlib.sha256(data).hexdigest())
-    assert A.install("linux", fetch=lambda url: buf.getvalue(), log=lambda *a: None).read_bytes() == data
+def test_tapedelay2_n_est_plus_installe():
+    # le bloc delay-tape-aw est retiré (catalogue v48) : plus d'installateur Airwindows (2026-11-15) ; le
+    # désinstallateur garde son entrée pour les installs plus anciennes
+    assert not os.path.exists(os.path.join(ROOT, "provision", "airwindows.py"))
+    for f in ("provision/install.sh", "provision/desktop.py", "installer/platform_linux.py"):
+        assert "airwindows.py" not in open(os.path.join(ROOT, f), encoding="utf-8").read(), f
+    assert "TapeDelay2.so" in open(os.path.join(ROOT, "provision", "uninstall.py"), encoding="utf-8").read()

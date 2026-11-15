@@ -45,6 +45,27 @@ in the repository.
 Kept: `whammy-dt` and `midi-pedal` (MIDI hardware, drawn as hardware units), and `spectral-comp` until golem-fx ships
 its own pedal.
 
+### The installers follow (2026-11-15)
+
+**CODED** — the third-party plugins that no block uses any more left the installation on all three OS (and
+`provision/components.json`, so System ▸ Licences ▸ Libraries no longer lists them):
+
+- **AIDA-X, Ratatouille, Aether** (Linux, `provision/plugins.sh`): the `amp` block plays NAM; no block named them.
+- **Proteus** (Linux `.deb`, Windows `-Proteus`, macOS `--proteus`): `boost` is retired. **BYOD** (Linux): no block.
+- **LSP** (Linux, `packages.txt`): no block. `app/vst-host-model.mjs` still recognises it among the user's plugins.
+- **Airwindows TapeDelay2** (Linux, Windows; macOS manual pin): `delay-tape-aw` is retired. `provision/airwindows.py`
+  and `provision/plugins-deb.sh` are deleted.
+- **GoleM Freeze** (Linux, `install-spectral.sh`): `freeze` is retired; its Rust source `plugins/` is deleted.
+  Spectral Compressor and PaulXStretch stay in the same script.
+- **macOS manual pins**: Spectral Shift (`pitch-spectral` retired); the x42 pin no longer mentions the EQ (`eq-para`
+  retired) — the limiter and pitch-correct still need x42.
+
+The uninstallers (`provision/uninstall.py`, `provision/uninstall_win.py`) keep their explicit entries for all of
+them: an older install placed them and must still be cleaned up. **What stays until golem-fx ships in the
+installers**: guitarix, Calf, x42 / fat1, Dragonfly, ZamAudio, mda, Surge XT, Prisma, PaulXStretch, Spectral
+Compressor (nih-plug), zeroconvo, NAM, sfizz, setBfree, Dexed, Vital, AVL Drumkits, DrumGizmo — they still play blocks:
+the effects wherever golem-fx is not installed, the rest as instruments, captures and cabs. `reaper/Scripts/golem_rig.lua` keeps its dead Ratatouille path for now.
+
 ## 2. Will golem have only golem-fx pedals?
 
 For the **effects**, yes: decided on 2026-11-15 ("the golem will run only with our blocks", §1 bis). What remains of

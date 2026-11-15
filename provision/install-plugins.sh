@@ -24,7 +24,6 @@ echo "== 1. Plugins LV2 par apt (universe) =="
 # guitarix-lv2        : gx_* (wah, octaver gx_oc_2, vibrato, detune, muff, scream, echocat, shimmer…)
 # zam-plugins         : Zam* (ZamGrains = granular freeze, ZamGEQ31, ZaMaximX2…)
 # mda-lv2             : mda (RingMod, Degrade=bitcrusher, RezFilter, SubSynth, TalkBox…)
-# byod                : BYOD (distorsion modulaire)
 # avldrums.lv2 (+soundfont) : moteur de batterie « avldrums » (blocs drums)
 # drumgizmo           : moteur de batterie multi-micro (kit Aasimonster, cf. fetch-assets.sh)
 #   ⚠ ces deux-là étaient ABSENTS d'ici : présents sur le poste de dev par une install
@@ -32,7 +31,7 @@ echo "== 1. Plugins LV2 par apt (universe) =="
 #   des trois moteurs de batterie (2026-08-02).
 apt-get -o DPkg::Lock::Timeout=300 update -qq || echo "  ⚠ un dépôt a échoué — on continue avec l'index disponible"
 # une seule liste : celle qu'on demande à apt est celle que le reçu note comme explicite (apt.requested)
-APT_PKGS=(calf-plugins x42-plugins dragonfly-reverb-lv2 guitarix-lv2 zam-plugins mda-lv2 byod
+APT_PKGS=(calf-plugins x42-plugins dragonfly-reverb-lv2 guitarix-lv2 zam-plugins mda-lv2
           avldrums.lv2 avldrums.lv2-soundfont drumgizmo)
 receipt apt-snapshot before
 receipt apt-requested "${APT_PKGS[@]}"

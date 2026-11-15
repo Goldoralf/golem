@@ -64,12 +64,13 @@ def test_une_archive_ne_sort_jamais_de_son_dossier(tmp_path, monkeypatch):
     assert not (tmp_path / "evil.dll").exists()
 
 
-def test_le_setup_windows_et_l_installeur_posent_reverbes_et_proteus():
+def test_le_setup_windows_pose_les_reverbes_et_plus_proteus():
     desk = open(os.path.join(ROOT, "provision", "desktop.py"), encoding="utf-8").read()
     assert "dragonfly.install()" in desk
+    # Proteus : le bloc boost est retiré (catalogue v48) — plus posé depuis le 2026-11-15
     inst = open(os.path.join(ROOT, "installer", "platform_windows.py"), encoding="utf-8").read()
-    assert '"-Proteus"' in inst
+    assert '"-Proteus"' not in inst
     ps1 = open(os.path.join(ROOT, "provision", "windows", "install-system.ps1"), encoding="utf-8-sig").read()
-    assert "[switch]$Proteus" in ps1 and "CheckSha $pr $pins.proteus.sha256" in ps1
+    assert "[switch]$Proteus" not in ps1 and "$pins.proteus" not in ps1
     pins = json.load(open(os.path.join(ROOT, "provision", "windows", "pins.json"), encoding="utf-8"))
-    assert len(pins["proteus"]["sha256"]) == 64 and pins["proteus"]["url"].startswith("https://github.com/GuitarML/")
+    assert "proteus" not in pins

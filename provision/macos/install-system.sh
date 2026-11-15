@@ -4,7 +4,7 @@
 # Le pendant de provision/windows/install-system.ps1 : lancé UNE fois par installer/platform_macos.py
 # derrière la fenêtre d'administrateur de macOS (osascript « with administrator privileges »).
 #
-#   install-system.sh --log FICHIER [--reaper] [--nam] [--avldrums] [--sfizz] [--vitalium] [--dragonfly] [--proteus]
+#   install-system.sh --log FICHIER [--reaper] [--nam] [--avldrums] [--sfizz] [--vitalium] [--dragonfly]
 #
 # Chaque fichier vient de provision/macos/pins.json (adresse ET empreinte) : une empreinte qui ne
 # correspond pas ARRÊTE l'étape, on ne pose pas un binaire que personne n'a vérifié. Écrit SANS Mac :
@@ -15,7 +15,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 PINS="$HERE/pins.json"
 LOG=/dev/stdout
-DO_REAPER=0; DO_NAM=0; DO_AVL=0; DO_SFIZZ=0; DO_VITALIUM=0; DO_DRAGONFLY=0; DO_PROTEUS=0
+DO_REAPER=0; DO_NAM=0; DO_AVL=0; DO_SFIZZ=0; DO_VITALIUM=0; DO_DRAGONFLY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --log) LOG="$2"; shift ;;
@@ -25,7 +25,6 @@ while [ $# -gt 0 ]; do
     --sfizz) DO_SFIZZ=1 ;;
     --vitalium) DO_VITALIUM=1 ;;
     --dragonfly) DO_DRAGONFLY=1 ;;
-    --proteus) DO_PROTEUS=1 ;;
     *) echo "unknown option $1" >>"$LOG"; exit 2 ;;
   esac
   shift
@@ -181,7 +180,7 @@ if [ "$DO_VITALIUM" = 1 ]; then
   fi
 fi
 
-# ── un paquet dans une image disque : Dragonfly, Proteus ──
+# ── un paquet dans une image disque : Dragonfly ──
 install_dmg_pkg() {  # install_dmg_pkg <clé de pins.json> <nom> — l'image se démonte même si le paquet échoue
   local dmg mnt pkg rc=0
   dmg="$(fetch "$1")" || exit 1
@@ -214,17 +213,7 @@ if [ "$DO_DRAGONFLY" = 1 ]; then
   fi
 fi
 
-# ── Proteus (GuitarML) : le bloc boost ──
-if [ "$DO_PROTEUS" = 1 ]; then
-  if [ -d "/Library/Audio/Plug-Ins/VST3/Proteus.vst3" ]; then
-    ok "Proteus already installed — kept as is"
-  else
-    say "Proteus $(pin proteus.version) (the Boost block — VST3)"
-    install_dmg_pkg proteus "Proteus"
-    [ -d "/Library/Audio/Plug-Ins/VST3/Proteus.vst3" ] || fail "Proteus.vst3 missing after its installer"
-    ok "Proteus in /Library/Audio/Plug-Ins/VST3"
-  fi
-fi
+# Proteus (le bloc boost) : RETIRÉ (2026-11-15) — le bloc est retiré du catalogue (v48).
 
 ok "system step done"
 exit 0

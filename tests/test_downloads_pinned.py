@@ -33,7 +33,7 @@ def test_la_table_est_bien_formee_et_sans_doublon():
 
 def test_les_urls_ecrites_en_dur_sont_epinglees():
     rows = _table()
-    for script in ("plugins.sh", "plugins-deb.sh", "fetch-assets.sh"):
+    for script in ("plugins.sh", "fetch-assets.sh"):
         src = "\n".join(ln for ln in open(os.path.join(ROOT, "provision", script), encoding="utf-8")
                         if not ln.lstrip().startswith("#"))                     # une ligne commentée ne télécharge rien
         for url in re.findall(r'"(https://[^"$]+\.(?:deb|zip|tgz|tar\.gz|tar\.xz|so))"', src):

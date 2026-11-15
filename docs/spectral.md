@@ -3,7 +3,9 @@
 > **Status: CODED** — three spectral blocks (`spectral-comp`, `stretch`, `freeze`) in the catalog, built from
 > pinned sources by `provision/install-spectral.sh`; validated on the bench, not yet judged by ear.
 > **Freeze is QUARANTINED** since 2026-11-12 (catalog v35, the maintainer's call: it does not work well) — out of the drawer,
-> the AI vocabulary and the compile until it is reworked.
+> the AI vocabulary and the compile until it is reworked. **Freeze is RETIRED** since catalog v48 (2026-11-15): its
+> documents become `granular`; `GoleM Freeze` left the installer and its `plugins/` source left the repository the
+> same day. The §`freeze` section below is history.
 
 golem does not clone commercial spectral suites (no Linux build to study, licences forbid decompiling, and copying
 code or UI would be infringement). The DSP is public (phase vocoder, bin-wise companders): golem reuses two
@@ -94,11 +96,10 @@ plugins' own defaults would leave Spectral Comp at 1:1 and Stretch with the dire
 2. Rust: user-side `rustup` (`~/.cargo`, minimal profile, shell untouched) if missing;
 3. nih-plug at a pinned commit → `Spectral Compressor.clap` + `.vst3` in `~/.clap` / `~/.vst3`;
 4. PaulXStretch at a pinned commit → `PaulXStretch.clap` + `.vst3`;
-5. `plugins/golem_freeze` → `GoleM Freeze.clap` + `.vst3`;
-6. restart REAPER (it only rescans at startup).
+5. restart REAPER (it only rescans at startup).
 
-Licences: `provision/components.json` lists `fftw3`, `nih-plug`, `spectral-compressor`, `paulxstretch` and the
-freeze block (System ▸ Licences ▸ Libraries).
+Licences: `provision/components.json` lists `fftw3`, `nih-plug`, `spectral-compressor` and `paulxstretch`
+(System ▸ Licences ▸ Libraries).
 
 ## 5. Validation
 

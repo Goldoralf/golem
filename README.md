@@ -136,7 +136,6 @@ always the client; golem.fm never connects to it.
 | `library/` | Catalogues (blocks, sounds, pedals), factory content in `library/factory/` |
 | `config/` | Modes, sound-card and controller descriptors, pedalboards, engines |
 | `provision/` | Install, start, harden, update |
-| `plugins/` | In-house plugins (Rust) |
 | `tools/` | Checks and probes (`check-*`), offline builders |
 | `tests/` | The Python test suite |
 | `docs/` | References and contracts — start at [`docs/README.md`](docs/README.md) |

@@ -74,7 +74,7 @@ Rules:
 - **apt.requested** (2026-10-15): the package names each install script passes to `apt-get install` or `dpkg -i`
   (`receipt.py apt-requested PKG…`, called next to each `apt-snapshot before`: `install.sh` with `packages.txt`,
   `install-plugins.sh`, `install-zconvo.sh`, `install-nam.sh`, `install-prisma.sh`, `install-spectral.sh`,
-  `install-sfizz.sh`, `plugins-deb.sh`, `setup-net-sudo.sh`, `harden.sh` — the scripts keep one array for both
+  `install-sfizz.sh`, `plugins-deb.sh` (removed 2026-11-15), `setup-net-sudo.sh`, `harden.sh` — the scripts keep one array for both
   calls, so the two lists cannot drift; `tests/test_receipt.py` fails if a script calls apt without it). It
   records the **request**, not the effect: a requested package that was already installed is not in `apt.added`,
   and the uninstaller only keeps `apt.requested ∩ apt.added`. `pkg:arch` is stored as `pkg`; a `.deb` path is
@@ -448,7 +448,7 @@ Run it twice: on a machine without REAPER (golem installs it) and on one where R
   OneDrive-redirected Desktop is right), group `golem` — including **"Uninstall golem"** (Start menu): the **base**
   Python's `pythonw.exe` (`home` of `.venv\pyvenv.cfg`, else `sys._base_executable`; never the venv's) running
   `<root>\installer\server.py --uninstall --root <root> --open`, working folder the user's home. The autostart link
-  `Startup\golem server.lnk` when turned on. TapeDelay2 (`provision/airwindows.py`, group `plugins`), the Dragonfly bundles (`provision/dragonfly.py`, group `plugins`).
+  `Startup\golem server.lnk` when turned on. TapeDelay2 (`provision/airwindows.py` until 2026-11-15, group `plugins`), the Dragonfly bundles (`provision/dragonfly.py`, group `plugins`).
 - **Power plan**: `bridge/desktop_power.py` records `prior.power_scheme = {guid, name}` the first time the boost
   changes the plan; `config\.power.json` keeps working for boost OFF.
 - **Licence**: `installer/platform_windows.py` sets `RECEIPT = True`, so screen 3's `prior.reaper.license_present`

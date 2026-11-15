@@ -602,7 +602,10 @@ TWO_AMPS = {"id": "two-amps", "name": "Two amps", "role": "guitar", "kind": "pat
 def _amp_lab(tmp_path, monkeypatch, patch):
     from bridge import compile_rig
     files = {}
-    for ref, name in (("6237", "fender-deluxe.nam"), ("6440", "evh-5150.nam"), (compile_rig.DEFAULT_CAB, "mesa.wav")):
+    # « head-a / head-b » : des têtes qu'aucun catalogue local ne connaît (6237/6440 sont, sur un rack réel, des captures
+    # ampli + baffle : _carries_cab y lit le catalogue des tons et n'ajoute pas de baffle par défaut)
+    for ref, name in (("6237", "fender-deluxe.nam"), ("6440", "evh-5150.nam"), ("head-a", "head-a.nam"),
+                      ("head-b", "head-b.nam"), (compile_rig.DEFAULT_CAB, "mesa.wav")):
         p = tmp_path / "lib" / name
         p.parent.mkdir(exist_ok=True)
         if name.endswith(".nam"):
@@ -749,7 +752,7 @@ def test_un_seul_ampli_se_pose_comme_avant(tmp_path, monkeypatch):
 def test_deux_tetes_chacune_son_baffle_qui_la_suit(tmp_path, monkeypatch):
     """Deux têtes NAM sans cab sur le path : chacune son baffle par défaut, juste derrière elle, qui s'éteint avec
     elle (scène comme pied) — sinon la DI de la tête coupée passerait dans son IR."""
-    patch = _variant([{"id": "a1", "type": "amp-nam", "ref": "6237"}, {"id": "a2", "type": "amp-nam", "ref": "6440"}],
+    patch = _variant([{"id": "a1", "type": "amp-nam", "ref": "head-a"}, {"id": "a2", "type": "amp-nam", "ref": "head-b"}],
                      [("A", {"a1": True, "a2": False}), ("B", {"a1": False, "a2": True})], "two-heads")
     lab = _amp_lab(tmp_path, monkeypatch, patch)
     lab.run(action="rig_recall", preset="two-heads", scene="A")

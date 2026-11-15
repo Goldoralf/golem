@@ -267,8 +267,8 @@ def test_la_carte_vivante_du_moteur_est_celle_que_le_bridge_lit(tmp_path, monkey
 
 
 # ── 5. des presets tirés au hasard : les invariants tiennent ─────────────────────────────────────────
-POOL = ["gate", "comp", "eq", "delay", "clean-boost", "chorus-js", "phaser-js", "flanger-js", "killswitch",
-        "boost", "reverb-room", "reverb-plate", "delay-tape", "wah"]
+POOL = ["gate", "comp", "eq", "delay", "clean-boost", "chorus", "phaser-js", "flanger-js", "killswitch",
+        "guitar-drive", "reverb-room", "reverb-plate", "wah"]
 
 
 def _random_preset(seed):

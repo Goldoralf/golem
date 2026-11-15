@@ -677,6 +677,7 @@ def list_patches():
     retouche. La question a changé de forme : on ne demande plus quels morceaux utilisent ce
     patch, on choisit dans quels morceaux le déposer.
     """
+    from . import option_renames
     from .preset_view import features
     out = []
     for path in sorted(glob.glob(os.path.join(PATCHES_DIR, "*.json"))):
@@ -685,6 +686,7 @@ def list_patches():
         except Exception:
             continue
         if isinstance(d, dict):
+            option_renames.apply(d)                      # comme get_patch : un type retiré se lit déjà traduit (v48)
             d["features"] = features(d, capture=True)    # le filtre « With » du sélecteur (calculé, jamais écrit)
         out.append(d)
     return out

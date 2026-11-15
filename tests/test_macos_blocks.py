@@ -47,7 +47,7 @@ def test_the_mac_table_rests_on_what_vendors_publish():
 def test_x42_lv2_resolve_like_the_rack():
     """x42 publie limiter, autotune et eq pour macOS : AUCUNE entrée stricte, le nom Linux du LV2 sert."""
     _, _, mac = _tables()
-    for t in ("limiter", "pitch-correct", "eq-para"):
+    for t in ("limiter", "pitch-correct"):                # eq-para retiré (catalogue v48)
         assert t not in mac["effects"] and mac["unmapped"][t]["family"] == "installed-plugin", t
     assert mac["unmapped"]["drumkit"]["family"] == "installed-plugin"
     assert mac["unmapped"]["vital"]["family"] == "installed-plugin"

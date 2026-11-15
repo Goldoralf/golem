@@ -1,0 +1,14 @@
+{
+ "name": "Rhythm heads",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "feedback": 41.0,
+  "mix": 42.0,
+  "drive": 30.0,
+  "taps": "Heads 1+2+3"
+ },
+ "migrated_from": "delay-echo"
+}

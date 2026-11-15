@@ -1,0 +1,19 @@
+{
+ "name": "Bass envelope",
+ "type": "autowah",
+ "inst": "bass",
+ "factory": true,
+ "params": {
+  "type": "Low-pass",
+  "wah": 0.7,
+  "low": 214.0,
+  "high": 1284.0,
+  "peak": 12.2,
+  "attack": 45.3,
+  "release": 1204.0,
+  "rate": 0.24,
+  "source": "Envelope"
+ },
+ "default": false,
+ "migrated_from": "rezfilter"
+}

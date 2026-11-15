@@ -1,0 +1,14 @@
+{
+ "name": "Echorec Time",
+ "type": "delay",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "feedback": 26.0,
+  "mix": 38.0,
+  "drive": 25.0,
+  "taps": "Single"
+ },
+ "migrated_from": "delay-echo"
+}

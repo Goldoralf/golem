@@ -148,12 +148,12 @@
     "post": [
      {
       "id": "b2",
-      "type": "phaser",
+      "type": "phaser-js",
       "foot": 7
      },
      {
       "id": "b3",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 8
      }
     ]
@@ -343,12 +343,12 @@
   "post": [
    {
     "id": "b2",
-    "type": "phaser",
+    "type": "phaser-js",
     "foot": 7
    },
    {
     "id": "b3",
-    "type": "delay-tape",
+    "type": "delay",
     "foot": 8
    }
   ]

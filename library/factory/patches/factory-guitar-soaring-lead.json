@@ -96,29 +96,26 @@
     "post": [
      {
       "id": "eq",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 100,
-       "bass": 0,
-       "f1": 400,
-       "g1": -1.5,
-       "f2": 900,
-       "g2": 2,
-       "f3": 6500,
-       "g3": -2.5,
-       "treble": 0
+       "lowcut": 100.0,
+       "lows": 0.0,
+       "midgain": 2.0,
+       "midfreq": 900.0,
+       "mid2gain": -2.5,
+       "mid2freq": 6500.0,
+       "highs": 0.0
       }
      },
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "chorus",
       "params": {
-       "length": 20,
-       "voices": 3,
        "rate": 0.3,
-       "wet": -10,
-       "dry": 0
+       "delay_base": 20.0,
+       "depth": 5.0,
+       "mix": 0.32,
+       "voices": "3"
       }
      },
      {
@@ -181,10 +178,11 @@
        "thresh": -68
       },
       "eq": {
-       "lowcut": 120,
-       "g1": -2,
-       "g2": 0,
-       "g3": -1
+       "lowcut": 120.0,
+       "midgain": 0.0,
+       "midfreq": 500.0,
+       "mid2gain": -2.0,
+       "mid2freq": 1000.0
       },
       "echo": {
        "feedback": 45,
@@ -222,10 +220,11 @@
        "thresh": -66
       },
       "eq": {
-       "lowcut": 90,
-       "g1": -1,
-       "g2": 0,
-       "g3": -1
+       "lowcut": 90.0,
+       "midgain": 0.0,
+       "midfreq": 500.0,
+       "mid2gain": -1.0,
+       "mid2freq": 1000.0
       },
       "dly": {
        "mix": 14,
@@ -259,11 +258,11 @@
        "release": 60
       },
       "eq": {
-       "lowcut": 90,
-       "f1": 450,
-       "g1": -3,
-       "f2": 1500,
-       "g2": 1
+       "lowcut": 90.0,
+       "midgain": 1.0,
+       "midfreq": 1500.0,
+       "mid2gain": -3.0,
+       "mid2freq": 450.0
       },
       "verb": {
        "mix": 8,
@@ -361,10 +360,11 @@
      "thresh": -68
     },
     "eq": {
-     "lowcut": 120,
-     "g1": -2,
-     "g2": 0,
-     "g3": -1
+     "lowcut": 120.0,
+     "midgain": 0.0,
+     "midfreq": 500.0,
+     "mid2gain": -2.0,
+     "mid2freq": 1000.0
     },
     "echo": {
      "feedback": 45,
@@ -407,10 +407,11 @@
      "thresh": -66
     },
     "eq": {
-     "lowcut": 90,
-     "g1": -1,
-     "g2": 0,
-     "g3": -1
+     "lowcut": 90.0,
+     "midgain": 0.0,
+     "midfreq": 500.0,
+     "mid2gain": -1.0,
+     "mid2freq": 1000.0
     },
     "dly": {
      "mix": 14,
@@ -449,11 +450,11 @@
      "release": 60
     },
     "eq": {
-     "lowcut": 90,
-     "f1": 450,
-     "g1": -3,
-     "f2": 1500,
-     "g2": 1
+     "lowcut": 90.0,
+     "midgain": 1.0,
+     "midfreq": 1500.0,
+     "mid2gain": -3.0,
+     "mid2freq": 450.0
     },
     "verb": {
      "mix": 8,
@@ -649,29 +650,26 @@
   "post": [
    {
     "id": "eq",
-    "type": "eq-para",
+    "type": "eq",
     "params": {
-     "lowcut_on": true,
-     "lowcut": 100,
-     "bass": 0,
-     "f1": 400,
-     "g1": -1.5,
-     "f2": 900,
-     "g2": 2,
-     "f3": 6500,
-     "g3": -2.5,
-     "treble": 0
+     "lowcut": 100.0,
+     "lows": 0.0,
+     "midgain": 2.0,
+     "midfreq": 900.0,
+     "mid2gain": -2.5,
+     "mid2freq": 6500.0,
+     "highs": 0.0
     }
    },
    {
     "id": "chorus",
-    "type": "chorus-js",
+    "type": "chorus",
     "params": {
-     "length": 20,
-     "voices": 3,
      "rate": 0.3,
-     "wet": -10,
-     "dry": 0
+     "delay_base": 20.0,
+     "depth": 5.0,
+     "mix": 0.32,
+     "voices": "3"
     }
    },
    {

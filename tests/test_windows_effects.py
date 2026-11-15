@@ -42,9 +42,9 @@ class WindowsEffectsTests(unittest.TestCase):
 
     def test_linux_only_plugins_are_explicitly_handled(self):
         for block_type in (
-            "chorus", "phaser", "tremolo", "wah", "wah-color",
-            "autowah", "delay-tape", "delay-echo", "reverb-shimmer", "rotary",
-            "eq-para", "eq-graphic", "limiter", "octaver", "vibrato",
+            "chorus", "tremolo", "wah", "wah-color",
+            "autowah", "reverb-shimmer", "rotary",
+            "eq-graphic", "limiter", "octaver", "vibrato",
             "pitch-correct", "detune",
         ):
             with self.subTest(block_type=block_type):

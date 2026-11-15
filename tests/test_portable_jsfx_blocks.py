@@ -15,13 +15,12 @@ import pytest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 SLIDER = re.compile(r"^slider(\d+):(?:(\w+)=)?([-\d.]+)<([-\d.]+),([-\d.]+),([-\d.]+)(?:\{([^}]*)\})?>(.*)$")
-BLOCKS = {"delay-tape": ("golem_tapedelay", "td_"), "eq-para": ("golem_eq", "eq_"),
-          "reverb-shimmer": ("golem_shimmer", "sh_"), "grit": ("golem_grit", "gr_"),
+# catalogue v48 : delay-tape, eq-para, phaser et delay-echo sont retirés (golem-fx), leurs JSFX avec eux
+BLOCKS = {"reverb-shimmer": ("golem_shimmer", "sh_"), "grit": ("golem_grit", "gr_"),
           "wah": ("golem_wah", "wh_"), "wah-color": ("golem_colwah", "cw_"), "autowah": ("golem_autowah", "aw_"),
-          "chorus": ("golem_chorus", "ch_"), "tremolo": ("golem_tremolo", "tr_"), "phaser": ("golem_phaser", "ph_"),
+          "chorus": ("golem_chorus", "ch_"), "tremolo": ("golem_tremolo", "tr_"),
           "octaver": ("golem_octaver", "oc_"), "rotary": ("golem_rotary", "ro_"),
-          "limiter": ("golem_limiter", "li_"), "vibrato": ("golem_vibrato", "vb_"), "eq-graphic": ("golem_geq", "ge_"),
-          "delay-echo": ("golem_echocat", "ec_")}
+          "limiter": ("golem_limiter", "li_"), "vibrato": ("golem_vibrato", "vb_"), "eq-graphic": ("golem_geq", "ge_")}
 EFFECTS = {e["type"]: e for e in json.load(open(os.path.join(ROOT, "library", "catalog", "effects.json"),
                                                  encoding="utf-8"))["effects"]}
 
@@ -99,7 +98,7 @@ def test_les_tables_nomment_le_jsfx_par_son_chemin():
     for btype, (stem, _) in BLOCKS.items():
         assert {k: v for k, v in win[btype].items() if k != "params"} == {"plugin": f"JS:golem/{stem}",
                                                                           "note": win[btype]["note"]}, btype
-        if btype not in ("eq-para", "limiter"):                    # macOS résout l'x42-eq / x42-dpl que l'on installe soi-même
+        if btype != "limiter":                                     # macOS résout l'x42-dpl que l'on installe soi-même
             assert mac[btype] == {"plugin": f"JS:golem/{stem}", "note": mac[btype]["note"]}, btype
 
 
@@ -122,9 +121,6 @@ def _patch():
     from tests.test_rig_lua import PATCH
     p = copy.deepcopy(PATCH)
     p["lanes"][0]["chain"]["post"] += [
-        {"id": "peq", "type": "eq-para", "params": {"lowcut_on": True, "lowcut": 110, "f2": 1500, "g2": 3, "g1": -2.5,
-                                                    "treble": -1}},
-        {"id": "tape", "type": "delay-tape", "params": {"time": "8th", "feedback": 35, "mix": 22, "medium": "Old Tape"}},
         {"id": "shim", "type": "reverb-shimmer", "params": {"mix": 30, "decay": 6, "shimmer": 40, "pitch": 5, "hicut": 6000}},
         {"id": "grit", "type": "grit", "params": {"hm_m1": "Sample divide", "hm_v1": 24, "hm_m2": "Gain", "hm_v2": 53,
                                                  "x2": 50, "wet": 100}},
@@ -133,13 +129,11 @@ def _patch():
         {"id": "awah", "type": "autowah", "params": {"wah": 0.6}},
         {"id": "cho", "type": "chorus", "params": {"rate": 0.6, "depth": 4, "mix": 0.4}},
         {"id": "trem", "type": "tremolo", "params": {"rate": 5, "depth": 0.6, "wave": "Triangle"}},
-        {"id": "phs", "type": "phaser", "params": {"rate": 0.4, "depth": 4000, "stages": "8", "feedback": 0.3}},
         {"id": "oct", "type": "octaver", "params": {"direct": 1, "octave1": 0.6, "octave2": 0}},
         {"id": "rot", "type": "rotary", "params": {"speed": "fast", "mic": 70, "spacing": 50, "depth": 60}},
         {"id": "lim", "type": "limiter", "params": {"threshold": -6, "release": 80}},
         {"id": "vib", "type": "vibrato", "params": {"depth": 0.4, "speed": 5}},
-        {"id": "geq", "type": "eq-graphic", "params": {"g1": -3, "g6": 4, "g11": -12}},
-        {"id": "echo", "type": "delay-echo", "params": {"time": 100, "repeats": 40, "mix": 50, "head1": True, "head3": True}}]
+        {"id": "geq", "type": "eq-graphic", "params": {"g1": -3, "g6": 4, "g11": -12}}]
     return p
 
 
@@ -160,19 +154,12 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
     lab.run(action="rig_recall", preset="ci-engine", scene="A")
     # les FX vivants du REAPER factice (le snapshot ne garde pas les paramètres)
     fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
-    assert {"golem:peq", "golem:tape", "golem:shim", "golem:grit", "golem:cry", "golem:mwah", "golem:awah",
-            "golem:cho", "golem:trem", "golem:phs", "golem:oct", "golem:rot",
-            "golem:lim", "golem:vib", "golem:geq", "golem:echo"} <= set(fx), lab.log()
-    assert fx["golem:peq"].name == "JS:golem/golem_eq" and fx["golem:tape"].name == "JS:golem/golem_tapedelay"
+    assert {"golem:shim", "golem:grit", "golem:cry", "golem:mwah", "golem:awah",
+            "golem:cho", "golem:trem", "golem:oct", "golem:rot",
+            "golem:lim", "golem:vib", "golem:geq"} <= set(fx), lab.log()
 
     def val(fid, name):
         return next(p.val for p in fx[fid].params.values() if p.name == name)
-    assert (val("golem:peq", "Highpass"), val("golem:peq", "Highpass Frequency")) == (1, 110), lab.log()
-    assert (val("golem:peq", "Frequency 2"), val("golem:peq", "Gain 2"), val("golem:peq", "Gain 1")) == (1500, 3, -2.5)
-    assert val("golem:peq", "Highshelf Gain") == -1
-    assert val("golem:tape", "Time L") == 2                            # « 8th » = 2 ticks (2 doubles croches chez Calf)
-    assert val("golem:tape", "Feedback") == pytest.approx(0.35) and val("golem:tape", "Wet") == pytest.approx(0.22)
-    assert val("golem:tape", "Medium") == 2
     assert (val("golem:shim", "DRYWET"), val("golem:shim", "T60M"), val("golem:shim", "SHIFT")) ==         (pytest.approx(0.30), 6, 5)
     assert val("golem:shim", "PSDRYWET") == pytest.approx(0.40) and val("golem:shim", "F2") == 6000
     # types de Prisma : choix écrits en NORMALISÉ (index / 22) sur un slider à liste 0..22 -> index brut
@@ -189,16 +176,12 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
     assert (val("golem:cho", "Mod Rate"), val("golem:cho", "Mod Depth"), val("golem:cho", "Amount")) == (pytest.approx(0.6), 4, pytest.approx(0.4))
     assert val("golem:cho", "Dry Amount") == 1
     assert (val("golem:trem", "Frequency"), val("golem:trem", "Modulation"), val("golem:trem", "Mode")) == (5, pytest.approx(0.6), 1)
-    assert (val("golem:phs", "Mod rate"), val("golem:phs", "Mod depth"), val("golem:phs", "# Stages"), val("golem:phs", "Feedback")) == (pytest.approx(0.4), 4000, 8, pytest.approx(0.3))
     # octaver / flanger / rotary : valeurs brutes ; les % du rotary s'ecrivent 0..1 (scale 0.01)
     assert (val("golem:oct", "DIRECT"), val("golem:oct", "OCTAVE1"), val("golem:oct", "OCTAVE2")) == (1, pytest.approx(0.6), 0)
     assert (val("golem:rot", "Speed Mode"), val("golem:rot", "Mic Distance"), val("golem:rot", "Tap Spacing"), val("golem:rot", "FM Depth")) == (2, pytest.approx(0.7), pytest.approx(0.5), pytest.approx(0.6))
     assert (val("golem:lim", "Threshold"), val("golem:lim", "Release Time")) == (-6, 80)
     assert (val("golem:vib", "Depth"), val("golem:vib", "Speed")) == (pytest.approx(0.4), 5)
     assert (val("golem:geq", "G1"), val("golem:geq", "G6"), val("golem:geq", "G11")) == (-3, 4, -12)
-    # delay-echo : en quarantaine sous Linux (GxEchoCat), joué ici par golem_echocat — les % s'écrivent 0..1
-    assert (val("golem:echo", "BPM"), val("golem:echo", "Sustain"), val("golem:echo", "Swell")) == (100, pytest.approx(0.4), pytest.approx(0.5))
-    assert (val("golem:echo", "Head 1"), val("golem:echo", "Head 3")) == (1, 1)
     seen = json.loads((lab.root / "presets/.rig-plugins.json").read_text(encoding="utf-8"))["types"]
     assert all(seen[t]["ok"] is True for t in BLOCKS), seen
 

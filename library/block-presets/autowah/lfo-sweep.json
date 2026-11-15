@@ -1,0 +1,18 @@
+{
+ "name": "LFO sweep",
+ "type": "autowah",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "type": "Low-pass",
+  "wah": 0,
+  "low": 348.0,
+  "high": 2088.0,
+  "peak": 14.1,
+  "attack": 35.3,
+  "release": 1005.0,
+  "rate": 0.41,
+  "source": "LFO"
+ },
+ "migrated_from": "rezfilter"
+}

@@ -91,12 +91,12 @@
      },
      "params": {
       "verb": {
-       "mix": 0.4,
-       "decay": 0.7
+       "mix": 40.0,
+       "decay": 2.92
       },
       "dly": {
-       "mix": 24,
-       "feedback": 38
+       "feedback": 38.0,
+       "mix": 24.0
       }
      },
      "branches": {}
@@ -203,22 +203,23 @@
      },
      {
       "id": "dly",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 9,
       "params": {
-       "time": "16th",
-       "feedback": 25,
-       "mix": 16,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 25.0,
+       "mix": 16.0
       }
      },
      {
       "id": "verb",
-      "type": "surge-spring",
+      "type": "reverb",
       "params": {
-       "mix": 0.22,
-       "decay": 0.5,
-       "size": 0.5
+       "algo": "Spring",
+       "mix": 22.0,
+       "decay": 2.2,
+       "size": 30.0
       }
      }
     ]
@@ -322,12 +323,12 @@
    },
    "params": {
     "verb": {
-     "mix": 0.4,
-     "decay": 0.7
+     "mix": 40.0,
+     "decay": 2.92
     },
     "dly": {
-     "mix": 24,
-     "feedback": 38
+     "feedback": 38.0,
+     "mix": 24.0
     }
    },
    "lanes": {
@@ -466,22 +467,23 @@
    },
    {
     "id": "dly",
-    "type": "delay-tape",
+    "type": "delay",
     "foot": 9,
     "params": {
-     "time": "16th",
-     "feedback": 25,
-     "mix": 16,
-     "medium": "Tape"
+     "model": "Tape",
+     "time": "1/16",
+     "feedback": 25.0,
+     "mix": 16.0
     }
    },
    {
     "id": "verb",
-    "type": "surge-spring",
+    "type": "reverb",
     "params": {
-     "mix": 0.22,
-     "decay": 0.5,
-     "size": 0.5
+     "algo": "Spring",
+     "mix": 22.0,
+     "decay": 2.2,
+     "size": 30.0
     }
    }
   ]

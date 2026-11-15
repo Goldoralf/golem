@@ -21,7 +21,7 @@ DOC = ROOT / "docs" / "golem-fx-migration.md"
 BEGIN, END = "<!-- golem-fx-progress:begin -->", "<!-- golem-fx-progress:end -->"
 # ce que golem-fx ne remplacera pas : une capture (le son EST le fichier), un instrument, un bloc fonction de golem, du
 # matériel piloté en MIDI
-OUT_OF_SCOPE = {"nam": ("Captures (the sound is the file)", {"pedal-nam", "preamp-nam", "comp-nam", "amp", "amp-nam", "boost"}),
+OUT_OF_SCOPE = {"nam": ("Captures (the sound is the file)", {"pedal-nam", "preamp-nam", "comp-nam", "amp", "amp-nam"}),
                 "inst": ("Instruments", {"vital", "pads", "drumkit", "organ", "piano", "ep"}),
                 "feature": ("golem features", {"rec", "tuner", "click", "backing-track", "looper", "compo", "drums",
                                                "standard", "arrangement", "sample"}),

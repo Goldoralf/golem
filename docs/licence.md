@@ -46,7 +46,6 @@ Every file below carries `// SPDX-License-Identifier: MIT`:
 | `golem_chordseq.jsfx` | Tempo-synced MIDI chord and bass player (standards) |
 | `golem_click.jsfx` | Tempo-synced audio click |
 | `golem_deesser.jsfx` | De-esser |
-| `golem_eq.jsfx` | Parametric EQ, the `eq-para` block on Windows (x42-eq parameter names) |
 | `golem_drummix.jsfx` | Drum mixer, 16 mic channels to the stereo bus |
 | `golem_drumseq.jsfx` | Tempo-synced MIDI drum pattern player |
 | `golem_drumtrans.jsfx` | E-drum module notes to rack kit notes |
@@ -54,20 +53,17 @@ Every file below carries `// SPDX-License-Identifier: MIT`:
 | `golem_grit.jsfx` | Multiband grit, the `grit` block on Windows and macOS (Prisma's parameter interface; own DSP) |
 | `golem_killswitch.jsfx` | Tempo-synced stutter (Kill Switch block) |
 | `golem_safety.jsfx` | Zero-latency safety limiter, ceiling −1 dBFS |
-| `golem_tapedelay.jsfx` | Tape delay, the `delay-tape` block on Windows and macOS (Calf Vintage Delay parameter names) |
 | `golem_shimmer.jsfx` | Shimmer reverb, the `reverb-shimmer` block on Windows and macOS (GxShimmizita parameter names; own DSP) |
 | `golem_wah.jsfx` | Cry Baby wah, the `wah` block on Windows and macOS (Gxgcb_95 parameter names; own DSP tuned on the measured response) |
 | `golem_colwah.jsfx` | Multi wah, the `wah-color` block on Windows and macOS (GxWahwah parameters, 7 models, 3 modes; own DSP) |
 | `golem_autowah.jsfx` | Auto-wah, the `autowah` block on Windows and macOS (GxAutoWah parameter; own DSP) |
 | `golem_chorus.jsfx` | Multi-voice chorus, the `chorus` block on Windows and macOS (Calf Multi Chorus parameters; own DSP) |
 | `golem_tremolo.jsfx` | Tremolo, the `tremolo` block on Windows and macOS (Calf Pulsator parameters; own DSP) |
-| `golem_phaser.jsfx` | Phaser, the `phaser` block on Windows and macOS (Calf Phaser parameters; own DSP) |
 | `golem_octaver.jsfx` | Octaver, the `octaver` block on Windows and macOS (Gxoc_2 / Boss OC-2 parameters; own DSP) |
 | `golem_rotary.jsfx` | Rotary speaker, the `rotary` block on Windows and macOS (Calf Rotary Speaker parameters; own DSP) |
 | `golem_limiter.jsfx` | Look-ahead peak limiter, the `limiter` block on Windows (x42-dpl controls; own DSP) |
 | `golem_vibrato.jsfx` | Pitch vibrato, the `vibrato` block on Windows and macOS (GxTubeVibrato parameters; own DSP) |
 | `golem_geq.jsfx` | 11-band graphic EQ, the `eq-graphic` block on Windows and macOS (GxGraphicEQ parameters; own DSP) |
-| `golem_echocat.jsfx` | Tape echo, the `delay-echo` block on Windows and macOS (GxEchoCat parameters; own DSP, no engine stall) |
 | `golem_sample_trig.jsfx` | Fires note-on/off into the RS5k behind it |
 | `golem_tuner` | Tuner (pitch to gmem) |
 | `knob-tap.jsfx` | Sniffs incoming CC into gmem `golem_knobs` (full MIDI pass-through) |

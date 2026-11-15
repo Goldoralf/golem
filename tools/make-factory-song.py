@@ -32,7 +32,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 FACTORY = os.path.join(ROOT, "library", "factory")
 
-from bridge import patches  # noqa: E402
+from bridge import option_renames, patches  # noqa: E402
 
 BPM = 120
 # le rang de chaque groove dans les motifs du bloc Drum Machine d'Ambient Metal (GROOVES de make-factory-ambient-metal.py)
@@ -47,6 +47,7 @@ def _load(rel):
 
 def _dump(rel, doc):
     with open(os.path.join(FACTORY, rel), "w", encoding="utf-8") as f:
+        option_renames.apply(doc)                    # types retirés (catalogue v48) : écrits vers golem-fx
         json.dump(doc, f, indent=1, ensure_ascii=False)
         f.write("\n")
 
@@ -130,6 +131,7 @@ def hero_lead():
     # posé dans library/patches/ (l'état local), comme le bridge le fait au démarrage : le dépôt et l'export le lisent là
     local = os.path.join(ROOT, "library", "patches", "factory-guitar-hero-lead.json")
     with open(local, "w", encoding="utf-8") as f:
+        option_renames.apply(doc)                    # types retirés (catalogue v48) : écrits vers golem-fx
         json.dump(doc, f, indent=1, ensure_ascii=False)
     # ses DEPS (ce que golem.fm lit : l'empreinte de chaque capture) — calculées comme patches.refresh_deps, par l'export
     from bridge import preset_export
@@ -139,6 +141,7 @@ def hero_lead():
         if out.get("unresolved"):
             doc["unresolved"] = out["unresolved"]
     with open(local, "w", encoding="utf-8") as f:
+        option_renames.apply(doc)                    # types retirés (catalogue v48) : écrits vers golem-fx
         json.dump(doc, f, indent=1, ensure_ascii=False)
     _dump("patches/factory-guitar-hero-lead.json", doc)
     return doc

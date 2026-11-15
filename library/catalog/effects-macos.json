@@ -11,14 +11,6 @@
   "how": "GitHub releases API, pages éditeurs ; .pkg/.dmg ouverts (PackageInfo, Distribution, Mach-O) pour PawPaw, AVL, Dragonfly, NAM, Spectral Shift, PaulXStretch, sfizz, Dexed, Airwindows, DrumGizmo"
  },
  "effects": {
-  "boost": {
-   "plugin": "VST3: Proteus (GuitarML)",
-   "param_modes": {
-    "bass": "norm",
-    "mid": "norm",
-    "treble": "norm"
-   }
-  },
   "pedal-nam": {
    "plugin": "VST3: NeuralAmpModeler",
    "params": {
@@ -77,27 +69,6 @@
    "plugin": "VST3: ZamGrains (Damien Zammit) (mono)",
    "param_mode": "norm"
   },
-  "pitch-spectral": {
-   "plugin": "VST3: Spectral Shift (trencrumb)"
-  },
-  "surge-spring": {
-   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
-   "param_mode": "norm",
-   "params": {
-    "size": "Reverb Size",
-    "decay": "Reverb Decay",
-    "refl": "Reverb Reflections",
-    "damp": "Reverb HF Damping",
-    "spin": "Modulation Spin",
-    "chaos": "Modulation Chaos",
-    "knock": "Modulation Knock"
-   },
-   "fx_init": {
-    "FX Type": 0.928571
-   },
-   "late_params": true,
-   "note": "2026-10-22 : le VST3 Surge XT Effects expose « FX Type » normalisé (Spring Reverb = 26/28 des 29 types) et renomme ses 17 fentes selon le type ; le plugin réinitialise ses paramètres au bloc audio suivant — d'où late_params. Noms lus au banc."
-  },
   "surge-freqshift": {
    "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
    "param_mode": "norm",
@@ -142,16 +113,9 @@
   "bitcrusher": {
    "plugin": "LV2: MDA Degrade"
   },
-  "rezfilter": {
-   "plugin": "LV2: MDA RezFilter"
-  },
   "chorus": {
    "plugin": "JS:golem/golem_chorus",
    "note": "2026-10-22 : Calf Multi Chorus n'existe pas ici ; golem_chorus.jsfx (maison, MIT) reprend ses 12 paramètres (noms, bornes, défauts) et son architecture publique (N voix sur une ligne à retard, Overlap, Stereo Phase, deux passe-bande en sortie) — code à nous, son proche, pas identique."
-  },
-  "phaser": {
-   "plugin": "JS:golem/golem_phaser",
-   "note": "2026-10-22 : Calf Phaser n'existe pas ici ; golem_phaser.jsfx (maison, MIT) reprend ses paramètres (Center Freq, Mod depth en cents, Mod rate, Feedback, # Stages, Stereo phase, Amount, Dry Amount) et son architecture publique (passe-tout d'ordre 1 en cascade, LFO triangle, retour) — code à nous."
   },
   "tremolo": {
    "plugin": "JS:golem/golem_tremolo",
@@ -168,14 +132,6 @@
   "autowah": {
    "plugin": "JS:golem/golem_autowah",
    "note": "2026-10-22 : GxAutoWah (guitarix) n'existe pas ici ; golem_autowah.jsfx (maison, MIT) : le suiveur d'enveloppe de dunwahauto et le filtre du GCB-95 ; Wah = sensibilité (le plugin Linux n'a aucun paramètre)."
-  },
-  "delay-tape": {
-   "plugin": "JS:golem/golem_tapedelay",
-   "note": "2026-10-22 : Calf n'a aucune version macOS ; golem_tapedelay.jsfx (maison, MIT) en reprend les noms, bornes et sens de paramètres — les presets ne changent pas. Pas le DSP de Calf."
-  },
-  "delay-echo": {
-   "plugin": "JS:golem/golem_echocat",
-   "note": "2026-10-22 : GxEchoCat (guitarix) est en quarantaine (il fige le moteur ~520 ms) ; golem_echocat.jsfx (maison, MIT) reprend ses paramètres (BPM, Sustain, Swell, Input, Head 1-3) et l'architecture du Copicat — code à nous, ne fige rien (banc de gel)."
   },
   "reverb-shimmer": {
    "plugin": "JS:golem/golem_shimmer",
@@ -200,15 +156,9 @@
   "detune": {
    "unsupported": "guitarix / GxPlugins : aucune version macOS (vérifié le 2026-10-04 : .deb et win64 seulement)"
   },
-  "freeze": {
-   "unsupported": "GoleM Freeze : compilé depuis les sources sur le rack, aucune version macOS construite"
-  },
   "grit": {
    "plugin": "JS:golem/golem_grit",
    "note": "2026-10-22 : pas de Prisma à installer ici ; golem_grit.jsfx (maison, MIT) en reprend l'interface (noms, 23 modules, crossovers, gains) — le DSP de chaque module est le nôtre (Prisma est AGPL), son de la même famille, pas identique."
-  },
-  "delay-tape-aw": {
-   "plugin": "VST: TapeDelay2 (airwindows)"
   },
   "capture-module": {
    "plugin": "CLAP: golem Capture (golem)"
@@ -289,9 +239,6 @@
   },
   "cab": {
    "family": "core"
-  },
-  "chorus-js": {
-   "family": "reaper-jsfx"
   },
   "clean-boost": {
    "family": "reaper-jsfx"
@@ -393,10 +340,6 @@
   "pitch-correct": {
    "family": "installed-plugin",
    "note": "x42-autotune (fat1, LV2, gratuit) existe pour macOS arm64 — résolu comme sur le rack. À installer soi-même."
-  },
-  "eq-para": {
-   "family": "installed-plugin",
-   "note": "x42-eq (fil4, LV2) existe pour macOS arm64 en démo : sans licence (29 $) l'interface s'éteint, le SON n'est pas touché — GoleM ne l'ouvre pas. Résolu comme sur le rack. À installer soi-même."
   }
  }
 }

@@ -416,14 +416,12 @@
      },
      {
       "id": "bark",
-      "type": "boost",
+      "type": "emet",
       "foot": 8,
       "params": {
-       "drive": 25,
-       "level": 55,
-       "treble": 1,
-       "bass": 0,
-       "mid": 2
+       "gain": 25.0,
+       "tone_stack": 56.0,
+       "level": 1.2
       }
      },
      {
@@ -438,14 +436,14 @@
      },
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 7,
       "params": {
-       "length": 14,
-       "voices": 2,
        "rate": 0.5,
-       "wet": -10,
-       "dry": 0
+       "delay_base": 14.0,
+       "depth": 3.5,
+       "mix": 0.32,
+       "voices": "2"
       }
      },
      {

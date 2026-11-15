@@ -1,0 +1,16 @@
+{
+ "name": "Standard (tape)",
+ "type": "delay",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "time": "1/16",
+  "feedback": 40.0,
+  "mix": 30.0,
+  "stereo": "Ping-Pong"
+ },
+ "default": false,
+ "inst": "any",
+ "migrated_from": "delay-tape",
+ "id": null
+}

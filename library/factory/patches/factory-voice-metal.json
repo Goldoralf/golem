@@ -143,18 +143,15 @@
      },
      {
       "id": "eq",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 120,
-       "bass": 0,
-       "f1": 300,
-       "g1": -3,
-       "f2": 1500,
-       "g2": 1,
-       "f3": 3500,
-       "g3": 2,
-       "treble": 0
+       "lowcut": 120.0,
+       "lows": 0.0,
+       "midgain": 1.0,
+       "midfreq": 1500.0,
+       "mid2gain": -3.0,
+       "mid2freq": 300.0,
+       "highs": 0.0
       }
      },
      {
@@ -358,18 +355,15 @@
    },
    {
     "id": "eq",
-    "type": "eq-para",
+    "type": "eq",
     "params": {
-     "lowcut_on": true,
-     "lowcut": 120,
-     "bass": 0,
-     "f1": 300,
-     "g1": -3,
-     "f2": 1500,
-     "g2": 1,
-     "f3": 3500,
-     "g3": 2,
-     "treble": 0
+     "lowcut": 120.0,
+     "lows": 0.0,
+     "midgain": 1.0,
+     "midfreq": 1500.0,
+     "mid2gain": -3.0,
+     "mid2freq": 300.0,
+     "highs": 0.0
     }
    },
    {

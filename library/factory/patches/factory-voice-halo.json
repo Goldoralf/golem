@@ -82,30 +82,27 @@
      },
      {
       "id": "eq",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 110,
-       "bass": 0,
-       "f1": 280,
-       "g1": -2,
-       "f2": 1200,
-       "g2": 0,
-       "f3": 5000,
-       "g3": 1.5,
-       "treble": 2
+       "lowcut": 110.0,
+       "lows": 0.0,
+       "midgain": 0.0,
+       "midfreq": 1200.0,
+       "mid2gain": -2.0,
+       "mid2freq": 280.0,
+       "highs": 2.0
       }
      },
      {
       "id": "double",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 8,
       "params": {
-       "length": 22,
-       "voices": 2,
        "rate": 0.3,
-       "wet": -14,
-       "dry": 0
+       "delay_base": 22.0,
+       "depth": 5.5,
+       "mix": 0.2,
+       "voices": "2"
       }
      },
      {
@@ -202,7 +199,7 @@
      },
      "params": {
       "double": {
-       "wet": -10
+       "mix": 0.32
       },
       "dly": {
        "time": "1/8•",
@@ -312,7 +309,7 @@
    },
    "params": {
     "double": {
-     "wet": -10
+     "mix": 0.32
     },
     "dly": {
      "time": "1/8•",
@@ -423,30 +420,27 @@
    },
    {
     "id": "eq",
-    "type": "eq-para",
+    "type": "eq",
     "params": {
-     "lowcut_on": true,
-     "lowcut": 110,
-     "bass": 0,
-     "f1": 280,
-     "g1": -2,
-     "f2": 1200,
-     "g2": 0,
-     "f3": 5000,
-     "g3": 1.5,
-     "treble": 2
+     "lowcut": 110.0,
+     "lows": 0.0,
+     "midgain": 0.0,
+     "midfreq": 1200.0,
+     "mid2gain": -2.0,
+     "mid2freq": 280.0,
+     "highs": 2.0
     }
    },
    {
     "id": "double",
-    "type": "chorus-js",
+    "type": "chorus",
     "foot": 8,
     "params": {
-     "length": 22,
-     "voices": 2,
      "rate": 0.3,
-     "wet": -14,
-     "dry": 0
+     "delay_base": 22.0,
+     "depth": 5.5,
+     "mix": 0.2,
+     "voices": "2"
     }
    },
    {

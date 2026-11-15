@@ -1,0 +1,15 @@
+{
+ "name": "Dub throw",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "time": "1/8•",
+  "feedback": 70.0,
+  "mix": 45.0,
+  "stereo": "Ping-Pong",
+  "age": 60
+ },
+ "migrated_from": "delay-tape"
+}

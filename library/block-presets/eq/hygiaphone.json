@@ -1,0 +1,16 @@
+{
+ "name": "Hygiaphone",
+ "type": "eq",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "lowcut": 200,
+  "lows": -12.0,
+  "midgain": 4.0,
+  "midfreq": 1200.0,
+  "mid2gain": 3.0,
+  "mid2freq": 600.0,
+  "highs": -12
+ },
+ "migrated_from": "eq-para"
+}

@@ -79,14 +79,14 @@
         },
         {
          "id": "chorus",
-         "type": "chorus-js",
+         "type": "chorus",
          "foot": 8,
          "params": {
-          "length": 18,
-          "voices": 2,
           "rate": 0.4,
-          "wet": -10,
-          "dry": 0
+          "delay_base": 18.0,
+          "depth": 4.5,
+          "mix": 0.32,
+          "voices": "2"
          }
         }
        ]
@@ -345,13 +345,13 @@
      },
      {
       "id": "dly2",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 8,
       "params": {
-       "time": "16th",
-       "feedback": 30,
-       "mix": 12,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 30.0,
+       "mix": 12.0
       }
      },
      {
@@ -429,8 +429,8 @@
        "mix": 18
       },
       "dly2": {
-       "feedback": 40,
-       "mix": 16
+       "feedback": 40.0,
+       "mix": 16.0
       },
       "verb-2": {
        "mix": 30,
@@ -547,14 +547,14 @@
     "post": [
      {
       "id": "chorus-2",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 6,
       "params": {
-       "length": 20,
-       "voices": 2,
        "rate": 0.5,
-       "wet": -10,
-       "dry": 0
+       "delay_base": 20.0,
+       "depth": 5.0,
+       "mix": 0.32,
+       "voices": "2"
       }
      },
      {
@@ -1054,8 +1054,8 @@
      "mix": 18
     },
     "dly2": {
-     "feedback": 40,
-     "mix": 16
+     "feedback": 40.0,
+     "mix": 16.0
     },
     "verb-2": {
      "mix": 30,

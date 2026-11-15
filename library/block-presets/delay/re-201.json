@@ -1,0 +1,14 @@
+{
+ "name": "RE-201 Space Echo",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "feedback": 34.0,
+  "mix": 40.0,
+  "drive": 30.0,
+  "taps": "Heads 1+3"
+ },
+ "migrated_from": "delay-echo"
+}

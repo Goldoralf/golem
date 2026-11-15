@@ -29,7 +29,7 @@ PATCH = {"id": "ci-engine", "name": "CI engine check", "role": "guitar", "kind":
                               "split": {"mode": "merge", "gain": -3, "branches": [
                                   {"id": "lane-a", "blocks": [{"id": "boost", "type": "clean-boost"}, {"id": "eq", "type": "eq"}]},
                                   {"id": "lane-b", "blocks": [{"id": "phaser", "type": "phaser-js", "foot": 6}, {"id": "comp", "type": "comp"}]}]},
-                              "post": [{"id": "chorus", "type": "chorus-js", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8},
+                              "post": [{"id": "chorus", "type": "chorus", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8},
                                        {"id": "kill", "type": "killswitch", "foot": 9}]},
                     "states": [{"id": f"st-{LANE}-{s}", "name": n, "blocks": b, "params": {}, "branches": br} for s, n, b, br in STATES]}],
          "scenes": [{"id": s, "name": n, "blocks": b, "branches": br, "lanes": {LANE: {"state": f"st-{LANE}-{s}"}}} for s, n, b, br in STATES],

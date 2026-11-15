@@ -132,14 +132,12 @@
      },
      {
       "id": "drive",
-      "type": "boost",
+      "type": "emet",
       "foot": 6,
       "params": {
-       "drive": 40,
-       "level": 50,
-       "treble": 0,
-       "bass": 1,
-       "mid": 2
+       "gain": 40.0,
+       "tone_stack": 47.0,
+       "level": 0.0
       }
      },
      {
@@ -335,14 +333,12 @@
    },
    {
     "id": "drive",
-    "type": "boost",
+    "type": "emet",
     "foot": 6,
     "params": {
-     "drive": 40,
-     "level": 50,
-     "treble": 0,
-     "bass": 1,
-     "mid": 2
+     "gain": 40.0,
+     "tone_stack": 47.0,
+     "level": 0.0
     }
    },
    {

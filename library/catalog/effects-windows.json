@@ -3,14 +3,6 @@
  "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on Windows (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on Windows (`note` says which, and what is still missing); untested = never tried on Windows (`why`).",
  "revision": 8,
  "effects": {
-  "boost": {
-   "plugin": "VST3: Proteus (GuitarML)",
-   "param_modes": {
-    "bass": "norm",
-    "mid": "norm",
-    "treble": "norm"
-   }
-  },
   "piano": {
    "plugin": "VST3i: sfizz (SFZTools)",
    "note": "2026-10-22 : sfizz 1.2.3 est posé par install-system.ps1 -Sfizz ; REAPER ne lit que son VST3 sous Windows et golem_rig charge le .sfz par l'état VST3 (sfizz_vst3_set_file, mesuré au rendu le 2026-10-11, docs/drums-kit.md §8). Le pack piano (Salamander, 450 Mo) est posé par l'installeur (desktop_steps._sound_piano)."
@@ -73,27 +65,6 @@
    "plugin": "VST3: ZamGrains (Damien Zammit) (mono)",
    "param_mode": "norm"
   },
-  "pitch-spectral": {
-   "plugin": "VST3: Spectral Shift (trencrumb)"
-  },
-  "surge-spring": {
-   "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
-   "param_mode": "norm",
-   "params": {
-    "size": "Reverb Size",
-    "decay": "Reverb Decay",
-    "refl": "Reverb Reflections",
-    "damp": "Reverb HF Damping",
-    "spin": "Modulation Spin",
-    "chaos": "Modulation Chaos",
-    "knock": "Modulation Knock"
-   },
-   "fx_init": {
-    "FX Type": 0.928571
-   },
-   "late_params": true,
-   "note": "2026-10-22 : le VST3 Surge XT Effects expose « FX Type » normalisé (Spring Reverb = 26/28 des 29 types) et renomme ses 17 fentes selon le type ; le plugin réinitialise ses paramètres au bloc audio suivant — d'où late_params. Noms lus au banc."
-  },
   "surge-freqshift": {
    "plugin": "VST3: Surge XT Effects (Surge Synth Team)",
    "param_mode": "norm",
@@ -138,9 +109,6 @@
   "bitcrusher": {
    "plugin": "LV2: MDA Degrade"
   },
-  "rezfilter": {
-   "plugin": "LV2: MDA RezFilter"
-  },
   "limiter": {
    "plugin": "JS:golem/golem_limiter",
    "params": {
@@ -152,10 +120,6 @@
   "chorus": {
    "plugin": "JS:golem/golem_chorus",
    "note": "2026-10-22 : Calf Multi Chorus n'existe pas ici ; golem_chorus.jsfx (maison, MIT) reprend ses 12 paramètres (noms, bornes, défauts) et son architecture publique (N voix sur une ligne à retard, Overlap, Stereo Phase, deux passe-bande en sortie) — code à nous, son proche, pas identique."
-  },
-  "phaser": {
-   "plugin": "JS:golem/golem_phaser",
-   "note": "2026-10-22 : Calf Phaser n'existe pas ici ; golem_phaser.jsfx (maison, MIT) reprend ses paramètres (Center Freq, Mod depth en cents, Mod rate, Feedback, # Stages, Stereo phase, Amount, Dry Amount) et son architecture publique (passe-tout d'ordre 1 en cascade, LFO triangle, retour) — code à nous."
   },
   "tremolo": {
    "plugin": "JS:golem/golem_tremolo",
@@ -173,14 +137,6 @@
    "plugin": "JS:golem/golem_autowah",
    "note": "2026-10-22 : GxAutoWah (guitarix) n'existe pas ici ; golem_autowah.jsfx (maison, MIT) : le suiveur d'enveloppe de dunwahauto et le filtre du GCB-95 ; Wah = sensibilité (le plugin Linux n'a aucun paramètre)."
   },
-  "delay-tape": {
-   "plugin": "JS:golem/golem_tapedelay",
-   "note": "2026-10-22 : Calf Vintage Delay n'existe pas sous Windows ; golem_tapedelay.jsfx (maison, MIT) en reprend les noms, bornes et sens de paramètres — les presets ne changent pas. Pas le DSP de Calf."
-  },
-  "delay-echo": {
-   "plugin": "JS:golem/golem_echocat",
-   "note": "2026-10-22 : GxEchoCat (guitarix) est en quarantaine (il fige le moteur ~520 ms) ; golem_echocat.jsfx (maison, MIT) reprend ses paramètres (BPM, Sustain, Swell, Input, Head 1-3) et l'architecture du Copicat — code à nous, ne fige rien (banc de gel)."
-  },
   "reverb-shimmer": {
    "plugin": "JS:golem/golem_shimmer",
    "note": "2026-10-22 : GxShimmizita (guitarix) n'existe pas ici ; golem_shimmer.jsfx (maison, MIT) en reprend les noms, bornes et défauts de paramètres et l'idée (FDN 8 lignes, transposition dans la boucle) — notre code, son proche, niveaux à vérifier à l'oreille."
@@ -188,10 +144,6 @@
   "rotary": {
    "plugin": "JS:golem/golem_rotary",
    "note": "2026-10-22 : Calf Rotary Speaker n'existe pas ici ; golem_rotary.jsfx (maison, MIT) reprend ses paramètres (Speed Mode 0..5, Tap Spacing/Offset, FM/AM Depth, Mic Distance, Reflection, moteurs) et son architecture (deux rotors sur une ligne à retard, Doppler + AM, croisement 800 Hz / 2 kHz, rampes de vitesse de Calf) — code à nous."
-  },
-  "eq-para": {
-   "plugin": "JS:golem/golem_eq",
-   "note": "2026-10-22 : x42-eq n'est pas installé sous Windows ; golem_eq.jsfx (maison, MIT) en reprend les noms de paramètres et leurs unités (Hz, dB) — biquads RBJ, pas le DSP de fil4."
   },
   "eq-graphic": {
    "plugin": "JS:golem/golem_geq",
@@ -211,15 +163,9 @@
   "detune": {
    "unsupported": "GxDetune absent du scan REAPER Windows"
   },
-  "freeze": {
-   "unsupported": "GoleM Freeze absent du scan REAPER Windows"
-  },
   "grit": {
    "plugin": "JS:golem/golem_grit",
    "note": "2026-10-22 : pas de Prisma à installer ici ; golem_grit.jsfx (maison, MIT) en reprend l'interface (noms, 23 modules, crossovers, gains) — le DSP de chaque module est le nôtre (Prisma est AGPL), son de la même famille, pas identique."
-  },
-  "delay-tape-aw": {
-   "plugin": "VST: TapeDelay2 (airwindows)"
   },
   "capture-module": {
    "plugin": "CLAP: golem Capture (golem)"
@@ -300,9 +246,6 @@
   },
   "cab": {
    "family": "core"
-  },
-  "chorus-js": {
-   "family": "reaper-jsfx"
   },
   "clean-boost": {
    "family": "reaper-jsfx"

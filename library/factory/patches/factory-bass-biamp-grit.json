@@ -81,18 +81,15 @@
     "post": [
      {
       "id": "eq",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 35,
-       "bass": 0,
-       "f1": 250,
-       "g1": -2,
-       "f2": 800,
-       "g2": 1,
-       "f3": 2500,
-       "g3": 2,
-       "treble": -1
+       "lowcut": 35.0,
+       "lows": 0.0,
+       "midgain": 1.0,
+       "midfreq": 800.0,
+       "mid2gain": -2.0,
+       "mid2freq": 250.0,
+       "highs": -1.0
       }
      }
     ]
@@ -306,18 +303,15 @@
   "post": [
    {
     "id": "eq",
-    "type": "eq-para",
+    "type": "eq",
     "params": {
-     "lowcut_on": true,
-     "lowcut": 35,
-     "bass": 0,
-     "f1": 250,
-     "g1": -2,
-     "f2": 800,
-     "g2": 1,
-     "f3": 2500,
-     "g3": 2,
-     "treble": -1
+     "lowcut": 35.0,
+     "lows": 0.0,
+     "midgain": 1.0,
+     "midfreq": 800.0,
+     "mid2gain": -2.0,
+     "mid2freq": 250.0,
+     "highs": -1.0
     }
    }
   ]

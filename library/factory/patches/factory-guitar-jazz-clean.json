@@ -179,14 +179,14 @@
         },
         {
          "id": "chorus",
-         "type": "chorus-js",
+         "type": "chorus",
          "foot": 8,
          "params": {
-          "length": 18,
-          "voices": 2,
           "rate": 0.4,
-          "wet": -10,
-          "dry": 0
+          "delay_base": 18.0,
+          "depth": 4.5,
+          "mix": 0.32,
+          "voices": "2"
          }
         }
        ]
@@ -451,14 +451,14 @@
       },
       {
        "id": "chorus",
-       "type": "chorus-js",
+       "type": "chorus",
        "foot": 8,
        "params": {
-        "length": 18,
-        "voices": 2,
         "rate": 0.4,
-        "wet": -10,
-        "dry": 0
+        "delay_base": 18.0,
+        "depth": 4.5,
+        "mix": 0.32,
+        "voices": "2"
        }
       }
      ]

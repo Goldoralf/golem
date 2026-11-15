@@ -14,16 +14,15 @@ WIN = json.load(open(os.path.join(ROOT, "library", "catalog", "effects-windows.j
 # fxparams, 2026-10-03 (REAPER 7.27, Windows) — le JSFX est le même fichier sous Linux
 PHASER_SLIDERS = {0: ("Rate (Hz)", 0, 10), 1: ("Range Min (Hz)", 40, 20000), 2: ("Range Max (Hz)", 40, 20000),
                   3: ("Feedback (dB)", -120, -1), 4: ("Wet Mix (dB)", -120, 12)}
-TAPE_PARAMS = {0: "Time", 1: "Regen", 2: "Freq", 3: "Reso", 4: "Flutter", 5: "Dry/Wet"}
 
 
-def test_les_blocs_calf_restent_et_les_nouveaux_existent():
-    assert EFFECTS["phaser"]["plugin"] == "Calf Phaser" and EFFECTS["delay-tape"]["plugin"] == "Calf Vintage Delay"
+def test_le_phaser_jsfx_reste_et_les_anciens_sont_retires():
+    # catalogue v48 (2026-11-15, « le golem ne tournera qu'avec nos blocs ») : le phaser Calf et les trois tape delays
+    # (Calf, Airwindows, GxEchoCat) sont retirés ; un document qui les porte est réécrit au chargement (option_renames)
     assert EFFECTS["phaser-js"]["plugin"] == "JS: guitar/phaser"
-    assert EFFECTS["delay-tape-aw"]["plugin"] == "VST: TapeDelay2 (airwindows)"
-    for t in ("phaser-js", "delay-tape-aw"):
-        # validés le 2026-10-03 (banc de figeage Windows + écoute du mainteneur) : offerts à l'IA de golem.fm
-        assert "bench" not in EFFECTS[t] and not EFFECTS[t].get("quarantine")
+    for t in ("phaser", "delay-tape", "delay-tape-aw", "delay-echo"):
+        assert t not in EFFECTS and t not in WIN["effects"] and t not in WIN.get("unmapped", {}), t
+    assert "bench" not in EFFECTS["phaser-js"] and not EFFECTS["phaser-js"].get("quarantine")
 
 
 def test_le_phaser_ecrit_en_brut_au_bon_index_et_jamais_un_slider_bipolaire_sous_exp():
@@ -39,25 +38,11 @@ def test_le_phaser_ecrit_en_brut_au_bon_index_et_jamais_un_slider_bipolaire_sous
     assert {p["id"]: p["default"] for p in EFFECTS["phaser-js"]["params"]} == plugin_defaults
 
 
-def test_le_tape_delay_ses_temps_et_son_dry_wet():
-    e = EFFECTS["delay-tape-aw"]
-    assert e.get("defaults") == "compile"                     # son défaut à lui = écho seul, sans le son direct
-    by = {p["id"]: p for p in e["params"]}
-    for p in e["params"]:
-        assert TAPE_PARAMS[p["map"]["idx"]] == p["name"] and p["map"]["mode"] == "raw"
-    t = by["time"]
-    for opt, a in zip(t["options"], t["values"]):            # 2 s / (25·A⁴ + 1) à 44,1 kHz
-        ms = float(opt.split()[0]) * (1000 if opt.endswith(" s") else 1)
-        assert abs(2000 / (25 * a ** 4 + 1) - ms) / ms < 0.01, opt
-    assert by["mix"]["default"] <= 50                         # au-dessus de 50 % le son direct baisse
-
-
 def test_windows_et_aliases():
     assert WIN["unmapped"]["phaser-js"]["family"] == "reaper-jsfx"
-    assert WIN["effects"]["delay-tape-aw"]["plugin"] == EFFECTS["delay-tape-aw"]["plugin"]
     src = open(os.path.join(ROOT, "reaper", "Scripts", "golem_rig.lua"), encoding="utf-8").read()
-    for t in ("phaser-js", "delay-tape-aw"):                  # une ligne : blockstatus et check-block-stall la lisent
-        assert re.search(r'^\s*\["%s"\]\s*=\s*\{[^}\n]*\},' % re.escape(t), src, re.M), t
+    # une ligne : blockstatus et check-block-stall la lisent
+    assert re.search(r'^\s*\["phaser-js"\]\s*=\s*\{[^}\n]*\},', src, re.M)
 
 
 def test_le_plugin_est_epingle_par_son_fichier(tmp_path, monkeypatch):

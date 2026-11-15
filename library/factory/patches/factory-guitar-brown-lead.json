@@ -185,13 +185,13 @@
     "post": [
      {
       "id": "dly",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 9,
       "params": {
-       "time": "16th",
-       "feedback": 30,
-       "mix": 18,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 30.0,
+       "mix": 18.0
       }
      },
      {
@@ -423,13 +423,13 @@
   "post": [
    {
     "id": "dly",
-    "type": "delay-tape",
+    "type": "delay",
     "foot": 9,
     "params": {
-     "time": "16th",
-     "feedback": 30,
-     "mix": 18,
-     "medium": "Tape"
+     "model": "Tape",
+     "time": "1/16",
+     "feedback": 30.0,
+     "mix": 18.0
     }
    },
    {

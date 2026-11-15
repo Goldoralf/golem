@@ -144,7 +144,7 @@ def bench_rig(scene):
             {"role": "merge", "name": merge, "input": None, "merge_gain": -3, "folder": "parent", "out": 1,
              "level": None, "out_sel": "1-2",
              "blocks": [{"id": "met", "type": "met", "params": {"thresh": -60}},       # gate à clé : le DI de l'entrée 1
-                        {"id": "dly", "type": "delay-tape", "foot": 8, "bypass": a, "params": {"feedback": 40, "mix": 30}},
+                        {"id": "dly", "type": "delay", "foot": 8, "bypass": a, "params": {"feedback": 40, "mix": 30}},
                         {"type": "volume", "id": "volume-sys", "params": {"gain": 0.0}}]},
             {"role": "branch", "name": la, "input": None, "folder": "child", "folder_of": merge, "out": None, "mute": not a,
              "blocks": [{"id": "amp-a", "type": "amp-nam", "file": NAM, "bypass": not a, "params": {"output": 3.7}},

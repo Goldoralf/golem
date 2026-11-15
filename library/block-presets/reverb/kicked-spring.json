@@ -1,0 +1,14 @@
+{
+ "name": "Kicked spring",
+ "type": "reverb",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "algo": "Spring",
+  "mix": 45.0,
+  "decay": 2.74,
+  "size": 34.0,
+  "hicut": 8400.0
+ },
+ "migrated_from": "surge-spring"
+}

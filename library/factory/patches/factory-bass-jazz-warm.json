@@ -159,14 +159,14 @@
     "post": [
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 6,
       "params": {
-       "length": 20,
-       "voices": 2,
        "rate": 0.5,
-       "wet": -10,
-       "dry": 0
+       "delay_base": 20.0,
+       "depth": 5.0,
+       "mix": 0.32,
+       "voices": "2"
       }
      },
      {
@@ -382,14 +382,14 @@
   "post": [
    {
     "id": "chorus",
-    "type": "chorus-js",
+    "type": "chorus",
     "foot": 6,
     "params": {
-     "length": 20,
-     "voices": 2,
      "rate": 0.5,
-     "wet": -10,
-     "dry": 0
+     "delay_base": 20.0,
+     "depth": 5.0,
+     "mix": 0.32,
+     "voices": "2"
     }
    },
    {

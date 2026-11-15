@@ -2,7 +2,7 @@
 // Bottom sheets du Designer : potards (Knob/ParamSheet), assign, réglages preset (extraits, P3).
 import { html, useState, useEffect, useRef, useAsync, cls, esc, LIVE_PALETTE, GENRE_FAMILIES } from './lib.js';
 import { ANIM_STYLES, blkColor, ICON, animClass, animPackOf, ensurePackCss, refKey } from './designer-model.js';
-import { PCell, PDial, PToggle, PFader, PFaderBank, fmtVal, EqCurve, DynMeter } from './designer-widgets.js';
+import { PCell, PDial, PToggle, PFader, PFaderBank, fmtVal, DynMeter } from './designer-widgets.js';
 import { BlockPresetsList } from './designer-block-presets.js';   // l'onglet « Presets » (mockups/block-presets-list.html)
 import { StandardSheet } from './designer-standard.js';
 import { BackingDrawer } from './designer-backing.js';
@@ -700,9 +700,6 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
             : html`<span class="muted">Service block — no exposed settings.</span>`}
           </div>`
         : (visible.length || capCell) ? html`
-            ${block.type === 'eq-para' ? html`<${EqCurve}
-              vals=${Object.fromEntries(params.map(pm => [pm.id, val(pm)]))}
-              onParam=${onParam} />` : ''}
             ${['gate', 'comp', 'limiter'].includes(block.type) ? html`<${DynMeter}
               blockId=${block.id} kind=${block.type} />` : ''}
             ${isOrgan ? html`<div class="organ-top">

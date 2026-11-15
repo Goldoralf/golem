@@ -201,11 +201,11 @@ def test_dans_le_designer_un_type_sans_plugin_ici_est_pas_encore():
     prev = engine.use(A.ArdourEngine(link=object()))
     try:
         gate = blockstatus.engine_gate()
-        st = blockstatus.block_state({"type": "surge-spring"})
+        st = blockstatus.block_state({"type": "surge-freqshift"})
     finally:
         engine.use(prev)
     assert "amp-nam" not in gate and "cab" not in gate                  # dans la table : ils jouent
-    assert gate["surge-spring"] == ("planned", "Golem Engine")           # Surge XT : pas sur ce moteur
+    assert gate["surge-freqshift"] == ("planned", "Golem Engine")           # Surge XT : pas sur ce moteur
     assert gate["looper"][1] == "Golem Engine"                          # fonction du moteur non déclarée
     assert st["reason"] == "engine" and st["why"] == "not available on Golem Engine yet"
 
@@ -365,7 +365,7 @@ def test_un_parametre_sans_controle_est_refuse_avec_sa_raison():
 
 
 def test_un_vst3_part_avec_son_identifiant():
-    blk, _ = P.plan_block({"id": "b", "type": "boost", "params": {"drive": 40}}, P.load_catalog(), P.load_table())
+    blk, _ = P.plan_block({"id": "b", "type": "grit", "params": {}}, P.load_catalog(), P.load_table())
     assert set(blk["plugin"]) == {"vst3"} and len(blk["plugin"]["vst3"]) == 32
 
 

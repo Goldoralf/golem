@@ -682,11 +682,8 @@ local ADD_ALIAS = {
   delay   = { "ReaDelay" },
   reverb  = { "Dragonfly Hall Reverb", "ReaVerbate" },
   chorus  = { "Calf Multi Chorus" },
-  ["chorus-js"] = { "JS: sstillwell/chorus_stereo", "JS: Chorus Stereo [Stillwell]" },
   ["flanger-js"] = { "JS: guitar/flanger", "JS: Flanger" },
-  phaser  = { "Calf Phaser" },
   ["phaser-js"] = { "JS: guitar/phaser", "JS: 4-Tap Phaser" },
-  ["delay-tape-aw"] = { "VST: TapeDelay2 (airwindows)", "VST: TapeDelay2", "TapeDelay2" },
   tremolo = { "Calf Pulsator" },
   -- JSFX maison (link-reaper.sh : reaper/Effects -> <resource>/Effects/golem). Le chemin JS: charge
   -- le fichier même si le cache JSFX de Reaper ne l'a pas encore vu (Reaper lancé avant sa création).
@@ -699,7 +696,6 @@ local ADD_ALIAS = {
   detune   = { "GxDetune", "Gxdetune", "gx_detune" },
   ringmod    = { "MDA RingMod", "mda RingMod", "RingMod" },
   bitcrusher = { "MDA Degrade", "mda Degrade", "Degrade" },
-  rezfilter  = { "MDA RezFilter", "mda RezFilter", "RezFilter" },
   ["pedal-nam"] = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },
   ["preamp-nam"] = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },   -- outboard capturé (2026-09-14)
   ["comp-nam"]   = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },
@@ -734,7 +730,6 @@ local FX_INIT = {
   volume = { ["Adjustment (dB)"] = 0, ["Max Volume (dB)"] = 150 },
   ["clean-boost"] = { ["Adjustment (dB)"] = 0, ["Max Volume (dB)"] = 150 },
   -- Surge XT Effects = UN plugin, effet choisi par « FX Type » (valeur brute 1..31) posée à l'ajout
-  ["surge-spring"]      = { ["FX Type"] = 27 },   -- Spring Reverb
   ["surge-freqshift"]   = { ["FX Type"] = 7 },    -- Frequency Shifter
   ["surge-treemonster"] = { ["FX Type"] = 24 },   -- Treemonster (mono-synth)
 }

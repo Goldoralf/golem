@@ -117,14 +117,10 @@
        "blocks": [
         {
          "id": "treble",
-         "type": "boost",
+         "type": "shem",
          "foot": 6,
          "params": {
-          "drive": 10,
-          "level": 70,
-          "treble": 6,
-          "bass": -5,
-          "mid": 3
+          "grind": 10.0
          }
         },
         {
@@ -145,13 +141,13 @@
     "post": [
      {
       "id": "dly",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 7,
       "params": {
-       "time": "16th",
-       "feedback": 35,
-       "mix": 22,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 35.0,
+       "mix": 22.0
       }
      },
      {
@@ -322,14 +318,10 @@
      "blocks": [
       {
        "id": "treble",
-       "type": "boost",
+       "type": "shem",
        "foot": 6,
        "params": {
-        "drive": 10,
-        "level": 70,
-        "treble": 6,
-        "bass": -5,
-        "mid": 3
+        "grind": 10.0
        }
       },
       {
@@ -350,13 +342,13 @@
   "post": [
    {
     "id": "dly",
-    "type": "delay-tape",
+    "type": "delay",
     "foot": 7,
     "params": {
-     "time": "16th",
-     "feedback": 35,
-     "mix": 22,
-     "medium": "Tape"
+     "model": "Tape",
+     "time": "1/16",
+     "feedback": 35.0,
+     "mix": 22.0
     }
    },
    {

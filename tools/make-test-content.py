@@ -6,7 +6,7 @@ posent et se retirent par bridge/test_content.py (registre), jamais mêlés au c
 
 Ce qu'ils couvrent, et pourquoi (l'inventaire du contenu d'usine du 2026-10-20) :
   - chaque bloc qui se pose PARTOUT (intégrés REAPER, JSFX du stock et de golem) : gate, comp, eq, delay, clean-boost,
-    chorus-js, phaser-js, flanger-js, killswitch, guitar-drive, pitch-shift-js, deesser, volume — un patch sur un
+    phaser-js, flanger-js, killswitch, guitar-drive, pitch-shift-js, deesser, volume — un patch sur un
     runner sans modèle ni plugin tiers se matérialise quand même ;
   - un split merge ET un split fan-out, des mutes de branche par scène, des coupures par scène, des potards par scène ;
   - les quatre rôles audio (guitar, bass, voice) et les lanes MIDI (keys-pads avec le kit de pads d'usine « pads-house »
@@ -69,7 +69,7 @@ def main():
              "split": {"mode": "merge", "gain": -3, "branches": [
                  {"id": "lane-a", "blocks": [{"id": "boost", "type": "clean-boost", "params": {"gain": 3}}, {"id": "eq", "type": "eq"}]},
                  {"id": "lane-b", "blocks": [{"id": "phaser", "type": "phaser-js", "foot": 6}, {"id": "comp", "type": "comp"}]}]},
-             "post": [{"id": "chorus", "type": "chorus-js", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8, "params": {"mix": 20}},
+             "post": [{"id": "chorus", "type": "flanger-js", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8, "params": {"mix": 20}},
                       {"id": "kill", "type": "killswitch", "foot": 9}]}
     states = [st(L, "A", "Both branches", {"chorus": False}),
               st(L, "B", "Branch A, chorus and delay", {"chorus": True, "dly": True}, {"dly": {"mix": 35}}, {"lane-b": {"mute": True}}),
@@ -124,7 +124,7 @@ def main():
 
     # ── 6. preset « band session » : guitar + voice, backing-track, drums, click, rec, compo, arrangement, looper, tuner
     G, V = "guitar-1", "voice-1"
-    gchain = {"pre": [{"id": "g-gate", "type": "gate"}], "post": [{"id": "g-chorus", "type": "chorus-js", "foot": 6}, {"id": "g-dly", "type": "delay", "foot": 7}]}
+    gchain = {"pre": [{"id": "g-gate", "type": "gate"}], "post": [{"id": "g-chorus", "type": "flanger-js", "foot": 6}, {"id": "g-dly", "type": "delay", "foot": 7}]}
     vchain = {"pre": [{"id": "v-comp", "type": "comp"}], "post": [{"id": "v-eq", "type": "eq"}, {"id": "v-dly", "type": "delay", "foot": 8}]}
     gst = [st(G, "A", "Verse", {"g-chorus": False, "g-dly": False}), st(G, "B", "Chorus", {"g-chorus": True, "g-dly": True}), st(G, "C", "Bridge", {"g-chorus": True, "g-dly": False})]
     vst_ = [st(V, "A", "Verse", {"v-dly": False}), st(V, "B", "Chorus", {"v-dly": True}), st(V, "C", "Bridge", {"v-dly": True})]

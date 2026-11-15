@@ -332,6 +332,9 @@ def quarantined_plugin(name):
             data = json.load(open(os.path.join(C.ROOT, "library", "catalog", "effects.json")))
             _QUARANTINE_PLUGINS = {str(e["plugin"]).casefold(): e["quarantine"]
                                    for e in data.get("effects", []) if e.get("quarantine") and e.get("plugin")}
+            # un plugin qui fige le moteur reste refusé après le retrait de son type (catalogue v48 : GxEchoCat)
+            _QUARANTINE_PLUGINS.update({str(k).casefold(): v for k, v in (data.get("quarantined_plugins") or {}).items()
+                                        if not str(k).startswith("_")})
         except Exception:
             _QUARANTINE_PLUGINS = {}
     bare = re.sub(r"^\s*[A-Za-z0-9]+:\s*", "", str(name or "")).casefold()      # sans « VST3: »

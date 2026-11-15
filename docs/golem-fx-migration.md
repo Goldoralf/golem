@@ -19,12 +19,38 @@ block sheet, the golem-fx-only blocks), golem-fx's `docs/golem-contract.md`.
 - **Retiring an original** (a duplicate such as the Calf flanger, catalogue v40) is a separate, explicit decision, with
   the saved patches migrated.
 
+## 1 bis. The legacy blocks are retired (catalogue v48, 2026-11-15)
+
+**FIXED** — the maintainer: "the golem will run only with our blocks". The list is golem-fx's `docs/legacy-blocks.md`.
+These types leave the catalogue, the Windows / macOS tables and the engine table. A document that still carries one
+(a patch, a preset, a scene override, a block preset, the Designer sandbox) is rewritten **on load** by
+`bridge/option_renames.py` (`RETIRED`), values translated by intent; a scene override keeps only what it changes (the
+new pedal's model or voice belongs to the block). The factory and test content, and the block presets, are rewritten
+in the repository.
+
+| Old block | Plugin | Now |
+|---|---|---|
+| `chorus-js` | JS chorus_stereo | `chorus` (gfx-chorus): wet dB → mix, length → base delay and depth, voices |
+| `phaser` | Calf Phaser | `phaser-js` (gfx-phaser): depth in cents → sweep from 440 Hz, feedback → dB, stages |
+| `delay-tape` | Calf Vintage Delay | `delay` (gfx-delay, model Tape): a division the Delay has stays synced, others go free at the block's tempo; a different right time → Ping-Pong |
+| `delay-tape-aw` | Airwindows TapeDelay2 | `delay`, model Tape, free time; regen → feedback, flutter → mod, tone → high cut |
+| `delay-echo` | GxEchoCat | `delay`, model Tape, free time (its bpm = a quarter); heads → tap pattern; input → drive |
+| `eq-para` | x42 parametric | `eq` (gfx-eq): middle bell → mid, the stronger of the two others → second mid, shelves, low cut |
+| `surge-spring` | Surge XT spring | `reverb` (gfx-reverb, Spring voice) |
+| `boost` | Proteus | `emet` (overdrive); a drive ≤ 15 % was a boost → `shem` |
+| `pitch-spectral` | Spectral Shift | `pitch` (gfx-pitch, engine Poly), fully wet |
+| `rezfilter` | MDA RezFilter | `autowah` (gfx-autowah, low-pass, envelope / LFO) |
+| `freeze` | GoleM Freeze | dropped (the maintainer found it poor); a document that had it gets `granular`'s hold, the closest |
+
+Kept: `whammy-dt` and `midi-pedal` (MIDI hardware, drawn as hardware units), and `spectral-comp` until golem-fx ships
+its own pedal.
+
 ## 2. Will golem have only golem-fx pedals?
 
-For the **effects**, that is the direction: golem-fx's contract says its plugins "become golem's default blocks later".
-Not everything, though. Out of scope, and staying as they are:
+For the **effects**, yes: decided on 2026-11-15 ("the golem will run only with our blocks", §1 bis). What remains of
+the open-source effects is the step list of §4 and `spectral-comp`. Out of scope, and staying as they are:
 
-- **Captures** (NAM amps, pedals, preamps, compressors, Proteus): the sound is the capture file; golem-fx draws them but
+- **Captures** (NAM amps, pedals, preamps, compressors): the sound is the capture file; golem-fx draws them but
   does not replace them.
 - **Instruments** (Vital, piano, organ, EP, pads, the drum kit).
 - **golem features** (Rec, Tuner, Click, Backing Track, Looper, Riff, Drum Machine, Standard, Arrangement, Sample): they
@@ -37,7 +63,7 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**51 of 68 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 11 have no golem-fx counterpart yet.
+**51 of 58 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 1 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
@@ -45,8 +71,8 @@ catalogue change).
 | Played by golem-fx, new blocks with no open-source original (19) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
 | … of which the engine-stall bench is still pending (6) | `flanger-js`, `golem-double`, `glitch`, `met`, `emet`, `shem` |
 | Ready in golem-fx, not wired yet (6) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
-| No golem-fx counterpart yet (11) | `chorus-js` (sstillwell/chorus_stereo), `phaser` (Calf Phaser), `pitch-spectral` (Spectral Shift), `delay-tape` (Calf Vintage Delay), `delay-tape-aw` (TapeDelay2 (airwindows)), `delay-echo` (GxEchoCat), `eq-para` (x42-eq - Parametric Equalize), `rezfilter` (MDA RezFilter), `surge-spring` (Surge XT Effects), `spectral-comp` (Spectral Compressor (Robbert), `freeze` (GoleM Freeze (GoleM)) |
-| Out of scope — Captures (the sound is the file) (6) | `boost`, `pedal-nam`, `preamp-nam`, `comp-nam`, `amp`, `amp-nam` |
+| No golem-fx counterpart yet (1) | `spectral-comp` (Spectral Compressor (Robbert) |
+| Out of scope — Captures (the sound is the file) (5) | `pedal-nam`, `preamp-nam`, `comp-nam`, `amp`, `amp-nam` |
 | Out of scope — Instruments (6) | `vital`, `pads`, `drumkit`, `organ`, `piano`, `ep` |
 | Out of scope — golem features (10) | `backing-track`, `looper`, `tuner`, `rec`, `click`, `compo`, `sample`, `drums`, `standard`, `arrangement` |
 | Out of scope — Hardware (MIDI) (2) | `whammy-dt`, `midi-pedal` |

@@ -49,18 +49,15 @@
     "post": [
      {
       "id": "eq",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 110,
-       "bass": -2,
-       "f1": 250,
-       "g1": -2,
-       "f2": 1500,
-       "g2": 3,
-       "f3": 4000,
-       "g3": 1,
-       "treble": 0
+       "lowcut": 110.0,
+       "lows": -2.0,
+       "midgain": 3.0,
+       "midfreq": 1500.0,
+       "mid2gain": -2.0,
+       "mid2freq": 250.0,
+       "highs": 0.0
       }
      },
      {
@@ -130,7 +127,8 @@
      },
      "params": {
       "eq": {
-       "g2": 1
+       "midgain": 1.0,
+       "midfreq": 500.0
       }
      },
      "branches": {}
@@ -181,18 +179,15 @@
   "post": [
    {
     "id": "eq",
-    "type": "eq-para",
+    "type": "eq",
     "params": {
-     "lowcut_on": true,
-     "lowcut": 110,
-     "bass": -2,
-     "f1": 250,
-     "g1": -2,
-     "f2": 1500,
-     "g2": 3,
-     "f3": 4000,
-     "g3": 1,
-     "treble": 0
+     "lowcut": 110.0,
+     "lows": -2.0,
+     "midgain": 3.0,
+     "midfreq": 1500.0,
+     "mid2gain": -2.0,
+     "mid2freq": 250.0,
+     "highs": 0.0
     }
    },
    {
@@ -282,7 +277,8 @@
    },
    "params": {
     "eq": {
-     "g2": 1
+     "midgain": 1.0,
+     "midfreq": 500.0
     }
    },
    "level": -2

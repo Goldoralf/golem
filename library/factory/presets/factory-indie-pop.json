@@ -74,14 +74,14 @@
     "post": [
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 6,
       "params": {
-       "length": 16,
-       "voices": 2,
        "rate": 0.6,
-       "wet": -9,
-       "dry": 0
+       "delay_base": 16.0,
+       "depth": 4.0,
+       "mix": 0.35,
+       "voices": "2"
       }
      },
      {
@@ -376,14 +376,14 @@
      },
      {
       "id": "chorus-2",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 6,
       "params": {
-       "length": 16,
-       "voices": 3,
        "rate": 0.6,
-       "wet": -8,
-       "dry": 0
+       "delay_base": 16.0,
+       "depth": 4.0,
+       "mix": 0.4,
+       "voices": "3"
       }
      },
      {
@@ -510,18 +510,15 @@
      },
      {
       "id": "eq-2",
-      "type": "eq-para",
+      "type": "eq",
       "params": {
-       "lowcut_on": true,
-       "lowcut": 100,
-       "bass": 0,
-       "f1": 250,
-       "g1": -2,
-       "f2": 1000,
-       "g2": 0,
-       "f3": 4000,
-       "g3": 2,
-       "treble": 2
+       "lowcut": 100.0,
+       "lows": 0.0,
+       "midgain": 0.0,
+       "midfreq": 1000.0,
+       "mid2gain": -2.0,
+       "mid2freq": 250.0,
+       "highs": 2.0
       }
      },
      {
@@ -535,14 +532,14 @@
      },
      {
       "id": "double",
-      "type": "chorus-js",
+      "type": "chorus",
       "foot": 8,
       "params": {
-       "length": 20,
-       "voices": 2,
        "rate": 0.35,
-       "wet": -10,
-       "dry": 0
+       "delay_base": 20.0,
+       "depth": 5.0,
+       "mix": 0.32,
+       "voices": "2"
       }
      },
      {

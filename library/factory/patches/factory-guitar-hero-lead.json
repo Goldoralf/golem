@@ -123,14 +123,13 @@
      },
      {
       "id": "echo",
-      "type": "delay-tape",
+      "type": "delay",
       "params": {
-       "time": "16th",
-       "time_r": "8th",
-       "tempo": 120,
-       "feedback": 15,
-       "mix": 8,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 15.0,
+       "mix": 8.0,
+       "stereo": "Ping-Pong"
       }
      },
      {
@@ -161,7 +160,7 @@
        "feedback": 22
       },
       "echo": {
-       "mix": 8
+       "mix": 8.0
       },
       "verb": {
        "mix": 18,
@@ -216,8 +215,8 @@
        "feedback": 25
       },
       "echo": {
-       "mix": 10,
-       "feedback": 18
+       "feedback": 18.0,
+       "mix": 10.0
       },
       "verb": {
        "mix": 16,
@@ -246,8 +245,8 @@
        "feedback": 32
       },
       "echo": {
-       "mix": 14,
-       "feedback": 25
+       "feedback": 25.0,
+       "mix": 14.0
       },
       "verb": {
        "mix": 24,
@@ -284,7 +283,7 @@
      "feedback": 22
     },
     "echo": {
-     "mix": 8
+     "mix": 8.0
     },
     "verb": {
      "mix": 18,
@@ -350,8 +349,8 @@
      "feedback": 25
     },
     "echo": {
-     "mix": 10,
-     "feedback": 18
+     "feedback": 18.0,
+     "mix": 10.0
     },
     "verb": {
      "mix": 16,
@@ -387,8 +386,8 @@
      "feedback": 32
     },
     "echo": {
-     "mix": 14,
-     "feedback": 25
+     "feedback": 25.0,
+     "mix": 14.0
     },
     "verb": {
      "mix": 24,
@@ -539,14 +538,13 @@
    },
    {
     "id": "echo",
-    "type": "delay-tape",
+    "type": "delay",
     "params": {
-     "time": "16th",
-     "time_r": "8th",
-     "tempo": 120,
-     "feedback": 15,
-     "mix": 8,
-     "medium": "Tape"
+     "model": "Tape",
+     "time": "1/16",
+     "feedback": 15.0,
+     "mix": 8.0,
+     "stereo": "Ping-Pong"
     }
    },
    {

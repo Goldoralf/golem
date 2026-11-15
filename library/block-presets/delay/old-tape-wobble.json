@@ -1,0 +1,14 @@
+{
+ "name": "Old tape wobble",
+ "type": "delay",
+ "inst": "any",
+ "factory": true,
+ "params": {
+  "model": "Tape",
+  "time": "1/8",
+  "feedback": 45.0,
+  "mix": 32.0,
+  "age": 60
+ },
+ "migrated_from": "delay-tape"
+}

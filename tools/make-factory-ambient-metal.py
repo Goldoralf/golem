@@ -31,7 +31,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from bridge import patches  # noqa: E402
+from bridge import option_renames, patches  # noqa: E402
 
 # les outils de la chanson d'usine (charger un bloc d'un patch d'usine, écrire, lire les blocs d'une lane)
 _spec = importlib.util.spec_from_file_location("make_factory_song", os.path.join(ROOT, "tools", "make-factory-song.py"))
@@ -84,6 +84,7 @@ def patch(pid, name, role, tags, chain, states, *, service, color, anims, midi=F
            "colors": {k: color for k in cells}, "anims": anims}
     local = os.path.join(ROOT, "library", "patches", pid + ".json")
     with open(local, "w", encoding="utf-8") as f:
+        option_renames.apply(doc)                    # types retirés (catalogue v48) : écrits vers golem-fx
         json.dump(doc, f, indent=1, ensure_ascii=False)
     from bridge import preset_export
     out, _blobs = preset_export.build_export(patches.PATCH_PREFIX + pid)
@@ -92,6 +93,7 @@ def patch(pid, name, role, tags, chain, states, *, service, color, anims, midi=F
         if out.get("unresolved"):
             doc["unresolved"] = out["unresolved"]
     with open(local, "w", encoding="utf-8") as f:
+        option_renames.apply(doc)                    # types retirés (catalogue v48) : écrits vers golem-fx
         json.dump(doc, f, indent=1, ensure_ascii=False)
     S._dump(f"patches/{pid}.json", doc)
     return doc

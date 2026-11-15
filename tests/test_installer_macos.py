@@ -86,7 +86,8 @@ def test_only_the_pythons_the_bridge_lock_installs_are_accepted():
 def test_the_pinned_reverbs_and_boost_are_the_plugins_the_macos_table_names():
     table = open(os.path.join(ROOT, "library", "catalog", "effects-macos.json"), encoding="utf-8").read()
     sh = open(os.path.join(ROOT, "provision", "macos", "install-system.sh"), encoding="utf-8").read()
-    for plugin in ("Dragonfly Hall Reverb", "Dragonfly Plate Reverb", "Dragonfly Room Reverb", "Proteus"):
+    # catalogue v48 : le bloc boost (Proteus) est retiré — Proteus reste posé par l'installateur jusqu'à son ménage
+    for plugin in ("Dragonfly Hall Reverb", "Dragonfly Plate Reverb", "Dragonfly Room Reverb"):
         assert plugin in table
     for bundle in ("DragonflyHallReverb", "DragonflyPlateReverb", "DragonflyRoomReverb", "Proteus.vst3"):
         assert bundle in sh

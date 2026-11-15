@@ -67,7 +67,11 @@ def test_le_rack_et_golem_fm_calculent_la_meme_fiche(monkeypatch):
     monkeypatch.setattr(store, "save_recorder_cfg_from", lambda p, prev=None: None)      # n'écrit pas config/recorder.json
     docs = _fixtures()
     assert docs
+    from bridge import option_renames
     for d in docs:
+        # golem.fm ne reçoit que des documents déjà réécrits par le rack (types retirés, catalogue v48) : la parité se
+        # juge sur ce document-là
+        option_renames.apply(d)
         rack = store.preset_summary(store.migrate_config(copy.deepcopy(d)))
         from bridge import genres
         assert PV.summary(d, migrate_styles=genres.migrate_styles) == rack

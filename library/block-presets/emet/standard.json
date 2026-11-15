@@ -1,0 +1,13 @@
+{
+ "name": "Standard",
+ "type": "emet",
+ "factory": true,
+ "params": {
+  "gain": 30.0,
+  "tone_stack": 50.0,
+  "level": 0.0
+ },
+ "default": false,
+ "inst": "guitar",
+ "migrated_from": "boost"
+}

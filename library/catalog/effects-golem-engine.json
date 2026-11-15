@@ -68,9 +68,6 @@
     "file": "http://gareus.org/oss/lv2/zeroconvolv#ir"
    }
   },
-  "delay-tape": {
-   "lv2": "http://calf.sourceforge.net/plugins/VintageDelay"
-  },
   "volume": {
    "vst3": "476F6C654D4678426F6F737430303031",
    "params": {
@@ -78,9 +75,6 @@
    },
    "golem_fx": true,
    "status": "testing"
-  },
-  "boost": {
-   "vst3": "ABCDEF019182FAEB47744D4C50727433"
   },
   "chorus": {
    "vst3": "476F6C654D467843686F727573303031",
@@ -94,9 +88,6 @@
     "Level Comp": 0
    },
    "status": "testing"
-  },
-  "phaser": {
-   "lv2": "http://calf.sourceforge.net/plugins/Phaser"
   },
   "tremolo": {
    "vst3": "476F6C654D46785472656D6F6C6F3031",
@@ -183,9 +174,6 @@
     "Wet Level": 21.0
    }
   },
-  "eq-para": {
-   "lv2": "http://gareus.org/oss/lv2/fil4#mono"
-  },
   "eq-graphic": {
    "vst3": "476F6C654D4678476571303030303031",
    "golem_fx": true,
@@ -235,9 +223,6 @@
   },
   "bitcrusher": {
    "lv2": "http://drobilla.net/plugins/mda/Degrade"
-  },
-  "rezfilter": {
-   "lv2": "http://drobilla.net/plugins/mda/RezFilter"
   },
   "grit": {
    "vst3": "ABCDEF019182FAEB557265645072736D"

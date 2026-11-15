@@ -144,16 +144,18 @@
         },
         {
          "id": "filt",
-         "type": "rezfilter",
+         "type": "autowah",
          "foot": 7,
          "params": {
-          "freq": 0.45,
-          "res": 0.65,
-          "env": 0.5,
-          "attack": 0.2,
-          "release": 0.4,
-          "lfodepth": 0,
-          "lforate": 0.3
+          "type": "Low-pass",
+          "wah": 0.5,
+          "low": 444.0,
+          "high": 2664.0,
+          "peak": 13.2,
+          "attack": 20.4,
+          "release": 806.0,
+          "rate": 0.24,
+          "source": "Envelope"
          }
         },
         {
@@ -385,16 +387,18 @@
       },
       {
        "id": "filt",
-       "type": "rezfilter",
+       "type": "autowah",
        "foot": 7,
        "params": {
-        "freq": 0.45,
-        "res": 0.65,
-        "env": 0.5,
-        "attack": 0.2,
-        "release": 0.4,
-        "lfodepth": 0,
-        "lforate": 0.3
+        "type": "Low-pass",
+        "wah": 0.5,
+        "low": 444.0,
+        "high": 2664.0,
+        "peak": 13.2,
+        "attack": 20.4,
+        "release": 806.0,
+        "rate": 0.24,
+        "source": "Envelope"
        }
       },
       {

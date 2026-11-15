@@ -110,22 +110,23 @@
      },
      {
       "id": "dly",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 9,
       "params": {
-       "time": "16th",
-       "feedback": 25,
-       "mix": 16,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 25.0,
+       "mix": 16.0
       }
      },
      {
       "id": "verb",
-      "type": "surge-spring",
+      "type": "reverb",
       "params": {
-       "mix": 0.22,
-       "decay": 0.5,
-       "size": 0.5
+       "algo": "Spring",
+       "mix": 22.0,
+       "decay": 2.2,
+       "size": 30.0
       }
      },
      {
@@ -218,12 +219,12 @@
      },
      "params": {
       "verb": {
-       "mix": 0.4,
-       "decay": 0.7
+       "mix": 40.0,
+       "decay": 2.92
       },
       "dly": {
-       "mix": 24,
-       "feedback": 38
+       "feedback": 38.0,
+       "mix": 24.0
       }
      },
      "branches": {}
@@ -274,14 +275,10 @@
        "blocks": [
         {
          "id": "treble",
-         "type": "boost",
+         "type": "shem",
          "foot": 6,
          "params": {
-          "drive": 10,
-          "level": 70,
-          "treble": 6,
-          "bass": -5,
-          "mid": 3
+          "grind": 10.0
          }
         },
         {
@@ -302,13 +299,13 @@
     "post": [
      {
       "id": "dly-2",
-      "type": "delay-tape",
+      "type": "delay",
       "foot": 7,
       "params": {
-       "time": "16th",
-       "feedback": 35,
-       "mix": 22,
-       "medium": "Tape"
+       "model": "Tape",
+       "time": "1/16",
+       "feedback": 35.0,
+       "mix": 22.0
       }
      },
      {
@@ -576,14 +573,12 @@
      },
      {
       "id": "drive",
-      "type": "boost",
+      "type": "emet",
       "foot": 6,
       "params": {
-       "drive": 40,
-       "level": 50,
-       "treble": 0,
-       "bass": 1,
-       "mid": 2
+       "gain": 40.0,
+       "tone_stack": 47.0,
+       "level": 0.0
       }
      },
      {
@@ -1078,12 +1073,12 @@
    },
    "params": {
     "verb": {
-     "mix": 0.4,
-     "decay": 0.7
+     "mix": 40.0,
+     "decay": 2.92
     },
     "dly": {
-     "mix": 24,
-     "feedback": 38
+     "feedback": 38.0,
+     "mix": 24.0
     },
     "verb-2": {
      "mix": 22,

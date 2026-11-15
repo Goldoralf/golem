@@ -234,7 +234,7 @@ def test_la_liste_marque_ce_que_golem_joue_deja_et_cache_les_plugins_de_golem():
     assert "CLAP: GoleM Freeze (GoleM)" not in got and "CLAP: golem Capture (golem)" not in got     # les plugins de golem
     assert "VST: ReaPitch (Cockos)" not in got                                                        # quarantaine
     assert got["CLAP: Dragonfly Plate Reverb (Michael Willis)"]["block"].startswith("reverb")
-    assert got["VST3: Surge XT Effects (Surge Synth Team)"]["block"] == "surge-spring"
+    assert got["VST3: Surge XT Effects (Surge Synth Team)"]["block"].startswith("surge-")     # le ressort est retiré (v48)
     assert "block" not in got["CLAP: Surge XT (Surge Synth Team)"] and "block" not in got["CLAP: Dexed (Digital Suburban)"]
 
 

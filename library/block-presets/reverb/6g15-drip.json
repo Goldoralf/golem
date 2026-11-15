@@ -1,0 +1,15 @@
+{
+ "name": "6G15 Drip",
+ "type": "reverb",
+ "inst": "guitar",
+ "factory": true,
+ "params": {
+  "algo": "Spring",
+  "mix": 40.0,
+  "decay": 2.56,
+  "size": 32.0,
+  "hicut": 7950.0
+ },
+ "default": false,
+ "migrated_from": "surge-spring"
+}

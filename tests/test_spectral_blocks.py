@@ -20,14 +20,11 @@ def _block(t):
 def test_les_deux_blocs_sont_au_catalogue_avec_des_tapers_connus():
     cat = _catalog()
     assert cat["catalog_version"] >= 23
-    sc, px, fz = _block("spectral-comp"), _block("stretch"), _block("freeze")
+    sc, px = _block("spectral-comp"), _block("stretch")      # freeze (GoleM Freeze) : retiré au catalogue v48
     assert sc["plugin"].startswith("CLAP: Spectral Compressor") and px["plugin"].startswith("CLAP: PaulXStretch")
     assert sc["category"] == "dynamics" and px["category"] == "reverb"
-    assert sc.get("defaults") == "compile" and px.get("defaults") == "compile" and fz.get("defaults") == "compile"
-    assert fz["plugin"] == "CLAP: GoleM Freeze (GoleM)" and fz["category"] == "reverb"
-    assert next(p for p in fz["params"] if p["id"] == "freeze")["type"] == "bool"      # le geste = un paramètre
-    assert next(p for p in fz["params"] if p["id"] == "mix").get("exp") is True         # le gel entre à la pédale EXP
-    for b in (sc, px, fz):
+    assert sc.get("defaults") == "compile" and px.get("defaults") == "compile"
+    for b in (sc, px):
         for p in b["params"]:
             m = p.get("map") or {}
             assert m.get("mode") in ("pow", "raw"), (b["type"], p["id"])          # jamais « norm » (dichotomie)
@@ -62,8 +59,7 @@ def test_les_interrupteurs_de_module_de_stretch_suivent_leurs_potards():
     assert blocks[1]["params"]["spread_on"] is True and blocks[1]["params"]["comp_on"] is True   # explicite : gardé
 
 
-def test_freeze_est_en_quarantaine_au_niveau_du_bloc():
-    """Catalogue v37 : la quarantaine de Freeze (v35) avait été posée sur un PARAMÈTRE du bloc — inactive, le bloc
-    restait au tiroir et dans la compile (signalé par golem.fm le 2026-11-12). La clé se lit au niveau du bloc."""
-    from bridge import rig
-    assert "freeze" in rig.quarantined_types()
+def test_freeze_est_retire_du_catalogue():
+    """Catalogue v48 (2026-11-15) : GoleM Freeze est retiré sans remplaçant (le mainteneur le trouvait pauvre) ; un
+    document qui le porte encore prend le maintien de gfx-grains au chargement (option_renames)."""
+    assert not any(e.get("type") == "freeze" for e in _catalog()["effects"])

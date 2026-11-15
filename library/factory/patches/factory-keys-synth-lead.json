@@ -128,13 +128,13 @@
      },
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "chorus",
       "params": {
-       "length": 16,
-       "voices": 3,
        "rate": 0.5,
-       "wet": -8,
-       "dry": 0
+       "delay_base": 16.0,
+       "depth": 4.0,
+       "mix": 0.4,
+       "voices": "3"
       }
      },
      {
@@ -355,13 +355,13 @@
    },
    {
     "id": "chorus",
-    "type": "chorus-js",
+    "type": "chorus",
     "params": {
-     "length": 16,
-     "voices": 3,
      "rate": 0.5,
-     "wet": -8,
-     "dry": 0
+     "delay_base": 16.0,
+     "depth": 4.0,
+     "mix": 0.4,
+     "voices": "3"
     }
    },
    {

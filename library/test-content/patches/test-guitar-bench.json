@@ -67,7 +67,7 @@
     "post": [
      {
       "id": "chorus",
-      "type": "chorus-js",
+      "type": "flanger-js",
       "foot": 7
      },
      {

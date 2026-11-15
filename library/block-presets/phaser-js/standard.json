@@ -1,0 +1,15 @@
+{
+ "name": "Standard",
+ "type": "phaser-js",
+ "factory": true,
+ "params": {
+  "rate": 0.4,
+  "low": 440,
+  "high": 4435,
+  "feedback": -10.5,
+  "stages": "6"
+ },
+ "default": false,
+ "inst": "any",
+ "migrated_from": "phaser"
+}

@@ -1346,6 +1346,30 @@ svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:
 .dbx-h span{color:var(--muted); font-size:12px}
 .dbx-h em{margin-left:auto; font-style:normal; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#f0b35a}
 .dbx-mark{font-family:ui-monospace,monospace; color:#ff7a60}
+/* LE TIROIR « ADD BLOCK » D'UNE SEULE GRAMMAIRE (maquette 2026-11-15) : filtres, tes captures, blocs, modèles dessinés */
+.dbx.one{grid-template-columns:1fr; gap:10px}
+.dk-filters{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.dk-filters .grow{flex:1}
+.dk-chip{height:32px; padding:0 12px; border-radius:16px; border:1px solid var(--line); background:var(--panel2); color:#c3cad4;
+  font-size:13px; font-weight:600; cursor:pointer}
+.dk-chip small{color:var(--muted); font-weight:400; margin-left:2px}
+.dk-chip.on{background:color-mix(in srgb, var(--sect, #3d9be9) 22%, var(--panel2)); border-color:var(--sect, #3d9be9); color:var(--text)}
+.dk-sub button{font-size:12px; padding:0 8px; height:30px}
+.dk-filters .dk-chip{padding:0 10px}
+.dk-h{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:4px}
+.dk-h span{text-transform:none; letter-spacing:0; margin-left:8px}
+.dk-rows{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px}
+.dbx.one .dbx-arch{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+.dk-empty{display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; padding:40px 30px; color:var(--muted)}
+.dk-empty b{color:var(--text); font-size:16px}
+.dk-empty span{max-width:420px; line-height:1.5}
+.dk-go{display:inline-flex; align-items:center; height:44px; padding:0 18px; border-radius:10px; background:#3d9be9; color:#0d0f12;
+  font-weight:700; text-decoration:none}
+.dc-mine{font-style:normal; font-size:11px; font-weight:700; color:#ff9f43; margin-left:6px}
+.di.drawn{padding:8px 6px 10px}
+.di-draw{display:block; width:100%; height:62px; pointer-events:none}
+.di-draw svg{display:block}
+.di-mine{position:absolute; top:5px; left:7px; font-size:10px; font-weight:800; color:#ff9f43}
 .dbx-arch{display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px; margin-top:4px}
 .dbx-arch .di-group{margin-top:4px}
 .dr{display:flex; align-items:center; gap:12px; min-height:48px; padding:6px 12px; border-radius:9px; border:1px solid var(--line);

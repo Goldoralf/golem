@@ -4,6 +4,7 @@ import { html, useState, useEffect, useAsync, post, cls, esc, getCatalog, refres
 import { CAT_COLOR, ICON, MODEL_GEARS, needsModel, archOf, archKws, catLabel, GOLEM_FX } from './designer-model.js';
 import { makerOf, splitGolem } from './drawer-rows.mjs';
 import { loadVisuals, pedalSvg, visualsReady } from './golem-visuals.js';
+import { GP, namPedalSvg, rackSvg } from './tones-ui.js';
 import { searchDrawer, myCaptures, isMine } from './drawer-search.mjs';
 import { FORMATS, selectVsts, vstFormatCounts, vstGroups, recentVsts, rememberVst, pickRecent } from './vst-host-model.mjs';
 
@@ -11,6 +12,39 @@ import { FORMATS, selectVsts, vstFormatCounts, vstGroups, recentVsts, rememberVs
 const FAMILY_LABELS = { overdrive: 'Overdrive', distortion: 'Distortion', fuzz: 'Fuzz', boost: 'Boost',
   clean: 'Clean', crunch: 'Crunch', 'high-gain': 'High-gain', bass: 'Bass' };
 const FAMILY_ORDER = ['overdrive', 'distortion', 'fuzz', 'boost', 'clean', 'crunch', 'high-gain', 'bass'];
+
+// UNE CAPTURE DESSINÉE (maquette « Add block drawer », 2026-11-15) : chaque modèle et chaque capture à toi se dessine
+// comme dans Library ▸ Tones (têtes, stacks, baffles, pédales NAM de golem-fx) — plus de glyphes texte à côté des
+// icônes de blocs. Un dessin est fait UNE fois par contenu et gardé : le tiroir est redessiné à chaque état du rack, et
+// un SVG remplacé sous le doigt annule le clic (golem-visuals.js, « un dessin stable »).
+const _draws = new Map();
+const drawOnce = (key, make) => {
+  if (_draws.has(key)) return _draws.get(key);
+  let v = '';
+  try { v = make() || ''; } catch (e) { v = ''; }
+  if (_draws.size > 300) _draws.clear();
+  _draws.set(key, v);
+  return v;
+};
+const fitSvg = svg => String(svg || '').replace(/^<svg([^>]*?) width="[\d.]+"/, '<svg$1 width="100%" height="100%" preserveAspectRatio="xMidYMax meet"');
+// le dessin d'un MODÈLE (archétype) d'une catégorie : ampli = tête, baffle = baffle, sinon une pédale NAM
+function archDrawing(cat, a) {
+  const P = GP(); if (!P) return '';
+  const title = a.short || a.name;
+  return drawOnce('a|' + cat + '|' + a.id, () => cat === 'amp' ? P.namHead({ family: a.family, title })
+    : cat === 'cab' ? P.namCab({ title, size: a.size }) : namPedalSvg(a, title, a.family, true));
+}
+// le dessin d'une capture À TOI, par sa nature (gear)
+function toneDrawing(t) {
+  const P = GP(); if (!P) return '';
+  const title = String(t.amp || t.title || '').slice(0, 14);
+  return drawOnce('t|' + (t.id || title) + '|' + t.gear, () => t.gear === 'amp' ? P.namHead({ title })
+    : t.gear === 'amp-cab' ? P.namStack({ title }) : (t.gear === 'cab' || t.format === 'ir') ? P.namCab({ title })
+    : t.gear === 'outboard' ? rackSvg(title) : namPedalSvg(null, title, 'overdrive', true));
+}
+// où l'on ajoute une capture à soi, par catégorie (Library ▸ Tones, son + New)
+const cap1 = x => String(x || '').charAt(0).toUpperCase() + String(x || '').slice(1);
+const TONES_SUB = { amp: 'amps', cab: 'cabs', drive: 'pedals', preamp: 'outboard', dynamics: 'outboard' };
 
 // ── tiroir « ajouter un bloc » : catégories → blocs → (ampli/cab) volet des sims ──
 // hw = pédales MIDI INSTALLÉES (registre, /api/mappings, sans la Whammy qui a son bloc dédié) :
@@ -51,7 +85,12 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
   // popularité TONE3000, elles finissaient au bas d'Amp ▸ Other ▸ Head+Cab (NAM) — la dernière ligne d'une longue liste
   const { data: catg } = useAsync(getCatalog, []);
   const mine = flat || vstOnly ? [] : myCaptures({ cats: base, fx, tones: (catg && catg.tones) || [], modelGears: MODEL_GEARS });
-  const list = mine.length ? ['mine', ...base] : base;
+  // MINE EST UN FILTRE (maquette 2026-11-15), plus une catégorie qui rétrécissait le tiroir : la colonne des catégories
+  // dit combien de tes captures chacune porte, et elles passent en tête de leur catégorie
+  const list = base;
+  const catOfType = t => (fx.find(e => e.type === t) || {}).category;
+  const mineIn = c => mine.filter(m => catOfType(m.type) === c);
+  const [show, setShow] = useState('all');        // all | blocks | captures | mine
   const [cat, setCat] = useState(vstOnly ? 'vst-host' : '');
   const [vstQuery, setVstQuery] = useState('');
   const [vstKind, setVstKind] = useState(vstOnly ? 'effect' : 'all');   // remplacer un effet : des effets d'abord
@@ -112,6 +151,8 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
   const setView = v => { setView0(v); try { localStorage.setItem('golem.drawer.view', v); } catch (e) { /* navigation privée */ } };
   const [vis, setVis] = useState(visualsReady());
   useEffect(() => { if (view === 'pedals' && !vis) loadVisuals({ effects: fx }).then(() => setVis(true)).catch(() => setView('blocks')); }, [view]);
+  // les captures se DESSINENT aussi dans la vue Blocks : les visuels se chargent dès le tiroir ouvert
+  useEffect(() => { if (!vis && !flat && !vstOnly) loadVisuals({ effects: fx }).then(() => setVis(true)).catch(() => {}); }, []);
   const [pick, setPick] = useState(null);         // 3e volet : {type,name,macro?} (sim) | {ped:archétype} (pédale nommée)
   const [gainF, setGainF] = useState('');         // filtre caractère : '' (tout) | clean | crunch | high-gain
   const [rigF, setRigF] = useState('all');        // filtre nature : all | amp (têtes) | amp-cab (full-rig)
@@ -164,12 +205,23 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
             if (!arch.length) return '';
             const unit = activeCat === 'cab' ? 'IR(s)' : 'capture(s)';
             const tile = a => { const n = nOf(a);
-              return html`<button class=${cls('di', 'ped', !n && 'nocap', pick && pick.ped && pick.ped.id === a.id && 'on')}
+              const svg = vis ? archDrawing(activeCat, a) : '';
+              return html`<button class=${cls('di', 'ped', svg && 'drawn', !n && 'nocap', pick && pick.ped && pick.ped.id === a.id && 'on')}
                 style=${'--tc:' + (a.color || '#ffb03a')} onClick=${() => setPick({ ped: a })}
                 title=${n ? a.name + ' — ' + n + ' ' + unit + ' on the rack' : a.name + ' — no capture yet (download one from the picker)'}>
-                <span class="di-ic">${a.glyph || '⬢'}</span><span class="di-nm">${brandCat ? (a.short || a.name) : a.name}</span>
+                ${svg ? html`<span class="di-draw" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: fitSvg(svg) }}></span>`
+                  : html`<span class="di-ic">${a.glyph || '⬢'}</span>`}
+                <span class="di-nm">${brandCat ? (a.short || a.name) : a.name}</span>
+                ${brandCat && svg && (a.brand || a.name.split(' ')[0]) !== (a.short || a.name)
+                  ? html`<small class="ds-meta">${esc(a.brand || a.name.split(' ')[0])}</small>` : ''}
                 ${n ? html`<span class="di-count">${n}</span>` : ''}<span class="di-caret">›</span>
               </button>`; };
+            // dessinés, les modèles d'une marque ne prennent plus chacun une ligne : une grille triée par marque, la
+            // marque sous le nom
+            if (brandCat && vis) {
+              const brandOfArch = a => a.brand || a.name.split(' ')[0];
+              return arch.slice().sort((a, b) => (nOf(b) && 1) - (nOf(a) && 1) || brandOfArch(a).localeCompare(brandOfArch(b))).map(tile);
+            }
             if (brandCat) {
               const brandOfArch = a => a.brand || a.name.split(' ')[0];
               return [...new Set(arch.map(brandOfArch))].sort((a, b) => a.localeCompare(b)).map(b => html`
@@ -201,12 +253,15 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
           </button>`; };
   // ── LIGNES (maquette B) : les effets golem FX dans leur colonne, les autres blocs à côté avec leur fabricant ; en vue
   // Pedals, les mêmes en étagère de pédales (maquette D). Pas pour la recherche, le 3e volet, Mine, VST Host, Hardware.
-  const useB = !flat && !vstOnly && !found && !pick && !['vst-host', 'hardware', 'mine'].includes(activeCat)
-    && (items.length > 0 || arch.length > 0);
+  const mineHere = flat || vstOnly ? [] : mineIn(activeCat);
+  const useB = !flat && !vstOnly && !found && !pick && !['vst-host', 'hardware'].includes(activeCat)
+    && (items.length > 0 || arch.length > 0 || mineHere.length > 0);
   const { gfx: gxItems, other: oxItems } = splitGolem(items, GOLEM_FX);
   const offOf = e => { const cf = conflict(e); return { cf, off: (e.unique && taken(e.type)) || !!cf || !!e.blocked }; };
-  const rowOf = (e, golem) => { const { cf, off } = offOf(e); const mk = golem ? '' : makerOf(e.plugin);
-    return html`<button class=${cls('dr', golem && 'g', off && 'off')} disabled=${off}
+  // UNE SEULE LIGNE pour tous les blocs (2026-11-15 : plus de colonne « golem FX » marron ni de badge TESTING) : le
+  // glyphe à la couleur de la catégorie, le nom, d'où il vient en dessous ; « + » ajoute, « › » ouvre ses captures
+  const rowOf = (e, golem) => { const { cf, off } = offOf(e); const mk = golem ? 'golem' : ['cab', 'ir-fx'].includes(e.type) ? 'impulse response (IR)' : needsModel(e.type) ? 'NAM capture' : makerOf(e.plugin);
+    return html`<button class=${cls('dr', off && 'off')} disabled=${off}
       style=${'--tc:' + (e.color || CAT_COLOR[e.category] || '#8a94a3')}
       title=${cf ? whyBlocked(e, cf) : e.blocked ? e.why : (e.unique && taken(e.type) ? 'already in this preset (unique block)' : '')}
       onClick=${() => chooseItem(e)}>
@@ -220,18 +275,47 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
       title=${e.name + (cf ? ' — ' + whyBlocked(e, cf) : e.blocked ? ' — ' + e.why : '')}>
       <span class="dp-svg" dangerouslySetInnerHTML=${{ __html: pedalSvg({ type: e.type, title: e.short || e.name }) }}></span>
       <span class="dp-nm">${e.short || e.name}</span></button>`; };
-  // une catégorie sans golem FX (Amp, Cab, Preamp…) prend toute la largeur : une colonne vide ne dirait rien d'utile
-  const bView = () => html`<div class=${cls('dbx', shelf && 'shelf', !gxItems.length && 'solo')}>
-    ${!gxItems.length ? '' : html`<div class="dbx-g">
-      <div class="dbx-h"><b class="dbx-mark">/g_</b><b>golem FX</b>
-        ${gxItems.length ? html`<span>${gxItems.length} effect${gxItems.length > 1 ? 's' : ''}</span><em>testing</em>` : ''}</div>
-      ${shelf ? html`<div class="dp-row">${gxItems.map(pedalOf)}</div>` : gxItems.map(e => rowOf(e, true))}
-    </div>`}
-    <div class="dbx-o">
-      ${oxItems.length ? html`<div class="dbx-h"><b>Other blocks</b><span>${oxItems.length}</span></div>
-        ${shelf ? html`<div class="dp-row">${oxItems.map(pedalOf)}</div>` : oxItems.map(e => rowOf(e, false))}` : ''}
-      ${arch.length ? html`<div class="dbx-arch">${archSections}</div>` : ''}
-    </div></div>`;
+  // LA CATÉGORIE (maquette « Add block drawer », 2026-11-15) : un filtre All · Blocks · Captures · Mine, puis tes captures,
+  // les blocs (une ligne chacun), les modèles dessinés
+  const blocksAll = [...gxItems, ...oxItems];
+  const nCaps = arch.length;
+  const wants = k => show === 'all' || show === k;
+  const capTile = m => html`<button class="di ped drawn mine" style=${'--tc:#ff9f43'} onClick=${() => onAdd(m.type, m.tone)}
+      title=${(m.tone.amp || m.tone.title) + ' — ' + m.block}>
+    <span class="di-mine">yours</span>
+    ${vis ? html`<span class="di-draw" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: fitSvg(toneDrawing(m.tone)) }}></span>` : html`<span class="di-ic">★</span>`}
+    <span class="di-nm">${esc(m.tone.amp || m.tone.title)}</span><small class="ds-meta">${esc(m.tone.source === 'capture' ? 'captured here' : 'imported')}</small>
+  </button>`;
+  const bView = () => html`<div class=${cls('dbx', 'one', shelf && 'shelf')}>
+    <div class="dk-filters">
+      ${[['all', 'All', blocksAll.length + nCaps + mineHere.length], ['blocks', 'Blocks', blocksAll.length],
+         ['captures', 'Captures', nCaps], ['mine', 'Mine', mineHere.length]].filter(([k, , n]) => k === 'all' || k === 'mine' || n)
+        .map(([k, l, n]) => html`<button class=${cls('dk-chip', show === k && 'on')} onClick=${() => setShow(k)}>${l} <small>${n}</small></button>`)}
+      ${isAmpCat && wants('captures') ? html`<span class="grow"></span>
+        <div class="tb-seg dk-sub" title="Gain character">
+          ${[['clean', 'Clean'], ['crunch', 'Crunch'], ['high-gain', 'High']].map(([v, l]) => html`
+            <button class=${cls(gainF === v && 'on')} onClick=${() => setGainF(gainF === v ? '' : v)}>${l}</button>`)}
+        </div>
+        <div class="tb-seg dk-sub" title="Capture type — head only vs full rig (cab included)">
+          <button class=${cls(rigF !== 'amp-cab' && 'on')} onClick=${() => setRigF(rigF === 'all' ? 'amp-cab' : 'all')}>Heads</button>
+          <button class=${cls(rigF !== 'amp' && 'on')} onClick=${() => setRigF(rigF === 'all' ? 'amp' : 'all')}>+Cab</button>
+        </div>` : ''}
+    </div>
+    ${wants('mine') && mineHere.length ? html`<div class="dk-h">Yours · ${mineHere.length}</div>
+      <div class="dbx-arch">${mineHere.map(capTile)}</div>` : ''}
+    ${show === 'mine' && !mineHere.length ? html`<div class="dk-empty">
+      <b>Nothing of yours in ${esc(cap1(catLabel(activeCat)))} yet</b>
+      <span>Your own sounds land here: a pedal or an amp you capture on this rack, or a NAM file you import.
+        ${mine.length ? ' You have ' + list.filter(c => mineIn(c).length).map(c => mineIn(c).length + ' in ' + cap1(catLabel(c))).join(', ') + '.' : ''}</span>
+      <a class="dk-go" href=${'#/library/tones/' + (TONES_SUB[activeCat] || 'amps')} onClick=${onClose}>Capture or import in Library ▸ Tones</a>
+      <small>A VST plugin you own goes in VST Host.</small>
+    </div>` : ''}
+    ${wants('blocks') && blocksAll.length ? html`<div class="dk-h">Blocks · ${blocksAll.length}</div>
+      ${shelf ? html`<div class="dp-row">${blocksAll.map(pedalOf)}</div>`
+        : html`<div class="dk-rows">${blocksAll.map(e => rowOf(e, gxItems.includes(e)))}</div>`}` : ''}
+    ${wants('captures') && arch.length ? html`<div class="dk-h">Captures · ${nCaps}<span>${activeCat === 'cab' ? 'real cabs, as impulse responses' : 'real gear, captured with NAM'}</span></div>
+      <div class="dbx-arch">${archSections}</div>` : ''}
+  </div>`;
   const headTitle = pick ? (pick.ped ? pick.ped.name : pick.name) : flat ? 'Add service' : vstOnly ? 'Replace with your own plugin' : 'Add block';
   return html`<div class="drawer-scrim" onClick=${e => e.target.classList.contains('drawer-scrim') && onClose()}>
     <div class=${cls('drawer', pick && 'wide', flat && 'flat', activeCat === 'vst-host' && !flat && 'vst-wide', useB && 'rows')}>
@@ -245,7 +329,8 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
       <div class="drawer-body">
         ${flat ? '' : html`<div class="drawer-cats">
           ${list.map(c => html`<button class=${'dc' + (c === activeCat && !found ? ' on' : '')} style=${'--tc:' + (CAT_COLOR[c] || '#8a94a3')}
-            onClick=${() => { setCat(c); setPick(null); setGainF(''); setRigF('all'); setQ(''); }}>${catLabel(c)}</button>`)}
+            onClick=${() => { setCat(c); setPick(null); setGainF(''); setRigF('all'); setQ(''); setShow('all'); }}>${catLabel(c)}${mineIn(c).length
+              ? html`<i class="dc-mine" title="yours in this category">${mineIn(c).length}</i>` : ''}</button>`)}
         </div>`}
         <div class="drawer-items">
           ${found ? html`
@@ -267,8 +352,7 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
                   ${cf ? html`<span class="di-why">${whyBlocked(e, cf)}</span>` : e.blocked ? html`<span class="di-why">${e.why}</span>` : ''}
                 </button>`; })}` : ''}
           ` : html`
-          ${activeCat === 'mine' ? html`<div class="di-group">Your captures — imported or made on this rack</div>${mine.map(capRow)}` : ''}
-          ${!flat && isAmpCat ? html`<div class="drawer-filters">
+          ${!flat && isAmpCat && !useB ? html`<div class="drawer-filters">
             <div class="tb-seg" title="Gain character">
               ${[['clean', 'Clean'], ['crunch', 'Crunch'], ['high-gain', 'High']].map(([v, l]) => html`
                 <button class=${cls(gainF === v && 'on')} onClick=${() => setGainF(gainF === v ? '' : v)}>${l}</button>`)}

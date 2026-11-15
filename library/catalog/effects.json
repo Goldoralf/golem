@@ -934,7 +934,7 @@
   ]
  },
  "role_categories": {
-  "_comment": "Categories offered to each lane ROLE — the add-block drawer (rack Designer AND golem.fm) and the AI vocabulary read THIS table; guitar and line: every category except drums (the Drum Kit is the drums lane's instrument — offered on a guitar lane it only showed a greyed tile, 2026-10-25); a role absent here sees every category. voice: vocal FX + captured outboard + lofi (Grit, the ONLY saturation allowed on a voice) — never amp, cab or drive. keys/pads: instruments + keyboard-coherent FX (no wah, no pitch, no amp). drums (docs/drums-kit.md): an electronic kit — the Drum Kit instrument (category drums, lot 2), then dynamics, preamp, lofi, eq, modulation, delay, reverb, utility; never amp, cab, drive, filter or pitch.",
+  "_comment": "Categories offered to each lane ROLE — the add-block drawer (rack Designer AND golem.fm) and the AI vocabulary read THIS table; guitar and line: every category except drums (the Drum Kit is the drums lane's instrument — offered on a guitar lane it only showed a greyed tile, 2026-10-25); a role absent here sees every category. voice: vocal FX + captured outboard + lofi (Grit, the ONLY saturation allowed on a voice) — never amp, cab or drive. keys/pads: instruments + keyboard-coherent FX (no wah, no amp; pitch since 2026-11-15: Formant, octaver, detune — the Whammy DT stays guitar/bass/voice). drums (docs/drums-kit.md): an electronic kit — the Drum Kit instrument (category drums, lot 2), then dynamics, preamp, lofi, eq, modulation, delay, reverb, utility; never amp, cab, drive, filter or pitch.",
   "guitar": [
    "dynamics",
    "preamp",
@@ -1011,7 +1011,8 @@
    "eq",
    "modulation",
    "delay",
-   "reverb"
+   "reverb",
+   "pitch"
   ],
   "keys-pads": [
    "keys",
@@ -1023,7 +1024,8 @@
    "eq",
    "modulation",
    "delay",
-   "reverb"
+   "reverb",
+   "pitch"
   ],
   "pads": [
    "keys",
@@ -1035,7 +1037,8 @@
    "eq",
    "modulation",
    "delay",
-   "reverb"
+   "reverb",
+   "pitch"
   ]
  },
  "effects": [
@@ -2712,6 +2715,12 @@
    "type": "whammy-dt",
    "name": "Whammy DT (MIDI)",
    "category": "pitch",
+   "roles": [
+    "guitar",
+    "line",
+    "bass",
+    "voice"
+   ],
    "engine": "midi",
    "plugin": null,
    "icon": "⤓",
@@ -6816,7 +6825,8 @@
    "roles": [
     "voice",
     "guitar",
-    "bass"
+    "bass",
+    "keys"
    ],
    "note": "golem-fx formant shifter (gfx-formant, catalogue v50): moves the voice's formants without moving its pitch — a darker, bigger or smaller voice, a growl, a vowel. Engine Live has no latency (or the Lookahead you set); Grain sounds smoother but adds about 9 to 21 ms by Register. Engine, Register and Lookahead are setup settings: the block's base only, never per scene or on the pedal. Put the de-esser and any gate BEFORE it on a voice lane.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",

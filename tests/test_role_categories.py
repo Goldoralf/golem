@@ -31,7 +31,10 @@ def test_la_doctrine_voix_est_dans_la_donnee():
     voice = set(rc["voice"])
     assert {"drive", "amp", "cab", "filter"}.isdisjoint(voice)      # ni ampli, ni cab, ni disto (patches.md §12)
     assert {"lofi", "preamp", "dynamics", "eq", "pitch"} <= voice    # la seule saturation ouverte : Grit
-    assert "amp" not in rc["keys"] and "pitch" not in rc["keys"]     # claviers : aucun ampli, pas de Whammy
+    assert "amp" not in rc["keys"]                                    # claviers : aucun ampli
+    # pitch ouvert aux claviers (2026-11-15 : Formant, octaver, detune) — la Whammy DT, pédale de guitare, reste dehors
+    whammy = next(e for e in _fx()["effects"] if e["type"] == "whammy-dt")
+    assert "pitch" in rc["keys"] and "keys" not in whammy["roles"]
 
 
 def test_le_catalogue_pousse_porte_la_table_sans_le_commentaire():

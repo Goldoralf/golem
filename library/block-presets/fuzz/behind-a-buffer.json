@@ -1,0 +1,46 @@
+{
+ "id": "behind-a-buffer",
+ "type": "fuzz",
+ "name": "Behind a buffer",
+ "desc": "The same face after a buffer: the volume knob only turns it down, the fuzz stays",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": true,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "To hear why a face wants to be first: buffered, the THD is 5 – 13 dB higher at every knob position",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

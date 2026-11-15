@@ -1,0 +1,43 @@
+{
+ "id": "live-clean-retriggers",
+ "type": "swell",
+ "name": "Live clean retriggers",
+ "desc": "The violin swell with 3 ms of lookahead: re-picked notes lose their attack completely",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "rise": 250,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "3 ms",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "3 ms of reported latency hides every pick's dip; set at insert, never switched inside a song",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

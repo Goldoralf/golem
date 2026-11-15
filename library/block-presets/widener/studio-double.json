@@ -1,0 +1,41 @@
+{
+ "id": "studio-double",
+ "type": "widener",
+ "name": "Studio double",
+ "desc": "The classic micro-shift double: two detuned, slightly late voices left and right, heard in mono too",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Double",
+  "amount": 50,
+  "width": 100,
+  "time": 12,
+  "bass_keep": 120,
+  "mono_law": "Classic",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -1.0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Classic law: the fold carries the double as a chorus; Mono Error shows it",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

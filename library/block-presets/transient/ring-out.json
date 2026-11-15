@@ -1,0 +1,51 @@
+{
+ "id": "ring-out",
+ "type": "transient",
+ "name": "Ring out",
+ "desc": "Clean arpeggios ring longer: tails lifted up to 10 dB, never above their height over the noise floor",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic",
+  "folk"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "attack": 0,
+  "sustain": 10,
+  "att_time": 15,
+  "sus_time": 2000,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -60,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "A 2 s reference shapes slowly decaying notes; thresh just above the rig's hiss keeps the noise from being lifted",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

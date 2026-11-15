@@ -1,0 +1,41 @@
+{
+ "id": "mono-the-lows",
+ "type": "widener",
+ "name": "Mono the lows",
+ "desc": "A stereo synth or backing with everything below 180 Hz made mono, the rest untouched",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop",
+  "hip-hop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "mode": "M/S",
+  "amount": 60,
+  "width": 100,
+  "time": 20,
+  "bass_keep": 180,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "The vinyl and live rule, on the side only: the dry mid never sees a filter",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

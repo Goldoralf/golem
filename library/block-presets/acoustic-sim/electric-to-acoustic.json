@@ -1,0 +1,50 @@
+{
+ "id": "electric-to-acoustic",
+ "type": "acoustic-sim",
+ "name": "Electric to acoustic",
+ "desc": "Mix on the expression pedal: morph the electric DI into the miked acoustic mid-song",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "alternative-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 0,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Put EXP on mix 0 → 100 %: the wet has no bulk delay, so the sweep has no comb",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

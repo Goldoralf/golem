@@ -1,8 +1,8 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 46,
+ "catalog_version": 47,
  "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
- "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER on Linux with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
+ "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER on Linux with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
@@ -922,7 +922,11 @@
    "reverb-plate",
    "reverb-room",
    "volume",
-   "bitcrusher"
+   "bitcrusher",
+   "transient",
+   "ducker",
+   "tape",
+   "radio"
   ]
  },
  "role_categories": {
@@ -6805,6 +6809,1159 @@
    "color": "#ffb03a",
    "params": [],
    "hidden": true
+  },
+  {
+   "type": "swell",
+   "name": "Auto Swell",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Swell (GoleM)",
+   "short": "Swell",
+   "color": "#4a5a6e",
+   "roles": [
+    "guitar",
+    "bass",
+    "keys"
+   ],
+   "params": [
+    {
+     "id": "rise",
+     "name": "Rise",
+     "min": 5,
+     "max": 4000,
+     "default": 300,
+     "unit": "ms",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "sens",
+     "name": "Sensitivity",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0
+    },
+    {
+     "id": "legato",
+     "name": "Legato",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0
+    },
+    {
+     "id": "curve",
+     "name": "Curve",
+     "type": "enum",
+     "options": [
+      "Square",
+      "Linear",
+      "S-Curve",
+      "dB",
+      "Pedal"
+     ],
+     "default": "Square"
+    },
+    {
+     "id": "depth",
+     "name": "Depth",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    }
+   ],
+   "note": "golem-fx auto-swell (slow gear): each note fades in on its own, no volume pedal. It reads the lane's clean DI (its key) wherever it sits, so it can follow the amp; without a key it reads its input. Lookahead (expert) adds 3 to 25 ms of reported latency: a setup setting, never a scene value. Expert: sync, decay, gate, envelope.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "transient",
+   "name": "Transient Shaper",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Transient (GoleM)",
+   "short": "Transient",
+   "color": "#4a5a6e",
+   "roles": [
+    "guitar",
+    "bass",
+    "voice",
+    "drums"
+   ],
+   "params": [
+    {
+     "id": "attack",
+     "name": "Attack",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "sustain",
+     "name": "Sustain",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "att_time",
+     "name": "Attack Length",
+     "min": 1,
+     "max": 100,
+     "default": 15,
+     "unit": "ms",
+     "fmt": 1
+    },
+    {
+     "id": "sus_time",
+     "name": "Sustain Length",
+     "min": 20,
+     "max": 3000,
+     "default": 300,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "att_band",
+     "name": "Attack Band",
+     "type": "enum",
+     "options": [
+      "Full",
+      "Highs",
+      "Lows"
+     ],
+     "default": "Full"
+    },
+    {
+     "id": "ceil_mode",
+     "name": "Ceiling",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Soft",
+      "Limit"
+     ],
+     "default": "Off"
+    }
+   ],
+   "note": "golem-fx level-independent transient shaper. Attack and Sustain are GAINS in dB on the note's attack and on its tail (not times). It reads the lane's clean DI (its key) wherever it sits. Ceiling is off by default (the rack's safety limiter stays). Lookahead (expert, 1 to 5 ms of latency) is a setup setting, never a scene value.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "mb-comp",
+   "name": "Multiband Comp",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX MB Comp (GoleM)",
+   "short": "Bands",
+   "color": "#4a5a6e",
+   "roles": [
+    "guitar",
+    "bass",
+    "voice",
+    "keys"
+   ],
+   "params": [
+    {
+     "id": "amount",
+     "name": "Amount",
+     "min": 0,
+     "max": 200,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "tilt",
+     "name": "Tilt",
+     "min": -100,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "time",
+     "name": "Time",
+     "min": 10,
+     "max": 400,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "character",
+     "name": "Character",
+     "type": "enum",
+     "options": [
+      "Clean",
+      "Bus",
+      "FET",
+      "Opto",
+      "Pedal"
+     ],
+     "default": "Clean"
+    }
+   ],
+   "note": "golem-fx multiband compressor (3 or 4 bands, up and down). Amount scales every band, Tilt leans it to the lows or the highs. Phase (expert) is set before playing: Linear reports 42.7 ms of latency at 48 kHz, Minimum none. In a split lane summed against a dry branch it combs at the crossovers: use Mix or Linear there.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "ducker",
+   "name": "Ducker",
+   "category": "dynamics",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Ducker (GoleM)",
+   "short": "Duck",
+   "color": "#4a5a6e",
+   "roles": [
+    "guitar",
+    "bass",
+    "voice",
+    "keys",
+    "drums"
+   ],
+   "params": [
+    {
+     "id": "mode",
+     "name": "Mode",
+     "type": "enum",
+     "options": [
+      "Follow",
+      "Trigger",
+      "Pump"
+     ],
+     "default": "Follow"
+    },
+    {
+     "id": "thresh",
+     "name": "Threshold",
+     "min": -90,
+     "max": 0,
+     "default": -40,
+     "unit": "dB",
+     "fmt": 1
+    },
+    {
+     "id": "depth",
+     "name": "Depth",
+     "min": 0,
+     "max": 60,
+     "default": 12,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "hold",
+     "name": "Hold",
+     "min": 0,
+     "max": 2000,
+     "default": 150,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "release",
+     "name": "Release",
+     "min": 10,
+     "max": 5000,
+     "default": 400,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "shape",
+     "name": "Band",
+     "type": "enum",
+     "options": [
+      "Wide",
+      "Bell",
+      "Low",
+      "High",
+      "Spectral"
+     ],
+     "default": "Wide"
+    },
+    {
+     "id": "force",
+     "name": "Duck Now",
+     "type": "bool",
+     "default": false
+    }
+   ],
+   "note": "golem-fx ducker: it lowers this lane when its KEY plays. Today the key is the lane's own clean DI (a duck of a wet-only branch, the delay or reverb tail under the notes); another lane or the backing as key is not routed yet. Pump needs no key (tempo-synced). Force ducks by hand (talkback). Without a key (Windows, macOS) it does nothing. Lookahead (expert) is a setup setting.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "widener",
+   "name": "Stereo Widener",
+   "category": "utility",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Widener (GoleM)",
+   "short": "Wide",
+   "color": "#c0e0f8",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "mode",
+     "name": "Mode",
+     "type": "enum",
+     "options": [
+      "Velvet",
+      "Allpass",
+      "Comb",
+      "Double",
+      "M/S"
+     ],
+     "default": "Velvet"
+    },
+    {
+     "id": "amount",
+     "name": "Amount",
+     "min": 0,
+     "max": 100,
+     "default": 60,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "width",
+     "name": "Width",
+     "min": 0,
+     "max": 200,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "time",
+     "name": "Time",
+     "min": 1,
+     "max": 40,
+     "default": 20,
+     "unit": "ms",
+     "fmt": 1
+    },
+    {
+     "id": "bass_keep",
+     "name": "Bass Keep",
+     "min": 0,
+     "max": 500,
+     "default": 120,
+     "unit": "Hz",
+     "fmt": 0
+    },
+    {
+     "id": "mono_law",
+     "name": "Mono Law",
+     "type": "enum",
+     "options": [
+      "Exact",
+      "Classic"
+     ],
+     "default": "Exact"
+    }
+   ],
+   "note": "golem-fx stereo widener and imager, exact in mono (Exact law: folding to mono gives back the dry). Stereo by nature: it turns a mono lane stereo; put it after the last mono block. Listen (expert) is never stored.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "bass-di",
+   "name": "Bass DI",
+   "category": "preamp",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Bass DI (GoleM)",
+   "short": "BassDI",
+   "color": "#b316c0",
+   "roles": [
+    "bass",
+    "guitar"
+   ],
+   "params": [
+    {
+     "id": "gain",
+     "name": "Drive",
+     "min": 0,
+     "max": 100,
+     "default": 35,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mix",
+     "name": "Blend",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "bass",
+     "name": "Bass",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "treble",
+     "name": "Treble",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "model",
+     "name": "Model",
+     "type": "enum",
+     "options": [
+      "Modern",
+      "Classic",
+      "Vintage"
+     ],
+     "default": "Modern"
+    },
+    {
+     "id": "cab",
+     "name": "Cab",
+     "type": "enum",
+     "options": [
+      "Off",
+      "Smooth",
+      "8×10",
+      "4×10",
+      "1×15"
+     ],
+     "default": "Smooth"
+    }
+   ],
+   "note": "golem-fx bass preamp / DI: a phase-coherent blend of the clean bass and a driven channel (Blend), a tone stack, and a cab voicing (Cab: turn it off when an amp, a cab or an IR follows). Low Note (expert) follows the lane's lowest string: 41.2 Hz on a 4-string.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "tape",
+   "name": "Tape",
+   "category": "lofi",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Tape (GoleM)",
+   "short": "Tape",
+   "color": "#d8c8a0",
+   "roles": [
+    "guitar",
+    "bass",
+    "keys",
+    "voice",
+    "drums"
+   ],
+   "params": [
+    {
+     "id": "input",
+     "name": "Record",
+     "min": -12,
+     "max": 24,
+     "default": 6,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "wow",
+     "name": "Wow",
+     "min": 0,
+     "max": 4,
+     "default": 0.1,
+     "unit": "%",
+     "fmt": 3,
+     "exp": true
+    },
+    {
+     "id": "flutter",
+     "name": "Flutter",
+     "min": 0,
+     "max": 1,
+     "default": 0.05,
+     "unit": "%",
+     "fmt": 3,
+     "exp": true
+    },
+    {
+     "id": "wear",
+     "name": "Wear",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "model",
+     "name": "Model",
+     "type": "enum",
+     "options": [
+      "Studio Reel",
+      "Home Reel",
+      "Cassette",
+      "Portable Cassette",
+      "Microcassette",
+      "VHS",
+      "Vinyl",
+      "Shellac 78"
+     ],
+     "default": "Studio Reel"
+    },
+    {
+     "id": "speed",
+     "name": "Speed",
+     "type": "enum",
+     "options": [
+      "Model",
+      "1⅞ ips",
+      "3¾ ips",
+      "7½ ips",
+      "15 ips",
+      "30 ips"
+     ],
+     "default": "Model"
+    },
+    {
+     "id": "noise",
+     "name": "Noise",
+     "type": "bool",
+     "default": true
+    }
+   ],
+   "note": "golem-fx tape and lo-fi media: record level, wow, flutter, wear, noise, models from studio tape to cassette. The wet carries the transport's delay (0.8 ms at the defaults, up to 40 ms) and the dry follows it inside the block: a DI split summed back outside it can comb. Stop (expert) is a tape stop then spin-up.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "dist",
+   "name": "Dist",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Dist (GoleM)",
+   "short": "Dist",
+   "color": "#c8160e",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "circuit",
+     "name": "Circuit",
+     "type": "enum",
+     "options": [
+      "Op-Amp Dist",
+      "Booster Dist",
+      "Blend OD",
+      "MOSFET OD"
+     ],
+     "default": "Op-Amp Dist"
+    },
+    {
+     "id": "gain",
+     "name": "Gain",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "tone_stack",
+     "name": "Tone",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    }
+   ],
+   "note": "golem-fx circuit-simulated distortions: op-amp dist, booster dist, blend overdrive, MOSFET overdrive (Circuit). Heavy on the processor (about 20 % of a core in mono): count it in the lane's budget.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "fuzz",
+   "name": "Fuzz",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Fuzz (GoleM)",
+   "short": "Fuzz",
+   "color": "#b0602a",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "fuzz",
+     "name": "Fuzz",
+     "min": 0,
+     "max": 100,
+     "default": 70,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "tone",
+     "name": "Tone",
+     "min": -100,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "guitar_vol",
+     "name": "Guitar Vol",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "model",
+     "name": "Model",
+     "type": "enum",
+     "options": [
+      "Ge Pair",
+      "Si Four"
+     ],
+     "default": "Ge Pair"
+    },
+    {
+     "id": "buffer",
+     "name": "Buffer",
+     "type": "bool",
+     "default": false
+    }
+   ],
+   "note": "golem-fx circuit-simulated fuzz, the guitar included: Guitar Vol cleans it up as a real guitar's volume knob does (the EXP's natural target). Germanium pair or silicon four-transistor (Model); Buffer puts a buffer before it. Heavy on the processor (about 21 to 23 % of a core): count it in the lane's budget.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "radio",
+   "name": "Radio",
+   "category": "lofi",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Radio (GoleM)",
+   "short": "Radio",
+   "color": "#4b5320",
+   "roles": [
+    "voice",
+    "guitar",
+    "keys",
+    "drums"
+   ],
+   "params": [
+    {
+     "id": "model",
+     "name": "Model",
+     "type": "enum",
+     "options": [
+      "Telephone",
+      "Cell Phone",
+      "Megaphone",
+      "Walkie-Talkie",
+      "AM Radio",
+      "PA Horn",
+      "Intercom",
+      "Pocket Radio",
+      "Gramophone",
+      "Laptop"
+     ],
+     "default": "Telephone"
+    },
+    {
+     "id": "drive",
+     "name": "Drive",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "noise",
+     "name": "Noise",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "distance",
+     "name": "Distance",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "tune",
+     "name": "Tune",
+     "min": -100,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    }
+   ],
+   "note": "golem-fx small speaker and transmission pedal: AM, FM, walkie-talkie, phone, cell codec, megaphone, laptop… (Model). Tune detunes the AM/FM receivers (an EXP target). Prefer it to Grit's Megaphone / Telephone and the graphic EQ's lo-fi presets for a radio voice.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "vocoder",
+   "name": "Vocoder",
+   "category": "modulation",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Vocoder (GoleM)",
+   "short": "Vocoder",
+   "color": "#00a84f",
+   "roles": [
+    "voice",
+    "guitar",
+    "keys"
+   ],
+   "params": [
+    {
+     "id": "source",
+     "name": "Carrier",
+     "type": "enum",
+     "options": [
+      "Tracked",
+      "Drone",
+      "Noise",
+      "Self"
+     ],
+     "default": "Tracked"
+    },
+    {
+     "id": "chord",
+     "name": "Chord",
+     "type": "enum",
+     "options": [
+      "Unison",
+      "Octave",
+      "Fifth",
+      "Triad",
+      "Seventh",
+      "Ninth"
+     ],
+     "default": "Unison"
+    },
+    {
+     "id": "formant",
+     "name": "Formant",
+     "min": -12,
+     "max": 12,
+     "default": 0,
+     "unit": "st",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "env_rel",
+     "name": "Release",
+     "min": 20,
+     "max": 2000,
+     "default": 40,
+     "unit": "ms",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "sib",
+     "name": "Sibilance",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "freeze",
+     "name": "Freeze",
+     "type": "bool",
+     "default": false
+    }
+   ],
+   "note": "golem-fx channel vocoder played by the lane itself: the carrier is tracked from the voice (or a drone, noise, the signal itself), in unison or as a chord (Chord). No other lane or MIDI needed in v1. Freeze holds the vowel.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "acoustic-sim",
+   "name": "Acoustic Sim",
+   "category": "amp",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Acoustic (GoleM)",
+   "short": "Acoustic",
+   "color": "#552210",
+   "roles": [
+    "guitar"
+   ],
+   "params": [
+    {
+     "id": "model",
+     "name": "Model",
+     "type": "enum",
+     "options": [
+      "Dreadnought",
+      "Jumbo",
+      "Concert",
+      "Parlor",
+      "Classical",
+      "Round-back"
+     ],
+     "default": "Dreadnought"
+    },
+    {
+     "id": "body",
+     "name": "Body",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "top",
+     "name": "Top",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mic",
+     "name": "Mic",
+     "min": 0,
+     "max": 100,
+     "default": 75,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "twelve",
+     "name": "12-String",
+     "type": "bool",
+     "default": false
+    }
+   ],
+   "note": "golem-fx acoustic simulator: the electric DI becomes a miked acoustic guitar (six bodies, Mic, Body, Top, 12-string). A full rig on its own: no amp or cab after it; put it first after the gate. Stereo in 2/2 (a mic pair).",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "sustainer",
+   "name": "Sustainer",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Sustainer (GoleM)",
+   "short": "Feedback",
+   "color": "#c4148c",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "harmonic",
+     "name": "Harmonic",
+     "type": "enum",
+     "options": [
+      "Sub",
+      "Fundamental",
+      "Octave",
+      "Octave + Fifth",
+      "Two Octaves",
+      "Two Octaves + Third",
+      "Natural Low",
+      "Natural High",
+      "Climb"
+     ],
+     "default": "Octave"
+    },
+    {
+     "id": "delay",
+     "name": "Onset Delay",
+     "min": 0,
+     "max": 3000,
+     "default": 300,
+     "unit": "ms",
+     "fmt": 0
+    },
+    {
+     "id": "rise",
+     "name": "Rise",
+     "min": 50,
+     "max": 6000,
+     "default": 1200,
+     "unit": "ms",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "bloom",
+     "name": "Bloom",
+     "min": -24,
+     "max": 6,
+     "default": -6,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "dry",
+     "name": "Dry",
+     "min": -60,
+     "max": 0,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "mode",
+     "name": "Mode",
+     "type": "enum",
+     "options": [
+      "Feedback",
+      "Sustain",
+      "Both"
+     ],
+     "default": "Feedback"
+    }
+   ],
+   "note": "golem-fx sustainer and controlled feedback, with no loop through the amp: Feedback blooms a harmonic of the string (Harmonic), Sustain holds the note, or Both; chords up to 4 voices. Muting with the hand releases it, a hammer-on carries it to the new note. Put it before the amp.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
+  },
+  {
+   "type": "polysynth",
+   "name": "Poly Synth",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Polysynth (GoleM)",
+   "short": "Synth",
+   "color": "#ff9ecf",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "engine",
+     "name": "Engine",
+     "type": "enum",
+     "options": [
+      "Spectral",
+      "Mono"
+     ],
+     "default": "Spectral"
+    },
+    {
+     "id": "wave",
+     "name": "Wave",
+     "type": "enum",
+     "options": [
+      "Saw",
+      "Pulse",
+      "Triangle",
+      "Sine"
+     ],
+     "default": "Saw"
+    },
+    {
+     "id": "cutoff",
+     "name": "Cutoff",
+     "min": 40,
+     "max": 12000,
+     "default": 3000,
+     "unit": "Hz",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "reso",
+     "name": "Resonance",
+     "min": 0,
+     "max": 100,
+     "default": 20,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "filt_env",
+     "name": "Env Amount",
+     "min": -48,
+     "max": 48,
+     "default": 24,
+     "unit": "st",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "synth",
+     "name": "Synth",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "dry",
+     "name": "Dry",
+     "min": -60,
+     "max": 0,
+     "default": -60,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    }
+   ],
+   "note": "golem-fx guitar synth with no MIDI and no hex pickup. Spectral turns every partial into a waveform (chords play polyphonically); Mono is one tracked voice with exact bends. Put it first in the lane on a clean DI. The heaviest golem-fx pedal (7 to 8 % of a core): count it in the lane's budget.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
   }
  ],
  "cabs": [

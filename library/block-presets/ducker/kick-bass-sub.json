@@ -1,0 +1,50 @@
+{
+ "id": "kick-bass-sub",
+ "type": "ducker",
+ "name": "Kick ducks the sub",
+ "desc": "Each kick fires the same short 12 dB dip on the bass's lows only; the growl above 240 Hz stays",
+ "inst": "bass",
+ "genres": [
+  "electronic",
+  "pop",
+  "hip-hop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Trigger",
+  "thresh": -40,
+  "depth": 12,
+  "attack": 2,
+  "hold": 20,
+  "release": 120,
+  "shape": "Low",
+  "hpf": 0,
+  "lpf": 150,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 120,
+  "width": 2,
+  "spread": 12,
+  "sync": "Off",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Key = the kick (needs golem's key_from). Level-independent dips; for a kick mic with bass bleed use hpf 2000 on the beater's click",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

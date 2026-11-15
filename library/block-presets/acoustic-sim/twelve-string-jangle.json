@@ -1,0 +1,50 @@
+{
+ "id": "twelve-string-jangle",
+ "type": "acoustic-sim",
+ "name": "Twelve-string jangle",
+ "desc": "Octave and unison courses added before the body, detuned and strummed late, compressed",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "folk-rock",
+  "jangle-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 100,
+  "twelve": true,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 35,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Octave voice below 400 Hz from the ERB bank, unison above 150 Hz; 4 cents and 2.5 ms on the shifter's 3 ms",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

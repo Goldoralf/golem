@@ -1,0 +1,50 @@
+{
+ "id": "pad-under-voice",
+ "type": "ducker",
+ "name": "Pad under the voice",
+ "desc": "Lowers an ambient guitar pad by 9 dB while the singer sings, holding through the gaps between words",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "experimental"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 9,
+  "attack": 15,
+  "hold": 250,
+  "release": 600,
+  "shape": "Wide",
+  "hpf": 150,
+  "lpf": 4000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Key = the voice lane's DI. The key filters keep breath and stage rumble out; set thresh just above the mic's bleed at soundcheck",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

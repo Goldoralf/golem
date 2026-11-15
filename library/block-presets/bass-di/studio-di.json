@@ -1,0 +1,49 @@
+{
+ "id": "studio-di",
+ "type": "bass-di",
+ "name": "Studio DI",
+ "desc": "A clean DI that sounds miked: a touch of tube push, the smooth speaker emulation, flat EQ",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "gain": 10,
+  "mix": 100,
+  "level": 0,
+  "bass": 0,
+  "lo_mid": 0,
+  "hi_mid": 0,
+  "treble": 0,
+  "model": "Classic",
+  "cab": "Smooth",
+  "grunt": 0,
+  "attack": 0,
+  "dirt_level": 0,
+  "lo_mid_freq": 500,
+  "hi_mid_freq": 1500,
+  "bass_keep": 0,
+  "low_note": 41.2,
+  "comp": 0,
+  "comp_char": "FET",
+  "comp_path": "Dirt",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "The SansAmp-style use: Blend full, Drive low; the cab's smoothing does most of the work. Turn cab Off before an IR",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

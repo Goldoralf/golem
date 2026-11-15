@@ -1,0 +1,50 @@
+{
+ "id": "tune-the-dial",
+ "type": "radio",
+ "name": "Tune the dial",
+ "desc": "AM receiver for the expression pedal: neighbour stations, a squeal through zero beat, static between",
+ "inst": "any",
+ "genres": [
+  "experimental",
+  "electronic",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "model": "AM Radio",
+  "drive": 0,
+  "noise": 60,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -30,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "notes": "Put the expression pedal on tune and sweep −100 → +100 %; the whistle's pitch follows the dial",
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

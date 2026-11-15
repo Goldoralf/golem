@@ -1,0 +1,42 @@
+{
+ "id": "air-pad",
+ "type": "widener",
+ "name": "Air pad",
+ "desc": "Keys or ambient guitar opened past the speakers: correlation below zero, mono fold still exact",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop",
+  "experimental"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Velvet",
+  "amount": 100,
+  "width": 130,
+  "time": 35,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -4.3,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "For headphones and recordings rather than a PA: a side louder than the mid reads as outside the speakers",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

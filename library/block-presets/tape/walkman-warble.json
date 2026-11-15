@@ -1,0 +1,62 @@
+{
+ "id": "walkman-warble",
+ "type": "tape",
+ "name": "Personal player warble",
+ "desc": "Portable cassette with random wow, automatic level control and worn tape: lo-fi chords",
+ "inst": "keys",
+ "genres": [
+  "hip-hop",
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "lo-fi-hip-hop",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "input": 6,
+  "wow": 0.6,
+  "flutter": 0.2,
+  "wear": 30,
+  "mix": 100,
+  "model": "Portable Cassette",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 40,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 8.5,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

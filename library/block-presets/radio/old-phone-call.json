@@ -1,0 +1,54 @@
+{
+ "id": "old-phone-call",
+ "type": "radio",
+ "name": "Old phone call",
+ "desc": "Carbon-mic handset over an analog line: 2nd-harmonic grit, line hum and hiss that stop in silence",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "screen"
+ ],
+ "subgenres": [
+  "indie-pop",
+  "film-score"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "lo-fi"
+ ],
+ "default": true,
+ "params": {
+  "model": "Telephone",
+  "drive": 0,
+  "noise": 50,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "notes": "The default: recognisable at once with no drive; the noise follows the voice (squelch 25 %)",
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

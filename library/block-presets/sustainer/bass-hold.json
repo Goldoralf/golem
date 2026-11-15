@@ -1,0 +1,52 @@
+{
+ "id": "bass-hold",
+ "type": "sustainer",
+ "name": "Held bass root",
+ "desc": "A bass note held on its own partials, down to 35 Hz, so a root rings under the band",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "harmonic": "Octave",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": -6,
+  "dry": 0,
+  "mode": "Sustain",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 500,
+  "mute_sens": 50,
+  "max_time": 30,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 35,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Lowest 35 Hz switches in the long detector window (55 ms to the first reading on E1)",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

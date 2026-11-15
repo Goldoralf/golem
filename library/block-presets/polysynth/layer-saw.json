@@ -1,0 +1,63 @@
+{
+ "id": "layer-saw",
+ "type": "polysynth",
+ "name": "Guitar plus synth layer",
+ "desc": "The guitar untouched with a saw synth under it, 6 dB down: a doubled part from one take",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "new-wave"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 1,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "engine": "Spectral",
+  "wave": "Saw",
+  "cutoff": 3000,
+  "reso": 20,
+  "filt_env": 24,
+  "synth": -6,
+  "dry": 0,
+  "pw": 50,
+  "octave": 0,
+  "sub": 0,
+  "detune": 0,
+  "noise": 0,
+  "amp_mode": "Follow",
+  "attack": 2,
+  "decay": 400,
+  "sustain": 70,
+  "release": 200,
+  "compress": 40,
+  "type": "Low-pass",
+  "poles": "4",
+  "drive": 0,
+  "key_track": 0,
+  "fenv_att": 0,
+  "fenv_dec": 300,
+  "fenv_vel": 50,
+  "bank": "Dual",
+  "residue": 100,
+  "glide": 0,
+  "quantize": "Off",
+  "lowest": 70,
+  "thresh": -66,
+  "spread": 0,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The dry is sample-aligned and untouched: the synth sits under the guitar in time",
+ "factory": true,
+ "golem_fx_seed": "gfx-polysynth",
+ "golem_fx": true
+}

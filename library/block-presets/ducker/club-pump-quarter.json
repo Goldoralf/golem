@@ -1,0 +1,51 @@
+{
+ "id": "club-pump-quarter",
+ "type": "ducker",
+ "name": "Club pump",
+ "desc": "The sidechain pump on every beat without a kick: a fast 18 dB dip that swells back late",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -2,
+ "sync": "1/4",
+ "tags": [
+  "modern",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Pump",
+  "thresh": -40,
+  "depth": 18,
+  "attack": 5,
+  "hold": 0,
+  "release": 400,
+  "shape": "Wide",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 80,
+  "tension": 40,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Phase from the host's position: the dip lands on the beat. Positive tension keeps the gain low and returns it late",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

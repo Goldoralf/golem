@@ -1,0 +1,45 @@
+{
+ "id": "swell-fuzz",
+ "type": "fuzz",
+ "name": "Swell fuzz",
+ "desc": "Put EXP on fuzz: the face's own pot swept under the foot, from boost-like to full fuzz",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 60,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

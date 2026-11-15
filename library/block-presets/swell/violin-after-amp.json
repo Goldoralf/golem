@@ -1,0 +1,43 @@
+{
+ "id": "violin-after-amp",
+ "type": "swell",
+ "name": "Violin after the amp",
+ "desc": "The violin swell placed after the drive or amp, listening to the clean DI on the key input",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "post-rock",
+  "post-metal"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "rise": 250,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Key",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Detection on the clean DI: a distorted signal has few transients left and lifts the hiss; needs the DI routed to the key bus",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

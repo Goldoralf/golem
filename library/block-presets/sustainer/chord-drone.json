@@ -1,0 +1,53 @@
+{
+ "id": "chord-drone",
+ "type": "sustainer",
+ "name": "Chord drone",
+ "desc": "Each note of a strummed chord is held on its own partial bank, a little darker than played",
+ "inst": "guitar",
+ "genres": [
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "drone",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Octave",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": -9,
+  "dry": 0,
+  "mode": "Sustain",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "All",
+  "carry": true,
+  "release": 1000,
+  "mute_sens": 50,
+  "max_time": 60,
+  "duck": 0,
+  "color": 50,
+  "tone": -30,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Chord All gives each named note (up to four) its own voice; a partial shared by two notes is held once",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

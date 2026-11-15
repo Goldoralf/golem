@@ -1,0 +1,52 @@
+{
+ "id": "octave-squeal",
+ "type": "sustainer",
+ "name": "Octave squeal",
+ "desc": "A held note blooms into its octave after 0.4 s, phase-locked to the string and following its bends",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": true,
+ "params": {
+  "harmonic": "Octave",
+  "delay": 400,
+  "rise": 1000,
+  "bloom": 0,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Before a high-gain amp: the amp gives the octave its grit. Bloom 0 dB lets the octave reach the note's own body level",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

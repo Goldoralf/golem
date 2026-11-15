@@ -1,0 +1,51 @@
+{
+ "id": "voice-band-carve",
+ "type": "ducker",
+ "name": "Voice band carve",
+ "desc": "Cuts 8 dB from a pad only in a two-octave band around 1.5 kHz while the voice sings; the body stays",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "folk"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 8,
+  "attack": 15,
+  "hold": 250,
+  "release": 600,
+  "shape": "Bell",
+  "hpf": 150,
+  "lpf": 4000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1500,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "The pad keeps its loudness and lows; only the band the voice needs moves out of the way",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

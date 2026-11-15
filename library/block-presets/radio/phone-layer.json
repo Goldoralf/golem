@@ -1,0 +1,49 @@
+{
+ "id": "phone-layer",
+ "type": "radio",
+ "name": "Phone layer",
+ "desc": "A thin telephone copy blended under the clean vocal for presence",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "hip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "model": "Telephone",
+  "drive": 0,
+  "noise": 0,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 30,
+  "bypass": false
+ },
+ "notes": "Keep mix at 30 % or less: between 35 and 70 % the device and the dry comb like two out-of-phase sources",
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

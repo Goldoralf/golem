@@ -1,0 +1,52 @@
+{
+ "id": "sub-swell",
+ "type": "sustainer",
+ "name": "Sub swell",
+ "desc": "An octave below the note swells in slowly under a lowered dry",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "ambient",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Sub",
+  "delay": 300,
+  "rise": 1500,
+  "bloom": 0,
+  "dry": -12,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The sub runs on its own accumulator at half the tracked fundamental's rate: no partial of the string to grow from",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

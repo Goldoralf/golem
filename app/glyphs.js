@@ -3,6 +3,11 @@
 // One glyph per catalogue type: inner SVG on a 24 x 24 grid, stroked in currentColor; `uni` = the former
 // Unicode glyph, kept as a text fallback (docs/designer-glyphs-pedals.md).
 export const GLYPHS = {
+"acoustic-sim": {
+"svg": "<path d='M12 1.5V5'/><path d='M8.86 11.48A4 4 0 1 1 15.14 11.48A5.5 5.5 0 1 1 8.86 11.48Z'/><circle cx='12' cy='9.4' r='1.6'/><path d='M10 17.2h4'/>",
+"uni": "◉",
+"label": "Acoustic simulator (gfx)"
+},
 "amp": {
 "svg": "<rect x='3.5' y='2.5' width='17' height='6' rx='1'/><circle cx='8' cy='5.5' r='.8' fill='currentColor' stroke='none'/><circle cx='11' cy='5.5' r='.8' fill='currentColor' stroke='none'/><circle cx='14' cy='5.5' r='.8' fill='currentColor' stroke='none'/><rect x='3.5' y='10' width='17' height='11.5' rx='1'/><circle cx='9' cy='15.7' r='2.6'/><circle cx='15' cy='15.7' r='2.6'/>",
 "uni": "▦",
@@ -27,6 +32,11 @@ export const GLYPHS = {
 "svg": "<path d='M7 4.5v15l12-7.5z'/><path d='M3 8v8' opacity='.5'/>",
 "uni": "▶",
 "label": "Backing track"
+},
+"bass-di": {
+"svg": "<path d='M2 12h3M19 12h3'/><path d='M5 12l3-5h8l3 5'/><path d='M5 12c2 4 4.5 6 7 6s5-2 7-6'/>",
+"uni": "⫘",
+"label": "Bass DI (gfx)"
 },
 "bitcrusher": {
 "svg": "<path d='M2.5 16h4v-4h4V7h4v5h4v4h3'/><path d='M2.5 16c3 0 5-9 8.5-9s5 9 10.5 9' opacity='.35'/>",
@@ -113,6 +123,11 @@ export const GLYPHS = {
 "uni": "♒",
 "label": "Detune"
 },
+"dist": {
+"svg": "<path d='M2 12C3.5 8 4.5 6 6 6h3c1.5 0 2 2 3 6s1.5 6 3 6h3c1.5 0 2.5-2 4-6'/><path d='M6 6Q7.5 1.5 9 6M15 18Q16.5 22.5 18 18' opacity='.55'/>",
+"uni": "⊓",
+"label": "Dist (circuit-simulated distortions)"
+},
 "drumkit": {
 "svg": "<ellipse cx='12' cy='9' rx='8' ry='3.2'/><path d='M4 9v6.5c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V9'/><path d='M8 2.5l3.5 5M16 2.5l-3.5 5' opacity='.6'/>",
 "uni": "🥁",
@@ -122,6 +137,11 @@ export const GLYPHS = {
 "svg": "<rect x='2.5' y='4.5' width='19' height='15' rx='1.5'/><path d='M2.5 9.5h19M2.5 14.5h19' opacity='.4'/><path d='M5.5 7v0M10 7v0M14.5 12v0M19 12v0M5.5 17v0M14.5 17v0' stroke-width='3'/>",
 "uni": "⊞",
 "label": "Drum machine"
+},
+"ducker": {
+"svg": "<path d='M2.5 6.5H8.5V14.5C12.5 14.5 15 6.5 21.5 6.5'/><path d='M7 21.5V20M9.5 21.5V18.5M12 21.5V19.5' opacity='.5'/>",
+"uni": "▽",
+"label": "Ducker"
 },
 "emet": {
 "svg": "<path d='M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 1.5 2 1.5 3 .5-2 1.5-4 1.5-7z'/><path d='M12 21a2 2 0 0 1-2-2c0-1.5 2-2.5 2-4 0 1.5 2 2.5 2 4a2 2 0 0 1-2 2z' opacity='.55'/>",
@@ -158,6 +178,11 @@ export const GLYPHS = {
 "uni": "❄",
 "label": "Freeze"
 },
+"fuzz": {
+"svg": "<path d='M2 17V6h5v11h2.5V8.5H13V17h2.5v-6h2.5v6h2v-3.5h1.5V17H22'/>",
+"uni": "⊓",
+"label": "Fuzz (circuit-simulated fuzz, the guitar included)"
+},
 "gapmeter": {
 "svg": "<path d='M2.5 12h4l1-3 1 6 1-3'/><path d='M14.5 12l1-3 1 6 1-3h4'/><path d='M10.5 7.5h3M12 7.5v1.5' opacity='.6'/><path d='M10 12h4' stroke-dasharray='1 1.6'/>",
 "uni": "⏱",
@@ -179,9 +204,9 @@ export const GLYPHS = {
 "label": "Golem (vocal octave doubler)"
 },
 "granular": {
-"svg": "<circle cx='12' cy='12' r='2.2'/><circle cx='5' cy='8' r='1.2' fill='currentColor' stroke='none'/><circle cx='19' cy='7' r='1.6'/><circle cx='17.5' cy='17' r='1.1' fill='currentColor' stroke='none'/><circle cx='6.5' cy='17.5' r='1.7'/><circle cx='12' cy='4' r='.9' fill='currentColor' stroke='none'/><circle cx='21' cy='12.5' r='.8' fill='currentColor' stroke='none'/><circle cx='12' cy='20.5' r='.8' fill='currentColor' stroke='none'/><circle cx='3' cy='13' r='.8' fill='currentColor' stroke='none'/>",
-"uni": "❄",
-"label": "Granular freeze"
+"svg": "<path d='M2 20C4 20 3.8 12 6 12S8 20 10 20'/><path d='M7 20C9.5 20 9.25 4 12 4S14.5 20 17 20'/><path d='M14 20C16 20 15.8 11 18 11S20 20 22 20'/><circle cx='4.5' cy='5.5' r='.9' fill='currentColor' stroke='none'/><circle cx='19.5' cy='5' r='.9' fill='currentColor' stroke='none'/>",
+"uni": "∴",
+"label": "Granular (gfx)"
 },
 "grit": {
 "svg": "<rect x='3' y='3' width='18' height='18' rx='2'/><path d='M3 9h18M3 15h18' opacity='.5'/><path d='M5 6.5l2-1.5 2 1.5 2-1.5 2 1.5M9 12l2.5-1.5 2.5 1.5 2.5-1.5M5 18l3-1.5 3 1.5 3-1.5 3 1.5'/>",
@@ -212,6 +237,11 @@ export const GLYPHS = {
 "svg": "<path d='M20 12a8 8 0 1 1-2.3-5.7'/><path d='M18 2.5v4h-4'/><circle cx='12' cy='12' r='2.2' fill='currentColor' stroke='none'/>",
 "uni": "⟳",
 "label": "Looper"
+},
+"mb-comp": {
+"svg": "<path d='M3 7.5h18M3 13.5h18M3 19.5h18'/><path d='M4.5 2.5 7 5l2.5-2.5M10.5 8.5 13 11l2.5-2.5M14.5 14.5 17 17l2.5-2.5'/>",
+"uni": "≣",
+"label": "Multiband compressor (gfx)"
 },
 "met": {
 "svg": "<path d='M3 6h8c2.5 0 3.5 11 7 11h3'/><path d='M3 20h18' opacity='.35'/><path d='M7 3v6' opacity='.6'/>",
@@ -278,10 +308,20 @@ export const GLYPHS = {
 "uni": "♭",
 "label": "Digital detuner"
 },
+"polysynth": {
+"svg": "<path d='M2 5Q4 0 6 5T10 5M2 12Q4 7 6 12T10 12M2 19Q4 14 6 19T10 19' opacity='.45'/><path d='M10 5L14 2.5V7.5L18 2.5V7.5L22 2.5V7.5M10 12L14 9.5V14.5L18 9.5V14.5L22 9.5V14.5M10 19L14 16.5V21.5L18 16.5V21.5L22 16.5V21.5'/>",
+"uni": "⩘",
+"label": "Guitar synth (gfx)"
+},
 "preamp-nam": {
 "svg": "<path d='M12 2 20.7 7v10L12 22 3.3 17V7z'/><path d='M9.5 16.5V10a2.5 2.5 0 0 1 5 0v6.5z'/><path d='M12 11v3'/>",
 "uni": "⬡",
 "label": "Preamp (NAM capture)"
+},
+"radio": {
+"svg": "<path d='M3 10.5v3h2.5L15 18.5V5.5L5.5 10.5z'/><path d='M7.5 14l1 4.5h2l-.7-3.4'/><path d='M18 8.5l2.5 1.2-2.5 1.2 2.5 1.2-2.5 1.2 2.5 1.2' opacity='.6'/>",
+"uni": "◁",
+"label": "Radio / megaphone (gfx)"
 },
 "rec": {
 "svg": "<circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='5' fill='currentColor' stroke='none'/>",
@@ -314,7 +354,7 @@ export const GLYPHS = {
 "label": "Resonant filter"
 },
 "ringmod": {
-"svg": "<circle cx='12' cy='12' r='9'/><path d='M7 9l10 6M7 15l10-6M12 6v12'/>",
+"svg": "<circle cx='12' cy='12' r='9'/><path d='M5.5 12L8 10L10.5 15L13.5 8.5L16 14L18.5 12'/>",
 "uni": "⊛",
 "label": "Ring modulator"
 },
@@ -344,7 +384,7 @@ export const GLYPHS = {
 "label": "Standard"
 },
 "stretch": {
-"svg": "<path d='M2.5 12c3-5 6-5 9.5 0s6.5 5 9.5 0'/><path d='M2.5 4.5v4M21.5 15.5v4' opacity='.5'/><path d='M6 19.5h12M15.5 17l2.5 2.5-2.5 2.5M8.5 17 6 19.5 8.5 22'/>",
+"svg": "<path d='M2.5 9.5q1.3-6 2.6 0q1.9 6 3.8 0q2.65-6 5.3 0q3.65 6 7.3 0'/><path d='M6 19.5h12M15.5 17l2.5 2.5-2.5 2.5M8.5 17 6 19.5 8.5 22'/>",
 "uni": "≈",
 "label": "Stretch"
 },
@@ -362,6 +402,26 @@ export const GLYPHS = {
 "svg": "<path d='M12 21.5V11'/><path d='M12 14 7 9.5M12 12l5-4.5M7 9.5 4.5 7M7 9.5V6M17 7.5V4.5M17 7.5l2.5-1.5'/><path d='M8 21.5h8'/>",
 "uni": "♫",
 "label": "Treemonster"
+},
+"sustainer": {
+"svg": "<path d='M2 12h20' opacity='.35'/><path d='M2 12Q12 2 22 12Q12 22 2 12' opacity='.4'/><path d='M2 12Q7 4.5 12 12T22 12'/>",
+"uni": "∞",
+"label": "Sustainer / feedback (gfx)"
+},
+"swell": {
+"svg": "<path d='M2.5 20h19' opacity='.4'/><path d='M4 20V12.5' opacity='.35'/><path d='M4 20C10 20 11.5 7 16 7h5.5'/>",
+"uni": "◢",
+"label": "Auto swell"
+},
+"tape": {
+"svg": "<rect x='2.5' y='5' width='19' height='14' rx='1.5'/><circle cx='8.5' cy='11' r='2'/><circle cx='15.5' cy='11' r='2'/><path d='M7 19l1.5-3h7l1.5 3'/><path d='M10.5 11c1-1 2-1 3 0' opacity='.5'/>",
+"uni": "◫",
+"label": "Tape (gfx)"
+},
+"transient": {
+"svg": "<path d='M2.5 20.5h19' opacity='.4'/><path d='M4 20.5L6.5 13C10 16 14 18.5 21.5 19.5' opacity='.35'/><path d='M4 20.5L6 3.5L8.5 12C12 15 16 16 21.5 16.5'/>",
+"uni": "▲",
+"label": "Transient shaper"
 },
 "tremolo": {
 "svg": "<path d='M2.5 12h1.5l1-5 1 10 1-8 1 6 1-3 1 0 1-6 1 12 1-10 1 8 1-5 1 0 1-4 1 8 1-2h2'/><path d='M2.5 4.5c4 0 5 3 9.5 3s5.5-3 9.5-3' opacity='.45'/>",
@@ -383,6 +443,11 @@ export const GLYPHS = {
 "uni": "♫",
 "label": "Vital"
 },
+"vocoder": {
+"svg": "<path d='M2.5 20.5c1.5 0 2-9 3.5-9s2 9 3.5 9M8.5 20.5c1.5 0 2-16.5 3.5-16.5s2 16.5 3.5 16.5M14.5 20.5c1.5 0 2-6 3.5-6s2 6 3.5 6'/>",
+"uni": "⌢",
+"label": "Vocoder (gfx)"
+},
 "volume": {
 "svg": "<path d='M12 3v18' opacity='.4'/><rect x='8.5' y='10' width='7' height='4.5' rx='1'/><path d='M6 5.5h2M6 9h2M6 15.5h2M6 19h2M16 5.5h2M16 9h2M16 15.5h2M16 19h2' opacity='.6'/>",
 "uni": "▮",
@@ -402,5 +467,10 @@ export const GLYPHS = {
 "svg": "<path d='M3 19.5h18'/><path d='M5 16.5 19 10'/><path d='M12 2.5v6M9.5 5 12 2.5 14.5 5M9.5 6 12 8.5 14.5 6' opacity='.75'/>",
 "uni": "↕",
 "label": "Whammy (MIDI)"
+},
+"widener": {
+"svg": "<path d='M12 4v16'/><path d='M7.5 7L3 12l4.5 5M16.5 7L21 12l-4.5 5'/><path d='M8.5 12h-3M15.5 12h3' opacity='.45'/>",
+"uni": "↔",
+"label": "Stereo widener (gfx)"
 }
 };

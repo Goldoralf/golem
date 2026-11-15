@@ -1,0 +1,47 @@
+{
+ "id": "bass-even",
+ "type": "transient",
+ "name": "Bass even",
+ "desc": "Fingerstyle evenness without a threshold: plucks softened 6 dB, held notes lifted up to 6 dB",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "pop",
+  "rnb"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "attack": -6,
+  "sustain": 6,
+  "att_time": 30,
+  "sus_time": 1000,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Acts the same at any playing level: a compressor-like evenness with no threshold to set",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

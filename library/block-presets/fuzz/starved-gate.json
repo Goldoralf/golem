@@ -1,0 +1,47 @@
+{
+ "id": "starved-gate",
+ "type": "fuzz",
+ "name": "Starved gate",
+ "desc": "A dying 4 V battery with sag on the germanium face: notes chop off as they decay",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "noise-rock",
+  "garage-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": -40,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 4,
+  "sag": 40,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "The README's velcro gate is a silicon face (not shipped yet); on germanium the bias follows the supply: splattier than gated",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

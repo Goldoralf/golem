@@ -1,0 +1,63 @@
+{
+ "id": "swell-strings",
+ "type": "polysynth",
+ "name": "Swelled strings",
+ "desc": "Saw waves that rise slowly under every note and follow the string's level: a bowed, violin-like swell",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "classical"
+ ],
+ "subgenres": [
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "engine": "Spectral",
+  "wave": "Saw",
+  "cutoff": 2500,
+  "reso": 20,
+  "filt_env": 0,
+  "synth": 0,
+  "dry": -60,
+  "pw": 50,
+  "octave": 0,
+  "sub": 0,
+  "detune": 6,
+  "noise": 0,
+  "amp_mode": "Follow",
+  "attack": 300,
+  "decay": 400,
+  "sustain": 70,
+  "release": 200,
+  "compress": 40,
+  "type": "Low-pass",
+  "poles": "4",
+  "drive": 0,
+  "key_track": 0,
+  "fenv_att": 0,
+  "fenv_dec": 300,
+  "fenv_vel": 50,
+  "bank": "Dual",
+  "residue": 100,
+  "glide": 0,
+  "quantize": "Off",
+  "lowest": 70,
+  "thresh": -66,
+  "spread": 0,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Attack is the minimum rise in Follow: the pick disappears, the note swells in",
+ "factory": true,
+ "golem_fx_seed": "gfx-polysynth",
+ "golem_fx": true
+}

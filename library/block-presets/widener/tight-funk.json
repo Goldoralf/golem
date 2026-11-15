@@ -1,0 +1,42 @@
+{
+ "id": "tight-funk",
+ "type": "widener",
+ "name": "Tight funk",
+ "desc": "Rhythm parts with the pick centred and punchy and the ring blooming wide behind it",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "pop",
+  "rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Allpass",
+  "amount": 70,
+  "width": 100,
+  "time": 20,
+  "bass_keep": 150,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 80,
+  "balance": 0,
+  "rotate": 0,
+  "level": -1.7,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Allpass smears nothing; transient focus ducks the side on each stroke",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

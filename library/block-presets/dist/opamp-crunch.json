@@ -1,0 +1,39 @@
+{
+ "id": "opamp-crunch",
+ "type": "dist",
+ "name": "Open op-amp crunch",
+ "desc": "Low gain, filter open: the op-amp barely slews, an open crunch into a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "garage-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 30,
+  "tone_stack": 70,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Below 40 % gain the closed loop stays wide: a crunch that cleans up with the guitar's volume",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

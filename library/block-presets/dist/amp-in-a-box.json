@@ -1,0 +1,39 @@
+{
+ "id": "amp-in-a-box",
+ "type": "dist",
+ "name": "Amp in a box",
+ "desc": "MOSFET overdrive at 55 %: the body-diode knee into a second gain stage, amp-like",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "MOSFET OD",
+  "gain": 55,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Two op-amp stages with the clip between them: louder and more open than a TS",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

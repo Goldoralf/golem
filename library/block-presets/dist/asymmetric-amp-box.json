@@ -1,0 +1,39 @@
+{
+ "id": "asymmetric-amp-box",
+ "type": "dist",
+ "name": "Asymmetric amp box",
+ "desc": "MOSFET + germanium clip of some units: asymmetric, more even harmonics",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "blues-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "MOSFET OD",
+  "gain": 55,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "MOSFET + Ge",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The rarer germanium version: 0.6 / 0.9 V clipping, a touch of 2nd harmonic",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

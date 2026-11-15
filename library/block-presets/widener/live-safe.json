@@ -1,0 +1,42 @@
+{
+ "id": "live-safe",
+ "type": "widener",
+ "name": "Live safe",
+ "desc": "Moderate width that survives any PA: exact mono fold at the bypassed level, lows mono, attacks centred",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Velvet",
+  "amount": 45,
+  "width": 100,
+  "time": 25,
+  "bass_keep": 200,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 40,
+  "balance": 0,
+  "rotate": 0,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Level stays 0 dB so a mono PA hears the bypass level exactly; one side alone stays within ±2 dB in bands",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "sustainer-mix",
+ "type": "sustainer",
+ "name": "Sustainer mix",
+ "desc": "The note held at its level with its octave blooming on it, the dry giving way a little",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "harmonic": "Octave",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": -6,
+  "dry": 0,
+  "mode": "Both",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 40,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Both: the bank holds the note while the Feedback octave grows; a partial in both takes the larger level",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

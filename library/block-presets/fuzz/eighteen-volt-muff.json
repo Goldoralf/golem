@@ -1,0 +1,45 @@
+{
+ "id": "eighteen-volt-muff",
+ "type": "fuzz",
+ "name": "Eighteen-volt muff",
+ "desc": "The muff on an 18 V supply: more headroom, louder and less compressed",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "hard-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 70,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Si Four",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 18,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

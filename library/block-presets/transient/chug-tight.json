@@ -1,0 +1,51 @@
+{
+ "id": "chug-tight",
+ "type": "transient",
+ "name": "Chug tight",
+ "desc": "Palm-mute definition into a high-gain amp: each chug's attack up 6 dB, its tail cut 10 dB",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "thrash-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "attack": 6,
+  "sustain": -10,
+  "att_time": 6,
+  "sus_time": 250,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 70,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 120,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Placed before the amp. Drop A: sc_hpf 100 (at or under twice the lowest note). Complements a gate",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

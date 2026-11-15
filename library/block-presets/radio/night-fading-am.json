@@ -1,0 +1,53 @@
+{
+ "id": "night-fading-am",
+ "type": "radio",
+ "name": "Night fading AM",
+ "desc": "Distant AM station at night: selective fading sweeps a notch through it, then the carrier distorts",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "electronic",
+  "folk"
+ ],
+ "subgenres": [
+  "psychedelic-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "lo-fi",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "model": "AM Radio",
+  "drive": 0,
+  "noise": 55,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 60,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

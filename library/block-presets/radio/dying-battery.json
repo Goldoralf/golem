@@ -1,0 +1,51 @@
+{
+ "id": "dying-battery",
+ "type": "radio",
+ "name": "Dying battery",
+ "desc": "A 9 V radio on a flat battery: the rail sags and sputters on every peak",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "experimental"
+ ],
+ "subgenres": [
+  "lo-fi-indie"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "model": "Pocket Radio",
+  "drive": 40,
+  "noise": 50,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 25,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

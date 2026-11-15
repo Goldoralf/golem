@@ -1,0 +1,40 @@
+{
+ "id": "haas-pan",
+ "type": "widener",
+ "name": "Haas pan",
+ "desc": "A true precedence shift: the right side a few ms late, the image pulled left; combs in mono",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Comb",
+  "amount": 100,
+  "width": 100,
+  "time": 15,
+  "bass_keep": 120,
+  "mono_law": "Classic",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Studio, stereo playback only: Mono Error shows the comb the fold takes (notches at 33, 100, 167 Hz)",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

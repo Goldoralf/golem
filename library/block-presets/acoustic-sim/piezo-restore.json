@@ -1,0 +1,50 @@
+{
+ "id": "piezo-restore",
+ "type": "acoustic-sim",
+ "name": "Piezo restore",
+ "desc": "An acoustic-electric's piezo DI given back its body and mic, quack tamed, blended with the DI",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "contemporary-folk",
+  "singer-songwriter"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "model": "Concert",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 70,
+  "twelve": false,
+  "pickup": "Piezo",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 40,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Concert with a piezo source is the measured guitar's own piezo-to-mic response; pick the nearest body",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

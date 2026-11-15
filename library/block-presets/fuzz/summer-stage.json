@@ -1,0 +1,46 @@
+{
+ "id": "summer-stage",
+ "type": "fuzz",
+ "name": "Summer stage",
+ "desc": "Hot germanium at 35 °C: the face drifts off bias, thinner and splattier",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "psychedelic-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 35,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "Q2's collector moves 4.5 → 6.7 V (bias_v): less swing towards the supply",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

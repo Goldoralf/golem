@@ -1,0 +1,52 @@
+{
+ "id": "78-horn",
+ "type": "radio",
+ "name": "78 horn",
+ "desc": "Acoustic gramophone horn and mica soundbox; chain a 78 medium before it for the record",
+ "inst": "any",
+ "genres": [
+  "jazz",
+  "folk",
+  "screen"
+ ],
+ "subgenres": [
+  "swing"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "model": "Gramophone",
+  "drive": 0,
+  "noise": 0,
+  "distance": 20,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "notes": "noise 0 here: the record's surface noise and wow come from the medium pedal chained before",
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

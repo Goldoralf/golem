@@ -1,0 +1,37 @@
+{
+ "id": "blend-stack-front",
+ "type": "dist",
+ "name": "Blend into drive",
+ "desc": "Blend overdrive at 15 % as the first of two drives: tightens and pushes the next",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "hard-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": false,
+ "params": {
+  "circuit": "Blend OD",
+  "gain": 15,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Put a second instance on Op-Amp Dist after it: the first fills the mids and pushes the clipper",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

@@ -76,6 +76,31 @@ samples, 53 ms at 48 kHz, at the default size). The plugin reports no latency un
 delays the dry to match: a **setup** setting, never a scene value. There is **no footswitch action** (no `foot_mode`,
 no trigger: you set it before playing), and 17 factory presets (golem-fx e2fbdd9, default "Ringing partials"; none turns `align` on), values tuned after the maintainer listens.
 
+**Catalogue v47** (golem-fx 9c573f0, the maintainer's go on 2026-11-15) adds fourteen blocks of the same kind, golem-fx
+only, `bench: pending`, status `testing`; their params are the descriptor's front panel and their factory presets are
+seeded (223 files):
+
+| Type | Name | Category | Roles | What golem must know |
+|---|---|---|---|---|
+| `swell` | Auto Swell | dynamics | guitar, bass, keys | keyed (`key: true`, the lane's DI); expert `lookahead` reports 3–25 ms: setup only |
+| `transient` | Transient Shaper | dynamics | guitar, bass, voice, drums | keyed; Attack / Sustain are gains in dB; `lookahead` 1–5 ms, setup only |
+| `mb-comp` | Multiband Comp | dynamics | guitar, bass, voice, keys | `phase` Linear reports 42.7 ms at 48 kHz: setup only |
+| `ducker` | Ducker | dynamics | every role, drums included | keyed on the lane's own DI; another lane or a service bus as key is **not routed** yet; Pump needs no key |
+| `widener` | Stereo Widener | utility | guitar, bass | 2/2 only (turns a lane stereo); voice and keys lanes do not offer `utility` |
+| `bass-di` | Bass DI | preamp | bass, guitar | `low_note` should follow the lane's tuning (not written yet: 41.2 Hz default) |
+| `tape` | Tape | lofi | guitar, bass, keys, voice, drums | the wet and the dry carry the transport's delay (0.8 ms at the defaults, up to 40 ms) |
+| `dist` | Dist | drive | guitar, bass | ~20 % of a core in mono |
+| `fuzz` | Fuzz | drive | guitar, bass | ~21–23 % of a core; `pickup` should follow the lane's instrument (not written yet) |
+| `radio` | Radio | lofi | voice, guitar, keys, drums | |
+| `vocoder` | Vocoder | modulation | voice, guitar, keys | carrier from the lane itself (Tracked, Drone, Noise, Self); Key Input and Talk Box come later |
+| `acoustic-sim` | Acoustic Sim | amp | guitar | a full rig: a `cab` after it is flagged by `rig.stacked_cab`; its body data's attributions are in Settings ▸ About (`provision/components.json`) |
+| `sustainer` | Sustainer | pitch | guitar, bass | before the amp |
+| `polysynth` | Poly Synth | pitch | guitar, bass | first in the lane on a clean DI; the heaviest golem-fx pedal (7–8 % of a core) |
+
+`transient`, `ducker`, `tape` and `radio` join `role_blocks.drums`. Not done yet: a momentary footswitch (Ducker
+`force`, Swell `fire`: the foot chip sends no release), values written from context (Bass DI `low_note`, Fuzz `pickup`,
+Radio `mains`), the latency re-sync when a preset changes a setup setting, and the stall bench.
+
 Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
 

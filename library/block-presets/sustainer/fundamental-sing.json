@@ -1,0 +1,52 @@
+{
+ "id": "fundamental-sing",
+ "type": "sustainer",
+ "name": "Singing fundamental",
+ "desc": "The note itself stops dying: its fundamental is topped up from 0.2 s on, so the note just keeps singing",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "electric-blues"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Fundamental",
+  "delay": 200,
+  "rise": 800,
+  "bloom": -3,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The generated partial only supplies what the string has lost (g = a − d): no doubling, no step when it starts",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

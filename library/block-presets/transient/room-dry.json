@@ -1,0 +1,49 @@
+{
+ "id": "room-dry",
+ "type": "transient",
+ "name": "Room dry",
+ "desc": "Pulls a live voice's room down 8 dB after each phrase, leaves held notes alone, at any singing level",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "singer-songwriter"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "attack": 0,
+  "sustain": -8,
+  "att_time": 15,
+  "sus_time": 150,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 100,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "A short reference (58 dB / s): only the room's fall after a phrase is faster than it",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

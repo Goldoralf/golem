@@ -1,0 +1,47 @@
+{
+ "id": "drum-punch",
+ "type": "transient",
+ "name": "Drum punch",
+ "desc": "Drum bus punch: hits up 9 dB, tails tightened 4 dB, the boosted peaks soft-clipped under 0 dBFS",
+ "inst": "drums",
+ "genres": [
+  "rock",
+  "pop",
+  "hip-hop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": true,
+ "params": {
+  "attack": 9,
+  "sustain": -4,
+  "att_time": 10,
+  "sus_time": 250,
+  "att_band": "Full",
+  "ceil_mode": "Soft",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 120,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "sc_hpf 120 shortens the detector's hold to 20 ms. Accents get more than ghost notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

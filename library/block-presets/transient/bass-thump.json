@@ -1,0 +1,50 @@
+{
+ "id": "bass-thump",
+ "type": "transient",
+ "name": "Bass thump",
+ "desc": "More knock on each bass note: the lows boosted 6 dB over two full periods of a low E",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "rnb",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "attack": 6,
+  "sustain": 0,
+  "att_time": 60,
+  "sus_time": 300,
+  "att_band": "Lows",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 3,
+  "att_freq": 300,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "att_time 60 ms covers whole cycles of a 41 Hz note, so the boost is a thump, not one louder half-cycle",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

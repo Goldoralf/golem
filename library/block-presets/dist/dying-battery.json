@@ -1,0 +1,40 @@
+{
+ "id": "dying-battery",
+ "type": "dist",
+ "name": "Dying battery",
+ "desc": "Supply at 70 %: lower rails and bias, a sputtering, gated decay",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "noise-rock",
+  "garage-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 80,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 70,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "A tired battery: less headroom and an earlier, uneven breakup as notes decay",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "tail-duck-delay",
+ "type": "ducker",
+ "name": "Delay tail out of the way",
+ "desc": "On a wet-only branch: the repeats drop 12 dB while you play and swell back in the gaps",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 12,
+  "attack": 5,
+  "hold": 0,
+  "release": 300,
+  "shape": "Wide",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Works today: golem keys the block with the lane's DI. Knee 6 dB gives gfx-delay's own ducking curve, for effects without one",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

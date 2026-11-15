@@ -1,0 +1,50 @@
+{
+ "id": "wide-doubled-acoustic",
+ "type": "acoustic-sim",
+ "name": "Wide doubled acoustic",
+ "desc": "Two microphones from one body on a stereo lane, a little room",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "folk"
+ ],
+ "subgenres": [
+  "indie-folk",
+  "indie-pop"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "model": "Concert",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 25,
+  "width": 80,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "2 / 2 only: the mics sit at mic ± width / 2 on the same modal bank; the lows stay coherent",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

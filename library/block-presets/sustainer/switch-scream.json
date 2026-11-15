@@ -1,0 +1,52 @@
+{
+ "id": "switch-scream",
+ "type": "sustainer",
+ "name": "Scream on the switch",
+ "desc": "Nothing until the footswitch: then the held note screams at the twelfth within 0.3 s",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Octave + Fifth",
+  "delay": 0,
+  "rise": 300,
+  "bloom": 3,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Switch",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "golem's footswitch drives Feed; releasing it fades the scream with its pitch held, no chirp",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

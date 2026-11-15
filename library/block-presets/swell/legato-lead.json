@@ -1,0 +1,43 @@
+{
+ "id": "legato-lead",
+ "type": "swell",
+ "name": "Legato lead",
+ "desc": "Hammer-ons, pull-offs and slides swell too, not only picked notes; a slide swells once",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "progressive-rock",
+  "jazz-fusion"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "rise": 120,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 75,
+  "curve": "dB",
+  "depth": 100,
+  "dip": 70,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "The pitch-jump detector answers 8 – 16 ms after a legato note: a short blip, then the swell; lookahead 25 ms removes it in the studio",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

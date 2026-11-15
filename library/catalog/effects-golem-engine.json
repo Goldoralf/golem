@@ -445,6 +445,79 @@
    "vst3": "476F6C654D4678476C69746368303031",
    "golem_fx": true,
    "status": "testing"
+  },
+  "swell": {
+   "vst3": "476F6C654D46785377656C6C30303031",
+   "golem_fx": true,
+   "status": "testing",
+   "key": true
+  },
+  "transient": {
+   "vst3": "476F6C654D46785472616E736E743031",
+   "golem_fx": true,
+   "status": "testing",
+   "key": true
+  },
+  "mb-comp": {
+   "vst3": "476F6C654D46784D62436F6D70303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "ducker": {
+   "vst3": "476F6C654D46784475636B6572303031",
+   "golem_fx": true,
+   "status": "testing",
+   "key": true
+  },
+  "widener": {
+   "vst3": "476F6C654D4678576964656E65723031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "bass-di": {
+   "vst3": "476F6C654D4678426173734469303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "tape": {
+   "vst3": "476F6C654D4678546170653030303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "dist": {
+   "vst3": "476F6C654D4678446973743030303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "fuzz": {
+   "vst3": "476F6C654D467846757A7A3030303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "radio": {
+   "vst3": "476F6C654D4678526164696F30303031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "vocoder": {
+   "vst3": "476F6C654D4678566F636F6465723031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "acoustic-sim": {
+   "vst3": "476F6C654D467841636F757374696331",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "sustainer": {
+   "vst3": "476F6C654D46785375737461696E3031",
+   "golem_fx": true,
+   "status": "testing"
+  },
+  "polysynth": {
+   "vst3": "476F6C654D4678506F6C7973796E3031",
+   "golem_fx": true,
+   "status": "testing"
   }
  }
 }

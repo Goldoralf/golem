@@ -1,0 +1,49 @@
+{
+ "id": "bridge-pickup-rescue",
+ "type": "acoustic-sim",
+ "name": "Bridge-pickup rescue",
+ "desc": "A bridge humbucker turned into a usable acoustic: position shelf and aperture shelf",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 45,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Humbucker",
+  "pickup_pos": "Bridge",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "The position shelf adds up to 13.8 dB of lows re the treble; top 45 % trims what the guess leaves",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

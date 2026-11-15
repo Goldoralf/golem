@@ -1,0 +1,52 @@
+{
+ "id": "front-door-buzzer",
+ "type": "radio",
+ "name": "Front door buzzer",
+ "desc": "Cheap intercom pushed into its IC amp's clip, hum up",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "electronic",
+  "screen"
+ ],
+ "subgenres": [
+  "alternative-hip-hop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "model": "Intercom",
+  "drive": 40,
+  "noise": 70,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

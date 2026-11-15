@@ -1,0 +1,49 @@
+{
+ "id": "pick-definition-after-amp",
+ "type": "transient",
+ "name": "Pick definition after the amp",
+ "desc": "Restores the pick attack an amp compressed, detecting on the clean DI; peaks held under -1 dBFS",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "attack": 6,
+  "sustain": 0,
+  "att_time": 15,
+  "sus_time": 300,
+  "att_band": "Highs",
+  "ceil_mode": "Limit",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 2500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Key",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": -1,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "The key input carries the DI: a high-gain signal has few level changes left, its DI has them all",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

@@ -816,6 +816,34 @@
       "mb": 2300
     },
     {
+      "id": "acoustic-body-mores",
+      "name": "Spanish guitar bridge mobility archive (guitar g34)",
+      "by": "R. Mores",
+      "what": "the Classical body of the golem-fx Acoustic Sim block: fitted from guitar g34 (Zenodo, 2021, doi:10.5281/zenodo.4604577); modified: windowed, converted and reduced to a modal table and a short filter by golem-fx",
+      "license": "CC-BY-4.0",
+      "url": "https://doi.org/10.5281/zenodo.4604577",
+      "kind": "asset",
+      "check": {
+        "glob": [
+          "~/.vst3/GoleM FX Acoustic.vst3"
+        ]
+      }
+    },
+    {
+      "id": "acoustic-body-iem",
+      "name": "IEM / DEGA guitar recordings",
+      "by": "F. Zotter and D. Rudrich",
+      "what": "the Concert body of the golem-fx Acoustic Sim block: fitted from Phaidra o:68022 and o:69273; modified: reduced to a modal table and a short filter by golem-fx",
+      "license": "Public Domain Mark 1.0",
+      "url": "https://phaidra.kug.ac.at/o:68022",
+      "kind": "asset",
+      "check": {
+        "glob": [
+          "~/.vst3/GoleM FX Acoustic.vst3"
+        ]
+      }
+    },
+    {
       "id": "unfa-vital",
       "name": "unfa Vital presets",
       "by": "unfa",

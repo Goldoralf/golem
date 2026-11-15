@@ -1,0 +1,41 @@
+{
+ "id": "wall-rhythm",
+ "type": "widener",
+ "name": "Wall rhythm",
+ "desc": "Detuned width around a dry centre for high-gain rhythm after the cab; the fold cannot comb",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Double",
+  "amount": 50,
+  "width": 100,
+  "time": 18,
+  "bass_keep": 180,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 7,
+  "high_cut": 8000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -1.0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Exact Double: the voices live in the side only, so a mono PA hears the dry riff; high cut keeps the fizz centred",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

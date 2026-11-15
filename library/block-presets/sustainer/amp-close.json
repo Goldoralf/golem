@@ -1,0 +1,52 @@
+{
+ "id": "amp-close",
+ "type": "sustainer",
+ "name": "Close to the amp",
+ "desc": "Natural feedback a step from the amp: the loop picks the low harmonics, jumping on bends",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "grunge"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Natural Low",
+  "delay": 300,
+  "rise": 800,
+  "bloom": 0,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 0.5,
+  "drift": 20,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The virtual loop's phase sets which of harmonics 1 – 4 wins; a short rise is a loud, close amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

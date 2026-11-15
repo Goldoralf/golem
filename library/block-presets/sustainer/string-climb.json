@@ -1,0 +1,48 @@
+{
+ "id": "string-climb",
+ "type": "sustainer",
+ "name": "String climb",
+ "desc": "The note sings on its fundamental, then rises to the octave, as a magnetic sustainer's harmonic mode does",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "post-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "harmonic": "Climb",
+  "delay": 0,
+  "rise": 600,
+  "bloom": 0,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 60,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Duck 60 % lets the dry give way as the octave takes over, so the note turns into its harmonic",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

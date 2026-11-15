@@ -1,0 +1,42 @@
+{
+ "id": "vocal-spread",
+ "type": "widener",
+ "name": "Vocal spread",
+ "desc": "A lead or backing voice widened by detuned voices in the side; sibilants stay centred",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Double",
+  "amount": 40,
+  "width": 100,
+  "time": 15,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 6,
+  "high_cut": 6000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -0.6,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "High cut 6 kHz keeps esses and breaths in the middle; the fold is the dry voice",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

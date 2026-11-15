@@ -1,0 +1,50 @@
+{
+ "id": "fingerstyle-concert",
+ "type": "acoustic-sim",
+ "name": "Fingerstyle concert",
+ "desc": "The measured grand-concert body, a brighter attack and shorter sustain between picks",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "contemporary-folk",
+  "singer-songwriter"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "model": "Concert",
+  "body": 50,
+  "top": 55,
+  "mic": 85,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 60,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 20,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Concert is fitted from public-domain recordings of a steel-string; decay 60 % shortens tails between picks",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

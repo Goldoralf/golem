@@ -1,0 +1,61 @@
+{
+ "id": "dropout-rhythm",
+ "type": "tape",
+ "name": "Dropout rhythm",
+ "desc": "Cassette dropouts locked to eighth notes: the highs gate in time, like tape losing contact",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/8",
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "input": 6,
+  "wow": 0.1,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Cassette",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 70,
+  "drop_sync": "1/8",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

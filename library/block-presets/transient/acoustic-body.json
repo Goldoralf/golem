@@ -1,0 +1,50 @@
+{
+ "id": "acoustic-body",
+ "type": "transient",
+ "name": "Acoustic body",
+ "desc": "Less pick and more body on an acoustic guitar: attacks down 4 dB, tails up 6 dB",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "singer-songwriter",
+  "contemporary-folk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "attack": -4,
+  "sustain": 6,
+  "att_time": 15,
+  "sus_time": 800,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "sus_time 800 ms lifts the ring of strummed chords without touching the pick",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

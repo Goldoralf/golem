@@ -1,0 +1,47 @@
+{
+ "id": "cello-pad",
+ "type": "swell",
+ "name": "Cello pad",
+ "desc": "Strummed chords swell in slowly as one bowed pad, one swell per strum; best into a long reverb",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient",
+  "shoegaze"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "rise": 700,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "S-Curve",
+  "depth": 100,
+  "dip": 100,
+  "strum": 80,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "An 80 ms strum window merges slow strums into one swell; the S-curve lands softly",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

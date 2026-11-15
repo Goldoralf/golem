@@ -1,0 +1,47 @@
+{
+ "id": "reverse-tape",
+ "type": "swell",
+ "name": "Reverse tape",
+ "desc": "Every note rises over a quarter note and stops dead: a backwards-tape feel locked to the tempo",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "shoegaze"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "rise": 300,
+  "sync": "1/4",
+  "sens": 50,
+  "legato": 50,
+  "curve": "dB",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 40,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Long rise, 40 ms decay: the attack-decay bow of the reverse-tape pedals",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

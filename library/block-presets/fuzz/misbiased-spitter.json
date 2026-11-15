@@ -1,0 +1,48 @@
+{
+ "id": "misbiased-spitter",
+ "type": "fuzz",
+ "name": "Misbiased spitter",
+ "desc": "The trimmer turned down (bias −70 %): Q2 near saturation, sputter on the decay",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "noise-rock",
+  "stoner-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": -70,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "bias_v ≈ 1 V; which side gates best is for the ear (README §2.6)",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

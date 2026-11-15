@@ -1,0 +1,47 @@
+{
+ "id": "soft-attack",
+ "type": "swell",
+ "name": "Soft attack",
+ "desc": "Takes the edge off each pick: a 25 ms linear fade from half level, nothing else changes",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "folk"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "indie-pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "rise": 25,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Linear",
+  "depth": 50,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Depth 50 % starts each note 6 dB down: a transient softener rather than a swell",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

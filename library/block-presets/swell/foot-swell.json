@@ -1,0 +1,43 @@
+{
+ "id": "foot-swell",
+ "type": "swell",
+ "name": "Foot swell",
+ "desc": "Swells only when the footswitch fires: re-swell a held chord on demand",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "rise": 300,
+  "sync": "Off",
+  "sens": 0,
+  "legato": 0,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Map Fire to a momentary footswitch; sens 0 and legato 0 leave the picks and legato detectors at their least eager",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

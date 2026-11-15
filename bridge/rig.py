@@ -508,13 +508,17 @@ def stacked_cab(blocks, gear_of):
     Pourquoi ça vaut un avertissement plutôt qu'un retrait : deux baffles s'entendent comme une
     couverture jetée sur l'ampli, donc comme un mauvais réglage — on cherche des heures dans les
     potards. Mais c'est peut-être voulu (un cab de caractère derrière une capture complète), et on
-    ne retire pas un choix. On le nomme."""
+    ne retire pas un choix. On le nomme.
+    2026-11-15 : l'Acoustic Sim de golem-fx (`acoustic-sim`) est un rig complet (le micro devant la caisse) : un `cab`
+    après lui est le même empilement. Un ampli après lui reste un usage voulu : on n'en dit rien."""
     out, pending = [], None
     for b in blocks:
         if not isinstance(b, dict) or b.get("bypass"):
             continue
         t, ref = b.get("type"), b.get("ref")
-        if t in ("amp", "amp-nam") and ref:
+        if t == "acoustic-sim":                           # golem-fx : un micro devant une acoustique, baffle compris
+            pending = b
+        elif t in ("amp", "amp-nam") and ref:
             pending = b if gear_of(ref) == "amp-cab" else None
         elif t == "cab" and ref and pending is not None:
             out.append(pending.get("id") or "amp")

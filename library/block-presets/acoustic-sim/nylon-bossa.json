@@ -1,0 +1,50 @@
+{
+ "id": "nylon-bossa",
+ "type": "acoustic-sim",
+ "name": "Nylon bossa",
+ "desc": "The archive-fitted classical body, dark top and a short nylon decay, miked near the neck",
+ "inst": "guitar",
+ "genres": [
+  "latin",
+  "jazz"
+ ],
+ "subgenres": [
+  "bossa-nova"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "model": "Classical",
+  "body": 50,
+  "top": 35,
+  "mic": 80,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 20,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Classical is fitted from a measured Spanish concert guitar (CC BY 4.0 archive); its k is higher in the highs",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

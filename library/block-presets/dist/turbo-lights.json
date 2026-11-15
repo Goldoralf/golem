@@ -1,0 +1,40 @@
+{
+ "id": "turbo-lights",
+ "type": "dist",
+ "name": "LED clip",
+ "desc": "LED clippers in the op-amp circuit: louder, more open, the rail clipping heard",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "stoner-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 75,
+  "tone_stack": 50,
+  "level": -6,
+  "diodes": "LED",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The classic LED mod: the clip at 1.6 V lets the op-amp's rails shape the top",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

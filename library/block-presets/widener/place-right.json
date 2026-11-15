@@ -1,0 +1,41 @@
+{
+ "id": "place-right",
+ "type": "widener",
+ "name": "Place right",
+ "desc": "A guitar lane widened and placed right of centre without touching its mono fold",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Velvet",
+  "amount": 50,
+  "width": 100,
+  "time": 20,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 3,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 35,
+  "rotate": 0,
+  "level": -1.0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "The partner of Place left: variant 3 against its 2",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

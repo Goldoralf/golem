@@ -1,0 +1,61 @@
+{
+ "id": "bass-bump",
+ "type": "tape",
+ "name": "Bass bump",
+ "desc": "15 ips reel with its 38 Hz head bump under the fundamental and a slightly over-biased, rounder attack",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "funk",
+  "classic-soul"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": true,
+ "params": {
+  "input": 8,
+  "wow": 0.03,
+  "flutter": 0.02,
+  "wear": 0,
+  "mix": 100,
+  "model": "Studio Reel",
+  "speed": "Model",
+  "noise": false,
+  "formula": "Model",
+  "bias": 110,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

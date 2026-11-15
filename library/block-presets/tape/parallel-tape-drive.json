@@ -1,0 +1,61 @@
+{
+ "id": "parallel-tape-drive",
+ "type": "tape",
+ "name": "Parallel tape drive",
+ "desc": "Cassette slammed 18 dB, blended at 40 % with the aligned dry: thick low-mids, no comb",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal",
+  "rnb"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "input": 18,
+  "wow": 0.05,
+  "flutter": 0.03,
+  "wear": 0,
+  "mix": 40,
+  "model": "Cassette",
+  "speed": "Model",
+  "noise": false,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

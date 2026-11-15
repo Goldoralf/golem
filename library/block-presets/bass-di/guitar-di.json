@@ -1,0 +1,51 @@
+{
+ "id": "guitar-di",
+ "type": "bass-di",
+ "name": "Guitar DI",
+ "desc": "The tube-emulation DI on guitar: corners scaled to the guitar's low E, smooth speaker",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "garage-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "gain": 40,
+  "mix": 100,
+  "level": 0,
+  "bass": 0,
+  "lo_mid": 0,
+  "hi_mid": 0,
+  "treble": 0,
+  "model": "Classic",
+  "cab": "Smooth",
+  "grunt": 0,
+  "attack": 0,
+  "dirt_level": 0,
+  "lo_mid_freq": 500,
+  "hi_mid_freq": 1500,
+  "bass_keep": 0,
+  "low_note": 41.2,
+  "comp": 0,
+  "comp_char": "FET",
+  "comp_path": "Dirt",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "golem sets low_note to 82.4 Hz on a guitar lane: every low corner moves up an octave with it",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

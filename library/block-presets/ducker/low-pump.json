@@ -1,0 +1,50 @@
+{
+ "id": "low-pump",
+ "type": "ducker",
+ "name": "Low-only pump",
+ "desc": "Pumps only the lows of a pad or clean chords on each beat, 24 dB deep; the top stays bright",
+ "inst": "keys",
+ "genres": [
+  "electronic"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/4",
+ "tags": [
+  "bright",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Pump",
+  "thresh": -40,
+  "depth": 24,
+  "attack": 5,
+  "hold": 0,
+  "release": 400,
+  "shape": "Low",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 200,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 80,
+  "tension": 40,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "A band split without a crossover: the shelf is out of the path between dips, so the top is never touched",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

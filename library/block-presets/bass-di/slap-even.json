@@ -1,0 +1,55 @@
+{
+ "id": "slap-even",
+ "type": "bass-di",
+ "name": "Slap Even",
+ "desc": "Compressor before everything evens slap and pop; a hint of grit, bass and treble up, mids cut",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "funk-rock",
+  "jazz-funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "gain": 15,
+  "mix": 30,
+  "level": 0,
+  "bass": 3,
+  "lo_mid": -4,
+  "hi_mid": 0,
+  "treble": 4,
+  "model": "Classic",
+  "cab": "Smooth",
+  "grunt": 0,
+  "attack": 0,
+  "dirt_level": 0,
+  "lo_mid_freq": 500,
+  "hi_mid_freq": 1500,
+  "bass_keep": 0,
+  "low_note": 41.2,
+  "comp": 50,
+  "comp_char": "FET",
+  "comp_path": "Both",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "Comp Path Both: the clean is compressed too, so the thumb and the pop come out level",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

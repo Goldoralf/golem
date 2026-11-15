@@ -1,0 +1,47 @@
+{
+ "id": "tempo-swells",
+ "type": "swell",
+ "name": "Tempo swells",
+ "desc": "Swells that take a half note at the song's tempo, with a pedal-like taper; feed a dotted delay and a long reverb",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "ambient",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/2",
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "rise": 300,
+  "sync": "1/2",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Pedal",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "The swell starts at the note, not on the grid; only its length follows the tempo",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

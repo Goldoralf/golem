@@ -1,0 +1,40 @@
+{
+ "id": "transparent-push",
+ "type": "dist",
+ "name": "Transparent push",
+ "desc": "Low gain, the clean feeds dominant: mids filled in, a clean boost into a pushed amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Blend OD",
+  "gain": 10,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The sum on the pumped rails never clips: the guitar's own tone with more push",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

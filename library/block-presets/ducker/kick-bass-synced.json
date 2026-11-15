@@ -1,0 +1,51 @@
+{
+ "id": "kick-bass-synced",
+ "type": "ducker",
+ "name": "Kick ducks the sub, in time",
+ "desc": "Each kick dips the bass's lows 12 dB for 70 % of an eighth note, the recovery locked to the tempo",
+ "inst": "bass",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/8",
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Trigger",
+  "thresh": -40,
+  "depth": 12,
+  "attack": 2,
+  "hold": 20,
+  "release": 400,
+  "shape": "Low",
+  "hpf": 0,
+  "lpf": 150,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 120,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/8",
+  "length": 70,
+  "tension": 30,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "The recovery follows the song's tempo, so it never needs retuning between songs",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

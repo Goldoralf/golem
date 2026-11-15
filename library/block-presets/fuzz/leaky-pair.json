@@ -1,0 +1,47 @@
+{
+ "id": "leaky-pair",
+ "type": "fuzz",
+ "name": "Leaky pair",
+ "desc": "An unselected germanium pair (250 % leakage): biased high, thin and spitty",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "noise-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 250,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "The pedal a builder would have rejected: Q2 sits near 6.5 V",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

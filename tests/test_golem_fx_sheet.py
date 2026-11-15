@@ -59,12 +59,17 @@ def test_le_compilateur_retire_les_reglages_de_la_pedale_la_ou_golem_fx_ne_joue_
     assert blocks[0]["params"] == {"rate": 1.2, "warmth": 70}
 
 
+# catalogue v47 (golem-fx 9c573f0, 2026-11-15) : quatorze blocs de plus que seul golem-fx joue
+V47 = ("swell", "transient", "mb-comp", "ducker", "widener", "bass-di", "tape", "dist", "fuzz", "radio", "vocoder",
+       "acoustic-sim", "sustainer", "polysynth")
+
+
 def test_les_blocs_du_seul_golem_fx_ne_vivent_que_la_ou_golem_fx_joue(monkeypatch):
     # met, emet, shem (catalogue v43) : aucun plugin d'origine — en quarantaine partout, sauf là où golem-fx les joue
     from bridge import rig
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
     q = rig.quarantined_types()
-    only = ("met", "emet", "shem", "golem-double", "glitch")
+    only = ("met", "emet", "shem", "golem-double", "glitch", *V47)
     assert set(only) <= set(q) and all(q[t].startswith("golem-fx only") for t in only)
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: set(only))
     assert not set(only) & set(rig.quarantined_types())
@@ -79,6 +84,22 @@ def test_les_trois_pedales_ont_leur_feuille_et_leur_plugin():
         assert os.listdir(os.path.join(golem_fx.C.ROOT, "library", "block-presets", t)), t     # ses presets, semés
         assert plugins[table[t]["vst3"]]["reaper"] == CAT[t]["plugin"], t      # même nom des deux côtés
         assert all("engine_only" not in d for d in params if d["id"] in front), t
+
+
+def test_les_quatorze_pedales_v47_ont_leur_feuille_leur_plugin_et_leurs_presets():
+    plugins, table = golem_fx._load()
+    for t in V47:
+        e = CAT[t]
+        assert e["quarantine"].startswith("golem-fx only") and e["bench"] == "pending", t
+        params, sheet = golem_fx.merged(t, e["params"])
+        assert sheet["front"] == [p["id"] for p in e["params"]], t                # la face avant = le catalogue
+        assert plugins[table[t]["vst3"]]["reaper"] == e["plugin"], t
+        assert table[t]["golem_fx"] and table[t]["status"] == "testing", t
+        assert os.listdir(os.path.join(golem_fx.C.ROOT, "library", "block-presets", t)), t
+    # la clé de ces trois-là est le DI de la lane, comme Met (docs/golem-fx-sheet.md §4)
+    assert {t for t in V47 if table[t].get("key")} == {"swell", "transient", "ducker"}
+    assert {"transient", "ducker", "tape", "radio"} <= set(json.load(open(os.path.join(
+        golem_fx.C.ROOT, "library", "catalog", "effects.json")))["role_blocks"]["drums"])
 
 
 def test_golem_double_est_un_bloc_de_voix_dessine_par_la_pedale_golem():

@@ -1,0 +1,41 @@
+{
+ "id": "orange-crunch-stack",
+ "type": "dist",
+ "name": "Booster crunch into a stack",
+ "desc": "Transistor booster, op-amp and diodes with the mid scoop, into a cranked amp",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Booster Dist",
+  "gain": 55,
+  "tone_stack": 60,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 120,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "Thin into a clean amp, right into a pushed one: tight 120 Hz keeps the lows from flubbing",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

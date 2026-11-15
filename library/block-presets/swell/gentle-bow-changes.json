@@ -1,0 +1,46 @@
+{
+ "id": "gentle-bow-changes",
+ "type": "swell",
+ "name": "Gentle bow changes",
+ "desc": "A new note only pulls the ringing one down a little before swelling: smooth bow changes",
+ "inst": "guitar",
+ "genres": [
+  "classical",
+  "rock"
+ ],
+ "subgenres": [
+  "neoclassical-new-age",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "rise": 300,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 35,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Dip 35 % keeps two thirds of the ringing note under the new one",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

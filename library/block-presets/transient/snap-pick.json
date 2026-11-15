@@ -1,0 +1,50 @@
+{
+ "id": "snap-pick",
+ "type": "transient",
+ "name": "Snap pick",
+ "desc": "Lifts the pick click on every note by 8 dB on the highs only; the low strings' fundamentals stay put",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "rnb",
+  "pop"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "attack": 8,
+  "sustain": 0,
+  "att_time": 12,
+  "sus_time": 300,
+  "att_band": "Highs",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "A shelf at 1.5 kHz carries the boost: the pick gets louder, the bass of a low E is not pumped",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

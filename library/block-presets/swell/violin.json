@@ -1,0 +1,48 @@
+{
+ "id": "violin",
+ "type": "swell",
+ "name": "Violin",
+ "desc": "Each picked note fades in from silence over a quarter second; stop each note before the next",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic",
+  "folk"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient",
+  "americana"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "rise": 250,
+  "sync": "Off",
+  "sens": 50,
+  "legato": 50,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Stopping each note lets the swell reset, so the next pick meets a closed gain: the attack is removed at zero latency",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

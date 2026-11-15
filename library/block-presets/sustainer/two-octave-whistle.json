@@ -1,0 +1,51 @@
+{
+ "id": "two-octave-whistle",
+ "type": "sustainer",
+ "name": "Two-octave whistle",
+ "desc": "A slow whistle two octaves above the held note, under the note's own level",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "post-rock",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Two Octaves",
+  "delay": 500,
+  "rise": 1500,
+  "bloom": -6,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The 4th harmonic fits any chord; a slow rise keeps it a whistle rather than a squeal",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

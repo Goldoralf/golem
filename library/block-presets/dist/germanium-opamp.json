@@ -1,0 +1,40 @@
+{
+ "id": "germanium-opamp",
+ "type": "dist",
+ "name": "Germanium op-amp dist",
+ "desc": "Germanium clippers in the op-amp circuit: a softer knee, more output",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "stoner-rock",
+  "psychedelic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 65,
+  "tone_stack": 50,
+  "level": -3,
+  "diodes": "Germanium",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "1N34A at about 0.3 V: a softer, compressed clip",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

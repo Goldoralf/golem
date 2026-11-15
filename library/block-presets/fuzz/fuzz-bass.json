@@ -1,0 +1,46 @@
+{
+ "id": "fuzz-bass",
+ "type": "fuzz",
+ "name": "Fuzz bass",
+ "desc": "Russian muff for bass: below 120 Hz the dry stays, a 70 % blend keeps the fundamental",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "stoner-rock",
+  "doom-metal"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark"
+ ],
+ "default": true,
+ "params": {
+  "fuzz": 75,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Si Four",
+  "buffer": false,
+  "pickup": "Active",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Russian",
+  "mids": 0,
+  "input": 0,
+  "mix": 70,
+  "bass_keep": 120,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

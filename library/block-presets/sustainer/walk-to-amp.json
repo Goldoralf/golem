@@ -1,0 +1,52 @@
+{
+ "id": "walk-to-amp",
+ "type": "sustainer",
+ "name": "Walk to the amp",
+ "desc": "Natural feedback up to the 6th harmonic whose winner moves with distance: put Distance on the expression pedal",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "experimental"
+ ],
+ "subgenres": [
+  "noise-rock",
+  "noise"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Natural High",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": 0,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "EXP on distance 0.5 – 3 m: the harmonic changes every few tens of centimetres, each change a cross-fade",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

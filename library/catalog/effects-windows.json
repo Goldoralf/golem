@@ -241,6 +241,48 @@
   },
   "ir-fx": {
    "unsupported": "catalogue v46: no stereo convolver is mapped on Windows yet (the Cab block's convolver is mono there)"
+  },
+  "swell": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "transient": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "mb-comp": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "ducker": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "widener": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "bass-di": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "tape": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "dist": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "fuzz": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "radio": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "vocoder": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "acoustic-sim": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "sustainer": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "polysynth": {
+   "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
   }
  },
  "unmapped": {

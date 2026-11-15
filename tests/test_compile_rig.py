@@ -483,6 +483,15 @@ def test_un_cab_bypasse_ne_compte_pas_comme_second_baffle():
     assert rig.stacked_cab(blocks, _gear(**{"53952": "amp-cab", "42": "cab"})) == []
 
 
+def test_un_baffle_apres_l_acoustic_sim_est_signale():
+    from bridge import rig
+    # golem-fx (gfx-acoustic) : le bloc rend déjà une guitare acoustique micro — un cab après lui s'empile
+    blocks = [{"id": "ac", "type": "acoustic-sim"}, {"id": "c", "type": "cab", "ref": "42"}]
+    assert rig.stacked_cab(blocks, _gear(**{"42": "cab"})) == ["ac"]
+    blocks = [{"id": "ac", "type": "acoustic-sim"}, {"id": "a", "type": "amp-nam", "ref": "28245"}]
+    assert rig.stacked_cab(blocks, _gear(**{"28245": "amp"})) == []
+
+
 # ── UNE SCÈNE QUI NE LAISSE AUCUN CHEMIN AUDIBLE (patch « Hammer », 2026-09-12) ─────────────
 # Deux branches, une par son. Le bloc de la branche clean n'avait pas de capture : retiré, et dit.
 # Mais la scène « Clean » MUTE l'autre branche — donc en scène A, la seule voie ouverte était une

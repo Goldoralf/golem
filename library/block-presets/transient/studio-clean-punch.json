@@ -1,0 +1,47 @@
+{
+ "id": "studio-clean-punch",
+ "type": "transient",
+ "name": "Studio clean punch",
+ "desc": "Drum punch with the gain in place before each hit and no peak over 0 dBFS (1 ms latency)",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "attack": 9,
+  "sustain": -4,
+  "att_time": 10,
+  "sus_time": 250,
+  "att_band": "Full",
+  "ceil_mode": "Limit",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 120,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "1 ms",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Lookahead 1 ms ramps the gain in before the transient: the first cycle is boosted whole. Not for a song that switches lookahead live",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

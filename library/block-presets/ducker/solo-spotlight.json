@@ -1,0 +1,51 @@
+{
+ "id": "solo-spotlight",
+ "type": "ducker",
+ "name": "Solo spotlight",
+ "desc": "Makes room in the centre of a stereo backing for a band mate's solo, in its own bands; the width stays",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "blues"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 6,
+  "attack": 10,
+  "hold": 250,
+  "release": 800,
+  "shape": "Spectral",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Mid",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Key = the soloist's lane output (needs golem's key_from). Mid only: the backing's side signal is untouched",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

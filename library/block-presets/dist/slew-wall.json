@@ -1,0 +1,45 @@
+{
+ "id": "slew-wall",
+ "type": "dist",
+ "name": "Slew wall",
+ "desc": "Slow op-amp hard clipper at 70 %: a thick, compressed rhythm wall without fizz",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "grunge",
+  "alternative-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [
+  {
+   "artist": "Nirvana",
+   "why": "op-amp distortion pedal rhythm tones of the early 90s",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": true,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 70,
+  "tone_stack": 60,
+  "level": -2,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The LM308's slew and narrow closed loop round the clip before the diodes: thick, not fizzy. Into a clean amp",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

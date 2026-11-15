@@ -1,0 +1,63 @@
+{
+ "id": "brass-section",
+ "type": "polysynth",
+ "name": "Synth brass",
+ "desc": "Saw waves with a slow filter swell on every pick: a paraphonic synth-brass section from chords",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "synth-pop",
+  "funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "engine": "Spectral",
+  "wave": "Saw",
+  "cutoff": 1200,
+  "reso": 20,
+  "filt_env": 36,
+  "synth": 0,
+  "dry": -60,
+  "pw": 50,
+  "octave": 0,
+  "sub": 0,
+  "detune": 0,
+  "noise": 0,
+  "amp_mode": "Follow",
+  "attack": 30,
+  "decay": 400,
+  "sustain": 70,
+  "release": 200,
+  "compress": 40,
+  "type": "Low-pass",
+  "poles": "4",
+  "drive": 0,
+  "key_track": 0,
+  "fenv_att": 40,
+  "fenv_dec": 350,
+  "fenv_vel": 50,
+  "bank": "Dual",
+  "residue": 100,
+  "glide": 0,
+  "quantize": "Off",
+  "lowest": 70,
+  "thresh": -66,
+  "spread": 0,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "One filter envelope per pick (paraphonic): the 40 ms filter attack is the brass 'blat'",
+ "factory": true,
+ "golem_fx_seed": "gfx-polysynth",
+ "golem_fx": true
+}

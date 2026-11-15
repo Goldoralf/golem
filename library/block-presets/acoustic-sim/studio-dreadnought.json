@@ -1,0 +1,50 @@
+{
+ "id": "studio-dreadnought",
+ "type": "acoustic-sim",
+ "name": "Studio dreadnought",
+ "desc": "Electric DI to a miked dreadnought between sound hole and neck, a light comp and room",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "folk-rock",
+  "singer-songwriter"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 25,
+  "room": 15,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "The reference: neck single coil, modal lows, the decay stage at the model's own shortening",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

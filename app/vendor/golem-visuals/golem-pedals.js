@@ -25,6 +25,7 @@
     enamelSmall: "'Saira Semi Condensed','Arial Narrow',sans-serif",
     nam: "'Big Shoulders Display','Oswald','Arial Narrow',sans-serif",
     blackletter: "'Pirata One','UnifrakturCook','Georgia',serif",
+    lcd: "'Share Tech Mono','DejaVu Sans Mono','Courier New',monospace",
   };
 
   // ---------- colour ----------
@@ -346,11 +347,38 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
   const METAL_HUE = {
     dynamics: '#4a5a6e', drive: '#e04a00', utility: '#f0a500', filter: '#00a8c0', eq: '#0058e0',
     modulation: '#00a84f', delay: '#3a28f0', reverb: '#6a1fd1', pitch: '#c4148c',
+    // raspberry: golem's lofi orange sits too close to drive's; free between pitch's magenta and the thrash red
+    lofi: '#e8336f',
+    // orchid violet: the free gap between reverb / shimmer (265°) and pitch's magenta (319°)
+    preamp: '#b316c0',
+    // teal: between filter's cyan and modulation's green, near golem's own cab tile (gfx-cab's review)
+    cab: '#00a898',
   };
-  const METAL_CRATE_HUE = { 'gfx-shimmer': '#8a3ff0', 'gfx-gapmeter': '#6b7480', 'gfx-glitch': '#72c000' };
+  const METAL_CRATE_HUE = { 'gfx-shimmer': '#8a3ff0', 'gfx-gapmeter': '#6b7480', 'gfx-glitch': '#72c000', 'gfx-ringmod': '#c9b000',
+    // deck champagne: the pale gold-anodized faceplate of a reel deck (gfx-tape's review: brown is
+    // gfx-fuzz's copper at tile size)
+    'gfx-tape': '#d8c8a0',
+    // ice glass: pale sky, air and open space (gfx-widener's review: utility's amber would read as a boost)
+    'gfx-widener': '#c0e0f8',
+    // germanium copper (gfx-fuzz's review: a third thrash-red drive pedal would be told apart by its
+    // motif alone; no other pedal is copper)
+    'gfx-fuzz': '#b0602a',
+    // deep scope green: separated from gfx-glitch's lime and modulation's green by lightness (L* 40)
+    'gfx-tuner': '#126e1c',
+    // deep plum: a darker sister of the pitch family's magenta (gfx-correct's review: ΔE00 16 from it,
+    // 20.6 from preamp violet); it sits beside gfx-formant on a voice lane
+    'gfx-correct': '#7a1450',
+    // rosewood: a dark, saturated wood (gfx-acoustic's review: ΔE 36 to the copper)
+    'gfx-acoustic': '#552210',
+    'gfx-radio': '#4b5320',
+    'gfx-stretch': '#a0a8ff',
+    // neon rose: the pink of an 80s synth's lettering, a light tint of the pitch family's magenta
+    // (gfx-polysynth's review: the draft's mint was ΔE*ab 27 from gfx-cab's teal; this rose is 42 – 44 from
+    // raspberry, periwinkle and the pitch magenta)
+    'gfx-polysynth': '#ff9ecf' };
   const THRASH_HUE = { drive: '#c8160e' };
   // the rune's light where the body's own hue would glow too dull
-  const RUNE_LIGHT = { dynamics: '#5fb0ff', 'gfx-gapmeter': '#d8dde3' };
+  const RUNE_LIGHT = { dynamics: '#5fb0ff', preamp: '#ecb8ff', 'gfx-gapmeter': '#d8dde3', 'gfx-swell': '#ffd0dc', 'gfx-tape': '#94461a', 'gfx-widener': '#3a7fc0', 'gfx-tuner': '#3ddc2e', 'gfx-correct': '#ff5fb4', 'gfx-acoustic': '#ffc46b', 'gfx-radio': '#c8d86a', 'gfx-stretch': '#3040c8', 'gfx-polysynth': '#8a1060' };
   const MOTIF = {
     'gfx-drive': 'flames', 'gfx-boost': 'chevrons', 'gfx-gate': 'barbed', 'gfx-comp': 'clamp', 'gfx-limiter': 'clamp',
     'gfx-deesser': 'clamp', 'gfx-wah': 'crescent', 'gfx-autowah': 'crescent', 'gfx-eq': 'curve', 'gfx-tremolo': 'pulse',
@@ -360,13 +388,36 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-met': 'barbed', 'gfx-emet': 'flames', 'gfx-shem': 'chevrons', 'gfx-golem': 'waves', 'gfx-glitch': 'bins',
     'gfx-geq': 'scale',
     'gfx-freqshift': 'barber',
-  };
+    'gfx-swell': 'swells',
+    'gfx-crusher': 'pixels',
+    'gfx-ringmod': 'sidebands',
+    'gfx-bassdi': 'parallel',
+    'gfx-tape': 'ribbon',
+    'gfx-grit': 'prism',
+    'gfx-dist': 'traces',
+    'gfx-transient': 'spikes',
+    'gfx-mbcomp': 'tiers',
+    'gfx-widener': 'fan',
+    'gfx-ducker': 'dips',
+    'gfx-fuzz': 'sputter',
+    'gfx-tuner': 'strobe',
+    'gfx-cab': 'cone',
+    'gfx-irfx': 'impulse',
+    'gfx-correct': 'staff',
+    'gfx-vocoder': 'bank',
+    'gfx-acoustic': 'rosette',
+    'gfx-radio': 'grille',
+    'gfx-stretch': 'chirp',
+    'gfx-grains': 'grains',
+    'gfx-sustainer': 'modes',
+    'gfx-polysynth': 'saws' };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
-  const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash' };
+  const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash', lofi: 'thrash' };
   // the high-gain companions (Fortin's role) and the vocal doubler have their own black finish
-  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork', 'gfx-golem': 'blackwork' };
+  // the swell removes attacks (violins, pads): anodized, against the dynamics family's thrash
+  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-swell': 'anodized', 'gfx-tape': 'anodized', 'gfx-widener': 'anodized', 'gfx-fuzz': 'anodized', 'gfx-tuner': 'anodized', 'gfx-correct': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork', 'gfx-golem': 'blackwork', 'gfx-acoustic': 'anodized', 'gfx-radio': 'thrash', 'gfx-polysynth': 'anodized' };
   const finishFor = spec => CRATE_FINISH[spec.crate] || FAMILY_FINISH[spec.category] || 'anodized';
   let metalCount = 0;
   const f1 = v => (+v).toFixed(1);
@@ -416,10 +467,63 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         P.push({ band: [cy - ch / 2 - 4, ch + 8] });
         shape(`M2 ${f1(cy - 7)}L11 ${f1(cy)}L2 ${f1(cy + 7)}Z`); shape(`M${W - 2} ${f1(cy - 7)}L${W - 11} ${f1(cy)}L${W - 2} ${f1(cy + 7)}Z`);
         break;
+      case 'tiers': {
+        // gfx-comp's clamp split into bands: four short meter bars each side of the rune, inside the
+        // cartouche's height, each pressed at its inner end by its own small clamp (gfx-comp's
+        // triangle at 0.45, 2 px clear); the two sides run to different depths, fainter downwards
+        const s = (W - cw) / 2 - 4, room = s - 8, ops = [1, .85, .7, .55];
+        const lens = [[.7, .4, .55, .3], [.35, .65, .3, .5]];
+        [-.375, -.125, .125, .375].forEach((k, i) => {
+          const y = cy + k * ch;
+          [0, 1].forEach(side => {
+            const len = Math.max(3, lens[side][i] * room), x0 = side ? W - 4 - len : 4;
+            shape(pill(x0, y - 1.5, len, 3), ops[i]);
+            if (s >= 16) {
+              const tip = side ? x0 - 2 : x0 + len + 2, dir = side ? -1 : 1;
+              shape(`M${f1(tip)} ${f1(y)}L${f1(tip + dir * 4.05)} ${f1(y - 3.15)}L${f1(tip + dir * 4.05)} ${f1(y + 3.15)}Z`, ops[i]);
+            }
+          });
+        });
+        break;
+      }
       case 'crescent':
         line(arcPath(cx, cy, W * .44, 200, 340)); line(arcPath(cx, cy, W * .53, 205, 335), .6);
         line(arcPath(cx, cy, W * .44, 20, 160), .45);
         break;
+      case 'strobe':
+        // the bands of a strobe disc round the rune: 12, 24 and 48 segments per turn (the octave bands),
+        // equal gaps, on crescent's two spans (clear of the knobs); the middle band offset by half a
+        // segment so the eye reads motion
+        [[.40, 12, 1, 0], [.47, 24, .7, .5], [.54, 48, .45, 0]].forEach(([k, n, op, off]) => {
+          const per = 360 / n, r = W * k;
+          for (const [a0, a1] of [[200, 340], [20, 160]]) {
+            for (let s = Math.ceil(a0 / per - off); (s + off) * per + per / 2 <= a1 + 1e-9; s++) {
+              const b = (s + off) * per;
+              if (b >= a0 - 1e-9) line(arcPath(cx, cy, r, b, b + per / 2), op);
+            }
+          }
+        });
+        break;
+      case 'staff': {
+        // five engraved staff lines across the face; on the left a free-hand pitch trace wanders between
+        // them with a small vibrato (60 %), on the right it rests on lines and spaces, joined by risers
+        const gap = ch * .3, ys = [-2, -1, 0, 1, 2].map(k => cy + k * gap);
+        ys.forEach(y => line(`M0 ${f1(y)}H${W}`, .45));
+        let d = '';
+        for (let x = 0; x <= W / 2 + .01; x += 2) {
+          const y = cy + gap * (1.1 * Math.sin(x / W * 5.2) - .5 * Math.sin(x / W * 11 + 1)) + .9 * Math.sin(x / 2.6);
+          d += (d ? 'L' : 'M') + f1(x) + ' ' + f1(y);
+        }
+        line(d, .6);
+        const steps = [.5, -1, 0, 1.5, .5], sw = (W / 2) / steps.length;
+        let q = `M${f1(W / 2)} ${f1(cy + steps[0] * gap)}`;
+        steps.forEach((k, i) => {
+          if (i) q += `V${f1(cy + k * gap)}`;
+          q += `H${f1(W / 2 + (i + 1) * sw)}`;
+        });
+        line(q);
+        break;
+      }
       case 'curve':
         for (let i = 1; i < 8; i++) line(`M${f1(W * i / 8)} ${f1(cy - ch)}V${f1(cy + ch)}`, .35);
         line(`M0 ${f1(cy + ch * .7)}C${f1(W * .18)} ${f1(cy + ch * .7)} ${f1(W * .18)} ${f1(cy - ch * .95)} ${f1(W * .35)} ${f1(cy - ch * .95)}` +
@@ -435,6 +539,24 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
       case 'waves':
         line(sine(0, W, cy - 4, ch * .7, 30, 0)); line(sine(0, W, cy + 4, ch * .7, 30, 1.4), .6);
         break;
+      case 'sidebands': {
+        // the product of two sines, above and below the rune: a fast sine (period ≈ 9 px) whose amplitude
+        // follows a slow one (period W / 1.5), pinching to zero and swelling twice; its two envelope
+        // curves (± |slow sine|) at opacity 0.4. Polylines sampled every 1 px
+        const a = 6, fast = 9, slow = W / 1.5;
+        [cy - ch / 2 - 11, cy + ch / 2 + 11].forEach(y0 => {
+          let d = '', up = '', dn = '';
+          for (let x = 0; x <= W + .01; x += 1) {
+            const env = Math.sin(x / slow * 2 * Math.PI);
+            const m = (d ? 'L' : 'M');
+            d += m + f1(x) + ' ' + f1(y0 + a * env * Math.sin(x / fast * 2 * Math.PI));
+            up += m + f1(x) + ' ' + f1(y0 - a * Math.abs(env));
+            dn += m + f1(x) + ' ' + f1(y0 + a * Math.abs(env));
+          }
+          line(d); line(up, .4); line(dn, .4);
+        });
+        break;
+      }
       case 'jet':
         [[-10, 30, 70], [0, 18, 90], [20, 4, 60], [-6, -10, 110], [30, -22, 80], [10, -36, 70], [40, 44, 60]].forEach(([x, dy, len], i) =>
           line(`M${f1(x)} ${f1(cy + dy + len * .35)}L${f1(x + len)} ${f1(cy + dy - len * .25)}`, .45 + .08 * (i % 4)));
@@ -496,6 +618,123 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         });
         break;
       }
+      case 'ribbon': {
+        // a tape ribbon: two lines 2.5 units apart crossing the face through the rune zone, waving with
+        // an irregular wow (sines of 1 and 2.7 cycles across the face, amplitude 3 units), broken by two
+        // short gaps (dropouts: 3 and 5 units), passing behind the rune's disc; three oxide specks
+        // (r 0.6) by the wider gap
+        const yAt = x => cy + 3 * (.62 * Math.sin(2 * Math.PI * x / W) + .38 * Math.sin(2 * Math.PI * 2.7 * x / W + 1.1));
+        const behind = x => Math.abs(x - cx) < cw / 2 + 1.5;
+        const gaps = [[W * .16, 3], [W * .84, 5]];
+        const gapped = x => gaps.some(([g0, w]) => x >= g0 && x <= g0 + w);
+        [-1.25, 1.25].forEach(off => {
+          let d = '', on = false;
+          for (let x = 2; x <= W - 2 + .01; x += 1) {
+            if (behind(x) || gapped(x)) { on = false; continue; }
+            d += (on ? 'L' : 'M') + f1(x) + ' ' + f1(yAt(x) + off);
+            on = true;
+          }
+          if (d) line(d);
+        });
+        const [g1, w1] = gaps[1], r = .6;
+        [[g1 - 2.2, 3.4], [g1 + w1 + 1.8, -3.3], [g1 + w1 / 2, 4.2]].forEach(([x, dy]) =>
+          shape(`M${f1(x - r)} ${f1(yAt(x) + dy)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`, .8));
+        break;
+      }
+      case 'chirp': {
+        // one wave whose period grows ×8 from left to right, time being stretched: instantaneous
+        // period p0 · 8^(x / W), p0 = 5 px, so φ(x) = 2π W / (p0 ln 8) · (1 − 8^(−x / W)) (≈ 6.7 cycles
+        // over an 80 px face). A second copy at .45, 4 px lower and a quarter of the local period
+        // later: the stereo wash. In the rune band like `waves`, told apart by its glide
+        const a = ch * .7, p0 = 5, k = 2 * Math.PI * W / (p0 * Math.log(8));
+        const phi = x => k * (1 - Math.pow(8, -x / W));
+        [[0, 0, 1], [4, -Math.PI / 2, .45]].forEach(([dy, ph, op]) => {
+          let d = '';
+          for (let x = 0; x <= W + .01; x += 1) d += (d ? 'L' : 'M') + f1(x) + ' ' + f1(cy + dy + a * Math.sin(phi(x) + ph));
+          line(d, op);
+        });
+        break;
+      }
+      case 'grains': {
+        // a cloud of grains converging on the rune: seven small Hann arches each side (3 – 7 units wide,
+        // 2 – 6 high), each with a dot at its peak, placed by a fixed seed (from the crate's name, so the
+        // drawing is stable), larger, denser and brighter toward the rune (35 → 90 %); inside the
+        // rune's band, clear of the knobs
+        let seed = 0;
+        for (const c of 'gfx-grains') seed = (seed * 31 + c.charCodeAt(0)) >>> 0;
+        const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+        const inner = cx - cw / 2 - 3, outer = 4, n = 7;
+        [[1, outer, inner], [-1, W - outer, W - inner]].forEach(([s, a, b]) => {
+          for (let k = 0; k < n; k++) {
+            // denser toward the rune: positions on a square-root law
+            const t = Math.sqrt((k + .5 + .4 * (rnd() - .5)) / n), x = a + s * t * Math.abs(b - a);
+            const w = 3 + 4 * t * (.7 + .3 * rnd()), h = 2 + 4 * t * (.7 + .3 * rnd());
+            const y0 = cy + (ch / 2 - h - 1) * (rnd() - .5) * 1.6 + h / 2, op = .35 + .55 * t;
+            line(`M${f1(x - w / 2)} ${f1(y0)}C${f1(x - w / 6)} ${f1(y0)} ${f1(x - w / 6)} ${f1(y0 - h)} ${f1(x)} ${f1(y0 - h)}` +
+              `S${f1(x + w / 2 - w / 3)} ${f1(y0)} ${f1(x + w / 2)} ${f1(y0)}`, op);
+            const r = .55 + .25 * t;
+            shape(`M${f1(x - r)} ${f1(y0 - h - 1.6)}a${r} ${r} 0 1 0 ${f1(2 * r)} 0a${r} ${r} 0 1 0 ${f1(-2 * r)} 0Z`, op);
+          }
+        });
+        break;
+      }
+      case 'bank': {
+        // a filterbank raised by a vowel: nine overlapping bells on one baseline just under the
+        // cartouche, each reaching its neighbours' centres; low under the rune (2 px under it), tall
+        // beside it (up to the cartouche's top). Closed arches only, no envelope line (gfx-formant's)
+        const y0 = cy + ch / 2 + 8, w = W / 9;
+        const e = [1, .55, .85, .45, .3, .5, .9, .6, .7];
+        for (let i = 0; i < 9; i++) {
+          const x = W * (i + .5) / 9, room = Math.abs(x - cx) < cw / 2 ? 6 : ch + 6, h = e[i] * room;
+          line(`M${f1(x - w)} ${f1(y0)}C${f1(x - w / 3)} ${f1(y0)} ${f1(x - w / 3)} ${f1(y0 - h)} ${f1(x)} ${f1(y0 - h)}` +
+            `S${f1(x + w / 3)} ${f1(y0)} ${f1(x + w)} ${f1(y0)}`, .45 + .5 * e[i]);
+        }
+        break;
+      }
+      case 'modes': {
+        // a string's standing waves, the note blooming into its harmonic (gfx-sustainer). Left of the
+        // cartouche the fundamental: one loop between two nodes, three nested lenses (a = .35, .65, 1 ×
+        // .55 ch; opacity .35, .65, 1: the bloom). Right of it the octave: two loops (one lens each,
+        // a = .55 ch) over a faint one-loop lens (.3: the harmonic taking over). The string through both
+        // regions at the rune's centre line (.4)
+        const lens = (xa, xb, a, op) => {
+          const xm = (xa + xb) / 2;
+          line(`M${f1(xa)} ${f1(cy)}Q${f1(xm)} ${f1(cy - 2 * a)} ${f1(xb)} ${f1(cy)}Q${f1(xm)} ${f1(cy + 2 * a)} ${f1(xa)} ${f1(cy)}`, op);
+        };
+        const l0 = 6, l1 = cx - cw / 2 - 6, r0 = cx + cw / 2 + 6, r1 = W - 6, a = .55 * ch, rm = (r0 + r1) / 2;
+        line(`M${f1(l0)} ${f1(cy)}H${f1(l1)}`, .4);
+        line(`M${f1(r0)} ${f1(cy)}H${f1(r1)}`, .4);
+        [.35, .65, 1].forEach(k => lens(l0, l1, k * a, k));
+        lens(r0, r1, a, .3);
+        lens(r0, rm, a, 1);
+        lens(rm, r1, a, 1);
+        break;
+      }
+      case 'saws': {
+        // a chord turned into oscillators (gfx-polysynth). Either side of the cartouche, within the
+        // rune band, three sawtooth rows at cy − ch / 2, cy, cy + ch / 2 (amplitude ch / 6), periods
+        // 6 : 5 : 4 from bottom to top (a major triad: the higher note, the shorter period), each tooth a
+        // ramp then a vertical drop; opacity .45, .7, 1 from bottom to top. The left rows start with one
+        // sine cycle (the string) before the teeth; the right rows are teeth only
+        const l0 = 6, l1 = cx - cw / 2 - 6, r0 = cx + cw / 2 + 6, r1 = W - 6, a = ch / 6;
+        const rows = [[cy + ch / 2, 6, .45], [cy, 5, .7], [cy - ch / 2, 4, 1]];
+        const unit = Math.max(2, (l1 - l0) / 22);
+        rows.forEach(([y, k, op]) => {
+          const per = k * unit;
+          const teeth = (x0, x1, start) => {
+            let d = start;
+            for (let x = x0; x + per <= x1 + .01; x += per) d += `L${f1(x + per)} ${f1(y - a)}V${f1(y + a)}`;
+            return d;
+          };
+          // left: one sine cycle, then teeth from its end
+          let d = `M${f1(l0)} ${f1(y)}`;
+          for (let x = 0; x <= per + .01; x += 1) d += `L${f1(l0 + x)} ${f1(y - a * Math.sin(x / per * 2 * Math.PI))}`;
+          d += `L${f1(l0 + per)} ${f1(y + a)}`;
+          line(teeth(l0 + per, l1, d), op);
+          line(teeth(r0, r1, `M${f1(r0)} ${f1(y + a)}`), op);
+        });
+        break;
+      }
       case 'bins': {
         // a spectrum's bins either side of the rune, sliced along one line and the tops slipped
         // sideways, as the glyph: the spectrum fractured
@@ -517,6 +756,246 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         // (the wide face's slots run y 16 – 100, 0 dB at 58)
         for (let db = -15; db <= 15; db += 5) line(`M4 ${f1(WIDE_SLOT.mid - db / 15 * WIDE_SLOT.half)}H${W - 4}`, db === 0 ? 1 : .5);
         break;
+      case 'spikes': {
+        // either side of the rune, two envelopes each: the original (ghost) and the shaped one over it,
+        // a taller, sharper spike and a lifted tail (t 4 then 2: two shaped notes, not one stamp)
+        const y0 = cy + ch / 2 + 3, yTop = cy - ch / 2 - 6, free = (W - cw) / 2 - 3, w = free / 2 - 2;
+        for (const left of [true, false]) {
+          for (let k = 0; k < 2; k++) {
+            const x0 = (left ? 2 : cx + cw / 2 + 3) + k * (w + 2), t = k === 0 ? 4 : 2;
+            line(`M${f1(x0)} ${f1(y0)}L${f1(x0 + 1.5)} ${f1(y0 - 12)}Q${f1(x0 + .3 * w)} ${f1(y0 - 6)} ${f1(x0 + w)} ${f1(y0)}`, .35);
+            line(`M${f1(x0)} ${f1(y0)}L${f1(x0 + 1.2)} ${f1(yTop)}Q${f1(x0 + .25 * w)} ${f1(y0 - 9)} ${f1(x0 + w)} ${f1(y0 - t)}`);
+          }
+        }
+        break;
+      }
+      case 'dips': {
+        // the swells' band and slots, the figure hung from a level line: in each of four beats the
+        // level runs flat, drops at once to near the baseline and climbs back along a curve (a pump);
+        // under each drop, three faint ticks are the key's burst that caused it. The dips get
+        // shallower by 2 px from left to right, so the row is not a repeated stamp
+        const y0 = H - 40, sw = W / 4, w = sw - 4, yTop = cy + ch / 2 + 8;
+        line(`M0 ${f1(y0)}H${W}`, .4);
+        for (let k = 0; k < 4; k++) {
+          const x0 = k * sw + 2, xd = x0 + .12 * w, yb = y0 - 10 - 2 * k;
+          line(`M${f1(x0)} ${f1(yTop)}H${f1(xd)}L${f1(xd + 1.5)} ${f1(yb)}Q${f1(x0 + .45 * w)} ${f1(yb)} ${f1(x0 + .9 * w)} ${f1(yTop)}H${f1(x0 + w)}`);
+          line(`M${f1(xd - 1)} ${f1(y0)}v-3M${f1(xd + .75)} ${f1(y0)}v-6M${f1(xd + 2.5)} ${f1(y0)}v-4`, .35);
+        }
+        break;
+      }
+      case 'swells': {
+        // four notes along a baseline: each pick's tick (the attack removed, faint), then a concave-up
+        // rise (the Square curve) to a plateau, then the next note's dip; plateaus climb, a crescendo
+        const y0 = H - 40, sw = W / 4, w = sw - 4;
+        line(`M0 ${f1(y0)}H${W}`);
+        for (let k = 0; k < 4; k++) {
+          const x0 = k * sw + 2, yTop = cy + ch / 2 + 8 - 3 * k, op = .45 + .55 * k / 3;
+          line(`M${f1(x0)} ${f1(y0)}V${f1(y0 - 8)}`, .35);
+          line(`M${f1(x0)} ${f1(y0)}Q${f1(x0 + .75 * w)} ${f1(y0)} ${f1(x0 + .92 * w)} ${f1(yTop)}H${f1(x0 + w)}V${f1(y0)}`, op);
+        }
+        break;
+      }
+      case 'parallel': {
+        // the blend, drawn: one line splits into two tracks, a clipped wave above and the same wave
+        // round below (its crests under the flats), and the tracks rejoin into one line
+        const x0 = W * .12, x1 = W * .88, ya = cy - ch * .9, yb = cy + ch * .9, a = ch * .35, s = 6;
+        line(`M0 ${f1(cy)}H${f1(x0)}L${f1(x0 + s)} ${f1(ya)}M${f1(x0)} ${f1(cy)}L${f1(x0 + s)} ${f1(yb)}`);
+        line(`M${f1(x1 - s)} ${f1(ya)}L${f1(x1)} ${f1(cy)}H${W}M${f1(x1 - s)} ${f1(yb)}L${f1(x1)} ${f1(cy)}`);
+        // trapezoids from the middle level, rising: rise 4, flat 7, fall 4, flat 7 (period 22)
+        const xs = x0 + s, xe = x1 - s;
+        let d = `M${f1(xs)} ${f1(ya)}`, x = xs;
+        const steps = [[2, -1], [7, -1], [4, 1], [7, 1], [2, 0]];
+        while (x < xe - .01) {
+          for (const [dx, lv] of steps) {
+            const nx = Math.min(x + dx, xe);
+            d += `L${f1(nx)} ${f1(ya + a * lv)}`;
+            x = nx;
+            if (x >= xe - .01) break;
+          }
+        }
+        line(d);
+        line(sine(xs, xe, yb, -a, 22, -2 * Math.PI * xs / 22), .6);
+        break;
+      }
+      case 'pixels': {
+        // a sine sampled into square pixels either side of the rune (one column every 6 units, 1.5
+        // periods across the face, 5 levels), joined by its hold staircase; the two columns nearest
+        // the rune smaller and fainter, so the wave dissolves into it
+        // (the phase puts a rising swing on each side: trough at the edge, crest by the rune)
+        const amp = ch * .6, cols = [];
+        for (let x = 5; x <= W - 5; x += 6) {
+          if (Math.abs(x - cx) < cw / 2 + 2) continue;
+          const lv = Math.round((Math.sin(3 * Math.PI * x / W - Math.PI / 2) + 1) * 2) / 2 - 1;
+          cols.push({ x, y: cy - amp * lv, side: x < cx ? 0 : 1 });
+        }
+        [0, 1].forEach(side => {
+          const c = cols.filter(p => p.side === side);
+          if (!c.length) return;
+          let d = `M${f1(c[0].x)} ${f1(c[0].y)}`;
+          for (let i = 1; i < c.length; i++) d += `H${f1(c[i].x)}V${f1(c[i].y)}`;
+          line(d, .35);
+          const near = side ? c.slice(0, 2) : c.slice(-2);
+          c.forEach(p => {
+            const small = near.includes(p), s = small ? 3 : 4;
+            shape(`M${f1(p.x - s / 2)} ${f1(p.y - s / 2)}h${s}v${s}h${-s}Z`, small ? .55 : 1);
+          });
+        });
+        break;
+      }
+      case 'cone': {
+        // a loudspeaker from the front, the rune as its dust cap: either side, arcs of radius 34, 40,
+        // 46 (opacity 1, .8, .6) and 52 dashed (the surround, 2 on 2 off) over ±28° about the
+        // horizontal, and three ribs at 0° and ±18° from 34 to 52 at 40 %
+        [[34, 1], [40, .8], [46, .6]].forEach(([r, op]) => {
+          line(arcPath(cx, cy, r, -28, 28), op);
+          line(arcPath(cx, cy, r, 152, 208), op);
+        });
+        const step = 4 / 52 * 180 / Math.PI, on = 2 / 52 * 180 / Math.PI;
+        for (const a0 of [-28, 152]) {
+          for (let a = a0; a < a0 + 56 - .01; a += step) line(arcPath(cx, cy, 52, a, Math.min(a + on, a0 + 56)));
+        }
+        const pt = (r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)];
+        [-18, 0, 18, 162, 180, 198].forEach(deg => {
+          const [x0, y0] = pt(34, deg), [x1, y1] = pt(52, deg);
+          line(`M${f1(x0)} ${f1(y0)}L${f1(x1)} ${f1(y1)}`, .4);
+        });
+        break;
+      }
+      case 'impulse': {
+        // an impulse response either side of the rune, bars on the baseline of 'bins': a tall spike at
+        // the inner end, then bars every 4 units decaying ×0.72, a gap, and a fainter echo cluster
+        const y0 = cy + ch / 2 + 6, top = cy - ch * .7, full = y0 - top;
+        for (const sgn of [-1, 1]) {
+          const x0 = cx + sgn * (cw / 2 + 3), end = sgn < 0 ? 7 : W - 7;
+          let x = x0, h = full, k = 0;
+          while (sgn * (end - x) >= 0) {
+            const echo = k >= 7, hh = echo ? full * .38 * Math.pow(.72, k - 7) : h;
+            if (k !== 6 && hh > 1) line(`M${f1(x)} ${f1(y0)}V${f1(y0 - hh)}`, k === 0 ? 1 : echo ? .45 : .75);
+            h *= .72;
+            x += sgn * 4;
+            k++;
+          }
+        }
+        break;
+      }
+      case 'fan': {
+        // the mono axis and the spread image: a vertical centre line from just under the rune to above
+        // the switch zone (the mid, untouched), and either side five straight rays opening upward from
+        // a point 6 units below the rune's centre, at ±18° … ±66° from the vertical, 0.9 · ch down to
+        // 0.5 · ch long, fainter outward (the side, L = M + S, R = M − S)
+        line(`M${f1(cx)} ${f1(cy + ch / 2 + 3)}V${f1(H - 34)}`);
+        const oy = cy + 6;
+        [18, 30, 42, 54, 66].forEach((deg, i) => {
+          const a = deg * Math.PI / 180, len = ch * (.9 - .1 * i), op = 1 - .1625 * i;
+          const y1 = Math.max(cy - ch, oy - len * Math.cos(a)), dx = (oy - y1) * Math.tan(a);
+          [-1, 1].forEach(sgn => line(`M${f1(cx)} ${f1(oy)}L${f1(cx + sgn * dx)} ${f1(y1)}`, op));
+        });
+        break;
+      }
+      case 'prism': {
+        // one beam in on the left of the rune, four rays out on the right, fanning: each carries its
+        // band's dirt along its length, top to bottom clean, clipped (a sine with flat crests),
+        // folded (a zigzag), crushed (a staircase), fainter downwards like light dispersed
+        const xl = cx - cw / 2 - 2, x0 = cx + cw / 2 + 2, x1 = W - 6;
+        line(`M6 ${f1(cy)}H${f1(xl)}`);
+        const ends = [-.7, -.23, .23, .7].map(k => cy + k * ch), ops = [1, .85, .7, .55];
+        ends.forEach((y1, i) => {
+          const dx = x1 - x0, dy = y1 - cy, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+          const at = (s, o) => `${f1(x0 + ux * s - uy * o)} ${f1(cy + uy * s + ux * o)}`;
+          let d = `M${f1(x0)} ${f1(cy)}`;
+          if (i === 0) {
+            d += `L${f1(x1)} ${f1(y1)}`;
+          } else if (i === 1) {
+            for (let s = .5; s <= L; s += .5) d += `L${at(s, Math.max(-1.4, Math.min(1.4, 2.1 * Math.sin(2 * Math.PI * s / 6))))}`;
+          } else if (i === 2) {
+            for (let s = 1; s <= L; s += 1) d += `L${at(s, [1.6, 0, -1.6, 0][(s - 1) % 4])}`;
+          } else {
+            for (let x = x0 + 3; x <= x1 + .01; x += 3) d += `H${f1(x)}V${f1(cy + dy * (x - x0) / dx)}`;
+          }
+          line(d, ops[i]);
+        });
+        break;
+      }
+      case 'traces': {
+        // printed-circuit traces: three each side from the body's edge to the rune's cartouche (inside
+        // the rune band, clear of the knob grid), the outer ones jogging 45° away from the centre,
+        // each ending on a round pad; the middle one carries a diode pointing to the rune
+        const L = cx - cw / 2 - 4, sides = [[1, 0], [-1, W]];
+        sides.forEach(([s, x0]) => [-.6, 0, .6].forEach(k => {
+          const y = cy + k * ch, jog = k === 0 ? 0 : 6 * Math.sign(k), xa = x0 + s * 4, xb = x0 + s * W * .18,
+                xe = s > 0 ? L : W - L;
+          line(`M${f1(xa)} ${f1(y)}H${f1(xb)}L${f1(xb + s * 6)} ${f1(y + jog)}H${f1(xe)}`);
+          shape(`M${f1(xe - 2.2)} ${f1(y + jog)}a2.2 2.2 0 1 0 4.4 0a2.2 2.2 0 1 0 -4.4 0Z`);
+          if (k === 0) {
+            const xd = x0 + s * W * .27;
+            shape(`M${f1(xd - s * 3)} ${f1(y - 3.5)}L${f1(xd + s * 3)} ${f1(y)}L${f1(xd - s * 3)} ${f1(y + 3.5)}Z`);
+            line(`M${f1(xd + s * 3)} ${f1(y - 3.5)}V${f1(y + 3.5)}`);
+          }
+        }));
+        break;
+      }
+      case 'rosette': {
+        // the sound-hole rosette drawn around the rune (gfx-acoustic): circles at r0 and r0 + 2.5, a
+        // herringbone ring of 36 strokes every 10° alternately slanted ±25° from the radius between
+        // r0 + 3.3 and r0 + 7.2, circles at r0 + 8 and r0 + 10.5; the face's clip cuts what leaves it
+        const r0 = Math.hypot(cw, ch) / 2 + 3;
+        const ring = (r, op) => line(arcPath(cx, cy, r, 0, 359.9), op);
+        ring(r0, 1);
+        ring(r0 + 2.5, .6);
+        const ri = r0 + 3.3, ro = r0 + 7.2, tilt = Math.tan(25 * Math.PI / 180) * (ro - ri);
+        let d = '';
+        for (let k = 0; k < 36; k++) {
+          const a = k * 10 * Math.PI / 180, s = k % 2 ? -1 : 1;
+          const t = [-Math.sin(a), Math.cos(a)];
+          const x0 = cx + ri * Math.cos(a), y0 = cy + ri * Math.sin(a);
+          const x1 = cx + ro * Math.cos(a) + s * tilt * t[0], y1 = cy + ro * Math.sin(a) + s * tilt * t[1];
+          d += `${k ? 'L' : 'M'}${f1(x0)} ${f1(y0)}L${f1(x1)} ${f1(y1)}`;
+        }
+        line(d + 'Z', .8);
+        ring(r0 + 8, .6);
+        ring(r0 + 10.5, 1);
+        break;
+      }
+      case 'sputter': {
+        // a square wave each side of the rune, gating out towards it: each pulse narrower and lower
+        // (widths 6 : 4.5 : 3 : 2, heights 100 / 75 / 50 / 30 %), the last two fading (60 / 35 %);
+        // flat tops at ±7 (≤ 0.3 of the cartouche: inside the rune band), 1.5-unit fillets
+        const a0 = Math.min(7, .3 * ch), r = 1.5, wid = [6, 4.5, 3, 2], amp = [1, .75, .5, .3], ops = [1, 1, .6, .35];
+        const inner = cx - cw / 2 - 4, span = inner - 6, unit = span / wid.reduce((s, w) => s + w, 0);
+        [[1, 6], [-1, W - 6]].forEach(([s, x0]) => {
+          let x = x0;
+          wid.forEach((w, k) => {
+            const pw = w * unit, h = a0 * amp[k], rr = Math.min(r, pw / 6, h / 2), half = pw / 2;
+            const up = cy - h, dn = cy + h;
+            // up, across, down through the axis to the bottom, across, back up to the axis
+            let d = `M${f1(x)} ${f1(cy)}V${f1(up + rr)}Q${f1(x)} ${f1(up)} ${f1(x + s * rr)} ${f1(up)}` +
+                    `H${f1(x + s * (half - rr))}Q${f1(x + s * half)} ${f1(up)} ${f1(x + s * half)} ${f1(up + rr)}` +
+                    `V${f1(dn - rr)}Q${f1(x + s * half)} ${f1(dn)} ${f1(x + s * (half + rr))} ${f1(dn)}` +
+                    `H${f1(x + s * (pw - rr))}Q${f1(x + s * pw)} ${f1(dn)} ${f1(x + s * pw)} ${f1(dn - rr)}V${f1(cy)}`;
+            line(d, ops[k]);
+            x += s * pw;
+          });
+        });
+        break;
+      }
+      case 'grille': {
+        // a speaker grille each side of the rune: 4 pill slots (height 2.4, gap 2.0) stacked and centred
+        // on it, 14 / 11.5 / 9 / 6.5 long from the top, anchored at the outer margin; above the rune a
+        // tuning dial: a baseline from 8 to W − 8, 9 ticks alternating 2.5 / 1.4 tall, a 1.4-wide needle
+        // 6 tall at 62 % of the strip, between two ticks ("between stations")
+        const hh = 2.4, gap = 2.0, lens = [14, 11.5, 9, 6.5], top = cy - (4 * hh + 3 * gap) / 2;
+        lens.forEach((len, k) => {
+          const y = top + k * (hh + gap);
+          shape(pill(6, y, len, hh));
+          shape(pill(W - 6 - len, y, len, hh));
+        });
+        const yb = cy - ch / 2 - 6, x0 = 8, x1 = W - 8, step = (x1 - x0) / 8;
+        line(`M${f1(x0)} ${f1(yb)}H${f1(x1)}`);
+        for (let k = 0; k <= 8; k++) line(`M${f1(x0 + k * step)} ${f1(yb)}v${f1(k % 2 ? -1.4 : -2.5)}`, k % 2 ? .7 : 1);
+        const xn = x0 + .62 * (x1 - x0);
+        shape(`M${f1(xn - .7)} ${f1(yb + 1.5)}h1.4v-6h-1.4Z`);
+        break;
+      }
       case 'ticks':
         for (let y = 14; y < H - 40; y += 7) { const long = Math.round((y - 14) / 7) % 4 === 0; line(`M5 ${y}h${long ? 7 : 4}M${W - 5} ${y}h${long ? -7 : -4}`, long ? 1 : .6); }
         break;
@@ -1309,6 +1788,12 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     'module-70s': { panel: '#1d1f22', tex: 'gp-brush-lines', ink: '#e2e6ea', sub: '#7fa6d6', scale: '#b9c1c9', lamp: '#ff3b2a' },
     'modern-90s': { panel: '#141518', tex: 'gp-brush-lines', ink: '#dfe3e7', sub: '#8a94a3', scale: '#aab3bd', lamp: '#ff3b2a' },
     'tube-50s': { panel: '#6f767c', tex: 'gp-hammer', ink: '#0f1214', sub: '#23282c', scale: '#1b1f22', lamp: '#ffb03a' },
+    // the IR units (ir-fx): an amp-tank spring unit in tolex, a cream 70s tape echo, a brushed-steel
+    // analog echo, a charcoal 80s digital rack with its program LCD
+    'tolex-60s': { panel: '#211e1b', tex: 'gp-tolex', ink: '#efe6cf', sub: '#c9b98f', scale: '#d9cca8', lamp: '#ff5a3c' },
+    'cream-70s': { panel: '#d6ccb0', tex: 'gp-speckle', ink: '#1d1b17', sub: '#5a4e3a', scale: '#3a342a', lamp: '#ff5a3c' },
+    'steel-70s': { panel: '#9ba2a9', tex: 'gp-brush-lines', ink: '#121417', sub: '#2b3036', scale: '#1d2125', lamp: '#ff3b2a' },
+    'digital-80s': { panel: '#25282d', tex: 'gp-brush-lines', ink: '#e6e9ec', sub: '#7fb0d8', scale: '#b9c1c9', lamp: '#2ecc71', lcd: '#9fd0e8' },
   };
   // a unit golem has no archetype for: voiced by kind
   const RACK_GENERIC = {
@@ -1322,7 +1807,36 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     eq: { id: 'eq', short: 'EQ', kind: 'eq', sub: 'equalizer', look: 'module-70s', u: 1, controls: [
       { type: 'knob', label: 'low', cap: 'black' }, { type: 'knob', label: 'low mid', cap: 'black' }, { type: 'knob', label: 'high mid', cap: 'black' },
       { type: 'knob', label: 'high', cap: 'black' }, { type: 'toggle', label: 'in', on: true }, { type: 'badge', bind: 'channel', label: 'ch' }] },
+    // IR units (ir-fx): a digital reverb rack with its program LCD, a generic echo with a program LED
+    reverb: { id: 'reverb', short: 'REVERB', kind: 'reverb', sub: 'digital reverb', look: 'digital-80s', u: 1, controls: [
+      { type: 'program', style: 'lcd', label: 'program', default: 'Hall 1' }, { type: 'knob', label: 'decay', cap: 'grey' },
+      { type: 'knob', label: 'pre-delay', cap: 'grey' }, { type: 'knob', label: 'mix', cap: 'grey' }, { type: 'leds', label: 'in' }] },
+    echo: { id: 'echo', short: 'ECHO', kind: 'echo', sub: 'studio echo', look: 'console-80s', u: 1, controls: [
+      { type: 'program', style: 'led', label: 'program', default: 'Echo 1' }, { type: 'knob', label: 'time', cap: 'black' },
+      { type: 'knob', label: 'repeats', cap: 'black' }, { type: 'knob', label: 'mix', cap: 'black' }, { type: 'knob', label: 'tone', cap: 'black' }] },
   };
+  // the kind of a unit golem has no archetype for, from its label
+  const rackKindOf = label => {
+    const l = String(label || '').toLowerCase();
+    return /reverb|spring|\bhall\b|\broom\b|\bplate\b|chamber|ambien/.test(l) ? 'reverb' : /echo|delay/.test(l) ? 'echo'
+      : /comp|limit|level(?:l)?er/.test(l) ? 'comp' : /\beq\b|equali/.test(l) ? 'eq' : 'preamp';
+  };
+  const rackArch = opts => opts.archetype || archetypeFor('outboard', opts.label || opts.title)
+    || RACK_GENERIC[opts.kind] || RACK_GENERIC[rackKindOf(opts.label || opts.title)] || RACK_GENERIC.preamp;
+  const rackGlyph = (kind, ir) => ir ? 'ir-fx' : { comp: 'comp-nam', eq: 'eq', reverb: 'reverb', echo: 'delay-tape' }[kind] || 'preamp-nam';
+  // an IR's program, from its label: "… Spring Reverb 3" -> "Spring 3", "… delay 7" -> "Delay 7", "… Hall 3"
+  const PROGRAM_WORD = 'spring(?:\\s*reverb)?|reverb|hall|room|plate|chamber|ambience|ambiance|echo|delay|tape|repeat|mode|program|prog|preset|patch|bank|setting|head|tank';
+  function programOf(label) {
+    const l = String(label || '').replace(/\.(wav|aiff?|flac)$/i, '').trim();
+    const title = w => w.toLowerCase().replace(/^spring\s*reverb$/, 'spring').replace(/^program$/, 'prog').replace(/^./, x => x.toUpperCase());
+    let m = new RegExp(`(?:^|[\\s\\-–_/(])(${PROGRAM_WORD})\\s*[#.]?\\s*(\\d{1,3}[a-z]?)\\s*\\)?$`, 'i').exec(l);
+    if (m) return `${title(m[1])} ${m[2].toUpperCase()}`;
+    m = /(?:^|[\s\-–_/(])(hall|room|plate|chamber|spring|ambience)\s*\)?$/i.exec(l);
+    if (m) return title(m[1]);
+    m = /\s[-–_]\s*(\d{1,2})\s*$/.exec(l);
+    return m ? `Prog ${m[1]}` : null;
+  }
+  const programNum = p => { const m = /(\d+)[a-z]?\s*$/i.exec(String(p || '')); return m ? +m[1] : null; };
   const RACK_U = 56;
 
   // the setting a capture was taken at, from its label: "1073MP - 60 dB Hard - B", "1176 L", "Bus comp 4:1"
@@ -1335,6 +1849,7 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     const c = /(?:^|[\s\-–_/(])(?:ch(?:annel)?\s*)?([A-D]|L|R)\s*\)?\s*$/i.exec(l.trim()); if (c) s.channel = c[1].toUpperCase();
     if (/\blimit\b/i.test(l)) s.limit = true;
     const t = /\btime\s*(\d)\b/i.exec(l); if (t) s.time = +t[1];
+    const p = programOf(l); if (p) s.program = p;
     return s;
   }
 
@@ -1348,11 +1863,11 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
   <path d="M${cx - r * .28} ${cy + r * .45}L${cx} ${cy - r * 1.05}L${cx + r * .28} ${cy + r * .45}Z" fill="#141210"/><path d="M${cx} ${cy - r * .15}V${cy - r * .95}" stroke="#f3ead2" stroke-width="1.1"/></g>${lbl}</g>`;
     }
     if (cap === 'alu') return knobAlu(cx, cy, r, { min: 0, max: 1, default: frac }, '', L.ink).replace('</g>', '') + lbl + '</g>';
-    const fill = { red: '#a3201a', blue: '#2f5f9e', grey: '#9aa3ad', black: '#17191b' }[cap] || '#17191b';
+    const fill = { red: '#a3201a', blue: '#2f5f9e', grey: '#9aa3ad', black: '#17191b', cream: '#e6dcc0' }[cap] || '#17191b';
     return `<g class="gp-knob"><circle cx="${cx}" cy="${cy + 1.4}" r="${r}" fill="#000" opacity=".45"/>
   <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-knob)"/><circle cx="${cx}" cy="${cy}" r="${r * .72}" fill="${fill}"/>
   <circle cx="${cx}" cy="${cy}" r="${r * .72}" fill="url(#gp-sheen)" opacity=".5"/>
-  <path d="M${cx} ${cy}L${px.toFixed(2)} ${py.toFixed(2)}" stroke="${cap === 'grey' ? '#15181b' : '#f2f4f6'}" stroke-width="${r > 16 ? 2.2 : 1.5}" stroke-linecap="round"/>${lbl}</g>`;
+  <path d="M${cx} ${cy}L${px.toFixed(2)} ${py.toFixed(2)}" stroke="${cap === 'grey' || cap === 'cream' ? '#15181b' : '#f2f4f6'}" stroke-width="${r > 16 ? 2.2 : 1.5}" stroke-linecap="round"/>${lbl}</g>`;
   }
 
   function rackControl(c, cx, cy, h, set, L, on, cw) {
@@ -1410,25 +1925,117 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
   <text x="${cx}" y="${cy + 3.6}" text-anchor="middle" font-family="${FONT.nam}" font-size="13" font-weight="800" fill="#eef0f2">${esc(v)}</text>
   <text x="${cx}" y="${cy + 19}" text-anchor="middle" font-family="${FONT.nam}" font-size="7" font-weight="700" letter-spacing=".9" fill="${L.ink}">${esc(c.label.toUpperCase())}</text></g>`;
       }
+      case 'program': {
+        // an IR's program: a lit LCD, an LED readout, or a stepped selector (opts.program, or the label's)
+        const prog = String((v != null ? v : set.program != null ? set.program : c.default) || '--');
+        const lbl = (t, y) => `<text x="${cx}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${FONT.nam}" font-size="7.4" font-weight="700" letter-spacing=".9" fill="${L.ink}">${esc(t)}</text>`;
+        if (c.style === 'selector') {
+          const n = Math.max(2, Math.min(12, c.count || 6)), num = programNum(prog), k = Math.max(0, Math.min(n - 1, (num || 1) - 1));
+          const r = Math.min(15, h * .22), step = 1 / (n - 1), sweep = 120;
+          const marks = Array.from({ length: n }, (_, i) => {
+            const a = -sweep + 2 * sweep * i * step, [tx, ty] = polar(cx, cy, r + (n <= 6 ? 9 : 6), a), sel = i === k;
+            if (n <= 6 || sel) return `<text x="${tx.toFixed(1)}" y="${(ty + 2.6).toFixed(1)}" text-anchor="middle" font-family="${FONT.gfx}" font-size="${r > 12 ? 7.6 : 6.4}" font-weight="700" fill="${sel ? L.ink : L.scale}" opacity="${sel ? 1 : .7}">${i + 1}</text>`;
+            const [a1, b1] = polar(cx, cy, r + 3, a), [a2, b2] = polar(cx, cy, r + 7, a);
+            return `<path d="M${a1.toFixed(1)} ${b1.toFixed(1)}L${a2.toFixed(1)} ${b2.toFixed(1)}" stroke="${L.scale}" stroke-opacity=".7" stroke-width="1.1"/>`;
+          }).join('');
+          const [lx, ly] = polar(cx, cy, r + (n <= 6 ? 16 : 13), -sweep + 2 * sweep * k * step);
+          const led = `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="1.9" fill="${on ? L.lamp : mix(L.lamp, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>`;
+          return `<g class="gp-rack-program" data-program="${esc(prog)}">${marks}${led}${rackKnob(cx, cy, r, k * step, c.cap || 'black', '', L, sweep)}${lbl(prog.toUpperCase().slice(0, 12), cy + r + 15)}</g>`;
+        }
+        const led = c.style === 'led', w = Math.min(led ? 92 : 100, (cw || 110) - 8), dh = Math.min(22, h * .4), x = cx - w / 2, y = cy - dh / 2 - 3;
+        const txt = prog.toUpperCase().slice(0, 12), fs = Math.min(dh * .68, (w - 10) / (Math.max(4, txt.length) * .62));
+        const tint = c.tint || L.lcd || '#b4d86a';
+        const screen = led ? '#1c0705' : on ? tint : mix(tint, '#111', .82);
+        const ink = led ? (on ? '#ff4b33' : '#4a1a14') : on ? '#11180d' : mix(tint, '#111', .62);
+        const ty = (y + dh / 2 + fs * .36).toFixed(1);
+        return `<g class="gp-rack-program" data-program="${esc(prog)}"><rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${dh + 6}" rx="3" fill="#0b0c0e"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${dh}" rx="1.6" fill="${screen}"/>${!led && on ? `<rect x="${x}" y="${y}" width="${w}" height="${dh}" rx="1.6" fill="#fff" opacity=".12"/>` : ''}
+  <text x="${cx}" y="${ty}" text-anchor="middle" font-family="${FONT.lcd}" font-size="${fs.toFixed(1)}" font-weight="700" letter-spacing=".5" fill="${ink}"${led && on ? ' filter="url(#gp-glow-soft)"' : ''}>${esc(txt)}</text>${led && on ? `<text x="${cx}" y="${ty}" text-anchor="middle" font-family="${FONT.lcd}" font-size="${fs.toFixed(1)}" font-weight="700" letter-spacing=".5" fill="#ffb3a6">${esc(txt)}</text>` : ''}
+  <rect x="${x}" y="${y}" width="${w}" height="${dh}" rx="1.6" fill="url(#gp-glass-glare)"/>${lbl(String(c.label || 'program').toUpperCase(), y + dh + 12)}</g>`;
+      }
+      case 'spring': {
+        // the tank seen through a window: transducers at both ends, the coiled springs between
+        const w = Math.min(150, (cw || 150) - 8), wh = Math.min(46, h - 26), x = cx - w / 2, y = cy - wh / 2 - 3;
+        const n = wh > 30 ? 3 : 2, col = on ? '#d4dbe1' : '#70767d';
+        const springs = Array.from({ length: n }, (_, i) => { const yy = (y + wh * (i + 1) / (n + 1)).toFixed(1);
+          return `<path d="M${x + 13} ${yy}H${x + w - 13}" stroke="#000" stroke-opacity=".5" stroke-width="5.4"/>
+  <path d="M${x + 13} ${yy}H${x + w - 13}" stroke="${col}" stroke-width="4.6" stroke-dasharray="1 1.3"/>
+  <path d="M${x + 13} ${yy}H${x + w - 13}" stroke="${on ? '#ffffff' : '#9aa3ad'}" stroke-opacity=".35" stroke-width=".6"/>`; }).join('');
+        const tr = xx => `<rect x="${xx}" y="${y + 3}" width="9" height="${wh - 6}" rx="1.5" fill="#2e3236" stroke="#000" stroke-opacity=".5"/><rect x="${xx + 2}" y="${y + wh / 2 - 3}" width="5" height="6" rx="1" fill="${on ? '#b87333' : '#5a3b22'}"/>`;
+        return `<g class="gp-rack-spring"><rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${wh + 6}" rx="4" fill="#0b0c0e"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="#181a1d"/>${on ? `<rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="${L.lamp}" opacity=".07"/>` : ''}
+  ${springs}${tr(x + 2)}${tr(x + w - 11)}
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="url(#gp-glass-glare)"/>
+  <text x="${cx}" y="${y + wh + 12}" text-anchor="middle" font-family="${FONT.nam}" font-size="7.4" font-weight="700" letter-spacing=".9" fill="${L.ink}">${esc(String(c.label || 'tank').toUpperCase())}</text></g>`;
+      }
+      case 'tape': {
+        // the tape window: two reels, the loop running past the heads
+        const w = Math.min(150, (cw || 150) - 8), wh = Math.min(70, h - 26), x = cx - w / 2, y = cy - wh / 2 - 3;
+        const r = Math.min(wh * .36, w * .17), ry = y + r + 4, hy = y + wh - 7;
+        const reel = (rx, rot) => `<g transform="rotate(${rot} ${rx.toFixed(1)} ${ry.toFixed(1)})"><circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${(r * .82).toFixed(1)}" fill="#3a281a"/>
+  <circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${r.toFixed(1)}" fill="none" stroke="#9aa3ad" stroke-width="1.2"/>
+  ${[0, 120, 240].map(a => { const [px, py] = polar(rx, ry, r * .52, a); return `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${(r * .2).toFixed(1)}" fill="#0f0d0b"/>`; }).join('')}
+  <circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${(r * .22).toFixed(1)}" fill="#c9d3dc"/></g>`;
+        const lx = x + r + 6, rx2 = x + w - r - 6, hx0 = cx - w * .2, hx1 = cx + w * .2;
+        const heads = [0, 1, 2, 3].map(i => `<rect x="${(hx0 + (hx1 - hx0) * i / 3 - 3).toFixed(1)}" y="${hy - 1}" width="6" height="6" rx="1" fill="${i ? '#aab3bd' : '#6f767c'}"/>`).join('');
+        return `<g class="gp-rack-tape"><rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${wh + 6}" rx="4" fill="#0b0c0e"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="#1a1714"/>
+  <path d="M${lx.toFixed(1)} ${(ry + r * .82).toFixed(1)}L${hx0 - 6} ${hy - 1}H${hx1 + 6}L${rx2.toFixed(1)} ${(ry + r * .82).toFixed(1)}" fill="none" stroke="#5a3b22" stroke-width="1.6"/>
+  ${reel(lx, on ? 25 : 0)}${reel(rx2, on ? 70 : 0)}${heads}<circle cx="${hx1 + 9}" cy="${hy + 2}" r="2.4" fill="#26282b" stroke="#6f767c" stroke-width=".6"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="url(#gp-glass-glare)"/>
+  <text x="${cx}" y="${y + wh + 12}" text-anchor="middle" font-family="${FONT.nam}" font-size="7.4" font-weight="700" letter-spacing=".9" fill="${L.ink}">${esc(String(c.label || 'tape').toUpperCase())}</text></g>`;
+      }
+      case 'bbd': {
+        // the bucket brigade: a chain of cells, each passing a fainter copy on, under the clock
+        const w = Math.min(112, (cw || 120) - 8), wh = Math.min(28, h - 28), x = cx - w / 2, y = cy - wh / 2 - 3, n = 10;
+        const cw2 = (w - 12) / n, col = on ? '#ffb03a' : '#5a4a3a';
+        const cells = Array.from({ length: n }, (_, i) => `<rect x="${(x + 6 + i * cw2 + 1).toFixed(1)}" y="${(y + wh * .45).toFixed(1)}" width="${(cw2 - 2).toFixed(1)}" height="${(wh * .4).toFixed(1)}" rx="1" fill="${col}" opacity="${(1 - i * .075).toFixed(2)}"${on && i < 3 ? ' filter="url(#gp-glow-soft)"' : ''}/>`).join('');
+        let clk = `M${x + 6} ${(y + wh * .32).toFixed(1)}`;
+        for (let i = 0; i < n; i++) clk += `h${(cw2 / 2).toFixed(1)}v${(-wh * .18).toFixed(1)}h${(cw2 / 2).toFixed(1)}v${(wh * .18).toFixed(1)}`;
+        return `<g class="gp-rack-bbd"><rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${wh + 6}" rx="4" fill="#0b0c0e"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="#15171a"/>
+  <path d="${clk}" fill="none" stroke="#7fa6d6" stroke-opacity="${on ? .8 : .35}" stroke-width=".9"/>${cells}
+  <rect x="${x}" y="${y}" width="${w}" height="${wh}" rx="2.5" fill="url(#gp-glass-glare)"/>
+  <text x="${cx}" y="${y + wh + 12}" text-anchor="middle" font-family="${FONT.nam}" font-size="7.4" font-weight="700" letter-spacing=".9" fill="${L.ink}">${esc(String(c.label || 'bbd').toUpperCase())}</text></g>`;
+      }
       default: return '';
     }
   }
-  const RACK_W = { stepped: 78, knob: 52, toggle: 40, buttons: 44, vu: 150, leds: 34, badge: 38 };
+  // IR format: the controls an IR cannot turn are drawn fixed (greyed); the capture's own setting stays
+  const FIXABLE = new Set(['knob', 'stepped', 'toggle', 'buttons']);
+  const rackFixed = (c, svg, ir) => ir && !c.bind && FIXABLE.has(c.type) ? `<g class="gp-rack-fixed" opacity=".42">${svg}</g>` : svg;
+  // an IR's program display, when the unit has none of its own: an LED readout
+  const irControls = (arch, ir) => {
+    const list = (arch.controls || []).slice();
+    if (ir && !list.some(c => c.type === 'program')) list.unshift({ type: 'program', style: 'led', label: 'program' });
+    return list;
+  };
+  // the engraved IR mark: a recessed plate, the letters cut through to the panel's own light
+  const irBadge = (x, y, L) => { const light = luma(L.panel) > .45;
+    return `<g class="gp-ir-badge"><rect x="${x - 11}" y="${y - 6}" width="22" height="12" rx="2.5" fill="${mix(L.panel, '#000', light ? .74 : .45)}" stroke="#fff" stroke-opacity=".16"/>
+  <rect x="${x - 11.5}" y="${y - 6.5}" width="22" height="12" rx="2.5" fill="none" stroke="#000" stroke-opacity=".55"/>
+  <text x="${x}" y="${y + 3.4}" text-anchor="middle" font-family="${FONT.nam}" font-size="9.4" font-weight="800" letter-spacing="1.4" fill="${light ? mix(L.panel, '#fff', .3) : mix(L.ink, L.panel, .1)}">IR</text></g>`; };
+  const RACK_W = { stepped: 78, knob: 52, toggle: 40, buttons: 44, vu: 150, leds: 34, badge: 38, program: 108, spring: 156, tape: 156, bbd: 120 };
   // ratio buttons: a column when it fits the unit's height, else a row
   const buttonsRow = (c, h) => !!c.row || (c.values || []).length * 14 > h - 26;
   const rackWidth = (c, small, h) => c.type === 'buttons' && buttonsRow(c, h) ? (c.values || []).length * 21 + 6
+    : c.type === 'program' && c.style === 'selector' ? 76
     : (c.size === 'big' ? 1.35 : 1) * (RACK_W[c.type] || 50) * (small && c.type === 'vu' ? .55 : 1);
 
   // a NAM capture of outboard gear, as a 19" rack unit. opts: archetype (an outboard archetype, or found
-  // from opts.label / opts.title), kind ('preamp' | 'comp' | 'eq', for the generic unit), title, u,
-  // on, setting (or read from opts.label: gain, hard, channel, ratio), width
+  // from opts.label / opts.title), kind ('preamp' | 'comp' | 'eq' | 'reverb' | 'echo', for the generic
+  // unit; else guessed from the label), title, u, on, setting (or read from opts.label: gain, hard,
+  // channel, ratio, program), width. format: 'ir' draws the unit as an IR (golem's ir-fx: a captured
+  // impulse response, played whole): an engraved IR mark, the controls it cannot turn greyed, and its
+  // program (opts.program, or the label's "Spring 3" / "Delay 7") on the unit's program display, an
+  // LED readout added when the unit has none
   function namRack(opts) {
     opts = opts || {};
     const on = opts.on !== false;
-    const arch = opts.archetype || archetypeFor('outboard', opts.label || opts.title) || RACK_GENERIC[opts.kind] || RACK_GENERIC.preamp;
+    const arch = rackArch(opts), ir = opts.format === 'ir';
     const L = RACK_LOOK[arch.look] || RACK_LOOK['console-60s'];
-    const voice = NAM_VOICE[arch.kind] || NAM_VOICE.preamp;
-    const set = Object.assign({}, outboardSetting(opts.label), opts.setting || {});
+    const voice = NAM_VOICE[arch.kind] || (arch.kind ? { label: arch.kind } : NAM_VOICE.preamp);
+    const set = Object.assign({}, outboardSetting(opts.label), opts.setting || {}, opts.program != null ? { program: opts.program } : {});
     const u = Math.max(1, Math.min(4, opts.u || arch.u || 1));
     const W = 600, H = u * RACK_U - 2, EAR = 26, title = opts.title || arch.short || arch.name || 'outboard';
     const holes = (u === 1 ? [H / 2] : [RACK_U * .27, H - RACK_U * .27]).flatMap(y => [[EAR / 2, y], [W - EAR / 2, y]])
@@ -1438,20 +2045,23 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
     const tsize = small ? 17 : Math.min(26, 13 + u * 4);
     const name = `<text x="${tx}" y="${small ? H / 2 + 2 : H * .4}" font-family="${FONT.nam}" font-size="${tsize}" font-weight="800" letter-spacing="1.6" fill="${L.ink}">${esc(String(title).toUpperCase().slice(0, 12))}</text>
   <text x="${tx}" y="${small ? H / 2 + 14 : H * .4 + 15}" font-family="${FONT.gfx}" font-size="8" font-weight="600" letter-spacing="1.6" fill="${L.sub}">${esc(String(arch.sub || voice.label).toUpperCase())}</text>
-  ${small ? '' : `<text x="${tx}" y="${H * .4 + 28}" font-family="${FONT.nam}" font-size="7" font-weight="700" letter-spacing="1.4" fill="${L.sub}" opacity=".8">NAM · ${esc(voice.label)}</text>`}`;
+  ${small ? '' : `<text x="${tx}" y="${H * .4 + 28}" font-family="${FONT.nam}" font-size="7" font-weight="700" letter-spacing="1.4" fill="${L.sub}" opacity=".8">${ir ? 'IMPULSE RESPONSE' : `NAM · ${esc(voice.label)}`}</text>`}`;
     // the controls, spread between the name block and the lamp
     const x0 = EAR + (small ? 128 : 150), x1 = W - EAR - 40;
-    const ctls = (arch.controls || []).filter(c => c.type !== 'badge' || (c.bind && set[c.bind] != null));
+    const ctls = irControls(arch, ir).filter(c => c.type !== 'badge' || (c.bind && set[c.bind] != null));
+    // an IR makes room for its program by dropping the fixed knobs from the right
+    for (let i = ctls.length - 1; ir && i >= 0 && ctls.reduce((a, c) => a + rackWidth(c, small, H), 0) > x1 - x0; i--)
+      if (!ctls[i].bind && FIXABLE.has(ctls[i].type)) ctls.splice(i, 1);
     const widths = ctls.map(c => rackWidth(c, small, H));
     const total = widths.reduce((a, b) => a + b, 0), gap = Math.max(0, (x1 - x0 - total) / Math.max(1, ctls.length));
     const scale = total > x1 - x0 ? (x1 - x0) / total : 1;
     let cx = x0 + gap / 2;
     const cy = small ? H / 2 - 3 : H / 2 - 4;
-    const body = ctls.map((c, i) => { const w = widths[i] * scale, x = cx + w / 2; cx += w + gap; return rackControl(c, x, cy, H, set, L, on, w + gap); }).join('');
+    const body = ctls.map((c, i) => { const w = widths[i] * scale, x = cx + w / 2; cx += w + gap; return rackFixed(c, rackControl(c, x, cy, H, set, L, on, w + gap), ir); }).join('');
     const lamp = `<circle cx="${W - EAR - 18}" cy="${H / 2}" r="6.4" fill="#26282b"/>
   <circle cx="${W - EAR - 18}" cy="${H / 2}" r="4.6" fill="${on ? L.lamp : mix(L.lamp, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
   <circle cx="${W - EAR - 18}" cy="${H / 2}" r="4.6" fill="url(#gp-jewel)"/>`;
-    return `<svg class="gp-rack gp-nam-rack${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${H + 10}" width="${opts.width || W + 8}" role="img" aria-label="NAM outboard — ${esc(title)}" data-archetype="${esc(arch.id || '')}" data-u="${u}">
+    return `<svg class="gp-rack gp-nam-rack${on ? ' is-on' : ''}" viewBox="-4 -4 ${W + 8} ${H + 10}" width="${opts.width || W + 8}" role="img" aria-label="${ir ? 'IR' : 'NAM'} outboard — ${esc(title)}" data-archetype="${esc(arch.id || '')}" data-u="${u}"${ir ? ' data-format="ir"' : ''}>
 <g filter="url(#gp-shadow-small)">
   <rect x="0" y="0" width="${W}" height="${H}" rx="3" fill="${L.panel}"/>
   <rect x="0" y="0" width="${W}" height="${H}" rx="3" fill="url(#${L.tex})" opacity="${L.tex === 'gp-brush-lines' ? .55 : .35}"/>
@@ -1459,26 +2069,29 @@ ${knobAlu(32, 140, 9, { min: 0, max: 1, default: .5 }, 'input')}${knobAlu(W - 32
   <path d="M${EAR} 2V${H - 2}M${W - EAR} 2V${H - 2}" stroke="#000" stroke-opacity=".35"/>
 </g>
 ${holes}${name}${body}${lamp}
-${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'preamp-nam', W - EAR - 18, small ? H / 2 - 16 : H / 2 - 20, 11, L.sub, 2)}
+${glyphAt(rackGlyph(arch.kind, ir), W - EAR - 18, small ? H / 2 - 16 : H / 2 - 20, 11, L.sub, 2)}${ir ? irBadge(W - EAR - 18, small ? H / 2 + 16 : H / 2 + 20, L) : ''}
 </svg>`;
   }
 
   // the same outboard unit at the pedal footprint (Designer, pedal mode): a 500-series-style vertical
-  // module, its controls in a narrow column. Same opts as namRack; the rack stays in the Library.
+  // module, its controls in a narrow column. Same opts as namRack (format 'ir' too: the program display
+  // comes first); the rack stays in the Library.
   function namModule(opts) {
     opts = opts || {};
     const on = opts.on !== false;
-    const arch = opts.archetype || archetypeFor('outboard', opts.label || opts.title) || RACK_GENERIC[opts.kind] || RACK_GENERIC.preamp;
+    const arch = rackArch(opts), ir = opts.format === 'ir';
     const L = RACK_LOOK[arch.look] || RACK_LOOK['console-60s'];
-    const voice = NAM_VOICE[arch.kind] || NAM_VOICE.preamp;
-    const set = Object.assign({}, outboardSetting(opts.label), opts.setting || {});
+    const voice = NAM_VOICE[arch.kind] || (arch.kind ? { label: arch.kind } : NAM_VOICE.preamp);
+    const set = Object.assign({}, outboardSetting(opts.label), opts.setting || {}, opts.program != null ? { program: opts.program } : {});
     const W = 112, H = 200, title = opts.title || arch.short || arch.name || 'outboard';
     const top = 42, bottom = H - 34;
     // rows: a wide control alone, small ones in pairs; bound controls first in priority
-    const ctls = (arch.controls || []).filter(c => c.type !== 'leds' && (c.type !== 'badge' || (c.bind && set[c.bind] != null)))
+    const ctls = irControls(arch, ir).filter(c => c.type !== 'leds' && (c.type !== 'badge' || (c.bind && set[c.bind] != null)))
       .map(c => c.type === 'buttons' && (c.values || []).length * 21 > W - 16 ? Object.assign({}, c, { type: 'stepped' }) : c);
-    const wide = c => c.type === 'stepped' || c.type === 'vu' || c.type === 'buttons' || c.size === 'big';
-    const rowH = r => r.wide ? (r.items[0].type === 'buttons' ? 34 : r.items[0].type === 'vu' ? 40 : 54) : 44;
+    const MOTIF = new Set(['spring', 'tape', 'bbd']);
+    const wide = c => c.type === 'stepped' || c.type === 'vu' || c.type === 'buttons' || c.type === 'program' || MOTIF.has(c.type) || c.size === 'big';
+    const rowH = r => { const t = r.items[0].type, sel = r.items[0].style === 'selector';
+      return !r.wide ? 44 : t === 'buttons' ? 34 : t === 'vu' || t === 'bbd' ? 40 : t === 'program' && !sel ? 36 : t === 'spring' ? 46 : t === 'tape' ? 58 : 54; };
     const layout = list => {
       const rows = [];
       list.forEach(c => {
@@ -1489,10 +2102,12 @@ ${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'pream
       return rows;
     };
     const height = rows => rows.reduce((a, r) => a + rowH(r), 0);
-    // the capture's own setting first, then the meter, then the rest, while the column has room;
-    // drawn in the unit's own order
+    // the program first, then the capture's own setting, then the meter or the unit's window, then the
+    // rest, while the column has room; drawn in the unit's own order
     const flat = ctls.map((c, i) => Object.assign({}, c, { size: undefined, _i: i }));
-    const prio = flat.filter(c => c.bind).concat(flat.filter(c => !c.bind && c.type === 'vu'), flat.filter(c => !c.bind && c.type !== 'vu'));
+    const show = c => c.type === 'vu' || MOTIF.has(c.type);
+    const prio = flat.filter(c => c.type === 'program').concat(flat.filter(c => c.bind && c.type !== 'program'),
+      flat.filter(c => !c.bind && show(c)), flat.filter(c => !c.bind && !show(c) && c.type !== 'program'));
     let chosen = [];
     prio.forEach(c => {
       const next = chosen.concat(c).sort((a, b) => a._i - b._i);
@@ -1505,13 +2120,13 @@ ${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'pream
     const body = rows.map(r => {
       const h = rowH(r), cy = y + h / 2 - 5;
       y += h + spare;
-      if (r.wide) return rackControl(r.items[0], W / 2, cy, h + 6, set, L, on, W - 12);
-      if (r.items.length === 1) return rackControl(r.items[0], W / 2, cy, h, set, L, on, W - 12);
-      return r.items.map((c, i) => rackControl(c, W * (i ? .73 : .27), cy, h, set, L, on, W / 2)).join('');
+      if (r.wide) return rackFixed(r.items[0], rackControl(r.items[0], W / 2, cy, h + 6, set, L, on, W - 12), ir);
+      if (r.items.length === 1) return rackFixed(r.items[0], rackControl(r.items[0], W / 2, cy, h, set, L, on, W - 12), ir);
+      return r.items.map((c, i) => rackFixed(c, rackControl(c, W * (i ? .73 : .27), cy, h, set, L, on, W / 2), ir)).join('');
     }).join('');
     const screws = [[W / 2, 7], [W / 2, H - 7]].map(([x, yy]) => `<rect x="${x - 7}" y="${yy - 3.4}" width="14" height="6.8" rx="3.4" fill="#0b0c0e"/><circle cx="${x}" cy="${yy}" r="2.5" fill="#9aa3ad"/><circle cx="${x - .5}" cy="${yy - .5}" r=".9" fill="#eef1f4"/>`).join('');
     const tsize = String(title).length > 7 ? 11 : 15;
-    return `<svg class="gp-pedal gp-nam-module${on ? ' is-on' : ''}" viewBox="-6 -4 ${W + 12} ${H + 16}" width="${opts.width || W + 12}" role="img" aria-label="NAM outboard — ${esc(title)}" data-archetype="${esc(arch.id || '')}">
+    return `<svg class="gp-pedal gp-nam-module${on ? ' is-on' : ''}" viewBox="-6 -4 ${W + 12} ${H + 16}" width="${opts.width || W + 12}" role="img" aria-label="${ir ? 'IR' : 'NAM'} outboard — ${esc(title)}" data-archetype="${esc(arch.id || '')}"${ir ? ' data-format="ir"' : ''}>
 <g filter="url(#gp-shadow)">
   <rect x="0" y="5" width="${W}" height="${H}" rx="3" fill="#0b0c0e"/>
   <rect x="0" y="0" width="${W}" height="${H}" rx="3" fill="${L.panel}"/>
@@ -1525,8 +2140,8 @@ ${body}
 <circle cx="${W / 2 - 18}" cy="${H - 18}" r="5" fill="#26282b"/>
 <circle cx="${W / 2 - 18}" cy="${H - 18}" r="3.6" fill="${on ? L.lamp : mix(L.lamp, '#000', .7)}"${on ? ' filter="url(#gp-glow-soft)"' : ''}/>
 <circle cx="${W / 2 - 18}" cy="${H - 18}" r="3.6" fill="url(#gp-jewel)"/>
-<text x="${W / 2 - 8}" y="${H - 15.5}" font-family="${FONT.nam}" font-size="6.4" font-weight="700" letter-spacing="1.2" fill="${L.sub}">NAM</text>
-${glyphAt(arch.kind === 'comp' ? 'comp-nam' : arch.kind === 'eq' ? 'eq' : 'preamp-nam', W / 2 + 26, H - 18, 10, L.sub, 2)}
+${ir ? irBadge(W / 2 + 3, H - 18, L) : `<text x="${W / 2 - 8}" y="${H - 15.5}" font-family="${FONT.nam}" font-size="6.4" font-weight="700" letter-spacing="1.2" fill="${L.sub}">NAM</text>`}
+${glyphAt(rackGlyph(arch.kind, ir), W / 2 + 26, H - 18, 10, L.sub, 2)}
 </svg>`;
   }
 

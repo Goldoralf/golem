@@ -1,0 +1,52 @@
+{
+ "id": "infinite-note",
+ "type": "sustainer",
+ "name": "Infinite note",
+ "desc": "Every partial of the note is held at 6 dB under its body, on its own frequency, for up to a minute",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Octave",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": -6,
+  "dry": 0,
+  "mode": "Sustain",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 800,
+  "mute_sens": 50,
+  "max_time": 60,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "A partial bank, not a loop: no pumping, no hiss raised, the partials drift as on the string. Follow with a reverb",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

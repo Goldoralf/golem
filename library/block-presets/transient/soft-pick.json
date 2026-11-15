@@ -1,0 +1,51 @@
+{
+ "id": "soft-pick",
+ "type": "transient",
+ "name": "Soft pick",
+ "desc": "Takes 9 dB off each pick attack and lets the note through untouched: a rounder, jazzier touch",
+ "inst": "guitar",
+ "genres": [
+  "jazz",
+  "folk",
+  "pop"
+ ],
+ "subgenres": [
+  "cool-jazz"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "attack": -9,
+  "sustain": 0,
+  "att_time": 20,
+  "sus_time": 300,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 2,
+  "att_freq": 1500,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Zero latency lets a short tick through at each pick; lookahead 2 ms removes it where latency is acceptable",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

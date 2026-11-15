@@ -1,0 +1,45 @@
+{
+ "id": "dying-battery",
+ "type": "fuzz",
+ "name": "Dying battery",
+ "desc": "Put EXP on voltage and sweep 9 → 3 V: from full fuzz to a broken, sputtering gate",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "noise-rock",
+  "experimental-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 30,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

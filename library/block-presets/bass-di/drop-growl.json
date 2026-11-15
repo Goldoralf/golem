@@ -1,0 +1,53 @@
+{
+ "id": "drop-growl",
+ "type": "bass-di",
+ "name": "Drop Growl",
+ "desc": "Drop-tuned growl: heavy grind with the hi-mid bark, clean low end held under 90 Hz",
+ "inst": "bass",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "metalcore",
+  "sludge-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "gain": 80,
+  "mix": 65,
+  "level": 0,
+  "bass": 0,
+  "lo_mid": -3,
+  "hi_mid": 6,
+  "treble": 0,
+  "model": "Modern",
+  "cab": "4×10",
+  "grunt": 0,
+  "attack": 6,
+  "dirt_level": 0,
+  "lo_mid_freq": 400,
+  "hi_mid_freq": 1200,
+  "bass_keep": 90,
+  "low_note": 41.2,
+  "comp": 0,
+  "comp_char": "FET",
+  "comp_path": "Dirt",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "Bass Keep is the guarantee that the fundamental of a drop-A string never thins in the blend",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

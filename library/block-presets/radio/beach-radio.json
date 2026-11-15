@@ -1,0 +1,54 @@
+{
+ "id": "beach-radio",
+ "type": "radio",
+ "name": "Beach radio",
+ "desc": "An AM station on a 9 V pocket set: crossover grit and small-speaker breakup",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "folk"
+ ],
+ "subgenres": [
+  "surf-rock",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "vintage",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "model": "Pocket Radio",
+  "drive": 25,
+  "noise": 50,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "AM",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 0,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "ringing-sustain",
+ "type": "acoustic-sim",
+ "name": "Ringing sustain",
+ "desc": "The measured concert body with the electric's full sustain kept, a larger room",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "post-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "model": "Concert",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 0,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 30,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Decay 0 is bit-exact pass-through of the strings' sustain: long notes ring as on the electric",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

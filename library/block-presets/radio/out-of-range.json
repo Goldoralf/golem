@@ -1,0 +1,52 @@
+{
+ "id": "out-of-range",
+ "type": "radio",
+ "name": "Out of range",
+ "desc": "Walkie at the edge of its range: FM threshold clicks in bursts at the bottom of each fade",
+ "inst": "voice",
+ "genres": [
+  "screen",
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "film-score"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "model": "Walkie-Talkie",
+  "drive": 0,
+  "noise": 80,
+  "distance": 0,
+  "tune": 0,
+  "squelch": 25,
+  "mic": "Model",
+  "channel": "Model",
+  "speaker": "Model",
+  "room": "Model",
+  "band": 0,
+  "resonance": 100,
+  "codec": 50,
+  "dropouts": 50,
+  "whistle": -80,
+  "squelch_tail": 100,
+  "roger": false,
+  "battery": 100,
+  "rattle": 0,
+  "mains": "50 Hz",
+  "level": 0,
+  "mix": 100,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-radio",
+ "golem_fx": true
+}

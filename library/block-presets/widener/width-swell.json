@@ -1,0 +1,42 @@
+{
+ "id": "width-swell",
+ "type": "widener",
+ "name": "Width swell",
+ "desc": "Stereo opening with the expression pedal, from mono to fully decorrelated",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic",
+  "experimental"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Velvet",
+  "amount": 0,
+  "width": 100,
+  "time": 25,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Map EXP to Amount 0 - 100 %: the fold stays the dry at every position, no zipper",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

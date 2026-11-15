@@ -1,0 +1,61 @@
+{
+ "id": "dirty-heads",
+ "type": "tape",
+ "name": "Dirty heads",
+ "desc": "Home reel with 4 µm of head spacing, meant for the expression pedal: a speed-dependent tone control",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "input": 6,
+  "wow": 0.1,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Home Reel",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 4,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Map EXP to spacing 0 - 10 µm: the highs fold away first, as dirt on a head does",
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

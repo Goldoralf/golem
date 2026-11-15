@@ -1,0 +1,40 @@
+{
+ "id": "gritty-core",
+ "type": "dist",
+ "name": "Gritty core",
+ "desc": "Germanium grit and a 9 V gain stage over a clean core, the sum phase-coherent by circuit",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Blend OD",
+  "gain": 50,
+  "tone_stack": 55,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The clean bass path stays at every gain: grit over a clean low end",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

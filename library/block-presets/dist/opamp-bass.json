@@ -1,0 +1,38 @@
+{
+ "id": "opamp-bass",
+ "type": "dist",
+ "name": "Op-amp bass drive",
+ "desc": "Op-amp distortion over a clean fundamental (below 120 Hz kept out of the clip)",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "stoner-rock",
+  "sludge-metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": true,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 60,
+  "tone_stack": 55,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 120
+ },
+ "notes": "bass_keep sends the low band through the filter and output stage only: grit on top, the low end clean",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

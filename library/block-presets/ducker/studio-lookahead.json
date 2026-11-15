@@ -1,0 +1,50 @@
+{
+ "id": "studio-lookahead",
+ "type": "ducker",
+ "name": "Clean deep duck, lookahead",
+ "desc": "Ducks 15 dB with a 5 ms fall that completes as the key's onset arrives: no tick on low sustained notes",
+ "inst": "any",
+ "genres": [
+  "pop",
+  "rock",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 15,
+  "attack": 5,
+  "hold": 150,
+  "release": 400,
+  "shape": "Wide",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "5 ms",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "5 ms of reported latency: a studio or setup choice, not for live monitoring through the block",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

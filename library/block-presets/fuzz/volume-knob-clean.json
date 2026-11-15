@@ -1,0 +1,49 @@
+{
+ "id": "volume-knob-clean",
+ "type": "fuzz",
+ "name": "Volume-knob clean",
+ "desc": "Full fuzz; roll the guitar volume (EXP) to 30 % for a bright, nearly clean tone at the same level",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "blues-rock",
+  "british-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 100,
+  "tone": 0,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Ge Pair",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Classic",
+  "mids": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "Measured: THD −7 dB at 100 %, −17 at 50 %, −23 at 30 % with the level within 2.5 dB; put EXP on guitar_vol",
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

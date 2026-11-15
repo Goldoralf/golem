@@ -1,0 +1,49 @@
+{
+ "id": "stage-acoustic",
+ "type": "acoustic-sim",
+ "name": "Stage acoustic",
+ "desc": "Piezo and mic blended with the lows cut: cuts through a loud band and resists feedback",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "pop-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 60,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 40,
+  "quack": 0,
+  "low_cut": 100,
+  "comp": 35,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "The piezo voice is F̂ through the force conversion plus a 2 kHz bell; low cut 100 Hz keeps the body boom out",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

@@ -1,0 +1,48 @@
+{
+ "id": "doom-wall",
+ "type": "fuzz",
+ "name": "Doom wall",
+ "desc": "Russian stack, sustain high, tone towards the bass, a little mids: dark and thick",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "doom-metal",
+  "stoner-metal",
+  "stoner-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "fuzz": 90,
+  "tone": -40,
+  "level": 0,
+  "guitar_vol": 100,
+  "model": "Si Four",
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "leakage": 100,
+  "voltage": 9,
+  "sag": 0,
+  "stack": "Russian",
+  "mids": 20,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-fuzz",
+ "golem_fx": true
+}

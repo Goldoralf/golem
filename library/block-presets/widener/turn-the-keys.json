@@ -1,0 +1,40 @@
+{
+ "id": "turn-the-keys",
+ "type": "widener",
+ "name": "Turn the keys",
+ "desc": "A stereo keyboard image rotated off-centre to the right, its spread kept",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "mode": "M/S",
+  "amount": 60,
+  "width": 100,
+  "time": 20,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 15,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "A true rotation of a stereo source; it moves the fold (stated), use Balance for a mono lane",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

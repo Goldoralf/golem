@@ -1,0 +1,52 @@
+{
+ "id": "halftime-breath",
+ "type": "ducker",
+ "name": "Half-time breathing",
+ "desc": "A gentle 6 dB dip every half note that snaps back early: the pad breathes with the groove",
+ "inst": "any",
+ "genres": [
+  "electronic",
+  "pop",
+  "rock"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "sync": "1/2",
+ "tags": [
+  "subtle",
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Pump",
+  "thresh": -40,
+  "depth": 6,
+  "attack": 10,
+  "hold": 0,
+  "release": 400,
+  "shape": "Wide",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/2",
+  "length": 90,
+  "tension": -30,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "Negative tension returns the gain early and lands softly on 0 dB",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

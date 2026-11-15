@@ -1,0 +1,62 @@
+{
+ "id": "sweep-exp",
+ "type": "polysynth",
+ "name": "Expression filter sweep",
+ "desc": "A resonant synth whose cut-off is swept from the expression pedal, heel dark to toe bright",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "space-music"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "engine": "Spectral",
+  "wave": "Saw",
+  "cutoff": 800,
+  "reso": 60,
+  "filt_env": 0,
+  "synth": 0,
+  "dry": -60,
+  "pw": 50,
+  "octave": 0,
+  "sub": 0,
+  "detune": 0,
+  "noise": 0,
+  "amp_mode": "Follow",
+  "attack": 2,
+  "decay": 400,
+  "sustain": 70,
+  "release": 200,
+  "compress": 40,
+  "type": "Low-pass",
+  "poles": "4",
+  "drive": 0,
+  "key_track": 0,
+  "fenv_att": 0,
+  "fenv_dec": 300,
+  "fenv_vel": 50,
+  "bank": "Dual",
+  "residue": 100,
+  "glide": 0,
+  "quantize": "Off",
+  "lowest": 70,
+  "thresh": -66,
+  "spread": 0,
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Put the expression pedal on cutoff; the 7-bit steps are smoothed (golem contract)",
+ "factory": true,
+ "golem_fx_seed": "gfx-polysynth",
+ "golem_fx": true
+}

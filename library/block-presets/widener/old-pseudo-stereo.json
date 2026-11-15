@@ -1,0 +1,42 @@
+{
+ "id": "old-pseudo-stereo",
+ "type": "widener",
+ "name": "Old pseudo-stereo",
+ "desc": "The complementary-comb pseudo-stereo of the fifties, exact in mono",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Comb",
+  "amount": 80,
+  "width": 100,
+  "time": 12,
+  "bass_keep": 120,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -2.1,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Lauridsen's comb: flat in bands but periodic, the classic phasey stereo of reissues",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

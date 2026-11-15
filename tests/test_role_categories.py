@@ -53,7 +53,9 @@ def test_le_tamis_fin_role_blocks_est_coherent_et_pousse():
     for role, blocks in rb.items():
         cats = set(fx["role_categories"][role])
         for t in blocks:
-            assert t in types and not types[t].get("quarantine"), (role, t)
+            # une quarantaine « golem-fx only » se lève là où golem-fx joue le bloc (catalogue v47 : transient, ducker…)
+            q = types[t].get("quarantine") if t in types else None
+            assert t in types and (not q or q.startswith("golem-fx only")), (role, t)
             assert types[t]["category"] in cats, (role, t, types[t]["category"])
     assert rigstatus.catalog()["role_blocks"]["drums"] == rb["drums"]
 

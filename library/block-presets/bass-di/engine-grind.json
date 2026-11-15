@@ -1,0 +1,53 @@
+{
+ "id": "engine-grind",
+ "type": "bass-di",
+ "name": "Engine Grind",
+ "desc": "Compressed grind blended with an uncompressed clean: an even dirt, the dynamics kept underneath",
+ "inst": "bass",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal",
+  "progressive-metal",
+  "alternative-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "gain": 60,
+  "mix": 50,
+  "level": 0,
+  "bass": 0,
+  "lo_mid": 0,
+  "hi_mid": 0,
+  "treble": 0,
+  "model": "Modern",
+  "cab": "8×10",
+  "grunt": 0,
+  "attack": 0,
+  "dirt_level": 0,
+  "lo_mid_freq": 500,
+  "hi_mid_freq": 1500,
+  "bass_keep": 0,
+  "low_note": 41.2,
+  "comp": 60,
+  "comp_char": "FET",
+  "comp_path": "Dirt",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "The compressor sits in the dirt only (the amp-head engine's way): the clean keeps every accent",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

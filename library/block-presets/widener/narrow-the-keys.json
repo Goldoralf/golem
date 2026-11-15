@@ -1,0 +1,41 @@
+{
+ "id": "narrow-the-keys",
+ "type": "widener",
+ "name": "Narrow the keys",
+ "desc": "A stereo keyboard brought in from the edges, its lows made mono",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "rock",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "mode": "M/S",
+  "amount": 60,
+  "width": 60,
+  "time": 20,
+  "bass_keep": 150,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": 0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "M/S width only; the mid is untouched",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

@@ -1,0 +1,41 @@
+{
+ "id": "opamp-only",
+ "type": "dist",
+ "name": "Op-amp only",
+ "desc": "Diodes lifted: the rail clipping and slew of the raw LM308",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "punk"
+ ],
+ "subgenres": [
+  "noise-rock",
+  "garage-punk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Op-Amp Dist",
+  "gain": 90,
+  "tone_stack": 50,
+  "level": -9,
+  "diodes": "None",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "No clipper: the op-amp's own rails and slew are the whole distortion, raw and loud",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

@@ -1,0 +1,40 @@
+{
+ "id": "hp-roar",
+ "type": "dist",
+ "name": "HP roar",
+ "desc": "MOSFET overdrive in HP mode at 70 %: brighter, looser, louder",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "garage-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "MOSFET OD",
+  "gain": 70,
+  "tone_stack": 50,
+  "level": -3,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": true,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "HP parallels 22 kΩ on the 33 kΩ output resistor: less loss, more top",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

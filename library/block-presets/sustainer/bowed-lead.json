@@ -1,0 +1,52 @@
+{
+ "id": "bowed-lead",
+ "type": "sustainer",
+ "name": "Bowed lead",
+ "desc": "Dry off: each note swells from silence on its fundamental, carried across hammer-ons and slides",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "classical"
+ ],
+ "subgenres": [
+  "post-rock",
+  "neoclassical-new-age"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Fundamental",
+  "delay": 0,
+  "rise": 400,
+  "bloom": 0,
+  "dry": -60,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 300,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "With the dry at −60 dB only the phase-locked partial is heard; Legato Carry keeps the bow across notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

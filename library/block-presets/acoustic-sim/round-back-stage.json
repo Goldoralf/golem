@@ -1,0 +1,50 @@
+{
+ "id": "round-back-stage",
+ "type": "acoustic-sim",
+ "name": "Round-back stage",
+ "desc": "A subdued round-back body with a strong piezo voice: the bright stage acoustic",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "subgenres": [
+  "soft-rock",
+  "pop-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "model": "Round-back",
+  "body": 50,
+  "top": 60,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 60,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Few low-Q modes and a short tail, as the round-back's subdued body resonance",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

@@ -1,0 +1,43 @@
+{
+ "id": "bowed-bass",
+ "type": "swell",
+ "name": "Bowed bass",
+ "desc": "Bass notes fade in like a bowed double bass, at any playing level",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "jazz"
+ ],
+ "subgenres": [
+  "post-rock",
+  "jazz-fusion"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": true,
+ "params": {
+  "rise": 180,
+  "sync": "Off",
+  "sens": 60,
+  "legato": 40,
+  "curve": "Square",
+  "depth": 100,
+  "dip": 100,
+  "strum": 60,
+  "decay": 0,
+  "reset": 30,
+  "release": 60,
+  "thresh": -66,
+  "source": "Main",
+  "lookahead": "Off",
+  "fire": false,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Pitch jumps are read above 75 Hz only (from the D string's first frets up); below, legato swells through the flux detector or not at all",
+ "factory": true,
+ "golem_fx_seed": "gfx-swell",
+ "golem_fx": true
+}

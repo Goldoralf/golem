@@ -1,0 +1,55 @@
+{
+ "id": "fuzz-wall-low",
+ "type": "bass-di",
+ "name": "Fuzz Wall Low",
+ "desc": "Full-gain grind with the treble pushed into the clipper: a synth-like fuzz wall over the clean",
+ "inst": "bass",
+ "genres": [
+  "metal",
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "stoner-metal",
+  "sludge-metal",
+  "industrial-electronic"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "gain": 100,
+  "mix": 80,
+  "level": 0,
+  "bass": 0,
+  "lo_mid": 0,
+  "hi_mid": 6,
+  "treble": 0,
+  "model": "Modern",
+  "cab": "4×10",
+  "grunt": 0,
+  "attack": 12,
+  "dirt_level": 0,
+  "lo_mid_freq": 500,
+  "hi_mid_freq": 2000,
+  "bass_keep": 0,
+  "low_note": 41.2,
+  "comp": 0,
+  "comp_char": "FET",
+  "comp_path": "Dirt",
+  "sag": 50,
+  "input": 0,
+  "cab_lows": true,
+  "bypass": false
+ },
+ "notes": "8× oversampling and the interstage low-pass keep the aliases about 100 dB under the note at full gain",
+ "factory": true,
+ "golem_fx_seed": "gfx-bassdi",
+ "golem_fx": true
+}

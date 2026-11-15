@@ -1,0 +1,62 @@
+{
+ "id": "melted-tape",
+ "type": "tape",
+ "name": "Melted tape",
+ "desc": "Cassette whose wow is meant for the expression pedal: 0.2 % at heel, toe to 4 % for melting pitch",
+ "inst": "guitar",
+ "genres": [
+  "electronic",
+  "rock"
+ ],
+ "subgenres": [
+  "ambient",
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "input": 6,
+  "wow": 0.2,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Cassette",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 60,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Map EXP to wow 0.2 - 4 %: the read head's centre rises at 20 ms/s, so the sweep sags in pitch like a slowing tape",
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

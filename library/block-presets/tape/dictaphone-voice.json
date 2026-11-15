@@ -1,0 +1,61 @@
+{
+ "id": "dictaphone-voice",
+ "type": "tape",
+ "name": "Dictaphone voice",
+ "desc": "Microcassette band (300 Hz - 5 kHz), automatic level pumping and motor noise on a voice",
+ "inst": "voice",
+ "genres": [
+  "rock",
+  "electronic",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "indie-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "extreme"
+ ],
+ "default": true,
+ "params": {
+  "input": 12,
+  "wow": 0.1,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Microcassette",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 6,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 7.3,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

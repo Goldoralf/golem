@@ -1,0 +1,53 @@
+{
+ "id": "twelfth-scream",
+ "type": "sustainer",
+ "name": "Twelfth scream",
+ "desc": "The octave and a fifth above the note screams in fast and loud once the note is held",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "harmonic": "Octave + Fifth",
+  "delay": 300,
+  "rise": 600,
+  "bloom": 3,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "The 3rd harmonic: what a loud amp tends to scream at on the wound strings",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

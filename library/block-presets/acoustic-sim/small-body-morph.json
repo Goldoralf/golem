@@ -1,0 +1,49 @@
+{
+ "id": "small-body-morph",
+ "type": "acoustic-sim",
+ "name": "Small-body morph",
+ "desc": "The body shrinks under the expression pedal: every mode glides up, no click",
+ "inst": "guitar",
+ "genres": [
+  "experimental",
+  "rock"
+ ],
+ "subgenres": [
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 75,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 140,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Put EXP on size 140 → 80 %: modes at f · 100 / size, coefficients ramped every 32 samples",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

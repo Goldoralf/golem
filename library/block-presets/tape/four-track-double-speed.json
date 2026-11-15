@@ -1,0 +1,60 @@
+{
+ "id": "four-track-double-speed",
+ "type": "tape",
+ "name": "Four-track double speed",
+ "desc": "Cassette at 3¾ ips through the compander, driven 10 dB: the portastudio's bounce",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "indie-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "input": 10,
+  "wow": 0.1,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Cassette",
+  "speed": "3¾ ips",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Compander",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

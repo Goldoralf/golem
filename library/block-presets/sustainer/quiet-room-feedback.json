@@ -1,0 +1,49 @@
+{
+ "id": "quiet-room-feedback",
+ "type": "sustainer",
+ "name": "Feedback at low volume",
+ "desc": "Amp-like natural feedback at bedroom or in-ear level, ahead of an amp model",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "default": false,
+ "params": {
+  "harmonic": "Natural Low",
+  "delay": 300,
+  "rise": 1200,
+  "bloom": 0,
+  "dry": 0,
+  "mode": "Feedback",
+  "trigger": "Auto",
+  "feed": false,
+  "distance": 1.5,
+  "drift": 0,
+  "chord": "Strongest",
+  "carry": true,
+  "release": 150,
+  "mute_sens": 50,
+  "max_time": 15,
+  "duck": 0,
+  "color": 50,
+  "tone": 0,
+  "lowest": 70,
+  "thresh": -66,
+  "source": "Main",
+  "bypass": false,
+  "trails": true
+ },
+ "notes": "Natural Low stops at the 4th harmonic, as the classic feedback pedals do",
+ "factory": true,
+ "golem_fx_seed": "gfx-sustainer",
+ "golem_fx": true
+}

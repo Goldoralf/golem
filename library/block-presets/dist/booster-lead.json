@@ -1,0 +1,37 @@
+{
+ "id": "booster-lead",
+ "type": "dist",
+ "name": "Booster lead",
+ "desc": "The booster soft-clipping ahead of the diodes: a singing, sustaining lead",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [],
+ "default": false,
+ "params": {
+  "circuit": "Booster Dist",
+  "gain": 85,
+  "tone_stack": 45,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0
+ },
+ "notes": "The common-emitter booster clips softly ahead of the op-amp: sustain without fizz",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

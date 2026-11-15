@@ -1,0 +1,50 @@
+{
+ "id": "tail-duck-reverb",
+ "type": "ducker",
+ "name": "Reverb tail out of the way",
+ "desc": "On a wet-only reverb branch: the wash sinks 10 dB under the playing and blooms when you stop",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 10,
+  "attack": 8,
+  "hold": 80,
+  "release": 600,
+  "shape": "Wide",
+  "hpf": 0,
+  "lpf": 22000,
+  "knee": 9,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "A slower return than the delay preset: the bloom rises over 600 ms instead of jumping back",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

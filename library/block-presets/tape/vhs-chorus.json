@@ -1,0 +1,62 @@
+{
+ "id": "vhs-chorus",
+ "type": "tape",
+ "name": "VHS chorus",
+ "desc": "VHS linear track half wet against the aligned dry: a centred warble chorus, widened by spread",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "electronic"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "ambient"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "input": 6,
+  "wow": 0.8,
+  "flutter": 0.15,
+  "wear": 0,
+  "mix": 50,
+  "model": "VHS",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 100,
+  "wow_rand": 0,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 60,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 2.6,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

@@ -1,0 +1,50 @@
+{
+ "id": "bass-click",
+ "type": "transient",
+ "name": "Bass click",
+ "desc": "The bass's finger or pick click up 8 dB on the highs; the fundamental is not modulated",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "rnb",
+  "metal"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": true,
+ "params": {
+  "attack": 8,
+  "sustain": 0,
+  "att_time": 15,
+  "sus_time": 300,
+  "att_band": "Highs",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 1200,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "A full-band attack on a low E would reshape its first cycle; the shelf moves the boost to the click",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

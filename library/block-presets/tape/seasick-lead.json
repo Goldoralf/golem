@@ -1,0 +1,60 @@
+{
+ "id": "seasick-lead",
+ "type": "tape",
+ "name": "Seasick lead",
+ "desc": "Home reel with a strong, regular, machine-like wobble: periodic wow at 1.2 %",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "psychedelic-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "input": 6,
+  "wow": 1.2,
+  "flutter": 0.05,
+  "wear": 0,
+  "mix": 100,
+  "model": "Home Reel",
+  "speed": "Model",
+  "noise": true,
+  "formula": "Model",
+  "bias": 100,
+  "head_bump": 100,
+  "spacing": 0,
+  "azimuth": 0,
+  "alc": "Model",
+  "nr": "Off",
+  "wow_rate": 150,
+  "wow_rand": -60,
+  "snags": 0,
+  "dropouts": 0,
+  "drop_sync": "Off",
+  "crinkle": 0,
+  "crackle": 0,
+  "noise_mode": "Follow",
+  "hiss": 0,
+  "mech": 0,
+  "stop": false,
+  "stop_time": 600,
+  "spread": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "level": 0,
+  "bypass": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-tape",
+ "golem_fx": true
+}

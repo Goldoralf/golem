@@ -1,0 +1,50 @@
+{
+ "id": "single-note-lead",
+ "type": "acoustic-sim",
+ "name": "Single-note lead",
+ "desc": "Long electric notes decay like an acoustic's: the sustain that gives a sim away is gone",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "rock"
+ ],
+ "subgenres": [
+  "americana",
+  "folk-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "model": "Dreadnought",
+  "body": 50,
+  "top": 50,
+  "mic": 70,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 70,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 0,
+  "room": 15,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Where the decay stage acts fully: single lines and long notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

@@ -1,0 +1,51 @@
+{
+ "id": "funk-pop",
+ "type": "transient",
+ "name": "Funk pop",
+ "desc": "Sharper 16th strums: attacks up 10 dB, muted chops pulled down 8 dB, ringing chords left alone",
+ "inst": "guitar",
+ "genres": [
+  "rnb",
+  "pop"
+ ],
+ "subgenres": [
+  "funk",
+  "disco"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "attack": 10,
+  "sustain": -8,
+  "att_time": 8,
+  "sus_time": 250,
+  "att_band": "Full",
+  "ceil_mode": "Off",
+  "sens": 70,
+  "smooth": 0.5,
+  "att_freq": 1500,
+  "sc_hpf": 120,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "sus_time 250 ms: chops decay faster than the reference and are cut, sustained chords are not. sc_hpf 120 is safe down to a low B",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

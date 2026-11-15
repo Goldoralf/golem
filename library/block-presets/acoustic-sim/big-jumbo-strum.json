@@ -1,0 +1,50 @@
+{
+ "id": "big-jumbo-strum",
+ "type": "acoustic-sim",
+ "name": "Big jumbo strum",
+ "desc": "A jumbo body with more boom under strummed chords, compressed for a band mix",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "americana"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "model": "Jumbo",
+  "body": 60,
+  "top": 50,
+  "mic": 65,
+  "mix": 100,
+  "twelve": false,
+  "pickup": "Single Coil",
+  "pickup_pos": "Neck",
+  "size": 100,
+  "decay": 50,
+  "piezo": 0,
+  "quack": 0,
+  "low_cut": 20,
+  "comp": 30,
+  "room": 0,
+  "width": 40,
+  "twelve_level": 0,
+  "twelve_detune": 4,
+  "twelve_delay": 2.5,
+  "level": 0,
+  "bypass": false
+ },
+ "notes": "Body 60 % lifts the modal bank 2.4 dB: the deeper air and top modes of the larger box",
+ "factory": true,
+ "golem_fx_seed": "gfx-acoustic",
+ "golem_fx": true
+}

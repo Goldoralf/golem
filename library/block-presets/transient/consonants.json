@@ -1,0 +1,48 @@
+{
+ "id": "consonants",
+ "type": "transient",
+ "name": "Consonants",
+ "desc": "Clearer diction: the consonants' attacks up 5 dB on the highs",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "hip-hop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "attack": 5,
+  "sustain": 0,
+  "att_time": 10,
+  "sus_time": 300,
+  "att_band": "Highs",
+  "ceil_mode": "Off",
+  "sens": 50,
+  "smooth": 0.5,
+  "att_freq": 3000,
+  "sc_hpf": 0,
+  "sc_lpf": 22000,
+  "thresh": -66,
+  "source": "Main",
+  "link": 100,
+  "lookahead": "Off",
+  "ceiling": 0,
+  "mix": 100,
+  "level": 0,
+  "listen": false,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Pair it with a de-esser placed after",
+ "factory": true,
+ "golem_fx_seed": "gfx-transient",
+ "golem_fx": true
+}

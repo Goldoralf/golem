@@ -1,0 +1,51 @@
+{
+ "id": "spectral-vocal-space",
+ "type": "ducker",
+ "name": "Spectral vocal space",
+ "desc": "Ducks a keys or synth bed by 8 dB only in the half-octave bands where the voice is loudest, moment by moment",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "electronic",
+  "rnb"
+ ],
+ "gain": "clean",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Follow",
+  "thresh": -35,
+  "depth": 8,
+  "attack": 10,
+  "hold": 250,
+  "release": 600,
+  "shape": "Spectral",
+  "hpf": 100,
+  "lpf": 12000,
+  "knee": 6,
+  "hyst": -3,
+  "freq": 1000,
+  "width": 2,
+  "spread": 12,
+  "sync": "1/4",
+  "length": 75,
+  "tension": 0,
+  "offset": 0,
+  "sens": 50,
+  "stereo": "Both",
+  "lookahead": "Off",
+  "force": false,
+  "listen": false,
+  "bypass": false
+ },
+ "notes": "16 bells from 57 Hz to 10 kHz; spread 12 dB ducks the voice's formant regions and leaves the rest of the bed alone",
+ "factory": true,
+ "golem_fx_seed": "gfx-ducker",
+ "golem_fx": true
+}

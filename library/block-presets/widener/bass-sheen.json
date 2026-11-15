@@ -1,0 +1,42 @@
+{
+ "id": "bass-sheen",
+ "type": "widener",
+ "name": "Bass sheen",
+ "desc": "Bass with its lows mono and dry and only the top spread wide",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "pop",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "wide",
+  "tight"
+ ],
+ "default": true,
+ "params": {
+  "mode": "Allpass",
+  "amount": 50,
+  "width": 100,
+  "time": 20,
+  "bass_keep": 300,
+  "mono_law": "Exact",
+  "variant": 1,
+  "cents": 9,
+  "high_cut": 20000,
+  "transient": 0,
+  "balance": 0,
+  "rotate": 0,
+  "level": -1.0,
+  "listen": "Stereo",
+  "bypass": false
+ },
+ "notes": "Side-only crossover at 300 Hz: the fundamental never moves; Allpass keeps the attack unsmeared",
+ "factory": true,
+ "golem_fx_seed": "gfx-widener",
+ "golem_fx": true
+}

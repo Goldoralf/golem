@@ -103,10 +103,10 @@
   }
  ],
  "source": {
-  "by": "drumsynth (synthèse procédurale, ~/code/drumsynth)",
+  "by": "drumsynth v2 (drumsynth/v2.py, synthèse modale)",
   "kit": "lofi-000",
   "seed": 0,
   "licence": "own — synthesized, no third-party sample",
-  "date": "2026-10-13"
+  "date": "2026-11-15"
  }
 }

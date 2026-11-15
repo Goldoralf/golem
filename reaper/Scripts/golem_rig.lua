@@ -387,7 +387,9 @@ local function switch_param_of(tr, fx)
   local _, shown = reaper.TrackFX_GetFXName(tr, fx, ""); names[1] = shown
   local ok, orig = reaper.TrackFX_GetNamedConfigParm(tr, fx, "fx_name"); if ok then names[2] = orig end
   for _, nm in ipairs(names) do
-    if (nm or ""):lower():find("golem freeze", 1, true) then return "Freeze" end
+    local l = (nm or ""):lower()
+    -- le pied d'un bloc granular joué par gfx-grains TIENT le Freeze (golem-fx, 2026-11-15), comme GoleM Freeze
+    if l:find("golem freeze", 1, true) or l:find("golem fx grains", 1, true) then return "Freeze" end
   end
   return nil
 end

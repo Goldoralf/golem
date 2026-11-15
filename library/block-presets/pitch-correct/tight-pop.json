@@ -1,14 +1,55 @@
 {
- "name": "Tight pop",
+ "id": "tight-pop",
  "type": "pitch-correct",
+ "name": "Tight pop",
+ "desc": "Notes land fast on the key's scale, held notes stay human, vibrato kept",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rnb",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "tight"
+ ],
+ "default": false,
  "params": {
   "corr": 1.0,
-  "filter": 0.25,
-  "fastmode": false,
+  "filter": 0.04,
+  "transition": 15,
+  "vibrato": 100,
   "key": "C",
   "scale": "Major",
-  "offset": 0
- }
+  "fastmode": true,
+  "offset": 0,
+  "flex": 0,
+  "hysteresis": 23,
+  "formant_keep": true,
+  "register": "Mid",
+  "reference": 440,
+  "sens": 50,
+  "thresh": -50,
+  "m00": true,
+  "m01": true,
+  "m02": true,
+  "m03": true,
+  "m04": true,
+  "m05": true,
+  "m06": true,
+  "m07": true,
+  "m08": true,
+  "m09": true,
+  "m10": true,
+  "m11": true,
+  "bypass": false
+ },
+ "notes": "Two times: transition 15 ms for the landing, filter 40 ms on the held note (README §3.5 re-voicing of golem's Tight pop)",
+ "factory": true,
+ "golem_fx_seed": "gfx-correct",
+ "golem_fx": false
 }

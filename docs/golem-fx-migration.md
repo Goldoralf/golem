@@ -37,14 +37,14 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**46 of 68 effect blocks** are played by golem-fx; 11 are ready in golem-fx and not wired yet; 11 have no golem-fx counterpart yet.
+**51 of 68 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 11 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
-| Played by golem-fx, replacing an open-source plugin (27) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `limiter`, `deesser`, `octaver`, `vibrato`, `detune`, `guitar-drive` |
+| Played by golem-fx, replacing an open-source plugin (32) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `guitar-drive` |
 | Played by golem-fx, new blocks with no open-source original (19) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
 | … of which the engine-stall bench is still pending (6) | `flanger-js`, `golem-double`, `glitch`, `met`, `emet`, `shem` |
-| Ready in golem-fx, not wired yet (11) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `eq-graphic` (gfx-geq, today GxGraphicEQ), `granular` (gfx-grains, today ZamGrains), `pitch-correct` (gfx-correct, today x42-Autotune), `ringmod` (gfx-ringmod, today MDA RingMod), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `surge-treemonster` (gfx-ringmod, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
+| Ready in golem-fx, not wired yet (6) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
 | No golem-fx counterpart yet (11) | `chorus-js` (sstillwell/chorus_stereo), `phaser` (Calf Phaser), `pitch-spectral` (Spectral Shift), `delay-tape` (Calf Vintage Delay), `delay-tape-aw` (TapeDelay2 (airwindows)), `delay-echo` (GxEchoCat), `eq-para` (x42-eq - Parametric Equalize), `rezfilter` (MDA RezFilter), `surge-spring` (Surge XT Effects), `spectral-comp` (Spectral Compressor (Robbert), `freeze` (GoleM Freeze (GoleM)) |
 | Out of scope — Captures (the sound is the file) (6) | `boost`, `pedal-nam`, `preamp-nam`, `comp-nam`, `amp`, `amp-nam` |
 | Out of scope — Instruments (6) | `vital`, `pads`, `drumkit`, `organ`, `piano`, `ep` |
@@ -53,6 +53,20 @@ catalogue change).
 <!-- golem-fx-progress:end -->
 
 ## 4. The order for what is ready (2026-11-15)
+
+**Step 1 is wired (2026-11-15):**
+
+- `pitch-correct` → gfx-correct. Live (`fastmode`) is on by default; the knob that read Speed is Smoothing (lower
+  = tighter); Key and Scale are real settings of the plugin (eleven scales; the x42 mask learned them too) and
+  follow the song's key (`song_key`, virtual, on by default, never over Chromatic). Hard tune and Transparent are
+  re-voiced by hand, Tight pop by golem-fx. Stall bench: one 519 ms freeze in 32 switch-ons (none in a rerun of 20);
+  519 ms is the signature of a known bench artefact (golem-fx-reaper.md §3), to confirm on a quiet machine.
+- `ringmod` and `surge-treemonster` → gfx-ringmod (Carrier Free / Track written at insert). Bench clean.
+- `granular` → gfx-grains: Grain Position works; Freeze is a switch and the block's footswitch holds it
+  (`golem_rig.lua` `switch_param_of`); the lane turns stereo. Bench clean.
+- `eq-graphic` → gfx-geq: one block (the maintainer did not ask for three), ±15 dB; Layout (expert) gives the guitar
+  or bass seven-band set. Bench clean.
+
 
 1. `pitch-correct` (catalogue fixes: Live by default, Hard tune's filter, key and scale as real settings), `ringmod` and
    `surge-treemonster`, `granular`, `eq-graphic`.

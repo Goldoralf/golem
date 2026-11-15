@@ -1,8 +1,26 @@
 {
- "name": "Lo-fi radio",
+ "id": "lofi-radio",
  "type": "eq-graphic",
+ "name": "Lo-fi radio",
+ "desc": "Lows and highs falling away from a +3 dB 500 Hz – 1 kHz hump: a small transistor radio",
  "inst": "any",
- "factory": true,
+ "genres": [
+  "hip-hop",
+  "electronic",
+  "pop"
+ ],
+ "subgenres": [
+  "boom-bap",
+  "bedroom-pop"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -2,
+ "tags": [
+  "lo-fi",
+  "vintage"
+ ],
  "params": {
   "g1": -8,
   "g2": -6,
@@ -14,6 +32,32 @@
   "g8": -2,
   "g9": -8,
   "g10": -12,
-  "g11": -12
- }
+  "g11": -12,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "golem's preset kept as is; the top cut starts at 12 kHz here, a little lower and more audible than on GxGraphicEQ",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": false
 }

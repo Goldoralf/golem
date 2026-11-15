@@ -1,8 +1,20 @@
 {
- "name": "Hygiaphone",
+ "id": "hygiaphone",
  "type": "eq-graphic",
+ "name": "Hygiaphone",
+ "desc": "Everything below 250 Hz and above 8 kHz at -12 dB, a +4 dB bump at 1 – 2 kHz: a voice through a ticket-window grille",
  "inst": "any",
- "factory": true,
+ "genres": [
+  "experimental",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -3,
+ "tags": [
+  "lo-fi"
+ ],
  "params": {
   "g1": -12,
   "g2": -12,
@@ -14,6 +26,32 @@
   "g8": 0,
   "g9": -12,
   "g10": -12,
-  "g11": -12
- }
+  "g11": -12,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "golem's preset kept as is. The faders hold their values: -12 at 8 kHz is -12 there, not a gentle skirt",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": false
 }

@@ -1,7 +1,21 @@
 {
- "name": "Standard",
+ "id": "standard",
  "type": "eq-graphic",
- "factory": true,
+ "name": "Standard",
+ "desc": "Every fader at 0 dB: bit-transparent, the starting point to draw a curve from",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
  "params": {
   "g1": 0,
   "g2": 0,
@@ -13,8 +27,32 @@
   "g8": 0,
   "g9": 0,
   "g10": 0,
-  "g11": 0
+  "g11": 0,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
  },
- "default": true,
- "inst": "any"
+ "notes": "golem's Standard preset kept as is",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": false
 }

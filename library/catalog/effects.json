@@ -4447,8 +4447,8 @@
     {
      "id": "g1",
      "name": "G1",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4460,8 +4460,8 @@
     {
      "id": "g2",
      "name": "G2",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4473,8 +4473,8 @@
     {
      "id": "g3",
      "name": "G3",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4486,8 +4486,8 @@
     {
      "id": "g4",
      "name": "G4",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4499,8 +4499,8 @@
     {
      "id": "g5",
      "name": "G5",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4512,8 +4512,8 @@
     {
      "id": "g6",
      "name": "G6",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4525,8 +4525,8 @@
     {
      "id": "g7",
      "name": "G7",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4538,8 +4538,8 @@
     {
      "id": "g8",
      "name": "G8",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4551,8 +4551,8 @@
     {
      "id": "g9",
      "name": "G9",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4564,8 +4564,8 @@
     {
      "id": "g10",
      "name": "G10",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4577,8 +4577,8 @@
     {
      "id": "g11",
      "name": "G11",
-     "min": -12,
-     "max": 12,
+     "min": -15,
+     "max": 15,
      "default": 0,
      "unit": "dB",
      "map": {
@@ -4588,7 +4588,7 @@
      "label": "16k"
     }
    ],
-   "note": "GxGraphicEQ (guitarix) - 11 octave-spaced bands, G1=lows -> G11=highs (~30Hz-16kHz), native dB ports (-30/+20 clamped to +/-12). Chosen over LSP Graphic x16 Mono: LSP band-gain ports are LINEAR multipliers (no dB mapping mode in golem_rig -> knobs would read as meaningless ratios). MONO plugin.",
+   "note": "11 octave bands, G1 = lows to G11 = highs (30 Hz to 16 kHz), +/-15 dB (2026-11-15). Where golem-fx plays it (gfx-geq): Layout (expert) switches to a 7-band guitar or bass set, plus level, amount, cuts and auto gain. Elsewhere GxGraphicEQ (guitarix, mono), whose ports stop near +5 dB upstream: a bigger boost is clamped there.",
    "short": "GEQ",
    "color": "#8a94a3",
    "glyph": "≡"
@@ -5118,12 +5118,9 @@
     {
      "id": "freeze",
      "name": "Freeze",
-     "min": 0,
-     "max": 1,
-     "default": 0,
-     "map": {
-      "mode": "raw"
-     }
+     "type": "bool",
+     "default": false,
+     "note": "A switch (2026-11-15, gfx-grains): held by the block's footswitch where golem-fx plays it. A saved 0 / 1 reads as off / on."
     },
     {
      "id": "grains",
@@ -5146,7 +5143,7 @@
      }
     }
    ],
-   "note": "ZamGrains (ZamAudio LV2, deja installe) — granular freeze/glitch (drone/pad quand Freeze engage). Chantier 2 (algo OSS). Nom Reaper + params A VERIFIER sur le rig.",
+   "note": "Granular freeze and granular delay. Where golem-fx plays it (gfx-grains, stereo 2/2: it turns a mono lane stereo), the footswitch holds FREEZE instead of bypassing the block, and Grain Position works; expert: modes Cloud, Rhythm, Strum, Phrase, pitch, size, mix. Elsewhere ZamGrains, which is transparent at its defaults and has no Grain Position.",
    "short": "Freeze",
    "color": "#5ec8e0",
    "glyph": "❄"
@@ -5263,15 +5260,16 @@
       "mode": "raw"
      },
      "fmt": 2,
-     "label": "Speed",
-     "note": "constante de lissage zita-at1 : bas = correction lente/naturelle, haut = rapide"
+     "label": "Smoothing",
+     "note": "Smoothing time of the correction: LOWER = snaps faster (0.02 = robotic hard tune), higher = looser and more natural. (It was labelled Speed, which read backwards.)"
     },
     {
      "id": "fastmode",
      "name": "Fast Correction",
      "type": "bool",
-     "default": false,
-     "label": "Hard"
+     "default": true,
+     "label": "Live",
+     "note": "Live = low latency (about 9 ms on gfx-correct, against 26 to 37 ms off): on by default since 2026-11-15, a live singer must not hear themselves late. A setup setting, never a scene value."
     },
     {
      "id": "key",
@@ -5292,7 +5290,7 @@
      ],
      "default": "C",
      "label": "Key",
-     "note": "VIRTUEL : consommé par compile_rig (_expand_pitch_correct) -> masque m00-m11 ; jamais écrit au plugin"
+     "note": "Where gfx-correct plays the block (golem-fx), a real setting of the plugin. Elsewhere (x42) VIRTUAL: compile_rig (_expand_pitch_correct) turns Key + Scale into the note mask m00-m11. Follows the song's key when Song key is on."
     },
     {
      "id": "scale",
@@ -5300,11 +5298,26 @@
      "options": [
       "Chromatic",
       "Major",
-      "Minor"
+      "Minor",
+      "Harmonic Minor",
+      "Melodic Minor",
+      "Dorian",
+      "Phrygian",
+      "Lydian",
+      "Mixolydian",
+      "Major Pentatonic",
+      "Minor Pentatonic"
      ],
      "default": "Chromatic",
      "label": "Scale",
-     "note": "VIRTUEL : voir key"
+     "note": "See Key. The list only grows at the end (gfx-correct's order)."
+    },
+    {
+     "id": "song_key",
+     "type": "bool",
+     "default": true,
+     "label": "Song key",
+     "note": "VIRTUAL: consumed by compile_rig (_expand_pitch_correct), never written to the plugin. On + the patch has a key: Key and Scale follow the song (a major key sets Major, a minor key Minor; a mode of the right family stays). Never over Chromatic."
     },
     {
      "id": "offset",

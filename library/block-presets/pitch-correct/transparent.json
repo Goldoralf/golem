@@ -6,10 +6,13 @@
  "params": {
   "corr": 0.7,
   "filter": 0.06,
-  "fastmode": false,
+  "fastmode": true,
   "key": "C",
   "scale": "Chromatic",
-  "offset": 0
+  "offset": 0,
+  "transition": 40,
+  "vibrato": 100,
+  "flex": 40
  },
  "default": true
 }

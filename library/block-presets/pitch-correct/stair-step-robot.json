@@ -1,0 +1,67 @@
+{
+ "id": "stair-step-robot",
+ "type": "pitch-correct",
+ "name": "Stair-step robot",
+ "desc": "Instant steps between the scale's notes, vibrato flattened: the 2000s hard-tune sound",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "pop",
+  "electronic"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [
+  {
+   "artist": "Cher",
+   "song": "Believe",
+   "why": "the instant note steps that made hard tuning an effect",
+   "verified": false
+  },
+  {
+   "artist": "T-Pain",
+   "why": "the stair-step vocal used as the lead sound on every hook",
+   "verified": false
+  }
+ ],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "corr": 1.0,
+  "filter": 0.0,
+  "transition": 0,
+  "vibrato": 0,
+  "key": "C",
+  "scale": "Minor",
+  "fastmode": true,
+  "offset": 0,
+  "flex": 0,
+  "hysteresis": 10,
+  "formant_keep": true,
+  "register": "Mid",
+  "reference": 440,
+  "sens": 50,
+  "thresh": -50,
+  "m00": true,
+  "m01": true,
+  "m02": true,
+  "m03": true,
+  "m04": true,
+  "m05": true,
+  "m06": true,
+  "m07": true,
+  "m08": true,
+  "m09": true,
+  "m10": true,
+  "m11": true,
+  "bypass": false
+ },
+ "notes": "filter 0 and transition 0 are the robot; the minor scale and a short note hold keep the steps on the melody's notes",
+ "factory": true,
+ "golem_fx_seed": "gfx-correct",
+ "golem_fx": true
+}

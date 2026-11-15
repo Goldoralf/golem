@@ -1,0 +1,62 @@
+{
+ "id": "solo-lift",
+ "type": "eq-graphic",
+ "name": "Solo lift",
+ "desc": "Guitar 7: +4 dB at 800 Hz, +3 at 1.6 kHz, +1 at 400 Hz and 3 dB of level: the solo voicing on a footswitch",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "blues",
+  "metal"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock"
+ ],
+ "gain": "any",
+ "use": "solo",
+ "refs": [],
+ "level_db": 4,
+ "tags": [
+  "bright"
+ ],
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 0,
+  "g4": 0,
+  "g5": 0,
+  "g6": 0,
+  "g7": 0,
+  "g8": 0,
+  "g9": 0,
+  "g10": 0,
+  "g11": 0,
+  "layout": "Guitar 7",
+  "level": 3,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 1,
+  "gt_800": 4,
+  "gt_1k6": 3,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "The classic 7-band trick: a mid lift plus level. Accurate mode means +4 at 800 Hz is +4, with no pile-up between 800 and 1.6k",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

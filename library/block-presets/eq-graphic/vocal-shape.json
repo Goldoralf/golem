@@ -1,8 +1,20 @@
 {
- "name": "Vocal shape",
+ "id": "vocal-shape",
  "type": "eq-graphic",
+ "name": "Vocal shape",
+ "desc": "Lows below 125 Hz cut hard, +2 – 3 dB from 4 to 12 kHz: a clear, airy voice above the band",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
  "params": {
   "g1": -12,
   "g2": -8,
@@ -14,6 +26,32 @@
   "g8": 2,
   "g9": 2,
   "g10": 3,
-  "g11": 2
- }
+  "g11": 2,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "golem's preset kept as is",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": false
 }

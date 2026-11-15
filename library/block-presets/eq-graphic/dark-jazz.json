@@ -1,0 +1,61 @@
+{
+ "id": "dark-jazz",
+ "type": "eq-graphic",
+ "name": "Dark jazz",
+ "desc": "-4 dB at 4 kHz down to -8 at 12 kHz, +2 at 125 Hz: a dark, round archtop tone",
+ "inst": "guitar",
+ "genres": [
+  "jazz",
+  "blues"
+ ],
+ "subgenres": [
+  "bebop",
+  "cool-jazz"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "dark",
+  "warm"
+ ],
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 2,
+  "g4": 0,
+  "g5": 0,
+  "g6": 0,
+  "g7": 0,
+  "g8": -4,
+  "g9": -6,
+  "g10": -8,
+  "g11": 0,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

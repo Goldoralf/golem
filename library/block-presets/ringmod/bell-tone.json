@@ -1,11 +1,62 @@
 {
- "name": "Bell tone",
+ "id": "bell-tone",
  "type": "ringmod",
- "inst": "any",
- "factory": true,
+ "name": "Bell tone",
+ "desc": "A 1 kHz sine carrier: struck-metal partials over every note",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "experimental"
+ ],
+ "subgenres": [
+  "art-rock"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
  "params": {
-  "freq": 0.55,
-  "fine": 0.62,
-  "feedback": 0
- }
+  "carrier": "Free",
+  "freq": 0.06,
+  "fine": 0.5,
+  "pitch": 0.5,
+  "ring": 1,
+  "feedback": 0,
+  "mix": 0.8,
+  "thr": 0.3,
+  "speed": 0.5,
+  "lowcut": 0.3,
+  "highcut": 0.7,
+  "mode": "Ring",
+  "model": "Clean",
+  "wave": "Sine",
+  "tuning": "Just",
+  "lock": true,
+  "snap": false,
+  "phase": 90,
+  "drive": 0,
+  "carrier_level": 0,
+  "balance": 0,
+  "rate": 1,
+  "lfo_depth": 0,
+  "shape": "Sine",
+  "sync": "Off",
+  "stereo_phase": 0,
+  "env_amount": 0,
+  "env_sens": 50,
+  "env_att": 5,
+  "env_rel": 200,
+  "hpf": 0,
+  "lpf": 20000,
+  "bass_keep": 0,
+  "level": 0
+ },
+ "notes": "Re-authored from 8.86 kHz (a whistle) to about 1 kHz",
+ "factory": true,
+ "golem_fx_seed": "gfx-ringmod",
+ "golem_fx": false
 }

@@ -1,0 +1,62 @@
+{
+ "id": "slow-sweep",
+ "type": "ringmod",
+ "name": "Slow sweep",
+ "desc": "A 320 Hz carrier swept ±12 semitones by a 0.3 Hz LFO: sidebands that glide through the note",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "space-rock"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "carrier": "Free",
+  "freq": 0.02,
+  "fine": 0.0,
+  "pitch": 0.5,
+  "ring": 1,
+  "feedback": 0,
+  "mix": 0.8,
+  "thr": 0.3,
+  "speed": 0.5,
+  "lowcut": 0.3,
+  "highcut": 0.7,
+  "mode": "Ring",
+  "model": "Clean",
+  "wave": "Sine",
+  "tuning": "Just",
+  "lock": true,
+  "snap": false,
+  "phase": 90,
+  "drive": 0,
+  "carrier_level": 0,
+  "balance": 0,
+  "rate": 0.3,
+  "lfo_depth": 12.0,
+  "shape": "Sine",
+  "sync": "Off",
+  "stereo_phase": 0,
+  "env_amount": 0,
+  "env_sens": 50,
+  "env_att": 5,
+  "env_rel": 200,
+  "hpf": 0,
+  "lpf": 20000,
+  "bass_keep": 0,
+  "level": 0
+ },
+ "notes": "The analog ring pedal's LFO move",
+ "factory": true,
+ "golem_fx_seed": "gfx-ringmod",
+ "golem_fx": true
+}

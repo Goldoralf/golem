@@ -1,8 +1,24 @@
 {
- "name": "Bass smiley",
+ "id": "bass-smiley",
  "type": "eq-graphic",
+ "name": "Bass smiley",
+ "desc": "+4 dB at 60 Hz and +2 at 2 – 4 kHz around a small 500 Hz dip, the top rolled off: a round, present bass",
  "inst": "bass",
- "factory": true,
+ "genres": [
+  "rock",
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
  "params": {
   "g1": 2,
   "g2": 4,
@@ -14,6 +30,32 @@
   "g8": 2,
   "g9": 0,
   "g10": -2,
-  "g11": -4
- }
+  "g11": -4,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "golem's preset kept as is; its top two faders now act at 12 and 16 kHz (GxGraphicEQ's top bands sat higher)",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": false
 }

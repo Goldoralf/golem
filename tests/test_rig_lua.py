@@ -525,3 +525,28 @@ def test_le_bloc_ir_fx_recoit_son_ir_entiere_dans_l_etat_du_convolveur(tmp_path,
     fx = next(f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name == "golem:re301")
     assert "IR Convolver Stereo" in fx.name, lab.log()
     assert ("zeroconvolv#ir " + files[0]) in (fx.state or ""), lab.log()[-2000:]
+
+
+def test_le_pied_d_un_granular_joue_par_gfx_grains_tient_le_freeze(tmp_path):
+    # golem-fx 2026-11-15 : le pied de gfx-grains TIENT le Freeze (comme GoleM Freeze), il ne coupe pas le bloc
+    import copy
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    p = next(p for p in plugins.values() if p["crate"] == "gfx-grains")
+    lab.F.installed[p["reaper"]] = True
+    lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0})
+                                                 for k in p["params"]])
+    patch = copy.deepcopy(PATCH)
+    patch["lanes"][0]["chain"]["post"].append({"id": "grains", "type": "granular", "foot": 10})
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    g = fx["golem:grains"]
+    assert g.name == p["reaper"], lab.log()
+    freeze = lambda: next(q.val for q in g.params.values() if q.name == "Freeze")       # noqa: E731
+    lab.run(action="stomp", preset="ci-engine", ids=["grains"], on=True)
+    assert freeze() == 1 and g.enabled is True, lab.log()
+    lab.run(action="stomp", preset="ci-engine", ids=["grains"], on=False)
+    assert freeze() == 0 and g.enabled is True, lab.log()

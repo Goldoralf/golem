@@ -103,7 +103,16 @@ def _normalize_amp_outputs(blocks, comps):
 _PC_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 _PC_SCALES = {"Chromatic": list(range(12)),
               "Major": [0, 2, 4, 5, 7, 9, 11],
-              "Minor": [0, 2, 3, 5, 7, 8, 10]}
+              "Minor": [0, 2, 3, 5, 7, 8, 10],
+              # 2026-11-15 : les gammes de gfx-correct (même ordre, ajoutées à la fin) — le masque fat1 les joue aussi
+              "Harmonic Minor": [0, 2, 3, 5, 7, 8, 11],
+              "Melodic Minor": [0, 2, 3, 5, 7, 9, 11],
+              "Dorian": [0, 2, 3, 5, 7, 9, 10],
+              "Phrygian": [0, 1, 3, 5, 7, 8, 10],
+              "Lydian": [0, 2, 4, 6, 7, 9, 11],
+              "Mixolydian": [0, 2, 4, 5, 7, 9, 10],
+              "Major Pentatonic": [0, 2, 4, 7, 9],
+              "Minor Pentatonic": [0, 3, 5, 7, 10]}
 
 
 # ── clamp des params aux plages des defs (bug piste-6 Prism 2026-07-23 : chorus.mix=30 dans
@@ -185,11 +194,32 @@ def _expand_stretch(blocks):
                     pm[sw] = False
 
 
-def _expand_pitch_correct(blocks):
+def _expand_pitch_correct(blocks, sk=None):
+    """Key / Scale du bloc pitch-correct. `song_key` (virtuel, allumé par défaut, décision du mainteneur 2026-11-15) :
+    le patch a une tonalité -> Key et Scale la suivent, JAMAIS par-dessus Chromatic (corriger au demi-ton reste un
+    choix). Là où gfx-correct joue le bloc (golem-fx), Key et Scale sont de vrais réglages du plugin : on les garde et
+    le masque reste tout allumé ; ailleurs (x42 / fat1) ils deviennent le masque m00-m11 et sont retirés."""
+    try:
+        from . import rig
+        gfx = "pitch-correct" in rig._engine_safe_types()
+    except Exception:
+        gfx = False
     for b in blocks or []:
         if b.get("type") != "pitch-correct":
             continue
         pm = b.setdefault("params", {})
+        follow = pm.pop("song_key", True)
+        if follow and sk and pm.get("scale", "Chromatic") != "Chromatic":
+            pc, minor = sk
+            pm["key"] = _PC_NOTES[pc]
+            if pm.get("scale") not in (_MINOR_SCALES if minor else _MAJOR_SCALES):
+                pm["scale"] = "Minor" if minor else "Major"
+        if gfx:
+            pm.setdefault("key", "C")
+            pm.setdefault("scale", "Chromatic")
+            for i in range(12):
+                pm[f"m{i:02d}"] = True
+            continue
         key = pm.pop("key", "C")
         scale = pm.pop("scale", "Chromatic")
         root = _PC_NOTES.index(key) if key in _PC_NOTES else 0
@@ -568,7 +598,7 @@ def compile_preset(preset: dict) -> str:
             for captured in t["blocks"]:
                 capture_module.prepare(captured)
             _normalize_amp_outputs(t["blocks"], comps)     # normalisation loudness (voir LOUD_TARGET)
-            _expand_pitch_correct(t["blocks"])             # Key/Scale -> masque de notes fat1
+            _expand_pitch_correct(t["blocks"], sk)         # Key/Scale (tonalité du morceau) -> masque fat1 ou gfx-correct
             _expand_pitch_harmony(t["blocks"], sk)         # harmonie gfx-pitch : Key/Scale du morceau
             _fill_compile_defaults(t["blocks"])            # défauts du catalogue pour les blocs `defaults: compile`
             _expand_stretch(t["blocks"])                   # Spread/Compress -> leurs interrupteurs de module

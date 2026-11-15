@@ -1,0 +1,61 @@
+{
+ "id": "bright-clean-sparkle",
+ "type": "eq-graphic",
+ "name": "Bright clean sparkle",
+ "desc": "+3 dB at 8 kHz, +2 at 12 kHz and -2 at 125 Hz: a clean guitar with more sheen and less boom",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": -2,
+  "g4": 0,
+  "g5": 0,
+  "g6": 0,
+  "g7": 0,
+  "g8": 0,
+  "g9": 3,
+  "g10": 2,
+  "g11": 0,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

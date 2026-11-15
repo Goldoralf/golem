@@ -1,0 +1,62 @@
+{
+ "id": "tight-front-end",
+ "type": "eq-graphic",
+ "name": "Tight front end",
+ "desc": "-15 dB at 30 Hz, -10 at 60 Hz, -4 at 125 Hz, +3 at 1 kHz and +2 at 2 kHz: a tight low end into a high-gain amp",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "death-metal",
+  "alternative-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight",
+  "modern"
+ ],
+ "params": {
+  "g1": -15,
+  "g2": -10,
+  "g3": -4,
+  "g4": 0,
+  "g5": 0,
+  "g6": 3,
+  "g7": 2,
+  "g8": 0,
+  "g9": 0,
+  "g10": 0,
+  "g11": 0,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "Before the amp: the lows the amp would turn into mush are cut by faders, with no peaking at 125 Hz",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

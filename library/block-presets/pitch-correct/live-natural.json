@@ -1,0 +1,53 @@
+{
+ "id": "live-natural",
+ "type": "pitch-correct",
+ "name": "Live natural",
+ "desc": "Fast but not instant help on held notes (84 %, 33 ms): x42's own Live preset",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "corr": 0.84,
+  "filter": 0.033,
+  "transition": 0,
+  "vibrato": 0,
+  "key": "C",
+  "scale": "Chromatic",
+  "fastmode": true,
+  "offset": 0,
+  "flex": 0,
+  "hysteresis": 23,
+  "formant_keep": true,
+  "register": "Mid",
+  "reference": 440,
+  "sens": 50,
+  "thresh": -50,
+  "m00": true,
+  "m01": true,
+  "m02": true,
+  "m03": true,
+  "m04": true,
+  "m05": true,
+  "m06": true,
+  "m07": true,
+  "m08": true,
+  "m09": true,
+  "m10": true,
+  "m11": true,
+  "bypass": false
+ },
+ "notes": "x42-Autotune's factory Live preset (corr 0.84, filter 0.033), kept for golem users who knew it",
+ "factory": true,
+ "golem_fx_seed": "gfx-correct",
+ "golem_fx": true
+}

@@ -1,12 +1,58 @@
 {
- "name": "Standard",
+ "id": "standard",
  "type": "granular",
- "factory": true,
- "params": {
-  "freeze": 0,
-  "grains": 8,
-  "pos": 0.5
- },
+ "name": "Standard",
+ "desc": "A gentle band-limited cloud of the last second under the dry playing, half wet",
+ "inst": "any",
+ "genres": [
+  "rock",
+  "pop",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
  "default": true,
- "inst": "any"
+ "params": {
+  "freeze": false,
+  "grains": 8,
+  "pos": 0.5,
+  "size": 120,
+  "pitch": 0,
+  "mix": 50,
+  "mode": "Cloud",
+  "length": 1000,
+  "length_sync": "Off",
+  "spray": 10,
+  "scan": 0,
+  "regular": 0,
+  "chance": 100,
+  "shape": 100,
+  "skew": 0,
+  "reverse": 0,
+  "pitch_rand": 0,
+  "scale": "Off",
+  "detune": 0,
+  "glide": 0,
+  "spread": 50,
+  "sync": "Off",
+  "seed": 0,
+  "skip": 0,
+  "live": 100,
+  "decay": 1,
+  "feedback": 0,
+  "low_cut": 20,
+  "high_cut": 20000,
+  "kill_dry": false,
+  "trails": true,
+  "bypass": false
+ },
+ "notes": "ZamGrains' Standard played the dry signal; re-authored by intent: grains from ~500 ms back, level matched to the source",
+ "factory": true,
+ "golem_fx_seed": "gfx-grains",
+ "golem_fx": false
 }

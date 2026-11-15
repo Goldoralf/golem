@@ -1,0 +1,62 @@
+{
+ "id": "transmitter",
+ "type": "ringmod",
+ "name": "Transmitter",
+ "desc": "An 80 Hz diode ring band-limited to 300 Hz – 3.5 kHz: a voice through a radio link",
+ "inst": "voice",
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "industrial-electronic"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi"
+ ],
+ "default": false,
+ "params": {
+  "carrier": "Free",
+  "freq": 0.0,
+  "fine": 0.8,
+  "pitch": 0.5,
+  "ring": 1,
+  "feedback": 0,
+  "mix": 1.0,
+  "thr": 0.3,
+  "speed": 0.5,
+  "lowcut": 0.3,
+  "highcut": 0.7,
+  "mode": "Ring",
+  "model": "Diode",
+  "wave": "Sine",
+  "tuning": "Just",
+  "lock": true,
+  "snap": false,
+  "phase": 90,
+  "drive": 0,
+  "carrier_level": 0,
+  "balance": 0,
+  "rate": 1,
+  "lfo_depth": 0,
+  "shape": "Sine",
+  "sync": "Off",
+  "stereo_phase": 0,
+  "env_amount": 0,
+  "env_sens": 50,
+  "env_att": 5,
+  "env_rel": 200,
+  "hpf": 300,
+  "lpf": 3500,
+  "bass_keep": 0,
+  "level": 0
+ },
+ "notes": "fine 0.8 = 80 Hz with freq at 0",
+ "factory": true,
+ "golem_fx_seed": "gfx-ringmod",
+ "golem_fx": true
+}

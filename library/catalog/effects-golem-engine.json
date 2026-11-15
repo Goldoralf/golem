@@ -187,7 +187,9 @@
    "lv2": "http://gareus.org/oss/lv2/fil4#mono"
   },
   "eq-graphic": {
-   "lv2": "http://guitarix.sourceforge.net/plugins/gx_graphiceq_#_graphiceq_"
+   "vst3": "476F6C654D4678476571303030303031",
+   "golem_fx": true,
+   "status": "testing"
   },
   "limiter": {
    "vst3": "476F6C654D46784C696D697465723031",
@@ -198,10 +200,9 @@
    "status": "testing"
   },
   "granular": {
-   "vst3": "2046504473616C6352474D5A00000000",
-   "absent": {
-    "pos": "ZamGrains 4 has no Grain Position control (VST3 and LV2)"
-   }
+   "vst3": "476F6C654D4678477261696E73303031",
+   "golem_fx": true,
+   "status": "testing"
   },
   "octaver": {
    "vst3": "476F6C654D46784F6374617665723031",
@@ -225,7 +226,12 @@
    }
   },
   "ringmod": {
-   "lv2": "http://drobilla.net/plugins/mda/RingMod"
+   "vst3": "476F6C654D467852696E676D6F643031",
+   "golem_fx": true,
+   "status": "testing",
+   "init": {
+    "Carrier": 0
+   }
   },
   "bitcrusher": {
    "lv2": "http://drobilla.net/plugins/mda/Degrade"
@@ -518,6 +524,35 @@
    "vst3": "476F6C654D4678506F6C7973796E3031",
    "golem_fx": true,
    "status": "testing"
+  },
+  "pitch-correct": {
+   "vst3": "476F6C654D4678436F72726563743031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "key": "Key",
+    "scale": "Scale"
+   },
+   "absent": {
+    "song_key": "virtual: resolved by the compiler (Key and Scale follow the song's key)"
+   }
+  },
+  "surge-treemonster": {
+   "vst3": "476F6C654D467852696E676D6F643031",
+   "golem_fx": true,
+   "status": "testing",
+   "params": {
+    "thr": "Threshold",
+    "speed": "Speed",
+    "lowcut": "Low Cut",
+    "highcut": "High Cut",
+    "pitch": "Pitch",
+    "ring": "Ring Mod",
+    "mix": "Mix"
+   },
+   "init": {
+    "Carrier": 1
+   }
   }
  }
 }

@@ -1,0 +1,62 @@
+{
+ "id": "post-cab-tame",
+ "type": "eq-graphic",
+ "name": "Post-cab tame",
+ "desc": "Low cut 80 Hz, steep high cut 8 kHz and -2 dB at 4 kHz: a cab sim's rumble and fizz removed",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal",
+  "punk"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "tight"
+ ],
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 0,
+  "g4": 0,
+  "g5": 0,
+  "g6": 0,
+  "g7": 0,
+  "g8": -2,
+  "g9": 0,
+  "g10": 0,
+  "g11": 0,
+  "layout": "Octave 11",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 0,
+  "gb_120": 0,
+  "gb_400": 0,
+  "gb_500": 0,
+  "gb_800": 0,
+  "gb_4k5": 0,
+  "gb_10k": 0,
+  "lowcut": 80,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 8000,
+  "highcut_slope": "24 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "The cuts the faders cannot do: a 30 Hz fader at -15 dB is not a high-pass",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

@@ -1,11 +1,62 @@
 {
- "name": "Robot Voice",
+ "id": "robot-voice",
  "type": "ringmod",
+ "name": "Robot voice",
+ "desc": "A 39 Hz carrier with mda feedback: the classic metallic robot voice",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "electronic",
+  "experimental"
+ ],
+ "subgenres": [
+  "electro"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "lo-fi"
+ ],
+ "default": true,
  "params": {
-  "freq": 0.12,
-  "fine": 0.3,
-  "feedback": 0.35
- }
+  "carrier": "Free",
+  "freq": 0.0015,
+  "fine": 0.15,
+  "pitch": 0.5,
+  "ring": 1,
+  "feedback": 0.3,
+  "mix": 1.0,
+  "thr": 0.3,
+  "speed": 0.5,
+  "lowcut": 0.3,
+  "highcut": 0.7,
+  "mode": "Ring",
+  "model": "Clean",
+  "wave": "Sine",
+  "tuning": "Just",
+  "lock": true,
+  "snap": false,
+  "phase": 90,
+  "drive": 0,
+  "carrier_level": 0,
+  "balance": 0,
+  "rate": 1,
+  "lfo_depth": 0,
+  "shape": "Sine",
+  "sync": "Off",
+  "stereo_phase": 0,
+  "env_amount": 0,
+  "env_sens": 50,
+  "env_att": 5,
+  "env_rel": 200,
+  "hpf": 150,
+  "lpf": 20000,
+  "bass_keep": 0,
+  "level": 0
+ },
+ "notes": "Re-authored from 1.95 kHz: robot voices sit at 30 to 50 Hz; the wet low cut keeps the difference tones clean",
+ "factory": true,
+ "golem_fx_seed": "gfx-ringmod",
+ "golem_fx": false
 }

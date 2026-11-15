@@ -635,3 +635,39 @@ def test_un_potard_golem_fx_est_retire_la_ou_golem_fx_ne_joue_pas(rigc, monkeypa
     assert "fb_polarity" not in _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"flanger-js"})
     assert _main_blocks(_compile(_preset([dict(fl, params=dict(fl["params"]))]))[0])[0]["params"]["fb_polarity"] == "Inverted"
+
+def test_pitch_correct_suit_la_tonalite_du_morceau_jamais_par_dessus_chromatic(monkeypatch):
+    # 2026-11-15 (gfx-correct) : Hard tune et Tight pop accordaient tout en do ; `song_key` (virtuel, allumé) les met
+    # dans la tonalité du morceau. Sous x42, Key + Scale deviennent le masque ; où golem-fx joue, ils restent réglages
+    from bridge import compile_rig as CR, rig
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
+    b = [{"type": "pitch-correct", "params": {"key": "C", "scale": "Major"}}]
+    CR._expand_pitch_correct(b, (4, True))                        # Mi mineur
+    pm = b[0]["params"]
+    assert "key" not in pm and "scale" not in pm and "song_key" not in pm
+    assert [i for i in range(12) if pm[f"m{i:02d}"]] == sorted({(4 + d) % 12 for d in CR._PC_SCALES["Minor"]})
+    b = [{"type": "pitch-correct", "params": {"scale": "Chromatic"}}]
+    CR._expand_pitch_correct(b, (4, True))
+    assert all(b[0]["params"][f"m{i:02d}"] for i in range(12))  # chromatique : la tonalité n'y touche pas
+    b = [{"type": "pitch-correct", "params": {"key": "D", "scale": "Dorian", "song_key": False}}]
+    CR._expand_pitch_correct(b, (4, False))
+    assert [i for i in range(12) if b[0]["params"][f"m{i:02d}"]] == sorted({(2 + d) % 12 for d in CR._PC_SCALES["Dorian"]})
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"pitch-correct"})
+    b = [{"type": "pitch-correct", "params": {"key": "C", "scale": "Dorian"}}]
+    CR._expand_pitch_correct(b, (9, True))                        # La mineur : Dorian est de la famille mineure, il reste
+    pm = b[0]["params"]
+    assert pm["key"] == "A" and pm["scale"] == "Dorian" and all(pm[f"m{i:02d}"] for i in range(12))
+
+
+def test_pitch_correct_live_par_defaut_et_presets_revoices():
+    import json
+    import os
+    from bridge import config as C
+    fx = {e["type"]: e for e in json.load(open(os.path.join(C.ROOT, "library", "catalog", "effects.json")))["effects"]}
+    pm = {p["id"]: p for p in fx["pitch-correct"]["params"]}
+    assert pm["fastmode"]["default"] is True and pm["filter"]["label"] == "Smoothing"
+    d = os.path.join(C.ROOT, "library", "block-presets", "pitch-correct")
+    hard = json.load(open(os.path.join(d, "hard-tune.json")))["params"]
+    assert hard["filter"] == pm["filter"]["min"] and hard["fastmode"]          # le plus serré, pas le plus lâche
+    for f in ("hard-tune", "tight-pop", "transparent"):
+        assert json.load(open(os.path.join(d, f + ".json")))["params"]["fastmode"], f

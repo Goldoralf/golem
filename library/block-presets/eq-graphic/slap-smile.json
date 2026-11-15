@@ -1,0 +1,60 @@
+{
+ "id": "slap-smile",
+ "type": "eq-graphic",
+ "name": "Slap smile",
+ "desc": "Bass 7: +4 dB at 50 Hz and 10 kHz, +3 at 4.5 kHz, -4 / -3 dB at 400 / 500 Hz: a slap bass scoop",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "rock"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "params": {
+  "g1": 0,
+  "g2": 0,
+  "g3": 0,
+  "g4": 0,
+  "g5": 0,
+  "g6": 0,
+  "g7": 0,
+  "g8": 0,
+  "g9": 0,
+  "g10": 0,
+  "g11": 0,
+  "layout": "Bass 7",
+  "level": 0,
+  "amount": 100,
+  "gt_100": 0,
+  "gt_200": 0,
+  "gt_400": 0,
+  "gt_800": 0,
+  "gt_1k6": 0,
+  "gt_3k2": 0,
+  "gt_6k4": 0,
+  "gb_50": 4,
+  "gb_120": 0,
+  "gb_400": -4,
+  "gb_500": -3,
+  "gb_800": 0,
+  "gb_4k5": 3,
+  "gb_10k": 4,
+  "lowcut": 10,
+  "lowcut_slope": "12 dB/oct",
+  "highcut": 22000,
+  "highcut_slope": "12 dB/oct",
+  "auto_gain": false
+ },
+ "notes": "The two low-mid faders a third of an octave apart make one clean dip, with no hole between them",
+ "factory": true,
+ "golem_fx_seed": "gfx-geq",
+ "golem_fx": true
+}

@@ -1747,6 +1747,14 @@ def block_presets_delete(btype: str, slug: str):
     p = os.path.join(_BP_DIR, _bp_slug(btype), _bp_slug(slug) + ".json")
     if not os.path.isfile(p):
         return JSONResponse({"error": "unknown block preset"}, status_code=404)
+    try:
+        with open(p, encoding="utf-8") as f:
+            is_fac = bool(json.load(f).get("factory"))
+    except (OSError, ValueError):
+        is_fac = False
+    if is_fac:                                               # l'usine se cache, elle ne s'efface pas (2026-11-15)
+        from . import factory
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     os.remove(p)
     return {"ok": True}
 
@@ -1932,7 +1940,9 @@ def groove_remap(gid: str, body: dict):
 
 @router.delete("/api/groove/{gid}")
 def groove_delete(gid: str):
-    from . import grooves
+    from . import grooves, factory
+    if factory.protected("grooves", gid):
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     r = grooves.delete_groove(gid)
     return r if r.get("ok") else JSONResponse(r, status_code=404)
 
@@ -2094,6 +2104,9 @@ def lane_apply_undo():
 def delete_preset(pid: str):
     """Corps partagé avec le job `preset-delete` de golem.fm : store.delete_preset (patches.md §21)."""
     from .store import delete_preset as _del
+    from . import factory
+    if factory.protected("presets", pid):
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     r = _del(pid)
     if not r["deleted"]:
         return JSONResponse({"error": "not found"}, status_code=404)
@@ -2928,7 +2941,9 @@ def setlists_rename(sid: str, body: dict):
 
 @router.delete("/api/setlists/{sid}")
 def setlists_delete(sid: str):
-    from . import setlists as sl
+    from . import setlists as sl, factory
+    if factory.protected("setlists", sid):
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     r = sl.remove(sid)
     if r.get("ok"):
         _foot_lists_changed()
@@ -3366,7 +3381,9 @@ def api_song_delete(sid: str):
     """Retire la chanson DU RACK — elle reste au répertoire du groupe chez golem.fm, SAUF si elle est
     née ici et n'est jamais montée : alors elle disparaît. Refusé tant qu'une setlist la joue — sa
     ligne jouerait une bank vide (§9.7)."""
-    from . import songs as SG
+    from . import songs as SG, factory
+    if factory.protected("songs", sid):
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     used = SG.setlists_of(sid)
     if used:
         return JSONResponse({"error": "remove it from " + ", ".join(x.get("name") or x["id"] for x in used) + " first",

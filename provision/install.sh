@@ -292,6 +292,11 @@ log "Config Reaper (symlinks portables + OSC + device audio dans reaper.ini)"
 log "Bridge Python (venv + dépendances)"
 "$HERE/bridge-setup.sh"
 
+# --- 6 a. Démos d'usine (~70 Mo) : rendues UNE fois, posées à l'installation (2026-11-15, docs/preset-preview.md §10).
+# Jamais fatal : hors ligne, golem les rattrape à son prochain démarrage.
+log "Démos d'usine (golem-binaries factory-demos)"
+(cd "$HERE/.." && .venv/bin/python -m bridge.factory_demos) || echo "  ⚠ démos d'usine pas téléchargées — golem les rattrapera au démarrage"
+
 # --- 6 bis. Sons lourds (hors Git : captures NAM/IR + piano Salamander) -----
 # ~1 Go au total, dont 714 Mo pour le seul Salamander. Rien de tout ça n'entre dans Git : le
 # dépôt versionne les RECETTES, ce script récupère le contenu depuis sa source d'origine.

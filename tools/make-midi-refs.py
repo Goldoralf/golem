@@ -17,7 +17,7 @@ kits du rack (même liste que les grooves) : deux mesures de groove, une variati
 
     ./tools/make-midi-refs.py       # écrit library/di-refs/{keys,drums}/<bucket>.mid et met à jour index.json
 
-Les fichiers vont avec les DI (library/di-refs/, hors dépôt, livrés dans la release di-refs) ; ce script, lui, est
+Les fichiers vont avec les DI (library/di-refs/, VERSIONNÉS et livrés avec golem depuis le 2026-11-15) ; ce script est
 commité : la partition reste lisible et régénérable.
 """
 import json

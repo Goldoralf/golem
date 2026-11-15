@@ -352,11 +352,12 @@ export function PatchesPage({ rig } = {}) {
                     onClick=${() => { setMenu(null); if (e.remove) del('/api/startup/home').catch(() => {});
                       else post('/api/startup/home', { ...key, name: x.name || x.id }).catch(() => {}); }}>
                     ${e.label}${e.small ? html`<small> ${esc(e.small)}</small>` : ''}</button>`; })()}
-                <button class=${cls('row-btn danger', armDel === x.id && 'armed')}
+                ${x.factory ? html`<button class="row-btn" onClick=${() => { setMenu(null); location.hash = '#/system/content/factory'; }}>
+                  ◆ Factory patch<small>it can be hidden, not deleted</small></button>` : html`<button class=${cls('row-btn danger', armDel === x.id && 'armed')}
                   title="deletes the patch file — every song keeps its own copy of the chain"
                   onClick=${() => { if (armDel === x.id) { setMenu(null); delP(x.id); } else setArmDel(x.id); }}>
                   ${armDel === x.id ? html`🗑 Sure ? tap again<small>the catalogue entry only</small>`
-                    : html`🗑 Delete patch…<small>songs keep their copy</small>`}</button>
+                    : html`🗑 Delete patch…<small>songs keep their copy</small>`}</button>`}
               </div>` : ''}
             </div>
             ${/* ⚙ : nom, personne, et le DÉPÔT dans des morceaux (2026-09-08 : la place du

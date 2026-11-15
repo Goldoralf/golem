@@ -333,7 +333,10 @@ catalogue, `schedule`, 20 s). It first runs the job queue, then: builds one pack
 lent packs filtered out — and `PUT`s only the packs whose document hash changed since the last push **to
 this server**; `GET /api/ext/tones/manifest` and uploads the `missing_blobs[]` it has on disk (`507` =
 quota, blob skipped and retried next sync; a `400` on `kit`/`loop`/`sample`/`groove` = server without
-that kind, skipped without being marked pushed); `PUT /api/ext/tones/rig-manifest`; then, best effort,
+that kind, skipped without being marked pushed); `PUT /api/ext/tones/rig-manifest`. **Factory files are never uploaded** (FIXED 2026-11-15): the blobs of a factory
+pack (`extra.factory`, or `local:synth-vital-factory`; `tones_sync.factory_shas`) are skipped even when listed in
+`missing_blobs[]` — golem.fm keeps **one** copy, taken from the repository and the `factory-demos` release, served to
+every user and outside any quota; the rack sends only the pack's card. Then, best effort,
 `PUT /api/ext/golem/state`, the patch catalogue, and the preset catch-up below. The sync is a mirror in
 one direction: **a pack deleted on the rack is never deleted on golem.fm**, it only leaves the
 rig-manifest. A pack's `kind` is read from its files (`tones_sync.kind_of`: IR files → `cab`; `.nam`

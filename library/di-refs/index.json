@@ -1,0 +1,155 @@
+{
+ "_comment": "DI de référence GoleM-owned (docs/preset-preview.md). Phrases ORIGINALES jouées en DI sèche (Volt), JAMAIS un riff protégé — pattern fonctionnel. DI mono sec, courte, sans tempo (rendue dans des patches de tous BPM), avec une QUEUE TENUE pour entendre delay/reverb. Tonalité E entre buckets pour comparer. Fichier absent = preview indisponible pour ce bucket. `lead` = surcharge manuelle (pas auto-sélectionné). VOIX (2026-07-24) : phrases chantées ORIGINALES (yaourt/vocalises, pas de paroles protégées), mêmes règles — mono sec, queue tenue, sifflantes pour le de-esser. À ENREGISTRER (comme les DI guitare).",
+ "refs": {
+  "guitar/clean": {
+   "file": "guitar/clean.flac",
+   "name": "Clean chords",
+   "guitar": "6-string",
+   "key": "E",
+   "showcases": "cleans, chorus, delay, reverb"
+  },
+  "guitar/crunch": {
+   "file": "guitar/crunch.flac",
+   "name": "Crunch riff",
+   "guitar": "6-string",
+   "key": "E",
+   "showcases": "breakup, drive, dynamics"
+  },
+  "guitar/high-gain": {
+   "file": "guitar/high-gain.flac",
+   "name": "High-gain metal",
+   "guitar": "7-string",
+   "key": "E",
+   "showcases": "tightness, saturation, gate"
+  },
+  "guitar/djent": {
+   "file": "guitar/djent.flac",
+   "name": "Djent (8-string)",
+   "guitar": "8-string",
+   "key": "E",
+   "showcases": "low atmospheric chug, drop tuning, dynamics"
+  },
+  "guitar/lead": {
+   "file": "guitar/lead.flac",
+   "name": "Lead lick (high-gain)",
+   "guitar": "6-string",
+   "key": "E",
+   "showcases": "bend/vibrato/sustain through drive, tails delay+reverb"
+  },
+  "bass/finger": {
+   "file": "bass/finger.wav",
+   "name": "Finger groove",
+   "bass": "4/5-string",
+   "key": "E",
+   "showcases": "warmth, comp, low end"
+  },
+  "bass/pick": {
+   "file": "bass/pick.wav",
+   "name": "Pick drive",
+   "bass": "4/5-string",
+   "key": "E",
+   "showcases": "attack, grind, definition"
+  },
+  "voice/male": {
+   "file": "voice/male.wav",
+   "name": "Male vocal",
+   "voice": "male",
+   "key": "E",
+   "showcases": "comp, de-esser, pitch correct, plate — phrase chantée tenue + sifflantes"
+  },
+  "voice/female": {
+   "file": "voice/female.wav",
+   "name": "Female vocal",
+   "voice": "female",
+   "key": "E",
+   "showcases": "idem male, tessiture haute (le de-esser et l'autotune réagissent autrement)"
+  },
+  "keys/pad": {
+   "file": "keys/pad.mid",
+   "kind": "midi",
+   "name": "Slow pad",
+   "key": "E",
+   "showcases": "overlapping chords, filter opened by the mod wheel, long release"
+  },
+  "keys/piano": {
+   "file": "keys/piano.mid",
+   "kind": "midi",
+   "name": "Piano ballad",
+   "key": "E",
+   "showcases": "velocity, sustain pedal, the body and the room of a piano"
+  },
+  "keys/organ": {
+   "file": "keys/organ.mid",
+   "kind": "midi",
+   "name": "Gospel organ",
+   "key": "E",
+   "showcases": "held legato chords, drawbars, rotary speaker"
+  },
+  "keys/lead": {
+   "file": "keys/lead.mid",
+   "kind": "midi",
+   "name": "Synth lead",
+   "key": "E",
+   "showcases": "legato, pitch bend, vibrato on the mod wheel, delay tails"
+  },
+  "keys/arp": {
+   "file": "keys/arp.mid",
+   "kind": "midi",
+   "name": "Held chord (arp)",
+   "key": "E",
+   "showcases": "sync BPM, delays rythmiques"
+  },
+  "keys/epiano": {
+   "file": "keys/epiano.mid",
+   "kind": "midi",
+   "name": "Electric piano comping",
+   "key": "E",
+   "showcases": "velocity bark, tremolo and chorus, ninth chords"
+  },
+  "drums/rock": {
+   "file": "drums/rock.mid",
+   "kind": "midi",
+   "name": "Rock beat",
+   "showcases": "kick and snare body, hi-hat, toms, crash"
+  },
+  "drums/funk": {
+   "file": "drums/funk.mid",
+   "kind": "midi",
+   "name": "Funk beat",
+   "showcases": "ghost notes, open hi-hat, tight snare"
+  },
+  "drums/jazz": {
+   "file": "drums/jazz.mid",
+   "kind": "midi",
+   "name": "Jazz swing",
+   "showcases": "ride, feathered kick, cross-stick, brushes or sticks"
+  },
+  "drums/metal": {
+   "file": "drums/metal.mid",
+   "kind": "midi",
+   "name": "Metal double kick",
+   "showcases": "kick definition at speed, crash and ride, tom fill"
+  },
+  "guitar/lead-clean": {
+   "file": "guitar/lead-clean.flac",
+   "name": "Lead lick (clean)",
+   "guitar": "6-string",
+   "key": "E",
+   "showcases": "clean solo: bends, vibrato, sustain, delay and reverb tails"
+  },
+  "guitar/funk": {
+   "file": "guitar/funk.flac",
+   "name": "Funk rhythm",
+   "guitar": "6-string",
+   "key": "E",
+   "showcases": "16th-note chops, muted strums, envelope and wah response, tight compression"
+  },
+  "keys/bass": {
+   "file": "keys/bass.mid",
+   "kind": "midi",
+   "name": "Synth bass",
+   "key": "E",
+   "showcases": "low end, octave jumps, staccato and legato, glide into the root"
+  }
+ }
+}

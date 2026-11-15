@@ -33,7 +33,6 @@ def test_only_missing_demos_are_placed_and_a_local_one_is_never_overwritten(tmp_
     (prev / "kit-drums-z").mkdir(parents=True)
     (prev / "kit-drums-z" / "rock.opus").write_bytes(b"rendered here, newer")
     monkeypatch.setattr(C, "PREVIEWS_DIR", str(prev))
-    monkeypatch.setattr(F, "STATE", str(prev / ".factory-demos.json"))
     monkeypatch.setattr(F, "BASE", src.as_uri() + "/")
     F.fetch()
     assert F.status()["state"] == "done" and F.status()["added"] == 2
@@ -51,7 +50,6 @@ def test_an_archive_that_does_not_match_its_index_is_refused(tmp_path, monkeypat
     (src / (F.NAME + ".json")).write_text(json.dumps(idx))
     prev = tmp_path / "previews"
     monkeypatch.setattr(C, "PREVIEWS_DIR", str(prev))
-    monkeypatch.setattr(F, "STATE", str(prev / ".factory-demos.json"))
     monkeypatch.setattr(F, "BASE", src.as_uri() + "/")
     F.fetch()
     assert F.status()["state"] == "error" and not (prev / "patch-factory-x").exists()
@@ -60,3 +58,30 @@ def test_an_archive_that_does_not_match_its_index_is_refused(tmp_path, monkeypat
 def test_an_index_never_writes_outside_the_previews(tmp_path, monkeypatch):
     monkeypatch.setattr(C, "PREVIEWS_DIR", str(tmp_path))
     assert F.missing({"items": {"../evil": {"x": "0"}, "/abs": {"x": "0"}, "ok": {"../x": "0", "a.opus": "0"}}}) == {"ok": ["a.opus"]}
+
+
+def test_start_only_catches_up_what_install_or_update_did_not_place(tmp_path, monkeypatch):
+    # décision du 2026-11-15 : téléchargées à l'installation et à la mise à jour, pas à chaque démarrage
+    prev = tmp_path / "previews"
+    prev.mkdir()
+    monkeypatch.setattr(C, "PREVIEWS_DIR", str(prev))
+    monkeypatch.setenv("GOLEM_FACTORY_DEMOS", "1")
+    started = []
+    monkeypatch.setattr(F.threading, "Thread", lambda **k: type("T", (), {"start": lambda s: started.append(1)})())
+    F.start()
+    assert started == [1]                                         # rien de posé : rattrapage
+    (prev / F.STATE_NAME).write_text(json.dumps({"tag": F.TAG}))
+    F.start()
+    assert started == [1]                                         # l'installation a posé ce TAG : rien
+
+
+def test_the_installer_loads_it_without_the_bridge(tmp_path):
+    # installer/desktop_steps le charge par son chemin, dans un dossier de destination : la bibliothèque standard seule
+    import importlib.util
+    import sys
+    spec = importlib.util.spec_from_file_location("fd_alone", F.__file__)
+    m = importlib.util.module_from_spec(spec)
+    before = {k for k in sys.modules if k.startswith("bridge")}
+    spec.loader.exec_module(m)
+    assert {k for k in sys.modules if k.startswith("bridge")} == before
+    assert m.missing({"items": {"a": {"x.opus": "0"}}}, str(tmp_path)) == {"a": ["x.opus"]}

@@ -2,7 +2,7 @@
 
 > **Status: PARTLY CODED** — the generation engine, the `generate-preview` and `patch-preview` jobs, playback and
 > export are coded (`bridge/preview.py`), and the Patches page listens to a patch. **First run on the rig
-> 2026-11-03**: the five guitar DIs are recorded (`library/di-refs/guitar/`, local until the `di-refs-v1` release),
+> 2026-11-03**: the guitar DIs are recorded (`library/di-refs/guitar/`; since 2026-11-15 they ship **with golem**, versioned as FLAC — lossless, 4.4 MB for seven — with the MIDI references and the index; the original WAVs and source takes stay local),
 > Jazz Clean renders its five scenes in stereo with their tails. Bass and voice DIs are not recorded yet.
 
 A preset can carry a **short audio demo per scene**, made by re-amping a **reference DI phrase owned by golem**
@@ -296,7 +296,16 @@ half an hour of engine time for ~67 MB. Now they are rendered **once**, on the m
   archive's sha256); `--publish <tag>` creates the release on `Goldoralf/golem-binaries` (never marked latest). First
   release: `factory-demos-v1` (127 folders, 460 files, 68.6 MB). Never a user's demo (Vital presets, imported kits,
   listening clips).
-- `bridge/factory_demos.py`, at bridge start (background, once): reads the index; when files are missing here,
+- **When** (maintainer's decision, 2026-11-15): at **install** (`provision/install.sh` after the bridge step;
+  `installer/desktop_steps._sound_di` on Windows/macOS, which loads the module by path — standard library only) and
+  at **update** (`release_update.apply`, through the new code so its `TAG` is used). Bridge start only **catches up**:
+  it fetches only when `library/previews/.factory-demos.json` does not name the current `TAG` (offline on install
+  day, an update by git). `python -m bridge.factory_demos [dir]` runs it by hand.
+- **The reference DIs and MIDI phrases ship with golem** (2026-11-15): `library/di-refs/` is versioned — seven guitar
+  DIs as FLAC (lossless, bit-identical to the recorded WAVs, 4.4 MB), the keys and drums phrases, `index.json`. The
+  original WAVs and source takes stay local. Without them another golem could render neither "Listen" on a capture
+  nor the demos of its own sounds. `fetch-assets.sh` no longer downloads them.
+- `bridge/factory_demos.py` (install, update, or the start catch-up): reads the index; when files are missing here,
   downloads the archive, checks its sha256, and places **only the missing files** (each checked against the index).
   A demo already here — rendered locally, maybe newer — is never overwritten; a stale one is redone by the batch as
   before. No network, or nothing published yet: nothing happens. `GOLEM_FACTORY_DEMOS=0` turns it off (the test

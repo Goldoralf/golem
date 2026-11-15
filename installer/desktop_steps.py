@@ -193,37 +193,27 @@ def _sound_piano(ctx, target):
 
 
 def _sound_di(ctx, target):
-    # library/di-refs : là où le bridge les lit (bridge/config.py DI_REFS_DIR) — c'était library/di, qu'il ne lit pas
-    di = os.path.join(target, "library", "di-refs")
-    if os.path.isdir(di) and any(f.lower().endswith((".wav", ".flac")) for _r, _d, fs in os.walk(di) for f in fs):
-        ctx.log("✓ reference DIs already present", "sounds")
+    """Les DI et phrases MIDI de référence arrivent AVEC le code depuis le 2026-11-15 (library/di-refs, en FLAC) ; ce
+    qui se télécharge ici, ce sont les DÉMOS D'USINE rendues une fois (golem-binaries `factory-demos-vN`) — à
+    l'installation, pas au premier démarrage (décision du mainteneur). bridge/factory_demos.py est chargé par son
+    chemin : la bibliothèque standard seule, pas le bridge."""
+    import importlib.util
+    path = os.path.join(target, "bridge", "factory_demos.py")
+    if not os.path.isfile(path):
         return
-    # PAS ENCORE ENREGISTRÉES (2026-10-24) : sans empreinte épinglée, on ne télécharge pas — comme fetch-assets.sh,
-    # et comme toute archive qu'on extrait (celle-ci partait sans aucune vérification)
-    want = _pinned(target, DI_URL)
-    if not want:
-        ctx.log("⏭ reference DIs: not published yet — the preset previews will wait; nothing else depends on it", "sounds")
-        return
-    os.makedirs(di, exist_ok=True)
-    tgz = os.path.join(di, "di.tgz")
-    ctx.log(f"↓ golem reference DIs ← {DI_URL}", "sounds")
     try:
-        urllib.request.urlretrieve(DI_URL, tgz)
-        h = hashlib.sha256()
-        with open(tgz, "rb") as f:
-            for chunk in iter(lambda: f.read(1 << 20), b""):
-                h.update(chunk)
-        if h.hexdigest() != want:
-            raise ValueError("sha256 mismatch — file rejected")
-        with tarfile.open(tgz) as t:
-            t.extractall(di, filter="data")
-        ctx.log("✓ reference DIs", "sounds")
+        spec = importlib.util.spec_from_file_location("golem_factory_demos", path)
+        fd = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fd)
+        ctx.log(f"↓ factory sound demos ({fd.TAG}, ~70 MB)", "sounds")
+        st = fd.fetch(os.path.join(target, "library", "previews"))
+        if st["state"] == "done":
+            ctx.log(f"✓ factory sound demos ({st['added']} new)", "sounds")
+        else:
+            # une source qui manque n'emporte pas l'install : golem rattrape au démarrage suivant
+            ctx.log(f"⚠ factory sound demos unavailable ({st['error']}) — golem fetches them on its next start", "sounds")
     except Exception as e:
-        # même règle que sous Linux (fetch-assets.sh) : une source qui manque n'emporte pas l'install
-        ctx.log(f"⚠ reference DIs unavailable ({e}) — the preset previews will wait; nothing else depends on it", "sounds")
-    finally:
-        if os.path.exists(tgz):
-            os.remove(tgz)
+        ctx.log(f"⚠ factory sound demos unavailable ({e}) — golem fetches them on its next start", "sounds")
 
 
 def _pinned(target, url):

@@ -348,12 +348,13 @@ export function SetlistsPage({ rig }) {
                   onClick=${() => { setMenu(null); if (e.remove) del('/api/startup/home').catch(() => {});
                     else post('/api/startup/home', { ...homeKey, name: homeLine ? (homeLine.title || p.name) : (p.name || p.id) }).catch(() => {}); }}>
                   ${e.label}${e.small ? html`<small> ${esc(e.small)}</small>` : ''}</button>`; })()}
-              <button class=${cls('row-btn danger', armDel === p.id && 'armed')}
+              ${p.factory ? html`<button class="row-btn" onClick=${() => { setMenu(null); location.hash = '#/system/content/factory'; }}>
+                ◆ Factory preset<small>it can be hidden, not deleted</small></button>` : html`<button class=${cls('row-btn danger', armDel === p.id && 'armed')}
                 title="deletes the preset file — it leaves every setlist at once"
                 onClick=${() => { if (armDel === p.id) setMenu(null); askRemove(p.id); }}>
                 ${armDel === p.id
                   ? html`🗑 Sure ? tap again<small>gone from every setlist</small>`
-                  : html`🗑 Delete preset…<small>from every setlist</small>`}</button>
+                  : html`🗑 Delete preset…<small>from every setlist</small>`}</button>`}
             </div>` : ''}
           </div>
         </div>

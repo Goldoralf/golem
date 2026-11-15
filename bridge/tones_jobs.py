@@ -449,6 +449,9 @@ def _patch_delete(job):
     if not str(job.get("patch_id") or "").strip():
         raise RuntimeError("patch-delete without patch_id")
     pid = P._safe_id(str(job.get("patch_id")))
+    from . import factory
+    if factory.protected("patches", pid):
+        raise RuntimeError(f"patch '{pid}' is factory content: it can be hidden, not deleted")
     deleted = bool(P.get_patch(pid) is not None and P.delete_patch(pid))
     golemfm.push_patches()
     return {"_log": f"patch '{pid}' " + ("deleted" if deleted else "absent (nothing to delete)"),
@@ -469,6 +472,9 @@ def _preset_delete(job):
     pid = _safe_id(str(job.get("preset_id")))
     if state.preset_id == pid:
         raise RuntimeError(f"preset '{pid}' is playing right now — recall another one first")
+    from . import factory
+    if factory.protected("presets", pid):
+        raise RuntimeError(f"preset '{pid}' is factory content: it can be hidden, not deleted")
     r = delete_preset(pid)
     if r["deleted"]:
         rigstatus.push_soon()

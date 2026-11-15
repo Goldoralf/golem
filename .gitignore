@@ -155,8 +155,11 @@ library/drumkits/*
 # ce qui s'en déduit. « Pour l'instant » : le jour où le store/vault dira OÙ ce
 # contenu vit et sous quelle licence, on rouvrira la question.
 # (pas de commentaire en bout de ligne : git le lirait comme une partie du motif)
-# DI de référence enregistrées (7 Mo d'audio) — l'index reste versionné
-library/di-refs/*/
+# DI de référence (2026-11-15, décision du mainteneur) : LIVRÉES avec golem — sans elles, « Listen » d'une capture
+# et les démos des sons de l'utilisateur ne se rendent pas ailleurs. Versionnées en FLAC (sans perte, 4,4 Mo) avec les
+# phrases MIDI et l'index ; les WAV d'origine et les prises sources restent locaux
+library/di-refs/**/*.wav
+library/di-refs/**/sources/
 # previews rendues par preset (régénérables)
 library/previews/
 # index dérivé du contenu du dossier
@@ -230,7 +233,6 @@ library/kits/
 library/dx7/
 library/grooves/
 library/sample-sets/
-library/di-refs/index.json
 library/patches/
 # ⚠ library/block-presets/ N'EST PLUS ignoré (2026-09-07). Ces 158 fichiers sont du contenu
 # d'USINE (`factory: true`, 55 sont les défauts à l'insertion d'un bloc), fabriqués par les

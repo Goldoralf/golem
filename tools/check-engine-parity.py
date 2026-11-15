@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Un bloc sonne-t-il pareil sous REAPER et sous le Golem Engine ? — mesuré (docs/ardour-plan.md §4).
 
-La MÊME DI (library/di-refs/guitar/<signal>.wav) traverse chaque bloc des deux côtés, réglé avec les MÊMES valeurs :
+La MÊME DI (library/di-refs/guitar/<signal>.flac, livrée avec golem) traverse chaque bloc des deux côtés, réglé avec les MÊMES valeurs :
   - REAPER : une instance ISOLÉE (dossier de ressources jetable, audio factice), le plugin ajouté par le nom du
     catalogue, les réglages d'ajout de golem_rig (FX_INIT) puis les paramètres posés par le code de golem_rig recopié
     tel quel (raw : TrackFX_SetParam ; norm : la valeur AFFICHÉE visée par dichotomie ; enum/bool : normalisés) ;
@@ -400,6 +400,10 @@ def main():
     work = Path(tempfile.mkdtemp(prefix="golem-engine-parity-"))
     try:
         src = ROOT / "library" / "di-refs" / "guitar" / f"{a.signal}.wav"
+        if not src.is_file():                        # le dépôt livre les DI en FLAC (2026-11-15) : décodée en WAV ici
+            flac = src.with_suffix(".flac")
+            src = work / f"{a.signal}.wav"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(flac), "-c:a", "pcm_s24le", str(src)], check=True)
         x, _ = CP.read_first_channel(src)
         x = x[:int(a.seconds * SR)]
         di = {"di": work / "di.wav", "noise": work / "noise.wav"}

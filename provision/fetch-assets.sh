@@ -87,24 +87,8 @@ fetch_watched() {
   return "$rc"
 }
 
-# ── DI de référence GoleM (guitare, basse) : le SEUL son livré — les previews de presets s'en re-ampent
-#    (docs/preset-preview.md). Publié en release GitHub `di-refs-v1` ; tant qu'il n'est pas publié, on le dit.
-# library/di-refs : là où le bridge les lit (bridge/config.py DI_REFS_DIR) — c'était library/di, qu'il ne lit pas.
-# PAS ENCORE ENREGISTRÉES (2026-10-23) : la release n'existe pas, son URL n'est pas épinglée — on le dit sans
-# tenter un téléchargement voué au refus (la ligne « ✗ non épinglé — refusé » faisait croire à une panne).
-DI_DIR="$ROOT/library/di-refs"; DI_URL="${GOLEM_DI_URL:-https://github.com/Goldoralf/golem-binaries/releases/download/di-refs-v1/golem-di-refs-v1.tar.gz}"
-if ! has_pack di; then
-  echo "  ⏭ DI de référence : pack « di » non demandé (GOLEM_PACKS=$PACKS)"
-elif ! awk -v u="$DI_URL" '$1 !~ /^#/ && $2 == u { f=1 } END { exit !f }' "$GOLEM_SUMS" 2>/dev/null; then
-  echo "  ⏭ DI de référence : pas encore publiées (docs/preset-preview.md) — les previews de presets attendront"
-elif ls "$DI_DIR"/*/*.wav "$DI_DIR"/*/*.flac >/dev/null 2>&1; then
-  echo "  ✓ DI de référence déjà présentes ($DI_DIR)"
-else
-  echo "  ↓ DI de référence GoleM ← $DI_URL"
-  mkdir -p "$DI_DIR" && cd "$DI_DIR"
-  if fetch_verified "$DI_URL" di.tgz; then tar -xzf di.tgz && rm -f di.tgz && echo "    ✓ DI de référence"
-  else rm -f di.tgz; echo "    ⚠ indisponible (pas encore publiée sur GitHub Releases, ou pas encore épinglée dans downloads.sha256) — les previews attendront ; rejouer fetch-assets.sh plus tard"; fi
-fi
+# ── DI de référence : LIVRÉES AVEC LE CODE depuis le 2026-11-15 (library/di-refs, FLAC + MIDI, versionnées) — plus
+#    rien à télécharger ici. Les démos d'usine rendues à partir d'elles arrivent par bridge/factory_demos.py.
 
 # ── Piano SFZ : Salamander Grand v3 (bloc piano, lane Keys — P1 claviers) ────
 if ! has_pack piano; then

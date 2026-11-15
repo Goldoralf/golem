@@ -148,6 +148,21 @@ def _ledger():
         return {}
 
 
+# L'USINE SE CACHE, ELLE NE S'EFFACE PAS (décision du mainteneur, 2026-11-15) : un objet d'usine effacé revenait à la
+# mise à jour suivante, et un patch d'usine qui s'en servait cassait entre-temps. Ce que l'utilisateur a ajouté, lui,
+# s'efface (à la corbeille quand elle existe). Garde appelée par chaque route de suppression ET par les jobs golem.fm.
+PROTECTED_MSG = "Factory content can't be deleted. Hide it in Settings ▸ Content ▸ Factory."
+
+
+def protected(kind, item_id):
+    """Vrai si `item_id` (sans extension) est un objet que l'usine livre, dans la sorte `kind` de KINDS."""
+    if kind not in KINDS or not item_id:
+        return False
+    ext = KINDS[kind][2]
+    name = os.path.basename(str(item_id))
+    return (name if name.endswith(ext) else name + ext) in set(catalog().get(kind) or [])
+
+
 def catalog():
     """{sorte: [nom de fichier, …]} — ce que l'usine livre."""
     out = {}

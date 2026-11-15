@@ -216,6 +216,13 @@ def apply(tag, fetch_src=None, fetch_signed=None):
                 py = os.path.join(C.ROOT, ".venv", "bin", "python")
                 subprocess.run([py, "-m", "pip", "install", "--require-hashes", "-r", _p(LOCK)], check=True,
                                capture_output=True, timeout=900)
+        # les DÉMOS D'USINE de la nouvelle version (2026-11-15) : posées à la mise à jour, par le NOUVEAU code (son TAG),
+        # jamais fatal — un échec se rattrape au démarrage (bridge/factory_demos.start)
+        try:
+            if os.environ.get("GOLEM_FACTORY_DEMOS", "1") != "0":      # 0 : la suite de tests (tests/conftest.py)
+                subprocess.run([sys.executable, "-m", "bridge.factory_demos"], cwd=C.ROOT, capture_output=True, timeout=600)
+        except Exception as e:
+            log.warning(f"démos d'usine non posées à la mise à jour : {e}")
         log.info(f"release {tag} posée par archive : {len(new_files)} fichiers, {removed} retirés, pip={pip}")
         return {"ok": True, "pip": pip, "removed": removed}
     finally:

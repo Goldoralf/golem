@@ -80,3 +80,13 @@ def test_kit_engine_et_pack_sample(tmp_path, monkeypatch):
     ex2 = packs2["local:kit-k2"]["extra"]
     assert {k: ex2[k] for k in ("kit_id", "engine", "factory")} == {"kit_id": "k2", "engine": "rs5k", "factory": False} and "pads" in packs2["local:kit-k2"]["tags"]
     assert ex2["type"] == "pads"
+
+
+def test_factory_files_are_never_uploaded():
+    # décision du 2026-11-15 : golem.fm a UNE copie des fichiers d'usine ; un rack n'envoie que leur fiche
+    from bridge import tones_sync as T
+    packs = [{"uid": "local:kit-pads-house", "extra": {"factory": True}, "assets": [{"sha256": "f1"}]},
+             {"uid": "local:synth-vital-factory", "extra": {}, "assets": [{"sha256": "f2"}]},
+             {"uid": "local:kit-mine", "extra": {"factory": False}, "assets": [{"sha256": "u1"}]},
+             {"uid": "local:groove-x", "extra": {"factory": True}, "assets": [{"sha256": "f3"}]}]
+    assert T.factory_shas(packs) == {"f1", "f2", "f3"}

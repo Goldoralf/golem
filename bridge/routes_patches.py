@@ -330,6 +330,9 @@ async def api_meta(pid: str, body: dict):
 def api_delete(pid: str):
     """Supprime le fichier — les lanes liées deviennent orphelines et jouent toujours
     leur copie inline (§9.3)."""
+    from . import factory
+    if factory.protected("patches", pid):
+        return JSONResponse({"error": factory.PROTECTED_MSG, "factory": True}, status_code=403)
     return _pushed({"ok": P.delete_patch(pid)})
 
 

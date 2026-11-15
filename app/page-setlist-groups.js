@@ -246,7 +246,7 @@ export function SetlistGroupsPage({ rig, sub }) {
             ${bank ? '' : html`<button class="mini edit-only" title="duplicate" onClick=${() => act(() => post('/api/setlists/' + s.id + '/duplicate'), 'copying…')}>⧉</button>
             ${fmPaired(rig) ? html`<button class="mini edit-only" title="push this setlist AND its presets to golem.fm" onClick=${() => doPush(s)}>${armed('p:' + s.id) ? 'send?' : '☁'}</button>` : ''}
             <button class="mini edit-only" title="freeze the SOUNDS of these presets (snapshot)" onClick=${() => act(() => post('/api/setlists/' + s.id + '/snapshot'), 'freezing…')}>📷</button>`}
-            ${!s.active ? html`<button class=${cls('mini edit-only', !armed('d:' + s.id) && 'slv-ic', armed('d:' + s.id) && 'danger')} title="delete the setlist (never the presets)" onClick=${() => remove(s)}>${armed('d:' + s.id) ? 'sure?' : '🗑'}</button>` : ''}
+            ${!s.active && !isFactory(s) ? html`<button class=${cls('mini edit-only', !armed('d:' + s.id) && 'slv-ic', armed('d:' + s.id) && 'danger')} title="delete the setlist (never the presets)" onClick=${() => remove(s)}>${armed('d:' + s.id) ? 'sure?' : '🗑'}</button>` : ''}
           </div>
         </div>
         <div class="slo-right" data-doc="setlists.detail">
@@ -293,7 +293,7 @@ export function SetlistGroupsPage({ rig, sub }) {
                      : 'open this ' + (s.kind === 'sounds' ? 'bank' : 'setlist') + ' at startup — it goes on the foot, on its first line'}
           onClick=${() => on ? del('/api/startup/home').catch(() => {}) : post('/api/startup/home', { kind: 'setlist', id: s.id, name: s.name }).catch(() => {})}>${on ? '⌂ startup' : '⌂'}</button>`; })()}
       ${s.kind === 'sounds' ? '' : html`<button class="mini slv-ic edit-only" title="duplicate" onClick=${() => act(() => post('/api/setlists/' + s.id + '/duplicate'), 'copying…')}>⧉</button>`}
-      ${!s.active ? html`<button class=${cls('mini edit-only', armed('d:' + s.id) && 'danger')} title="delete the setlist (never the presets)" onClick=${() => remove(s)}>${armed('d:' + s.id) ? 'sure?' : '🗑'}</button>` : ''}
+      ${!s.active && !isFactory(s) ? html`<button class=${cls('mini edit-only', armed('d:' + s.id) && 'danger')} title="delete the setlist (never the presets)" onClick=${() => remove(s)}>${armed('d:' + s.id) ? 'sure?' : '🗑'}</button>` : ''}
     </div>
   </div>`;
 

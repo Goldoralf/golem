@@ -324,7 +324,10 @@ def kit_card(k):
         out["mics"] = [{"name": m.get("name"), "group": m.get("group")} for m in k["mix"] if isinstance(m, dict)]
     pads = [p for p in k.get("pads") or [] if isinstance(p, dict) and p.get("sample")]
     if pads:
-        out["pads"] = [{"pad": i + 1, "note": p.get("note"), "label": _pad_label(p["sample"])} for i, p in enumerate(pads)]
+        # le NOM du fichier (sans chemin) : l'ordre des pads n'est pas celui des fichiers (pad 2 = 03_snare.wav), et
+        # golem.fm retrouve le son d'un pad parmi les assets du pack par ce nom (2026-11-15)
+        out["pads"] = [{"pad": i + 1, "note": p.get("note"), "label": _pad_label(p["sample"]),
+                        "sample": os.path.basename(str(p["sample"]))} for i, p in enumerate(pads)]
         out["samples"] = len(pads)
     src = k.get("source") if isinstance(k.get("source"), dict) else None
     # la source d'un kit de pads d'usine est une note interne (en français, un chemin de développeur) : jamais telle quelle

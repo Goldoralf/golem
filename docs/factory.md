@@ -91,7 +91,17 @@ the ninth preset, Ambient Metal. Fixed 2026-10-24: a Windows rack kept stale fac
 
 ## 3. Hide and restore (Settings ▸ Content ▸ Factory)
 
-The factory is **hidden, never deleted** by a switch per kind:
+The factory is **hidden, never deleted** by a switch per kind.
+
+> **FIXED 2026-11-15 (maintainer's decision): factory content cannot be deleted at all.** A deleted factory item came
+> back with the next update, and a factory patch that used it broke in between. `factory.protected(kind, id)` (an id
+> in `catalog()`) makes every delete route answer `403 {error, factory: true}` — patches, presets, setlists, grooves,
+> songs, block presets with `factory: true`; kits and the Vital factory pack already refused — and the golem.fm jobs
+> `patch-delete` / `preset-delete` fail with the reason. The UI offers no Delete on a factory item: its menu points to
+> this tab instead. **What the user added** (downloaded NAM captures, imported Vital presets and kits, their own
+> patches) is **deleted**, to the trash where one exists — never "hidden": it is theirs and takes disk space. If golem
+> ever ships factory captures, they follow the factory rule. `removed()` / `restore()` stay for items deleted before
+> this rule.
 
 | Endpoint | Function | Effect |
 |---|---|---|

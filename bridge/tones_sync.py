@@ -354,8 +354,9 @@ def build_packs(cache):
         if assets:
             packs.append({"uid": f"local:synth-vital-{label}", "kind": "synth",
                           "title": f"Vital presets ({label})", "brand": "Vital",
-                          "creator": "user", "url": "", "tags": ["synth", "vital", label],
-                          "style": "", "extra": {}, "assets": assets})
+                          "creator": "factory" if label == "factory" else "user", "url": "",
+                          "tags": ["synth", "vital", label],
+                          "style": "", "extra": {"factory": label == "factory"}, "assets": assets})
     return packs, blob_map
 
 
@@ -370,6 +371,16 @@ def _vital_meta(path):
     except (OSError, ValueError, AttributeError):
         comments = ""
     return {"preset_name": name, "style": style, "author": author, "comments": comments, "macros": list(macros)}
+
+
+def is_factory_pack(p):
+    """Un pack d'usine : marqué `factory` (kits, grooves) ou le pack des presets Vital d'usine."""
+    return bool((p.get("extra") or {}).get("factory")) or p.get("uid") == "local:synth-vital-factory"
+
+
+def factory_shas(packs):
+    """Les sha256 des fichiers d'usine — jamais téléversés."""
+    return {a.get("sha256") for p in packs if is_factory_pack(p) for a in p.get("assets") or [] if a.get("sha256")}
 
 
 def _doc_hash(pack):
@@ -545,7 +556,14 @@ def _worker():
             loans.refresh(manifest)
         except Exception as e:
             log.warning(f"registre des prêts non relu : {e}")
-        missing = [s for s in manifest.get("missing_blobs", []) if s in blob_map]
+        # LES FICHIERS D'USINE NE PARTENT JAMAIS (décision du mainteneur, 2026-11-15) : golem.fm en a UNE copie, prise
+        # du dépôt et de la release des démos, servie à tous ; chaque rack qui les renvoyait les faisait voyager 1 000
+        # fois. Leur fiche part (golem.fm reconnaît le pack, ses sha256 aussi), leurs octets non.
+        fac = factory_shas(packs)
+        missing = [s for s in manifest.get("missing_blobs", []) if s in blob_map and s not in fac]
+        if any(s in fac for s in manifest.get("missing_blobs", [])):
+            log.info(f"{sum(s in fac for s in manifest.get('missing_blobs', []))} fichier(s) d'usine demandé(s) : "
+                     "jamais envoyés (golem.fm a sa copie)")
         _ST.update(state="blobs", msg=f"uploading {len(missing)} file(s)…",
                    done=0, total=len(missing))
         for i, sha in enumerate(missing):

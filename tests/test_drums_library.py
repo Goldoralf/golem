@@ -147,7 +147,8 @@ def test_a_kit_card_for_golem_fm_says_what_a_drummer_cares_about():
                                 {"note": 38, "sample": "assets/samples/kits/x/03_snare.wav"}, {"note": 42}],
                        "source": {"by": "drumsynth (synthèse, ~/code/drumsynth)", "licence": "own — synthesized"}})
     assert pads["type"] == "pads" and pads["samples"] == 2
-    assert pads["pads"] == [{"pad": 1, "note": 36, "label": "kick"}, {"pad": 2, "note": 38, "label": "snare"}]
+    assert pads["pads"] == [{"pad": 1, "note": 36, "label": "kick", "sample": "01_kick.wav"},
+                            {"pad": 2, "note": 38, "label": "snare", "sample": "03_snare.wav"}]
     assert "~" not in json.dumps(pads) and "synthèse" not in json.dumps(pads)   # une note interne ne part pas telle quelle
     kit = D.kit_card({"id": "drums-aasimonster", "role": "drum", "engine": "drumgizmo", "hint": "metal",
                       "notes": {"kick": 36, "snare": 38}, "mix": [{"name": "OHL", "group": "oh", "gain": 0}]})

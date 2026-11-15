@@ -66,6 +66,15 @@ def kit_dir(kit_id):
     return os.path.join(C.PREVIEWS_DIR, "kit-" + store._safe_id(kit_id))
 
 
+def gm_net(k):
+    """La traduction GM → kit d'une BATTERIE dont la table n'est pas General MIDI (kit_import.gm_translation) ; {}
+    pour un kit GM ou un kit de pads (ses pads sont déjà sur les notes GM, kits.DEFAULT_NOTES)."""
+    from . import kit_import as KI
+    if (k or {}).get("role") != "drum" or not isinstance(k.get("notes"), dict):
+        return {}
+    return KI.gm_translation(k["notes"])
+
+
 def _kit_fp(k):
     """Ce qui fait le son d'un kit : son moteur et ce qu'il charge (banque avldrums, kit drumgizmo, sfz) — et, pour un
     kit de PADS, chaque son et son réglage (des samples refaits changent l'écoute d'un groove sur ce kit, 2026-11-15)."""
@@ -81,8 +90,11 @@ def _kit_fp(k):
     if k.get("imported") and k.get("midimap"):
         f = os.path.join(C.ROOT, k["midimap"])
         mm = [k["midimap"], _sha(f) if os.path.isfile(f) else None]
+    # le FILET d'un kit non GM (2026-11-15) : sa traduction change ce qu'on entend ; seulement quand il y en a une,
+    # l'empreinte d'un kit GM ne bouge pas
+    net = sorted(gm_net(k).items())
     return hashlib.sha1(json.dumps([k.get("engine"), k.get("bank"), k.get("drumkit"), k.get("sfz"), k.get("mix")]
-                                   + ([pads] if pads else []) + ([mm] if mm else []),
+                                   + ([pads] if pads else []) + ([mm] if mm else []) + ([["gm-net", net]] if net else []),
                                    sort_keys=True, default=str).encode()).hexdigest()[:16]
 
 
@@ -170,6 +182,8 @@ def render_kit(kit_id, seq_of, force=False):
         return {"status": "skipped", "reason": k.get("unavailable_why") or "not on this machine"}
     if not force and demo(k)["status"] == "ready":
         return {"status": "skipped", "reason": "up to date"}
+    from . import kit_import as KI
+    net = gm_net(k)
     d = kit_dir(kit_id)
     old = (entry(kit_id) or {}).get("clips") or {}
     clips, fails, new = {}, [], 0
@@ -179,6 +193,7 @@ def render_kit(kit_id, seq_of, force=False):
             fails.append(f"{ref}: reference missing")
             continue
         dur, lines = PV.midi_events(p, offset=PV.MIDI_LEAD_IN)
+        lines = KI.translate_lines(lines, net)          # un kit non GM : chaque note GM vers SA pièce (le filet)
         opus = os.path.join(d, ref.split("/")[-1] + ".opus")
         ok, why = _render(k, dur, lines, opus, seq_of(), f"kit-{kit_id}-{ref.split('/')[-1]}")
         if not ok:
@@ -275,7 +290,9 @@ def _hear(gen, path, kit, bpm, key, opus, seq):
     if not PV._gen_lock.acquire(blocking=False):
         return done(phase="error", error="a demo is already rendering")
     try:
+        from . import kit_import as KI
         dur, lines = groove_lines(path, bpm)
+        lines = KI.translate_lines(lines, gm_net(kit))  # un kit non GM : chaque note GM vers SA pièce (le filet)
         ok, why = _render(kit, dur, lines, opus, seq, f"gok-{key}")
         if not ok:
             return done(phase="error", error=why)

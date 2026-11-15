@@ -122,7 +122,7 @@ A rack kit is a library object referenced by a block (`drumkit` on a lane, `drum
 |---|---|---|
 | `avldrums` | none (samples inside the LV2 plugin) | `bank` ∈ `kits.AVL_BANKS` (`black-pearl`, `red-zeppelin`, `blonde-bop`) |
 | `drumgizmo` | a multi-mic kit folder under `library/drumkits/` | `drumkit` (the kit `.xml`) and `midimap` (`.xml`) — both required, the plugin has no default map; `mix[]` = factory mix, one `{ch, name, short, group, gain, pan}` per mic (≤ 16, groups `kits.MIC_GROUPS`, `trig` outputs muted); optional `bleed` |
-| `sfz` | a `.sfz` + samples under `library/sfz/` | `sfz` (path) |
+| `sfz` | a `.sfz` + samples under `library/sfz/` | `sfz` (path; for an import, the General MIDI copy `kit-gm.sfz`, original in `sfz_src`, §8.1) |
 | `rs5k` | pad kit: up to 16 `pads[] {note, sample, mode, level}` | samples under `assets/samples/`; `mode` = `gate` \| `oneshot` \| `toggle`; level in dB. Default notes `kits.DEFAULT_NOTES` = GM in MPC placement |
 
 A drum engine (`avldrums`, `drumgizmo`, `sfz`) also carries `notes` (element → kit note, vocabulary
@@ -335,9 +335,92 @@ import or a deletion (`kits._sync_soon`) so the card appears / disappears from t
 `kit-install` of a card is acknowledged `{card: true, installed: false}` without installing
 anything. See [golemfm-protocol.md](golemfm-protocol.md).
 
+### 8.1 General MIDI: imported kits, and the safety net for the rest
+
+> **Status: CODED** (2026-11-15).
+
+Demo phrases (`library/di-refs/drums/*.mid`), the groove library and the drum machine all send
+**General MIDI**. A kit that keeps its own numbering plays them on the wrong pieces. Two mechanisms
+deal with this: imports are rewritten in GM, and anything that cannot be rewritten is translated
+by piece name.
+
+**Imported kits are rewritten in GM** (`bridge/kit_import.py`). The same rule (`_gm_moves`) applies
+to both engines:
+
+- each recognised piece goes to its GM note (`GM_NOTES`);
+- a GM slot the kit lacks takes the nearest piece it has (`GM_FALLBACK`);
+- everything else (variants, pieces without a GM slot, unknown names) goes to free notes outside
+  the GM drum range 35..81, so nothing is lost.
+
+| engine | played file | original kept as | rewritten at startup |
+|---|---|---|---|
+| DrumGizmo | `midimap-gm.xml` next to the original | `midimap_src` | `remap_imported_gm`, once per `gm_rev` |
+| SFZ | `kit-gm.sfz` **in the same folder** as the original, so `default_path` and sample paths still resolve | `sfz_src` | same |
+
+The SFZ copy is **flat**:
+
+- each `#include` is expanded in place and each `#define` is substituted;
+- every `<region>` carries all the opcodes it inherits, with `key=` unfolded level by level;
+- `<control>` blocks keep their place among the regions;
+- each region moves to its new key, and its `pitch_keycenter` moves with it (same key-to-centre
+  distance, so the same pitch);
+- a piece with two GM slots (kick 36/35, tom 48/50, tom 43/41) or one that fills a missing slot is
+  emitted once per slot.
+
+Some constructs are not rewritten, because the copy would not be faithful:
+
+- a region spanning several keys;
+- keyswitches (`sw_*`);
+- `note_offset` / `octave_offset`;
+- `<curve>` / `<effect>` sections;
+- a missing `#include`.
+
+When the import meets one of these, the kit keeps its original `.sfz` and its own `notes`. The
+reason goes into `notes_note` ("kept its own note map (…)"), and the safety net below translates
+for it.
+
+**The safety net** (`kit_import.is_gm`, `gm_translation`, `translate_lines`). A kit **is GM** when
+every element that has a GM slot sits on one of its family's slots: its own, or that of a fallback.
+For example, the Aasimonster's `ride-edge` on 51 still counts as GM. Elements without a GM slot
+(`hh-half`, `aux*`, …) do not count. For a kit that is not GM, each GM note is translated:
+
+1. the note gives an element (`GM_NOTES` inverted);
+2. the element gives the kit's `notes[element]`, with the `GM_FALLBACK` chain when the kit lacks
+   it;
+3. clap 39, tambourine 54 and cowbell 56 go to `aux1` when the kit declares one, and pass through
+   otherwise;
+4. a GM note whose piece the kit lacks, with no fallback either, is **dropped**. In a kit that is
+   not GM it would hit an unrelated piece.
+
+A GM kit gets an empty translation, so its notes, its demo fingerprint and its demos do not change.
+The net is applied:
+
+- **kit demos and a groove heard on a kit** (`drum_preview.render_kit`, `_hear`): the translation
+  enters the kit fingerprint (`_kit_fp`) only when it is not empty;
+- **the drum machine** (`drums.DrumControl._play`): the `play` command carries
+  `notemap {"GM note": kit note, -1 = drop}`, and `golem_drums.lua` rewrites the notes as it loads
+  the bank (`apply_notemap`; the map is part of the bank fingerprint). Covered by
+  `tests/test_drums_notemap_lua.py`.
+
+The **Standards** player sends GM straight to an avldrums bank (`kit` = a bank name, not a rack
+kit), so the net does not cover it.
+
+**Factory AVL kits.** The note tables in `Black_Pearl_4_LV2.sf2`, `Red_Zeppelin_4_LV2.sf2` and
+`Blonde_Bop_LV2.sf2` were read on 2026-11-15:
+
+- **52 = "RideChoke"** in all three banks;
+- **60 = "Crash3"** (Black Pearl, Red Zeppelin) or **"ChinaCrash"** (Blonde Bop).
+
+avldrums cannot play a china on 52, so the seeds keep `china: 60`. These kits are therefore not GM
+(also tom 45, open hi-hat 48). The net sends GM 52 to 60, 48/50 to 45, 45/47/43 to the floor tom
+41, 46 to the swish 48 and 35 to 36. Their demos are pending once and re-render with the
+translation. An **e-drum** does not need the net: its module notes already go through
+`drumkits.translation` (module note → element → `kit_note`, with `HH_FALLBACK`) to the kit's own
+notes. Moving the china to 52 would make an e-drum's china play the ride choke.
+
 ## 9. Tests and tools
 
 `tests/test_drumkits.py`, `test_drums_lane.py`, `test_drums_patch.py`,
-`test_patches_drums_bind.py`, `test_kit_import.py`, `test_role_categories.py`,
+`test_patches_drums_bind.py`, `test_kit_import.py`, `test_drums_notemap_lua.py`, `test_role_categories.py`,
 `test_inputmap_usb.py`, `test_lane_stomps.py`. Tools: `tools/check-descriptors.py` (shape),
 `tools/check-drums.py` (listen to a module), `tools/import-drum-packs.py`.

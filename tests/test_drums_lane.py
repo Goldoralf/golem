@@ -295,3 +295,20 @@ def test_rappuyer_sur_le_switch_coupe_la_batterie(monkeypatch):
     assert sent[-1]["op"] == "stop" and not ctl.snapshot()["drums"]["playing"]
     ctl.tap(*args); ctl.tap(*args)                               # l'écran : même geste
     assert [c["op"] for c in sent[-2:]] == ["play", "stop"]
+
+
+def test_le_play_d_un_kit_non_gm_porte_sa_traduction_un_kit_gm_rien(monkeypatch):
+    """Le filet (2026-11-15) : les grooves sont GM ; un kit dont la table ne l'est pas (les AVL : tom 45, china 60)
+    reçoit `notemap` — golem_drums réécrit les notes en chargeant la banque (tests/test_drums_notemap_lua.py)."""
+    from bridge import drums, kits
+    table = {"avl": {"id": "avl", "role": "drum", "engine": "avldrums", "notes": {"kick": 36, "tom1": 45, "china": 60}},
+             "gm": {"id": "gm", "role": "drum", "engine": "avldrums", "notes": {"kick": 36, "tom1": 48, "china": 52}}}
+    monkeypatch.setattr(kits, "get_kit", lambda kid: table.get(kid))
+    sent = []
+    ctl = drums.DrumControl(emit=sent.append)
+    ctl.tap("d", ["library/grooves/x.mid"], [], "avl")
+    nm = sent[-1]["notemap"]
+    assert nm["52"] == 60 and nm["48"] == nm["50"] == 45 and nm["38"] == -1 and "36" not in nm   # pas de caisse : rien
+    ctl.tap("d", [], [], "avl")
+    ctl.tap("d", ["library/grooves/x.mid"], [], "gm")
+    assert sent[-1]["op"] == "play" and "notemap" not in sent[-1]

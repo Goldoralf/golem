@@ -101,6 +101,11 @@ class DrumControl:
         # kit multi-micros : le mix voyage AVEC le play — golem_drums ne relit pas le preset.
         if p.get("mix"):
             cmd["mix"], cmd["master"] = p["mix"], p.get("master", -6)
+        # LE FILET (2026-11-15) : un kit dont la table n'est pas General MIDI reçoit les grooves (GM) traduits par
+        # le nom des pièces — golem_drums réécrit les notes en chargeant la banque. Rien pour un kit GM.
+        nm = gm_notemap(p.get("kit"))
+        if nm:
+            cmd["notemap"] = nm
         self._emit(cmd)
         st["playing"], st["idx"], st["t"] = True, idx, _time.monotonic()
         self._on_change()
@@ -239,6 +244,16 @@ def blocks(preset):
             out.append({"block": b["id"], "patterns": patterns, "fills": pm.get("fills") or [], "kit": pm.get("kit"),
                         **resolve_mix(pm.get("kit"), pm)})
     return out
+
+
+def gm_notemap(kit_id):
+    """{"note GM": note du kit, -1 = se taire} pour une batterie non GM (kit_import.gm_translation) ; {} sinon.
+    Les clés en texte : la commande est du JSON, et golem_drums la lit au motif."""
+    from . import kits as K, kit_import as KI
+    k = K.get_kit(kit_id) if kit_id else None
+    if not k or k.get("role") != "drum" or not isinstance(k.get("notes"), dict):
+        return {}
+    return {str(n): (-1 if t is None else t) for n, t in KI.gm_translation(k["notes"]).items()}
 
 
 def resolve_mix(kit_id, params):

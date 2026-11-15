@@ -132,37 +132,119 @@ def best_pieces(multi, pieces, extra):
 _FREE = list(range(82, 128)) + list(range(34, -1, -1))
 
 
-def gm_remap(multi, pieces):
-    """{note → [instr]} lu dans le kit + {élément → note} reconnus → ({note GM → [instr]}, {élément → note GM},
-    [instruments laissés faute de note libre])."""
-    out, notes, placed = {}, {}, {}                     # placed : note d'ORIGINE → sa nouvelle note (la 1re)
+def _gm_src(el, pieces):
+    """L'élément du kit qui joue la case GM de `el` : lui-même, sinon le plus proche (GM_FALLBACK), sinon None."""
+    src, seen = el, set()
+    while src and src not in pieces and src not in seen:
+        seen.add(src)
+        src = GM_FALLBACK.get(src)
+    return src if src and src in pieces else None
+
+
+def _gm_moves(in_kit, pieces):
+    """Les notes du kit (un ensemble) + {élément → note} reconnus → ({note d'origine → [nouvelles notes]},
+    {élément → nouvelle note}, [notes d'origine laissées faute de note libre]). Le cœur commun du midimap DrumGizmo
+    et du .sfz : une pièce reconnue va sur sa (ses) case(s) GM, le reste sur des notes libres hors plage GM."""
+    moves, notes, placed = {}, {}, {}                   # placed : note d'ORIGINE → sa nouvelle note (la 1re)
     for el, gm in GM_NOTES.items():
-        src, seen = el, set()
-        while src and src not in pieces and src not in seen:
-            seen.add(src)
-            src = GM_FALLBACK.get(src)
-        if not src or src not in pieces or not multi.get(pieces[src]):
+        src = _gm_src(el, pieces)
+        if not src or pieces[src] not in in_kit:
             continue
-        for n in gm:
-            out[n] = list(multi[pieces[src]])
+        moves.setdefault(pieces[src], []).extend(gm)
         placed.setdefault(pieces[src], gm[0])
         if el in pieces:
             notes[el] = gm[0]
     free = list(_FREE)
     left = []
-    rest = [pieces[el] for el in pieces if el not in notes] + sorted(multi)    # les pièces d'abord, puis le reste
+    rest = [pieces[el] for el in pieces if el not in notes] + sorted(in_kit)    # les pièces d'abord, puis le reste
     for n0 in rest:
-        if n0 in placed or not multi.get(n0):
+        if n0 in placed or n0 not in in_kit:
             continue
         if not free:
-            left += multi[n0]
+            left.append(n0)
             continue
         placed[n0] = n = free.pop(0)
-        out[n] = list(multi[n0])
+        moves[n0] = [n]
     for el, n0 in pieces.items():
         if el not in notes and n0 in placed:
             notes[el] = placed[n0]
-    return out, notes, left
+    return moves, notes, left
+
+
+def gm_remap(multi, pieces):
+    """{note → [instr]} lu dans le kit + {élément → note} reconnus → ({note GM → [instr]}, {élément → note GM},
+    [instruments laissés faute de note libre])."""
+    moves, notes, left = _gm_moves({n for n, v in multi.items() if v}, pieces)
+    out = {n: list(multi[n0]) for n0, ns in moves.items() for n in ns}
+    return out, notes, [i for n0 in left for i in multi[n0]]
+
+
+# ── LE FILET (2026-11-15) : une phrase GM jouée par un kit qui N'EST PAS en General MIDI ────────────────────────────
+# Les démos, l'écoute d'un groove sur un kit et la boîte à rythmes envoient du GM. Un kit dont la table n'est pas GM
+# (les batteries avldrums d'usine : tom 45, charleston ouverte 48, china 60 ; un .sfz qu'on n'a pas su réécrire) y
+# tapait à côté — la note GM 48 (tom aigu) jouait le « swish » de charleston d'AVL. On traduit donc PAR LE NOM :
+# note GM → élément (GM_NOTES inversé) → la note du kit pour cet élément, avec le même repli que GM_FALLBACK. Une
+# note GM dont le kit n'a ni la pièce ni de voisine se tait (dans un kit non GM, elle frapperait n'importe quoi).
+GM_ELEMENT = {n: el for el, ns in GM_NOTES.items() for n in ns}
+# les autres notes GM des grooves (grooves.KIT_NOTES) : clap, tambourin, cowbell — pas d'élément propre ; un kit qui
+# déclare un `aux1` (guess_element y range cloche, clap, tambourin) les joue là, sinon elles passent telles quelles
+GM_EXTRA = {39: "aux1", 54: "aux1", 56: "aux1"}
+
+
+def _gm_slots(el):
+    """Les cases GM qu'un élément peut occuper : les siennes, puis celles de ses replis (une ride sans bord distinct
+    tient aussi la case ride-edge 59 sur 51 : l'Aasimonster reste GM)."""
+    out, src, seen = set(), el, set()
+    while src and src not in seen:
+        seen.add(src)
+        out.update(GM_NOTES.get(src, ()))
+        src = GM_FALLBACK.get(src)
+    return out
+
+
+def _clean_notes(notes):
+    return {el: n for el, n in (notes or {}).items() if isinstance(n, int) and not isinstance(n, bool) and 0 <= n <= 127}
+
+
+def is_gm(notes):
+    """Un kit « est GM » quand chaque élément qui a une case GM est sur l'une des cases de sa famille (la sienne ou
+    celle d'un repli). Les éléments sans case GM (charleston mi-ouverte, aux…) ne comptent pas. Sans table : GM."""
+    return all(n in _gm_slots(el) for el, n in _clean_notes(notes).items() if el in GM_NOTES)
+
+
+def gm_translation(notes):
+    """{note GM → note du kit, ou None = se taire} pour un kit non GM ; {} pour un kit GM (rien ne bouge)."""
+    notes = _clean_notes(notes)
+    if is_gm(notes):
+        return {}
+    out = {}
+    for n, el in sorted(GM_ELEMENT.items()):
+        src = _gm_src(el, notes)
+        t = notes[src] if src else None
+        if t != n:
+            out[n] = t
+    for n, el in GM_EXTRA.items():
+        if el in notes and notes[el] != n:
+            out[n] = notes[el]
+    return out
+
+
+def translate_lines(lines, tr):
+    """Lignes golem_preview (`n début fin canal note vél`, `c …`) passées par une traduction GM → kit : la note
+    change, ou la ligne tombe (None). Sans traduction : les mêmes lignes, l'objet même."""
+    if not tr:
+        return lines
+    out = []
+    for ln in lines:
+        p = ln.split()
+        if len(p) == 6 and p[0] == "n" and p[4].isdigit() and int(p[4]) in tr:
+            t = tr[int(p[4])]
+            if t is None:
+                continue
+            p[4] = str(t)
+            ln = " ".join(p)
+        out.append(ln)
+    return out
 
 
 def midimap_xml(table):
@@ -191,22 +273,43 @@ def write_gm(dest_dir, src_midimap):
     return notes, left
 
 
+def _sfz_gm_doc(k, orig):
+    """Les champs d'un kit SFZ importé après la règle GM : la copie GM écrite (`sfz` = elle, `sfz_src` = l'original,
+    `notes` relues) — ou, quand la copie ne serait pas fidèle, l'original gardé et le pourquoi dans `notes_note` (le
+    filet gm_translation traduit alors démos et grooves). `orig` : chemin relatif à la racine du .sfz d'origine."""
+    res = write_sfz_gm(os.path.join(C.ROOT, orig))
+    if res["ok"]:
+        return {"sfz": os.path.dirname(orig) + "/" + GM_SFZ, "sfz_src": orig, "notes": res["notes"], "gm_rev": GM_REV,
+                "notes_note": _gm_note(k.get("notes_note"), res["left"])}
+    log.info("kit sfz %s : pas de copie GM (%s) — le filet traduit", orig, res["why"])
+    note = re.sub(r" — kept its own note map .*$", "", k.get("notes_note") or "read at import")
+    return {"sfz": orig, "sfz_src": None, "gm_rev": GM_REV,
+            "notes_note": note + f" — kept its own note map ({res['why']}): demos and grooves are translated through the piece names"}
+
+
 def remap_imported_gm():
-    """Les kits DrumGizmo importés réécrits par une règle plus ancienne (ou pas du tout) : réécrits depuis leur table
-    d'origine (`midimap_src`). Rend leurs ids. Appelé au démarrage ; idempotent (`gm_rev`)."""
+    """Les kits DrumGizmo et SFZ importés réécrits par une règle plus ancienne (ou pas du tout) : réécrits depuis leur
+    table d'origine (`midimap_src`, `sfz_src`). Rend leurs ids. Appelé au démarrage ; idempotent (`gm_rev`)."""
     from . import kits
     done = []
     for k in kits.list_kits():
-        if k.get("factory") or k.get("engine") != "drumgizmo" or not k.get("imported") or k.get("gm_rev") == GM_REV:
+        if k.get("factory") or k.get("engine") not in ("drumgizmo", "sfz") or not k.get("imported") \
+                or k.get("gm_rev") == GM_REV:
             continue
-        orig = k.get("midimap_src") or k.get("midimap") or ""
-        src = os.path.join(C.ROOT, orig)
-        if not os.path.isfile(src):
-            continue
-        notes, left = write_gm(os.path.dirname(src), src)
-        doc = dict(k, midimap_src=orig, notes=notes, gm_rev=GM_REV,
-                   midimap=os.path.dirname(k["midimap"]) + "/" + GM_MIDIMAP,
-                   notes_note=_gm_note(k.get("notes_note"), left))
+        if k["engine"] == "sfz":
+            orig = k.get("sfz_src") or k.get("sfz") or ""
+            if not os.path.isfile(os.path.join(C.ROOT, orig)):
+                continue
+            doc = dict(k, **_sfz_gm_doc(k, orig))
+        else:
+            orig = k.get("midimap_src") or k.get("midimap") or ""
+            src = os.path.join(C.ROOT, orig)
+            if not os.path.isfile(src):
+                continue
+            notes, left = write_gm(os.path.dirname(src), src)
+            doc = dict(k, midimap_src=orig, notes=notes, gm_rev=GM_REV,
+                       midimap=os.path.dirname(k["midimap"]) + "/" + GM_MIDIMAP,
+                       notes_note=_gm_note(k.get("notes_note"), left))
         res = kits.save_kit(doc, allow_drums=True)
         if res.get("ok"):
             done.append(k["id"])
@@ -221,7 +324,7 @@ def remap_imported_gm():
 def _gm_note(note, left):
     if "rewritten in General MIDI" in (note or ""):       # déjà dit (une règle plus récente réécrit le même kit)
         return re.sub(r" — no free note left for: .*$", "", note) + (f" — no free note left for: {', '.join(left[:8])}" if left else "")
-    base = re.sub(r"^read in ([^ ]+) at import", r"read in \1 at import, rewritten in General MIDI", note or "") \
+    base = re.sub(r"^read in (.+?) at import",r"read in \1 at import, rewritten in General MIDI", note or "") \
         or "rewritten in General MIDI at import"
     return base + (f" — no free note left for: {', '.join(left[:8])}" if left else "")
 
@@ -413,6 +516,191 @@ def sfz_note_names(regions):
             nm = os.path.splitext(os.path.basename(str(r["sample"]).replace("\\", "/")))[0]
         out[note] = nm or f"note {note}"
     return out
+
+
+# ── SFZ en General MIDI (2026-11-15) : une COPIE à plat du .sfz, à côté de l'original ───────────────────────────────
+# Même règle que le midimap DrumGizmo (_gm_moves). La copie est À PLAT : #include dépliés à leur place, #define
+# remplacés, chaque <region> porte tous ses opcodes hérités (<global>/<master>/<group>) — on ne réécrit pas des clés
+# héritées à travers des fichiers. Elle vit dans le MÊME dossier : default_path et les chemins d'échantillons restent
+# relatifs au même endroit. Ce qu'on ne sait pas réécrire juste (une région sur plusieurs touches, des keyswitches,
+# un note_offset, <curve>/<effect>) : le kit garde sa table, et le filet (gm_translation) traduit démos et grooves.
+GM_SFZ = "kit-gm.sfz"
+_SFZ_UNSUPPORTED_CTL = ("note_offset", "octave_offset")
+
+
+class _SfzNotGm(ValueError):
+    pass
+
+
+def _sfz_expand(text, reader, depth=0, defines=None):
+    """Le texte d'un .sfz, #include dépliés à leur place et #define remplacés ; commentaires retirés."""
+    defines = {} if defines is None else defines
+    text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+    out = []
+    for raw in text.splitlines():
+        line = raw.split("//", 1)[0].strip()
+        for k in sorted(defines, key=len, reverse=True):
+            line = line.replace(k, defines[k])
+        if not line:
+            continue
+        m = re.match(r"#define\s+(\$\w+)\s+(.*)$", line)
+        if m:
+            defines[m.group(1)] = m.group(2).strip()
+            continue
+        m = re.match(r'#include\s+"([^"]+)"', line)
+        if m:
+            if depth >= 8:
+                raise _SfzNotGm("#include nested too deep")
+            try:
+                sub = reader(m.group(1))
+            except OSError as e:
+                raise _SfzNotGm(f"#include {m.group(1)} unreadable ({e.__class__.__name__})")
+            out.append(_sfz_expand(sub, reader, depth + 1, defines))
+            continue
+        if line.startswith("#"):
+            continue
+        out.append(line)
+    return "\n".join(out)
+
+
+def _sfz_key(lvl):
+    """`key=N` d'un niveau = lokey=hikey=pitch_keycenter=N (un pitch_keycenter explicite du même niveau l'emporte) :
+    déplié niveau par niveau, une région `key=24` sous un <group> `lokey=40 hikey=40` reste bien sur 24."""
+    if "key" not in lvl:
+        return lvl
+    d = {k: v for k, v in lvl.items() if k != "key"}
+    d["lokey"] = d["hikey"] = lvl["key"]
+    d.setdefault("pitch_keycenter", lvl["key"])
+    return d
+
+
+def _sfz_flat(body):
+    """Le texte déplié → [("control", {opcodes}) | ("region", {opcodes hérités compris})], dans l'ordre."""
+    items, ctx, kind, cur = [], {"global": {}, "master": {}, "group": {}}, None, None
+    pos, parts = 0, []
+    for m in _SFZ_HDR.finditer(body):
+        parts.append((None, body[pos:m.start()]))
+        pos = m.end()
+        parts.append((m.group(1).lower(), None))
+    parts.append((None, body[pos:]))
+
+    def close():
+        if kind == "region" and cur is not None:
+            r = {}
+            for lvl in (ctx["global"], ctx["master"], ctx["group"], cur):
+                r.update(_sfz_key(lvl))
+            items.append(("region", r))
+        elif kind == "control" and cur:
+            items.append(("control", cur))
+    for hdr, chunk in parts:
+        if hdr is not None:
+            close()
+            if hdr in ("curve", "effect"):
+                raise _SfzNotGm(f"<{hdr}> sections")
+            kind, cur = hdr, {}
+            if hdr in ("global", "master", "group"):
+                ctx[hdr] = {}
+                if hdr == "global":
+                    ctx["master"], ctx["group"] = {}, {}
+                elif hdr == "master":
+                    ctx["group"] = {}
+            continue
+        if not chunk or kind is None:
+            if chunk and chunk.strip() and kind is None:
+                raise _SfzNotGm("opcodes outside any section")
+            continue
+        keys = list(_SFZ_OPC.finditer(chunk))
+        for i, k in enumerate(keys):
+            v = chunk[k.end():keys[i + 1].start() if i + 1 < len(keys) else len(chunk)].strip()
+            key = k.group(1).lower()
+            if kind in ("global", "master", "group"):
+                ctx[kind][key] = v
+            else:
+                cur[key] = v
+    close()
+    return items
+
+
+def _sfz_region_note(r):
+    """La touche UNIQUE d'une région (key, ou lokey == hikey) ; sinon _SfzNotGm."""
+    if any(k.startswith("sw_") for k in r):
+        raise _SfzNotGm("keyswitches (sw_*)")
+    lo, hi = _note_of(r.get("lokey")), _note_of(r.get("hikey"))       # key= déjà déplié (_sfz_key)
+    n = lo if lo is not None and lo == hi else None
+    if n is None or not 0 <= n <= 127:
+        raise _SfzNotGm("a region spans several keys")
+    return n
+
+
+def sfz_gm(text, reader):
+    """Le texte d'un .sfz → (texte de la copie GM, {élément → note}, [noms laissés faute de note libre]).
+    _SfzNotGm (ValueError) quand la copie ne serait pas fidèle — le kit garde alors sa table."""
+    items = _sfz_flat(_sfz_expand(text, reader))
+    regions = []
+    for kind, ops in items:
+        if kind == "control" and any(k in ops for k in _SFZ_UNSUPPORTED_CTL):
+            raise _SfzNotGm("note_offset / octave_offset")
+        if kind == "region":
+            regions.append((_sfz_region_note(ops), ops))
+    if not regions:
+        raise _SfzNotGm("no region")
+    names = sfz_note_names([dict(ops, key=str(n), lokey=None) for n, ops in regions])
+    multi = {n: [nm] for n, nm in names.items()}
+    pieces, _unknown, extra = pieces_from_names(names)
+    moves, notes, left = _gm_moves(set(names), best_pieces(multi, pieces, extra))
+    out = ["// golem: General MIDI copy of this kit, written at import (bridge/kit_import.py, sfz_gm).",
+           "// Do not edit: the original sits next to it (the kit's sfz_src) and this copy is rebuilt from it."]
+    # les <control> restent à leur place parmi les régions (un default_path peut changer en cours de fichier)
+    ri = 0
+    for kind, ops in items:
+        if kind == "control":
+            out.append("<control>")
+            out += [f"{k}={v}" for k, v in ops.items()]
+            continue
+        n0, r = regions[ri]
+        ri += 1
+        pk = r.get("pitch_keycenter")
+        pkn = _note_of(pk) if pk is not None else 60     # le centre par défaut du format (key= l'a déjà posé)
+        for n in moves.get(n0, []):                      # une note laissée (plus de note libre) : sa région tombe
+            body = {k: v for k, v in r.items() if k not in ("key", "lokey", "hikey", "pitch_keycenter")}
+            out.append("<region>")
+            out.append(f"lokey={n}")
+            out.append(f"hikey={n}")
+            if pkn is None:                              # pitch_keycenter=sample : tel quel
+                out.append(f"pitch_keycenter={pk}")
+            else:
+                c = n + pkn - n0                         # le même écart touche → centre : la même hauteur
+                if not 0 <= c <= 127:
+                    if str(r.get("pitch_keytrack", "100")).strip() not in ("0", "0.0"):
+                        raise _SfzNotGm("a pitch centre would leave 0..127")
+                    c = max(0, min(127, c))
+                out.append(f"pitch_keycenter={c}")
+            out += [f"{k}={v}" for k, v in body.items()]
+    return "\n".join(out) + "\n", notes, [names[n] for n in left]
+
+
+def write_sfz_gm(src_sfz):
+    """Écrit <dossier>/kit-gm.sfz depuis le .sfz d'origine. Rend {ok, notes, left, path} ou {ok: False, why}."""
+    folder = os.path.dirname(src_sfz)
+    if os.path.basename(src_sfz) == GM_SFZ:
+        return {"ok": False, "why": f"the kit's own file is named {GM_SFZ}"}
+
+    def reader(inc):
+        with open(os.path.join(folder, inc.replace("\\", "/")), "r", encoding="utf-8", errors="replace") as f:
+            return f.read()
+    try:
+        with open(src_sfz, "r", encoding="utf-8", errors="replace") as f:
+            text, notes, left = sfz_gm(f.read(), reader)
+    except _SfzNotGm as e:
+        return {"ok": False, "why": str(e)}
+    except OSError as e:
+        return {"ok": False, "why": f"unreadable ({e.__class__.__name__})"}
+    dst = os.path.join(folder, GM_SFZ)
+    tmp = dst + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+    os.replace(tmp, dst)
+    return {"ok": True, "notes": notes, "left": left, "path": dst}
 
 
 # ── 2. LIRE UN DOSSIER ─────────────────────────────────────────────────────────────────────────────────────
@@ -742,7 +1030,7 @@ def install(path, name=None, sfz_file=None):
             doc["notes"], doc["notes_note"] = notes, _gm_note(doc["notes_note"], left)
             doc["mix"] = _mix_from_channels(r.get("channels") or [])
         else:
-            doc["sfz"] = rel + "/" + r["sfz_file"]
+            doc.update(_sfz_gm_doc(doc, rel + "/" + r["sfz_file"]))
         res = kits.save_kit(doc, allow_drums=True)
         if not res.get("ok"):
             shutil.rmtree(dest, ignore_errors=True)

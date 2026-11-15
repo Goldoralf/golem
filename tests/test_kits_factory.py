@@ -66,3 +66,18 @@ def test_une_batterie_ne_se_supprime_ni_ne_se_cree_depuis_un_ecran(tmp_path, mon
     # un kit de pads garde son cycle complet
     assert kits.save_kit({"id": "pads1", "name": "Pads", "engine": "rs5k", "pads": []})["ok"]
     assert kits.delete_kit("pads1")["ok"] is True
+
+
+def test_les_batteries_avl_gardent_la_china_sur_60_et_le_filet_y_envoie_le_52_gm():
+    """avldrums (Black_Pearl_4 / Red_Zeppelin_4 / Blonde_Bop_LV2.sf2, lu le 2026-11-15) : 52 = « RideChoke » dans les
+    trois banques, 60 = Crash3 (Black Pearl, Red Zeppelin) ou ChinaCrash (Blonde Bop). Mettre la china sur 52 ferait
+    jouer une ride étouffée : la table reste sur 60, et le filet GM (kit_import.gm_translation) y envoie le 52 des
+    grooves et des démos. Les kits AVL ne sont donc PAS GM (tom 45, charleston ouverte 48) ; l'Aasimonster l'est."""
+    from bridge import kit_import as KI
+    seeds = {s["id"]: s for s in kits.factory_seeds()}
+    for sid in ("drums-black-pearl", "drums-red-zeppelin", "drums-blonde-bop"):
+        n = seeds[sid]["notes"]
+        assert n["china"] == 60 and not KI.is_gm(n)
+        tr = KI.gm_translation(n)
+        assert tr[52] == 60 and tr[48] == 45 and tr[46] == 48 and tr[35] == 36 and 36 not in tr and 42 not in tr
+    assert KI.is_gm(seeds["drums-aasimonster"]["notes"]) and KI.gm_translation(seeds["drums-aasimonster"]["notes"]) == {}

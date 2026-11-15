@@ -145,7 +145,10 @@ def test_install_copie_pose_une_fiche_importee_qui_se_supprime_avec_son_dossier(
         time.sleep(0.05)
     assert j["state"] == "done", j
     kit = j["result"]["kit"]
-    assert kit["id"] == "drums-my-sfz-kit" and kit["engine"] == "sfz" and kit["sfz"] == "library/sfz/my-sfz-kit/kit.sfz"
+    # le kit joue sa COPIE General MIDI, écrite à côté de l'original (2026-11-15)
+    assert kit["id"] == "drums-my-sfz-kit" and kit["engine"] == "sfz" and kit["sfz"] == "library/sfz/my-sfz-kit/kit-gm.sfz"
+    assert kit["sfz_src"] == "library/sfz/my-sfz-kit/kit.sfz" and kit["gm_rev"] == KI.GM_REV
+    assert kit["notes"]["hh-open"] == 46 and "rewritten in General MIDI" in kit["notes_note"]
     assert kit["notes"]["kick"] == 36 and kit["imported"]["dir"] == "library/sfz/my-sfz-kit" and kit["imported"]["files"] == 3
     assert (rack / "library" / "sfz" / "my-sfz-kit" / "toms.sfz").is_file()
     assert j["done_bytes"] == j["total_bytes"] > 0
@@ -271,3 +274,89 @@ def test_l_import_drumgizmo_pose_la_table_general_midi_et_garde_l_originale(kit_
     assert table[36] == ["Kick"] and table[42] == ["HiHat-Closed"] and table[57] == ["Crash2"]
     assert "Weird" not in {i for n in KI.GM_RANGE for i in table.get(n, [])}   # inconnu : gardé, hors plage GM
     assert KI.remap_imported_gm() == []                                 # déjà en GM : rien à refaire
+
+
+# ── le filet GM (2026-11-15) et les .sfz en General MIDI ───────────────────────────────────────────────────────────
+
+def test_un_kit_est_gm_quand_chaque_piece_est_sur_une_case_de_sa_famille():
+    assert KI.is_gm({}) and KI.is_gm({"kick": 36, "snare": 38, "ride-edge": 51, "hh-half": 41})   # ride-edge → ride
+    assert not KI.is_gm({"kick": 24, "snare": 38})
+    assert KI.gm_translation({"kick": 36, "snare": 38}) == {}
+    tr = KI.gm_translation({"kick": 24, "snare": 32, "hh-closed": 30, "aux1": 70})
+    assert tr[36] == tr[35] == 24 and tr[38] == tr[40] == tr[37] == 32        # le rim et le cross-stick : la caisse
+    assert tr[44] == tr[46] == 30 and tr[48] is None and tr[49] is None         # pas de tom ni de crash : se taire
+    assert tr[39] == tr[54] == tr[56] == 70                                     # clap, tambourin, cowbell → aux1
+    assert 39 not in KI.gm_translation({"kick": 24}) and KI.gm_translation({"kick": True, "snare": 38}) == {}
+
+
+def test_les_lignes_d_une_phrase_passent_par_la_traduction():
+    lines = ["n 1.000000 1.100000 9 48 100", "c 1.000000 176 9 4 90", "n 2.000000 2.100000 9 50 90",
+             "n 3.000000 3.100000 9 36 80"]
+    assert KI.translate_lines(lines, {}) is lines                               # un kit GM : rien ne bouge
+    assert KI.translate_lines(lines, {48: 45, 50: None}) == [
+        "n 1.000000 1.100000 9 45 100", "c 1.000000 176 9 4 90", "n 3.000000 3.100000 9 36 80"]
+
+
+def test_la_copie_gm_d_un_sfz_deplie_include_et_define_et_garde_la_hauteur():
+    sfz = ('#define $SN 40\n<control> default_path=s/\n<global> ampeg_release=0.2\n'
+           '<group> lokey=$SN hikey=$SN\n<region> sample=Snare.wav\n#include "k.sfz"\n')
+    text, notes, left = KI.sfz_gm(sfz, lambda inc: "<region> key=24 sample=Kick 1.wav\n")
+    assert notes == {"snare": 38, "kick": 36} and left == []
+    regs = [dict(ln.split("=", 1) for ln in r.strip().splitlines()) for r in text.split("<region>")[1:]]
+    by = {r["lokey"]: r for r in regs}
+    # la caisse claire était sur 40 sans centre (60 par défaut) : le même écart → 38 + 60 - 40 = 58
+    assert by["38"]["pitch_keycenter"] == "58" and by["38"]["sample"] == "Snare.wav" and by["38"]["ampeg_release"] == "0.2"
+    assert by["36"]["pitch_keycenter"] == "36" and by["36"]["sample"] == "Kick 1.wav"         # key= : centre = touche
+    assert by["35"]["sample"] == "Kick 1.wav" and by["40"]["sample"] == "Snare.wav"            # les deux cases GM
+    assert "<control>\ndefault_path=s/" in text and "#include" not in text and "$SN" not in text
+    regions, _dp = KI.parse_sfz(text)
+    names = KI.sfz_note_names(regions)
+    assert names[36] == "Kick 1" and names[38] == "Snare" and names[40] == "Snare"   # la copie se relit, en GM
+
+
+@pytest.mark.parametrize("sfz, why", [
+    ("<region> lokey=36 hikey=40 sample=Kick.wav\n", "several keys"),
+    ("<region> key=36 sw_last=24 sample=Kick.wav\n", "keyswitches"),
+    ("<control> note_offset=12\n<region> key=36 sample=Kick.wav\n", "note_offset"),
+    ("<curve> curve_index=7 v000=0\n<region> key=36 sample=Kick.wav\n", "<curve>"),
+    ('<region> key=36 sample=Kick.wav\n#include "missing.sfz"\n', "missing.sfz"),
+])
+def test_un_sfz_qu_on_ne_sait_pas_reecrire_juste_garde_sa_table(tmp_path, sfz, why):
+    (tmp_path / "kit.sfz").write_text(sfz)
+    r = KI.write_sfz_gm(str(tmp_path / "kit.sfz"))
+    assert r["ok"] is False and why in r["why"] and not (tmp_path / KI.GM_SFZ).exists()
+
+
+def _sfz_rack(monkeypatch, tmp_path, text):
+    rack = tmp_path / "rack"; sd = rack / "library" / "sfz" / "mine"; sd.mkdir(parents=True)
+    (rack / "library" / "kits").mkdir(parents=True)
+    (sd / "kit.sfz").write_text(text)
+    monkeypatch.setattr(KI.C, "ROOT", str(rack)); monkeypatch.setattr(K.C, "ROOT", str(rack))
+    monkeypatch.setattr(K, "KITS_DIR", str(rack / "library" / "kits")); monkeypatch.setattr(K, "_sync_soon", lambda: None)
+    old = {"id": "drums-mine", "name": "Mine", "role": "drum", "engine": "sfz", "sfz": "library/sfz/mine/kit.sfz",
+           "notes": {"kick": 24, "snare": 26}, "notes_note": "read in the .sfz keys at import", "imported": {"at": 1}}
+    assert K.save_kit(old, allow_drums=True)["ok"]
+    return sd
+
+
+def test_un_kit_sfz_importe_avant_est_reecrit_une_fois_en_gm(monkeypatch, tmp_path):
+    sd = _sfz_rack(monkeypatch, tmp_path, "<region> key=24 sample=Kick.wav\n<region> key=26 sample=Snare.wav\n")
+    assert KI.remap_imported_gm() == ["drums-mine"]
+    k = K.get_kit("drums-mine")
+    assert k["sfz"] == "library/sfz/mine/kit-gm.sfz" and k["sfz_src"] == "library/sfz/mine/kit.sfz"
+    assert k["notes"] == {"kick": 36, "snare": 38} and k["gm_rev"] == KI.GM_REV
+    assert k["notes_note"] == "read in the .sfz keys at import, rewritten in General MIDI"
+    assert (sd / "kit.sfz").read_text().startswith("<region> key=24")          # l'original n'est pas touché
+    assert KI.remap_imported_gm() == []                                         # idempotent
+    K.save_kit(dict(k, gm_rev=1), allow_drums=True)
+    assert KI.remap_imported_gm() == ["drums-mine"] and K.get_kit("drums-mine")["sfz_src"] == "library/sfz/mine/kit.sfz"
+
+
+def test_un_kit_sfz_qu_on_ne_sait_pas_reecrire_garde_sa_table_et_le_filet_le_traduit(monkeypatch, tmp_path):
+    _sfz_rack(monkeypatch, tmp_path, "<region> lokey=24 hikey=25 sample=Kick.wav\n<region> key=26 sample=Snare.wav\n")
+    assert KI.remap_imported_gm() == ["drums-mine"]
+    k = K.get_kit("drums-mine")
+    assert k["sfz"] == "library/sfz/mine/kit.sfz" and "sfz_src" not in k and k["gm_rev"] == KI.GM_REV
+    assert k["notes"] == {"kick": 24, "snare": 26} and "kept its own note map (a region spans several keys)" in k["notes_note"]
+    assert KI.gm_translation(k["notes"])[36] == 24                             # démos et grooves : traduits
+    assert KI.remap_imported_gm() == []

@@ -37,6 +37,8 @@
                aucune clé SetNamedConfigParm ne le porte.
   MAPPING NOTE = IDENTITÉ dans tous les cas : la note du .mid EST la note GM que l'instrument joue
   (36=kick, 38=snare, 42=hihat…). ⚠ DÉCISION PRODUIT  : suppose kits ET .mid en convention GM.
+  Sauf un kit NON GM (2026-11-15) : le play porte alors `notemap` (note GM -> note du kit, -1 = rien),
+  appliquée en chargeant la banque (apply_notemap).
 
   Commandes : golem_watch relaie {"action":"drums",...} en ProjExtState golem/drums_cmd (branche
   exempte de SETTLE — on ne touche qu'à NOS propres FX de piste). Dédup par "seq" (bridge/commands.py
@@ -836,8 +838,33 @@ end
 local blocks = {}
 local cur_block = nil
 
-local function load_bank(bid, patterns, fills)
-  local fp = table.concat(patterns or {}, "\30") .. "\31" .. table.concat(fills or {}, "\30")
+-- notemap : {note GM -> note du kit, -1 = se taire} quand le kit n'est PAS en General MIDI (le filet,
+-- bridge/drums.py gm_notemap, 2026-11-15) — les grooves sont GM, la table du kit dit où est chaque pièce.
+-- nil = identité (un kit GM). La table entre dans l'empreinte : un autre kit recharge la banque.
+local function apply_notemap(pat, notemap)
+  if not notemap then return pat end
+  local ev = {}
+  for _, e in ipairs(pat.events) do
+    local t = notemap[e[2]]
+    if t == nil then ev[#ev + 1] = e
+    elseif t >= 0 then ev[#ev + 1] = { e[1], t, e[3] } end
+  end
+  pat.events, pat.nev = ev, #ev
+  return pat
+end
+
+local function notemap_fp(notemap)
+  if not notemap then return "" end
+  local keys = {}
+  for k in pairs(notemap) do keys[#keys + 1] = k end
+  table.sort(keys)
+  local parts = {}
+  for _, k in ipairs(keys) do parts[#parts + 1] = k .. ">" .. notemap[k] end
+  return table.concat(parts, ",")
+end
+
+local function load_bank(bid, patterns, fills, notemap)
+  local fp = table.concat(patterns or {}, "\30") .. "\31" .. table.concat(fills or {}, "\30") .. "\31" .. notemap_fp(notemap)
   local st = blocks[bid]
   if st and st.fp == fp then return st end
   local slot = 0
@@ -850,7 +877,7 @@ local function load_bank(bid, patterns, fills)
         log("  x .mid : " .. rel .. " (" .. tostring(err) .. ")")
         pat = { nev = 0, length = 4 * PPQ_RES, barppq = 4 * PPQ_RES, events = {} }  -- slot muet (silence 1 mesure)
       end
-      write_slot(slot, pat)
+      write_slot(slot, apply_notemap(pat, notemap))
       slot = slot + 1
     end
     return slot - first
@@ -899,12 +926,12 @@ local function write_sequence(st, sequence, seq_mode)
   return n
 end
 
-local function op_play(bid, idx, patterns, fills, kit, sequence, seq_mode)
+local function op_play(bid, idx, patterns, fills, kit, sequence, seq_mode, notemap)
   if not bid then log("play : block manquant"); return end
   idx = idx or 0
   local tr = ensure_track()
   build_kit(tr, kit)
-  local st = load_bank(bid, patterns, fills)
+  local st = load_bank(bid, patterns, fills, notemap)
   if idx < 0 or idx >= st.P then log("play : idx " .. idx .. " hors des " .. st.P .. " pattern(s)"); idx = 0 end
   cur_block = bid
   st.idx = idx; st.playing = true; st.mode = 0
@@ -1019,7 +1046,16 @@ local function poll_cmd()
       end
     end
     local seq_mode = body:match('"seq_mode"%s*:%s*"([^"]+)"')
-    op_play(bid, idx, patterns, fills, kit, sequence, seq_mode)
+    -- traduction GM -> kit d'un kit non GM : {"52": 60, "48": 45, "50": -1, ...} (absente = identité)
+    local notemap = nil
+    local na = body:match('"notemap"%s*:%s*{(.-)}')
+    if na then
+      for k, v in na:gmatch('"(%d+)"%s*:%s*(%-?%d+)') do
+        notemap = notemap or {}
+        notemap[tonumber(k)] = tonumber(v)
+      end
+    end
+    op_play(bid, idx, patterns, fills, kit, sequence, seq_mode, notemap)
     -- le mix voyage AVEC le play : le kit peut venir d'être (re)construit, ses sliders sont
     -- alors ceux du kit — les écarts du preset ne vivent que dans la commande.
     local mix = parse_mix(body)

@@ -167,3 +167,56 @@ def test_new_samples_in_a_pad_kit_change_its_fingerprint(tmp_path, monkeypatch):
     before = D._kit_fp(k)
     (tmp_path / "a.wav").write_bytes(b"v2, a less metallic kick")
     assert D._kit_fp(k) != before
+
+
+# ── le filet GM (2026-11-15) : une phrase GM jouée par un kit dont la table n'est pas General MIDI ─────────────────
+GM_KIT = {"id": "drums-gm", "role": "drum", "engine": "drumgizmo", "drumkit": "d.xml", "notes": {
+    "kick": 36, "snare": 38, "tom1": 48, "tom4": 43, "china": 52, "ride": 51, "ride-edge": 51, "hh-half": 41}}
+AVL = {"id": "drums-avl", "role": "drum", "engine": "avldrums", "bank": "black-pearl", "notes": {
+    "kick": 36, "snare": 38, "tom1": 45, "tom2": 41, "hh-closed": 42, "hh-open": 48, "china": 60}}
+
+
+def test_the_fingerprint_of_a_gm_kit_does_not_move_and_a_non_gm_kit_gets_its_translation():
+    import hashlib
+    legacy = hashlib.sha1(json.dumps(["drumgizmo", None, "d.xml", None, None], sort_keys=True,
+                                     default=str).encode()).hexdigest()[:16]
+    assert D._kit_fp(GM_KIT) == legacy                          # la formule d'avant le filet : ses démos restent à jour
+    assert D.gm_net(GM_KIT) == {} and D.gm_net({"role": "pad", "notes": {"kick": 24}}) == {}
+    assert D._kit_fp(AVL) != D._kit_fp({**AVL, "notes": {**AVL["notes"], "tom1": 48, "hh-open": 46, "china": 52,
+                                                         "tom2": 47}})
+    assert D.gm_net(AVL)[52] == 60 and D.gm_net(AVL)[48] == 45
+
+
+def _capture(monkeypatch, kit):
+    got = []
+    monkeypatch.setattr(D, "_render", lambda k, dur, lines, opus, seq, scene: (got.append(lines), (False, "test"))[1])
+    monkeypatch.setattr(D, "_get_kit", lambda kid: kit)
+    return got
+
+
+def test_a_kit_demo_plays_each_gm_note_on_the_kit_s_own_piece(monkeypatch, lib):
+    from bridge import config as C
+    monkeypatch.setattr(C, "PREVIEWS_DIR", str(lib / "previews"))
+    ref = lib / "rock.mid"
+    ref.write_bytes(smf([(0, 36), (480, 48), (960, 52), (1440, 46)], end_tick=1920))
+    monkeypatch.setattr(D, "REFS", ("drums/rock",))
+    monkeypatch.setattr(D, "_ref_path", lambda r: str(ref))
+    got = _capture(monkeypatch, GM_KIT)
+    D.render_kit("drums-gm", lambda: 1, force=True)
+    from bridge import preview as PV
+    assert got[0] == PV.midi_events(str(ref), offset=PV.MIDI_LEAD_IN)[1]       # un kit GM : les mêmes lignes
+    got = _capture(monkeypatch, AVL)
+    D.render_kit("drums-avl", lambda: 1, force=True)
+    assert [int(ln.split()[4]) for ln in got[0]] == [36, 45, 60, 48]            # tom 45, china 60, charleston 48
+
+
+def test_a_groove_heard_on_a_non_gm_kit_is_translated_too(monkeypatch, lib):
+    p = lib / "g.mid"
+    p.write_bytes(smf([(0, 36), (480, 52)], end_tick=1920 * 4))
+    got = _capture(monkeypatch, AVL)
+    monkeypatch.setattr(D, "GOK_DIR", str(lib / "gok"))
+    D._GOK["gen"] = 7
+    D._hear(7, str(p), AVL, 120, "k", str(lib / "gok" / "k.opus"), 1)
+    assert [int(ln.split()[4]) for ln in got[0]] == [36, 60]
+    D._hear(7, str(p), GM_KIT, 120, "k", str(lib / "gok" / "k.opus"), 1)
+    assert [int(ln.split()[4]) for ln in got[1]] == [36, 52]

@@ -90,8 +90,8 @@ the effects wherever golem-fx is not installed, the rest as instruments, capture
 
 ### golem-fx in the installers (2026-11-15)
 
-**CODED** — the installers ship golem-fx **0.4** (prebuilt release `golem-fx-0.4` in Goldoralf/golem-binaries, golem-fx
-e98eec3, 54 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
+**CODED** — the installers ship golem-fx **0.5** (pinned 2026-11-15; 0.4 before that) (prebuilt release `golem-fx-0.5` in Goldoralf/golem-binaries, golem-fx
+ca0d494, 56 VST3, incl. Formant, Morph and Spectral Comp) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
 Windows and macOS now play golem-fx blocks when the plugin is installed, as Linux does
 ([golem-fx-reaper.md](golem-fx-reaper.md)). The golem-fx-only blocks (Met, Emet, Shem, Tape, Glitch…) are therefore
 offered on Windows and macOS too. The third-party fallbacks — guitarix, Calf, Dragonfly, ZamAudio and the rest of the

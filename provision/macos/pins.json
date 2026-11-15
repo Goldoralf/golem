@@ -41,10 +41,10 @@
   "sha256": "e0b854b92a4e51ce5851320fb1a9f91ab1a4309f997de070e175b3e5cab4adaf"
  },
  "golem_fx": {
-  "_comment": "golem-fx (les effets de golem, GPL-3) : 54 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.4 de Goldoralf/golem-binaries (golem-fx e98eec3, vérifiée par golem-fx le 2026-11-15). Posés par provision/golem_fx.py (provision/desktop.py setup) dans ~/Library/Audio/Plug-Ins/VST3 (sans droits d'administrateur ; bundles universels, signés ad hoc) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
-  "version": "0.4",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.4/golem-fx-macos-universal.tar.gz",
-  "sha256": "281e937ef73298a67207f0bccb643a23711a13e1525ce429102bbea34b611602"
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 56 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.5 de Goldoralf/golem-binaries (golem-fx ca0d494, vérifiée par golem-fx le 2026-11-15). Posés par provision/golem_fx.py (provision/desktop.py setup) dans ~/Library/Audio/Plug-Ins/VST3 (sans droits d'administrateur ; bundles universels, signés ad hoc) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
+  "version": "0.5",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.5/golem-fx-macos-universal.tar.gz",
+  "sha256": "2e435e78ea1d8ceb65cbbd1512a2e9dcb2e9f6a1134c14add849023c464d5a9f"
  },
  "manual": [
   {

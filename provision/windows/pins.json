@@ -47,9 +47,9 @@
   "signer": "Microsoft Corporation"
  },
  "golem_fx": {
-  "_comment": "golem-fx (les effets de golem, GPL-3) : 54 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.4 de Goldoralf/golem-binaries (golem-fx e98eec3, vérifiée par golem-fx le 2026-11-15). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Dragonfly et Surge) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
-  "version": "0.4",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.4/golem-fx-windows-x86_64.zip",
-  "sha256": "c9306cc7204a3ed6dc386f89c897a26b85c6fbc455b180f9c31b845a58bb0dbd"
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 56 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.5 de Goldoralf/golem-binaries (golem-fx ca0d494, vérifiée par golem-fx le 2026-11-15). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Dragonfly et Surge) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
+  "version": "0.5",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.5/golem-fx-windows-x86_64.zip",
+  "sha256": "4b1a11c97acb30638261ee82c9e7fd6edce99f8785865bb4caa8fea68d0d3f69"
  }
 }

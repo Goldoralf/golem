@@ -144,6 +144,7 @@ def main():
                   "@@phase realtime", "▶ Temps-réel : groupe audio + limits",
                   "@@phase reaper", "▶ Reaper", "→ already installed",
                   "@@phase plugins", "▶ Plugins (releases GitHub : NAM, Dexed)",
+                  "▶ golem-fx (les effets de golem — VST3 précompilés)", "✓ golem-fx 0.4: 54 plugin(s) → ~/.vst3 (dry)",
                   "▶ Plugins LV2 des blocs FX", "▶ sfizz",
                   *(["@@warn |Vital is missing — the synth of the Keys lane stays silent. It needs a free vital.audio "
                      "account: get it from vital.audio, golem finds it at its next start."] if "vital" in warn else []),

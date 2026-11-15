@@ -171,7 +171,9 @@ local DESKTOP_TABLE = MAC_FX and "effects-macos.json" or "effects-windows.json"
 -- plugin change — et les autres blocs gardent leur plugin d'origine. Ce que REAPER ajoute : un VST3 s'écrit
 -- NORMALISÉ, donc chaque potard prend les bornes réelles du plugin (library/catalog/golem-fx-plugins.json, tiré de
 -- golem-fx : plages linéaires, nombre de choix d'une liste). Un plugin golem-fx absent de CE REAPER : le bloc garde
--- son plugin d'origine. Linux seulement (golem-fx n'est construit que là).
+-- son plugin d'origine. Les TROIS systèmes depuis le 2026-11-15 (les installateurs posent golem-fx 0.4) : REAPER nomme
+-- un VST3 de la même façon sous Linux, Windows et macOS (« VST3: GoleM FX Gate (GoleM) »), et un type joué par
+-- golem-fx échappe à la table de l'OS (effects-windows/macos.json) — appliqué AVANT elle, il n'en reçoit rien.
 local _GFX_INSTALLED = nil
 local function gfx_installed_name(base)
   if _GFX_INSTALLED == nil then
@@ -299,6 +301,8 @@ local function read_effects(root)
   else
     log("effects.json illisible : params de blocs ignorés")
   end
+  -- golem-fx d'abord : un type qu'il joue ici garde l'entrée de effects.json (ids, noms) que sa table attend
+  apply_golem_fx(root, map)
   if DESKTOP_FX then
     local wj = read_file(root .. "/library/catalog/" .. DESKTOP_TABLE)
     local wd = wj and json_decode(wj) or nil
@@ -307,7 +311,9 @@ local function read_effects(root)
     else
       for btype, override in pairs(wd.effects) do
         local e = map[btype]
-        if e then
+        -- un bloc joué par golem-fx (plugin installé) : la table de l'OS ne le concerne plus — ni son plugin, ni son
+        -- `unsupported` (Met, Emet… n'existaient pas ici sans golem-fx), ni ses noms de potards
+        if e and not e.gfx then
           e.windows_strict = true
           e.unsupported = override.unsupported
           if override.plugin then e.plugin = override.plugin end
@@ -339,7 +345,6 @@ local function read_effects(root)
       end
     end
   end
-  if not DESKTOP_FX then apply_golem_fx(root, map) end
   _effects_cache = map
   return map
 end

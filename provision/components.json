@@ -28,6 +28,34 @@
       "mb": 40
     },
     {
+      "id": "golem-fx",
+      "name": "golem-fx",
+      "by": "golem",
+      "what": "golem's own effects — the pedals most blocks play (gate, drives, delays, reverbs, modulation…); prebuilt VST3 release, installed with golem on Linux, Windows and macOS",
+      "license": "GPL-3.0",
+      "url": "https://github.com/Goldoralf/golem-binaries/releases/tag/golem-fx-0.4",
+      "kind": "plugin",
+      "version": "0.4",
+      "check_mac": {
+        "glob": [
+          "~/Library/Audio/Plug-Ins/VST3/GoleM FX *.vst3",
+          "/Library/Audio/Plug-Ins/VST3/GoleM FX *.vst3"
+        ]
+      },
+      "check_win": {
+        "glob": [
+          "%LOCALAPPDATA%/Programs/Common/VST3/GoleM/GoleM FX *.vst3",
+          "%CommonProgramFiles%/VST3/GoleM FX *.vst3"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/.vst3/GoleM FX *.vst3"
+        ]
+      },
+      "mb": 80
+    },
+    {
       "id": "nam-core",
       "name": "Neural Amp Modeler",
       "by": "Steven Atkinson",

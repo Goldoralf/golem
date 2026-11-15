@@ -481,6 +481,16 @@ def setup():
             surge.install()
         except Exception as exc:
             print(f"⚠ Surge XT Effects not installed ({exc}) — the Spring, Freq Shifter and Treemonster blocks stay unavailable.")
+    # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release 0.4 épinglée (pins.json `golem_fx`),
+    # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Dragonfly ; macOS :
+    # ~/Library/Audio/Plug-Ins/VST3). Non fatal : sans eux, les blocs gardent leurs plugins d'origine.
+    if sys.platform in ("win32", "darwin"):
+        step("golem's own effects (golem-fx)")
+        try:
+            from provision import golem_fx
+            golem_fx.install()
+        except Exception as exc:
+            print(f"⚠ golem-fx not installed ({exc}) — the blocks keep playing their previous plugins.")
     for path in install_shortcuts():
         print(f"Shortcut: {path}")
     print(f"golem is ready in {ROOT}.")

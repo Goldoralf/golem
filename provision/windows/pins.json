@@ -45,5 +45,11 @@
   "_comment": "Microsoft ne publie pas d'adresse figée : on télécharge la dernière et on vérifie sa SIGNATURE (Authenticode, éditeur Microsoft Corporation) au lieu d'une empreinte.",
   "url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
   "signer": "Microsoft Corporation"
+ },
+ "golem_fx": {
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 54 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.4 de Goldoralf/golem-binaries (golem-fx e98eec3, vérifiée par golem-fx le 2026-11-15). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Dragonfly et Surge) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
+  "version": "0.4",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.4/golem-fx-windows-x86_64.zip",
+  "sha256": "c9306cc7204a3ed6dc386f89c897a26b85c6fbc455b180f9c31b845a58bb0dbd"
  }
 }

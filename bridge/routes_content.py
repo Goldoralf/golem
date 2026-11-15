@@ -70,18 +70,20 @@ def get_preset(pid: str):
 def get_effects():
     data = _read_json(C.EFFECTS, {"effects": []})
     # par PLUGIN : un type que ce poste joue autrement sort du tiroir des interdits — par un JSFX golem (Windows, macOS :
-    # M6, 2026-10-04) ou par golem-fx (Golem Engine ; REAPER sous Linux avec le plugin installé : le Pitch, et met / emet /
+    # M6, 2026-10-04) ou par golem-fx (Golem Engine ; REAPER avec le plugin installé : le Pitch, et met / emet /
     # shem que seul golem-fx joue, catalogue v43). Sous Linux la levée ne se faisait pas : le tiroir les cachait.
     from . import rig
     q = rig.quarantined_types()
-    lifted = "quarantine_linux" if sys.platform in ("win32", "darwin") else "quarantine_lifted"
+    safe = rig._engine_safe_types()
+    desktop = sys.platform in ("win32", "darwin")
     for e in data.get("effects", []):
         if e.get("quarantine") and e.get("type") not in q:
-            e[lifted] = e.pop("quarantine")
+            # levée par golem-fx (les trois OS depuis le 2026-11-15), ou par un JSFX golem sous Windows / macOS
+            e["quarantine_linux" if desktop and e.get("type") not in safe else "quarantine_lifted"] = e.pop("quarantine")
     # LE BLOC VST HOST, PARTOUT (Linux depuis le 2026-11-09, docs/platforms.md §6.1) : la fenêtre du plugin y est la
     # vue filmée. La capture NAM d'un plugin reste Windows/macOS (`vst_capture`) : le tiroir la montre grisée.
     # LES EFFETS DE golem-fx (docs/designer-glyphs-pedals.md) : les types que le moteur ACTIF joue par un plugin golem-fx
-    # (Golem Engine seulement ; sous REAPER, aucun) — le Designer leur donne le fond « terre cuite », le tiroir les range
+    # (Golem Engine ; REAPER sur les trois OS quand le plugin est installé) — le Designer leur donne le fond « terre cuite », le tiroir les range
     # dans leur colonne, la vue pédalier les dessine en pédales golem-fx
     from . import rig as _rig
     data["golem_fx"] = sorted(_rig._engine_safe_types())

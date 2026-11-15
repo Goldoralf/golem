@@ -80,8 +80,25 @@ def effects():
                             lambda p: json.load(open(p, encoding="utf-8")).get("effects", {})) or {}
     except (OSError, ValueError):
         overrides = {}
-    return {t: {**entry, **overrides[t], "windows_strict": True} if t in overrides else entry
+    gfx = _gfx_plugins()
+    return {t: {**entry, "plugin": gfx[t], "windows_strict": True} if t in gfx
+            else {**entry, **overrides[t], "windows_strict": True} if t in overrides else entry
             for t, entry in base.items()}
+
+
+def _gfx_plugins():
+    """{type: nom REAPER du plugin golem-fx} des types que golem-fx joue sur CE poste (2026-11-15) : golem_rig les pose
+    par ce nom-là, la table de l'OS (son plugin, son `unsupported`) ne les concerne plus. Vide si golem-fx manque."""
+    try:
+        from . import golem_fx, rig
+        safe = rig._engine_safe_types()
+        if not safe:
+            return {}
+        plugins, table = golem_fx._load()
+        return {t: plugins[table[t]["vst3"]]["reaper"] for t in safe
+                if isinstance(table.get(t), dict) and plugins.get(table[t].get("vst3"), {}).get("reaper")}
+    except Exception:
+        return {}
 
 
 def aliases():

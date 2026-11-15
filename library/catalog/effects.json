@@ -2,7 +2,7 @@
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
  "catalog_version": 49,
  "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
- "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER on Linux with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
+ "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
  "_renamed_comment": "v31 — per-param `renamed: {old label: new label}` on an enum whose LABELS changed while its values did not (delay-tape time: '1/4' played a sixteenth). bridge/option_renames.py rewrites old labels on load (presets, patches, block presets, Designer sandbox); an old label is never a new option (tests/test_option_renames.py), so the rewrite is pure and idempotent.",
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
@@ -5219,7 +5219,7 @@
     }
    ],
    "note": "golem-fx live vocal doubler: a double one octave below the singer (by default), formants kept or moved; the dry voice is untouched and has no latency, the doubles trail by a few periods of the note. Put a de-esser and a gate BEFORE it. Expert: a second voice, character, tracking (register, sensitivity, a level threshold against stage bleed), harmony.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
    "bench": "pending"
   },
   {
@@ -5307,7 +5307,7 @@
     }
    ],
    "note": "golem-fx spectral glitch: it slices the sound into spectral bins and holds, scatters or reshapes them (30 effects); Sustain turns what you play into a pad. Stereo by nature: put it on a stereo lane (it also plays mono). The dry is never delayed; the wet trails by the analysis window (2,048 + 512 samples at the default size, 53 ms at 48 kHz). Its `align` setting (expert, setup only, never a scene value) delays the dry to match. Set it before playing: no footswitch action. Expert: two more effect slots, cloud, pitch, LFO, envelope, filters.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
    "bench": "pending"
   },
   {
@@ -5604,7 +5604,7 @@
     }
    ],
    "note": "golem-fx keyed expander-gate for high gain (the role of a keyed gate in the loop). Reads its key input when one is routed, otherwise the main input. Expert: ratio, range, detector, key filters.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
    "bench": "pending"
   },
   {
@@ -5882,7 +5882,7 @@
     }
    ],
    "note": "golem-fx high-headroom 808-style overdrive, to tighten a high-gain amp. Expert: headroom, asymmetry, tight, input, bass keep.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
    "bench": "pending"
   },
   {
@@ -5910,7 +5910,7 @@
     }
    ],
    "note": "golem-fx clean, shaped tight boost in front of a high-gain amp. Linear: its output can exceed 0 dBFS, as a boost's does. Expert: voice, bright.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
    "bench": "pending"
   },
   {
@@ -5993,7 +5993,7 @@
     }
    ],
    "note": "golem-fx auto-swell (slow gear): each note fades in on its own, no volume pedal. It reads the lane's clean DI (its key) wherever it sits, so it can follow the amp; without a key it reads its input. Lookahead (expert) adds 3 to 25 ms of reported latency: a setup setting, never a scene value. Expert: sync, decay, gate, envelope.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "transient",
@@ -6072,7 +6072,7 @@
     }
    ],
    "note": "golem-fx level-independent transient shaper. Attack and Sustain are GAINS in dB on the note's attack and on its tail (not times). It reads the lane's clean DI (its key) wherever it sits. Ceiling is off by default (the rack's safety limiter stays). Lookahead (expert, 1 to 5 ms of latency) is a setup setting, never a scene value.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "mb-comp",
@@ -6153,7 +6153,7 @@
     }
    ],
    "note": "golem-fx multiband compressor (3 or 4 bands, up and down). Amount scales every band, Tilt leans it to the lows or the highs. Phase (expert) is set before playing: Linear reports 42.7 ms of latency at 48 kHz, Minimum none. In a split lane summed against a dry branch it combs at the crossovers: use Mix or Linear there.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "ducker",
@@ -6240,7 +6240,7 @@
     }
    ],
    "note": "golem-fx ducker: it lowers this lane when its KEY plays. Today the key is the lane's own clean DI (a duck of a wet-only branch, the delay or reverb tail under the notes); another lane or the backing as key is not routed yet. Pump needs no key (tempo-synced). Force ducks by hand (talkback). Without a key (Windows, macOS) it does nothing. Lookahead (expert) is a setup setting.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "widener",
@@ -6318,7 +6318,7 @@
     }
    ],
    "note": "golem-fx stereo widener and imager, exact in mono (Exact law: folding to mono gives back the dry). Stereo by nature: it turns a mono lane stereo; put it after the last mono block. Listen (expert) is never stored.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "bass-di",
@@ -6409,7 +6409,7 @@
     }
    ],
    "note": "golem-fx bass preamp / DI: a phase-coherent blend of the clean bass and a driven channel (Blend), a tone stack, and a cab voicing (Cab: turn it off when an amp, a cab or an IR follows). Low Note (expert) follows the lane's lowest string: 41.2 Hz on a 4-string.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "tape",
@@ -6515,7 +6515,7 @@
     }
    ],
    "note": "golem-fx tape and lo-fi media: record level, wow, flutter, wear, noise, models from studio tape to cassette. The wet carries the transport's delay (0.8 ms at the defaults, up to 40 ms) and the dry follows it inside the block: a DI split summed back outside it can comb. Stop (expert) is a tape stop then spin-up.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "dist",
@@ -6574,7 +6574,7 @@
     }
    ],
    "note": "golem-fx circuit-simulated distortions: op-amp dist, booster dist, blend overdrive, MOSFET overdrive (Circuit). Heavy on the processor (about 20 % of a core in mono): count it in the lane's budget.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "fuzz",
@@ -6647,7 +6647,7 @@
     }
    ],
    "note": "golem-fx circuit-simulated fuzz, the guitar included: Guitar Vol cleans it up as a real guitar's volume knob does (the EXP's natural target). Germanium pair or silicon four-transistor (Model); Buffer puts a buffer before it. Heavy on the processor (about 21 to 23 % of a core): count it in the lane's budget.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "radio",
@@ -6724,7 +6724,7 @@
     }
    ],
    "note": "golem-fx small speaker and transmission pedal: AM, FM, walkie-talkie, phone, cell codec, megaphone, laptop… (Model). Tune detunes the AM/FM receivers (an EXP target). Prefer it to Grit's Megaphone / Telephone and the graphic EQ's lo-fi presets for a radio voice.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "morph",
@@ -6888,7 +6888,7 @@
     }
    ],
    "note": "golem-fx channel vocoder played by the lane itself: the carrier is tracked from the voice (or a drone, noise, the signal itself), in unison or as a chord (Chord). No other lane or MIDI needed in v1. Freeze holds the vowel.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "acoustic-sim",
@@ -6964,7 +6964,7 @@
     }
    ],
    "note": "golem-fx acoustic simulator: the electric DI becomes a miked acoustic guitar (six bodies, Mic, Body, Top, 12-string). A full rig on its own: no amp or cab after it; put it first after the gate. Stereo in 2/2 (a mic pair).",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "sustainer",
@@ -7048,7 +7048,7 @@
     }
    ],
    "note": "golem-fx sustainer and controlled feedback, with no loop through the amp: Feedback blooms a harmonic of the string (Harmonic), Sustain holds the note, or Both; chords up to 4 voices. Muting with the hand releases it, a hammer-on carries it to the new note. Put it before the amp.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "polysynth",
@@ -7137,7 +7137,7 @@
     }
    ],
    "note": "golem-fx guitar synth with no MIDI and no hex pickup. Spectral turns every partial into a waveform (chords play polyphonically); Mono is one tracked voice with exact bends. Put it first in the lane on a clean DI. The heaviest golem-fx pedal (7 to 8 % of a core): count it in the lane's budget.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   }
  ],
  "cabs": [

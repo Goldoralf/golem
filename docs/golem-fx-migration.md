@@ -11,9 +11,9 @@ block sheet, the golem-fx-only blocks), golem-fx's `docs/golem-contract.md`.
 - **A block keeps its type, presets, scenes and footswitch; only the plugin that plays it changes.** A golem-fx plugin
   "stands for" a catalogue block and keeps its parameter ids (the contract). Saved patches keep working.
 - **Where golem-fx plays.** `golem_fx: true` in `library/catalog/effects-golem-engine.json` switches a type to its
-  golem-fx plugin on the Golem Engine, and under REAPER on Linux when the plugin is installed. Elsewhere (Windows and
-  macOS until golem-fx builds there, a Linux rack without the plugin) the block keeps its open-source plugin. Nothing is
-  deleted from the catalogue while one platform still needs the original.
+  golem-fx plugin on the Golem Engine, and under REAPER (Linux, Windows, macOS) when the plugin is installed. Elsewhere
+  (a machine without the plugin) the block keeps its open-source plugin. Nothing is deleted from the catalogue while
+  one platform still needs the original.
 - **New blocks** that no open-source plugin plays (Met, Glitch, Tape, Poly Synth…) are golem-fx only: offered where
   golem-fx plays, out of the drawer elsewhere.
 - **Retiring an original** (a duplicate such as the Calf flanger, catalogue v40) is a separate, explicit decision, with
@@ -62,7 +62,7 @@ its own pedal.
 
 The uninstallers (`provision/uninstall.py`, `provision/uninstall_win.py`) keep their explicit entries for all of
 them: an older install placed them and must still be cleaned up. **What stays until golem-fx ships in the
-installers**: guitarix, Calf, x42 / fat1, Dragonfly, ZamAudio, mda, Surge XT, Prisma, PaulXStretch, Spectral
+installers** (it does since 2026-11-15, below — they stay until a later step): guitarix, Calf, x42 / fat1, Dragonfly, ZamAudio, mda, Surge XT, Prisma, PaulXStretch, Spectral
 Compressor (nih-plug), zeroconvo, NAM, sfizz, setBfree, Dexed, Vital, AVL Drumkits, DrumGizmo — they still play blocks:
 the effects wherever golem-fx is not installed, the rest as instruments, captures and cabs. `reaper/Scripts/golem_rig.lua` keeps its dead Ratatouille path for now.
 
@@ -77,6 +77,16 @@ the effects wherever golem-fx is not installed, the rest as instruments, capture
 - Not done yet: the meter display (`gr`, `lift_gr`, the eight `dyn_*`), `key_from` (another lane's voice), the
   latency re-sync when a preset switches Live ↔ Studio, gfx-morph's `depends` that golem's descriptor format cannot
   hold (gfx-morph README §3.2), and both on the quiet-machine stall bench.
+
+### golem-fx in the installers (2026-11-15)
+
+**CODED** — the installers ship golem-fx **0.4** (prebuilt release `golem-fx-0.4` in Goldoralf/golem-binaries, golem-fx
+e98eec3, 54 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
+Windows and macOS now play golem-fx blocks when the plugin is installed, as Linux does
+([golem-fx-reaper.md](golem-fx-reaper.md)). The golem-fx-only blocks (Met, Emet, Shem, Tape, Glitch…) are therefore
+offered on Windows and macOS too. The third-party fallbacks — guitarix, Calf, Dragonfly, ZamAudio and the rest of the
+list above — **stay installed** until a later step retires them: they still play a block wherever golem-fx is missing
+or fails to install.
 
 ## 2. Will golem have only golem-fx pedals?
 

@@ -947,12 +947,13 @@ def build_plan(ctx):
                       "uninstall" if exe else "manual", _exe=exe, _args=_with_silent(exe, args, family) if exe else [],
                       _probes=present))
 
-    # ── plugins : TapeDelay2 (posé par provision/airwindows.py jusqu'au 2026-11-15, sans droits) ──
+    # ── plugins : le dossier VST3 de golem, sans droits (%LOCALAPPDATA%\Programs\Common\VST3\GoleM) — golem-fx
+    # (provision/golem_fx.py, 2026-11-15), Dragonfly Reverb, Surge XT Effects, et TapeDelay2 d'une install d'avant ──
     td = os.path.join(ctx.localappdata, "Programs", "Common", "VST3", "GoleM")
     if os.path.isdir(td):
         o, rid = origin_of([td] + [os.path.join(td, n) for n in os.listdir(td)])
-        add(_item("plugins:tapedelay2", "plugins", "Airwindows TapeDelay2", [td], "user", o, True,
-                  "golem placed it in its own folder", "remove", _paths=[td], _rids=rid))
+        add(_item("plugins:golem-folder", "plugins", "golem's plugins (golem-fx, Dragonfly Reverb, Surge XT Effects)",
+                  [td], "user", o, True, "golem placed them in its own folder", "remove", _paths=[td], _rids=rid))
 
     # ── reaper : le dossier de réglages (REAPER lui-même est un programme) ──
     if os.path.isdir(rdir):

@@ -251,9 +251,10 @@ def quarantined_types():
 
 
 def _engine_safe_types():
-    """Les types que le moteur ACTIF joue par un effet golem-fx. Golem Engine : sa table. REAPER sous Linux
+    """Les types que le moteur ACTIF joue par un effet golem-fx. Golem Engine : sa table. REAPER
     (docs/golem-fx-reaper.md) : la MÊME table, pour les plugins golem-fx installés ici (golem_rig.lua ne bascule un
-    bloc vers golem-fx que si REAPER connaît le plugin ; sinon il garde son plugin d'origine). Windows / macOS : aucun."""
+    bloc vers golem-fx que si REAPER connaît le plugin ; sinon il garde son plugin d'origine). Linux, Windows et macOS
+    depuis le 2026-11-15 : les installateurs des trois systèmes posent golem-fx 0.4."""
     try:
         from . import engine
         from .engine import ardour_plan
@@ -262,7 +263,7 @@ def _engine_safe_types():
         types = {t for t, spec in table.items() if spec.get("golem_fx")}
         if eid == "ardour":
             return types
-        if eid != "reaper" or _platform() in ("win32", "darwin"):
+        if eid != "reaper":
             return set()
         installed = _golem_fx_installed()
         return {t for t in types if table[t].get("vst3") in installed}
@@ -270,16 +271,32 @@ def _engine_safe_types():
         return set()
 
 
+def golem_fx_dirs(platform=None):
+    """Les dossiers VST3 où chercher les bundles golem-fx sur CE système : celui où l'installateur les pose
+    (provision/golem_fx.py, provision/install-golem-fx.sh) EN TÊTE, puis les dossiers standard que REAPER parcourt."""
+    plat = platform or _platform()
+    home = os.path.expanduser("~")
+    if plat == "win32":
+        local = os.environ.get("LOCALAPPDATA") or os.path.join(home, "AppData", "Local")
+        common = os.environ.get("CommonProgramFiles") or r"C:\Program Files\Common Files"
+        user = os.path.join(local, "Programs", "Common", "VST3")
+        return [os.path.join(user, "GoleM"), user, os.path.join(common, "VST3")]
+    if plat == "darwin":
+        return [os.path.join(home, "Library", "Audio", "Plug-Ins", "VST3"), "/Library/Audio/Plug-Ins/VST3"]
+    return [os.path.join(home, ".vst3"), "/usr/local/lib/vst3", "/usr/lib/vst3"]
+
+
 def _golem_fx_installed():
-    """Les class ids (hex) des VST3 golem-fx présents dans ~/.vst3 — le dossier où tools/golem-fx-install.py les pose
-    et que REAPER scanne. Lu dans library/catalog/golem-fx-plugins.json (le nom de chaque bundle)."""
+    """Les class ids (hex) des VST3 golem-fx présents sur cette machine — dans un des dossiers de golem_fx_dirs(),
+    que REAPER scanne. Lu dans library/catalog/golem-fx-plugins.json (le nom de chaque bundle)."""
     try:
         from . import config as C
         plugins = json.load(open(os.path.join(C.ROOT, "library", "catalog", "golem-fx-plugins.json"))).get("plugins", {})
     except (OSError, ValueError):
         return set()
-    home = os.path.join(os.path.expanduser("~"), ".vst3")
-    return {cid for cid, p in plugins.items() if os.path.isdir(os.path.join(home, p.get("name", "") + ".vst3"))}
+    dirs = [d for d in golem_fx_dirs() if os.path.isdir(d)]
+    return {cid for cid, p in plugins.items()
+            if p.get("name") and any(os.path.isdir(os.path.join(d, p["name"] + ".vst3")) for d in dirs)}
 
 
 def _base_quarantine():

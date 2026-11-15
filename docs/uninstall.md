@@ -127,7 +127,7 @@ second implementation (the installer's rule).
 | `reaper-ini` | the keys golem wrote, set back to their prior values; the OSC surface removed only if golem added it | reverted |
 | `system` | sudoers rules, `/usr/local/sbin/golem-*`, `golem-net.service`, `golem-perf.service`, the `golem-ap` connection and its DNS file, `95-golem-audio.conf`, the `audio` group (only if the user was not in it before) | removed |
 | `dedicated` | ssh hardening, ufw rules (golem's rules deleted; ufw disabled only if it was inactive before), the port-80 sysctl, the USB autosuspend rule, automatic updates restored to their prior file | reverted |
-| `plugins` | plugins golem placed or built (patched NAM, patched zconvo, Freeze, Prisma, Spectral Compressor, PaulXStretch, Dexed, AIDA-X, Ratatouille, Aether, TapeDelay2) | checked if the receipt says golem placed them; else listed unchecked |
+| `plugins` | plugins golem placed or built (patched NAM, patched zconvo, Freeze, Prisma, Spectral Compressor, PaulXStretch, Dexed, AIDA-X, Ratatouille, Aether, TapeDelay2; golem-fx — every `~/.vst3/GoleM FX *.vst3` as one item, `plugins:golem-fx`, since 2026-11-15) | checked if the receipt says golem placed them; else listed unchecked |
 | `reaper` | REAPER itself (`~/opt/REAPER`, `~/opt/reaper-versions`) and the desktop integration its installer wrote (menu entries, icons, file types) | offered **only** if `installed_by_golem`; unchecked. `~/.config/REAPER` is a separate box, unchecked; the licence is always backed up first |
 | `apt` | the packages golem asked for **explicitly**: `apt.requested ∩ apt.added`, plus `apt.debs`; for a receipt written before `apt.requested`, `apt.added ∩` the packages apt marks manual. A package of `apt.added` that apt marks manual but no script requested is listed too, unchecked ("installed on purpose, but no golem script asked for it"). The rest of `apt.added` — the dependencies — are **not items**: the plan counts them (`apt_deps`) and the run removes them with what pulled them in | audio plugin packages checked; **build files checked** (`BUILD_APT`: `*-dev`, cmake, pkg-config — asked only to compile golem's plugins, absent before golem; 2026-10-24: a VM uninstall left ~20 of them with ~500 dependencies); general tools (ffmpeg, jq, xvfb) unchecked; **never offered**: the system base (pipewire, wireplumber, alsa, pulseaudio-utils, git, curl, wget, unzip, python3-*, network-manager, avahi-daemon, ufw, build-essential) — nor removed as a dependency |
 | `toolchain` | Rust (`~/.cargo`, `~/.rustup`) if the receipt says golem installed it | checked when `rust_installed_by_golem` is true, else unchecked |
@@ -448,7 +448,7 @@ Run it twice: on a machine without REAPER (golem installs it) and on one where R
   OneDrive-redirected Desktop is right), group `golem` — including **"Uninstall golem"** (Start menu): the **base**
   Python's `pythonw.exe` (`home` of `.venv\pyvenv.cfg`, else `sys._base_executable`; never the venv's) running
   `<root>\installer\server.py --uninstall --root <root> --open`, working folder the user's home. The autostart link
-  `Startup\golem server.lnk` when turned on. TapeDelay2 (`provision/airwindows.py` until 2026-11-15, group `plugins`), the Dragonfly bundles (`provision/dragonfly.py`, group `plugins`).
+  `Startup\golem server.lnk` when turned on. TapeDelay2 (`provision/airwindows.py` until 2026-11-15, group `plugins`), the Dragonfly bundles (`provision/dragonfly.py`, group `plugins`), the golem-fx bundles (`provision/golem_fx.py`, group `plugins`, 2026-11-15).
 - **Power plan**: `bridge/desktop_power.py` records `prior.power_scheme = {guid, name}` the first time the boost
   changes the plan; `config\.power.json` keeps working for boost OFF.
 - **Licence**: `installer/platform_windows.py` sets `RECEIPT = True`, so screen 3's `prior.reaper.license_present`
@@ -468,7 +468,7 @@ stop (`python -m provision.desktop stop`, then the windows closed), and elevatio
 | `reaper-ini` | same revert as Linux | reverted |
 | `system` | golem's firewall rules removed; deleted rules recreated from `prior.firewall_deleted`; `%ProgramData%\GoleM`; `REAPER (x64).golem-prev` | removed / restored |
 | `programs` (Windows' `apt`) | REAPER, NAM VST3, AVL Drumkits, sfizz, PawPaw — each by its **vendor uninstaller**, silent, only if the receipt says golem installed it | checked if golem installed it, except REAPER (unchecked, as on Linux). PawPaw says it removes **all** PawPaw plugins |
-| `plugins` | TapeDelay2 | checked |
+| `plugins` | golem's own VST3 folder (`%LOCALAPPDATA%\Programs\Common\VST3\GoleM`): golem-fx, Dragonfly Reverb, Surge XT Effects, TapeDelay2 from an older install | checked |
 | `toolchain` | Python per-user, if golem installed it | unchecked (other scripts may use it) |
 | never offered | the VC++ runtime (system base, like Linux's NEVER_APT) | — |
 
@@ -503,7 +503,7 @@ the startup link); vendor programs are listed as `unknown`, unchecked; nothing i
   `reaper-links:Scripts/__startup.lua` (only when it starts with golem's hook line; `restore` puts
   `moved_to` / `__startup.golem-user.lua` back), `reaper-ini:revert`, `system:firewall:<display name>`,
   `system:firewall-restore`, `system:programdata`, `system:reaper-prev`, `system:common-dirs`,
-  `programs:<reaper|nam_vst3|avldrums|sfizz|pawpaw>`, `plugins:tapedelay2`, `reaper:config`, `toolchain:python`,
+  `programs:<reaper|nam_vst3|avldrums|sfizz|pawpaw>`, `plugins:golem-folder` (`%LOCALAPPDATA%\Programs\Common\VST3\GoleM`: golem-fx, Dragonfly, Surge XT Effects), `reaper:config`, `toolchain:python`,
   `toolchain:pip-cache`; at run time only, `toolchain:python:firewall` (added to the elevated pass when Python is
   chosen). Privilege `admin` (not `root`) for `system` and `programs`.
 - **`reaper.ini`.** `[reaper]` as on Linux, plus `[audioconfig]` from `prior.reaper_ini.audioconfig`:

@@ -282,7 +282,7 @@ def test_sans_recu_ce_qui_est_a_golem_par_son_nom(win, fake):
               "reaper-links:golem-root.txt", "reaper-links:golem-runtime.txt", "reaper-links:GoleM",
               "reaper-links:Scripts/__startup.lua", "reaper-ini:revert",
               "system:firewall:GoleM - bridge", "system:firewall:GoleM - golem.local (mDNS)",
-              "system:programdata", "system:reaper-prev", "plugins:tapedelay2"):
+              "system:programdata", "system:reaper-prev", "plugins:golem-folder"):
         assert ids[i]["default"] is True and ids[i]["origin"] == "golem-named", i
     assert not any("Other" in i or "mine" in i for i in ids)
     assert ids["golem:tmp"]["paths"] == [os.path.join(win.env["TEMP"], "golem-install-system-1.log")]

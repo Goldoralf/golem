@@ -109,6 +109,8 @@ PLUGINS = (
     ("aether", "Aether", ("~/.lv2/aether.lv2",), False),
     ("tapedelay2", "Airwindows TapeDelay2", ("~/.vst/airwindows/TapeDelay2.so",), False),
 )
+# golem-fx (2026-11-15) : un nombre de bundles qui suit golem-fx — un motif, pas une liste
+GOLEM_FX_GLOB = "~/.vst3/GoleM FX *.vst3"
 
 # les fichiers système à golem PAR LEUR NOM : (motif, groupe, action, libellé)
 SYSTEM_GLOBS = (
@@ -922,6 +924,14 @@ def build_plan(ctx):
         add(_item("plugins:%s" % slug, "plugins", label, [ctx.tilde(p) for p in ps], "user", o, default,
                   "golem placed it" if o == "receipt" else "golem's own plugin" if o == "golem-named"
                   else "may have been here before golem", "remove", _paths=ps, _rids=rid))
+    # golem-fx (2026-11-15) : les effets de golem, ~54 bundles « GoleM FX <Nom>.vst3 » posés par
+    # provision/install-golem-fx.sh (ou par tools/golem-fx-install.py, un build de dev) — UN élément, à golem par son nom
+    gfx = [ctx.logical(x) for x in sorted(glob.glob(ctx.phys(GOLEM_FX_GLOB)))]
+    if gfx:
+        o, rid = origin_of(gfx)
+        add(_item("plugins:golem-fx", "plugins", "golem-fx effects (%d plugins)" % len(gfx),
+                  [ctx.tilde(GOLEM_FX_GLOB)], "user", o, True,
+                  "golem placed them" if o == "receipt" else "golem's own plugins", "remove", _paths=gfx, _rids=rid))
     # ── reaper ──
     rp = prior.get("reaper") or {}
     if receipt is not None and rp.get("installed_by_golem"):

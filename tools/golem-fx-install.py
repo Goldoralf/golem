@@ -3,12 +3,14 @@
 """Installe les VST3 de golem-fx sur CETTE machine, et tient le journal de ce qui est installé.
 
 golem-fx (dépôt séparé) fabrique un VST3 par effet ; la table du Golem Engine
-(library/catalog/effects-golem-engine.json, clé `golem_fx`) dit quel bloc il joue. Tant qu'aucun installeur ne les pose,
-ils arrivent par cet outil : copiés depuis le dossier de build de golem-fx dans ~/.vst3, notés au reçu d'install
+(library/catalog/effects-golem-engine.json, clé `golem_fx`) dit quel bloc il joue. Depuis le 2026-11-15 les installateurs
+posent la RELEASE (provision/install-golem-fx.sh, provision/golem_fx.py) ; cet outil reste celui des BUILDS DE DEV :
+copiés depuis le dossier de build de golem-fx dans ~/.vst3, notés au reçu d'install
 (le désinstalleur les retire), puis le cache VST3 du Golem Engine est rafraîchi (le moteur les voit à son prochain
 démarrage). Chaque pose est JOURNALISÉE (~/.local/share/golem/golem-fx-installed.json) : le bundle, le commit de
 golem-fx et s'il avait des modifications non commitées, l'empreinte du binaire, la date — un son qui change entre deux
-séances se retrouve là (une reconstruction garde le même identifiant de classe).
+séances se retrouve là (une reconstruction garde le même identifiant de classe). L'installateur lit ce journal : un
+bundle qui y figure est un build de dev, il le GARDE au lieu de reposer la release par-dessus.
 
   ./tools/golem-fx-install.py                       # tous les bundles de golem-fx
   ./tools/golem-fx-install.py "GoleM FX Gate" …     # seulement ceux-là

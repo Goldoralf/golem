@@ -353,9 +353,14 @@ def test_le_coupe_bas_de_reaeq_est_active(lab):
 # Un type que la table du moteur fait jouer par golem-fx le joue aussi sous REAPER — si le VST3 est installé dans CE
 # REAPER ; sinon le bloc garde son plugin d'origine. Les valeurs du catalogue (dB, ms…) s'écrivent NORMALISÉES avec
 # les bornes du plugin (golem-fx-plugins.json), une liste par son rang sur le nombre de choix du plugin.
-def test_golem_fx_sous_reaper_installe_ou_non(tmp_path):
+# 2026-11-15 : les trois OS — les installateurs posent golem-fx, et un type qu'il joue échappe à la table de l'OS
+OS3 = pytest.mark.parametrize("os_name", ["Other", "Win64", "macOS-arm64"], ids=["linux", "windows", "macos"])
+
+
+@OS3
+def test_golem_fx_sous_reaper_installe_ou_non(tmp_path, os_name):
     import copy
-    lab = Lab(tmp_path)
+    lab = Lab(tmp_path, os_name=os_name)
     for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
         shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
     plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
@@ -420,11 +425,13 @@ def test_un_reglage_de_la_pedale_golem_fx_s_ecrit_sous_reaper(tmp_path, monkeypa
     assert val("Mode") == pytest.approx(1 / (p["params"]["Mode"]["n"] - 1))
 
 
-def test_met_emet_shem_se_posent_sous_reaper_avec_golem_fx(tmp_path, monkeypatch):
+@OS3
+def test_met_emet_shem_se_posent_sous_reaper_avec_golem_fx(tmp_path, monkeypatch, os_name):
     # les blocs du seul golem-fx (catalogue v43) : sous REAPER avec leurs plugins installés, posés par leur nom REAPER,
-    # réglages de face avant ET experts écrits normalisés ; sans golem-fx, le compilateur les retire (quarantaine)
+    # réglages de face avant ET experts écrits normalisés ; sans golem-fx, le compilateur les retire (quarantaine).
+    # Windows et macOS aussi (2026-11-15) : `unsupported` dans leur table, ils y jouent dès que golem-fx est là
     import copy
-    lab = Lab(tmp_path)
+    lab = Lab(tmp_path, os_name=os_name)
     for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
         shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
     plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
@@ -462,6 +469,27 @@ def test_met_emet_shem_se_posent_sous_reaper_avec_golem_fx(tmp_path, monkeypatch
     plan = lab.compile(patch)
     txt = json.dumps(plan)
     assert not any(f'"type": "{t}"' in txt for t in want), txt[:400]
+
+
+@pytest.mark.parametrize("os_name", ["Win64", "macOS-arm64"], ids=["windows", "macos"])
+def test_sans_le_plugin_dans_reaper_la_table_de_l_os_reprend_la_main(tmp_path, monkeypatch, os_name):
+    # le bridge voit le bundle (dossier VST3) mais REAPER ne l'a pas scanné : golem_rig ne bascule rien, la table de l'OS
+    # s'applique comme avant — Met y est `unsupported`, dit au journal, et le reste de la chaîne tient
+    import copy
+    lab = Lab(tmp_path, os_name=os_name)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    from bridge import rig
+    monkeypatch.setattr(rig, "_golem_fx_installed", lambda: {k for k, v in plugins.items() if v["name"] == "GoleM FX Met"})
+    patch = copy.deepcopy(PATCH)
+    patch["lanes"][0]["chain"]["pre"] = [{"id": "met", "type": "met"}, {"id": "gate", "type": "gate"}]
+    lab.compile(patch)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
+    assert "golem:met" not in fx and "golem:gate" in fx, lab.log()
+    assert ("x bloc met : " + ("Windows" if os_name == "Win64" else "macOS")) in lab.log()
+    assert "GoleM FX" not in fx["golem:gate"].name
 
 
 def test_la_cle_du_gate_entend_le_di_de_la_lane(tmp_path, monkeypatch):

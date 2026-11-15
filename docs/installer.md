@@ -186,7 +186,7 @@ apart from **steps** — what the server runs (`installer/phases.py`):
 |---|---|---|
 | **source** — clone (or `git pull --ff-only` over an existing install) from the installer's copy, `origin` reset to the public repository; an extracted archive is copied with `rsync`, then linked to the repository once git is installed ([`update.md`](update.md) §2) | **source** — copy into the chosen folder (`~\golem`); over an existing install the code is updated and **local state is never overwritten** (`presets`, `sets`, `mappings`, `config`, `setlists`, `recordings`, `assets`) | **source** — same as Windows |
 | **system** — `provision/install.sh` (`--light` when no pack is chosen, `GOLEM_PACKS=<list>`) | **system** — **one UAC prompt** for `provision/windows/install-system.ps1`: Visual C++ runtime (without it `python-rtmidi` does not load: no foot controller, no MIDI), REAPER if missing, NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw), firewall rules; the bridge setup then adds, without admin rights, the Dragonfly Hall, Plate and Room reverbs (`provision/dragonfly.py`) | **system** — **one administrator prompt** (`osascript … with administrator privileges`) for `provision/macos/install-system.sh`: REAPER (`.dmg`), NAM VST3, AVL Drumkits, sfizz, Vitalium (PawPaw, Rosetta first), the Dragonfly Hall, Plate and Room reverbs, Proteus (the Boost block) |
-| — | **bridge** — `python -m provision.desktop setup` | **bridge** — same |
+| — | **bridge** — `python -m provision.desktop setup`; without admin rights it places golem-fx (`provision/golem_fx.py`, below) | **bridge** — same |
 | — | **sounds** — reference DIs, and the `guitar` pack (Shinyguitar, the Standard block's pompe) when chosen, checked against `provision/downloads.sha256` (both non-fatal) | **sounds** — same |
 | **profile** — `config/engine.json`, `provision/install-desktop.sh` (icons, `golem` command: desktop and server, always both — no autostart, no hardening) | **profile** — `golem.cmd` (console launcher for troubleshooting) and shortcuts "golem", "golem server" (Desktop, Start menu) and "Stop golem" (Start menu) | **profile** — golem.app, golem server.app, Stop golem.app in `~/Applications` |
 | **start** — `provision/start.sh`, then waits up to 90 s for the bridge on `:8770` | (golem starts from the Done button, so it never opens on top of the installer) | (same) |
@@ -196,6 +196,20 @@ apart from **steps** — what the server runs (`installer/phases.py`):
 runtime has no fixed URL: its **signature** is checked instead. A component already present is left
 as is (never downgrade someone's REAPER) and is judged after installation. Unsigned third-party
 installers (AVL, sfizz, PawPaw) and the Dragonfly archive are trusted only through their pinned hash.
+
+**golem-fx on all three OS (CODED 2026-11-15).** golem's own effects ship as a prebuilt release
+(`golem-fx-0.4` in Goldoralf/golem-binaries, 54 `GoleM FX <Name>.vst3` bundles), pinned per OS and placed
+**without admin rights** in the per-user VST3 folder REAPER scans; each bundle goes to the install receipt and
+non-fatal like every third-party step (the blocks then keep their previous plugins, which stay installed):
+
+| | Pin | Placed by | Folder | Uninstall |
+|---|---|---|---|---|
+| Linux | `provision/downloads.sha256` (`fetch_verified`) | `provision/install-golem-fx.sh` in the `plugins` phase (↻ Retry: `golem-fx`) | `~/.vst3` | `plugins:golem-fx` (`provision/uninstall.py`, every `GoleM FX *.vst3`) |
+| Windows | `provision/windows/pins.json` `golem_fx` | `provision/golem_fx.py` from the bridge step | `%LOCALAPPDATA%\Programs\Common\VST3\GoleM` (next to Dragonfly and Surge) | `plugins:golem-folder` (`provision/uninstall_win.py`) |
+| macOS | `provision/macos/pins.json` `golem_fx` | `provision/golem_fx.py` from the bridge step (urllib: no quarantine attribute) | `~/Library/Audio/Plug-Ins/VST3` | receipt entries (no macOS uninstaller yet) |
+
+A dev build placed by `tools/golem-fx-install.py` (its journal `~/.local/share/golem/golem-fx-installed.json`) is
+newer than the release: it is kept as is, and the install log says so. The Linux `.so` need glibc ≥ 2.34.
 
 ### Privileges
 
@@ -438,7 +452,7 @@ nothing.
 - **`golem update`** from the installer (same screens, steps "source" and "system --light").
 - Uninstall on Windows and macOS (the Linux one is coded: [`uninstall.md`](uninstall.md) §4).
 - Windows: ffmpeg (preview encoding) is not installed; block plugins other than the core, AVL, sfizz,
-  Vitalium, Dragonfly and Surge XT Effects are not installed (blocks say "plugin not installed on this
+  Vitalium, Dragonfly, Surge XT Effects and golem-fx are not installed (blocks say "plugin not installed on this
   machine"); a block whose plugin has no Windows build says "only available on a Linux golem" unless a golem
   JSFX plays it ([platforms.md](platforms.md) §5).
 - macOS: signing / notarisation.

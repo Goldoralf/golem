@@ -166,6 +166,12 @@ log "Plugins (releases GitHub : NAM, Dexed)"
 "$HERE/plugins.sh"
 # plugins-deb.sh (Proteus, ChowDSP BYOD) : RETIRÉ (2026-11-15) — aucun bloc ne s'en sert plus.
 
+# golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release 0.4 précompilée et épinglée, dans
+# ~/.vst3. Non fatal : sans eux, les blocs jouent leurs plugins d'origine (guitarix, Calf… restent installés).
+log "golem-fx (les effets de golem — VST3 précompilés)"
+"$HERE/install-golem-fx.sh" || soft_fail golem-fx "golem-fx NON installé — les blocs gardent leurs plugins d'origine" \
+  "golem's own effects (golem-fx) could not be installed — the blocks play their previous plugins. Tap Retry."
+
 # SWS : RETIRÉ de l'install (2026-09-22). Il était posé « requis par les scènes » — faux : le moteur
 # de scènes est golem_rig (union materialization), LiveConfigs n'a jamais servi (audit 2026-09-21), et
 # le dernier appel SWS du moteur (destination d'un send, rec-follow) passe désormais par l'API native

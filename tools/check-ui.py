@@ -214,6 +214,12 @@ def visit(page, url, size, settle_ms):
             and not any(n in m.text for n in _CONSOLE_NOISE) else None)
     page.set_viewport_size({"width": size[0], "height": size[1]})
     page.goto(url, wait_until="load")
+    # une page qui attend PLUSIEURS requêtes à la fois (Songs ▸ Patches : cinq, dont le catalogue) peut dépasser le délai
+    # fixe quand le bridge est chargé : on attend d'abord que le réseau se taise (8 s au plus), puis le délai habituel
+    try:
+        page.wait_for_load_state("networkidle", timeout=8000)
+    except Exception:
+        pass
     page.wait_for_timeout(settle_ms)
     metrics = page.evaluate("""() => {
         // l'INVENTAIRE de ce qui s'actionne sur la page : tag, rôle, nom accessible (aria-label, texte, title,

@@ -132,6 +132,7 @@ small{color:var(--muted); font-weight:400; font-size:.7em}
   font-size:12px; font-weight:600; cursor:pointer}
 .tb-seg button.on{background:var(--sect, var(--accent)); color:#fff}
 .tb-seg button + button{border-left:1px solid var(--line)}
+.tb-seg em{font-style:normal; opacity:.65; margin-left:4px}
 /* option d'un segmenté qui n'a pas de sens dans le contexte courant (« Bank # » quand on
    regarde les presets SANS bank) : éteinte, pas cachée — une commande qui disparaît fait
    douter de ce qu'on a vu la seconde d'avant. */

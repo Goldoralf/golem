@@ -422,7 +422,7 @@ export function PatchesPage({ rig } = {}) {
         </div>`;
       })()}
     </div>`)}
-      ${!shown.length ? html`<div class="empty">No patch matches.</div>` : ''}
+      ${!shown.length ? html`<div class="empty">${data ? 'No patch matches.' : 'Loading…'}</div>` : ''}
       </div>
     </div>
     ${/* LE DÉPÔT — le seul geste destructif du modèle (docs/patches.md §15.4). Il REMPLACE la

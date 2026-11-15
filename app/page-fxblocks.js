@@ -79,11 +79,18 @@ export function FxBlocksPage({ role, gears } = {}) {
   const [opened] = useState(() => takeOpen('pedal'));
   useEffect(() => { if (opened && !selPed) { const p = board.find(b => b.key === opened); if (p) setSelPed(p); } }, [opened, board.length]);
 
+  // le sélecteur Captured / Built-in monte dans la barre des onglets (comme Heads / +Cab sur Amps) : les filtres de
+  // famille ou de catégorie gardent une ligne pour eux seuls (2026-11-15, ils passaient sur deux lignes)
+  const nCaptured = board.length, nBuilt = fx.filter(isBuilt).length;
   useEffect(() => {
     setSubToolbar(html`<input class="search" type="search" placeholder="Search pedals and effects"
-        onInput=${e => setQ(e.target.value.trim().toLowerCase())} />`);
+        onInput=${e => setQ(e.target.value.trim().toLowerCase())} />
+      <div class="tb-seg">
+        <button class=${cls(mode === 'captured' && 'on')} onClick=${() => setMode('captured')}>Captured pedals <em>${nCaptured}</em></button>
+        <button class=${cls(mode === 'builtin' && 'on')} onClick=${() => setMode('builtin')}>Built-in effects <em>${nBuilt}</em></button>
+      </div>`);
     return () => setSubToolbar(null);
-  }, []);
+  }, [mode, nCaptured, nBuilt]);
 
   if (selPed) return html`<div class="library tn-page"><${PedalPanel} p=${selPed} vis=${vis}
     onClose=${() => setSelPed(null)} onT3k=${() => setT3k(true)} onOpen=${t => setSelCap(t)} />
@@ -96,8 +103,6 @@ export function FxBlocksPage({ role, gears } = {}) {
   return html`
     <div class="library tn-page"><div class="tn-col">
       <div class="tn-bar">
-        <div class="tn-seg"><button class=${cls(mode === 'captured' && 'on')} onClick=${() => setMode('captured')}>Captured pedals <em>${board.length}</em></button>
-          <button class=${cls(mode === 'builtin' && 'on')} onClick=${() => setMode('builtin')}>Built-in effects <em>${fx.filter(isBuilt).length}</em></button></div>
         <div class="chips">${mode === 'captured'
           ? [['all', 'All'], ...PED_FAM, ['other', 'Other']].filter(([f]) => f === 'all' || famCount(f)).map(([f, l]) => html`<button class=${cls('chip', pfam === f && 'on')} onClick=${() => setPfam(f)}>${l}${f !== 'all' ? html` <em>${famCount(f)}</em>` : ''}</button>`)
           : builtCats.map(c => html`<button class=${cls('chip', curCat === c && 'on')} onClick=${() => setBcat(c)}>${CAT_LABEL[c] || c}</button>`)}</div>

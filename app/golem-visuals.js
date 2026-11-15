@@ -89,6 +89,9 @@ function patchRenderers() {
   const orig = P.pedalFor;
   P.pedalFor = (item, opts) => {
     const it = typeof item === 'string' ? { type: item } : item;
+    // LES BLOCS FONCTION de golem (rec, tuner, click…) : la console de golem-fx (da73548), avant toute pédale golem-fx —
+    // le `tuner` est aussi le type que gfx-tuner jouera : ici il reste l'appareil de golem
+    if (P.isFeature && P.isFeature(it.type)) return orig(item, opts);
     const b = P.blockByType(it.type);
     // UNE CAPTURE D'OUTBOARD sur le sol du pédalier (docs/library-tones.md §6) : un module vertical façon série 500, à
     // l'empreinte d'une pédale — ses commandes au réglage que le nom de la capture écrit ; le rack reste dans la Library

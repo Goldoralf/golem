@@ -1,0 +1,51 @@
+{
+ "id": "make-room-for-voice",
+ "type": "spectral-comp",
+ "name": "Make room for voice",
+ "desc": "Keyed by the singer: the instrument steps out of the voice's harmonics only",
+ "inst": "keys",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-pop"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -50,
+  "down": 6,
+  "up": 1,
+  "slope": 0,
+  "attack": 10,
+  "mode": "Live",
+  "center": 420,
+  "release": 150,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Key",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4: needs golem-rack's key_from (another lane's voice); with no key it does nothing",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

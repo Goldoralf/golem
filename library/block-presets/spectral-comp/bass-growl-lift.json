@@ -1,0 +1,51 @@
+{
+ "id": "bass-growl-lift",
+ "type": "spectral-comp",
+ "name": "Bass growl lift",
+ "desc": "Brings up a bass's growl and finger noise without lifting the amp's hiss",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal",
+  "rnb"
+ ],
+ "subgenres": [
+  "funk",
+  "hard-rock"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -46,
+  "down": 2,
+  "up": 3,
+  "slope": -2,
+  "attack": 150,
+  "mode": "Live",
+  "center": 800,
+  "release": 300,
+  "window": "2048",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 9,
+  "guard": -66,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4 (Review change 11: window 2048 for bass)",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

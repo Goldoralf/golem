@@ -46,7 +46,7 @@ def test_les_defauts_du_catalogue_s_ecrivent_a_la_compile_pour_ces_blocs_seuleme
               {"id": "b3", "type": "gate", "params": {}}]
     CR._fill_compile_defaults(blocks)
     sc, px, gate = blocks
-    assert sc["params"]["thresh"] == -30 and sc["params"]["down"] == 4 and sc["params"]["window"] == "2048"
+    assert sc["params"]["thresh"] == -30 and sc["params"]["down"] == 4 and sc["params"]["window"] == "1024"   # v49 : la fenêtre la plus courte (latence)
     assert px["params"]["thru"] is True and px["params"]["capture"] is False and px["params"]["amount"] == 4
     assert gate["params"] == {}                             # les autres blocs gardent les défauts du plugin
 

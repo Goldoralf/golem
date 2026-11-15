@@ -1,18 +1,50 @@
 {
- "name": "Pink noise wash",
+ "id": "pink-noise-wash",
  "type": "spectral-comp",
+ "name": "Pink noise wash",
+ "desc": "Squashes anything toward pink noise, mixed under the dry: the legacy wash, unguarded",
  "inst": "keys",
- "factory": true,
+ "genres": [
+  "experimental",
+  "electronic"
+ ],
+ "subgenres": [
+  "ambient"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": -3,
+ "tags": [
+  "extreme",
+  "dreamy"
+ ],
+ "default": false,
  "params": {
-  "thresh": -40,
+  "thresh": -56.3,
   "down": 8,
-  "up": 12,
+  "up": 2.01,
+  "slope": -2.08,
+  "attack": 150.0,
+  "mode": "Studio",
   "center": 420,
-  "slope": 0,
-  "attack": 300,
   "release": 1000,
   "window": "4096",
-  "mix": 60,
-  "out": -6
- }
+  "res": 2,
+  "knee": 6,
+  "range": 60,
+  "lift_range": 24,
+  "guard": -96,
+  "source": "Main",
+  "auto_gain": false,
+  "mix": 42.9,
+  "out": -3.09,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Legacy preset, converted once (README §3.4), mix and out exact. spectral-wash is the guarded new sound",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": false
 }

@@ -253,6 +253,11 @@ export const GLYPHS = {
 "uni": "⇄",
 "label": "MIDI pedal"
 },
+"morph": {
+"svg": "<path d='M3 8.5h8v9.5a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 3 18z'/><ellipse cx='7' cy='8.5' rx='4' ry='1.5'/><path d='M13 12.5h2v-3h2.5v6H20v-3h1.5' />",
+"uni": "◘",
+"label": "Morph (gfx)"
+},
 "octaver": {
 "svg": "<circle cx='10' cy='7.5' r='3.5'/><circle cx='10' cy='15.5' r='4.5'/><path d='M19 5v13M16.5 15.5 19 18l2.5-2.5'/>",
 "uni": "⑧",
@@ -374,7 +379,7 @@ export const GLYPHS = {
 "label": "Shem (tight boost)"
 },
 "spectral-comp": {
-"svg": "<path d='M4 21v-5M8 21v-9M12 21v-7M16 21v-10M20 21v-6'/><path d='M12 2.5v4M9.5 4.5 12 7l2.5-2.5'/>",
+"svg": "<path d='M2.5 6.5 21.5 8.5'/><path d='M4.5 21.5V8.5M8.5 21.5V15.5M12.5 21.5V9.4M16.5 21.5V16M20.5 21.5V10.2'/><path d='M8.5 12.6V11M16.5 13.1V11.5' opacity='.5'/>",
 "uni": "⩓",
 "label": "Spectral compressor"
 },

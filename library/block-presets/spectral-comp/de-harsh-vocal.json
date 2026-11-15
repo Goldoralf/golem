@@ -1,18 +1,52 @@
 {
- "name": "De-harsh vocal",
+ "id": "de-harsh-vocal",
  "type": "spectral-comp",
+ "name": "De-harsh vocal",
+ "desc": "Holds the 3 kHz and up region of a bright voice as it gets harsh; the body passes",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-pop",
+  "neo-soul"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
  "params": {
-  "thresh": -30,
+  "thresh": -40.3,
   "down": 4,
-  "up": 1,
+  "up": 1.0,
+  "slope": -6.24,
+  "attack": 10.0,
+  "mode": "Studio",
   "center": 3000,
-  "slope": -6,
-  "attack": 20,
   "release": 120,
   "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 60,
+  "lift_range": 24,
+  "guard": -96,
+  "source": "Main",
+  "auto_gain": false,
   "mix": 100,
-  "out": 0
- }
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Legacy preset, converted once (README §3.4); Studio at 1024 (21 ms). vocal-de-harsh is its Live sibling",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": false
 }

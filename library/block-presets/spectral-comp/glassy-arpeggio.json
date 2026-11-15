@@ -1,0 +1,51 @@
+{
+ "id": "glassy-arpeggio",
+ "type": "spectral-comp",
+ "name": "Glassy arpeggio",
+ "desc": "Arpeggios whose quiet notes ring as loud as the picked ones",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop",
+  "experimental"
+ ],
+ "subgenres": [
+  "indie-rock",
+  "post-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -44,
+  "down": 2,
+  "up": 2.5,
+  "slope": 0,
+  "attack": 50,
+  "mode": "Live",
+  "center": 420,
+  "release": 400,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 9,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4. The lift stops at 9 dB and never raises what sits under the guard",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

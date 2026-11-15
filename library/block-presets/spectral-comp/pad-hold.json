@@ -1,19 +1,51 @@
 {
- "name": "Pad hold",
+ "id": "pad-hold",
  "type": "spectral-comp",
+ "name": "Pad hold",
+ "desc": "Pulls a pad's loud bands down and lifts its quiet ones: a steady, even bed",
  "inst": "keys",
- "factory": true,
+ "genres": [
+  "electronic",
+  "pop",
+  "experimental"
+ ],
+ "subgenres": [
+  "ambient",
+  "downtempo"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": -3,
+ "tags": [
+  "warm"
+ ],
+ "default": true,
  "params": {
-  "thresh": -30,
+  "thresh": -46.3,
   "down": 4,
-  "up": 3,
+  "up": 1.55,
+  "slope": -2.08,
+  "attack": 75.0,
+  "mode": "Studio",
   "center": 500,
-  "slope": 0,
-  "attack": 150,
   "release": 500,
   "window": "4096",
+  "res": 2,
+  "knee": 6,
+  "range": 60,
+  "lift_range": 24,
+  "guard": -96,
+  "source": "Main",
+  "auto_gain": false,
   "mix": 100,
-  "out": -3
+  "out": -3,
+  "link": 100,
+  "delta": false,
+  "bypass": false
  },
- "default": true
+ "notes": "Legacy preset, converted once (README §3.4); window 4096 in Studio (85 ms)",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": false
 }

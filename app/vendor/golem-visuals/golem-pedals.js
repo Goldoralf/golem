@@ -375,10 +375,13 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     // neon rose: the pink of an 80s synth's lettering, a light tint of the pitch family's magenta
     // (gfx-polysynth's review: the draft's mint was ΔE*ab 27 from gfx-cab's teal; this rose is 42 – 44 from
     // raspberry, periwinkle and the pitch magenta)
-    'gfx-polysynth': '#ff9ecf' };
+    'gfx-polysynth': '#ff9ecf',
+    // deep crimson: a raw throat, the darker sister of the lofi family's raspberry (gfx-morph's design:
+    // ΔE*ab 29 from raspberry, 34 from gfx-acoustic's rosewood, 35 from gfx-correct's plum)
+    'gfx-morph': '#9a0d2a' };
   const THRASH_HUE = { drive: '#c8160e' };
   // the rune's light where the body's own hue would glow too dull
-  const RUNE_LIGHT = { dynamics: '#5fb0ff', preamp: '#ecb8ff', 'gfx-gapmeter': '#d8dde3', 'gfx-swell': '#ffd0dc', 'gfx-tape': '#94461a', 'gfx-widener': '#3a7fc0', 'gfx-tuner': '#3ddc2e', 'gfx-correct': '#ff5fb4', 'gfx-acoustic': '#ffc46b', 'gfx-radio': '#c8d86a', 'gfx-stretch': '#3040c8', 'gfx-polysynth': '#8a1060' };
+  const RUNE_LIGHT = { dynamics: '#5fb0ff', preamp: '#ecb8ff', 'gfx-gapmeter': '#d8dde3', 'gfx-swell': '#ffd0dc', 'gfx-tape': '#94461a', 'gfx-widener': '#3a7fc0', 'gfx-tuner': '#3ddc2e', 'gfx-correct': '#ff5fb4', 'gfx-acoustic': '#ffc46b', 'gfx-radio': '#c8d86a', 'gfx-stretch': '#3040c8', 'gfx-polysynth': '#8a1060', 'gfx-morph': '#ff6a4d' };
   const MOTIF = {
     'gfx-drive': 'flames', 'gfx-boost': 'chevrons', 'gfx-gate': 'barbed', 'gfx-comp': 'clamp', 'gfx-limiter': 'clamp',
     'gfx-deesser': 'clamp', 'gfx-wah': 'crescent', 'gfx-autowah': 'crescent', 'gfx-eq': 'curve', 'gfx-tremolo': 'pulse',
@@ -410,7 +413,9 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-stretch': 'chirp',
     'gfx-grains': 'grains',
     'gfx-sustainer': 'modes',
-    'gfx-polysynth': 'saws' };
+    'gfx-polysynth': 'saws',
+    'gfx-spectralcomp': 'skyline',
+    'gfx-morph': 'canned' };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
@@ -751,6 +756,30 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         }
         break;
       }
+      case 'skyline': {
+        // a spectrum evened by a tilted line (gfx-spectralcomp): bins' grid and baseline either side of
+        // the rune; a threshold line falling to the right (the `slope`), broken at the cartouche; a bar
+        // over it is cut at the line with a faint stub of what was taken, a bar under it is lifted by a
+        // third of its gap to the line. Uneven below, flattened along the line
+        const y0 = cy + ch / 2 + 6, ya = cy - .15 * ch, yb = cy - .05 * ch, clear = cw / 2 + 2, gap = 1.6;
+        const yl = x => ya + (yb - ya) * x / W;
+        const tops = [.35, .9, .5, 1, .25, .7, .95, .4, .6, .3, .85, .55];
+        line(`M0 ${f1(ya)}L${f1(cx - clear)} ${f1(yl(cx - clear))}`, .45);
+        line(`M${f1(cx + clear)} ${f1(yl(cx + clear))}L${W} ${f1(yb)}`, .45);
+        let k = 0;
+        for (let x = 7; x <= W - 7; x += 5) {
+          if (Math.abs(x - cx) < clear) continue;
+          const t = tops[k++ % tops.length], top = y0 - (y0 - (cy - ch * .7)) * t, l = yl(x);
+          if (top < l) {
+            line(`M${f1(x)} ${f1(y0)}V${f1(l + gap)}`);
+            if (top < l - gap) line(`M${f1(x)} ${f1(l - gap)}V${f1(top)}`, .3);
+          } else {
+            line(`M${f1(x)} ${f1(y0)}V${f1(top)}`);
+            line(`M${f1(x)} ${f1(top)}V${f1(top - (top - l) / 3)}`, .55);
+          }
+        }
+        break;
+      }
       case 'scale':
         // a screen-printed fader scale: rules at 0 (stronger), ±5, ±10, ±15 dB across the slider field
         // (the wide face's slots run y 16 – 100, 0 dB at 58)
@@ -976,6 +1005,32 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
             x += s * pw;
           });
         });
+        break;
+      }
+      case 'canned': {
+        // the voice shouted into a can: left of the rune a smooth sine (3 periods, amplitude 0.25 · ch)
+        // from x = 6 to the cartouche's left edge − 2, the voice going in; right of the rune the outline
+        // of a can on its side (a 0.9 · ch × 1.3 · ch rounded rectangle at the cartouche's right edge +
+        // 3, its open left side an ellipse rim), and out of it to W − 6 the same wave squared off and
+        // broken: three flat-topped pulses, a gap, a stair step, at the same amplitude
+        const a = .25 * ch, xl = cx - cw / 2 - 2;
+        line(sine(6, xl, cy, a, (xl - 6) / 3, 0));
+        const w = .9 * ch, h = 1.3 * ch, x0 = cx + cw / 2 + 3, x1 = x0 + w, r = .15 * ch, top = cy - h / 2, bot = cy + h / 2;
+        line(`M${f1(x0)} ${f1(top)}H${f1(x1 - r)}Q${f1(x1)} ${f1(top)} ${f1(x1)} ${f1(top + r)}V${f1(bot - r)}` +
+             `Q${f1(x1)} ${f1(bot)} ${f1(x1 - r)} ${f1(bot)}H${f1(x0)}`);
+        const rx = .18 * w;
+        line(`M${f1(x0)} ${f1(top)}a${f1(rx)} ${f1(h / 2)} 0 1 0 0 ${f1(h)}a${f1(rx)} ${f1(h / 2)} 0 1 0 0 ${f1(-h)}Z`, .8);
+        const xs = x1 + 2, xe = W - 6, span = xe - xs, pw = span * .55 / 3, gapw = span * .12;
+        let x = xs, d = `M${f1(xs)} ${f1(cy)}`;
+        for (let k = 0; k < 3; k++) {
+          d += `V${f1(cy - a)}H${f1(x + pw / 2)}V${f1(cy + a)}H${f1(x + pw)}V${f1(cy)}`;
+          x += pw;
+        }
+        d += `H${f1(x + gapw)}`;
+        x += gapw;
+        const sw = (xe - x) / 4;
+        [-.5, -1, -.5, 0].forEach(k => { d += `V${f1(cy + k * a)}H${f1(x + sw)}`; x += sw; });
+        line(d);
         break;
       }
       case 'grille': {

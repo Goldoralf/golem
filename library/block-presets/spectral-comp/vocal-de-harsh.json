@@ -1,0 +1,51 @@
+{
+ "id": "vocal-de-harsh",
+ "type": "spectral-comp",
+ "name": "Vocal de-harsh",
+ "desc": "Holds the harshness and sibilant edges of a bright mic at zero latency",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-folk"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -44,
+  "down": 4,
+  "up": 1,
+  "slope": -6,
+  "attack": 15,
+  "mode": "Live",
+  "center": 3000,
+  "release": 100,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4; pair with gfx-deesser for the sibilants themselves",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

@@ -1,0 +1,51 @@
+{
+ "id": "fill-the-gaps",
+ "type": "spectral-comp",
+ "name": "Fill the gaps",
+ "desc": "A pad keyed by the lead: it rises where the lead leaves room",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop",
+  "experimental"
+ ],
+ "subgenres": [
+  "ambient",
+  "downtempo"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -50,
+  "down": 1,
+  "up": 3,
+  "slope": 0,
+  "attack": 150,
+  "mode": "Studio",
+  "center": 420,
+  "release": 300,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 9,
+  "guard": -60,
+  "source": "Key",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4; auto gain is 0 dB under a key, so a silent key changes nothing",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

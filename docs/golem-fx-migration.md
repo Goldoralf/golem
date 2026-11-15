@@ -66,6 +66,18 @@ installers**: guitarix, Calf, x42 / fat1, Dragonfly, ZamAudio, mda, Surge XT, Pr
 Compressor (nih-plug), zeroconvo, NAM, sfizz, setBfree, Dexed, Vital, AVL Drumkits, DrumGizmo — they still play blocks:
 the effects wherever golem-fx is not installed, the rest as instruments, captures and cabs. `reaper/Scripts/golem_rig.lua` keeps its dead Ratatouille path for now.
 
+### Catalogue v49: Spectral Comp and Morph (2026-11-15)
+
+- `spectral-comp` is played by **gfx-spectralcomp** (golem-fx bda4675): the last block a third-party plugin played
+  where golem-fx is installed. The ten catalogue ids are kept and mapped to the plugin's names in the engine table,
+  `key: true` (Source Key = the lane's DI); the window defaults to 1024. The legacy Spectral Compressor stays the
+  fallback where golem-fx is not installed. 18 golem-fx presets, the 7 rack ones converted by golem-fx.
+- `morph` is a new golem-fx-only block (gfx-morph, golem-fx 210d4ce), category Lo-Fi, voice lanes: the live vocal
+  mangler. 17 presets.
+- Not done yet: the meter display (`gr`, `lift_gr`, the eight `dyn_*`), `key_from` (another lane's voice), the
+  latency re-sync when a preset switches Live ↔ Studio, gfx-morph's `depends` that golem's descriptor format cannot
+  hold (gfx-morph README §3.2), and both on the quiet-machine stall bench.
+
 ## 2. Will golem have only golem-fx pedals?
 
 For the **effects**, yes: decided on 2026-11-15 ("the golem will run only with our blocks", §1 bis). What remains of
@@ -84,15 +96,15 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**51 of 58 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 1 have no golem-fx counterpart yet.
+**53 of 59 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
-| Played by golem-fx, replacing an open-source plugin (32) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `guitar-drive` |
-| Played by golem-fx, new blocks with no open-source original (19) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
+| Played by golem-fx, replacing an open-source plugin (33) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `spectral-comp`, `guitar-drive` |
+| Played by golem-fx, new blocks with no open-source original (20) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
 | … of which the engine-stall bench is still pending (6) | `flanger-js`, `golem-double`, `glitch`, `met`, `emet`, `shem` |
 | Ready in golem-fx, not wired yet (6) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
-| No golem-fx counterpart yet (1) | `spectral-comp` (Spectral Compressor (Robbert) |
+| No golem-fx counterpart yet (0) |  |
 | Out of scope — Captures (the sound is the file) (5) | `pedal-nam`, `preamp-nam`, `comp-nam`, `amp`, `amp-nam` |
 | Out of scope — Instruments (6) | `vital`, `pads`, `drumkit`, `organ`, `piano`, `ep` |
 | Out of scope — golem features (10) | `backing-track`, `looper`, `tuner`, `rec`, `click`, `compo`, `sample`, `drums`, `standard`, `arrangement` |

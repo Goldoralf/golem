@@ -1,0 +1,52 @@
+{
+ "id": "bass-even-strings",
+ "type": "spectral-comp",
+ "name": "Bass even strings",
+ "desc": "Bass whose strings read at different levels: the lows held, the fingers' detail kept",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "pop",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "funk",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -38,
+  "down": 3,
+  "up": 1.5,
+  "slope": 2,
+  "attack": 60,
+  "mode": "Live",
+  "center": 200,
+  "release": 300,
+  "window": "2048",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4; window 2048 reads the low E cleanly (1.5-bin floor: 35 Hz)",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

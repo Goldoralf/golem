@@ -1,19 +1,52 @@
 {
- "name": "Gentle glue",
+ "id": "gentle-glue",
  "type": "spectral-comp",
+ "name": "Gentle glue",
+ "desc": "Two-to-one on every band over the curve, a little lift under it: a whole mix leans together",
  "inst": "any",
- "factory": true,
+ "genres": [
+  "pop",
+  "rock",
+  "electronic"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-pop",
+  "downtempo"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
  "params": {
-  "thresh": -24,
+  "thresh": -37.3,
   "down": 2,
-  "up": 1.2,
+  "up": 1.1,
+  "slope": -2.08,
+  "attack": 75.0,
+  "mode": "Studio",
   "center": 420,
-  "slope": 0,
-  "attack": 150,
   "release": 300,
   "window": "2048",
+  "res": 2,
+  "knee": 6,
+  "range": 60,
+  "lift_range": 24,
+  "guard": -96,
+  "source": "Main",
+  "auto_gain": false,
   "mix": 100,
-  "out": 0
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
  },
- "default": true
+ "notes": "golem's legacy preset, converted once (README §3.4): Studio, the legacy block had no caps and no make-up",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": false
 }

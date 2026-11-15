@@ -538,6 +538,29 @@
    "init": {
     "Carrier": 1
    }
+  },
+  "spectral-comp": {
+   "vst3": "476F6C654D467853706563436D703031",
+   "golem_fx": true,
+   "status": "testing",
+   "key": true,
+   "params": {
+    "thresh": "Threshold",
+    "down": "Down",
+    "up": "Up",
+    "center": "Center",
+    "slope": "Slope",
+    "attack": "Attack",
+    "release": "Release",
+    "window": "Window",
+    "mix": "Mix",
+    "out": "Output"
+   }
+  },
+  "morph": {
+   "vst3": "476F6C654D46784D6F72706830303031",
+   "golem_fx": true,
+   "status": "testing"
   }
  }
 }

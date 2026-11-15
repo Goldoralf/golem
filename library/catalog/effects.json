@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 48,
+ "catalog_version": 49,
  "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
  "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER on Linux with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
@@ -4676,7 +4676,8 @@
    "short": "PCor",
    "color": "#b06cf0",
    "roles": [
-    "voice"
+    "voice",
+    "guitar"
    ],
    "params": [
     {
@@ -5514,7 +5515,7 @@
       5,
       6
      ],
-     "default": "2048",
+     "default": "1024",
      "min": 0,
      "max": 9,
      "map": {
@@ -5557,7 +5558,7 @@
      }
     }
    ],
-   "note": "Spectral Compressor (Robbert van der Helm, GPL-3, nih-plug — built from source by provision/install-spectral.sh, docs/spectral.md): a compressor per FFT bin (thousands of them), downwards AND upwards, with a threshold CURVE across the spectrum instead of one number. What it is for on a rack: even out a voice or a pad without pumping (the threshold follows the spectrum), hold a synth pad, 'pink-noise' a source with Up high. LATENCY = the window (2048 → 43 ms, compensated by Reaper's PDC on the lane): never in the base path of a guitar lane; voice, keys and pads take it. Placement: after gate/EQ, before delay/reverb. Knobs are written in NORMALIZED with the plugin's own tapers (map.mode pow, nih-plug Skewed/SymmetricalSkewed): a read-back in the same call is stale on nih-plug, so no display dichotomy here. `defaults: compile` — the catalog defaults are written at compile time when a preset omits them (the plugin's own defaults would leave Spectral Comp at 1:1 and Stretch with the direct signal cut).",
+   "note": "golem-fx Spectral Comp (gfx-spectralcomp, catalogue v49); the legacy Spectral Compressor (Robbert van der Helm, GPL-3, nih-plug, built by provision/install-spectral.sh) is the fallback where golem-fx is not installed. A compressor per frequency band, downwards AND upwards, with a threshold CURVE across the spectrum instead of one number. What it is for: even out a voice or a pad without pumping, hold a synth pad, 'pink-noise' a source with Up high. golem-fx Mode Live (its default) has NO latency; Studio adds the window's latency (set it before playing, never in the base path of a guitar lane), as the legacy plugin always does (1024 → 21 ms). Source Key listens to the lane's DI. Placement: after gate/EQ, before delay/reverb. With the legacy plugin, knobs are written NORMALIZED with its own tapers (map.mode pow) and `defaults: compile` writes the catalogue defaults at compile time; golem-fx takes plain values.",
    "_validation": "2026-09-25 : VALIDÉ au banc — fxadd sous « CLAP: Spectral Compressor (Robbert van der Helm) », pdc=2048 samples déclaré, check-block-stall : aucun gel (les −41…−47 ms mesurés sont le PDC qui entre, pas un gel), deux reconstructions (seul derrière un gate, puis rappel d'un autre preset et retour), les 10 potards relus à la valeur AFFICHÉE attendue (map.mode pow — la dichotomie d'affichage posait Window 32768 pour 2048, Attack 0,1 ms pour 50 : relecture en retard sur nih-plug), défauts du catalogue écrits à la compile. Pas encore joué à l'oreille.",
    "defaults": "compile"
   },
@@ -6726,6 +6727,80 @@
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
+   "type": "morph",
+   "name": "Morph",
+   "category": "lofi",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Morph (GoleM)",
+   "short": "Morph",
+   "color": "#9a0d2a",
+   "roles": [
+    "voice"
+   ],
+   "note": "golem-fx live vocal mangler (gfx-morph, catalogue v49): a guard against stage bleed, a de-fizz, A/B dirt you sweep with Morph, a physical object the voice sings into (Object: tin can, bucket, pipe, bottle…; Box sets how much), then a comp, a post filter and a slap echo. Expects the voice lane at about −18 dBFS RMS. Prefer it to Grit when the voice must stay intelligible while turning monstrous.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER on Linux with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "params": [
+    {
+     "id": "drive",
+     "name": "Drive",
+     "min": 0,
+     "max": 100,
+     "default": 40,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "morph",
+     "name": "Morph",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "box",
+     "name": "Box",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "mix",
+     "name": "Mix",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "object",
+     "name": "Object",
+     "type": "enum",
+     "options": [
+      "None",
+      "Tin Can",
+      "Bucket",
+      "Pipe",
+      "Bottle",
+      "Cardboard Box",
+      "Oil Drum",
+      "Glass Jar",
+      "Cone",
+      "Hands"
+     ],
+     "default": "Tin Can"
+    }
+   ]
+  },
+  {
    "type": "vocoder",
    "name": "Vocoder",
    "category": "modulation",
@@ -6897,7 +6972,7 @@
    "category": "pitch",
    "engine": "plugin",
    "plugin": "VST3: GoleM FX Sustainer (GoleM)",
-   "short": "Feedback",
+   "short": "Sustainer",
    "color": "#c4148c",
    "roles": [
     "guitar",

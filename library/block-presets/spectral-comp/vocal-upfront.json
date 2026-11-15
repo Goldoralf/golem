@@ -1,18 +1,51 @@
 {
- "name": "Vocal upfront",
+ "id": "vocal-upfront",
  "type": "spectral-comp",
+ "name": "Vocal upfront",
+ "desc": "Lifts a voice's quiet detail and holds its peaks, blended in parallel: closer, denser",
  "inst": "voice",
- "factory": true,
+ "genres": [
+  "pop",
+  "rnb",
+  "hip-hop"
+ ],
+ "subgenres": [
+  "indie-pop",
+  "neo-soul"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
  "params": {
-  "thresh": -32,
+  "thresh": -45.3,
   "down": 2,
-  "up": 3,
+  "up": 1.5,
+  "slope": -2.08,
+  "attack": 40.0,
+  "mode": "Studio",
   "center": 800,
-  "slope": 0,
-  "attack": 80,
   "release": 300,
   "window": "2048",
-  "mix": 70,
-  "out": -2
- }
+  "res": 2,
+  "knee": 6,
+  "range": 60,
+  "lift_range": 24,
+  "guard": -96,
+  "source": "Main",
+  "auto_gain": false,
+  "mix": 65.0,
+  "out": -1.35,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "Legacy preset, converted once (README §3.4), mix and out exact",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": false
 }

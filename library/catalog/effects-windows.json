@@ -229,6 +229,9 @@
   },
   "polysynth": {
    "unsupported": "golem-fx only (catalogue v47): golem-fx has no Windows build yet, and no original plugin plays this block"
+  },
+  "morph": {
+   "unsupported": "golem-fx only (catalogue v49): golem-fx has no Windows build yet, and no original plugin plays this block"
   }
  },
  "unmapped": {

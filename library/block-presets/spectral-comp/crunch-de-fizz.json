@@ -1,0 +1,50 @@
+{
+ "id": "crunch-de-fizz",
+ "type": "spectral-comp",
+ "name": "Crunch de-fizz",
+ "desc": "After a drive: the fizz above 3 kHz is held as the gain rises, the chug passes",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "alternative-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": -1,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -42,
+  "down": 4,
+  "up": 1,
+  "slope": -4,
+  "attack": 20,
+  "mode": "Live",
+  "center": 2000,
+  "release": 120,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4 (Review change 5): Main, not the DI key, since the DI has no fizz to read",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

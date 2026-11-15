@@ -1,0 +1,52 @@
+{
+ "id": "vocal-smooth-live",
+ "type": "spectral-comp",
+ "name": "Vocal smooth live",
+ "desc": "A live voice: ringing resonances and harsh vowels held, zero latency in the in-ears",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-pop",
+  "neo-soul"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "thresh": -40,
+  "down": 3,
+  "up": 1.5,
+  "slope": -3,
+  "attack": 40,
+  "mode": "Live",
+  "center": 1000,
+  "release": 200,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

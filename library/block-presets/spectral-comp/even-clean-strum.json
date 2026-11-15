@@ -1,0 +1,52 @@
+{
+ "id": "even-clean-strum",
+ "type": "spectral-comp",
+ "name": "Even clean strum",
+ "desc": "Strummed clean chords: the low strings stop masking the top ones, with no broadband pumping",
+ "inst": "guitar",
+ "genres": [
+  "pop",
+  "rock",
+  "folk"
+ ],
+ "subgenres": [
+  "pop-rock",
+  "indie-rock",
+  "indie-folk"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": true,
+ "params": {
+  "thresh": -40,
+  "down": 3,
+  "up": 1.5,
+  "slope": 0,
+  "attack": 30,
+  "mode": "Live",
+  "center": 420,
+  "release": 200,
+  "window": "1024",
+  "res": 2,
+  "knee": 6,
+  "range": 24,
+  "lift_range": 12,
+  "guard": -72,
+  "source": "Main",
+  "auto_gain": true,
+  "mix": 100,
+  "out": 0,
+  "link": 100,
+  "delta": false,
+  "bypass": false
+ },
+ "notes": "README §4. Live: zero latency on a played lane",
+ "factory": true,
+ "golem_fx_seed": "gfx-spectralcomp",
+ "golem_fx": true
+}

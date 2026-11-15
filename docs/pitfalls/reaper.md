@@ -183,6 +183,53 @@ EVERY FX on the track, which re-triggers loads.
 
 ---
 
+## Two amps on one lane: one core per block, never found by name
+
+**Status.** CODED, 2026-11-15.
+
+**Symptom.** A lane with two amp blocks on the same track (no split) plays only one of them. Seen
+live: `amp-x4x1` (Fender, off in scene A) before `amp-smku` (EVH, on in scene A). REAPER showed a
+single untagged NAM loaded with the Fender's file; the EVH was never materialized, the live map
+pointed the EVH's knobs at the Fender's NAM, and `.rig-check.json` said ok because *a* file was
+loaded.
+
+**Cause.** The file-loading core of a track (NAM [+ x42], baked `.RfxChain`) was built from the
+FIRST amp and the first cab only (`compile_rig._render_core_for`, `_native_core_for`), and the
+engine found a core block's FX by tag first, then by plugin name ("neural amp") — so every amp
+block resolved to the same instance.
+
+**Rule.**
+1. A track with two or more amp blocks, or two or more cab blocks (`compile_rig.multi_core`;
+   blocks set aside for a wrong file kind count), gets one core instance per block, in chain order:
+   each NAM loads its own model, each cab its own IR, and a head without any cab on the path gets
+   its own default IR right after it. The plan lists their tags in `core_ids` (Linux) or
+   `native_core.instances` (Windows/macOS, official NAM VST3).
+2. Each instance has its own FXID, derived from its tag (the templates carry a fixed FXID, and the
+   file memory of the previous section is keyed by FXID). The engine tags each instance
+   `golem:<block id>` right after loading the chain (a named config, not a chunk surgery); a default
+   IR is tagged `golem:<amp id>~ir` and follows its amp in scenes and stomps.
+3. On such a track the engine never falls back to the plugin name: a block whose instance is
+   missing stays missing and is logged, instead of driving another block's FX. Blocks between two
+   amps are placed in front of the next core block, so the chain order holds.
+4. The topology stays scene-independent: every amp is posed; scenes only switch instances on and
+   off (`apply_core_enabled`), with no rebuild.
+5. A track with one amp (+ one cab) is untouched: same `.RfxChain` byte for byte, same signature,
+   no `core_ids`, found by name as before — an existing rig is not rebuilt by this change.
+6. The file check judges the RIGHT file, not just *a* file: when the plugin exposes a single file
+   parameter of that kind and shows a file name, it must be the expected one (`loaded` in
+   `.rig-check.json` names what was loaded instead). The NAM LV2 shows the file's base name
+   (measured in a `.fxdump.json`).
+
+**Detect.** `.rig.json` (`core_ids`, `native_core.instances`); `.livemap.json` has one entry per
+amp, on different FX; `.rig-check.json` issues with `loaded`.
+
+**Code.** `bridge/compile_rig.py` (`multi_core`, `_core_plan`, `_render_multi_core`,
+`_native_multi_core`, `_fxid_for`); `reaper/Scripts/golem_rig.lua` (`core_multi`, `core_fx_index`,
+`apply_core_enabled`, `build_track_fx`, `load_native_core`, `files_issues`, `fx_signature`,
+`write_livemap`, `handle_stomp`); tests in `tests/test_rig_lua.py` and `tests/test_compile_rig.py`.
+
+---
+
 ## A send's index is the value returned by `CreateTrackSend`
 
 **Symptom.** Send parameters (volume, MIDI flags, channels) land on the wrong send, or nowhere.

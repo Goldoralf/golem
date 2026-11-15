@@ -28,6 +28,7 @@ of a subsystem before changing it.
 - REAPER reads no command for minutes → modal dialog; delete render output first, "exists" ≠ "produced" → [reaper.md](reaper.md#a-modal-dialog-stops-the-whole-rack)
 - Track memory vanishes after a chunk write → write `P_EXT` after `SetTrackStateChunk`, single-line values → [reaper.md](reaper.md#settrackstatechunk-also-erases-p_ext)
 - Amp/cab silent after a rebuild → the chunk lies while loading: heal, verify the plugin's own parameter, repair only after a rebuild, settle → [reaper.md](reaper.md#the-track-chunk-lies-while-a-plugin-is-loading)
+- Two amps on one lane, only one plays (and its knobs drive the other) → one core instance per block, tagged, never found by name; the file check judges the right file → [reaper.md](reaper.md#two-amps-on-one-lane-one-core-per-block-never-found-by-name)
 - Send settings land on the wrong send → use the index returned by `CreateTrackSend` → [reaper.md](reaper.md#a-sends-index-is-the-value-returned-by-createtracksend)
 - Looper toggles by itself when a keyboard plays → `I_MIDIFLAGS = 31` on audio-only sends → [reaper.md](reaper.md#a-send-carries-midi-by-default)
 - Half-second blank on every track at scene change → a plugin stalls the engine; `check-block-stall.py`, toggle the convolver's Enable, quarantine → [reaper.md](reaper.md#a-plugin-can-freeze-the-whole-audio-engine-when-it-turns-on)

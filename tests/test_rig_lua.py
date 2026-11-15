@@ -578,3 +578,197 @@ def test_le_pied_d_un_granular_joue_par_gfx_grains_tient_le_freeze(tmp_path):
     assert freeze() == 1 and g.enabled is True, lab.log()
     lab.run(action="stomp", preset="ci-engine", ids=["grains"], on=False)
     assert freeze() == 0 and g.enabled is True, lab.log()
+
+
+# ── DEUX AMPLIS SUR UNE LANE (2026-11-15) ─────────────────────────────────────────────────────────────────
+# Vu au rack : amp-x4x1 (Fender, coupé en scène A) AVANT amp-smku (EVH, allumé) sur une piste sans split. REAPER
+# montrait UN seul NAM, non estampillé, chargé du Fender ; l'EVH n'existait pas, sa carte vivante pointait sur le
+# Fender, et la vérification des fichiers disait « ok ». Ici : chaque ampli a son NAM, son fichier, son estampille.
+NAM_LV2 = "LV2: Neural Amp Modeler (Mike Oliphant) (Mono)"
+X42_LV2 = "LV2: x42 - IR Convolver Mono"
+TWO = [("A", "EVH", {"amp-x4x1": False, "amp-smku": True}), ("B", "Fender", {"amp-x4x1": True, "amp-smku": False})]
+TWO_AMPS = {"id": "two-amps", "name": "Two amps", "role": "guitar", "kind": "patch", "patch_v": 2, "lanes_v": 2, "bpm": 120,
+            "lanes": [{"id": "gtr", "role": "guitar", "name": "Two amps", "midi": False, "stereo": False,
+                       "chain": {"pre": [{"id": "gate", "type": "gate"},
+                                         {"id": "amp-x4x1", "type": "amp", "ref": "6237", "params": {"output": -3}},
+                                         {"id": "eq", "type": "eq"},
+                                         {"id": "amp-smku", "type": "amp", "ref": "6440", "params": {"output": 2}}],
+                                 "post": [{"id": "dly", "type": "delay"}]},
+                       "states": [{"id": f"st-gtr-{s}", "name": n, "blocks": b, "params": {}, "branches": {}} for s, n, b in TWO]}],
+            "scenes": [{"id": s, "name": n, "blocks": b, "branches": {}, "lanes": {"gtr": {"state": f"st-gtr-{s}"}}} for s, n, b in TWO],
+            "config": {"gen": {"out": "1-2", "blocks": []}}}
+
+
+def _amp_lab(tmp_path, monkeypatch, patch):
+    from bridge import compile_rig
+    files = {}
+    for ref, name in (("6237", "fender-deluxe.nam"), ("6440", "evh-5150.nam"), (compile_rig.DEFAULT_CAB, "mesa.wav")):
+        p = tmp_path / "lib" / name
+        p.parent.mkdir(exist_ok=True)
+        if name.endswith(".nam"):
+            p.write_text(json.dumps({"metadata": {"loudness": -18.0}}))
+        else:
+            p.write_bytes(b"RIFF")
+        files[ref] = str(p)
+    monkeypatch.setattr(compile_rig, "_resolve", lambda ref, comps=None, model=None: files.get(str(ref), ""))
+    monkeypatch.setattr(compile_rig, "ASSET_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setattr(compile_rig, "_ir_guard", lambda src, dst: shutil.copy2(src, dst))   # un faux .wav
+    lab = Lab(tmp_path)
+    nam = [{"name": "Input Lvl", "min": -20, "max": 20, "def": 0}, {"name": "Output Lvl", "min": -20, "max": 20, "def": 0},
+           {"name": "Neural Model", "min": 0, "max": 1, "def": 0}, {"name": "Quality", "min": 0, "max": 1, "def": 1}]
+    x42 = [{"name": "Enable", "min": 0, "max": 1, "def": 1}, {"name": "Wet Signal Level", "min": -40, "max": 40, "def": 0},
+           {"name": "Impulse Response", "min": 0, "max": 1, "def": 0}]
+    lab.F.specs[NAM_LV2] = lab.L.table_from([lab.L.table_from(p) for p in nam])
+    lab.F.specs[X42_LV2] = lab.L.table_from([lab.L.table_from(p) for p in x42])
+    lab.compile(patch)
+    return lab
+
+
+@pytest.fixture
+def two_amps(tmp_path, monkeypatch):
+    return _amp_lab(tmp_path, monkeypatch, TWO_AMPS)
+
+
+def _amp_fx(lab):
+    """{estampille: (piste, index, fx)} des NAM posés."""
+    out = {}
+    for t in lab.F.tracks.values():
+        for i, f in enumerate(t.fx.values()):
+            if f.name == NAM_LV2:
+                out[f.cfg.renamed_name or f"untagged#{i}"] = (t, i, f)
+    return out
+
+
+def test_deux_amplis_sur_une_lane_deux_nam_chacun_son_fichier(two_amps):
+    lab = two_amps
+    lab.run(action="rig_recall", preset="two-amps", scene="A")
+    amps = _amp_fx(lab)
+    assert set(amps) == {"golem:amp-x4x1", "golem:amp-smku"}, (sorted(amps), lab.log()[-3000:])
+    (tf, i_f, fender), (te, i_e, evh) = amps["golem:amp-x4x1"], amps["golem:amp-smku"]
+    assert tf is te                                                     # même piste : pas de split
+    assert "fender-deluxe" in fender.state and "evh-5150" not in fender.state, fender.state
+    assert "evh-5150" in evh.state and "fender-deluxe" not in evh.state, evh.state
+    assert fender.guid != evh.guid                                      # la mémoire des fichiers est par FXID
+    # l'ordre de la chaîne : gate, Fender, eq, EVH, delay
+    tags = [f.cfg.renamed_name for f in tf.fx.values() if f.cfg.renamed_name]
+    assert tags.index("golem:gate") < tags.index("golem:amp-x4x1") < tags.index("golem:eq") \
+        < tags.index("golem:amp-smku") < tags.index("golem:dly"), tags
+    # scène A : Fender coupé, EVH allumé
+    assert fender.enabled is False and evh.enabled is True, lab.log()
+    # la carte vivante : chaque ampli vise SON NAM (plus jamais les potards de l'EVH sur le Fender)
+    live = lab.livemap()["blocks"]
+    assert live["amp-x4x1"]["fx"] == i_f and live["amp-smku"]["fx"] == i_e and i_f != i_e, live
+    assert "output" in live["amp-smku"]["params"], live["amp-smku"]
+    # les potards de chaque bloc sur SON instance
+    outp = lambda f: next(q.val for q in f.params.values() if q.name == "Output Lvl")    # noqa: E731
+    assert outp(evh) != outp(fender), (outp(evh), outp(fender))
+
+
+def test_deux_amplis_la_scene_bascule_sans_rebuild_et_le_rappel_reutilise(two_amps):
+    lab = two_amps
+    lab.run(action="rig_recall", preset="two-amps", scene="A")
+    names = [t["name"] for t in lab.tracks()]
+    lab.compile(TWO_AMPS, scene="B")
+    lab.run(action="scene_apply", preset="two-amps", scene="B")
+    assert lab.calls("TrackFX_AddByName") == 0 and lab.calls("TrackFX_Delete") == 0 and lab.calls("DeleteTrack") == 0
+    amps = _amp_fx(lab)
+    assert amps["golem:amp-x4x1"][2].enabled is True and amps["golem:amp-smku"][2].enabled is False, lab.log()
+    # rappel identique : même signature -> REUSE, aucune chirurgie, aucun NAM rechargé
+    lab.run(action="rig_recall", preset="two-amps", scene="B")
+    assert lab.calls("TrackFX_Delete") == 0 and lab.calls("SetTrackStateChunk") == 0, lab.log()[-2000:]
+    assert [t["name"] for t in lab.tracks()] == names
+    amps = _amp_fx(lab)
+    assert set(amps) == {"golem:amp-x4x1", "golem:amp-smku"}
+    assert amps["golem:amp-x4x1"][2].enabled is True and amps["golem:amp-smku"][2].enabled is False
+
+
+def test_deux_amplis_le_stomp_vise_le_bon_nam(two_amps):
+    lab = two_amps
+    lab.run(action="rig_recall", preset="two-amps", scene="A")
+    lab.run(action="stomp", preset="two-amps", ids=["amp-x4x1"], on=True)
+    amps = _amp_fx(lab)
+    assert amps["golem:amp-x4x1"][2].enabled is True and amps["golem:amp-smku"][2].enabled is True
+
+
+def test_la_verification_voit_le_mauvais_fichier(two_amps):
+    """UN fichier chargé ne suffit plus : le NAM de l'EVH qui afficherait le modèle du Fender est un défaut."""
+    lab = two_amps
+    lab.run(action="rig_recall", preset="two-amps", scene="A")
+
+    def verify():
+        lab.F.ext["golem/rig_verify"] = "2"
+        lab.L.execute(RIG)
+        return json.loads((lab.root / "presets/.rig-check.json").read_text(encoding="utf-8"))
+    ok = verify()
+    assert ok["ok"] is True and ok["checked"] >= 1, (ok, lab.log()[-2000:])
+    evh = _amp_fx(lab)["golem:amp-smku"][2]
+    evh.shown = lab.L.table_from({"Neural Model": "fender-deluxe.nam"})
+    bad = verify()
+    assert bad["ok"] is False, bad
+    assert any(i["kind"] == "model" and "evh-5150" in i["expected"] and i["loaded"] == "fender-deluxe.nam"
+               for i in bad["issues"]), bad
+    evh.shown = lab.L.table_from({"Neural Model": ""})                 # rien de chargé : déjà vu avant ce jour
+    empty = verify()
+    assert empty["ok"] is False and any(i["loaded"] == "" for i in empty["issues"]), empty
+
+
+def _variant(blocks_pre, states, pid):
+    import copy
+    p = copy.deepcopy(TWO_AMPS)
+    p["id"] = pid
+    p["lanes"][0]["chain"]["pre"] = blocks_pre
+    p["lanes"][0]["states"] = [{"id": f"st-gtr-{s}", "name": s, "blocks": b, "params": {}, "branches": {}} for s, b in states]
+    p["scenes"] = [{"id": s, "name": s, "blocks": b, "branches": {}, "lanes": {"gtr": {"state": f"st-gtr-{s}"}}} for s, b in states]
+    return p
+
+
+def test_un_seul_ampli_se_pose_comme_avant(tmp_path, monkeypatch):
+    """Le cas commun ne change pas : UN NAM du gabarit (FXID du gabarit, pas de core_ids), trouvé par son nom, la
+    carte vivante sur lui, la scène qui l'allume et l'éteint."""
+    from bridge import compile_rig
+    patch = _variant([{"id": "gate", "type": "gate"}, {"id": "amp-smku", "type": "amp", "ref": "6440"}],
+                     [("A", {"amp-smku": True}), ("B", {"amp-smku": False})], "one-amp")
+    lab = _amp_lab(tmp_path, monkeypatch, patch)
+    plan = json.loads((lab.root / "reaper/FXChains/one-amp.rig.json").read_text(encoding="utf-8"))
+    track = plan["paths"][0]["tracks"][0]
+    assert "core_ids" not in track
+    core = (lab.root / "reaper/FXChains" / track["rfxchain"]).read_text(encoding="latin-1")
+    model = compile_rig._safe_asset(str(tmp_path / "lib/evh-5150.nam"))
+    assert core == compile_rig._tpl(compile_rig.TEMPLATE_HEAD, {"%MODEL%": model})
+    lab.run(action="rig_recall", preset="one-amp", scene="A")
+    amps = _amp_fx(lab)
+    assert len(amps) == 1, (sorted(amps), lab.log())
+    t, i, nam = next(iter(amps.values()))
+    assert nam.guid == "{B43FDC6B-1DC5-9ACE-633B-9EB8BF0C5A1F}" and nam.enabled is True
+    assert lab.livemap()["blocks"]["amp-smku"]["fx"] == i
+    lab.compile(patch, scene="B")
+    lab.run(action="scene_apply", preset="one-amp", scene="B")
+    assert nam.enabled is False, lab.log()
+
+
+def test_deux_tetes_chacune_son_baffle_qui_la_suit(tmp_path, monkeypatch):
+    """Deux têtes NAM sans cab sur le path : chacune son baffle par défaut, juste derrière elle, qui s'éteint avec
+    elle (scène comme pied) — sinon la DI de la tête coupée passerait dans son IR."""
+    patch = _variant([{"id": "a1", "type": "amp-nam", "ref": "6237"}, {"id": "a2", "type": "amp-nam", "ref": "6440"}],
+                     [("A", {"a1": True, "a2": False}), ("B", {"a1": False, "a2": True})], "two-heads")
+    lab = _amp_lab(tmp_path, monkeypatch, patch)
+    lab.run(action="rig_recall", preset="two-heads", scene="A")
+    tr = next(t for t in lab.F.tracks.values() if any(f.cfg.renamed_name == "golem:a1" for f in t.fx.values()))
+    fx = list(tr.fx.values())
+    tags = [f.cfg.renamed_name for f in fx]
+    assert tags.index("golem:a1") + 1 == tags.index("golem:a1~ir") < tags.index("golem:a2") < tags.index("golem:a2~ir"), tags
+    by = {f.cfg.renamed_name: f for f in fx}
+
+    def on(tag):
+        f = by[tag]
+        if f.name == X42_LV2:
+            return f.enabled and next(q.val for q in f.params.values() if q.name == "Enable") == 1
+        return f.enabled
+    assert on("golem:a1") and on("golem:a1~ir") and not on("golem:a2") and not on("golem:a2~ir"), lab.log()
+    live = lab.livemap()["blocks"]
+    assert {"a1", "a2"} <= set(live) and "a1~ir" not in live and live["a1"]["fx"] != live["a2"]["fx"]
+    lab.run(action="stomp", preset="two-heads", ids=["a2"], on=True)
+    assert on("golem:a2") and on("golem:a2~ir"), lab.log()
+    lab.compile(patch, scene="B")
+    lab.run(action="scene_apply", preset="two-heads", scene="B")
+    assert not on("golem:a1") and not on("golem:a1~ir") and on("golem:a2") and on("golem:a2~ir"), lab.log()

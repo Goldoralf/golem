@@ -1467,6 +1467,14 @@ local function load_native_core(tr, files)
     log("  NAM VST3 : modèle=" .. tostring(model) .. " IR=" .. tostring(ir))
     return true
   end
+  -- multi-amplis (compile_rig._native_multi_core) : une instance par bloc cœur, dans l'ordre de la chaîne,
+  -- chacune estampillée de son bloc (ou <ampli>~ir pour le baffle par défaut d'une tête)
+  if files.instances then
+    for _, it in ipairs(files.instances) do
+      if not add_one(it.model or "", it.ir or "", it.id) then return false end
+    end
+    return #files.instances > 0
+  end
   if files.model ~= "" and not add_one(files.model, "", files.amp_id) then return false end
   if files.ir ~= "" and not add_one("", files.ir, files.cab_id or "core-default-ir") then return false end
   return files.model ~= "" or files.ir ~= ""
@@ -1675,19 +1683,35 @@ local function files_issues(tr, strict)
         local kind = (lu:find("#ir", 1, true) or lu:find("irfile", 1, true)) and "ir"
                      or ((lu:find("model", 1, true) or lu:find("neural", 1, true)) and "model") or nil
         if kind and val ~= "" and val ~= "None" then
-          local got
+          local got, slots = nil, 0
           for p = 0, reaper.TrackFX_GetNumParams(tr, fx) - 1 do
             local _, pn = reaper.TrackFX_GetParamName(tr, fx, p, "")
             local pl = (pn or ""):lower()
             if (kind == "model" and pl:find("model", 1, true))
                or (kind == "ir" and (pl:find("impulse", 1, true) or pl:find("ir file", 1, true))) then
-              local _, d = reaper.TrackFX_GetFormattedParamValue(tr, fx, p, "")
-              got = d or ""
-              break
+              slots = slots + 1
+              if got == nil then
+                local _, d = reaper.TrackFX_GetFormattedParamValue(tr, fx, p, "")
+                got = d or ""
+              end
             end
           end
+          local expected = val:match("[^/\\]+$") or val
           if got == "" then                        -- nil = le plugin n'expose pas le fichier (sfizz) : pas jugé
-            issues[#issues + 1] = { fx = fx, fxid = fxid, uri = uri, kind = kind, expected = val:match("[^/]+$") or val }
+            issues[#issues + 1] = { fx = fx, fxid = fxid, uri = uri, kind = kind, expected = expected }
+          elseif got and slots == 1 then
+            -- LE BON fichier, pas seulement UN fichier (2026-11-15, deux amplis sur une lane : un seul NAM,
+            -- chargé du Fender, et la vérif disait « ok »). Le NAM LV2 affiche le NOM du fichier chargé
+            -- (mesuré au fxdump). Jugé seulement quand c'est sans ambiguïté : un seul paramètre fichier
+            -- de ce genre sur le plugin (Ratatouille en a deux), et une valeur qui a l'air d'un fichier.
+            local shown = (got:gsub('^"(.*)"$', "%1"))
+            shown = shown:match("[^/\\]+$") or shown
+            local sl = shown:lower()
+            local looks_file = sl:match("%.nam$") or sl:match("%.json$") or sl:match("%.wav$")
+                               or sl:match("%.flac$") or sl:match("%.aiff?$")
+            if looks_file and shown ~= expected then
+              issues[#issues + 1] = { fx = fx, fxid = fxid, uri = uri, kind = kind, expected = expected, loaded = shown }
+            end
           end
         end
       end
@@ -1747,7 +1771,7 @@ local function verify_files(root, second)
         for _, is in ipairs(iss) do
           is.track = track_name(tr); is.repaired = (n > 0)
           issues[#issues + 1] = is
-          log("⚠ VÉRIF " .. is.track .. " FX#" .. is.fx .. " (" .. is.kind .. ") attendu « " .. is.expected .. " », chargé « » "
+          log("⚠ VÉRIF " .. is.track .. " FX#" .. is.fx .. " (" .. is.kind .. ") attendu « " .. is.expected .. " », chargé « " .. (is.loaded or "") .. " » "
               .. (n > 0 and "-> ligne réinjectée, rechargement" or (recording and "-> prise en cours, pas de chirurgie"
                   or (not may_heal and "-> après une scène : signalé, réparé au prochain rappel du preset"
                   or "-> la ligne est là, le plugin ne charge pas ce fichier"))))
@@ -1763,8 +1787,9 @@ local function verify_files(root, second)
   if waiting then repaired = true end                           -- la seconde passe relira aussi ces pistes-là
   local parts = {}
   for _, is in ipairs(issues) do
-    parts[#parts + 1] = string.format('{"track":%s,"fx":%d,"kind":%s,"expected":%s,"repaired":%s}',
-      jstr(is.track), is.fx, jstr(is.kind), jstr(is.expected), tostring(is.repaired))
+    -- `loaded` : le fichier qu'un plugin a chargé À LA PLACE de l'attendu (vide = rien de chargé)
+    parts[#parts + 1] = string.format('{"track":%s,"fx":%d,"kind":%s,"expected":%s,"loaded":%s,"repaired":%s}',
+      jstr(is.track), is.fx, jstr(is.kind), jstr(is.expected), jstr(is.loaded or ""), tostring(is.repaired))
   end
   local body = string.format('{"t":%d,"ok":%s,"checked":%d,"issues":[%s]}', os.time(), tostring(#issues == 0), checked, table.concat(parts, ","))
   local path = root .. "/presets/.rig-check.json"
@@ -2736,9 +2761,16 @@ end
 -- guéri est renommé, et « neural amp » ne le trouve plus : mesuré le 2026-09-14, Sunfunk lane-b, ampli
 -- injoignable par nom donc ni enable ni potards), par NOM ensuite (cœur fondu du template, non
 -- estampillé). -1 si absent.
-local function core_fx_index(tr, blk)
+-- PISTE MULTI-AMPLIS (2026-11-15, compile_rig.multi_core) : chaque bloc cœur a SA propre instance,
+-- estampillée au build (spec.core_ids, ou native_core.instances). Là, JAMAIS de repli par nom : « neural
+-- amp » rendait le NAM d'un AUTRE bloc — les potards de l'EVH s'écrivaient sur le Fender, et la carte
+-- vivante y pointait. Un bloc introuvable reste introuvable, et le dit.
+local function core_multi(spec)
+  return spec ~= nil and (spec.core_ids ~= nil or (spec.native_core ~= nil and spec.native_core.instances ~= nil))
+end
+local function core_fx_index(tr, blk, spec)
   local fx = blk.id and fx_index_by_tag(tr, blk.id) or -1
-  if fx >= 0 then return fx end
+  if fx >= 0 or core_multi(spec) then return fx end
   return fx_index_by_name(tr, (blk.type == "cab") and "ir convolver" or "neural amp")
 end
 
@@ -2771,9 +2803,17 @@ end
 -- (ou l'IR d'un bloc cab) suit blk.bypass, et le BAFFLE PAR DÉFAUT d'une tête isolée (IR fondu au
 -- compile, sans bloc cab sur la piste) suit l'ampli — sinon une tête coupée laisserait la DI dans l'IR.
 local function apply_core_enabled(tr, spec, blk)
-  local fx = core_fx_index(tr, blk)
+  local fx = core_fx_index(tr, blk, spec)
   if fx < 0 then return false end
   fx_set_on(tr, fx, not blk.bypass)                               -- baffle : interrupteur interne, jamais le bypass
+  if core_multi(spec) then
+    -- multi-amplis : le baffle par défaut d'une tête est le SIEN (estampille <id>~ir), jamais le premier venu
+    if blk.type ~= "cab" and blk.id then
+      local ir = fx_index_by_tag(tr, blk.id .. "~ir")
+      if ir >= 0 then fx_set_on(tr, ir, not blk.bypass) end
+    end
+    return true
+  end
   if blk.type ~= "cab" then
     local explicit_cab = false
     for _, b in ipairs(spec.blocks or {}) do if b.type == "cab" then explicit_cab = true end end
@@ -2948,7 +2988,12 @@ local function handle_stomp(root, cmd)
         local fxs = block_fx_list(tr, parent or bid)         -- le contrôle capturé reste dans SON bloc
         if #fxs > 0 then
           if parent then reaper.TrackFX_SetParamNormalized(tr, fxs[1], tonumber(slot), grp.on and 1 or 0)
-          else fx_set_on(tr, fxs[1], grp.on) end
+          else
+            fx_set_on(tr, fxs[1], grp.on)
+            -- tête d'une piste multi-amplis : son baffle par défaut la suit (sinon la DI passerait dans l'IR)
+            local ir = fx_index_by_tag(tr, tostring(bid) .. "~ir")
+            if ir >= 0 then fx_set_on(tr, ir, grp.on) end
+          end
           hits = hits + 1
         end
       end
@@ -3006,7 +3051,19 @@ local function build_track_fx(root, tr, spec, effects)
     for _, ct in ipairs(spec.core_types or {}) do core[ct] = true end
   elseif spec.rfxchain then
     local rfx = read_file(root .. "/reaper/FXChains/" .. spec.rfxchain)
-    if rfx then load_fxchain(tr, rfx); log("  cœur chargé : " .. spec.rfxchain)
+    if rfx then
+      load_fxchain(tr, rfx); log("  cœur chargé : " .. spec.rfxchain)
+      -- multi-amplis : le .RfxChain pose une instance par bloc cœur, dans l'ordre de core_ids — chacune
+      -- reçoit son estampille TOUT DE SUITE (une config nommée, pas une chirurgie de chunk : rien ne
+      -- se ré-instancie pendant que les NAM chargent leur modèle)
+      if spec.core_ids then
+        local n = reaper.TrackFX_GetCount(tr)
+        for k, id in ipairs(spec.core_ids) do
+          if k <= n then tag_fx(tr, k - 1, id)
+          else log("  ⚠ cœur : instance " .. k .. " absente pour « " .. tostring(id) .. " » (" .. n .. " FX chargés)") end
+        end
+        log("  cœur multi-amplis : " .. #spec.core_ids .. " instance(s) estampillée(s)")
+      end
     else log("  ⚠ cœur introuvable : " .. spec.rfxchain) end
     for _, ct in ipairs(spec.core_types or {}) do core[ct] = true end
   end
@@ -3018,6 +3075,7 @@ local function build_track_fx(root, tr, spec, effects)
   if spec.input ~= nil and not spec.midi and spec_keyed(spec, effects) then ensure_keytap(tr, spec.stereo) end
 
   -- rang logique de l'ampli : les blocs hors-cœur AVANT lui doivent passer avant le NAM.
+  local multi = core_multi(spec)
   local amp_pos
   for i, blk in ipairs(spec.blocks or {}) do
     if blk.type == "amp" or blk.type == "amp-nam" then amp_pos = i; break end
@@ -3053,7 +3111,22 @@ local function build_track_fx(root, tr, spec, effects)
       local fx = add_block_fx(tr, blk, effects)                    -- posé en fin de chaîne
       if fx and fx >= 0 then
         local dest = fx                                            -- index FINAL du bloc (après un éventuel move)
-        if amp_pos and i < amp_pos then
+        if multi then
+          -- multi-amplis : le bloc passe juste DEVANT le prochain bloc cœur de la chaîne (par estampille) ;
+          -- les blocs entre deux amplis restent entre eux, ceux d'après le dernier restent en fin
+          local slot
+          for j = i + 1, #spec.blocks do
+            local nb = spec.blocks[j]
+            if core[nb.type] and nb.id then
+              local s = fx_index_by_tag(tr, nb.id)
+              if s >= 0 then slot = s; break end
+            end
+          end
+          if slot and slot < fx then
+            reaper.TrackFX_CopyToTrack(tr, fx, tr, slot, true)     -- MOVE : devant ce bloc cœur
+            dest = slot
+          end
+        elseif amp_pos and i < amp_pos then
           if pre_slot and pre_slot >= 0 then
             reaper.TrackFX_CopyToTrack(tr, fx, tr, pre_slot, true) -- MOVE : avant l'ampli
             dest = pre_slot                                        -- le FX déplacé est MAINTENANT à pre_slot
@@ -3157,7 +3230,7 @@ local function build_track_fx(root, tr, spec, effects)
   for _, blk in ipairs(spec.blocks or {}) do
     if core[blk.type] then
       local needle = (blk.type == "cab") and "ir convolver" or "neural amp"
-      local fx = core_fx_index(tr, blk)
+      local fx = core_fx_index(tr, blk, spec)
       if fx >= 0 then
         apply_core_params(tr, fx, blk, spec, effects)
         apply_core_enabled(tr, spec, blk)                        -- l'état de scène du cœur, dès le build
@@ -3274,12 +3347,14 @@ local function write_livemap(root, plan, created, effects)
       if id and not is_zone and not is_native_core then
         local btype, blk
         for _, b in ipairs(e.spec.blocks or {}) do if b.id == id then btype, blk = b.type, b; break end end
-        if btype then livemap_entry(tr, i, id, btype, effects, out, nil, blk) end
+        -- un bloc CŒUR estampillé (réutilisé, guéri, ou piste multi-amplis) : émis UNE fois, par la boucle du cœur
+        local is_core = btype == "amp" or btype == "amp-nam" or btype == "cab"
+        if btype and not is_core then livemap_entry(tr, i, id, btype, effects, out, nil, blk) end
       end
     end
     for _, b in ipairs(e.spec.blocks or {}) do                       -- cœur (NAM/IR, non estampillé)
       if b.id and (b.type == "amp" or b.type == "amp-nam" or b.type == "cab") then
-        local fx = core_fx_index(tr, b)
+        local fx = core_fx_index(tr, b, e.spec)
         if fx >= 0 then livemap_entry(tr, fx, b.id, b.type, effects, out, e.spec.native_core) end
       end
     end
@@ -3568,7 +3643,12 @@ local function fx_signature(root, spec, effects)
     local c = spec.native_core
     parts[#parts + 1] = "nam-vst3:" .. tostring(c.model) .. ":" .. tostring(c.ir) .. ":" ..
                         tostring(c.amp_id) .. ":" .. tostring(c.cab_id) .. ":" .. tostring(c.default_ir)
+    -- multi-amplis (absent d'une piste à un ampli : sa signature ne bouge pas)
+    for _, it in ipairs(c.instances or {}) do
+      parts[#parts + 1] = "nam-i:" .. tostring(it.id) .. ":" .. tostring(it.model) .. ":" .. tostring(it.ir)
+    end
   end
+  if spec.core_ids then parts[#parts + 1] = "ci=" .. table.concat(spec.core_ids, ",") end
   for _, ct in ipairs(spec.core_types or {}) do parts[#parts + 1] = "c:" .. tostring(ct) end
   for _, b in ipairs(spec.blocks or {}) do
     -- kit_pads : concat note:file:mode:level de chaque pad -> un changement de kit (par scène ou édition)
@@ -3646,7 +3726,7 @@ local function apply_track_params(root, tr, spec, effects)
   end
   for _, blk in ipairs(spec.blocks or {}) do
     if (blk.type == "amp" or blk.type == "amp-nam" or blk.type == "cab") then
-      local fx = core_fx_index(tr, blk)
+      local fx = core_fx_index(tr, blk, spec)
       if fx >= 0 then apply_core_params(tr, fx, blk, spec, effects) end
       apply_core_enabled(tr, spec, blk)                          -- enable du cœur (mesuré 2026-09-14)
     end
@@ -4199,7 +4279,7 @@ local function reapply_scene(root, plan)
         -- un ampli éteint par une scène ne se rallumait plus sans rebuild (Sunfunk « Heavy », 2026-09-14)
         for _, blk in ipairs(spec.blocks or {}) do
           if (blk.type == "amp" or blk.type == "amp-nam" or blk.type == "cab") then
-            local fx = core_fx_index(tr, blk)
+            local fx = core_fx_index(tr, blk, spec)
             if fx >= 0 then apply_core_params(tr, fx, blk, spec, effects) end
             -- le CŒUR d'une branche muette reste CHARGÉ : c'est lui qui coûte le plus cher à
             -- rallumer (NAM = worker asynchrone, convolver = rechargement d'IR)

@@ -556,6 +556,102 @@ def _native_core_for(blocks, comps, path_has_cab=True):
             "default_ir": bool(ir and amp and not cab)}
 
 
+# ── PLUSIEURS AMPLIS (ou baffles) SUR UNE PISTE (2026-11-15) ────────────────────────────────────────────
+# Le cœur d'une piste était UN chargeur : le PREMIER ampli à ref (+ le premier cab). Une lane qui portait
+# deux amplis (Fender éteint en scène A, EVH allumé) ne matérialisait que le Fender : un seul NAM, non
+# estampillé, que golem_rig retrouvait PAR NOM pour les deux blocs — les potards de l'EVH s'écrivaient sur
+# le Fender, et la vérification des fichiers disait « ok » puisqu'UN fichier était chargé.
+# Dès qu'une piste a ≥ 2 blocs ampli ou ≥ 2 blocs cab, chaque bloc cœur devient SA PROPRE instance, à sa
+# place dans la chaîne, avec son fichier, son FXID et son estampille (`core_ids`, posée par golem_rig juste
+# après le chargement). La topologie reste indépendante de la scène : tous les amplis sont posés, la scène
+# n'allume ou n'éteint que des instances. Une piste à UN ampli (+ un cab) ne passe JAMAIS par ici : même
+# .RfxChain octet pour octet, même signature, aucune reconstruction (docs/pitfalls/reaper.md).
+AMP_TYPES = ("amp", "amp-nam")
+
+
+def multi_core(blocks):
+    """La piste porte-t-elle plusieurs blocs ampli, ou plusieurs blocs cab ? Les blocs écartés (mauvaise
+    nature de fichier) COMPTENT : sinon golem_rig les retrouverait par nom sur le NAM d'un autre bloc."""
+    amps = sum(1 for b in blocks if b.get("type") in AMP_TYPES)
+    cabs = sum(1 for b in blocks if b.get("type") == "cab")
+    return amps > 1 or cabs > 1
+
+
+def default_ir_tag(amp_id):
+    """L'estampille du baffle par défaut fondu derrière UNE tête (piste multi-amplis) : il suit cet ampli."""
+    return f"{amp_id}~ir"
+
+
+def _core_plan(blocks, path_has_cab):
+    """Les instances cœur d'une piste multi-amplis, DANS L'ORDRE de la chaîne : [(tag, kind, bloc)].
+    kind = "amp" (NAM seul), "ir" (baffle d'un bloc cab), "default-ir" (baffle par défaut d'une tête isolée).
+    Mêmes règles que le cœur unique : un ampli qui porte son baffle (bloc `amp`, capture `gear: amp-cab`) n'en
+    reçoit pas un second ; une tête n'a un baffle par défaut que si aucun cab n'existe sur le path."""
+    out = []
+    for b in blocks:
+        if b.get("_wrong_kind") or not b.get("ref"):
+            continue
+        if b.get("type") in AMP_TYPES:
+            out.append((b["id"], "amp", b))
+            if not path_has_cab and not _carries_cab(b):
+                out.append((default_ir_tag(b["id"]), "default-ir", b))
+        elif b.get("type") == "cab":
+            out.append((b["id"], "ir", b))
+    return out
+
+
+def _fxid_for(tag):
+    """FXID DÉTERMINISTE et unique par instance : les gabarits portent un FXID fixe, or la mémoire des lignes
+    fichier (golem_rig, P_EXT golem_files) est indexée par FXID — deux NAM au même FXID s'écraseraient, et la
+    guérison réinjecterait le fichier de l'un dans l'autre. Dérivé de l'estampille : même plan, même texte."""
+    h = hashlib.md5(("golem-core:" + tag).encode("utf-8")).hexdigest().upper()
+    return "{%s-%s-%s-%s-%s}" % (h[:8], h[8:12], h[12:16], h[16:20], h[20:32])
+
+
+def _with_fxid(text, tag):
+    return re.sub(r"FXID \{[0-9A-Fa-f-]+\}", "FXID " + _fxid_for(tag), text, count=1)
+
+
+def _render_multi_core(blocks, comps, path_has_cab):
+    """(.RfxChain, core_ids) d'une piste multi-amplis (Linux, LV2) : une instance par bloc cœur."""
+    parts, ids = [], []
+    for tag, kind, b in _core_plan(blocks, path_has_cab):
+        if kind == "amp":
+            model = _safe_asset(_resolve(b.get("ref"), comps, b.get("model")))
+            parts.append(_with_fxid(_tpl(TEMPLATE_HEAD, {"%MODEL%": model}), tag))
+        elif kind == "ir":
+            ir = _safe_asset(_resolve(b.get("ref"), comps, b.get("model")))
+            parts.append(_with_fxid(_tpl(TEMPLATE_CAB, {"%IR%": ir}), tag))
+        else:
+            ir = _safe_asset(_resolve(b.get("cab") or DEFAULT_CAB, comps))
+            parts.append(_with_fxid(_tpl(TEMPLATE_CAB, {"%IR%": ir}), tag))
+        ids.append(tag)
+    if not parts:
+        return None, []
+    return "".join(parts), ids
+
+
+def _native_multi_core(blocks, comps, path_has_cab):
+    """Le même découpage pour le NAM VST3 officiel (Windows/macOS) : une instance par bloc cœur, modèle OU IR,
+    estampillée. Les champs à plat (model/ir/amp_id/cab_id) restent vides : golem_rig lit `instances`."""
+    inst = []
+    for tag, kind, b in _core_plan(blocks, path_has_cab):
+        if kind == "amp":
+            model = _safe_asset(_resolve(b["ref"], comps, b.get("model")))
+            if not model or not os.path.isfile(model) or not model.lower().endswith((".nam", ".json")):
+                raise ValueError(f"NAM natif : modèle absent ou incompatible pour {b.get('id')}")
+            inst.append({"id": tag, "model": model, "ir": ""})
+        else:
+            ref = b.get("ref") if kind == "ir" else (b.get("cab") or DEFAULT_CAB)
+            ir = _safe_asset(_resolve(ref, comps, b.get("model") if kind == "ir" else None))
+            if not ir or not os.path.isfile(ir) or not ir.lower().endswith(".wav"):
+                raise ValueError(f"NAM natif : IR WAV absente ou incompatible pour {b.get('id')}")
+            inst.append({"id": tag, "model": "", "ir": ir})
+    if not inst:
+        return None
+    return {"model": "", "ir": "", "amp_id": None, "cab_id": None, "default_ir": False, "instances": inst}
+
+
 def _io():
     """(out_count, mono_fallback) depuis config/io.json — supporte l'ancien et le nouveau format."""
     io = json.load(open(IO_PATH)) if os.path.exists(IO_PATH) else {}
@@ -604,11 +700,20 @@ def compile_preset(preset: dict) -> str:
             _expand_stretch(t["blocks"])                   # Spread/Compress -> leurs interrupteurs de module
             _clamp_params(t["blocks"])                     # filet : jamais de param hors plage au rig
             _drop_engine_only(t["blocks"])                 # potards du seul Golem Engine : retirés sous REAPER
+            multi = multi_core(t["blocks"])            # ≥ 2 amplis/cabs : une instance par bloc (voir AMP_TYPES)
             if COMPILE_TARGET in ("win32", "darwin"):
-                native_core = _native_core_for(t["blocks"], comps, path_has_cab)
+                native_core = (_native_multi_core if multi else _native_core_for)(t["blocks"], comps, path_has_cab)
                 if native_core:
                     t["native_core"] = native_core
                     t["core_types"] = CORE_TYPES
+            elif multi:
+                core, ids = _render_multi_core(t["blocks"], comps, path_has_cab)
+                if core:
+                    fn = f"{file_stem(preset['id'])}__{_safe(t['name'])}.RfxChain"
+                    _core._write(os.path.join(OUT_DIR, fn), core)
+                    t["rfxchain"] = fn
+                    t["core_types"] = CORE_TYPES
+                    t["core_ids"] = ids
             else:
                 core = _render_core_for(t["blocks"], comps, path_has_cab)
                 if core:

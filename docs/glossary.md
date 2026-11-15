@@ -140,7 +140,9 @@ sends it to golem.fm's composer; the take is tagged `kind: "riff"`.
 *Source of truth:* `bridge/compo.py`, `config/compo.json`, `effects.json` (`type: compo`, `name: Riff`).
 
 **Core** (cœur) — The file-loading blocks baked into REAPER FX-chain templates instead of being added by
-name: `amp` (Head+Cab: NAM + x42 convolver), `amp-nam` (head only), `cab` (x42 IR only).
+name: `amp` (Head+Cab: NAM + x42 convolver), `amp-nam` (head only), `cab` (x42 IR only). A track with
+one amp gets one fused core; a track with two or more amps (or cabs) gets one tagged instance per block, in
+chain order (`core_ids`; see [pitfalls/reaper.md](pitfalls/reaper.md#two-amps-on-one-lane-one-core-per-block-never-found-by-name)).
 *Source of truth:* `bridge/compile_rig.py` (`CORE_TYPES`, `TEMPLATE_NAM/HEAD/CAB`), `bridge/templates/*.RfxChain`.
 
 **Descriptor** — A data file that tells the rack how to talk to a device, never hard-coded. Families:

@@ -189,7 +189,19 @@ function reaper.TrackFX_GetParamNormalized(tr, i, p) local fx = tr.fx[i + 1]; lo
 function reaper.TrackFX_SetParamNormalized(tr, i, p, n) count("TrackFX_SetParamNormalized"); local fx = tr.fx[i + 1]; local pr = fx and fx.params[p + 1]
   if not pr then return false end pr.val = pr.min + (pr.max - pr.min) * n; return true end
 function reaper.TrackFX_GetFormattedParamValue(tr, i, p, _) local fx = tr.fx[i + 1]; local pr = fx and fx.params[p + 1]
-  if not pr then return false, "" end return true, tostring(pr.val) end
+  if not pr then return false, "" end
+  -- un paramètre FICHIER (NAM « Neural Model », x42 « Impulse Response ») affiche le NOM du fichier que le plugin a
+  -- chargé : celui de sa ligne d'état, sauf si le banc impose ce que le plugin a « vraiment » chargé (fx.shown)
+  if pr.name == "Neural Model" or pr.name == "Impulse Response" then
+    if fx.shown and fx.shown[pr.name] then return true, fx.shown[pr.name] end
+    local key = pr.name == "Neural Model" and "#model" or "#ir"
+    for line in (fx.state .. "\n"):gmatch("([^\n]*)\n") do
+      local uri, v = line:match("^%s*[SP]%s+(%S+)%s+(.-)%s+%d+%s*$")
+      if uri and uri:sub(-#key) == key then v = v:gsub('^"(.*)"$', "%1"); return true, v:match("[^/]+$") or v end
+    end
+    return true, ""
+  end
+  return true, tostring(pr.val) end
 function reaper.TrackFX_GetParameterStepSizes(_, _, _) return false, 0, 0, 0, false end
 function reaper.TrackFX_GetParamFromIdent(_, _, _) return -1 end
 function reaper.TrackFX_GetFXGUID(tr, i) local fx = tr.fx[i + 1]; return fx and fx.guid or nil end
@@ -217,8 +229,10 @@ function reaper.TrackFX_CopyToTrack(src, i, dst, j, move)
   local cp = { name = fx.name, enabled = fx.enabled, cfg = {}, guid = guid(), state = fx.state, params = {} }
   for k, v in pairs(fx.cfg) do cp.cfg[k] = v end
   for k, pr in ipairs(fx.params) do cp.params[k] = { name = pr.name, min = pr.min, max = pr.max, val = pr.val } end
+  if move then                                   -- un DÉPLACEMENT garde son identité (GUID) et arrive à l'index j
+    table.remove(src.fx, i + 1); cp.guid = fx.guid
+  end
   table.insert(dst.fx, math.min(j + 1, #dst.fx + 1), cp)
-  if move then table.remove(src.fx, i + 1) end
 end
 function reaper.EnumInstalledFX(i)
   local names = {}
@@ -262,22 +276,44 @@ function reaper.SetTrackStateChunk(tr, chunk, _)
   tr.ext = {}                                   -- LE PIÈGE : la mémoire P_EXT ne survit pas à un chunk posé
   tr.chunk_lines = {}
   for line in (chunk .. "\n"):gmatch("([^\n]*)\n") do tr.chunk_lines[#tr.chunk_lines + 1] = line end
-  -- on relit l'état des FX dans l'ordre : BYPASS, en-tête, lignes d'état jusqu'au « > » fermant
-  local fxs, cur, in_state = {}, nil, false
-  for _, line in ipairs(tr.chunk_lines) do
-    local byp = line:match("^BYPASS (%d)")
-    if byp then cur = { enabled = byp == "0", state_lines = {} }
-    elseif cur and not in_state and line:match("^<") then
-      cur.header = line; in_state = true
-    elseif cur and in_state then
-      if line == ">" then in_state = false; fxs[#fxs + 1] = cur; cur = nil
-      else cur.state_lines[#cur.state_lines + 1] = line end
+  -- on relit l'état des FX dans l'ordre : BYPASS, en-tête, lignes d'état jusqu'au « > » qui ferme l'en-tête
+  -- (en comptant la profondeur : un <STATE imbriqué ne ferme pas le FX), puis le FXID qui suit
+  local fxs, cur, depth, has_chain, last = {}, nil, 0, false, nil
+  for _, raw in ipairs(tr.chunk_lines) do
+    local line = raw:gsub("\r", "")
+    local t = line:match("^%s*(.-)%s*$")
+    if t:match("^<FXCHAIN") then has_chain = true end
+    local byp = t:match("^BYPASS (%d)")
+    if depth == 0 and byp then cur = { enabled = byp == "0", state_lines = {} }
+    elseif cur and depth == 0 and t:match("^<") then
+      cur.header = t; depth = 1
+    elseif cur and depth > 0 then
+      if t == ">" then
+        depth = depth - 1
+        if depth == 0 then fxs[#fxs + 1] = cur; last = cur; cur = nil
+        else cur.state_lines[#cur.state_lines + 1] = line end
+      else
+        if t:sub(1, 1) == "<" then depth = depth + 1 end
+        cur.state_lines[#cur.state_lines + 1] = line
+      end
+    elseif last and t:match("^FXID ") then
+      last.fxid = t:match("^FXID%s+(%b{})"); last = nil
     end
   end
   for k, parsed in ipairs(fxs) do
     local fx = tr.fx[k]
+    if not fx and has_chain then
+      -- un .RfxChain posé par chunk (le cœur NAM/IR) : REAPER instancie les FX DU TEXTE, FXID compris
+      local h = parsed.header or ""
+      local name = h:match('^<%u+%d?i?%s+"([^"]*)"')
+      if not name then name = "JS: " .. (h:match("^<JS%s+(%S+)") or "?") end
+      fx = new_fx(name)
+      if parsed.fxid then fx.guid = parsed.fxid end
+      tr.fx[k] = fx
+    end
     if fx then fx.enabled = parsed.enabled; fx.state = table.concat(parsed.state_lines, "\n") end
   end
+  if has_chain then for k = #tr.fx, #fxs + 1, -1 do table.remove(tr.fx, k) end end   -- la chaîne posée remplace l'ancienne
   return true
 end
 

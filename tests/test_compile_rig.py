@@ -672,3 +672,96 @@ def test_pitch_correct_live_par_defaut_et_presets_revoices():
     assert hard["filter"] <= pm["filter"]["min"] and hard["fastmode"]          # le plus serré (le plugin descend à 0)
     for f in ("hard-tune-keep-vibrato", "tight-pop", "transparent-live"):
         assert json.load(open(os.path.join(d, f + ".json")))["params"]["fastmode"], f
+
+
+# ── plusieurs amplis sur une piste (2026-11-15) : une instance par bloc cœur ─────────────────────────────
+# Le bug : amp-x4x1 (Fender, coupé en scène A) AVANT amp-smku (EVH) sur une lane sans split — un seul NAM, chargé
+# du Fender, et les potards de l'EVH écrits dessus. Le cœur ne prenait que le PREMIER ampli.
+def _fxids(text):
+    import re
+    return re.findall(r"FXID (\{[0-9A-F-]+\})", text)
+
+
+def test_un_seul_ampli_garde_exactement_son_coeur(rigc):
+    """Rien ne change pour le cas commun : même .RfxChain octet pour octet (le gabarit fondu), pas de core_ids."""
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "amp-clean"},
+                                {"id": "c1", "type": "cab", "ref": "cab-412"}]))
+    track = plan["paths"][0]["tracks"][0]
+    assert "core_ids" not in track
+    comps = resolver._components()
+    model = rigc._safe_asset(resolver._resolve("amp-clean", comps))
+    ir = rigc._safe_asset(resolver._resolve("cab-412", comps))
+    assert _core_text(plan) == rigc._tpl(rigc.TEMPLATE_NAM, {"%MODEL%": model, "%IR%": ir})
+
+
+def test_deux_amplis_complets_deux_nam_chacun_son_fichier(rigc):
+    plan, _ = _compile(_preset([{"id": "gate", "type": "gate"},
+                                {"id": "amp-x4x1", "type": "amp", "ref": "amp-clean"},
+                                {"id": "amp-smku", "type": "amp", "ref": "amp-hot", "bypass": True}]))
+    track = plan["paths"][0]["tracks"][0]
+    assert track["core_ids"] == ["amp-x4x1", "amp-smku"]          # un bloc `amp` porte son baffle : pas d'IR
+    core = _core_text(plan)
+    assert core.count("Neural Amp Modeler") == 2 and "IR Convolver" not in core
+    assert core.index("amp-clean") < core.index("amp-hot")            # dans l'ordre de la chaîne
+    ids = _fxids(core)
+    assert len(ids) == 2 and len(set(ids)) == 2                       # la mémoire des fichiers est indexée par FXID
+    assert "{B43FDC6B-1DC5-9ACE-633B-9EB8BF0C5A1F}" not in ids        # pas le FXID fixe du gabarit
+
+
+def test_deux_tetes_sans_cab_chacune_son_baffle_par_defaut(rigc):
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "amp-clean"},
+                                {"id": "a2", "type": "amp-nam", "ref": "amp-hot"}]))
+    track = plan["paths"][0]["tracks"][0]
+    assert track["core_ids"] == ["a1", "a1~ir", "a2", "a2~ir"]
+    core = _core_text(plan)
+    assert core.count("Neural Amp Modeler") == 2 and core.count("IR Convolver") == 2
+    assert core.count(compile_rig.DEFAULT_CAB) == 2
+    assert len(set(_fxids(core))) == 4
+
+
+def test_deux_tetes_et_un_cab_le_cab_a_sa_place(rigc):
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "amp-clean"},
+                                {"id": "a2", "type": "amp-nam", "ref": "amp-hot"},
+                                {"id": "c1", "type": "cab", "ref": "cab-412"}]))
+    assert plan["paths"][0]["tracks"][0]["core_ids"] == ["a1", "a2", "c1"]
+    core = _core_text(plan)
+    assert core.count("IR Convolver") == 1 and "cab-412" in core and compile_rig.DEFAULT_CAB not in core
+
+
+def test_un_ampli_mal_type_ne_prete_pas_son_nom_au_voisin(rigc):
+    """Un ampli écarté (fichier de mauvaise nature) n'a pas d'instance — et la piste reste en mode « une instance par
+    bloc » : golem_rig ne le retrouve pas par nom sur le NAM de l'autre."""
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "cab-412"},
+                                {"id": "a2", "type": "amp", "ref": "amp-clean"}]))
+    track = plan["paths"][0]["tracks"][0]
+    assert track["core_ids"] == ["a2"]
+    assert _core_text(plan).count("Neural Amp Modeler") == 1
+
+
+def test_deux_amplis_rendent_les_memes_octets(rigc):
+    chain = [{"id": "a1", "type": "amp", "ref": "amp-clean"}, {"id": "a2", "type": "amp", "ref": "amp-hot"}]
+    first, _ = _compile(_preset(chain))
+    text = _core_text(first)
+    again, _ = _compile(_preset(chain))
+    assert _core_text(again) == text
+
+
+def test_native_deux_amplis_une_instance_par_bloc(rigc, monkeypatch):
+    monkeypatch.setattr(rigc, "COMPILE_TARGET", "win32")
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "amp-clean"},
+                                {"id": "a2", "type": "amp", "ref": "amp-hot"},
+                                {"id": "c1", "type": "cab", "ref": "cab-412"}]))
+    track = plan["paths"][0]["tracks"][0]
+    core = track["native_core"]
+    assert "rfxchain" not in track and core["model"] == "" and core["amp_id"] is None
+    assert [i["id"] for i in core["instances"]] == ["a1", "a2", "c1"]
+    assert core["instances"][0]["model"].endswith("amp-clean.nam") and core["instances"][0]["ir"] == ""
+    assert core["instances"][1]["model"].endswith("amp-hot.nam")
+    assert core["instances"][2]["model"] == "" and core["instances"][2]["ir"].endswith(".wav")
+
+
+def test_native_un_seul_ampli_inchange(rigc, monkeypatch):
+    monkeypatch.setattr(rigc, "COMPILE_TARGET", "win32")
+    plan, _ = _compile(_preset([{"id": "a1", "type": "amp-nam", "ref": "amp-clean"}]))
+    core = plan["paths"][0]["tracks"][0]["native_core"]
+    assert "instances" not in core and core["amp_id"] == "a1" and core["default_ir"] is True

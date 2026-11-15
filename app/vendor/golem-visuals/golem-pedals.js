@@ -2877,6 +2877,216 @@ ${txt(W / 2, H - 5, 'golem', 7, '#0b0c0e', { font: FONT.gfx, anchor: 'middle', w
   return { featureUnit, isFeature, FEATURE_TYPES };
   })();
 
+  const { hardwareUnit, HARDWARE_KINDS } = (() => {
+  // ---------- golem hardware units ----------
+  // The MIDI hardware golem drives (its pedal registry: whammy-dt, midi-pedal), drawn as realistic vector
+  // renders, one per kind of unit, at the real units' proportions. Generic forms only: no maker's livery,
+  // colours, logo or lettering. `on` lights the LEDs and the screens. The maintainer validated them on 2026-11-15.
+  const f1 = v => (Math.round(v * 10) / 10).toString();
+  let count = 0;
+
+  // ---------- parts ----------
+  function hwDefs(id, body) {
+    return `<defs>
+<linearGradient id="${id}-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(body, '#fff', .14)}"/><stop offset=".45" stop-color="${body}"/><stop offset="1" stop-color="${mix(body, '#000', .32)}"/></linearGradient>
+<linearGradient id="${id}-bev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".05" stop-color="#fff" stop-opacity=".05"/><stop offset=".95" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
+<filter id="${id}-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .1 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="${id}-brush" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9 .012" numOctaves="2" seed="5" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .16 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<radialGradient id="${id}-knob" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#4a4d52"/><stop offset=".55" stop-color="#1c1e21"/><stop offset="1" stop-color="#0a0b0c"/></radialGradient>
+<linearGradient id="${id}-skirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2f33"/><stop offset="1" stop-color="#08090a"/></linearGradient>
+<radialGradient id="${id}-cap" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".3" stop-color="#d8dde2"/><stop offset=".7" stop-color="#7b838b"/><stop offset="1" stop-color="#b9bfc5"/></radialGradient>
+<linearGradient id="${id}-nut" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6e9ec"/><stop offset=".5" stop-color="#8e959c"/><stop offset="1" stop-color="#4a4f55"/></linearGradient>
+<linearGradient id="${id}-rub" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c3f44"/><stop offset=".4" stop-color="#25272b"/><stop offset="1" stop-color="#121315"/></linearGradient>
+<linearGradient id="${id}-steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6d737a"/><stop offset=".25" stop-color="#d5d9dd"/><stop offset=".5" stop-color="#9aa0a7"/><stop offset=".8" stop-color="#e2e5e8"/><stop offset="1" stop-color="#7a8087"/></linearGradient>
+<linearGradient id="${id}-in" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".8"/><stop offset=".25" stop-color="#000" stop-opacity="0"/></linearGradient>
+<linearGradient id="${id}-refl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".45" stop-color="#fff" stop-opacity=".03"/><stop offset=".46" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="${id}-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>
+<filter id="${id}-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>`;
+  }
+  // a box seen from above: drop shadow, painted body, grain (or brushed), side shading, bevelled edge
+  function enclosure(id, x, y, w, h, r, finish) {
+    return `<rect x="${x}" y="${y + 4}" width="${w}" height="${h}" rx="${r}" fill="#000" opacity=".55" filter="url(#${id}-glow)"/>
+<rect x="${x}" y="${y + 2.5}" width="${w}" height="${h}" rx="${r}" fill="#000" opacity=".6"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="url(#${id}-b)"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="#fff" filter="url(#${id}-${finish === 'brushed' ? 'brush' : 'grain'})"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="url(#gp-side)"/>
+<rect x="${x + .6}" y="${y + .6}" width="${w - 1.2}" height="${h - 1.2}" rx="${Math.max(0, r - .6)}" fill="none" stroke="url(#${id}-bev)" stroke-width="1.2"/>`;
+  }
+  function knob(id, cx, cy, r, pos, pointer) {
+    const a = (-135 + 270 * (pos == null ? .5 : pos)) * Math.PI / 180;
+    const px = cx + Math.sin(a) * r * .78, py = cy - Math.cos(a) * r * .78;
+    return `<g><circle cx="${cx}" cy="${f1(cy + r * .18)}" r="${f1(r * 1.08)}" fill="#000" opacity=".5" filter="url(#${id}-glow)"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * 1.06)}" fill="url(#${id}-skirt)"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * .86)}" fill="url(#${id}-knob)"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * .86)}" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width=".5"/>
+<path d="M${f1(cx + Math.sin(a) * r * .25)} ${f1(cy - Math.cos(a) * r * .25)}L${f1(px)} ${f1(py)}" stroke="${pointer || '#e9ecef'}" stroke-width="${f1(Math.max(.7, r * .14))}" stroke-linecap="round"/></g>`;
+  }
+  // chicken-head selector: a tapered pointer over a round base
+  function chicken(id, cx, cy, r, deg) {
+    return `<g transform="rotate(${deg || 0} ${cx} ${cy})"><circle cx="${cx}" cy="${f1(cy + r * .2)}" r="${f1(r)}" fill="#000" opacity=".45" filter="url(#${id}-glow)"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * .78)}" fill="url(#${id}-knob)"/>
+<path d="M${f1(cx - r * .42)} ${f1(cy + r * .3)}L${f1(cx - r * .14)} ${f1(cy - r * 1.2)}Q${cx} ${f1(cy - r * 1.35)} ${f1(cx + r * .14)} ${f1(cy - r * 1.2)}L${f1(cx + r * .42)} ${f1(cy + r * .3)}Z" fill="url(#${id}-knob)" stroke="#000" stroke-opacity=".4" stroke-width=".4"/>
+<path d="M${cx} ${f1(cy - r * .2)}L${cx} ${f1(cy - r * 1.1)}" stroke="#e9ecef" stroke-width="${f1(r * .12)}" stroke-linecap="round"/></g>`;
+  }
+  function hexPts(cx, cy, r) { return [0, 1, 2, 3, 4, 5].map(i => { const a = Math.PI / 6 + i * Math.PI / 3; return `${f1(cx + r * Math.cos(a))},${f1(cy + r * Math.sin(a))}`; }).join(' '); }
+  // a chrome stomp switch: shadow, hex nut, threaded collar, domed cap with a specular highlight
+  function foot(id, cx, cy, r) {
+    return `<g><circle cx="${cx}" cy="${f1(cy + 2)}" r="${f1(r * 1.5)}" fill="#000" opacity=".5" filter="url(#${id}-glow)"/>
+<polygon points="${hexPts(cx, cy, r * 1.45)}" fill="url(#${id}-nut)" stroke="#000" stroke-opacity=".45" stroke-width=".5"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * 1.12)}" fill="#3a3f45"/>
+${[0, 1, 2].map(i => `<circle cx="${cx}" cy="${cy}" r="${f1(r * (1.08 - i * .06))}" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width=".35"/>`).join('')}
+<circle cx="${cx}" cy="${f1(cy + .6)}" r="${f1(r * .92)}" fill="#000" opacity=".5"/>
+<circle cx="${cx}" cy="${cy}" r="${f1(r * .9)}" fill="url(#${id}-cap)"/>
+<ellipse cx="${f1(cx - r * .28)}" cy="${f1(cy - r * .32)}" rx="${f1(r * .32)}" ry="${f1(r * .22)}" fill="#fff" opacity=".85" filter="url(#${id}-soft)"/></g>`;
+  }
+  function led(id, cx, cy, col, on, r) {
+    r = r || 1.8;
+    return `<g>${on ? `<circle cx="${cx}" cy="${cy}" r="${f1(r * 3)}" fill="${col}" opacity=".55" filter="url(#${id}-glow)"/>` : ''}
+<circle cx="${cx}" cy="${cy}" r="${f1(r + .7)}" fill="#0b0c0d"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="${on ? mix(col, '#fff', .35) : mix(col, '#000', .72)}"/>
+<circle cx="${f1(cx - r * .35)}" cy="${f1(cy - r * .35)}" r="${f1(r * .35)}" fill="#fff" opacity="${on ? .8 : .35}"/></g>`;
+  }
+  function toggle(id, cx, cy, up) {
+    return `<g><circle cx="${cx}" cy="${cy}" r="3.1" fill="url(#${id}-nut)"/><circle cx="${cx}" cy="${cy}" r="1.9" fill="#2a2d31"/>
+<path d="M${cx} ${cy}L${cx} ${cy + (up ? -7 : 7)}" stroke="url(#${id}-steel)" stroke-width="2.2" stroke-linecap="round"/><circle cx="${cx}" cy="${cy + (up ? -7 : 7)}" r="1.5" fill="#e5e8eb"/></g>`;
+  }
+  // top-edge connectors: a 1/4" jack nut, a 5-pin DIN, a 3.5 mm TRS, a USB-C
+  function jackTop(cx, y) { return `<rect x="${f1(cx - 5)}" y="${f1(y - 5)}" width="10" height="6" rx="1" fill="#15171a"/><rect x="${f1(cx - 3.5)}" y="${f1(y - 7)}" width="7" height="3" rx="1" fill="#9aa1a8"/>`; }
+  function dinTop(cx, y) { return `<rect x="${f1(cx - 8)}" y="${f1(y - 6)}" width="16" height="7" rx="1.5" fill="#15171a"/><rect x="${f1(cx - 6)}" y="${f1(y - 8)}" width="12" height="3.2" rx="1.4" fill="#7d848b"/>`; }
+  function trsTop(cx, y) { return `<rect x="${f1(cx - 3.5)}" y="${f1(y - 5)}" width="7" height="6" rx="1" fill="#15171a"/><rect x="${f1(cx - 2.2)}" y="${f1(y - 6.5)}" width="4.4" height="2.4" rx=".8" fill="#9aa1a8"/>`; }
+  function usbTop(cx, y) { return `<rect x="${f1(cx - 5)}" y="${f1(y - 4.5)}" width="10" height="5" rx="1.5" fill="#15171a"/><rect x="${f1(cx - 3)}" y="${f1(y - 3.2)}" width="6" height="1.6" rx=".8" fill="#6f767d"/>`; }
+  function screw(cx, cy, r) {
+    r = r || 2.2;
+    return `<g><circle cx="${cx}" cy="${cy}" r="${f1(r + .5)}" fill="#0d0e10"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gp-chrome)"/><path d="M${f1(cx - r * .6)} ${cy}H${f1(cx + r * .6)}M${cx} ${f1(cy - r * .6)}V${f1(cy + r * .6)}" stroke="#2a2d31" stroke-width=".55"/></g>`;
+  }
+  // a screen under glass with abstract content ('bars', 'wave', 'blocks', 'segments', 'vfd')
+  function screen(id, x, y, w, h, kind, col, on) {
+    const ink = on ? col : mix(col, '#000', .78), s = [];
+    const n = Math.max(6, Math.round(w / 6));
+    if (kind === 'bars') for (let i = 0; i < n; i++) { const bh = (h - 8) * (.25 + .7 * Math.abs(Math.sin(i * 1.3 + .4))); s.push(`<rect x="${f1(x + 4 + i * (w - 8) / n)}" y="${f1(y + h - 4 - bh)}" width="${f1((w - 8) / n * .6)}" height="${f1(bh)}" fill="${ink}" opacity=".9"/>`); }
+    if (kind === 'wave') { let d = ''; for (let i = 0; i <= 60; i++) { const t = i / 60; d += `${i ? 'L' : 'M'}${f1(x + 4 + t * (w - 8))} ${f1(y + h / 2 + Math.sin(t * Math.PI * 4) * Math.sin(t * Math.PI) * (h * .32))}`; } s.push(`<path d="${d}" fill="none" stroke="${ink}" stroke-width="1.2"/>`, `<path d="M${x + 4} ${y + h / 2}H${x + w - 4}" stroke="${ink}" stroke-opacity=".25" stroke-width=".5"/>`); }
+    if (kind === 'blocks') { const cols = ['#3dd6ff', '#ff7a45', '#7bd36b', '#c77dff', '#ffd23f']; const bw = (w - 16) / 5; cols.forEach((c, i) => s.push(`<rect x="${f1(x + 4 + i * (bw + 2))}" y="${f1(y + h * .38)}" width="${f1(bw)}" height="${f1(h * .3)}" rx="1.5" fill="${on ? c : mix(c, '#000', .75)}"/>`)); s.push(`<path d="M${x + 4} ${f1(y + h * .53)}H${x + w - 4}" stroke="${ink}" stroke-opacity=".4" stroke-width=".7"/>`); }
+    if (kind === 'segments') { const sw = (w - 10) / 2; [0, 1].forEach(i => { const sx = x + 5 + i * sw, a = sw * .62, b = h - 10; s.push(`<path d="M${f1(sx + 2)} ${y + 5}h${f1(a)}M${f1(sx + 2)} ${f1(y + 5 + b / 2)}h${f1(a)}M${f1(sx + 2)} ${f1(y + 5 + b)}h${f1(a)}M${f1(sx + 1)} ${y + 6}v${f1(b / 2 - 2)}M${f1(sx + 3 + a)} ${f1(y + 6 + b / 2)}v${f1(b / 2 - 2)}" stroke="${ink}" stroke-width="2" stroke-linecap="round"/>`); }); }
+    if (kind === 'vfd') for (let i = 0; i < 3; i++) s.push(`<rect x="${f1(x + 4)}" y="${f1(y + 4 + i * (h - 8) / 3)}" width="${f1((w - 8) * [.85, .55, .7][i])}" height="${f1((h - 8) / 3 - 2.5)}" rx=".6" fill="${ink}" opacity="${[.9, .6, .75][i]}"/>`);
+    return `<rect x="${f1(x - 2.5)}" y="${f1(y - 2.5)}" width="${f1(w + 5)}" height="${f1(h + 5)}" rx="3" fill="#060708"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.6" fill="${on ? mix(col, '#050607', .9) : '#07080a'}"/>
+<g filter="url(#${id}-soft)">${s.join('')}</g>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.6" fill="url(#${id}-in)"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.6" fill="url(#${id}-refl)"/>`;
+  }
+  // an expression treadle seen from above: steel side rails, ribbed rubber top, hinge shadow
+  function treadle(id, x, y, w, h, plate) {
+    const ribs = []; for (let yy = y + 10; yy < y + h - 8; yy += 6) ribs.push(`<path d="M${x + 7} ${yy}H${x + w - 7}" stroke="#08090a" stroke-opacity=".85" stroke-width="2" stroke-linecap="round"/><path d="M${x + 7} ${yy + 1.8}H${x + w - 7}" stroke="#fff" stroke-opacity=".08" stroke-width=".8" stroke-linecap="round"/>`);
+    return `<rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${h + 6}" rx="5" fill="#000" opacity=".55" filter="url(#${id}-glow)"/>
+<rect x="${x - 2}" y="${y - 2}" width="${w + 4}" height="${h + 4}" rx="4" fill="url(#${id}-steel)"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="url(#${id}-rub)"/>
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#fff" filter="url(#${id}-grain)" opacity=".6"/>
+${ribs.join('')}${plate ? `<rect x="${f1(x + w * .26 - 1)}" y="${f1(y + h * .22 - 1)}" width="${f1(w * .48 + 2)}" height="${f1(h * .5 + 2)}" rx="4" fill="#000" opacity=".55"/><rect x="${f1(x + w * .26)}" y="${f1(y + h * .22)}" width="${f1(w * .48)}" height="${f1(h * .5)}" rx="3.5" fill="url(#${id}-steel)" opacity=".85"/><rect x="${f1(x + w * .26)}" y="${f1(y + h * .22)}" width="${f1(w * .48)}" height="${f1(h * .5)}" rx="3.5" fill="#fff" filter="url(#${id}-brush)"/><rect x="${f1(x + w * .26)}" y="${f1(y + h * .22)}" width="${f1(w * .48)}" height="${f1(h * .5)}" rx="3.5" fill="url(#${id}-in)" opacity=".6"/>` : ''}
+<rect x="${x}" y="${y + h - 6}" width="${w}" height="6" rx="2" fill="#000" opacity=".35"/>`;
+  }
+  const svg = (cls, vb, w, body, label) => `<svg class="gp-hw gp-hw-${cls}" viewBox="${vb}" width="${w}" role="img" aria-label="${esc(label)}" data-kind="${cls}">${body}</svg>`;
+
+  // ---------- the kinds ----------
+  const KINDS = {
+    'pitch-treadle'(o) {
+      const id = 'ghw' + (++count), W = 230, H = 214, body = '#3c4a5c', on = o.on !== false;
+      const leds = []; for (let i = 0; i < 9; i++) leds.push(led(id, 22, 30 + i * 11, '#ff3b2a', on && i === 3, 1.5), led(id, 50, 30 + i * 11, '#ff3b2a', false, 1.5));
+      const diag = []; for (let i = 0; i < 8; i++) diag.push(led(id, 168 + i * 6, 74 - i * 5.5, '#ff3b2a', on && i === 2, 1.4), led(id, 168 + i * 6, 96 + i * 5.5, '#ff3b2a', false, 1.4));
+      return svg('pitch-treadle', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(30, 0) + jackTop(200, 0) + dinTop(140, 0) + `<rect x="${W / 2 - 50}" y="-4" width="12" height="5" rx="1" fill="#15171a"/>` +
+        enclosure(id, 0, 0, W, H, 7) +
+        `<rect x="6" y="18" width="62" height="112" rx="3" fill="#000" opacity=".22"/><rect x="${W - 68}" y="18" width="62" height="112" rx="3" fill="#000" opacity=".22"/>` +
+        leds.join('') + chicken(id, 36, 84, 8, 30) + diag.join('') + chicken(id, 198, 84, 8, -60) +
+        treadle(id, 76, 12, 78, 186, true) +
+        foot(id, 26, 186, 8) + foot(id, W - 26, 186, 8) + foot(id, W - 26, 150, 6.5) + led(id, 26, 160, '#ff3b2a', on) +
+        screw(6, 6) + screw(W - 6, 6) + screw(6, H - 6) + screw(W - 6, H - 6), o.label || 'pitch treadle');
+    },
+    'big-box'(o) {
+      const id = 'ghw' + (++count), W = 260, H = 150, body = '#34373c', on = o.on !== false;
+      const ks = [0, 1, 2, 3, 4, 5].map(i => knob(id, 40 + i * 30, 70, 9, [.3, .55, .7, .45, .2, .8][i])).join('') + [0, 1, 2].map(i => knob(id, 70 + i * 30, 98, 7, [.6, .35, .5][i])).join('');
+      return svg('big-box', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(30, 0) + jackTop(50, 0) + dinTop(130, 0) + jackTop(210, 0) + jackTop(230, 0) +
+        `<rect x="-2" y="2" width="${W + 4}" height="${H - 4}" rx="9" fill="url(#${id}-steel)"/>` + enclosure(id, 0, 0, W, H, 8, 'brushed') +
+        `<rect x="5" y="5" width="${W - 10}" height="${H - 10}" rx="5" fill="#1d1f22" opacity=".75"/>` +
+        screen(id, 92, 18, 76, 28, 'bars', '#9ad7ff', on) + ks +
+        `<circle cx="214" cy="98" r="12" fill="#000" opacity=".45" filter="url(#${id}-glow)"/><circle cx="214" cy="98" r="11" fill="url(#${id}-steel)"/>${[...Array(24)].map((_, i) => { const a = i * Math.PI / 12; return `<path d="M${f1(214 + Math.cos(a) * 9.2)} ${f1(98 + Math.sin(a) * 9.2)}L${f1(214 + Math.cos(a) * 11)} ${f1(98 + Math.sin(a) * 11)}" stroke="#555b62" stroke-width=".7"/>`; }).join('')}<circle cx="214" cy="98" r="7.5" fill="url(#${id}-knob)"/>` +
+        `<rect x="186" y="62" width="9" height="5" rx="1.2" fill="#121315"/><rect x="200" y="62" width="9" height="5" rx="1.2" fill="#121315"/>` +
+        [0, 1, 2].map(i => led(id, 50 + i * 80, 112, i === 0 ? '#ffb02e' : '#4cff7a', on && i < 2) + foot(id, 50 + i * 80, 132, 8)).join(''),
+      o.label || 'big box');
+    },
+    'mid-box'(o) {
+      const id = 'ghw' + (++count), W = 180, H = 132, body = '#4a4d52', on = o.on !== false;
+      return svg('mid-box', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(24, 0) + usbTop(70, 0) + trsTop(100, 0) + jackTop(156, 0) +
+        enclosure(id, 0, 0, W, H, 6) + `<rect x="0" y="${H * .62}" width="${W}" height="${H * .38}" rx="6" fill="#000" opacity=".18"/>` +
+        screen(id, 14, 16, 64, 30, 'wave', '#7fe0ff', on) + knob(id, 120, 31, 14, .62) +
+        [0, 1, 2, 3].map(i => knob(id, 26 + i * 42, 66, 7.5, [.4, .65, .3, .55][i])).join('') +
+        led(id, 50, 92, '#ff4d3d', on) + led(id, 130, 92, '#ff4d3d', false) + foot(id, 50, 112, 8) + foot(id, 130, 112, 8),
+      o.label || 'mid box');
+    },
+    compact(o) {
+      const id = 'ghw' + (++count), W = 100, H = 140, body = '#e4dfd2', on = o.on !== false;
+      return svg('compact', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(18, 0) + trsTop(50, 0) + jackTop(82, 0) + enclosure(id, 0, 0, W, H, 5) +
+        [0, 1, 2].map(i => knob(id, 22 + i * 28, 24, 7.5, [.35, .6, .5][i], '#f4f1ea')).join('') +
+        [0, 1, 2].map(i => knob(id, 22 + i * 28, 52, 7.5, [.7, .25, .45][i], '#f4f1ea')).join('') +
+        [0, 1, 2].map(i => toggle(id, 30 + i * 20, 78, i !== 1)).join('') +
+        led(id, 28, 100, '#ffb347', on) + led(id, 72, 100, '#ffb347', false) + foot(id, 28, 120, 7.5) + foot(id, 72, 120, 7.5),
+      o.label || 'compact');
+    },
+    'floor-multi'(o) {
+      const id = 'ghw' + (++count), W = 300, H = 164, body = '#1d1f22', on = o.on !== false;
+      const rings = ['#3dd6ff', '#ff7a45', '#7bd36b', '#c77dff', '#ffd23f', '#ff4d6d'];
+      return svg('floor-multi', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(24, 0) + jackTop(44, 0) + usbTop(110, 0) + dinTop(140, 0) + dinTop(166, 0) + jackTop(196, 0) +
+        enclosure(id, 0, 0, W, H, 8) + screen(id, 52, 14, 140, 46, 'blocks', '#9fd8ff', on) +
+        [0, 1, 2, 3, 4, 5].map(i => knob(id, 54 + i * 27, 76, 6.5, [.4, .6, .3, .7, .5, .45][i])).join('') +
+        rings.map((c, i) => { const cx = 24 + i * 38, cy = 132; return `${on ? `<circle cx="${cx}" cy="${cy}" r="13" fill="none" stroke="${c}" stroke-width="2.4" opacity=".5" filter="url(#${id}-glow)"/>` : ''}<circle cx="${cx}" cy="${cy}" r="12" fill="none" stroke="${on ? c : mix(c, '#000', .7)}" stroke-width="1.6"/>` + foot(id, cx, cy, 7); }).join('') +
+        treadle(id, 240, 18, 50, 136) + screw(7, 7) + screw(W - 7, 7) + screw(7, H - 7) + screw(W - 7, H - 7),
+      o.label || 'floor multi-effects');
+    },
+    'loop-switcher'(o) {
+      const id = 'ghw' + (++count), W = 300, H = 120, body = '#26282b', on = o.on !== false;
+      const loops = []; for (let i = 0; i < 8; i++) loops.push(jackTop(70 + i * 26, 0), jackTop(80 + i * 26, 0));
+      return svg('loop-switcher', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        jackTop(14, 0) + jackTop(28, 0) + loops.join('') + dinTop(286, 0) + `<rect x="${W - 6}" y="20" width="6" height="8" rx="1" fill="#15171a"/>` +
+        enclosure(id, 0, 0, W, H, 6) + screen(id, 14, 22, 36, 26, 'segments', '#ff3b2a', on) +
+        [0, 1, 2, 3, 4, 5, 6, 7].map(i => { const cx = 84 + (i % 4) * 54, cy = i < 4 ? 40 : 92; return led(id, cx, cy - 15, '#4cff7a', on && [0, 2, 5].includes(i), 1.6) + foot(id, cx, cy, 7); }).join('') +
+        screw(6, 6) + screw(W - 6, 6) + screw(6, H - 6) + screw(W - 6, H - 6),
+      o.label || 'loop switcher');
+    },
+    'foot-controller'(o) {
+      const id = 'ghw' + (++count), W = 360, H = 134, body = '#3e4146', on = o.on !== false;
+      return svg('foot-controller', `-8 -12 ${W + 16} ${H + 26}`, o.width || W + 16, hwDefs(id, body) +
+        dinTop(40, 0) + dinTop(64, 0) + `<rect x="100" y="-4" width="10" height="5" rx="1" fill="#15171a"/>` +
+        enclosure(id, 0, 0, W, H, 5) + `<rect x="0" y="0" width="${W}" height="${H}" rx="5" fill="#fff" filter="url(#${id}-grain)" opacity=".7"/>` +
+        screen(id, 12, 12, 40, 22, 'segments', '#ff3b2a', on) +
+        [...Array(10)].map((_, i) => { const cx = 74 + (i % 5) * 34, cy = i < 5 ? 48 : 104; return led(id, cx, cy - 16, '#ff3b2a', on && i === 6, 1.5) + foot(id, cx, cy, 7.5); }).join('') +
+        treadle(id, 252, 10, 44, 114) + treadle(id, 306, 10, 44, 114) + screw(5, 5) + screw(W - 5, 5) + screw(5, H - 5) + screw(W - 5, H - 5),
+      o.label || 'MIDI foot controller');
+    },
+    'rack-1u'(o) {
+      const id = 'ghw' + (++count), W = 400, H = 56, body = '#1f2124', on = o.on !== false;
+      const btn = [...Array(8)].map((_, i) => `<rect x="${196 + i * 16}" y="34" width="12" height="7" rx="1.2" fill="#000" opacity=".5"/><rect x="${196 + i * 16}" y="33" width="12" height="7" rx="1.2" fill="#8d939a"/><rect x="${196 + i * 16}" y="33" width="12" height="2.2" rx="1" fill="#fff" opacity=".3"/>`).join('');
+      const meter = (y) => [...Array(8)].map((_, i) => `<rect x="${118 + i * 6}" y="${y}" width="4.6" height="3" rx=".6" fill="${on && i < (y < 30 ? 6 : 5) ? (i > 5 ? '#ffb02e' : '#4cff7a') : '#1a2a1c'}"/>`).join('');
+      return svg('rack-1u', `-6 -6 ${W + 12} ${H + 14}`, o.width || W + 12, hwDefs(id, body) +
+        enclosure(id, 0, 0, W, H, 2, 'brushed') +
+        [10, W - 10].map(x => `<rect x="${x - 6}" y="2" width="1" height="${H - 4}" fill="#000" opacity=".45"/>`).join('') +
+        `<ellipse cx="9" cy="14" rx="3.2" ry="2.2" fill="#0a0b0c"/><ellipse cx="9" cy="42" rx="3.2" ry="2.2" fill="#0a0b0c"/><ellipse cx="${W - 9}" cy="14" rx="3.2" ry="2.2" fill="#0a0b0c"/><ellipse cx="${W - 9}" cy="42" rx="3.2" ry="2.2" fill="#0a0b0c"/>` +
+        screw(9, 14, 1.8) + screw(9, 42, 1.8) + screw(W - 9, 14, 1.8) + screw(W - 9, 42, 1.8) +
+        `<circle cx="34" cy="28" r="7" fill="url(#${id}-nut)"/><circle cx="34" cy="28" r="5" fill="#16181a"/>` + led(id, 52, 28, '#4cff7a', on, 1.4) +
+        screen(id, 64, 14, 46, 26, 'vfd', '#5cffb0', on) + meter(18) + meter(30) + btn +
+        `<circle cx="${W - 46}" cy="28" r="14" fill="#000" opacity=".5" filter="url(#${id}-glow)"/><circle cx="${W - 46}" cy="28" r="13" fill="url(#${id}-steel)"/><circle cx="${W - 46}" cy="28" r="9" fill="url(#${id}-steel)" stroke="#000" stroke-opacity=".25"/><circle cx="${W - 50}" cy="23" r="1.8" fill="#3c4146"/>`,
+      o.label || 'rack effects unit');
+    },
+  };
+  const HARDWARE_KINDS = Object.keys(KINDS);
+  // kind: one of HARDWARE_KINDS (an unknown kind draws as `compact`); opts: {on, label, width}
+  function hardwareUnit(kind, opts) { opts = opts || {}; return (KINDS[kind] || KINDS.compact)(opts); }
+  return { hardwareUnit, HARDWARE_KINDS };
+  })();
+
   // ---------- block mode ----------
   function blockTile(block, opts) {
     opts = opts || {};
@@ -2910,6 +3120,9 @@ ${txt(W / 2, H - 5, 'golem', 7, '#0b0c0e', { font: FONT.gfx, anchor: 'middle', w
       : { type: it.type, name: it.type, color: '#8a94a3', family: 'generic', params: [] });
     const o = Object.assign({}, opts || {}, it);
     if (isFeature(it.type)) return featureUnit(it.type, o);
+    // MIDI hardware: the Whammy DT is a pitch treadle; a generic midi-pedal takes its registry kind (`kind`)
+    if (it.type === 'whammy-dt') return hardwareUnit(o.kind || 'pitch-treadle', o);
+    if (it.type === 'midi-pedal') return hardwareUnit(o.kind || 'compact', o);
     switch (b.family) {
       case 'gfx': return gfxPedal(b.gfx, o);
       case 'nam-pedal': return namPedal(b.type, o);
@@ -2922,7 +3135,7 @@ ${txt(W / 2, H - 5, 'golem', 7, '#0b0c0e', { font: FONT.gfx, anchor: 'middle', w
 
   // the golem-fx finish: 'auto' (by family, default), 'anodized', 'thrash'; 'clay' is the first prototype's
   const api = {
-    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, featureUnit, isFeature, FEATURE_TYPES, outboardSetting, blockTile, pedalFor,
+    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, featureUnit, isFeature, FEATURE_TYPES, hardwareUnit, HARDWARE_KINDS, outboardSetting, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE, RACK_LOOK, RACK_GENERIC, KEYS_STYLE_HUE, EP_FAMILIES, KIT_TYPES, KIT_PIECES, KIT_SPOTS, kitAssets: api_assets,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners, rackKnob, rackControl },
     layout: 'fixed', rune: 'engraved',

@@ -1,0 +1,41 @@
+{
+ "id": "fast-lines-live",
+ "type": "formant",
+ "name": "Fast lines, live",
+ "desc": "A slightly bigger voice whose filter keeps up with fast articulation: 20 ms lookahead",
+ "inst": "voice",
+ "genres": [
+  "hip-hop",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "formant": -3,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 20,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: lookahead 20 ms centres the analysis (glide error about 2 dB rms instead of 7) at 20 ms of latency",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

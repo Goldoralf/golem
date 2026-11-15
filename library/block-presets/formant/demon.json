@@ -1,0 +1,47 @@
+{
+ "id": "demon",
+ "type": "formant",
+ "name": "Demon",
+ "desc": "An octave down, formants 5 semitones down, heavy growl and breath: the horror-film voice",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "screen"
+ ],
+ "subgenres": [
+  "death-metal",
+  "film-score"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "formant": -5,
+  "growl": 60,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Grain",
+  "shift": -12,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 20,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: every throat option at once; mix 100 % so the dry octave above never shows",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

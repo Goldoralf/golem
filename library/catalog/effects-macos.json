@@ -225,6 +225,9 @@
   },
   "morph": {
    "unsupported": "golem-fx only (catalogue v49): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
+  },
+  "formant": {
+   "unsupported": "golem-fx only (catalogue v50): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
   }
  },
  "unmapped": {

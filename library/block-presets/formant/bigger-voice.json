@@ -1,0 +1,42 @@
+{
+ "id": "bigger-voice",
+ "type": "formant",
+ "name": "Bigger voice",
+ "desc": "The same singer a little larger and darker: formants 3 semitones down, pitch and timing untouched",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "formant": -3,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: Live, formant -2 to -4. Zero latency in the in-ears; the TE envelope keeps it from sounding metallic",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

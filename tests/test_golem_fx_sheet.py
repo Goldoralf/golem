@@ -168,3 +168,19 @@ def test_les_presets_de_golem_fx_ne_s_offrent_que_la_ou_golem_fx_joue(monkeypatc
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"gate"})
     ids = {p["id"] for p in R.block_presets_list("gate")["presets"]}
     assert {"chug-tight", "breakdown-stop"} <= ids
+
+
+def test_les_reglages_de_montage_de_formant_ne_sont_ni_par_scene_ni_a_la_pedale():
+    """gfx-formant (catalogue v50) : moteur, registre et lookahead changent la latence que le plugin annonce — la base du
+    bloc seulement. La liste vient de la table (`setup`), pas du `structural` des descripteurs (trop large : la vitesse
+    du rotary, le freeze d'une reverb se jouent par scène)."""
+    from bridge import golem_fx, scene_bake
+    assert golem_fx.setup_ids("formant") == {"engine", "register", "lookahead"}
+    assert golem_fx.setup_ids("rotary") == set() and golem_fx.setup_ids("reverb") == set()
+    params, _sheet = golem_fx.merged("formant", [p for e in json.load(open(os.path.join(
+        golem_fx.C.ROOT, "library", "catalog", "effects.json")))["effects"] if e["type"] == "formant" for p in e["params"]])
+    by = {d["id"]: d for d in params}
+    assert by["lookahead"].get("setup") and not by["lookahead"].get("exp") and by["formant"].get("exp")
+    b = scene_bake._bake_block({"id": "f1", "type": "formant", "params": {"engine": "Live", "formant": -3}}, {},
+                               {"f1": {"engine": "Grain", "formant": 5}})
+    assert b["params"] == {"engine": "Live", "formant": 5}           # l'override de scène du moteur est ignoré

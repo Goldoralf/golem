@@ -78,6 +78,16 @@ the effects wherever golem-fx is not installed, the rest as instruments, capture
   latency re-sync when a preset switches Live ↔ Studio, gfx-morph's `depends` that golem's descriptor format cannot
   hold (gfx-morph README §3.2), and both on the quiet-machine stall bench.
 
+### Catalogue v50: Formant (2026-11-15)
+
+- `formant` is a new golem-fx-only block (gfx-formant, golem-fx 048142e), category Pitch, voice and guitar lanes, 17
+  presets. Engine Live (no latency, or its Lookahead) or Grain (≈ 9–21 ms by Register).
+- **Setup settings** (new rule): a golem-fx setting that changes the latency the plugin reports is listed in the
+  engine table (`setup`, here `engine`, `register`, `lookahead`). It lives in the block's base only: the Designer
+  writes it there and drops every scene override of it, `scene_bake` ignores an old one, and it never takes the EXP
+  pedal. The descriptors' `structural` flag is NOT used for this: it also marks settings played per scene or by foot
+  (rotary speed, reverb freeze, delay time).
+
 ### golem-fx in the installers (2026-11-15)
 
 **CODED** — the installers ship golem-fx **0.4** (prebuilt release `golem-fx-0.4` in Goldoralf/golem-binaries, golem-fx
@@ -106,12 +116,12 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**53 of 59 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
+**54 of 60 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
 | Played by golem-fx, replacing an open-source plugin (33) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `spectral-comp`, `guitar-drive` |
-| Played by golem-fx, new blocks with no open-source original (20) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
+| Played by golem-fx, new blocks with no open-source original (21) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `formant`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
 | … of which the engine-stall bench is still pending (6) | `flanger-js`, `golem-double`, `glitch`, `met`, `emet`, `shem` |
 | Ready in golem-fx, not wired yet (6) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
 | No golem-fx counterpart yet (0) |  |

@@ -112,6 +112,13 @@ def merged(btype, catalog_params):
                     d["fmt"] = p["decimals"]
         if p.get("exp"):                                 # la pédale d'expression : ce que golem-fx déclare pilotable
             d["exp"] = True
+        # UN RÉGLAGE DE MONTAGE (2026-11-15, gfx-formant) : il change la latence que le plugin annonce (moteur, registre,
+        # lookahead). Ni par scène ni à la pédale : la base du bloc seulement. La liste vient de la TABLE (`setup`), pas
+        # du `structural` des descripteurs : celui-ci marque aussi la vitesse du rotary, le freeze d'une reverb ou le
+        # temps du delay — des réglages qu'on change justement par scène ou au pied
+        if gid in (spec.get("setup") or []):
+            d["setup"] = True
+            d.pop("exp", None)
         dep = p.get("depends")
         if isinstance(dep, dict) and dep.get("param") in keys:
             d["depends"] = {keys[dep["param"]]: _equals_as_block(dep, dparams, cat, keys)}
@@ -177,6 +184,27 @@ def _equals_as_block(dep, dparams, cat, keys):
         copts = c.get("options") or []
         return copts[i] if i < len(copts) else eq
     return eq
+
+
+_SETUP = {"key": None, "map": {}}
+
+
+def setup_ids(btype):
+    """Les ids de bloc des réglages DE MONTAGE d'un type que golem-fx joue (cf. merged) — set vide sinon. Le catalogue
+    est relu quand il change (mtime)."""
+    try:
+        path = os.path.join(C.ROOT, "library", "catalog", "effects.json")
+        cat = os.path.join(C.ROOT, "library", "catalog")
+        key = (os.path.getmtime(path), os.path.getmtime(os.path.join(cat, "golem-fx-plugins.json")),
+               os.path.getmtime(os.path.join(cat, "effects-golem-engine.json")))
+        if _SETUP["key"] != key:
+            with open(path, encoding="utf-8") as f:
+                fx = json.load(f).get("effects") or []
+            _SETUP.update(key=key, map={e.get("type"): e.get("params") or [] for e in fx})
+        params, sheet = merged(btype, _SETUP["map"].get(btype))
+        return {d["id"] for d in params if d.get("setup")} if sheet else set()
+    except Exception:
+        return set()
 
 
 def gfx_only_keys(btype, catalog_params):

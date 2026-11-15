@@ -1,0 +1,41 @@
+{
+ "id": "gender-up",
+ "type": "formant",
+ "name": "Gender up",
+ "desc": "Pitch a fifth up and formants 3 semitones up: a lower voice turned higher, both cues moved",
+ "inst": "voice",
+ "genres": [
+  "screen",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "formant": 3,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Grain",
+  "shift": 7,
+  "source": "Voice",
+  "register": "Low",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: formant alone gives a small man; a real change needs pitch too. Register Low tracks male voices",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

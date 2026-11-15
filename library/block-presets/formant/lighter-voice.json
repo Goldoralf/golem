@@ -1,0 +1,42 @@
+{
+ "id": "lighter-voice",
+ "type": "formant",
+ "name": "Lighter voice",
+ "desc": "Formants 3 semitones up on the same notes: female formants sit 15 - 20 % above male ones",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rnb"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "formant": 3,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: +2.4 to +3.2 st is the male-female formant distance (Peterson & Barney); pitch stays put",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

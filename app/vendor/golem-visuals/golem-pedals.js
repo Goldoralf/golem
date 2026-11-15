@@ -415,7 +415,8 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-sustainer': 'modes',
     'gfx-polysynth': 'saws',
     'gfx-spectralcomp': 'skyline',
-    'gfx-morph': 'canned' };
+    'gfx-morph': 'canned',
+    'gfx-formant': 'formants' };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
@@ -620,6 +621,27 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
             const ym = y - rise * (t0 + t1) / 2, op = .35 + .65 * (bot - ym) / (bot - top);
             line(`M${f1(xa + xs * t0)} ${f1(y - rise * t0)}L${f1(xa + xs * t1)} ${f1(y - rise * t1)}`, op);
           }
+        });
+        break;
+      }
+      case 'formants': {
+        // the envelope moves, the harmonics stay: two columns over the rune zone (x 4 – 16 and W − 16 –
+        // W − 4, as barber). In both, harmonic ticks 6 long every 5 units from the outer edge (opacity
+        // .35), identical left and right: the pitch does not change. Over them the envelope, frequency
+        // upwards, sampled every unit: three raised-cosine bumps 6 deep pointing towards the rune, at
+        // 22 / 42 / 62 % of the column's height on the left (the giant) and the same curve stretched
+        // ×1.3 on the right (29 / 55 / 81 %: the child)
+        const top = cy - ch, bot = cy + ch, hgt = bot - top;
+        [[4, 1, 1], [W - 4, -1, 1.3]].forEach(([xo, dir, k]) => {
+          for (let y = bot; y >= top - 1e-9; y -= 5) line(`M${f1(xo)} ${f1(y)}H${f1(xo + dir * 6)}`, .35);
+          let d = '';
+          for (let y = bot; y >= top - 1e-9; y -= 1) {
+            const u = (bot - y) / hgt;
+            let b = 0;
+            [.22, .42, .62].forEach(c => { const z = (u - c * k) / .09; if (Math.abs(z) < 1) b += .5 + .5 * Math.cos(Math.PI * z); });
+            d += `${d ? 'L' : 'M'}${f1(xo + dir * (3 + 6 * Math.min(b, 1)))} ${f1(y)}`;
+          }
+          line(d, 1);
         });
         break;
       }

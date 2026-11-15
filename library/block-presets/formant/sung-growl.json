@@ -1,0 +1,44 @@
+{
+ "id": "sung-growl",
+ "type": "formant",
+ "name": "Sung growl",
+ "desc": "Alternate glottal periods dropped on the predicted epochs: a rough growl on a sung line, zero latency",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-metal"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "formant": -1,
+  "growl": 40,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: growl 30 - 50 %; the modulation runs at f0 / 2, heard as roughness, not tremolo",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

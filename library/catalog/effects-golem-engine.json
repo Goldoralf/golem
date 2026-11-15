@@ -561,6 +561,16 @@
    "vst3": "476F6C654D46784D6F72706830303031",
    "golem_fx": true,
    "status": "testing"
+  },
+  "formant": {
+   "vst3": "476F6C654D4678466F726D616E743031",
+   "golem_fx": true,
+   "status": "testing",
+   "setup": [
+    "engine",
+    "register",
+    "lookahead"
+   ]
   }
  }
 }

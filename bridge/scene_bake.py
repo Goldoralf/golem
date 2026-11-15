@@ -123,6 +123,12 @@ def _bake_block(b, scene_blocks, scene_params=None, touched=None):
         b["bypass"] = bool(b["bypass"])
     ovr = (scene_params or {}).get(bid)
     if ovr:
+        # un réglage DE MONTAGE (golem_fx.setup_ids : moteur, registre, lookahead…) change la latence du plugin :
+        # jamais par scène, la base seule (un vieux patch qui en porte un en override le perd ici, pas au rig)
+        from . import golem_fx
+        setup = golem_fx.setup_ids(btype)
+        if setup:
+            ovr = {k: v for k, v in ovr.items() if k not in setup}
         b["params"] = {**(b.get("params") or {}), **ovr}   # base <- override scène
     need = (touched or {}).get(bid)
     if need:

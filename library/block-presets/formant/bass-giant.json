@@ -1,0 +1,42 @@
+{
+ "id": "bass-giant",
+ "type": "formant",
+ "name": "Bass giant",
+ "desc": "Bass body 5 semitones down: a bigger cabinet in the low mids, the noise floor guarded",
+ "inst": "bass",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "warm"
+ ],
+ "default": true,
+ "params": {
+  "formant": -5,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Instrument",
+  "register": "Low",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: the noise-floor guard keeps the shift from lifting hiss",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

@@ -1,0 +1,42 @@
+{
+ "id": "chipmunk-same-notes",
+ "type": "formant",
+ "name": "Chipmunk, same notes",
+ "desc": "The cartoon-chipmunk timbre without the pitch jump: formants 10 semitones up on the sung notes",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "formant": 10,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 50,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "Beyond +7 the +24 dB boost clamp already limits how far the valleys rise; unvoiced 50 % keeps the s and t",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

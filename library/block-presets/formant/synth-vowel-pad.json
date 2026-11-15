@@ -1,0 +1,41 @@
+{
+ "id": "synth-vowel-pad",
+ "type": "formant",
+ "name": "Vowel pad",
+ "desc": "A pad sung on the vowel i: the synth's own envelope replaced by the template",
+ "inst": "keys",
+ "genres": [
+  "electronic",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy"
+ ],
+ "default": true,
+ "params": {
+  "formant": 0,
+  "growl": 0,
+  "vowel": 50,
+  "vowel_amt": 100,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Instrument",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: vowel 50 % is i; vowel_amt 100 % replaces the input's envelope entirely",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

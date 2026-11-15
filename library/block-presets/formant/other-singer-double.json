@@ -1,0 +1,41 @@
+{
+ "id": "other-singer-double",
+ "type": "formant",
+ "name": "Another singer",
+ "desc": "A parallel double with formants 2 semitones up: same notes, another throat",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "rock"
+ ],
+ "gain": "any",
+ "use": "utility",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "formant": 2,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Grain",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 50,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: Grain's identity is exact, so only the formants differ; best on a parallel lane",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

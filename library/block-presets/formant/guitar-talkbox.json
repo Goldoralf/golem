@@ -1,0 +1,44 @@
+{
+ "id": "guitar-talkbox",
+ "type": "formant",
+ "name": "Talk-box sweep",
+ "desc": "Vowels imposed on the chord: a talk-box without the tube, the vowel on the expression pedal",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "rnb"
+ ],
+ "subgenres": [
+  "funk"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "formant": 0,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 85,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Instrument",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: put vowel on EXP and sweep a to u; vowel_amt 85 % keeps a little of the guitar's own body",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

@@ -1,0 +1,45 @@
+{
+ "id": "giant",
+ "type": "formant",
+ "name": "Giant",
+ "desc": "Pitch 5 semitones and formants 7 semitones down, with some growl and a darker source",
+ "inst": "voice",
+ "genres": [
+  "metal",
+  "experimental"
+ ],
+ "subgenres": [
+  "doom-metal"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "formant": -7,
+  "growl": 40,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Grain",
+  "shift": -5,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": -2,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: pitch and formant together; the growl is epoch-synchronous in Grain",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

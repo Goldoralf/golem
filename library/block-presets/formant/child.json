@@ -1,0 +1,41 @@
+{
+ "id": "child",
+ "type": "formant",
+ "name": "Child",
+ "desc": "A small throat on the sung melody: formants 6 semitones up, consonants moved half as much",
+ "inst": "voice",
+ "genres": [
+  "pop",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "formant": 6,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 50,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: Live +6 to +10 with unvoiced 50 % so sibilants do not thin out",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

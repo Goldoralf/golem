@@ -1,0 +1,41 @@
+{
+ "id": "gender-down",
+ "type": "formant",
+ "name": "Gender down",
+ "desc": "Pitch a fifth down and formants 3 semitones down: a higher voice turned lower, both cues moved",
+ "inst": "voice",
+ "genres": [
+  "screen",
+  "experimental"
+ ],
+ "gain": "any",
+ "use": "texture",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "formant": -3,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Grain",
+  "shift": -7,
+  "source": "Voice",
+  "register": "Low",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: the reverse of gender-up. Grain is the engine that moves the pitch",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

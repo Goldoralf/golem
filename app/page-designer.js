@@ -1012,6 +1012,14 @@ export function DesignerPage({ rig, sub }) {
         return;
       }
       const dropOvr = () => { if (sc.params && sc.params[b.id]) { delete sc.params[b.id][pid]; if (!Object.keys(sc.params[b.id]).length) delete sc.params[b.id]; } };
+      // UN RÉGLAGE DE MONTAGE (golem FX `setup` : moteur, registre, lookahead… — il change la latence du plugin) : la base
+      // du bloc, jamais une scène — et aucune scène n'en garde un override (bridge/scene_bake l'ignorerait)
+      if ((((fxDef(b.type) || {}).params) || []).some(x => x.id === pid && x.setup)) {
+        b.params = b.params || {};
+        if (value === null) delete b.params[pid]; else b.params[pid] = value;
+        (n.scenes || []).forEach(s2 => { if (s2.params && s2.params[b.id]) { delete s2.params[b.id][pid]; if (!Object.keys(s2.params[b.id]).length) delete s2.params[b.id]; } });
+        return;
+      }
       if (value === null) { dropOvr(); return; }               // reset override -> base héritée
       // UN PATCH À UNE SCÈNE ÉCRIT LA BASE (2026-10-14) : sinon chaque retouche partait dans A, et une scène B
       // créée ensuite reprenait la base — sans les retouches. Avec une seule scène, « la scène » et « le bloc » sont

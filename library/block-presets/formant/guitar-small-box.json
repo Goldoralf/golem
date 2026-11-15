@@ -1,0 +1,41 @@
+{
+ "id": "guitar-small-box",
+ "type": "formant",
+ "name": "Small box",
+ "desc": "Guitar body made smaller: the envelope 4 semitones up, notes and attack untouched",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "gain": "any",
+ "use": "rhythm",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "formant": 4,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Instrument",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": 0,
+  "breath": 0,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: a tone effect that leaves pitch and attack alone, polyphonic, zero latency",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

@@ -1,0 +1,42 @@
+{
+ "id": "whisper-ghost",
+ "type": "formant",
+ "name": "Whisper ghost",
+ "desc": "Aspiration noise shaped by the shifted envelope on top of a darker voice",
+ "inst": "voice",
+ "genres": [
+  "experimental",
+  "screen"
+ ],
+ "gain": "any",
+ "use": "ambient",
+ "refs": [],
+ "level_db": 0,
+ "tags": [
+  "dreamy",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "formant": 2,
+  "growl": 0,
+  "vowel": 0,
+  "vowel_amt": 0,
+  "engine": "Live",
+  "shift": 0,
+  "source": "Voice",
+  "register": "Mid",
+  "unvoiced": 100,
+  "tilt": -3,
+  "breath": 80,
+  "thresh": -60,
+  "lookahead": 0,
+  "mix": 100,
+  "output": 0,
+  "bypass": false
+ },
+ "notes": "README 4: the breath follows the voice's level and the voicing gate; tilt -3 dB/oct for a slacker source",
+ "factory": true,
+ "golem_fx_seed": "gfx-formant",
+ "golem_fx": true
+}

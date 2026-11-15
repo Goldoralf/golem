@@ -173,6 +173,11 @@ export const GLYPHS = {
 "uni": "⋈",
 "label": "Flanger"
 },
+"formant": {
+"svg": "<path d='M2.5 16C4.5 16 5 5.5 7 5.5s2.5 7 4.5 7 2.5-4.5 4.5-4.5 3 8 5 8'/><path d='M5 21h14M7 19l-2 2 2 2M17 19l2 2-2 2' opacity='.6'/>",
+"uni": "⏜",
+"label": "Formant shifter (gfx)"
+},
 "freeze": {
 "svg": "<path d='M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5'/><path d='M9.5 4 12 6.3 14.5 4M9.5 20 12 17.7 14.5 20' opacity='.7'/>",
 "uni": "❄",

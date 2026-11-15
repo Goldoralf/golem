@@ -294,7 +294,8 @@ half an hour of engine time for ~67 MB. Now they are rendered **once**, on the m
   blocks `block-factory-*` and `block-patch-factory-*`, keys sounds of `sound_preview.factory_sounds`, kits of
   `drum_preview.factory_kits`) into `golem-factory-demos.tar` with an index (`.json`: every file's sha256, the
   archive's sha256); `--publish <tag>` creates the release on `Goldoralf/golem-binaries` (never marked latest). First
-  release: `factory-demos-v1` (127 folders, 460 files, 68.6 MB). Never a user's demo (Vital presets, imported kits,
+  release: `factory-demos-v1` (127 folders, 460 files, 68.6 MB); `factory-demos-v2` (2026-11-15, 127 folders, 68.5 MB:
+  the factory AVL kits' demos re-rendered through the GM safety net, docs/drums-kit.md §8.1). Never a user's demo (Vital presets, imported kits,
   listening clips).
 - **When** (maintainer's decision, 2026-11-15): at **install** (`provision/install.sh` after the bridge step;
   `installer/desktop_steps._sound_di` on Windows/macOS, which loads the module by path — standard library only) and

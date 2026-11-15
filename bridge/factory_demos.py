@@ -23,7 +23,7 @@ import urllib.request
 
 log = logging.getLogger("golem.factory-demos")
 
-TAG = "factory-demos-v1"
+TAG = "factory-demos-v2"   # v2 (2026-11-15) : les kits AVL d'usine refaits à travers le filet GM
 NAME = "golem-factory-demos"
 BASE = os.environ.get("GOLEM_FACTORY_DEMOS_BASE") or f"https://github.com/Goldoralf/golem-binaries/releases/download/{TAG}/"
 STATE_NAME = ".factory-demos.json"

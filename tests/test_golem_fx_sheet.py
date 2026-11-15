@@ -161,8 +161,10 @@ def test_les_presets_semes_sont_a_jour_et_bien_formes():
 def test_les_presets_de_golem_fx_ne_s_offrent_que_la_ou_golem_fx_joue(monkeypatch):
     from bridge import rig, routes_content as R
     monkeypatch.setattr(rig, "_engine_safe_types", lambda: set())
-    ids = {p["id"] for p in R.block_presets_list("reverb")["presets"]}
-    assert "cathedral" in ids and "lush-clean-hall" not in ids          # le rack seul : ses presets à lui
-    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"reverb"})
-    ids = {p["id"] for p in R.block_presets_list("reverb")["presets"]}
-    assert {"cathedral", "lush-clean-hall"} <= ids
+    # les anciens presets du rack sont retirés (2026-11-15) ; un preset de golem-fx qui a repris un id du rack
+    # (`golem_fx: false`) s'offre partout, les autres seulement là où golem-fx joue le bloc
+    ids = {p["id"] for p in R.block_presets_list("gate")["presets"]}
+    assert "chug-tight" in ids and "breakdown-stop" not in ids
+    monkeypatch.setattr(rig, "_engine_safe_types", lambda: {"gate"})
+    ids = {p["id"] for p in R.block_presets_list("gate")["presets"]}
+    assert {"chug-tight", "breakdown-stop"} <= ids

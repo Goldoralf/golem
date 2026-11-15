@@ -44,7 +44,7 @@ those have their own code paths. Model to copy: `tremolo` (plugin) or `killswitc
    for the first paint. `GET /api/catalog-blocks` reads `effects.json` only, so golem.fm never sees
    a colour that lives only in the JS maps.
 5. **`library/block-presets/<type>/<slug>.json`** — factory settings, modelled on
-   `library/block-presets/tremolo/surf.json`: `{name, type, inst, factory: true, params}`.
+   `library/block-presets/tremolo/brownface-harmonic.json`: `{name, type, inst, factory: true, params}`.
    `"default": true` = applied when the block is added on a lane of that `inst` (one per type+inst).
    Without `factory: true` the file is treated as a user preset by `bridge/backup.py`.
 6. **Plugin availability** — Linux: add the package to `provision/install-plugins.sh` (it runs under

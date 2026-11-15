@@ -667,7 +667,8 @@ def test_pitch_correct_live_par_defaut_et_presets_revoices():
     pm = {p["id"]: p for p in fx["pitch-correct"]["params"]}
     assert pm["fastmode"]["default"] is True and pm["filter"]["label"] == "Smoothing"
     d = os.path.join(C.ROOT, "library", "block-presets", "pitch-correct")
-    hard = json.load(open(os.path.join(d, "hard-tune.json")))["params"]
-    assert hard["filter"] == pm["filter"]["min"] and hard["fastmode"]          # le plus serré, pas le plus lâche
-    for f in ("hard-tune", "tight-pop", "transparent"):
+    # les presets de golem-fx (les anciens du rack sont retirés le 2026-11-15) : le robot est au plus serré, en Live
+    hard = json.load(open(os.path.join(d, "stair-step-robot.json")))["params"]
+    assert hard["filter"] <= pm["filter"]["min"] and hard["fastmode"]          # le plus serré (le plugin descend à 0)
+    for f in ("hard-tune-keep-vibrato", "tight-pop", "transparent-live"):
         assert json.load(open(os.path.join(d, f + ".json")))["params"]["fastmode"], f

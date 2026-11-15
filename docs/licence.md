@@ -13,7 +13,7 @@ Related: [`CONTRIBUTING.md`](../CONTRIBUTING.md) (how contributions are signed),
 
 | Part | Licence | Where it is declared |
 |---|---|---|
-| Everything not listed below: `bridge/`, `app/`, `reaper/Scripts/`, `provision/`, `tools/`, tests, configs | **GPL-3.0-or-later** | `LICENSE`; `SPDX-License-Identifier: GPL-3.0-or-later` in each source file (`#`, `--` or `//` comment), `license = "GPL-3.0-or-later"` in `plugins/Cargo.toml` |
+| Everything not listed below: `bridge/`, `app/`, `reaper/Scripts/`, `provision/`, `tools/`, tests, configs | **GPL-3.0-or-later** | `LICENSE`; `SPDX-License-Identifier: GPL-3.0-or-later` in each source file (`#`, `--` or `//` comment) |
 | The in-house JSFX, the interchange-format specifications and the `.golem` parser module (§2) | **MIT** | [`LICENSE.MIT`](../LICENSE.MIT), copied as `reaper/Effects/LICENSE`, lists the paths; `// SPDX-License-Identifier: MIT` on line 2 of each JSFX and at the top of `bridge/golemfile.py` |
 | Factory presets, patches and drum grooves (§5 bis) | **CC0 1.0** | This page |
 | `reaper/Effects/golem_super8` | **LGPL-2.0-or-later**, same terms as its upstream (§3) | Its header (`// SPDX-License-Identifier: LGPL-2.0-or-later`) |

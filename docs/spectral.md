@@ -43,7 +43,7 @@ swallows the direct signal is a silence nobody would find. Other params: `fft`, 
 (module switches set by the compile). `capture` and `freeze` are foot booleans (a stomp on Capture = a spectral
 looper). Roles: voice, keys, pads, guitar, bass (not drums). Direct latency 0. Placement: last in the lane.
 
-### `freeze` — golem Freeze (category `reverb`)
+### `freeze` — golem Freeze (category `reverb`) — retired 2026-11-15, kept as history
 
 `CLAP: GoleM Freeze (GoleM)`, our own plugin: crate `plugins/golem_freeze` (Rust workspace `plugins/`, bundler
 `xtask`), on nih-plug, CLAP + VST3, GPL-3, no GUI (the rack drives parameters).

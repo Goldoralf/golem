@@ -3,7 +3,7 @@
 import { html, useState, useEffect, useRef, useAsync, cls, esc, LIVE_PALETTE, GENRE_FAMILIES } from './lib.js';
 import { ANIM_STYLES, blkColor, ICON, animClass, animPackOf, ensurePackCss, refKey } from './designer-model.js';
 import { PCell, PDial, PToggle, PFader, PFaderBank, fmtVal, DynMeter } from './designer-widgets.js';
-import { BlockPresetsList } from './designer-block-presets.js';   // l'onglet « Presets » (mockups/block-presets-list.html)
+import { BlockPresetsPane } from './designer-block-presets.js';   // presets en colonne + façade (maquette Chorus drawer, 2026-11-15)
 import { StandardSheet } from './designer-standard.js';
 import { BackingDrawer } from './designer-backing.js';
 import { ClickSongCols, PerSongNote, SongLayer, sheetBlocks } from './designer-song.js';   // la chanson chargée (docs/designer-song.md)     // le tiroir Backing Track (docs/song-backing.md)
@@ -92,6 +92,8 @@ export const PowerBtn = ({ on, onPower, sceneId }) => html`<button class=${cls('
 export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, exp2, pedals, svc, bpm, laneInst, tab, onTab, assign, onExp, expVol, onExpVol, onParam, onBypass, onScene, onModel, onApplyAll, onLoadPreset, onMove, onRemove, onPickRef, onClose, vstOpen, onRename, onCaptureFoot, powerOn, onPower, multiScene }) {
   // les boutons qu'un tiroir de service remonte dans la rangée ⏻ (le Standard : Change… / Audition, 2026-10-17)
   const [headX, setHeadX] = useState(null);
+  // Presets et Expert ne sont plus des onglets (2026-11-15) : un onglet mémorisé retombe sur Settings
+  if (tab === 'presets' || tab === 'expert') tab = 'params';
   // la COUCHE éditée par le tiroir Sample (docs/designer-song.md §4) : la liste du preset, ou celle de la chanson chargée
   const [songLayer, setSongLayer] = useState('preset');
   // capture d'un VST (2026-10-05) : le bloc garde son moteur, la fiche dit d'où il vient et se renomme
@@ -240,7 +242,20 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
   const xGroups = gsheet ? (gsheet.groups || []).filter(g => expertAll.some(pm => pm.gfx.group === g.id)) : [];
   const hasExpert = xGroups.length > 0;
   const [xg, setXg] = useState(null);
+  const [moreOpen, setMoreOpen] = useState(false);
   const xCur = xGroups.find(g => g.id === xg) || xGroups[0] || null;
+  // UN GROUPE PASSE EN CUSTOM QUAND ON LE TOUCHE (2026-11-15, « Expert on ne peut rien régler ») : l'interrupteur
+  // Custom restait éteint dans tous les presets, et ses réglages étaient grisés — des potards morts. Toucher un réglage
+  // d'un groupe allume son Custom ; « ↺ Back to profile » l'éteint.
+  const customIds = new Set(xGroups.map(g => g.custom).filter(Boolean));
+  const groupOn = g => !g.custom || !!val(params.find(x => x.id === g.custom) || { id: g.custom });
+  const onParam0 = onParam;
+  onParam = (pid, v) => {
+    const pm = params.find(x => x.id === pid);
+    const g = pm && isExpert(pm) ? xGroups.find(x => x.id === pm.gfx.group) : null;
+    if (g && g.custom && g.custom !== pid && !groupOn(g)) onParam0(g.custom, true);
+    onParam0(pid, v);
+  };
   // le groupe courant : son interrupteur « Custom » d'abord, puis ses réglages (grisés tant qu'il est éteint : depends)
   const xList = xCur ? [...expertAll.filter(pm => pm.id === xCur.custom), ...expertAll.filter(pm => pm.gfx.group === xCur.id && pm.id !== xCur.custom)] : [];
   const ovrCount = visible.filter(isOvr).length;
@@ -253,6 +268,7 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
   // params CONDITIONNELS (patron neural-split-mix2 : visibles mais grisés tant que la
   // condition n'est pas remplie). pm.depends = { <pid>: <valeur attendue> }.
   const depOff = pm => pm.depends && Object.entries(pm.depends).some(([k, w]) => {
+    if (customIds.has(k)) return false;            // « suit le profil » : réglable quand même (le groupe passe Custom)
     const d2 = params.find(x => x.id === k);
     return d2 && String(val(d2)) !== String(w);
   });
@@ -511,72 +527,8 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
           if (i2 !== idx + 1) onModel(arr[i2 - 1].m.id); }} />
     </${PCell}>`;
   })();
-  return html`<div class="sheet-scrim" onClick=${e => e.target.classList.contains('sheet-scrim') && onClose()}>
-    <div class="sheet" data-doc="designer.sheet" style=${'--tc:' + (vo ? '#8b9fd7' : blkColor(block.type))}>
-      <button class="sheet-tab" onClick=${onClose} title="close">
-        <span class="sheet-ic">${vo ? '◈' : fxIcon(block.type)}</span>
-        <b>${esc(vo ? (block.label || 'VST capture') : (def.name || block.type))}</b>
-        ${vo ? html`<em>VST capture · ${esc(voPlug)}</em>`
-          : capName ? html`<em title=${'capture : ' + esc(capName)}>${esc(capName)}</em>` : ''}
-        <span class="sheet-tab-x">▾</span>
-      </button>
-      ${assign || kitMix || hasPresets || hasExpert ? html`<div class="sheet-tabs2">
-        <button class=${cls('sheet-tab2', (tab || 'params') === 'params' && 'on')} data-doc="designer.sheet.settings" onClick=${() => onTab && onTab('params')}>Settings</button>
-        ${hasExpert ? html`<button class=${cls('sheet-tab2', tab === 'expert' && 'on')} data-doc="designer.sheet.expert" onClick=${() => onTab && onTab('expert')}
-          title="the pedal's expert settings, group by group — a group follows the profile until its Custom switch is on">Expert</button>` : ''}
-        ${hasPresets ? html`<button class=${cls('sheet-tab2', tab === 'presets' && 'on')} data-doc="designer.sheet.presets" onClick=${() => onTab && onTab('presets')} title="block presets — this block's settings, not golem presets">Presets</button>` : ''}
-        ${kitMix ? html`<button class=${cls('sheet-tab2', tab === 'mix' && 'on')} onClick=${() => onTab && onTab('mix')}>Mix</button>` : ''}
-        ${assign ? html`<button class=${cls('sheet-tab2', tab === 'assign' && 'on')} data-doc="designer.sheet.assign" onClick=${() => onTab && onTab('assign')}>MIDI assign</button>` : ''}
-      </div>` : ''}
-      ${vo ? html`<div class="vc-origin">
-        <span>Captured from <b>${esc(voPlug)}</b>${vo.patch ? html` in “${esc(vo.patch)}”` : ''}${vo.at ? ' · ' + esc(vo.at) : ''}${vo.part && vo.part !== 'full' ? ' · ' + esc(vo.part) : ''}${vo.null_db != null ? html` · matches the plugin to ${esc(String(vo.null_db))} dB` : ''}</span>
-        ${onRename ? html`<label class="vc-name">Name <input value=${block.label || ''} onChange=${e => onRename(e.target.value.trim() || block.label)} /></label>` : ''}
-      </div>` : ''}
-      ${tone?.parametric && !captureControls ? html`<${ParametricControls} tone=${tone} model=${curModel} onModel=${onModel} />` : ''}
-      <div class="sheet-head">
-        ${vstOpen ? html`<button class="mini edit-only" onClick=${vstOpen}>Open plugin window</button>` : ''}
-        ${hasCapture ? html`<button class="mini edit-only" onClick=${onPickRef}>${block.ref ? 'change the capture' : 'choose a capture'}</button>` : ''}
-        ${def.scene_invariant
-          ? html`<button class=${cls('ph-power', !powerOn && 'off')} onClick=${() => onPower(!powerOn)}
-              title="this block ignores scene changes — a recorded loop must survive the chorus">⏻ ${powerOn ? 'Active' : 'Bypassed'}</button>`
-          : html`<${PowerBtn} on=${powerOn} onPower=${onPower} sceneId=${multiScene ? sceneId : null} />`}
-        ${multiScene && ovrCount ? html`<button class="mini edit-only" onClick=${onApplyAll} title="this scene's knob values become the block's settings in every scene">Use in all scenes</button>` : ''}
-        <span class="grow"></span>
-        ${block.type === 'standard' || block.type === 'backing-track' ? headX : ''}
-        ${!isWhammy ? html`<button class="mini edit-only" onClick=${() => onMove(-1)} title="move back">←</button>
-        <button class="mini edit-only" onClick=${() => onMove(1)} title="move forward">→</button>` : html`<span class="mini muted" title="the Whammy sits physically BEFORE the input — anchored at the head of the lane">⚓</span>`}
-        ${onRemove ? html`<button class="mini danger" onClick=${onRemove}>🗑</button>`
-          : html`<span class="mini muted" title="permanent global service — its settings are shared by every preset; only the foot assignment is per-preset">🌐 global — all presets</span>`}
-      </div>
-      ${isDrums ? html`<input ref=${grvInpRef} type="file" accept=".mid,.midi" multiple style="display:none"
-        onChange=${e => { importGrv(e.target.files); e.target.value = ''; }} />` : ''}
-      ${grvPicker ? (() => { const cur = Array.isArray(val({ id: grvPicker.pid })) ? val({ id: grvPicker.pid }) : [];
-        return html`<${GroovePicker} title=${grvPicker.pid === 'fills' ? 'Fills' : 'Grooves'}
-          tab0=${grvPicker.tab || 'grooves'} songs=${(grd && grd.songs) || []}
-          grooves=${grooves} cur=${cur}
-          onSong=${s => { applySong(s); setGrvPicker(null); }}
-          onToggle=${f => onParam(grvPicker.pid, cur.includes(f) ? cur.filter(x => x !== f) : [...cur, f])}
-          onImport=${() => { grvTarget.current = { pid: grvPicker.pid, cur }; grvInpRef.current && grvInpRef.current.click(); }}
-          onClose=${() => setGrvPicker(null)} />`; })() : ''}
-
-      <div class="sheet-bodies">
-      ${/* L'ONGLET « PRESETS » (2026-10-11) : l'étagère de chips a quitté le corps Settings — la liste, à la VST,
-            vit dans son onglet (designer-block-presets.js), avec le réglage courant et la sauvegarde à côté */''}
-      ${hasPresets ? html`<div class=${cls('sheet-body', 'bpl-body', tab !== 'presets' && 'ghosted')}>
-        <${BlockPresetsList} btype=${block.type} inst=${laneInst || 'guitar'} blockName=${def.name || block.type}
-          defs=${[...visible, ...expertAll].filter(isCellParam)}
-          current=${Object.fromEntries([...visible, ...expertAll].filter(isCellParam).map(pm => [pm.id, val(pm)]))}
-          sig=${ps => bpSig(ps, [...visible, ...expertAll].filter(isCellParam))}
-          onLoad=${onLoadPreset} /></div>` : ''}
-      ${assign ? html`<div class=${cls('sheet-body', tab !== 'assign' && 'ghosted')}><${AssignBoard} block=${block} fxIcon=${fxIcon} ...${assign} /></div>` : ''}
-      ${kitMix ? html`<div class=${cls('sheet-body', tab !== 'mix' && 'ghosted')}>
-        <${DrumMixer} kit=${curKit} block=${block} onParam=${onParam} /></div>` : ''}
-      ${hasExpert ? html`<div class=${cls('sheet-body', 'gx-body', tab !== 'expert' && 'ghosted')}>
-        <div class="tb-seg gx-groups">${xGroups.map(g => html`<button class=${cls(xCur && xCur.id === g.id && 'on')}
-          onClick=${() => setXg(g.id)}>${esc(g.name)}</button>`)}</div>
-        ${renderGrid(xList)}
-      </div>` : ''}
-      <div class=${cls('sheet-body', ((tab === 'assign' && assign) || (tab === 'mix' && kitMix) || (tab === 'presets' && hasPresets) || (tab === 'expert' && hasExpert)) && 'ghosted')}>
+  // LA FAÇADE (le corps Settings d'avant) : seule, ou à droite de la colonne de presets
+  const face = html`
         ${captureControls ? html`<${CaptureModuleControls} controls=${captureControls}
           values=${{ ...(block.params || {}), ...(ovr || {}) }} foot=${block.capture_foot}
           scene=${sceneId} onChange=${onParam} onFoot=${onCaptureFoot} />` : ''}
@@ -718,6 +670,80 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
         ${isPads && kd ? html`<${PadsDrawer} data=${kd} kitId=${val(params.find(x => x.id === 'kit') || { id: 'kit' })}
           blockId=${block.id} onKit=${kid => onParam('kit', kid)}
           onSaved=${kid => { setKitsRev(kitsRev + 1); onParam('kit', kid); }} />` : ''}
+  `;
+  // LE PLUS (ex-onglet Expert) : les groupes de la pédale sous sa façade, un à la fois
+  const more = hasExpert ? html`<div class="gx-more">
+    <button class=${cls('gx-more-h', moreOpen && 'open')} onClick=${() => setMoreOpen(o => !o)} aria-expanded=${moreOpen}>
+      <b>More ${moreOpen ? '▾' : '▸'}</b>
+      <span>${xGroups.map(g => g.name).join(' · ')}${xGroups.some(g => g.custom && groupOn(g)) ? '' : ' — all follow the profile'}</span>
+    </button>
+    ${moreOpen && xCur ? html`
+      <div class="tb-seg gx-groups">${xGroups.map(g => html`<button class=${cls(xCur.id === g.id && 'on')}
+        onClick=${() => setXg(g.id)}>${esc(g.name)}${g.custom && groupOn(g) ? html`<i class="gx-dot">•</i>` : ''}</button>`)}</div>
+      <div class=${cls('gx-grp', xCur.custom && !groupOn(xCur) && 'profile')}>
+        ${xCur.custom ? html`<div class="gx-grp-h">
+          ${groupOn(xCur) ? html`<span class="gx-st on">• custom</span>
+              <button class="mini" onClick=${() => onParam0(xCur.custom, false)} title="this group follows the profile again">↺ Back to profile</button>`
+            : html`<span class="gx-st">follows the profile — touch a setting to make it yours</span>`}
+        </div>` : ''}
+        ${renderGrid(xList.filter(pm => pm.id !== xCur.custom))}
+      </div>` : ''}
+  </div>` : '';
+  const split = hasPresets;
+  const sigDefs = [...visible, ...expertAll].filter(isCellParam);
+  const curVals = Object.fromEntries(params.map(pm => [pm.id, val(pm)]));
+  return html`<div class="sheet-scrim" onClick=${e => e.target.classList.contains('sheet-scrim') && onClose()}>
+    <div class="sheet" data-doc="designer.sheet" style=${'--tc:' + (vo ? '#8b9fd7' : blkColor(block.type))}>
+      <button class="sheet-tab" onClick=${onClose} title="close">
+        <span class="sheet-ic">${vo ? '◈' : fxIcon(block.type)}</span>
+        <b>${esc(vo ? (block.label || 'VST capture') : (def.name || block.type))}</b>
+        ${vo ? html`<em>VST capture · ${esc(voPlug)}</em>`
+          : capName ? html`<em title=${'capture : ' + esc(capName)}>${esc(capName)}</em>` : ''}
+        <span class="sheet-tab-x">▾</span>
+      </button>
+      ${assign || kitMix ? html`<div class="sheet-tabs2">
+        <button class=${cls('sheet-tab2', (tab || 'params') === 'params' && 'on')} data-doc="designer.sheet.settings" onClick=${() => onTab && onTab('params')}>Settings</button>
+        ${kitMix ? html`<button class=${cls('sheet-tab2', tab === 'mix' && 'on')} onClick=${() => onTab && onTab('mix')}>Mix</button>` : ''}
+        ${assign ? html`<button class=${cls('sheet-tab2', tab === 'assign' && 'on')} data-doc="designer.sheet.assign" onClick=${() => onTab && onTab('assign')}>MIDI assign</button>` : ''}
+      </div>` : ''}
+      ${vo ? html`<div class="vc-origin">
+        <span>Captured from <b>${esc(voPlug)}</b>${vo.patch ? html` in “${esc(vo.patch)}”` : ''}${vo.at ? ' · ' + esc(vo.at) : ''}${vo.part && vo.part !== 'full' ? ' · ' + esc(vo.part) : ''}${vo.null_db != null ? html` · matches the plugin to ${esc(String(vo.null_db))} dB` : ''}</span>
+        ${onRename ? html`<label class="vc-name">Name <input value=${block.label || ''} onChange=${e => onRename(e.target.value.trim() || block.label)} /></label>` : ''}
+      </div>` : ''}
+      ${tone?.parametric && !captureControls ? html`<${ParametricControls} tone=${tone} model=${curModel} onModel=${onModel} />` : ''}
+      <div class="sheet-head">
+        ${vstOpen ? html`<button class="mini edit-only" onClick=${vstOpen}>Open plugin window</button>` : ''}
+        ${hasCapture ? html`<button class="mini edit-only" onClick=${onPickRef}>${block.ref ? 'change the capture' : 'choose a capture'}</button>` : ''}
+        ${def.scene_invariant
+          ? html`<button class=${cls('ph-power', !powerOn && 'off')} onClick=${() => onPower(!powerOn)}
+              title="this block ignores scene changes — a recorded loop must survive the chorus">⏻ ${powerOn ? 'Active' : 'Bypassed'}</button>`
+          : html`<${PowerBtn} on=${powerOn} onPower=${onPower} sceneId=${multiScene ? sceneId : null} />`}
+        ${multiScene && ovrCount ? html`<button class="mini edit-only" onClick=${onApplyAll} title="this scene's knob values become the block's settings in every scene">Use in all scenes</button>` : ''}
+        <span class="grow"></span>
+        ${block.type === 'standard' || block.type === 'backing-track' ? headX : ''}
+        ${!isWhammy ? html`<button class="mini edit-only" onClick=${() => onMove(-1)} title="move back">←</button>
+        <button class="mini edit-only" onClick=${() => onMove(1)} title="move forward">→</button>` : html`<span class="mini muted" title="the Whammy sits physically BEFORE the input — anchored at the head of the lane">⚓</span>`}
+        ${onRemove ? html`<button class="mini danger" onClick=${onRemove}>🗑</button>`
+          : html`<span class="mini muted" title="permanent global service — its settings are shared by every preset; only the foot assignment is per-preset">🌐 global — all presets</span>`}
+      </div>
+      ${isDrums ? html`<input ref=${grvInpRef} type="file" accept=".mid,.midi" multiple style="display:none"
+        onChange=${e => { importGrv(e.target.files); e.target.value = ''; }} />` : ''}
+      ${grvPicker ? (() => { const cur = Array.isArray(val({ id: grvPicker.pid })) ? val({ id: grvPicker.pid }) : [];
+        return html`<${GroovePicker} title=${grvPicker.pid === 'fills' ? 'Fills' : 'Grooves'}
+          tab0=${grvPicker.tab || 'grooves'} songs=${(grd && grd.songs) || []}
+          grooves=${grooves} cur=${cur}
+          onSong=${s => { applySong(s); setGrvPicker(null); }}
+          onToggle=${f => onParam(grvPicker.pid, cur.includes(f) ? cur.filter(x => x !== f) : [...cur, f])}
+          onImport=${() => { grvTarget.current = { pid: grvPicker.pid, cur }; grvInpRef.current && grvInpRef.current.click(); }}
+          onClose=${() => setGrvPicker(null)} />`; })() : ''}
+
+      <div class="sheet-bodies">
+      ${assign ? html`<div class=${cls('sheet-body', tab !== 'assign' && 'ghosted')}><${AssignBoard} block=${block} fxIcon=${fxIcon} ...${assign} /></div>` : ''}
+      ${kitMix ? html`<div class=${cls('sheet-body', tab !== 'mix' && 'ghosted')}>
+        <${DrumMixer} kit=${curKit} block=${block} onParam=${onParam} /></div>` : ''}
+      <div class=${cls('sheet-body', split && 'bp2-body', ((tab === 'assign' && assign) || (tab === 'mix' && kitMix)) && 'ghosted')}>
+        ${split ? html`<${BlockPresetsPane} btype=${block.type} blockId=${block.id} inst=${laneInst || 'guitar'}
+          current=${curVals} sig=${ps => bpSig(ps, sigDefs)} onLoad=${onLoadPreset}>${face}${more}</${BlockPresetsPane}>` : html`${face}${more}`}
       </div>
       </div>
     </div></div>`;

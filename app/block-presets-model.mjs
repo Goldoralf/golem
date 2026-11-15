@@ -48,3 +48,9 @@ export const pushRecent = (btype, id, store, max = 6) => {
   return next;
 };
 export const pickRecent = (shown, ids) => (ids || []).map(id => shown.find(p => p.id === id)).filter(Boolean);
+
+// le preset dont CHAQUE réglage est la valeur courante du bloc (le preset en jeu, non modifié) — ou null. Un nombre se
+// compare à 1e-6 près (une valeur relue d'un potard n'est pas toujours l'écriture exacte du fichier)
+const same = (a, b) => (typeof a === 'number' && typeof b === 'number') ? Math.abs(a - b) < 1e-6 : String(a) === String(b);
+export const matchPreset = (list, current) => (list || []).find(p => p && p.params && Object.keys(p.params).length
+  && Object.entries(p.params).every(([k, v]) => current && k in current && same(current[k], v))) || null;

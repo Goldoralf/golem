@@ -214,7 +214,7 @@ Anchors carried today:
 | `designer.bank`, `designer.scene-name`, `designer.song`, `designer.bpm` | the bank pill, the open scene's name, the song chip, the tempo | `page-designer.js`, `designer-song.js` |
 | `designer.saved`, `designer.menu`, `designer.menu.scenes` | the save indicator, `⋯`, its "Scenes & sounds" entry (hidden in `?shell=ro`: click, never halo) | `page-designer.js` |
 | `designer.scenes-sheet`, `designer.scene-sheet` | the open Scenes & sounds sheet, the open sheet of one scene | `page-designer.js`, `designer-sheets.js` |
-| `designer.sheet.settings`, `designer.sheet.presets`, `designer.sheet.assign` | the tabs of an open block drawer | `designer-sheets.js` |
+| `designer.sheet.settings`, `designer.sheet.assign` | the tabs of an open block drawer (its presets are the drawer's left column) | `designer-sheets.js` |
 | `designer.split`, `designer.merge` | the ⇉ / Σ choice of a split, the Σ level | `page-designer.js` |
 | `designer.block-status`, `designer.missing` | the sheet of a block that is missing on this rack, the "N blocks missing" banner | `designer-blockstatus.js` |
 | `tab.<id>` | a tab of a hub (`tab.tones`, `tab.gear`…) | `lib.js` (`HubPage`) |

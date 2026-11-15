@@ -1,6 +1,6 @@
 # The golem FX block sheet
 
-> **Status: CODED** (2026-11-13), on golem-fx's full descriptors (`visuals/data/descriptors.json`, golem-fx 405c90d:
+> **Status: CODED** (2026-11-13; one-screen drawer 2026-11-15), on golem-fx's full descriptors (`visuals/data/descriptors.json`, golem-fx 405c90d:
 > 24 pedals, 405 settings, 83 groups). Asked by the maintainer: "a new sheet with each pedal's settings, as golem-fx
 > planned them".
 
@@ -11,12 +11,18 @@ Related: [golem-fx-reaper.md](golem-fx-reaper.md), [designer-glyphs-pedals.md](d
 A block that golem-fx plays **here** (Golem Engine, or REAPER with the plugin installed) opens a sheet built from its
 pedal's descriptor, in the drawers' usual cells (dials, selects, switches, EXP chips, scene overrides):
 
-| Tab | Content |
+One screen, no Presets or Expert tab since 2026-11-15 (mockup "Chorus drawer", approved by the maintainer):
+
+| Part | Content |
 |---|---|
-| **Settings** | the **front panel**: exactly the controls the pedal face draws, in its order, under golem-fx's names |
-| **Expert** | one sub-tab per expert group; the group's **Custom** switch first, its settings greyed until it is on (`depends`) — only when the descriptor has groups |
-| **Presets** | block presets carry the front panel **and** the expert settings |
-| **MIDI assign** | unchanged |
+| **Preset column** (left, full drawer height) | the block presets for the lane's instrument (or All), searchable; a tap loads one and the knobs move under your eyes (`app/designer-block-presets.js`) |
+| **Front panel** (right) | exactly the controls the pedal face draws, in its order, under golem-fx's names |
+| **More ▸** (under the face) | the expert groups, one at a time. A group with a **Custom** switch follows the profile (dimmed) until you touch one of its settings: that turns its Custom on by itself (orange dot); **↺ Back to profile** turns it off. The switch itself is no longer shown |
+| **Footer** | the preset in play, `modified •` as soon as a knob leaves it, **↺ Revert**, **Save as…** |
+| **MIDI assign** (tab) | unchanged |
+
+The preset in play is the one whose every setting is the block's current value (`matchPreset`), else the last one
+loaded in this drawer (then shown modified). Every block with block presets gets the preset column, golem-fx or not.
 
 Where golem-fx does not play the block, the sheet is the catalogue's, as before. The pedal drawn in the Designer's
 pedal view shows the block's real settings (scene first).

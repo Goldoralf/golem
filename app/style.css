@@ -6995,31 +6995,7 @@ button.linkish{white-space:nowrap}
 .rec-rpp{font-size:11px; font-weight:800; letter-spacing:.03em; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:2px 7px; text-decoration:none; white-space:nowrap}
 .rec-rpp:hover{color:var(--text); border-color:var(--text)}
 
-/* ── L'ONGLET « PRESETS » D'UN BLOC (mockups/block-presets-list.html) ─────────────────────────────────────── */
-.sheet-body.bpl-body{display:block; padding:12px 2px}
-/* ⚠ RÉGRESSION du 2026-10-11, vue le 14 (« le tiroir est trop grand », sur TOUS les blocs) : les corps d'onglets sont
-   empilés dans la même case pour que le tiroir ne saute pas d'un onglet à l'autre — et la liste des presets (≈500 px,
-   même cachée) imposait sa hauteur à chaque tiroir. Elle ne compte plus : elle PREND la hauteur des autres onglets
-   et défile dedans. */
-.sheet-bodies>.sheet-body.bpl-body{contain:size; overflow:auto}
-.bpl{display:flex; gap:14px; align-items:flex-start; min-height:0}
-.bpl-left{flex:0 0 280px; display:flex; flex-direction:column; gap:10px}
-.bpl-card{padding:12px 14px; border-radius:14px; background:var(--panel2); border:1px solid var(--line)}
-.bpl-card h3{margin:0 0 8px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
-.bpl-kv{display:flex; justify-content:space-between; gap:8px; font-size:13px; padding:4px 0; border-bottom:1px dashed var(--line)} .bpl-kv:last-child{border:0}
-.bpl-kv span{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .bpl-kv b{font-weight:600; white-space:nowrap}
-.bpl-save{display:flex; flex-direction:column; gap:8px}
-.bpl-save input{height:38px; border-radius:9px; border:1px solid var(--line); background:var(--panel); color:var(--text); padding:0 12px; font-size:13px}
-.bpl-row2{display:flex; gap:8px; align-items:center} .bpl-row2 select{height:34px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--text); padding:0 8px; flex:1}
-.bpl-savebtn{height:40px; border-radius:10px; border:0; background:#8b9fd7; color:#111; font-weight:800; font-size:14px; cursor:pointer} .bpl-savebtn:disabled{opacity:.45; cursor:default}
-.bpl-note{font-size:11.5px; color:var(--muted); line-height:1.45; margin:0} .bpl-note b{color:var(--text)}
-.bpl-msg{font-size:12px; color:#4fd18b}
-.bpl-list{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px}
-.bpl-top{display:flex; flex-direction:column; gap:8px; padding-bottom:8px; border-bottom:1px solid var(--line)}
-.bpl-grid{grid-template-columns:repeat(auto-fill, minmax(250px, 1fr))}
-.bpl-row{cursor:pointer} .bpl-row.def{border-color:#4fd18b55}
-.bpl-nm{display:flex; flex-direction:column; line-height:1.2} .bpl-nm small{color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.bpl-tag{flex:none; font-size:10px; font-weight:800; padding:2px 6px; border-radius:5px; border:1px solid var(--line); color:var(--muted)} .bpl-tag.def{border-color:#4fd18b66; color:#4fd18b}
+/* les actions d'un preset à toi (défaut ●, supprimer ✕) — la colonne de presets du tiroir */
 .bpl-acts{flex:none; display:inline-flex; gap:4px} .bpl-acts i{font-style:normal; width:24px; height:24px; border-radius:6px; border:1px solid var(--line); display:inline-flex; align-items:center; justify-content:center; font-size:12px; color:var(--muted); cursor:pointer}
 .bpl-acts i:hover{color:var(--text); border-color:var(--text)} .bpl-acts i.arm{color:#ff8a7a; border-color:#ff8a7a}
 
@@ -8325,8 +8301,51 @@ button.mode-live{background:transparent; cursor:pointer}
 .lpad .lst-main.with-pedal .lst-name{margin-top:0; white-space:normal; line-height:1.1}
 .lt-ck{display:inline-block; width:1.2em; text-align:center; font-weight:800}
 
-/* l'onglet Expert de la feuille golem FX : un groupe à la fois (sous-onglets), pour tenir sans défilement */
-.gx-groups{margin:0 0 10px; flex-wrap:wrap}
+/* le « More » de la feuille golem FX (ex-onglet Expert, 2026-11-15) : sous la façade, un groupe à la fois */
+.gx-more{flex:1 1 100%; display:flex; flex-direction:column; gap:10px}
+.gx-more-h{display:flex; align-items:center; gap:10px; min-height:44px; padding:0 14px; border-radius:12px; border:1px dashed var(--line);
+  background:transparent; color:var(--muted); text-align:left; cursor:pointer}
+.gx-more-h b{color:var(--text); white-space:nowrap} .gx-more-h span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px}
+.gx-more-h.open{border-style:solid}
+.gx-groups{margin:0; flex-wrap:wrap}
+.gx-dot{font-style:normal; color:#ff9f43; margin-left:4px}
+.gx-grp{display:flex; flex-direction:column; gap:8px}
+.gx-grp-h{display:flex; align-items:center; gap:10px; font-size:12.5px}
+.gx-st{color:var(--muted)} .gx-st.on{color:#ff9f43; font-weight:700}
+.gx-grp.profile .pgrid{opacity:.55}
+.gx-grp.profile .pgrid:hover{opacity:.8}
+
+/* ── LES PRESETS EN COLONNE + LA FAÇADE (maquette « Chorus drawer », 2026-11-15) ────────────────────────────────── */
+.sheet:has(.bp2-body){height:min(560px, calc(100vh - 40px))}
+.sheet:has(.bp2-body) .sheet-bodies{flex:1}
+.sheet-body.bp2-body{display:block; padding:0; overflow:hidden; height:100%}
+.bp2{display:flex; height:100%; min-height:0}
+.bp2-col{flex:0 0 280px; display:flex; flex-direction:column; min-height:0; border-right:1px solid var(--line)}
+.bp2-top{display:flex; gap:6px; padding:10px 12px 8px 0}
+.bp2-q{flex:1; min-width:0; height:36px; border-radius:9px; border:1px solid var(--line); background:var(--bg); padding:0 10px; font-size:13px}
+.bp2-scope{height:36px; padding:0 10px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); font-size:12px; font-weight:700; cursor:pointer}
+.bp2-list{flex:1; min-height:0; overflow-y:auto; padding-right:6px}
+.bp2-row{display:flex; align-items:center; gap:8px; min-height:44px; padding:4px 10px; border-radius:9px; cursor:pointer}
+.bp2-row:hover{background:var(--panel2)}
+.bp2-row.on{background:color-mix(in srgb, var(--tc) 18%, var(--panel2)); box-shadow:inset 3px 0 0 var(--tc)}
+.bp2-nm{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2}
+.bp2-nm span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:500; font-size:13.5px}
+.bp2-nm small{color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bp2-tag{flex:none; font-size:10px; font-weight:800; padding:2px 6px; border-radius:5px; border:1px solid var(--line); color:var(--muted)}
+.bp2-tag.def{border-color:#4fd18b66; color:#4fd18b}
+.bp2-mod{flex:none; color:#ff9f43; font-size:12px; font-weight:700}
+.bp2-empty{color:var(--muted); font-size:13px; padding:12px 10px}
+.bp2-main{flex:1; min-width:0; display:flex; flex-direction:column; min-height:0}
+.bp2-face{flex:1; min-height:0; overflow-y:auto; display:flex; flex-wrap:wrap; gap:14px 18px; align-content:flex-start; padding:12px 0 12px 16px}
+.bp2-face > .pgrid, .bp2-face > .bp-row{flex:1 1 100%; width:100%}
+.bp2-foot{flex:none; display:flex; align-items:center; gap:10px; padding:10px 0 0 16px; border-top:1px solid var(--line)}
+.bp2-foot .grow{flex:1}
+.bp2-cur{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px}
+.bp2-msg{color:#4fd18b; font-size:12px}
+.bp2-btn{height:38px; padding:0 14px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); font-weight:600; cursor:pointer}
+.bp2-btn.pri{background:#8b9fd7; border-color:#8b9fd7; color:#111; font-weight:800} .bp2-btn:disabled{opacity:.45; cursor:default}
+.bp2-name{flex:1; min-width:0; height:38px; border-radius:9px; border:1px solid var(--line); background:var(--bg); padding:0 12px; font-size:13px}
+.bp2-inst{height:38px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); padding:0 8px}
 
 /* ═══ LIBRARY ▸ TONES (docs/library-tones.md) : backline, pédalier, mur de baffles, rack 19" — tout dessiné, paginé ═══ */
 .tn-page{padding:0}

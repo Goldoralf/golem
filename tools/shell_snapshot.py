@@ -718,8 +718,8 @@ EXAMPLES = [
     {"name": "reference-controllers", "title": "Settings ▸ Gear ▸ Controllers with the MPK Mini plugged",
      "line": "Golem Rising", "scene": "B", "route": "#/system/gear/controllers", "rack": "keys"},
     # un bloc PRÊT : sur un golem d'usine, toucher l'ampli ouvre la feuille « capture à télécharger », pas son tiroir
-    {"name": "golem-rising-delay-presets", "title": "Golem Rising: the Tempo Delay's drawer, Presets tab",
-     "line": "Golem Rising", "scene": "B", "route": "#/designer", "click": "designer.block:dly > designer.sheet.presets"},
+    {"name": "golem-rising-delay-presets", "title": "Golem Rising: the Tempo Delay's drawer, its presets beside its settings",
+     "line": "Golem Rising", "scene": "B", "route": "#/designer", "click": "designer.block:dly"},
     {"name": "golem-rising-delay-assign", "title": "Golem Rising: the Tempo Delay's drawer, MIDI assign tab",
      "line": "Golem Rising", "scene": "B", "route": "#/designer", "click": "designer.block:dly > designer.sheet.assign"},
     {"name": "factory-patches", "title": "Songs ▸ Patches: the factory patches",

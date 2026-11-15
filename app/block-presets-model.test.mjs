@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { filterPresets, groupByInst, effectiveDefault, loadRecent, pushRecent, pickRecent } from './block-presets-model.mjs';
+import { filterPresets, groupByInst, effectiveDefault, loadRecent, pushRecent, pickRecent, matchPreset } from './block-presets-model.mjs';
 
 const L = [
   { id: 'soft', name: 'Soft', inst: 'guitar', factory: true, params: { thresh: -55 } },
@@ -34,4 +34,12 @@ test('Recent : par type de bloc, six au plus, le dernier chargé en tête', () =
   for (let i = 0; i < 8; i++) pushRecent('gate', 'p' + i, store);
   assert.equal(loadRecent('gate', store).length, 6);
   assert.deepEqual(pickRecent(L, ['chug', 'nope', 'soft']).map(p => p.id), ['chug', 'soft']);
+});
+
+test('le preset en jeu : chaque réglage du preset est la valeur courante, sinon aucun', () => {
+  const P = [{ id: 'a', params: { rate: 0.8, mode: 'Classic' } }, { id: 'b', params: { rate: 5, mode: 'Classic' } }, { id: 'e', params: {} }];
+  assert.equal(matchPreset(P, { rate: 0.8000000001, mode: 'Classic', mix: 1 }).id, 'a');   // un réglage en plus ne gêne pas
+  assert.equal(matchPreset(P, { rate: 0.9, mode: 'Classic' }), null);                       // modifié
+  assert.equal(matchPreset(P, { mode: 'Classic' }), null);                                  // un réglage absent : pas lui
+  assert.equal(matchPreset([], {}), null);
 });

@@ -222,15 +222,16 @@
   "button | Whammy — switch #",
   "button | —",
   "button | ↕ Bank #",
+  "button | ↻",
   "button | ⇅ I/O",
   "button | ⋯",
   "button | ⌕",
   "button | ⚙",
   "button | ⚲ Filters",
+  "button | 🎧",
   "button | 🎧 Listen — Bass",
   "button | 🎧 Listen — Drums",
   "button | 🎧 Listen — Guitar",
-  "button | 🎧 Listen — Keys",
   "button | 🎧 Listen — Voice",
   "select | the bank whose # you see and edit here — the ped"
  ],
@@ -329,6 +330,7 @@
   "button | ♪ Golem Rising golem ▤",
   "button | ⚙",
   "button | ⚲ Filters",
+  "button | 🎧",
   "button | 🎧 Listen — Guitar",
   "button | 🎧 Listen — Keys",
   "select | (unnamed)",
@@ -547,9 +549,10 @@
   "button | Samples",
   "button | Synths",
   "button | Tones",
-  "button | Tonewheel",
   "button | Tracks",
   "button | ⇅ I/O",
+  "button | ▶ E.-PIANO",
+  "button | ▶ Tonewheel #:#",
   "button | ◉ Play it"
  ],
  "#/library/drums/drums": [
@@ -1062,7 +1065,7 @@
   "button | Storage",
   "button | System",
   "button | ⬇ Download the factory captures (#)",
-  "button | 🎧 Render the factory demos",
+  "button | 🎧 Render the missing demos",
   "switch | Shown"
  ],
  "#/system/connect/wifi": [

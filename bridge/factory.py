@@ -184,7 +184,29 @@ VIS_KINDS = ("patches", "presets", "setlists", "kits", "grooves", "standards")
 VIS_FILE = os.path.join(C.PRESETS_DIR, ".factory-show.json")
 
 
+def fm_hidden():
+    """Ce que le PROPRIÉTAIRE du golem a masqué sur golem.fm (/profile/settings ▸ Factory content, 2026-11-15 : UN
+    réglage pour golem.fm et le golem, choix du mainteneur) : la préférence `factory_hidden` de sa fiche au roster,
+    liste « patches,kits » dans l'ordre de VIS_KINDS. None quand golem.fm n'en dit rien (pas de groupe, pas de
+    propriétaire, clé absente) : le réglage local du golem vaut alors. "" = tout montrer."""
+    try:
+        from . import roster
+        d = roster.read()
+        owner = next((p for p in (d.get("people") or []) if isinstance(p, dict) and p.get("rights") == "owner"), None)
+        if not owner:
+            return None
+        pref = roster.prefs(owner.get("id"), d)
+    except Exception:
+        return None
+    if "factory_hidden" not in pref:
+        return None
+    return {k.strip() for k in str(pref.get("factory_hidden") or "").split(",") if k.strip() in VIS_KINDS}
+
+
 def visibility():
+    hidden = fm_hidden()
+    if hidden is not None:                               # golem.fm décide : le roster est en lecture seule ici
+        return {k: k not in hidden for k in VIS_KINDS}
     try:
         with open(VIS_FILE, encoding="utf-8") as f:
             d = json.load(f)
@@ -194,13 +216,15 @@ def visibility():
 
 
 def set_visibility(changes):
+    """Le réglage LOCAL. Tant que golem.fm porte le réglage du propriétaire (fm_hidden), c'est lui qui vaut : l'écriture
+    locale est gardée pour le jour où golem.fm n'en dit plus rien, et la réponse dit ce qui vaut vraiment."""
     from .store import _write_json_atomic
     cur = visibility()
     for k, v in (changes or {}).items():
         if k in VIS_KINDS:
             cur[k] = bool(v)
     _write_json_atomic(VIS_FILE, cur, indent=1)
-    return cur
+    return visibility()
 
 
 def ids(kind):

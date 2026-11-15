@@ -568,7 +568,8 @@ def t3k_auth_status():
 def factory_visibility():
     """Ce que l'utilisateur veut VOIR de l'usine, par sorte (Settings ▸ Content ▸ Factory). Masquer ne supprime rien."""
     from . import factory
-    return {"show": factory.visibility(), "kinds": list(factory.VIS_KINDS)}
+    return {"show": factory.visibility(), "kinds": list(factory.VIS_KINDS),
+            "managed": "golem.fm" if factory.fm_hidden() is not None else None}
 
 
 @router.get("/api/factory/status")
@@ -577,7 +578,8 @@ def factory_status():
     from . import factory
     cat = factory.catalog()
     return {"counts": {k: len(v) for k, v in cat.items()}, "removed": factory.removed(),
-            "edited": factory.edited(), "show": factory.visibility()}
+            "edited": factory.edited(), "show": factory.visibility(),
+            "managed": "golem.fm" if factory.fm_hidden() is not None else None}
 
 
 @router.post("/api/factory/restore")

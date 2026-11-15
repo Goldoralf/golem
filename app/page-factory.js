@@ -88,10 +88,11 @@ export function FactoryPanel() {
 
     <div class="fac-cols"><div class="fac-col"><div class="fac-sec" data-doc="factory.show">
       <div class="fac-h">Show factory content</div>
+      ${st && st.managed ? html`<p class="muted fac-managed">Set on golem.fm, in your profile settings (Factory content): it applies to this golem too.</p>` : ''}
       ${KINDS.map(([k, label, where]) => html`<label class=${cls('fac-row', show[k] === false && 'off')} data-doc=${'factory.kind:' + k}>
         <span class="fac-lb"><b>${label} <small class="muted">${counts[k] || (k === 'kits' ? 3 : '')}</small></b><small class="muted">${where}</small></span>
         <button class=${cls('fac-sw ro-inert', show[k] !== false && 'on')} role="switch" aria-checked=${show[k] !== false}
-          onClick=${() => setFactoryShow(k, show[k] === false)}>${show[k] === false ? 'Hidden' : 'Shown'}</button>
+          disabled=${!!(st && st.managed)} onClick=${() => setFactoryShow(k, show[k] === false)}>${show[k] === false ? 'Hidden' : 'Shown'}</button>
       </label>`)}
     </div>
     ${edited.length ? html`<div class="fac-sec" data-doc="factory.edited"><div class="fac-h">Changed on this golem</div><div class="fac-edited-line"><span class="muted">${`${edited.length} factory item${edited.length > 1 ? 's were' : ' was'} changed here — factory updates skip ${edited.length > 1 ? 'them' : 'it'}.`}</span>

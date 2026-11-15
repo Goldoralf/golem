@@ -103,6 +103,12 @@ The factory is **hidden, never deleted** by a switch per kind.
 > ever ships factory captures, they follow the factory rule. `removed()` / `restore()` stay for items deleted before
 > this rule.
 
+> **FIXED 2026-11-15 (maintainer's decision): ONE setting for golem.fm and the golem.** golem.fm writes it from
+> /profile/settings ▸ Factory content as the person pref `factory_hidden` ("patches,kits": hidden kinds in
+> `VIS_KINDS` order; "" = show all), served with the roster. `factory.fm_hidden()` reads it from the **owner**'s card:
+> when present it decides `visibility()`, and the tab shows its switches inert with "Set on golem.fm" (`managed`).
+> When golem.fm says nothing (no band, no owner, no key), the golem's own switches apply (`presets/.factory-show.json`).
+
 | Endpoint | Function | Effect |
 |---|---|---|
 | `GET /api/factory/visibility` | `visibility()` | `{show: {patches, presets, setlists, kits, grooves, standards}, kinds}`; default all `true`, stored in `presets/.factory-show.json` |

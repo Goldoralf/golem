@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Library ▸ Drums (docs/drums-library.md, 2026-11-14) : lire un groove de toute forme, son usage, une note inconnue
 associée à une pièce, le dessin d'un kit, l'état de ses démos, l'écoute d'un groove sur un kit."""
+import json
 import struct
 
 import pytest
@@ -99,6 +100,7 @@ def test_each_kit_gets_a_drawing_type():
     assert t({"name": "Aasimonster", "hint": "metal · multi-mic", "role": "drum"}) == "metal"
     assert t({"name": "Blonde Bop", "hint": "jazz · brushes", "role": "drum"}) == "jazz"
     assert t({"name": "Black Pearl", "hint": "rock · ambient", "role": "drum"}) == "vintage"
+    assert t({"name": "Red Zeppelin", "hint": "rock · dry", "role": "drum"}) == "rock"   # pas la même photo que Black Pearl
     assert t({"name": "Hybrid r15 MegaKit", "hint": "", "role": "drum"}) == "hybrid"
     assert t({"name": "Studio", "hint": "rock", "role": "drum"}) == "rock"
     assert t({"name": "Trap", "role": "pad", "engine": "rs5k"}) == "pads"
@@ -137,3 +139,29 @@ def test_a_kit_demo_is_pending_until_rendered_and_after_its_phrase_changes(monke
     ref.write_bytes(b"v2 - a new demo phrase")                  # on peut changer les phrases de démo : le clip est à refaire
     assert D.demo(k)["status"] == "pending"
     assert D.demo({"id": "pads-x", "role": "pad", "engine": "rs5k"})["status"] == "none"
+
+
+def test_a_kit_card_for_golem_fm_says_what_a_drummer_cares_about():
+    pads = D.kit_card({"id": "pads-x", "role": "pad", "engine": "rs5k",
+                       "pads": [{"note": 36, "sample": "assets/samples/kits/x/01_kick.wav"},
+                                {"note": 38, "sample": "assets/samples/kits/x/03_snare.wav"}, {"note": 42}],
+                       "source": {"by": "drumsynth (synthèse, ~/code/drumsynth)", "licence": "own — synthesized"}})
+    assert pads["type"] == "pads" and pads["samples"] == 2
+    assert pads["pads"] == [{"pad": 1, "note": 36, "label": "kick"}, {"pad": 2, "note": 38, "label": "snare"}]
+    assert "~" not in json.dumps(pads) and "synthèse" not in json.dumps(pads)   # une note interne ne part pas telle quelle
+    kit = D.kit_card({"id": "drums-aasimonster", "role": "drum", "engine": "drumgizmo", "hint": "metal",
+                      "notes": {"kick": 36, "snare": 38}, "mix": [{"name": "OHL", "group": "oh", "gain": 0}]})
+    assert kit["type"] == "metal" and kit["pieces"] == ["kick", "snare"] and kit["mics"] == [{"name": "OHL", "group": "oh"}]
+    assert kit["credit"]["licence"] == "CC BY 4.0"
+    avl = D.kit_card({"id": "drums-x", "role": "drum", "engine": "avldrums", "bank": "x"})
+    assert avl["credit"] == {"source": "avldrums.lv2 (AVL Drumkits)"}                # pas de licence inventée
+
+
+def test_new_samples_in_a_pad_kit_change_its_fingerprint(tmp_path, monkeypatch):
+    from bridge import config as C
+    monkeypatch.setattr(C, "ROOT", str(tmp_path))
+    (tmp_path / "a.wav").write_bytes(b"v1")
+    k = {"engine": "rs5k", "pads": [{"note": 36, "sample": "a.wav", "mode": "oneshot", "level": 0}]}
+    before = D._kit_fp(k)
+    (tmp_path / "a.wav").write_bytes(b"v2, a less metallic kick")
+    assert D._kit_fp(k) != before

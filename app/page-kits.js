@@ -73,8 +73,8 @@ export function KitsPage() {
       aria-label=${k.name} onClick=${() => touch(k)}>
       <div class="dk-art">${vis ? html`<${Drawing} svg=${kitSvg(k, { compact: true })} align="xMidYMid" />` : ''}</div>
       <span class="dk-sub">${k.type === 'pads' ? html`<span class="ky-play">▶</span> ${(k.pads || []).filter(p => p.sample).length} pads`
-        : html`${c && ready ? html`<span class="ky-play">▶</span>` : k.demo && k.demo.status === 'pending' ? html`<span class="ky-dm wait">◌</span>` : ''}
-          ${k.engine}${k.mics ? ' · ' + k.mics + ' mics' : ''}${k.imported ? ' · this golem only' : ''}`}</span>
+        : html`${c && ready ? html`<span class="dk-demo ok">▶ Demo</span>` : html`<span class="dk-demo">Demo soon</span>`}
+          <span class="dk-eng">${k.engine}${k.mics ? ' · ' + k.mics + ' mics' : ''}${k.imported ? ' · this golem only' : ''}</span>`}</span>
     </button>`; };
   const section = (title, list) => list.length ? html`<h6 class="dk-h">${title}</h6><div class="dk-grid">${list.map(card)}</div>` : '';
   const sets = shown.filter(k => k.type !== 'pads'), pads = shown.filter(k => k.type === 'pads');

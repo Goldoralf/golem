@@ -25,6 +25,16 @@ def _read_meta():
         return {}
 
 
+def _sync_soon():
+    """Les grooves partent à golem.fm avec leur lecture (signature, longueur, tempo, usage) : une écriture programme
+    le sync débouncé (no-op si non appairé). Sans lui, un usage changé ne remontait jamais (2026-11-15)."""
+    try:
+        from . import tones_sync
+        tones_sync.schedule()
+    except Exception:
+        pass
+
+
 def _write_meta(m):
     import json, tempfile
     os.makedirs(GROOVES_DIR, exist_ok=True)
@@ -32,6 +42,7 @@ def _write_meta(m):
     with os.fdopen(fd, "w") as f:
         json.dump(m, f, indent=1)
     os.replace(tmp, _META)
+    _sync_soon()
 
 
 def _safe_id(s):
@@ -160,6 +171,7 @@ def save_groove(name, data, meta=None):
         if tags:
             idx = _read_meta(); idx[gid] = tags; _write_meta(idx)
     notes, bars, _ = _probe(path)
+    _sync_soon()
     return {"ok": True, "groove": {"id": gid, "name": gid,
             "file": C.rel(path), "notes": notes, "bars": bars}}
 
@@ -205,6 +217,7 @@ def delete_groove(gid):
     # l'original d'un groove remappé part avec lui (il n'a plus de sens seul)
     with __import__("contextlib").suppress(OSError):
         os.remove(os.path.join(GROOVES_DIR, ".orig", _safe_id(gid) + ".mid"))
+    _sync_soon()
     return {"ok": True}
 
 

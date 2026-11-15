@@ -988,6 +988,13 @@ async def _startup():
     # les démos des presets claviers de l'utilisateur, rendues quand le rack est au repos (docs/preset-preview.md §9.2)
     from . import sound_preview
     sound_preview.start_idle()
+    # la bibliothèque se resynchronise au démarrage : ce qui a changé sans toucher le catalogue des captures (presets
+    # Vital, kits, grooves, ce qu'ils disent d'eux) n'attend plus qu'une capture s'installe (golem.fm, 2026-11-15)
+    from . import tones_sync as _ts
+    _ts.schedule(90)
+    # les démos d'usine publiées : celles qui manquent ici sont téléchargées, jamais rendues une seconde fois
+    from . import factory_demos
+    factory_demos.start()
     # golem.fm/connect : le rack dit où le trouver (case « Let golem.fm find this rack », silencieux sinon)
     with contextlib.suppress(Exception):
         from . import connect as _connect

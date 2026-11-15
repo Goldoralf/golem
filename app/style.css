@@ -8700,3 +8700,6 @@ button.mode-live{background:transparent; cursor:pointer}
 .la-lane span{font-size:12px; color:var(--muted)}
 .la-open{margin-top:auto; min-height:48px; font-size:15px}
 .ky-mac input[type=range]{width:100%; accent-color:var(--sect, #2ecc71)}
+.dk-demo{flex:none; font-size:11px; font-weight:700; color:var(--muted)}
+.dk-demo.ok{color:var(--sect, #2ecc71)}
+.dk-eng{overflow:hidden; text-overflow:ellipsis}

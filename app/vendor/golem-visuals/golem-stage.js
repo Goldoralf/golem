@@ -212,7 +212,8 @@ ${tapes}
         x += w + gap;
       } else {
         const isTreadle = /gp-treadle/.test(svg);
-        const w = isTreadle ? pedalW * 1.08 : /viewBox="-6 -4 104/.test(svg) ? pedalW * .84 : pedalW;
+        // the wide stomp (graphic EQ) is 1.5 × a stomp's width
+        const w = isTreadle ? pedalW * 1.08 : /gp-wide/.test(svg) ? pedalW * 1.5 : /viewBox="-6 -4 104/.test(svg) ? pedalW * .84 : pedalW;
         const pl = place(svg, x, 0, w);
         const y = floorY - pl.h;
         const p2 = place(svg, x, y, w, g.idx);

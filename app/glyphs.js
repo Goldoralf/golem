@@ -139,7 +139,7 @@ export const GLYPHS = {
 "label": "EQ"
 },
 "eq-graphic": {
-"svg": "<path d='M4 3v18M9 3v18M14 3v18M19 3v18' opacity='.4'/><path d='M2.5 15h3M7.5 9h3M12.5 12h3M17.5 6h3' stroke-width='2.6'/>",
+"svg": "<path d='M4 3v18M8 3v18M12 3v18M16 3v18M20 3v18' opacity='.4'/><path d='M2.5 14h3M6.5 15h3M10.5 9h3M14.5 7h3M18.5 12h3' stroke-width='2.6'/><path d='M4 14C6 14 6 15 8 15S10 9 12 9S14 7 16 7S18 12 20 12' stroke-width='1.1'/>",
 "uni": "≡",
 "label": "Graphic EQ"
 },
@@ -192,6 +192,11 @@ export const GLYPHS = {
 "svg": "<path d='M12 2.5 21.5 12 12 21.5 2.5 12z'/><path d='M6.5 12c1.5-3 2.5-3 3.3-3h4.4c.8 0 1.8 0 3.3 3' /><path d='M6.5 12c1.5 3 2.5 3 3.3 3h4.4c.8 0 1.8 0 3.3-3' opacity='.55'/>",
 "uni": "◆",
 "label": "Guitar drive"
+},
+"ir-fx": {
+"svg": "<path d='M2.5 20.5h19'/><path d='M5 20.5V3.5'/><path d='M8.5 20.5v-9M12 20.5v-5.5M15.5 20.5v-3' opacity='.7'/><path d='M19.5 20.5v-6' opacity='.45'/>",
+"uni": "⧗",
+"label": "IR effect"
 },
 "killswitch": {
 "svg": "<path d='M2.5 12h3l1-3 1 6 1-3h2.5'/><path d='M14 7v10'/><path d='M17 7v10' /><path d='M19.5 12h2'/>",
@@ -344,7 +349,7 @@ export const GLYPHS = {
 "label": "Stretch"
 },
 "surge-freqshift": {
-"svg": "<path d='M7 20V4M4 7l3-3 3 3'/><path d='M17 4v16M14 17l3 3 3-3'/><path d='M7 12h10' opacity='.4'/>",
+"svg": "<path d='M3.5 21V10M10.5 21V7M17.5 21V13'/><path d='M6.5 21V10M13.5 21V7M20.5 21V13' opacity='.45'/><path d='M3.5 3.5h16M17 1.5l2.5 2-2.5 2'/>",
 "uni": "⇅",
 "label": "Frequency shifter"
 },

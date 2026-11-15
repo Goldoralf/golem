@@ -68,11 +68,15 @@ def test_la_nature_se_lit_dans_les_fichiers(tmp_path, monkeypatch):
 def test_kit_engine_et_pack_sample(tmp_path, monkeypatch):
     kit = {"id": "k1", "name": "Pads", "engine": "avldrums", "pads": []}
     packs = _lib(tmp_path, monkeypatch, [], kit=kit, samples=("kick.wav", "count-in.wav"))
-    assert packs["local:kit-k1"]["extra"] == {"kit_id": "k1", "engine": "avldrums", "factory": True}   # une batterie est d'usine par nature
+    ex = packs["local:kit-k1"]["extra"]
+    assert {k: ex[k] for k in ("kit_id", "engine", "factory")} == {"kit_id": "k1", "engine": "avldrums", "factory": True}   # une batterie est d'usine par nature
+    assert ex["type"] == "rock" and ex["credit"] == {"source": "avldrums.lv2 (AVL Drumkits)"}   # la fiche Drums de golem.fm (2026-11-15)
     assert "drums" in packs["local:kit-k1"]["tags"]
     smp = packs["local:samples"]
     assert smp["kind"] == "sample" and len(smp["assets"]) == 2
     assert smp["assets"][0]["extra"]["rel"] == "assets/samples/count-in.wav"
     kit2 = {"id": "k2", "name": "Pads", "pads": []}                       # sans engine = rs5k (pads)
     packs2 = _lib(tmp_path / "b", monkeypatch, [], kit=kit2)
-    assert packs2["local:kit-k2"]["extra"] == {"kit_id": "k2", "engine": "rs5k", "factory": False} and "pads" in packs2["local:kit-k2"]["tags"]
+    ex2 = packs2["local:kit-k2"]["extra"]
+    assert {k: ex2[k] for k in ("kit_id", "engine", "factory")} == {"kit_id": "k2", "engine": "rs5k", "factory": False} and "pads" in packs2["local:kit-k2"]["tags"]
+    assert ex2["type"] == "pads"

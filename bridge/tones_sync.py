@@ -263,6 +263,12 @@ def build_packs(cache):
             # = batteries (« Drums », lecture seule — jamais importées depuis le web)
             engine = k.get("engine") if k.get("engine") in _kits.ENGINES else "rs5k"
             extra = {"kit_id": k["id"], "engine": engine, "factory": bool(k.get("factory"))}
+            # ce que golem.fm LIT pour sa page Drums (2026-11-15) : type de photo, pièces, micros, pads, crédit
+            try:
+                from . import drum_preview
+                extra.update(drum_preview.kit_card(k))
+            except Exception as _e:
+                _swallowed(_e)
             if imp:
                 extra.update({"card": True, "imported": True, "bytes": imp.get("bytes"), "files": imp.get("files"),
                               "pieces": sorted((k.get("notes") or {}).keys()), "mics": len(k.get("mix") or []) or None,
@@ -325,7 +331,11 @@ def build_packs(cache):
                       "creator": "factory" if fac else "user", "url": "",
                       "tags": ["groove"] + (["factory"] if fac else []), "style": g.get("genre") or "",
                       "extra": {"groove_id": g["id"], "rel": rel, "genre": g.get("genre"), "tempo": g.get("tempo"),
-                                "bars": g.get("bars"), "pack": g.get("pack"), "factory": fac},
+                                "bars": g.get("bars"), "pack": g.get("pack"), "factory": fac,
+                                # ce que golem LIT du fichier (docs/drums-library.md §3, 2026-11-15) — golem.fm l'affiche
+                                "meter": g.get("meter"), "file_bpm": g.get("file_bpm"), "played": g.get("played"),
+                                "use": g.get("use"), "unknown": g.get("unknown") or [], "voices": g.get("voices") or {},
+                                "kit": g.get("kit")},
                       "assets": [{"sha256": sha, "filename": os.path.basename(path), "name": g.get("name") or g["id"],
                                   "bytes": os.path.getsize(path), "format": "mid", "extra": {"rel": rel}}]})
     for label, d in VITAL_DIRS:

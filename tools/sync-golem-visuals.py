@@ -15,6 +15,7 @@ Writes:
   app/vendor/golem-visuals/golem-stage.js
   app/vendor/golem-visuals/visuals-data.js
   app/vendor/golem-visuals/SOURCE.json          golem-fx commit, date
+  app/vendor/golem-visuals/assets/kits/*.webp   the drum kits' photographs (drumKit), with their PROMPTS.md
   app/vendor/golem-visuals/fonts/*.woff2, OFL-*.txt + fonts.css   (--fonts)
 """
 import argparse
@@ -73,6 +74,19 @@ def main():
     for rel, name in (("js/golem-pedals.js", "golem-pedals.js"), ("js/golem-stage.js", "golem-stage.js"),
                       ("data/visuals-data.js", "visuals-data.js")):
         (DEST / name).write_bytes((vis / rel).read_bytes())
+    # les PHOTOS des kits de batterie (drumKit, golem-fx 00ccb5d, 2026-11-15) : des images, pas du code — et leurs
+    # prompts (PROMPTS.md : d'où elles viennent, comment les refaire). Ce que golem-fx n'a plus est retiré ici aussi.
+    kits_src, kits_dst = vis / "assets" / "kits", DEST / "assets" / "kits"
+    n_img = 0
+    if kits_src.is_dir():
+        kits_dst.mkdir(parents=True, exist_ok=True)
+        keep = {f.name for f in kits_src.iterdir() if f.suffix in (".webp", ".md")}
+        for f in kits_dst.iterdir():
+            if f.name not in keep:
+                f.unlink()
+        for name in sorted(keep):
+            (kits_dst / name).write_bytes((kits_src / name).read_bytes())
+            n_img += name.endswith(".webp")
     g = json.loads((vis / "data" / "glyphs.json").read_text(encoding="utf-8"))
     g = g.get("glyphs", g)
     glyphs = {t: {"svg": v["svg"], "uni": v.get("uni") or "", "label": v.get("label") or t} for t, v in sorted(g.items())}
@@ -86,7 +100,7 @@ def main():
     (DEST / "SOURCE.json").write_text(json.dumps({"repo": "golem-fx", "path": "visuals/", "commit": commit,
                                                   "synced": time.strftime("%Y-%m-%d")}, indent=1) + "\n", encoding="utf-8")
     nf = _fonts() if a.fonts else 0
-    print(f"{len(glyphs)} glyphs, renderers from golem-fx {commit[:10]}" + (f", {nf} font files" if nf else ""))
+    print(f"{len(glyphs)} glyphs, {n_img} kit photos, renderers from golem-fx {commit[:10]}" + (f", {nf} font files" if nf else ""))
     return 0
 
 

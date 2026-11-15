@@ -623,6 +623,9 @@ def light(with_modes=False):
         # les démos des sons de clavier rendues ici (docs/preset-preview.md §9) : un clip envoyé -> la fiche de son son
         from .sound_preview import rendered as _keys_previews
         st["keys_previews"] = _keys_previews()
+        # les démos de kits de batterie, même forme : un clip envoyé -> la fiche de son kit (docs/drums-library.md)
+        from .drum_preview import rendered as _kit_previews
+        st["kit_previews"] = _kit_previews()
         st["drum_kits"] = drum_kits()             # docs/drums-kit.md : ce que `params.kit` d'un drumkit peut valoir
     except Exception as e:
         log.warning(f"captures/catalogue absents du push : {e}")

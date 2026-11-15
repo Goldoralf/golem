@@ -915,7 +915,19 @@ async def vital_upload(request: Request):
     if len(data) > 80 * 1024 * 1024:                       # garde-fou (un pack .vital reste modeste)
         return JSONResponse({"error": "file too large (>80 MB)"}, status_code=413)
     r = vital.save_upload(name, data)
+    if r.get("ok"):
+        _vital_sync_soon()
     return r if r.get("ok") else JSONResponse(r, status_code=400)
+
+
+def _vital_sync_soon():
+    """Les presets Vital partent à golem.fm avec ce qu'ils disent d'eux (extra.meta) : un ajout, une suppression ou un
+    rescan programme le sync débouncé. Sans lui, rien ne repartait (golem.fm, 2026-11-15)."""
+    try:
+        from . import tones_sync
+        tones_sync.schedule()
+    except Exception:
+        pass
 
 
 @router.post("/api/vital/rescan")
@@ -923,6 +935,7 @@ def vital_rescan():
     """Ré-indexe la bibliothèque (après un dépôt manuel de .vital dans library/synth/vital/)."""
     from . import vital
     ps = vital.list_presets()
+    _vital_sync_soon()
     return {"ok": True, "count": len(ps),
             "presets": [{k: v for k, v in p.items() if k != "file"} for p in ps]}
 
@@ -940,6 +953,8 @@ def vital_delete(pid: str):
     """Supprime un preset Vital (corbeille). Le pack factory/ (seed) est protégé."""
     from . import vital
     r = vital.delete_preset(pid)
+    if r.get("ok"):
+        _vital_sync_soon()
     return r if r.get("ok") else JSONResponse(r, status_code=400)
 
 

@@ -282,3 +282,25 @@ a load, or another render — the factory batch included). A watcher started wit
 every 60 s; `GOLEM_KEYS_IDLE_RENDER=0` turns it off, as the test suite does) renders **one** pending preset, gives the
 engine back, reads the rule again before the next. A failed render is not retried until the bridge restarts.
 `idle` in `/api/keys/sounds` says what it does: `{current, waiting_for, rendered, failed}`.
+
+## 10. Factory demos: rendered once, downloaded everywhere
+
+> **Status: CODED 2026-11-15** — the maintainer's decision: factory demos are not rendered again on every golem.
+
+`library/previews/` is local (not versioned). Every golem used to render all the factory demos itself — about
+half an hour of engine time for ~67 MB. Now they are rendered **once**, on the maintainer's rack, and published:
+
+- `tools/pack-factory-demos.py` packs the factory demos (patches `patch-factory-*`, preset lanes `preset-factory-*/<lane>/`,
+  blocks `block-factory-*` and `block-patch-factory-*`, keys sounds of `sound_preview.factory_sounds`, kits of
+  `drum_preview.factory_kits`) into `golem-factory-demos.tar` with an index (`.json`: every file's sha256, the
+  archive's sha256); `--publish <tag>` creates the release on `Goldoralf/golem-binaries` (never marked latest). First
+  release: `factory-demos-v1` (127 folders, 460 files, 68.6 MB). Never a user's demo (Vital presets, imported kits,
+  listening clips).
+- `bridge/factory_demos.py`, at bridge start (background, once): reads the index; when files are missing here,
+  downloads the archive, checks its sha256, and places **only the missing files** (each checked against the index).
+  A demo already here — rendered locally, maybe newer — is never overwritten; a stale one is redone by the batch as
+  before. No network, or nothing published yet: nothing happens. `GOLEM_FACTORY_DEMOS=0` turns it off (the test
+  suite does); `GOLEM_FACTORY_DEMOS_BASE` points it elsewhere.
+- **golem.fm** reads the same archive: one source, served to everyone.
+- To publish a new version after factory demos change: run the batch on the maintainer's rack, then
+  `./tools/pack-factory-demos.py --publish factory-demos-vN` and bump `factory_demos.TAG`.

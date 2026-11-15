@@ -33,7 +33,7 @@ PREFIX = "kit:"                   # un élément du lot des démos d'usine
 # ── le dessin : le type de batterie (drumKit de golem-fx) d'un kit, par son style puis son nom ──────────────────────
 def kit_type(k):
     n, h = str(k.get("name") or "").lower(), str(k.get("hint") or "").lower()
-    if k.get("role") != "drum" and k.get("engine") == "rs5k":
+    if k.get("role") != "drum" and (k.get("engine") or "rs5k") == "rs5k":   # sans moteur = rs5k (bridge/kits.py)
         return "pads"
     if any(w in n + " " + h for w in ("electronic", "808", "909", "e-kit", "edrum")):
         return "electronic"
@@ -43,7 +43,9 @@ def kit_type(k):
         return "metal"
     if "jazz" in h or "bop" in n or "jazz" in n:
         return "jazz"
-    if any(w in n for w in ("pearl", "zeppelin", "vintage", "60s", "70s")):
+    # une PHOTO par type (golem-fx 00ccb5d) : deux kits du même type ont la même image — Red Zeppelin (rock · dry) prend
+    # la batterie rock, laquée rouge ; Black Pearl reste la vintage, nacrée
+    if any(w in n for w in ("pearl", "vintage", "60s", "70s")):
         return "vintage"
     return "rock"
 
@@ -65,9 +67,16 @@ def kit_dir(kit_id):
 
 
 def _kit_fp(k):
-    """Ce qui fait le son d'un kit : son moteur et ce qu'il charge (banque avldrums, kit drumgizmo, sfz)."""
-    return hashlib.sha1(json.dumps([k.get("engine"), k.get("bank"), k.get("drumkit"), k.get("sfz"), k.get("mix")],
-                                   sort_keys=True, default=str).encode()).hexdigest()[:16]
+    """Ce qui fait le son d'un kit : son moteur et ce qu'il charge (banque avldrums, kit drumgizmo, sfz) — et, pour un
+    kit de PADS, chaque son et son réglage (des samples refaits changent l'écoute d'un groove sur ce kit, 2026-11-15)."""
+    pads = []
+    for p in k.get("pads") or []:
+        if isinstance(p, dict) and p.get("sample"):
+            f = os.path.join(C.ROOT, p["sample"])
+            pads.append([p.get("note"), p.get("mode"), p.get("level"), _sha(f) if os.path.isfile(f) else p["sample"]])
+    # les pads seulement quand il y en a : l'empreinte d'une batterie ne bouge pas (ses démos restent à jour)
+    return hashlib.sha1(json.dumps([k.get("engine"), k.get("bank"), k.get("drumkit"), k.get("sfz"), k.get("mix")]
+                                   + ([pads] if pads else []), sort_keys=True, default=str).encode()).hexdigest()[:16]
 
 
 def entry(kit_id):
@@ -287,3 +296,115 @@ def catalog():
                     "mics": len(k.get("mix") or []) or None, "imported": imp,
                     "type": kit_type(k), "demo": demo(k)})
     return {"kits": out}
+
+
+# ── vers golem.fm (sa page Drums, 2026-11-15) ─────────────────────────────────────────────────────────────────────
+# Ce que golem.fm doit LIRE plutôt que deviner : le type de photo (notre règle, kit_type — jamais recopiée là-bas),
+# les pièces, les micros, les pads dans l'ordre, la source. Les crédits connus seulement : rien d'inventé (les kits
+# avldrums n'ont pas de licence écrite dans le dépôt ; leur source, oui).
+FACTORY_CREDITS = {
+    "drums-aasimonster": {"credit": "The Aasimonster v2.1 — the DrumGizmo team", "licence": "CC BY 4.0",
+                          "source": "https://drumgizmo.org/wiki/doku.php?id=kits:the_aasimonster"},
+}
+
+
+def _pad_label(sample):
+    import re
+    stem = os.path.splitext(os.path.basename(str(sample)))[0]
+    return re.sub(r"^\d+[_\- ]*", "", stem).replace("_", " ") or stem
+
+
+def kit_card(k):
+    """La fiche d'un kit pour le manifeste (extra du pack local:kit-*) : {type, hint, pieces, mics, bank, pads, samples,
+    credit}. pads : les 16 dans l'ordre du contrôleur, le pad 1 en bas à gauche."""
+    out = {"type": kit_type(k), "hint": k.get("hint") or None, "bank": k.get("bank") or None}
+    if isinstance(k.get("notes"), dict) and k["notes"]:
+        out["pieces"] = sorted(k["notes"].keys())
+    if k.get("mix"):
+        out["mics"] = [{"name": m.get("name"), "group": m.get("group")} for m in k["mix"] if isinstance(m, dict)]
+    pads = [p for p in k.get("pads") or [] if isinstance(p, dict) and p.get("sample")]
+    if pads:
+        out["pads"] = [{"pad": i + 1, "note": p.get("note"), "label": _pad_label(p["sample"])} for i, p in enumerate(pads)]
+        out["samples"] = len(pads)
+    src = k.get("source") if isinstance(k.get("source"), dict) else None
+    # la source d'un kit de pads d'usine est une note interne (en français, un chemin de développeur) : jamais telle quelle
+    cred = FACTORY_CREDITS.get(k.get("id")) or (
+        {"credit": "Synthesized by golem (drumsynth)", "licence": "golem's own: no third-party sample"}
+        if src and str(src.get("licence") or "").startswith("own") else None)
+    if not cred and k.get("engine") == "avldrums":
+        cred = {"source": "avldrums.lv2 (AVL Drumkits)"}
+    if cred:
+        out["credit"] = {x: v for x, v in cred.items() if v}
+    return {x: v for x, v in out.items() if v not in (None, [], {})}
+
+
+def rendered():
+    """Les démos de kits rendues ici : [{kit, factory, clips: {phrase: {sha256, seconds}}}] — le heartbeat (kit_previews)."""
+    from . import kits as K
+    out = []
+    if not os.path.isdir(C.PREVIEWS_DIR):
+        return out
+    for d in sorted(os.listdir(C.PREVIEWS_DIR)):
+        if not d.startswith("kit-"):
+            continue
+        e = store._read_json(os.path.join(C.PREVIEWS_DIR, d, "preview.json"), None)
+        if not isinstance(e, dict) or not e.get("kit") or not e.get("clips"):
+            continue
+        k = K.get_kit(e["kit"]) or {}
+        out.append({"kit": e["kit"], "factory": bool(k.get("factory")),
+                    "clips": {r.split("/")[-1]: {"sha256": c.get("sha256"), "seconds": c.get("seconds")}
+                              for r, c in e["clips"].items() if isinstance(c, dict)}})
+    return out
+
+
+def _is_user(kit_id):
+    from . import kits as K
+    k = K.get_kit(kit_id)
+    return bool(k) and not k.get("factory")
+
+
+def push(kit_id):
+    """Envoie les démos d'un kit au blob store de golem.fm ; un clip envoyé est marqué (pushed = son sha256)."""
+    from . import preview as PV
+    e = entry(kit_id)
+    if not e:
+        return None
+    sent = {}
+    for ref, c in (e.get("clips") or {}).items():
+        if c.get("pushed") == c.get("sha256"):
+            continue
+        one = PV.push_clip("kit-" + str(kit_id), ref.split("/")[-1], c.get("file") or "")
+        if one:
+            c["pushed"] = one["sha256"]
+            sent[ref.split("/")[-1]] = {"sha256": one["sha256"], "seconds": c.get("seconds")}
+    if sent:
+        store._write_json_atomic(os.path.join(kit_dir(kit_id), "preview.json"), e)
+    return {"kit": kit_id, "clips": sent} if sent else None
+
+
+def push_user(kit_id):
+    """Les démos d'un kit IMPORTÉ partent à golem.fm (les kits d'usine : jamais, golem.fm les a par ailleurs)."""
+    if not _is_user(kit_id):
+        return None
+    r = push(kit_id)
+    if r:
+        log.info(f"démos de kit envoyées à golem.fm : {kit_id}")
+    else:
+        e = entry(kit_id) or {}
+        if any(c.get("pushed") != c.get("sha256") for c in (e.get("clips") or {}).values()):
+            log.warning(f"démos de kit NON envoyées à golem.fm : {kit_id} (injoignable ou pas appairé ; réessai au repos)")
+    return r
+
+
+def unpushed():
+    """Un kit importé dont une démo n'est pas (ou plus) chez golem.fm, ou None."""
+    if not os.path.isdir(C.PREVIEWS_DIR):
+        return None
+    for d in sorted(os.listdir(C.PREVIEWS_DIR)):
+        if not d.startswith("kit-"):
+            continue
+        e = store._read_json(os.path.join(C.PREVIEWS_DIR, d, "preview.json"), None) or {}
+        if e.get("kit") and any(c.get("pushed") != c.get("sha256") for c in (e.get("clips") or {}).values()) \
+                and _is_user(e["kit"]):
+            return e["kit"]
+    return None

@@ -27,6 +27,8 @@ export function loadVisuals(catalog) {
       document.head.appendChild(l);
     }
     await script('visuals-data.js'); await script('golem-pedals.js'); await script('golem-stage.js');
+    // les PHOTOS des kits de batterie (drumKit, docs/drums-library.md §1) : servies à côté des renderers
+    if (window.GolemPedals.kitAssets) window.GolemPedals.kitAssets.base = new URL(BASE + 'assets/kits/', location.href).href;
     if (!document.getElementById('gp-defs')) {
       const d = document.createElement('div');
       d.id = 'gp-defs'; d.setAttribute('aria-hidden', 'true');

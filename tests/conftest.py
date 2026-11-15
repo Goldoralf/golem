@@ -15,6 +15,8 @@ os.environ["GOLEM_VST_TRIAL"] = "0"
 # ── LES DÉMOS CLAVIER AU REPOS (bridge/sound_preview.py, 2026-11-14) : jamais pendant la suite — un test qui démarre
 # l'app lancerait le veilleur, qui prend le vrai moteur pour rendre les presets Vital de la machine.
 os.environ["GOLEM_KEYS_IDLE_RENDER"] = "0"
+# ── LES DÉMOS D'USINE TÉLÉCHARGÉES (bridge/factory_demos.py) : jamais de réseau ni d'écriture pendant la suite
+os.environ["GOLEM_FACTORY_DEMOS"] = "0"
 
 # ── LE MOTEUR DE LA SUITE = REAPER (2026-11-12) : sans ça, l'adaptateur actif par défaut est celui que la MACHINE a choisi
 # (config/engine.json) — un poste passé au Golem Engine faisait échouer les tests écrits pour REAPER. Un test qui veut un

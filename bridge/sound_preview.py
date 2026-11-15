@@ -461,12 +461,16 @@ def idle_tick(seq_of):
             u = unpushed()
             if u and push_user(u):
                 return None
+            uk = DP.unpushed()                          # les démos d'un kit importé, de même
+            if uk and DP.push_user(uk):
+                return None
             return "nothing to render"
         _IDLE.update(current="kit:" + kid, waiting_for=None)
         try:
             r = DP.render_kit(kid, seq_of)
             if r["status"] == "rendered":
                 _IDLE["done"] += 1
+                DP.push_user(kid)
             else:
                 _IDLE["failed"]["kit:" + kid] = r.get("reason")
             log.info(f"démo au repos : kit {kid} → {r['status']}" + (f" ({r.get('reason')})" if r.get("reason") else ""))

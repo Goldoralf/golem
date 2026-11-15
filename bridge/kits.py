@@ -293,7 +293,7 @@ def save_kit(kit, allow_drums=False):
     if engine in DRUM_ENGINES:
         # ce qu'une batterie porte en plus (la graine l'écrit directement ; l'import passe ici) : la table
         # pièce → note, sa provenance, l'accroche, et l'origine d'un kit importé (kit_import)
-        for k in ("notes", "notes_note", "hint", "imported", "midimap_src"):
+        for k in ("notes", "notes_note", "hint", "imported", "midimap_src", "gm_rev"):
             if kit.get(k):
                 doc[k] = kit[k]
     os.makedirs(KITS_DIR, exist_ok=True)

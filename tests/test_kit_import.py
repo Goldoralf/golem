@@ -198,7 +198,9 @@ GREG = """<?xml version='1.0'?><midimap>
   <map note="24" instr="kick__acoustic"/><map note="25" instr="kick__sleep"/><map note="32" instr="snare1__metalcore"/>
   <map note="32" instr="snare_layer__a"/><map note="35" instr="rim1__rimshot"/><map note="36" instr="rim1__cross"/>
   <map note="52" instr="tom1__electronic"/><map note="53" instr="tom2__electronic"/><map note="66" instr="hh__pedal_close"/>
-  <map note="68" instr="hh__closed"/><map note="69" instr="hh__open"/><map note="72" instr="crash1__bow"/>
+  <map note="68" instr="hh__electronic_closed"/><map note="69" instr="hh__electronic_open"/><map note="72" instr="crash1__bow"/>
+  <map note="56" instr="tom1__acoustic"/><map note="112" instr="hh__bow_closed"/><map note="116" instr="hh__bow_open"/>
+  <map note="117" instr="hh__edge_closed"/><map note="79" instr="china1__edge"/><map note="80" instr="china1__bell"/>
   <map note="83" instr="ride__bow"/><map note="84" instr="ride__bell"/><map note="114" instr="hh__bow_half"/>
   <map note="93" instr="perc__cowbell"/>
 </midimap>"""
@@ -206,12 +208,15 @@ GREG = """<?xml version='1.0'?><midimap>
 
 def test_la_table_d_un_kit_est_reecrite_en_general_midi_sans_rien_perdre():
     multi = KI.parse_midimap_multi(GREG)
-    pieces, _u, _x = KI.pieces_from_names({n: v[0] for n, v in multi.items()})
-    table, notes, left = KI.gm_remap(multi, pieces)
+    pieces, _u, extra = KI.pieces_from_names({n: v[0] for n, v in multi.items()})
+    table, notes, left = KI.gm_remap(multi, KI.best_pieces(multi, pieces, extra))
     # chaque pièce sur sa note GM, les deux couches d'une frappe gardées
     assert notes["kick"] == 36 and table[36] == ["kick__acoustic"] and table[35] == ["kick__acoustic"]
     assert notes["snare"] == 38 and table[38] == ["snare1__metalcore", "snare_layer__a"]
     assert (notes["hh-closed"], notes["hh-pedal"], notes["hh-open"]) == (42, 44, 46)
+    # un kit hybride : la variante acoustique / « bow » joue la phrase GM, pas celle de boîte à rythmes
+    assert table[42] == ["hh__bow_closed"] and table[46] == ["hh__bow_open"] and table[48] == ["tom1__acoustic"]
+    assert table[52] == ["china1__edge"] and table[37] == ["rim1__cross"]       # la china sur son bord ; le cross-stick
     assert (notes["crash1"], notes["ride"], notes["ride-bell"], notes["tom1"], notes["tom2"]) == (49, 51, 53, 48, 47)
     # une case GM sans sa pièce prend la plus proche (crash 2 → crash 1, tom 4 → tom 2), sans l'inventer dans `notes`
     assert table[57] == ["crash1__bow"] and table[43] == ["tom2__electronic"] and "crash2" not in notes
@@ -220,7 +225,7 @@ def test_la_table_d_un_kit_est_reecrite_en_general_midi_sans_rien_perdre():
     assert notes["hh-half"] not in gm and notes["aux1"] not in gm
     every = {i for v in table.values() for i in v}
     assert every == {i for v in multi.values() for i in v} and left == []
-    assert all(i not in {x for n in gm for x in table.get(n, [])} for i in ("kick__sleep", "rim1__cross", "hh__bow_half"))
+    assert all(i not in {x for n in gm for x in table.get(n, [])} for i in ("kick__sleep", "hh__electronic_closed", "hh__bow_half"))
     assert KI.parse_midimap_multi(KI.midimap_xml(table)) == table          # le fichier écrit se relit à l'identique
 
 
@@ -240,6 +245,11 @@ def test_un_kit_drumgizmo_importe_avant_est_reecrit_une_fois(monkeypatch, tmp_pa
     assert k["notes"]["kick"] == 36 and k["notes"]["snare"] == 38 and "General MIDI" in k["notes_note"]
     assert (kd / "midimap.xml").read_text() == GREG                     # la table d'origine n'est pas touchée
     assert KI.remap_imported_gm() == []                                 # idempotent
+    K.save_kit(dict(K.get_kit("drums-greg"), gm_rev=1), allow_drums=True)  # réécrit par une règle plus ancienne
+    assert KI.remap_imported_gm() == ["drums-greg"]
+    k = K.get_kit("drums-greg")
+    assert k["gm_rev"] == KI.GM_REV and k["midimap_src"] == "library/drumkits/greg/midimap.xml"   # repart de l'original
+    assert k["notes_note"].count("General MIDI") == 1
 
 
 def test_l_import_drumgizmo_pose_la_table_general_midi_et_garde_l_originale(kit_on_disk, monkeypatch, tmp_path):

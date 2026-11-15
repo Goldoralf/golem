@@ -104,6 +104,31 @@ GM_FALLBACK = {"kick": None, "snare-rim": "snare", "snare-xstick": "snare-rim", 
                "hh-open": "hh-closed", "tom2": "tom1", "tom3": "tom2", "tom4": "tom3", "crash2": "crash1",
                "ride-edge": "ride", "ride-bell": "ride", "china": "crash2", "splash": "crash1"}
 GM_RANGE = range(35, 82)
+# QUELLE VARIANTE pour une pièce GM (2026-11-15, entendu sur la démo rock de Greg Hybrid : « un charley remplacé par un
+# claquement de doigts ») : un kit hybride porte plusieurs instruments par pièce (hh__electronic_closed, hh__bow_closed…).
+# La plus basse note gagnait — souvent la variante électronique. Une phrase GM attend une batterie : l'acoustique et le
+# jeu « bow » d'abord, les variantes de boîte à rythmes / de genre ensuite, le bord (edge) après le corps.
+_PREFER = ("acoustic", "bow", "natural", "room")
+_AVOID = ("electronic", "electro", "trap", "dnb", "sleep", "industrial", "glitch", "808", "909", "lofi", "lo-fi", "synth")
+
+
+def _variant_score(name, el=""):
+    s = str(name or "").lower()
+    # le bord est le jeu « normal » d'une china ; ailleurs, le corps passe avant le bord. La cloche n'est le bon jeu que
+    # pour la ride-bell (china1__bell n'est pas une china)
+    edge = (1 if el == "china" else -1) if "edge" in s else 0
+    bell = -1 if "bell" in s and el != "ride-bell" else 0
+    return (2 if any(k in s for k in _PREFER) else 0) - (2 if any(k in s for k in _AVOID) else 0) + edge + bell
+
+
+def best_pieces(multi, pieces, extra):
+    """{élément → note} : parmi toutes les notes reconnues pour un élément, la variante la plus « batterie » (score,
+    puis la note la plus basse)."""
+    out = {}
+    for el, n0 in pieces.items():
+        cands = [n0] + list((extra or {}).get(el) or [])
+        out[el] = min(cands, key=lambda n: (-_variant_score((multi.get(n) or [""])[0], el), n))
+    return out
 _FREE = list(range(82, 128)) + list(range(34, -1, -1))
 
 
@@ -148,6 +173,8 @@ def midimap_xml(table):
 
 
 GM_MIDIMAP = "midimap-gm.xml"
+# la version de la règle : un kit réécrit par une règle plus ancienne l'est de nouveau (2 = variantes acoustiques)
+GM_REV = 3
 
 
 def write_gm(dest_dir, src_midimap):
@@ -155,8 +182,8 @@ def write_gm(dest_dir, src_midimap):
     with open(src_midimap, "r", encoding="utf-8", errors="replace") as f:
         multi = parse_midimap_multi(f.read())
     first = {n: v[0] for n, v in multi.items()}
-    pieces, _unknown, _extra = pieces_from_names(first)
-    table, notes, left = gm_remap(multi, pieces)
+    pieces, _unknown, extra = pieces_from_names(first)
+    table, notes, left = gm_remap(multi, best_pieces(multi, pieces, extra))
     tmp = os.path.join(dest_dir, GM_MIDIMAP + ".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(midimap_xml(table))
@@ -165,18 +192,19 @@ def write_gm(dest_dir, src_midimap):
 
 
 def remap_imported_gm():
-    """Les kits DrumGizmo importés AVANT la réécriture GM (pas de `midimap_src`) : réécrits une fois. Rend leurs ids.
-    Appelé au démarrage ; idempotent (un kit déjà réécrit porte `midimap_src`)."""
+    """Les kits DrumGizmo importés réécrits par une règle plus ancienne (ou pas du tout) : réécrits depuis leur table
+    d'origine (`midimap_src`). Rend leurs ids. Appelé au démarrage ; idempotent (`gm_rev`)."""
     from . import kits
     done = []
     for k in kits.list_kits():
-        if k.get("factory") or k.get("engine") != "drumgizmo" or not k.get("imported") or k.get("midimap_src"):
+        if k.get("factory") or k.get("engine") != "drumgizmo" or not k.get("imported") or k.get("gm_rev") == GM_REV:
             continue
-        src = os.path.join(C.ROOT, k.get("midimap") or "")
+        orig = k.get("midimap_src") or k.get("midimap") or ""
+        src = os.path.join(C.ROOT, orig)
         if not os.path.isfile(src):
             continue
         notes, left = write_gm(os.path.dirname(src), src)
-        doc = dict(k, midimap_src=k["midimap"], notes=notes,
+        doc = dict(k, midimap_src=orig, notes=notes, gm_rev=GM_REV,
                    midimap=os.path.dirname(k["midimap"]) + "/" + GM_MIDIMAP,
                    notes_note=_gm_note(k.get("notes_note"), left))
         res = kits.save_kit(doc, allow_drums=True)
@@ -191,6 +219,8 @@ def remap_imported_gm():
 
 
 def _gm_note(note, left):
+    if "rewritten in General MIDI" in (note or ""):       # déjà dit (une règle plus récente réécrit le même kit)
+        return re.sub(r" — no free note left for: .*$", "", note) + (f" — no free note left for: {', '.join(left[:8])}" if left else "")
     base = re.sub(r"^read in ([^ ]+) at import", r"read in \1 at import, rewritten in General MIDI", note or "") \
         or "rewritten in General MIDI at import"
     return base + (f" — no free note left for: {', '.join(left[:8])}" if left else "")
@@ -213,6 +243,8 @@ def guess_element(name, crash_seen=0):
         return "snare-xstick"
     if has("rimshot") and not has("tom"):
         return "snare-rim"
+    if has("rim") and has("cross") and not has("tom"):       # « rim1__cross » : le cross-stick d'une caisse claire
+        return "snare-xstick"
     if has("snare", "snr") or "sd" in w or "sn" in w:
         if has("rim"):
             return "snare-rim"
@@ -705,7 +737,7 @@ def install(path, name=None, sfz_file=None):
             # la table jouée est réécrite en General MIDI (GM_NOTES) ; celle du kit reste à côté
             src = os.path.join(dest, r["midimap_xml"])
             notes, left = write_gm(os.path.dirname(src), src)
-            doc["midimap_src"] = rel + "/" + r["midimap_xml"]
+            doc["midimap_src"], doc["gm_rev"] = rel + "/" + r["midimap_xml"], GM_REV
             doc["midimap"] = C.rel(os.path.join(os.path.dirname(src), GM_MIDIMAP)).replace(os.sep, "/")
             doc["notes"], doc["notes_note"] = notes, _gm_note(doc["notes_note"], left)
             doc["mix"] = _mix_from_channels(r.get("channels") or [])

@@ -71,6 +71,131 @@ def parse_midimap_xml(text):
     return out
 
 
+def parse_midimap_multi(text):
+    """midimap.xml → {note → [instruments…]} : TOUTES les tables d'une note (un kit superpose parfois deux couches sur
+    une frappe) — ce qu'on réécrit en General MIDI doit garder chacune."""
+    root = ET.fromstring(text)
+    out = {}
+    for m in root.iter("map"):
+        try:
+            note = int(m.get("note"))
+        except (TypeError, ValueError):
+            continue
+        if 0 <= note <= 127 and m.get("instr") and m.get("instr") not in out.setdefault(note, []):
+            out[note].append(m.get("instr"))
+    return out
+
+
+# ── UN KIT IMPORTÉ JOUE EN GENERAL MIDI (2026-11-15) ────────────────────────────────────────────────────────────────
+# Les phrases des démos, les grooves de la bibliothèque et une batterie électronique envoient du GM. Un kit importé
+# garde sinon la numérotation de SA bibliothèque (Greg Hybrid : grosse caisse sur 24, caisse claire sur 32) et un
+# groove y tape à côté — « un kit qui n'en est pas un ». L'import réécrit donc la table : chaque pièce reconnue sur
+# sa note GM (les mêmes que la batterie d'usine drums-aasimonster), le reste du kit (variantes, pièces sans case GM,
+# noms inconnus) sur des notes LIBRES hors de la plage batterie GM (35..81) — rien n'est perdu, rien ne sonne dans
+# une phrase GM par accident. La table d'origine reste sur le disque (`midimap_src`).
+GM_NOTES = {"kick": (36, 35), "snare": (38,), "snare-xstick": (37,), "snare-rim": (40,),
+            "hh-closed": (42,), "hh-pedal": (44,), "hh-open": (46,),
+            "tom1": (48, 50), "tom2": (47,), "tom3": (45,), "tom4": (43, 41),
+            "crash1": (49,), "crash2": (57,), "ride": (51,), "ride-edge": (59,), "ride-bell": (53,),
+            "china": (52,), "splash": (55,)}
+# une case GM dont le kit n'a pas la pièce prend la plus proche (un groove qui frappe la crash 2 sur un kit à une
+# crash l'entend quand même) — la pièce elle-même reste absente de `notes`
+GM_FALLBACK = {"kick": None, "snare-rim": "snare", "snare-xstick": "snare-rim", "hh-pedal": "hh-closed",
+               "hh-open": "hh-closed", "tom2": "tom1", "tom3": "tom2", "tom4": "tom3", "crash2": "crash1",
+               "ride-edge": "ride", "ride-bell": "ride", "china": "crash2", "splash": "crash1"}
+GM_RANGE = range(35, 82)
+_FREE = list(range(82, 128)) + list(range(34, -1, -1))
+
+
+def gm_remap(multi, pieces):
+    """{note → [instr]} lu dans le kit + {élément → note} reconnus → ({note GM → [instr]}, {élément → note GM},
+    [instruments laissés faute de note libre])."""
+    out, notes, placed = {}, {}, {}                     # placed : note d'ORIGINE → sa nouvelle note (la 1re)
+    for el, gm in GM_NOTES.items():
+        src, seen = el, set()
+        while src and src not in pieces and src not in seen:
+            seen.add(src)
+            src = GM_FALLBACK.get(src)
+        if not src or src not in pieces or not multi.get(pieces[src]):
+            continue
+        for n in gm:
+            out[n] = list(multi[pieces[src]])
+        placed.setdefault(pieces[src], gm[0])
+        if el in pieces:
+            notes[el] = gm[0]
+    free = list(_FREE)
+    left = []
+    rest = [pieces[el] for el in pieces if el not in notes] + sorted(multi)    # les pièces d'abord, puis le reste
+    for n0 in rest:
+        if n0 in placed or not multi.get(n0):
+            continue
+        if not free:
+            left += multi[n0]
+            continue
+        placed[n0] = n = free.pop(0)
+        out[n] = list(multi[n0])
+    for el, n0 in pieces.items():
+        if el not in notes and n0 in placed:
+            notes[el] = placed[n0]
+    return out, notes, left
+
+
+def midimap_xml(table):
+    """{note → [instr]} → le texte d'un midimap.xml DrumGizmo."""
+    from xml.sax.saxutils import quoteattr
+    rows = [f'  <map note="{n}" instr={quoteattr(i)} />' for n in sorted(table) for i in table[n]]
+    return "<?xml version='1.0' encoding='utf-8'?>\n<midimap>\n" + "\n".join(rows) + "\n</midimap>\n"
+
+
+GM_MIDIMAP = "midimap-gm.xml"
+
+
+def write_gm(dest_dir, src_midimap):
+    """Écrit <dest_dir>/midimap-gm.xml depuis la table d'origine. Rend ({élément → note GM}, [laissés])."""
+    with open(src_midimap, "r", encoding="utf-8", errors="replace") as f:
+        multi = parse_midimap_multi(f.read())
+    first = {n: v[0] for n, v in multi.items()}
+    pieces, _unknown, _extra = pieces_from_names(first)
+    table, notes, left = gm_remap(multi, pieces)
+    tmp = os.path.join(dest_dir, GM_MIDIMAP + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(midimap_xml(table))
+    os.replace(tmp, os.path.join(dest_dir, GM_MIDIMAP))
+    return notes, left
+
+
+def remap_imported_gm():
+    """Les kits DrumGizmo importés AVANT la réécriture GM (pas de `midimap_src`) : réécrits une fois. Rend leurs ids.
+    Appelé au démarrage ; idempotent (un kit déjà réécrit porte `midimap_src`)."""
+    from . import kits
+    done = []
+    for k in kits.list_kits():
+        if k.get("factory") or k.get("engine") != "drumgizmo" or not k.get("imported") or k.get("midimap_src"):
+            continue
+        src = os.path.join(C.ROOT, k.get("midimap") or "")
+        if not os.path.isfile(src):
+            continue
+        notes, left = write_gm(os.path.dirname(src), src)
+        doc = dict(k, midimap_src=k["midimap"], notes=notes,
+                   midimap=os.path.dirname(k["midimap"]) + "/" + GM_MIDIMAP,
+                   notes_note=_gm_note(k.get("notes_note"), left))
+        res = kits.save_kit(doc, allow_drums=True)
+        if res.get("ok"):
+            done.append(k["id"])
+            log.info("kit %s : table réécrite en General MIDI", k["id"])
+        else:
+            log.warning("kit %s : réécriture GM refusée (%s)", k["id"], res.get("error"))
+    if done:
+        kits._sync_soon()
+    return done
+
+
+def _gm_note(note, left):
+    base = re.sub(r"^read in ([^ ]+) at import", r"read in \1 at import, rewritten in General MIDI", note or "") \
+        or "rewritten in General MIDI at import"
+    return base + (f" — no free note left for: {', '.join(left[:8])}" if left else "")
+
+
 # le nom d'une pièce → un élément de drumkits.ELEMENTS. Lu dans le NOM (midimap, fichier d'échantillon) :
 # « Snare », « HiHat_Open », « Tom2-Rim », « 36-Kick »… Ce qu'on ne reconnaît pas rend None, et c'est dit.
 _TOM_WORDS = {"hi": 1, "high": 1, "mid": 2, "low": 3, "floor": 3, "lowfloor": 4}
@@ -577,7 +702,12 @@ def install(path, name=None, sfz_file=None):
                             "dir": rel, "sample_rate": r.get("sample_rate"), "bits": r.get("bits")}}
         if r["engine"] == "drumgizmo":
             doc["drumkit"] = rel + "/" + r["drumkit_xml"]
-            doc["midimap"] = rel + "/" + r["midimap_xml"]
+            # la table jouée est réécrite en General MIDI (GM_NOTES) ; celle du kit reste à côté
+            src = os.path.join(dest, r["midimap_xml"])
+            notes, left = write_gm(os.path.dirname(src), src)
+            doc["midimap_src"] = rel + "/" + r["midimap_xml"]
+            doc["midimap"] = C.rel(os.path.join(os.path.dirname(src), GM_MIDIMAP)).replace(os.sep, "/")
+            doc["notes"], doc["notes_note"] = notes, _gm_note(doc["notes_note"], left)
             doc["mix"] = _mix_from_channels(r.get("channels") or [])
         else:
             doc["sfz"] = rel + "/" + r["sfz_file"]

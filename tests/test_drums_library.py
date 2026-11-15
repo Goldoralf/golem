@@ -153,6 +153,7 @@ def test_a_kit_card_for_golem_fm_says_what_a_drummer_cares_about():
     kit = D.kit_card({"id": "drums-aasimonster", "role": "drum", "engine": "drumgizmo", "hint": "metal",
                       "notes": {"kick": 36, "snare": 38}, "mix": [{"name": "OHL", "group": "oh", "gain": 0}]})
     assert kit["type"] == "metal" and kit["pieces"] == ["kick", "snare"] and kit["mics"] == [{"name": "OHL", "group": "oh"}]
+    assert kit["notes"] == {"kick": 36, "snare": 38}                     # la table jouée, pour la page du kit
     assert kit["credit"]["licence"] == "CC BY 4.0"
     avl = D.kit_card({"id": "drums-x", "role": "drum", "engine": "avldrums", "bank": "x"})
     assert avl["credit"] == {"source": "avldrums.lv2 (AVL Drumkits)"}                # pas de licence inventée

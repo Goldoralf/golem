@@ -125,6 +125,14 @@ def seed_factory():
             continue
         _write_json_atomic(p, seed)
         done.append(seed["id"])
+    # un kit DrumGizmo IMPORTÉ avant 2026-11-15 garde la numérotation de sa bibliothèque : réécrit une fois en
+    # General MIDI (kit_import.remap_imported_gm, idempotent) — au même moment que les graines, au démarrage
+    try:
+        from . import kit_import
+        done += kit_import.remap_imported_gm()
+    except Exception as e:
+        from .golog import get as _get
+        _get("kits").warning(f"kits importés en GM : {e}")
     return done
 
 
@@ -285,7 +293,7 @@ def save_kit(kit, allow_drums=False):
     if engine in DRUM_ENGINES:
         # ce qu'une batterie porte en plus (la graine l'écrit directement ; l'import passe ici) : la table
         # pièce → note, sa provenance, l'accroche, et l'origine d'un kit importé (kit_import)
-        for k in ("notes", "notes_note", "hint", "imported"):
+        for k in ("notes", "notes_note", "hint", "imported", "midimap_src"):
             if kit.get(k):
                 doc[k] = kit[k]
     os.makedirs(KITS_DIR, exist_ok=True)

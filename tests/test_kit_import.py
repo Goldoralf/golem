@@ -191,3 +191,73 @@ def test_un_job_kit_install_qui_porte_une_carte_n_installe_rien(monkeypatch):
     monkeypatch.setattr(TJ, "_blob_bytes", lambda job, tmp: b"not a zip")
     with pytest.raises(RuntimeError):
         TJ._kit_install({"action": "kit-install", "sha": "x"})
+
+
+# ── un kit importé joue en General MIDI (2026-11-15 : Greg Hybrid gardait la numérotation de sa bibliothèque) ──────
+GREG = """<?xml version='1.0'?><midimap>
+  <map note="24" instr="kick__acoustic"/><map note="25" instr="kick__sleep"/><map note="32" instr="snare1__metalcore"/>
+  <map note="32" instr="snare_layer__a"/><map note="35" instr="rim1__rimshot"/><map note="36" instr="rim1__cross"/>
+  <map note="52" instr="tom1__electronic"/><map note="53" instr="tom2__electronic"/><map note="66" instr="hh__pedal_close"/>
+  <map note="68" instr="hh__closed"/><map note="69" instr="hh__open"/><map note="72" instr="crash1__bow"/>
+  <map note="83" instr="ride__bow"/><map note="84" instr="ride__bell"/><map note="114" instr="hh__bow_half"/>
+  <map note="93" instr="perc__cowbell"/>
+</midimap>"""
+
+
+def test_la_table_d_un_kit_est_reecrite_en_general_midi_sans_rien_perdre():
+    multi = KI.parse_midimap_multi(GREG)
+    pieces, _u, _x = KI.pieces_from_names({n: v[0] for n, v in multi.items()})
+    table, notes, left = KI.gm_remap(multi, pieces)
+    # chaque pièce sur sa note GM, les deux couches d'une frappe gardées
+    assert notes["kick"] == 36 and table[36] == ["kick__acoustic"] and table[35] == ["kick__acoustic"]
+    assert notes["snare"] == 38 and table[38] == ["snare1__metalcore", "snare_layer__a"]
+    assert (notes["hh-closed"], notes["hh-pedal"], notes["hh-open"]) == (42, 44, 46)
+    assert (notes["crash1"], notes["ride"], notes["ride-bell"], notes["tom1"], notes["tom2"]) == (49, 51, 53, 48, 47)
+    # une case GM sans sa pièce prend la plus proche (crash 2 → crash 1, tom 4 → tom 2), sans l'inventer dans `notes`
+    assert table[57] == ["crash1__bow"] and table[43] == ["tom2__electronic"] and "crash2" not in notes
+    # ce qui n'a pas de case GM (charley mi-ouvert, cloche, variantes) : hors de la plage batterie GM, jamais perdu
+    gm = set(KI.GM_RANGE)
+    assert notes["hh-half"] not in gm and notes["aux1"] not in gm
+    every = {i for v in table.values() for i in v}
+    assert every == {i for v in multi.values() for i in v} and left == []
+    assert all(i not in {x for n in gm for x in table.get(n, [])} for i in ("kick__sleep", "rim1__cross", "hh__bow_half"))
+    assert KI.parse_midimap_multi(KI.midimap_xml(table)) == table          # le fichier écrit se relit à l'identique
+
+
+def test_un_kit_drumgizmo_importe_avant_est_reecrit_une_fois(monkeypatch, tmp_path):
+    rack = tmp_path / "rack"; kd = rack / "library" / "drumkits" / "greg"; kd.mkdir(parents=True)
+    (rack / "library" / "kits").mkdir(parents=True)
+    (kd / "drumkit.xml").write_text("<drumkit/>"); (kd / "midimap.xml").write_text(GREG)
+    monkeypatch.setattr(KI.C, "ROOT", str(rack)); monkeypatch.setattr(K.C, "ROOT", str(rack))
+    monkeypatch.setattr(K, "KITS_DIR", str(rack / "library" / "kits")); monkeypatch.setattr(K, "_sync_soon", lambda: None)
+    old = {"id": "drums-greg", "name": "Greg", "role": "drum", "engine": "drumgizmo",
+           "drumkit": "library/drumkits/greg/drumkit.xml", "midimap": "library/drumkits/greg/midimap.xml",
+           "notes": {"kick": 24, "snare": 32}, "notes_note": "read in midimap.xml at import", "imported": {"at": 1}}
+    assert K.save_kit(old, allow_drums=True)["ok"]
+    assert KI.remap_imported_gm() == ["drums-greg"]
+    k = K.get_kit("drums-greg")
+    assert k["midimap"] == "library/drumkits/greg/midimap-gm.xml" and k["midimap_src"] == "library/drumkits/greg/midimap.xml"
+    assert k["notes"]["kick"] == 36 and k["notes"]["snare"] == 38 and "General MIDI" in k["notes_note"]
+    assert (kd / "midimap.xml").read_text() == GREG                     # la table d'origine n'est pas touchée
+    assert KI.remap_imported_gm() == []                                 # idempotent
+
+
+def test_l_import_drumgizmo_pose_la_table_general_midi_et_garde_l_originale(kit_on_disk, monkeypatch, tmp_path):
+    rack = tmp_path / "rack"; (rack / "library" / "kits").mkdir(parents=True)
+    monkeypatch.setattr(KI.C, "ROOT", str(rack)); monkeypatch.setattr(K.C, "ROOT", str(rack))
+    monkeypatch.setattr(K, "KITS_DIR", str(rack / "library" / "kits")); monkeypatch.setattr(K, "_sync_soon", lambda: None)
+    monkeypatch.setattr(KI, "availability", lambda eng: (True, None))
+    jid = KI.install(str(kit_on_disk / "Salamander"))
+    import time
+    for _ in range(100):
+        j = KI.job(jid)
+        if j["state"] != "running":
+            break
+        time.sleep(0.05)
+    assert j["state"] == "done", j
+    kit = K.get_kit(j["result"]["kit"]["id"])
+    assert kit["midimap"].endswith("/midimap-gm.xml") and kit["midimap_src"].endswith("/midimap.xml")
+    table = KI.parse_midimap_multi((rack / kit["midimap"]).read_text())
+    assert table[36] == ["Kick"] and table[42] == ["HiHat-Closed"] and table[57] == ["Crash2"]
+    assert "Weird" not in {i for n in KI.GM_RANGE for i in table.get(n, [])}   # inconnu : gardé, hors plage GM
+    assert KI.remap_imported_gm() == []                                 # déjà en GM : rien à refaire

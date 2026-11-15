@@ -75,8 +75,15 @@ def _kit_fp(k):
             f = os.path.join(C.ROOT, p["sample"])
             pads.append([p.get("note"), p.get("mode"), p.get("level"), _sha(f) if os.path.isfile(f) else p["sample"]])
     # les pads seulement quand il y en a : l'empreinte d'une batterie ne bouge pas (ses démos restent à jour)
+    # la TABLE d'un kit importé aussi (réécrite en General MIDI le 2026-11-15 : les démos d'avant tapaient à côté) ;
+    # seulement pour un import, l'empreinte des batteries d'usine ne bouge pas
+    mm = []
+    if k.get("imported") and k.get("midimap"):
+        f = os.path.join(C.ROOT, k["midimap"])
+        mm = [k["midimap"], _sha(f) if os.path.isfile(f) else None]
     return hashlib.sha1(json.dumps([k.get("engine"), k.get("bank"), k.get("drumkit"), k.get("sfz"), k.get("mix")]
-                                   + ([pads] if pads else []), sort_keys=True, default=str).encode()).hexdigest()[:16]
+                                   + ([pads] if pads else []) + ([mm] if mm else []),
+                                   sort_keys=True, default=str).encode()).hexdigest()[:16]
 
 
 def entry(kit_id):
@@ -315,11 +322,13 @@ def _pad_label(sample):
 
 
 def kit_card(k):
-    """La fiche d'un kit pour le manifeste (extra du pack local:kit-*) : {type, hint, pieces, mics, bank, pads, samples,
+    """La fiche d'un kit pour le manifeste (extra du pack local:kit-*) : {type, hint, pieces, notes, mics, bank, pads, samples,
     credit}. pads : les 16 dans l'ordre du contrôleur, le pad 1 en bas à gauche."""
     out = {"type": kit_type(k), "hint": k.get("hint") or None, "bank": k.get("bank") or None}
     if isinstance(k.get("notes"), dict) and k["notes"]:
         out["pieces"] = sorted(k["notes"].keys())
+        # la table JOUÉE (pièce → note MIDI ; General MIDI pour un kit importé) : golem.fm la montre sur la page du kit
+        out["notes"] = {el: n for el, n in sorted(k["notes"].items()) if isinstance(n, int)}
     if k.get("mix"):
         out["mics"] = [{"name": m.get("name"), "group": m.get("group")} for m in k["mix"] if isinstance(m, dict)]
     pads = [p for p in k.get("pads") or [] if isinstance(p, dict) and p.get("sample")]

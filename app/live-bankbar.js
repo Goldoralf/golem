@@ -13,6 +13,7 @@
 // affichent la même barre, au même endroit, et se contentent de remplir ce qu'il y a dessous.
 import { html, useState, useEffect, useAsync, post, cls, esc, pad2, bankNo, setTopSlot, go, openInDesigner } from './lib.js';
 import { patchDraft } from './designer-model.js';
+import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
 
 const recall = (preset, scene) => post('/api/recall', { preset, scene });
 
@@ -35,7 +36,7 @@ async function openPlaying(id) {
 // de la topbar choisit déjà ce que joue le pédalier. Elle montre maintenant les chansons de la setlist (ou les sons de la
 // bank) choisie là-haut, dans l'ordre des banks ; un tap charge LA LIGNE — sa chanson, son tempo, ses stems, son
 // arrangement — comme ◀ ▶ et le pied. Un preset quelconque se joue depuis Songs ▸ Presets.
-function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose }) {
+function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose, cpu }) {
   const kind = !playingId ? null : playingId === 'sandbox-try' ? 'draft' : playingId.startsWith('patch:') ? 'patch' : 'preset';
   const sounds = foot && foot.kind === 'sounds';
   return html`<div class="live-picker" onClick=${onClose}>
@@ -48,7 +49,8 @@ function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose }) {
         <button class="close" style="position:static" onClick=${onClose}>×</button></div>
       <div class="live-picker-grid">
         ${rows.map(r => html`<button class=${cls('live-pick', r.slot === slot && 'on')} onClick=${() => onPick(r.slot)}>
-          <span class="lp-n">#${bankNo(r.slot)}</span> ${esc(r.title)}${r.sub ? html`<small>${esc(r.sub)}</small>` : ''}</button>`)}
+          <span class="lp-n">#${bankNo(r.slot)}</span> ${esc(r.title)}${r.sub ? html`<small>${esc(r.sub)}</small>` : ''}
+          ${r.preset && cpu && cpu[r.preset] ? html`<${StageChip} next still entry=${cpu[r.preset]} />` : ''}</button>`)}
         ${!rows.length ? html`<div class="muted" style="padding:24px">${sounds ? 'No sound in this bank yet' : 'No song in this setlist yet'} — build it in Songs ▸ Banks & Setlists.</div>` : ''}
       </div>
     </div>
@@ -180,6 +182,14 @@ export function BankBar({ rig, presets, badges, trial }) {
   // « SETLIST — · 0/8 », et ◀ ▶ menaient aux presets d'une setlist qui ne le contient pas) : la barre dit ce qui joue —
   // PATCH ou PRESET — sans numéro ni flèches. La setlist reste à un tap, dans la topbar.
   const alone = slot < 0 && !!current;
+  // LE BUDGET CPU SUR SCÈNE (docs/cpu-budget.md §3, lot 4) : une puce SEULEMENT quand le morceau chargé ou le suivant est
+  // tendu ou rouge — jamais un chiffre. Un tap = la feuille, en lecture seule. Sans les routes, rien ne s'affiche.
+  const [cpuOpen, setCpuOpen] = useState(null);       // {preset, title}
+  const nextSlots = bySlot && slot >= 0 ? navSlots.filter(i => i > slot).slice(0, 3) : [];
+  const cpu = useCpuMany([st.preset_id, ...navSlots.map(i => lines[i] && lines[i].preset)], [banks && banks.id]);
+  const nextPreset = nextSlots.length ? (lines[nextSlots[0]] || {}).preset : null;
+  const cpuNow = cpu[st.preset_id];
+  const nowChip = cpuNow ? html`<${StageChip} entry=${cpuNow} onOpen=${() => setCpuOpen({ preset: st.preset_id, title: song && song.title ? song.title : (current ? current.name : '') })} />` : '';
   const aloneKind = String(st.preset_id || '').startsWith('patch:') ? 'PATCH' : st.preset_id === 'sandbox-try' ? 'DRAFT' : 'PRESET';
   return html`<div class="live2-bank" data-doc="live.bank">
     ${alone ? html`<span class="live2-nav off"></span><div class="live2-peek prev"></div>` : html`
@@ -191,8 +201,9 @@ export function BankBar({ rig, presets, badges, trial }) {
       ${/* BANK pour une liste de SONS (patches), SETLIST pour une setlist de chansons (2026-10-08) : le même
             numéro ne dit pas la même chose — un son du pédalier, ou la place d'un morceau dans l'ordre du concert */''}
       <b>${alone ? aloneKind : html`${banks && banks.kind === 'sounds' ? 'BANK' : 'SETLIST'} ${slot >= 0 ? '#' + bankNo(slot) : '—'}${navOrder.length ? ` · ${pos}/${navOrder.length}` : ''}`}</b>
-      ${(badges || st.whammy_on || lone) ? html`<div class="live2-badges">
+      ${(badges || st.whammy_on || lone || nowChip) ? html`<div class="live2-badges">
         ${badges || ''}
+        ${nowChip}
         ${lone ? html`<button class="live2-badge lone" onClick=${e => { e.stopPropagation(); post('/api/recall', { slot }); }}
           title="this preset was loaded on its own — its song (parts, stems, click) is not. Tap to load the song from its bank.">no song · sounds only — load it</button>` : ''}
         ${st.whammy_on ? html`<span class="live2-badge whammy" title="whammy engaged">▲ ${st.whammy_mode || 'whammy'}</span>` : ''}
@@ -207,12 +218,14 @@ export function BankBar({ rig, presets, badges, trial }) {
         onClick=${e => { e.stopPropagation(); setSlPick(true); }}
         title="what plays is not in the list on the pedalboard — tap to choose another list">not in « ${esc(banks.name)} » — tap to change</button>` : ''}</div>
       <span class="live2-nav off"></span>` : html`
-    <div class="live2-peek next">${peek(1) || ''}</div>
+    <div class="live2-peek next">${nextPreset && cpu[nextPreset] ? html`<span class="live2-peek-tx">${peek(1) || ''}</span>` : (peek(1) || '')}${nextPreset && cpu[nextPreset] ? html`<${StageChip} next entry=${cpu[nextPreset]}
+      onOpen=${() => setCpuOpen({ preset: nextPreset, title: titleOf(nextSlots[0]) })} />` : ''}</div>
     <button class="live2-nav" data-doc="live.next" onClick=${() => navStep(1)} title="next preset">▶</button>`}
-    ${picker ? html`<${LivePicker} foot=${banks} slot=${slot} current=${current} playingId=${st.preset_id}
+    ${cpuOpen ? html`<${StageCpuSheet} preset=${cpuOpen.preset} title=${'CPU · ' + (cpuOpen.title || cpuOpen.preset)} onClose=${() => setCpuOpen(null)} />` : ''}
+    ${picker ? html`<${LivePicker} cpu=${cpu} foot=${banks} slot=${slot} current=${current} playingId=${st.preset_id}
       rows=${navSlots.map(i => { const l = lines[i], p = l.preset && list.find(x => x.id === l.preset);
         const name = p ? String(p.name || '').replace(/^⛓\s*/, '') : '';
-        return { slot: i, title: titleOf(i), sub: l.patch ? 'patch' : (name && name !== titleOf(i) ? name : '') }; })}
+        return { slot: i, preset: l.preset, title: titleOf(i), sub: l.patch ? 'patch' : (name && name !== titleOf(i) ? name : '') }; })}
       onPick=${i => { post('/api/recall', { slot: i }); setPicker(false); }} onClose=${() => setPicker(false)} />` : ''}
     ${slPick ? html`<${LiveSetlistPicker} current=${(banks && banks.id) || ''}
       onDone=${() => { setSlPick(false); setBkTick(t => t + 1); }} onClose=${() => setSlPick(false)} />` : ''}

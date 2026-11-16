@@ -89,7 +89,7 @@ export const PowerBtn = ({ on, onPower, sceneId }) => html`<button class=${cls('
   title=${sceneId ? (on ? 'on in scene ' + sceneId + ' — tap to switch it off in this scene' : 'off in scene ' + sceneId + ' — tap to switch it on in this scene')
     : (on ? 'block is active — tap to bypass' : 'block is bypassed — tap to engage')}>⏻ ${on ? 'Active' : (sceneId ? 'Off' : 'Bypassed')}${sceneId ? html` <i class="ph-scope">in ${sceneId}</i>` : ''}</button>`;
 
-export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, exp2, pedals, svc, bpm, laneInst, tab, onTab, assign, onExp, expVol, onExpVol, onParam, onBypass, onScene, onModel, onApplyAll, onLoadPreset, onMove, onRemove, onPickRef, onClose, vstOpen, onRename, onCaptureFoot, powerOn, onPower, multiScene }) {
+export function ParamSheet({ cpu, block, def, tones, ovr, sceneId, sceneOff, fxIcon, exp2, pedals, svc, bpm, laneInst, tab, onTab, assign, onExp, expVol, onExpVol, onParam, onBypass, onScene, onModel, onApplyAll, onLoadPreset, onMove, onRemove, onPickRef, onClose, vstOpen, onRename, onCaptureFoot, powerOn, onPower, multiScene }) {
   // les boutons qu'un tiroir de service remonte dans la rangée ⏻ (le Standard : Change… / Audition, 2026-10-17)
   const [headX, setHeadX] = useState(null);
   // Presets et Expert ne sont plus des onglets (2026-11-15) : un onglet mémorisé retombe sur Settings
@@ -720,6 +720,8 @@ export function ParamSheet({ block, def, tones, ovr, sceneId, sceneOff, fxIcon, 
           : html`<${PowerBtn} on=${powerOn} onPower=${onPower} sceneId=${multiScene ? sceneId : null} />`}
         ${multiScene && ovrCount ? html`<button class="mini edit-only" onClick=${onApplyAll} title="this scene's knob values become the block's settings in every scene">Use in all scenes</button>` : ''}
         <span class="grow"></span>
+        ${/* ce que ce bloc coûte sur ce golem, dans cette lane (docs/cpu-budget.md §3) — en petit, une information */''}
+        ${cpu && cpu.text ? html`<span class=${'cpu-cost lv-' + cpu.level} title="this block's share of one core, measured on this golem">${cpu.text}</span>` : ''}
         ${block.type === 'standard' || block.type === 'backing-track' ? headX : ''}
         ${!isWhammy ? html`<button class="mini edit-only" onClick=${() => onMove(-1)} title="move back">←</button>
         <button class="mini edit-only" onClick=${() => onMove(1)} title="move forward">→</button>` : html`<span class="mini muted" title="the Whammy sits physically BEFORE the input — anchored at the head of the lane">⚓</span>`}

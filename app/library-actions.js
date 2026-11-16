@@ -6,8 +6,9 @@
 //            le patch est mis de côté, Stop le rend ; sans appareil, le bouton le dit ;
 //   Add to…  où le mettre : le patch édité, un nouveau patch, un patch ou un morceau existant (et sa lane) — on arrive
 //            dans le Designer avec le changement en brouillon, rien n'est écrit avant d'enregistrer.
-import { html, useState, useEffect, useRef, cls, esc, post, openInDesigner } from './lib.js';
+import { html, useState, useEffect, useRef, cls, esc, post, openInDesigner, getCatalog } from './lib.js';
 import { patchDraft } from './designer-model.js';
+import { lanesAfter, addLaneState, namVariant } from './cpu-budget.js';   // docs/cpu-budget.md, lot 3
 
 const j = u => fetch(u).then(r => r.json());
 
@@ -83,10 +84,32 @@ export function AddToSheet({ item, onClose }) {
   const [pick, setPick] = useState(null);             // {kind: 'patch'|'song', x, lanes?}
   const [lane, setLane] = useState(null);
   const [err, setErr] = useState(null);
+  // LE BUDGET CPU (docs/cpu-budget.md §3, maquette Amps) : une lane que la capture pousserait dans le rouge est grisée, et
+  // la raison est écrite. {laneId: pct} pour le morceau choisi, et pour le patch édité (la sandbox). Sans les routes
+  // /api/cpu/* ou sans profil, rien n'est grisé.
+  const [after, setAfter] = useState({});
+  const [draftAfter, setDraftAfter] = useState({});
+  const cpuItem = async () => {
+    const b = (info && info.block) || {};
+    let variant = null;
+    if (/-nam$/.test(b.type || '') && item && item.capture != null) {
+      const cat = await getCatalog().catch(() => null);
+      const tone = ((cat && cat.tones) || []).find(t => String(t.id) === String(item.capture));
+      const m = tone && (tone.models || []).find(x => String(x.id) === String(item.model));
+      if (m) variant = namVariant(m);
+    }
+    return { type: b.type, ref: b.ref != null ? b.ref : item && item.capture, model: b.model != null ? b.model : item && item.model, variant };
+  };
   useEffect(() => {
     post('/api/library/patch-doc', { item }).then(setInfo).catch(e => setErr((e.body && e.body.error) || 'Could not reach golem.'));
     j('/api/sandbox').then(setSb).catch(() => {});
   }, []);
+  useEffect(() => {
+    if (!info || !sb || !sb.preset) return;
+    let live = true;
+    cpuItem().then(it => lanesAfter('sandbox', sb.preset, it)).then(m => { if (live) setDraftAfter(m); }).catch(() => {});
+    return () => { live = false; };
+  }, [info, sb]);
   useEffect(() => {
     if (step !== 'pick' || lists.loaded) return;
     Promise.all([j('/api/patches').catch(() => ({})), j('/api/presets').catch(() => [])])
@@ -97,14 +120,15 @@ export function AddToSheet({ item, onClose }) {
   const act = { kind: 'block', role, block: info.block };
   const draft = sb && sb.preset;
   const draftLane = draft && (draft.lanes || []).find(L => roleFits(role, L.role || L.in_role));
+  const draftCpu = draftLane ? addLaneState(draftAfter[draftLane.id]) : { disabled: false, why: '' };
   const go = (fn) => { onClose(); fn(); };
   const close = html`<button class="la-x" aria-label="Close" onClick=${onClose}>×</button>`;
   if (step === 'main') return html`<div class="la-sheet-bg" onClick=${e => e.target === e.currentTarget && onClose()}><div class="la-sheet">
     <div class="la-sheet-hd"><b>Add ${esc(info.name)} to…</b><span class="muted">${esc(info.block.type)} · ${ROLE_NAME[role] || role}</span>${close}</div>
     <div class="la-dests">
-      <button class="la-dest on" disabled=${!draftLane} onClick=${() => go(() => openInDesigner(null, null, act))}>
+      <button class="la-dest on" disabled=${!draftLane || draftCpu.disabled} onClick=${() => go(() => openInDesigner(null, null, act))}>
         <small>The patch you're editing</small><b>${esc((draft && (draft.name || '').replace(/^⛓\s*/, '')) || 'Nothing open')}</b>
-        <span>${draftLane ? 'Its ' + (draftLane.name || role) + ' lane takes it. Opens the Designer on it.' : 'It has no ' + (ROLE_NAME[role] || role) + ' lane.'}</span></button>
+        <span class=${draftCpu.why ? 'cpu-why lv-' + draftCpu.level : ''}>${draftLane ? (draftCpu.why ? 'CPU: its ' + (draftLane.name || role) + ' lane ' + draftCpu.why + '.' : 'Its ' + (draftLane.name || role) + ' lane takes it. Opens the Designer on it.') : 'It has no ' + (ROLE_NAME[role] || role) + ' lane.'}</span></button>
       <button class="la-dest" onClick=${() => go(() => openInDesigner(patchDraft(info.doc)))}>
         <small>A new patch</small><b>New ${ROLE_NAME[role] || role} patch</b>
         <span>A blank ${ROLE_NAME[role] || role} patch with this sound in it. You name it when you save.</span></button>
@@ -122,7 +146,13 @@ export function AddToSheet({ item, onClose }) {
     const d = await j('/api/preset/' + encodeURIComponent(x.id)).catch(() => null);
     const lanes = ((d && d.lanes) || []).filter(L => roleFits(role, L.role || L.in_role));
     setPick({ kind, x, lanes });
+    setAfter({});
     if (lanes[0]) setLane(lanes[0].id);
+    // où irait chaque lane : une lane rouge ne reste pas choisie d'office
+    const m = await cpuItem().then(it => lanesAfter(x.id, d, it)).catch(() => ({}));
+    setAfter(m);
+    const ok = lanes.find(L => !addLaneState(m[L.id]).disabled);
+    setLane(ok ? ok.id : null);
   };
   return html`<div class="la-sheet-bg" onClick=${e => e.target === e.currentTarget && onClose()}><div class="la-sheet tall">
     <div class="la-sheet-hd"><button class="tn-back la-back" onClick=${() => setStep('main')}>‹ Back</button><b>Add ${esc(info.name)} to a patch or a song</b>
@@ -138,8 +168,10 @@ export function AddToSheet({ item, onClose }) {
         : pick.kind === 'patch' ? html`<h6 class="ky-h6">${esc(pick.x.name)}</h6><div class="muted">Its ${ROLE_NAME[role] || role} lane takes it, in its place (an amp replaces the amp, a pedal goes before it).</div>
             <button class="primary la-open" onClick=${() => go(() => openInDesigner(patchDraft(pick.x), null, act))}>Open ${esc(pick.x.name)} in the Designer</button>`
         : html`<h6 class="ky-h6">${esc(pick.x.name)} · where does it go?</h6>
-          ${pick.lanes.length ? pick.lanes.map(L => html`<button class=${cls('la-lane', lane === L.id && 'on')} onClick=${() => setLane(L.id)}>
-            <b>${esc(L.name || L.id)}</b><span>${esc(L.role || L.in_role)}</span></button>`)
+          ${pick.lanes.length ? pick.lanes.map(L => { const c = addLaneState(after[L.id]);
+            return html`<button class=${cls('la-lane', lane === L.id && 'on')} disabled=${c.disabled} onClick=${() => setLane(L.id)}
+              title=${c.why ? 'CPU on this golem: this lane ' + c.why : ''}>
+            <b>${esc(L.name || L.id)}</b>${c.why ? html`<span class=${'cpu-why lv-' + c.level}>${c.why}</span>` : html`<span>${esc(L.role || L.in_role)}</span>`}</button>`; })
             : html`<div class="muted">This song has no ${ROLE_NAME[role] || role} lane. Add one in the Designer first, or pick another song.</div>`}
           <button class="primary la-open" disabled=${!lane} onClick=${() => go(() => openInDesigner(pick.x.id, null, { ...act, lane }))}>Open ${esc(pick.x.name)} in the Designer</button>`}</div>
     </div>

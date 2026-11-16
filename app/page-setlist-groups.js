@@ -27,6 +27,7 @@ import { SampleListEd } from './designer-sheets.js';
 import { SongPicker } from './page-repertoire.js';
 import { BankPicker } from './page-setlists.js';          // la feuille « quelle bank ? », partagée avec le Designer
 import { makeSongFromPatch } from './page-patches.js';   // « ▤ Make a song » (patch-as-preset §4 bis)
+import { useCpuMany, StageChip } from './cpu-budget.js';   // docs/cpu-budget.md : le verdict de chaque morceau
 
 const post = (u, b) => fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(b || {}) }).then(r => r.json());
@@ -167,6 +168,9 @@ export function SetlistGroupsPage({ rig, sub }) {
               : ''}`}
       <small>tap to dismiss</small></div>` : ''}`;
 
+  // LE BUDGET CPU DES LIGNES (docs/cpu-budget.md §3) : une puce sur un morceau tendu ou rouge sur ce golem, seulement — hors
+  // de toute condition (règle des hooks : la setlist ouverte change sans que la page se remonte)
+  const cpuLines = useCpuMany(opened && opened.kind !== 'sounds' ? (opened.lines || []).map(l => l && l.preset) : []);
   const modals = html`
     ${editing && sets.find(s => s.id === editing) ? html`<${SetlistGrid} sl=${sets.find(s => s.id === editing)}
       presets=${sets.find(s => s.id === editing).kind === 'sounds' ? allPatches : allPresets}
@@ -230,6 +234,7 @@ export function SetlistGroupsPage({ rig, sub }) {
               <b>${bankNo(i)}</b>
               <span class="t">${esc(ln.title || nameOf(ln.preset) || 'New song')}<small>${!ln.preset ? 'no preset yet' : (s.missing || []).includes(ln.preset) ? ln.preset + ' — not on this rack'
                 : esc(nameOf(ln.preset)) + (ln.title && !ln.arrangement && !ln.backing && !ln.blocks ? ' · preset as is' : '')}</small></span>
+              ${ln.preset && cpuLines[ln.preset] ? html`<${StageChip} next still short entry=${cpuLines[ln.preset]} />` : ''}
               ${ln.bpm ? html`<em class="bpm">♩${ln.bpm}</em>` : ''}
               <span class="ico">${icoRow(ln).map(([g, on, t]) => t === 'arrangement'
                 ? html`<i class=${cls(on && 'on', 'go')} role="button" tabindex="0"

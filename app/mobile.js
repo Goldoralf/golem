@@ -12,6 +12,7 @@ import { html, render, useState, useEffect, useRef, post, cls, useRigState, keep
 import { watchErrors } from './ui-errors.mjs';
 import { ICON, hydrateBlockMeta, shortBlockName } from './designer-model.js';
 import { PhoneCaptures } from './capture-module.js';
+import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
 
 const api = p => fetch(p).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
 const LANE_TAG = { guitar: 'GTR', bass: 'BASS', voice: 'VOX', keys: 'KEYS', 'keys-pads': 'KEYS', pads: 'PADS', drums: 'DRUM', line: 'LINE' };
@@ -132,6 +133,11 @@ function HoldButton({ label, sub, onHold, klass }) {
 function NowPage({ st, c }) {
   const arr = st.arrangement || {};
   const ln = c.lines[c.idx] || null;
+  // LE BUDGET CPU (docs/cpu-budget.md §3, lot 4) : la même puce que /live sous le morceau, et sur les suivants — seulement
+  // tendu ou rouge, jamais un chiffre ; un tap = la feuille, en lecture seule. AVANT les retours anticipés (règle des hooks).
+  const nextLines = c.idx >= 0 ? c.lines.slice(c.idx + 1, c.idx + 4) : [];
+  const cpu = useCpuMany([st.preset_id, ...nextLines.map(l => l && l.preset)]);
+  const [cpuOpen, setCpuOpen] = useState(null);
   const isShow = (st.mode || {}).id === 'show';
   // READY FOR THE SHOW : mode Show, rien n'a encore joué (on est sur la 1re chanson, ou sur rien)
   if (isShow && c.conductor && !arr.running && !arr.done && c.idx <= 0) return html`<${ReadyForShow} st=${st} c=${c} />`;
@@ -139,10 +145,13 @@ function NowPage({ st, c }) {
   const upcoming = arr.done ? c.lines[c.idx + 1] : (arr.present && !arr.running && c.idx >= 0 ? ln : null);
   if (upcoming) return html`<${BetweenSongs} st=${st} c=${c} next=${upcoming} loaded=${!arr.done} />`;
   const info = c.songOf(ln);
-  const next = c.idx >= 0 ? c.lines.slice(c.idx + 1, c.idx + 4) : [];
+  const next = nextLines;
   return html`<div class="c-page">
+    ${cpuOpen ? html`<${StageCpuSheet} preset=${cpuOpen.preset} title=${'CPU · ' + (cpuOpen.title || '')} onClose=${() => setCpuOpen(null)} />` : ''}
     <div class="c-card"><span class="c-lbl">Now${c.idx >= 0 ? ' · ' + (c.idx + 1) + ' / ' + c.lines.length : ''}${c.sl ? ' · ' + c.sl.name : ''}</span>
       <div class="c-big">${(ln && ln.title) || st.preset_name || 'No song'}</div>${info.artist ? html`<div class="c-sub">${info.artist}</div>` : ''}
+      ${cpu[st.preset_id] ? html`<div class="c-cpu"><${StageChip} entry=${cpu[st.preset_id]}
+        onOpen=${() => setCpuOpen({ preset: st.preset_id, title: (ln && ln.title) || st.preset_name })} /></div>` : ''}
       <div class="c-chips">
         <div class="c-chip"><small>BPM</small><b>${Math.round(st.tempo || 0)}</b></div>
         ${info.key ? html`<div class="c-chip"><small>KEY</small><b>${info.key}</b></div>` : ''}
@@ -156,7 +165,7 @@ function NowPage({ st, c }) {
     <div class="c-card grow"><span class="c-lbl">Next up</span>
       ${next.length ? html`<div class="c-list">${next.map((l, i) => { const inf = c.songOf(l);
         return html`<div class=${cls('c-row', !l.preset && 'dim')}><span class="n">${String(c.idx + i + 2).padStart(2, '0')}</span>${c.titleOf(l)}
-          <small>${l.preset ? [l.bpm, inf.key].filter(Boolean).join(' · ') : 'no rig yet'}</small></div>`; })}</div>`
+          <small>${l.preset && cpu[l.preset] ? html`<${StageChip} next entry=${cpu[l.preset]} onOpen=${() => setCpuOpen({ preset: l.preset, title: c.titleOf(l) })} />` : ''}${l.preset ? [l.bpm, inf.key].filter(Boolean).join(' · ') : 'no rig yet'}</small></div>`; })}</div>`
         : html`<p class="c-sub">${c.idx >= 0 ? 'End of the setlist.' : 'This preset is not in the setlist.'}</p>`}</div>
   </div>`;
 }

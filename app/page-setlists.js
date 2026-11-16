@@ -9,6 +9,7 @@ import { ListToolbar, useViewedList } from './list-toolbar.js';
 import { PresetSettings } from './designer-sheets.js';
 import { blkColor, ICON, SCENE_IDS, blockContent, SPECIAL_CAT, hydrateBlockMeta } from './designer-model.js';
 import { menuEntry as startupEntry, isHome } from './startup-model.mjs';   // l'accueil au démarrage (mockups/startup-home.html)
+import { useCpuMany, StageChip, PresetCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md : le verdict de chaque preset
 import { FeatChips } from './browser-rail.js';             // les blocs spéciaux, comme le menu « With » du Designer
 
 // état de scène (résumé backend, READ-ONLY : scn.branches_off = branches mutées, scn.off/on = blocs
@@ -132,6 +133,10 @@ export function SetlistsPage({ rig }) {
   // sélection locale par rangée : entrée affichée + scène active + APERÇU de stomps (non sauvegardé).
   // Changer de scène réinitialise l'aperçu -> tout revient à l'état de la scène.
   const [rowSel, setRowSel] = useState({});          // {pid: {inputIdx, scene, stomps:{type:bool}}}
+  // LE BUDGET CPU (docs/cpu-budget.md §3) : une puce sur un preset tendu ou rouge sur ce golem — le vert se tait, une
+  // liste de puces vertes ne se lit plus. Un tap = sa feuille (lanes, ce que golem propose).
+  const cpu = useCpuMany(list.map(x => x.id));
+  const [cpuOpen, setCpuOpen] = useState(null);
   const selOf = pid => rowSel[pid] || { inputIdx: 0, scene: 0, stomps: {} };
   const setSel = (pid, patch) => setRowSel(s => ({ ...s, [pid]: { ...selOf(pid), ...patch } }));
   // aperçu au pied : état EFFECTIF d'un stomp (scène ± bascule locale) ; tap = bascule on/off
@@ -275,6 +280,7 @@ export function SetlistsPage({ rig }) {
           <button class=${cls('pbank', slot >= 0 && 'on')} title=${slot >= 0 ? 'bank — tap to move' : 'tap to assign a bank'}
             onClick=${() => setPicker(p.id)}>${slot >= 0 ? '#' + bankNo(slot) : '—'}</button>
           <b class="prow-name">${esc(p.name)}</b>
+          ${cpu[p.id] ? html`<${StageChip} next short entry=${cpu[p.id]} onOpen=${() => setCpuOpen(p)} />` : ''}
           ${/* les INSTRUMENTS du preset, en chips (demande 2026-07-31) — à la place du duo
                 de styles, descendu devant les tags persos. Un tap = la lane s'affiche dans le
                 mini-flow (même état que le sélecteur IN, qui reste). */''}
@@ -460,6 +466,7 @@ export function SetlistsPage({ rig }) {
       activeSl, viewId, qRaw, sort, assign, tag, allTags.length]);
 
   return html`<div class="library">
+    ${cpuOpen ? html`<${PresetCpuSheet} preset=${cpuOpen.id} title=${'CPU · ' + (cpuOpen.name || cpuOpen.id)} onClose=${() => setCpuOpen(null)} />` : ''}
     <div class="lib-grid" onClick=${() => menu && setMenu(null)}>
       ${list.length ? html`<div class="plist">${list.map(Card)}</div>` : (() => {
         // « Installed on the rack » puis rien à l'écran (2026-09-15) : un preset poussé depuis

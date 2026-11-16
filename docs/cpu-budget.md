@@ -8,6 +8,25 @@
 > **Lot 1: CODED 2026-11-16** (`bridge/cpu_budget.py`, `bridge/cpu_bench.py`, `bridge/routes_cpu.py`, the `bench` op
 > of `golem_preview.lua`, the `cpu` fact of Health). Not yet run on a rack: the first real calibration confirms the
 > timings below. What lot 1 decided or changed is in §11.
+>
+> **Lots 2–4: CODED 2026-11-16** (app only, against the §9 shapes; the routes come with lot 1). Pure logic in
+> `app/cpu-budget-model.mjs` (tested), fetches and shared pieces in `app/cpu-budget.js` + `app/cpu-budget.css`.
+> Deviations from the mockup, decided while coding:
+> - Designer: the topbar has no room left, so the verdict chip sits at the right of the chain's title row, compact
+>   ("Tight · Guitar 78 %", the cores in its tooltip and in the sheet). The bar per lane, the scenes and each block's
+>   share live in the sheet the chip opens (the Main screen); a tight or red lane also gets a dot on its tab.
+> - Fix buttons: `perf-mode` (POST /api/perf-mode), `buffer` (opens Settings ▸ System), and in the Designer only
+>   `turn-off` (the block off in that scene) and `lighter-capture` ("Use it" when the action carries `ref`, else "Find"
+>   opens the capture picker). `mono` and `split` stay a sentence. A fix with `action.lane` shows on that lane; the
+>   others belong to the busiest lane. On /live and the Companion the sheet is read-only.
+> - /live: the chips live in the bank bar (the loaded song, the next one in the "next" peek) and on the rows of the
+>   songs picker. Lists (Songs ▸ Presets, setlist rows) show a compact "CPU" chip coloured by the verdict; "plays" is
+>   silent everywhere outside the Designer.
+> - Library: costs are asked mono; a NAM capture's variant is sent as `nam:<arch>` (`standard`, `lite`, `feather`,
+>   `nano` from the catalogue's `size`, `a2` when `arch` is 2). A capture's chip is coloured on a block scale (≤ 10 %,
+>   ≤ 25 %), not the lane thresholds.
+> - A route answering FastAPI's 404 `Not Found` silences every CPU read of the page until it reloads; an empty profile
+>   reads "not measured". Never an error banner.
 
 ## 1. What counts: the busiest lane, not the number of cores
 

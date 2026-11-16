@@ -32,6 +32,7 @@ import { layoutChain } from './chain-layout.js';
 import { BlockStatusSheet, MissingBanner, blockSig } from './designer-blockstatus.js';   // docs/block-status.md
 import { PedalView } from './designer-pedalview.js';     // la vue pédalier (docs/designer-glyphs-pedals.md §2)
 import { pedalValues } from './golem-visuals.js';
+import { useCpuEstimate, VerdictChip, CpuSheet, blockCostLine, laneAlerts, levelOf } from './cpu-budget.js';   // docs/cpu-budget.md, lot 2
 
 // long-press = assigner (convention QC) : longPress/lpFired partagés (lib.js).
 
@@ -151,6 +152,15 @@ export function DesignerPage({ rig, sub }) {
   const devSel = useRef(null);
   if (devSel.current === null) { const m = location.search.match(/[?&]dsel=pre(\d+)/); devSel.current = m ? Number(m[1]) : false; }
   const [pickAmp, setPickAmp] = useState(null);   // {li,i} | {post:i}
+  // LE BUDGET CPU DU BROUILLON (docs/cpu-budget.md §3, lot 2) : relu à chaque écriture de la sandbox. Sans les routes
+  // /api/cpu/* (bridge plus ancien) ou sans profil, `cpuEst` reste null et rien ne s'affiche — jamais une erreur.
+  const cpuEst = useCpuEstimate('sandbox', [((rig && rig.state) || {}).sandbox_rev]);
+  const [cpuSheet, setCpuSheet] = useState(null);   // {lane?} : la feuille des lanes / des correctifs
+  // la part d'UN bloc dans sa lane (sa feuille l'écrit en petit : « ≈ 9 % of a core ») — null sans estimation
+  const cpuOfBlock = b => { if (!cpuEst || !b || !b.id) return null;
+    for (const L of cpuEst.lanes || []) { const x = (L.blocks || []).find(y => y && y.id === b.id);
+      if (x) return { text: blockCostLine({ pct: x.pct, measured: x.measured }), level: levelOf(x.pct) }; }
+    return null; };
   const [saved, setSaved] = useState('');
   const [saving, setSaving] = useState(false);         // auto-save en cours (indicateur persistant)
   const [settings, setSettings] = useState(false);   // sheet réglages du preset (nom/style/FCB)
@@ -2337,7 +2347,7 @@ export function DesignerPage({ rig, sub }) {
             ${/* ≥ 4 lanes (2026-09-09, 7 onglets en Rehearsal) : le nom SUR l'entrée, en deux lignes
                   nettes — sur une ligne les libellés se coupaient au retour à la ligne */''}
             ${/* LOT 3 : un onglet PAR LANE, généré depuis la liste — nom de la lane, entrée en petit */''}
-            <${LaneTabs} lanes=${lanes} patch=${patch} patchMode=${patchMode} pmTab=${pmTab} pmTitle=${pmTitle} inTab=${inTab} laneTitle=${laneTitle} onPick=${pickInTab}
+            <${LaneTabs} cpu=${laneAlerts(cpuEst)} lanes=${lanes} patch=${patch} patchMode=${patchMode} pmTab=${pmTab} pmTitle=${pmTitle} inTab=${inTab} laneTitle=${laneTitle} onPick=${pickInTab}
               unmounted=${((rig && rig.state) || {}).rig_unmounted || []}
               folded=${drumsetsOf(lanes).filter(d => !dsFold.includes(d))} />
             ${/* UN PATCH A SON ⚙ (docs/patches.md §4) : looper, sample, grooves, pour jouer SEUL — le
@@ -2438,6 +2448,10 @@ export function DesignerPage({ rig, sub }) {
               ${curLane && laneWaitsCard(curLane) ? html`<small class="lane-off waits" title="the lane is prepared on the mode's card — it mounts when that card is connected">⏳ ${esc(modeCard)} not connected</small>`
                 : curLane && laneOffCard(curLane) ? html`<small class="lane-off warn">⚠ not mounted — IN ${curLane.in_sel} is not on this card, pick another input</small>` : ''}
               ${stompStrip()}
+              ${/* LE VERDICT CPU DU PRESET (docs/cpu-budget.md §3) : la lane la plus chargée dans sa scène la plus lourde, et
+                    les cœurs en information. Un tap = chaque lane contre un cœur, puis ce que golem propose. */''}
+              ${cpuEst ? html`<span class="cpu-slot"><${VerdictChip} compact est=${cpuEst}
+                onClick=${() => setCpuSheet({ lane: ['tight', 'red'].includes(levelOf(((cpuEst.lanes || []).find(x => x.id === curLane.id) || {}).pct)) ? curLane.id : null })} /></span>` : ''}
             </div>
             ${dview === 'pedals' && !curLane.midi ? html`<${PedalView} lane=${curLane.id} chain=${curLane.chain} catalog=${effects}
                 sceneState=${pedalState(curLane)} values=${pedalVals(curLane)}
@@ -2572,7 +2586,7 @@ export function DesignerPage({ rig, sub }) {
           onMove=${d => move(sel, d)} onRemove=${() => rmBlock(sel)}
           onOpen=${() => openVst(selBlock.id)}
           onClose=${() => setSel(null)} />`;
-        return html`<${ParamSheet} block=${vcapOrigin(selBlock) ? { ...selBlock, origin: vcapOrigin(selBlock) } : selBlock} def=${fxDef(selBlock.type)}
+        return html`<${ParamSheet} cpu=${cpuOfBlock(selBlock)} block=${vcapOrigin(selBlock) ? { ...selBlock, origin: vcapOrigin(selBlock) } : selBlock} def=${fxDef(selBlock.type)}
         onRename=${name => upd(n => { const b = blockAt(n, sel); if (b && name) b.label = name.slice(0, 60); })}
         onCaptureFoot=${(id, sw) => upd(n => {
           const b = blockAt(n, sel); if (!b) return;
@@ -2683,7 +2697,9 @@ export function DesignerPage({ rig, sub }) {
           .filter(e => !e.quarantine && e.type !== 'vst-host');
         const roleCats = role ? ROLE_CATS[role] : null;                 // absent (guitar) -> toutes
         const roleArch = role ? archetypes.filter(a => (a.roles || ['guitar']).includes(role)) : [];
+        const cpuL = !isCfg && cpuEst && dLane ? (cpuEst.lanes || []).find(x => x.id === dLane.id) : null;
         return html`<${CategoryDrawer} cats=${isCfg ? cats : (roleCats || cats)} fx=${dfx} flat=${isCfg}
+          cpu=${cpuL ? { lanePct: cpuL.pct, stereo: !!dLane.stereo, name: cpuL.name || laneTitle(dLane) } : null}
           pedals=${isCfg ? [] : roleArch} fam=${role ? ROLE_FAM[role] : null}
           post=${!!drawer.post} voice=${dLane.role === 'voice'} stereo=${drawer.add === 'pre' && !split && !dLane.midi} laneStereo=${!!dLane.stereo}
           present=${new Set([...laneBlocks(dLane), ...genBlocks, ...recBlocks].filter(Boolean).map(b => b.type))}
@@ -2728,6 +2744,27 @@ export function DesignerPage({ rig, sub }) {
             // MIDI s'ouvrait d'office, sans que rien ne dise qu'un autre choix existait.
             if (cur === 'drums') { setDsPick(null); setDsPlan([]); setDsOpen(true); } }}
           onClose=${() => setPatchBrowse(false)} />` : ''}
+
+      ${/* LA FEUILLE DU BUDGET CPU (maquettes Main + Fix) : les gestes que le Designer sait faire proprement — couper un
+            bloc dans une scène, prendre une capture plus légère (ou la chercher) ; perf-mode et buffer sont faits par la
+            feuille ; mono et split restent une phrase (aucun geste propre ici, docs/cpu-budget.md §4). */''}
+      ${cpuSheet ? html`<${CpuSheet} est=${cpuEst} lane=${cpuSheet.lane} sceneId=${sc.id} sceneIds=${(p.scenes || []).map(s => s.id)}
+        title=${'CPU · ' + (patchMode ? (pmTitle || 'this patch') : (p.name || 'this preset'))}
+        can=${['turn-off', 'lighter-capture']}
+        onAction=${fix => { const a = fix.action || {}; const ref = a.block ? refOfBlockId(a.block) : null;
+          if (!ref) return false;
+          if (a.kind === 'turn-off') {
+            const sid = a.scene || (cpuEst && cpuEst.worst && cpuEst.worst.scene) || sc.id;
+            upd(n => { const s = (n.scenes || []).find(x => x.id === sid); if (!s) return; s.blocks = s.blocks || {}; s.blocks[a.block] = false; });
+            return true;
+          }
+          if (a.kind === 'lighter-capture') {
+            if (!a.ref) { setCpuSheet(null); setPickAmp(ref); return 'close'; }
+            upd(n => { const b = blockAt(n, ref); if (!b) return; b.ref = String(a.ref); if (a.model) b.model = String(a.model); else delete b.model; });
+            return true;
+          }
+          return false; }}
+        onClose=${() => setCpuSheet(null)} />` : ''}
 
       ${pickAmp ? (() => { const blk = blockAt(p, pickAmp);
         const arch = blk.type === 'pedal-nam' && blk.variant ? pedalArch(blk.variant) : null;

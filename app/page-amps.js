@@ -7,6 +7,8 @@ import { usePlayIt, PlayBanner, ActionBar } from './library-actions.js';
 import { useVisuals, Drawing, ampSvg, AMP_FAMILIES, useAudition, PlayMark, AuditionNote, captureTags, openLater, takeOpen } from './tones-ui.js';
 import { capText, archOf as archMatch } from './designer-model.js';
 import { T3kModal } from './t3k-modal.js';
+import { useCpuBlocks, useCpu, useCpuEstimate, swapPath, captureCostLabel, rangeLine, costPct, namArch, namVariant, blockLevel, swapView, swapHint } from './cpu-budget.js';   // docs/cpu-budget.md, lot 3
+import { blockKey } from './cpu-budget-model.mjs';
 
 // 'bass' n'est PAS un style : c'est la famille (segmenté Guitar|Bass de la toolbar)
 const STYLES = ['metal', 'rock', 'blues', 'jazz', 'funk'];
@@ -225,13 +227,21 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
     refreshCatalog();
   };
   const fam = AMP_FAMILIES.find(f => f[0] === family) || AMP_FAMILIES[1];
+  // CE QUE COÛTE CHAQUE CAPTURE SUR CE GOLEM (docs/cpu-budget.md §3, maquette Amps) : son architecture NAM la fixe —
+  // deux captures du même ampli peuvent coûter trois fois plus l'une que l'autre. Mono : le cas d'une lane de guitare.
+  const capType = t.format === 'ir' ? null : 'amp-nam';
+  const cpuCosts = useCpuBlocks(capType ? t.models.map(m => ({ type: capType, variant: namVariant(m), stereo: false })) : []);
+  const costOf = m => capType ? cpuCosts[blockKey(capType, namVariant(m), false)] : null;
+  const range = rangeLine(t.models.map(m => costPct(costOf(m))));
+  const rangeLv = blockLevel(Math.min(...t.models.map(m => costPct(costOf(m))).filter(x => x != null)));
   return html`<div class="tn-detail" data-doc="tones.amp-detail">
     <section class="tn-stage">
       <button class="tn-back" onClick=${onClose}>‹ Amps</button>
       <div class="tn-spot">${vis ? html`<${Drawing} svg=${ampSvg(t, arch, family)} />` : ''}</div>
       <h2>${ampName(t)}</h2>
       <div class="tn-meta"><span class="fam" style=${'--c:' + fam[2]}>${fam[1]}</span><span>${t.gear === 'amp' ? 'Head only' : 'Head + cab'}</span>
-        <span>${t.brand || 'Other'}</span><span>⬇ ${(t.downloads || 0).toLocaleString('en')}</span>${lent ? html`<span class="tn-lent">${lentLabel(lent)}</span>` : ''}</div>
+        <span>${t.brand || 'Other'}</span><span>⬇ ${(t.downloads || 0).toLocaleString('en')}</span>${lent ? html`<span class="tn-lent">${lentLabel(lent)}</span>` : ''}
+        ${range ? html`<span class=${'cpu-range lv-' + rangeLv} title="what its captures cost on this golem, as a share of one core">${range}</span>` : ''}</div>
     </section>
     <section class="tn-caps">
       <header><b>Captures</b><em>${t.models.length}</em><span class="grow"></span>
@@ -240,7 +250,9 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
         <button class=${cls('tn-row', (au.playing(t.id, m.id) || (pi.st.on && cur === m.id)) && 'on', cur === m.id && 'cur')} onClick=${() => touch(m)}>
           <span class="num">${i + 1}</span><span class="nm">${m.name || 'model'}</span>
           <span class="tags">${captureTags(m.name).map(([c, x]) => html`<i class=${'t-' + c}>${x}</i>`)}</span>
+          ${costOf(m) ? html`<i class=${'cpu-tag lv-' + blockLevel(costPct(costOf(m)))} title="its share of one core on this golem · its NAM architecture">${captureCostLabel(costOf(m), namArch(m))}</i>` : ''}
           <${PlayMark} on=${au.playing(t.id, m.id)} busy=${au.loading(t.id, m.id)} /></button>`)}</div>
+      ${au.st.on && au.st.info && au.st.base ? html`<${ListenCpu} au=${au} t=${t} />` : ''}
       <${PlayBanner} pi=${pi} />
       ${pi.st.on ? '' : html`<${AuditionNote} au=${au} />`}
       <div class="tn-act">
@@ -252,6 +264,34 @@ function AmpPanel({ t, arch, family, vis, lent, pairs, onClose, onDeleted }) {
       <${ActionBar} pi=${pi} item=${item} onListen=${() => { if (pi.st.on) pi.stop(); au.play(t.id, cur); }} listening=${au.playing(t.id, cur)} />
       ${del_ ? html`<div class="sheet-scrim"><div class="gf-sheet"><${DeleteFlow} t=${t} onDone=${() => { setDel(false); onDeleted(); }} onCancel=${() => setDel(false)} /></div></div>` : ''}
     </section>
+  </div>`;
+}
+
+// LA BARRE D'ÉCOUTE (maquette Amps) : pendant qu'une capture s'écoute dans le patch, la lane avant → après — et une capture
+// plus légère quand il y en a une. Rien sans les routes /api/cpu/* ni sans profil.
+function ListenCpu({ au, t }) {
+  const { base, info, model } = au.st;
+  const sw = useCpu(swapPath(base, info.block, t.id, model), [base, info.block, t.id, model]);
+  const est = useCpuEstimate(base);
+  const [pname, setPname] = useState('');
+  useEffect(() => { if (!base || base.startsWith('patch:') || base === 'sandbox-try') { setPname(''); return; }
+    fetch('/api/preset/' + encodeURIComponent(base)).then(r => r.ok ? r.json() : null).then(d => setPname((d && d.name) || '')).catch(() => {}); }, [base]);
+  const v = swapView(sw);
+  if (!v) return '';
+  const L = est && (est.lanes || []).find(x => x.id === (sw.lane || info.lane));
+  const cur = L && (L.blocks || []).find(b => b.id === info.block);
+  const m = t.models.find(x => String(x.id) === String(model));
+  const li = sw.lighter && t.models.findIndex(x => String(x.id) === String(sw.lighter.model));
+  const lighterName = li != null && li >= 0 ? 'Capture ' + (li + 1) + ' (' + namArch(t.models[li]) + ')' : null;
+  return html`<div class="cpu-swap" data-doc="tones.amp-cpu">
+    <div class="cpu-swap-hd"><span>Listening in</span><b>${esc(pname || 'the patch that plays')}${L ? ' · lane ' + esc(L.name || L.id) : ''}</b>
+      <span class="grow"></span><span>${esc((cur && cur.label) || 'its amp')} → this capture</span></div>
+    <div class="cpu-swap-row">
+      <span class="cpu-bar"><i class="cpu-fill" style=${'width:' + v.base.w + '%;background:var(--cpu-' + (v.base.level === 'unknown' ? 'unk' : v.base.level) + ')'}></i>
+        ${v.delta.w > 0 ? html`<i class=${'cpu-delta' + (v.delta.freed ? ' freed' : '')} style=${'left:' + v.delta.from + '%;width:' + v.delta.w + '%' + (v.delta.freed ? '' : ';background:var(--cpu-' + v.level + ')')}></i>` : ''}
+        <i class="cpu-tick" style="left:60%"></i><i class="cpu-tick" style="left:80%"></i></span>
+      <b class=${'cpu-swap-tx lv-' + v.level}>${v.text}</b></div>
+    <small>${swapHint(sw, { current: cur && cur.label, arch: m ? namArch(m) : null, lighterName })}</small>
   </div>`;
 }
 

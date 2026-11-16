@@ -178,7 +178,11 @@ export function IoSheet({ rows, lanes, inTab, patch, modePatch, modeCard, modeNa
 // La barre d'onglets des lanes : un onglet PAR LANE, généré depuis la liste — titre de la lane,
 // entrée en petit (≥ 4 lanes : deux lignes nettes, classe `dense` posée par le parent). En mode
 // PATCH, un seul onglet : la lane du patch, titrée par le patch.
-export function LaneTabs({ lanes, patch, patchMode, pmTab, pmTitle, inTab, laneTitle, onPick, folded, unmounted }) {
+export function LaneTabs({ lanes, patch, patchMode, pmTab, pmTitle, inTab, laneTitle, onPick, folded, unmounted, cpu }) {
+  // LE BUDGET CPU (docs/cpu-budget.md §3) : une pastille orange ou rouge sur la lane qui manque de place sur son cœur —
+  // le vert ne se signale pas. `cpu` = {laneId: 'tight'|'red'} (cpu-budget-model.laneAlerts).
+  const cpuDot = id => (cpu || {})[id] ? html`<i class=${'cpu-dot lv-' + cpu[id]}
+    title=${cpu[id] === 'red' ? 'CPU: this lane will crackle — tap the CPU chip' : 'CPU: this lane is tight'}></i>` : '';
   // LE VERDICT DU MOTEUR SE LIT ICI (audit 2026-10-10) : une lane que scene_bake n'a pas montée (deux lanes sur
   // la même entrée, une entrée absente) portait un onglet vert — « un garde-fou qu'on ne consulte pas n'est pas
   // un garde-fou ». Orange, et la raison en titre.
@@ -224,7 +228,7 @@ export function LaneTabs({ lanes, patch, patchMode, pmTab, pmTitle, inTab, laneT
              : off && L.in_role ? 'waiting for a ' + L.in_role + ' input — this card has none (' + nIn + ' inputs); assign one in Soundcard ▸ Inputs'
              : off ? 'IN ' + L.in_sel + ' is not on this card (' + nIn + ' inputs) — this lane is not mounted; pick another input'
              : L.midi && !usbOn && !patchMode ? 'USB ' + usbPort + ' has no device bound — this lane is not mounted' : ''}
-      onClick=${() => onPick(L.id)}>${patchMode && !kitMode ? esc(pmTitle) : esc(laneTitle(L))}<small class=${cls(avail === true && 'in-on', avail === false && 'in-off')}>${patchMode && !kitMode ? (patchMode.role || patchMode.realm) + ' patch'
+      onClick=${() => onPick(L.id)}>${patchMode && !kitMode ? esc(pmTitle) : esc(laneTitle(L))}${cpuDot(L.id)}<small class=${cls(avail === true && 'in-on', avail === false && 'in-off')}>${patchMode && !kitMode ? (patchMode.role || patchMode.realm) + ' patch'
         /* UNE LANE LIÉE PAR RÔLE SANS ENTRÉE SUR CETTE CARTE N'A PAS DE NUMÉRO (2026-10-13 : « comment je me
            retrouve avec BASS en IN 1 ?! ») : le numéro qu'elle garde en mémoire est celui d'une AUTRE carte — ici
            c'est le micro. Le moteur ne la monte pas ; l'onglet ne doit pas davantage l'y afficher. */

@@ -12,6 +12,8 @@ import { useVisuals, Drawing, namPedalSvg, useAudition, PlayMark, AuditionNote, 
 import { pedalSvg } from './golem-visuals.js';
 import { T3kModal } from './t3k-modal.js';
 import { Detail as CaptureDetail, famOf } from './page-amps.js';
+import { useCpuBlocks, blockCostLine, captureCostLabel, costPct, blockLevel, namArch, namVariant } from './cpu-budget.js';   // docs/cpu-budget.md, lot 3
+import { blockKey, fmtPct } from './cpu-budget-model.mjs';
 
 const catColor = c => CAT_COLOR[c] || '#8a94a3';
 const CAT_LABEL = {
@@ -82,6 +84,9 @@ export function FxBlocksPage({ role, gears } = {}) {
   // le sélecteur Captured / Built-in monte dans la barre des onglets (comme Heads / +Cab sur Amps) : les filtres de
   // famille ou de catégorie gardent une ligne pour eux seuls (2026-11-15, ils passaient sur deux lignes)
   const nCaptured = board.length, nBuilt = fx.filter(isBuilt).length;
+  // CE QUE COÛTE CHAQUE EFFET SUR CE GOLEM (docs/cpu-budget.md §3) : mono, sa part d'un cœur — rien sans les routes
+  const cpuCosts = useCpuBlocks(mode === 'builtin' ? built.map(e => ({ type: e.type, stereo: false })) : []);
+  const costTxt = e => { const p = costPct(cpuCosts[blockKey(e.type, null, false)]); return p == null ? '' : ' · ' + fmtPct(p); };
   useEffect(() => {
     setSubToolbar(html`<input class="search" type="search" placeholder="Search pedals and effects"
         onInput=${e => setQ(e.target.value.trim().toLowerCase())} />
@@ -113,7 +118,7 @@ export function FxBlocksPage({ role, gears } = {}) {
             <b>${p.name}</b><span>${p.caps.length ? `${p.caps.reduce((s, t) => s + (t.models || []).length, 0)} captures` : 'Find on TONE3000'}</span></button>`)
         : built.map(e => html`<button class="tn-tile tn-ped" aria-label=${e.name} onClick=${() => setSel(e)}>
             ${vis ? html`<${Drawing} svg=${pedalSvg({ type: e.type, title: e.short || e.name })} />` : html`<div class="tn-draw"></div>`}
-            <b>${e.name}</b><span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '').split(/[ (]/)[0]}</span></button>`)}</div></div>
+            <b>${e.name}</b><span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '').split(/[ (]/)[0]}${costTxt(e)}</span></button>`)}</div></div>
     </div>
     ${t3k ? html`<${T3kModal} initGear="pedal" onClose=${() => setT3k(false)} onInstalled=${() => { refreshCatalog(); setCatTick(x => x + 1); }} />` : ''}
     </div>`;
@@ -137,6 +142,8 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
   const item = cur ? { capture: cur.t.id, model: cur.m.id } : null;
   const pi = usePlayIt(item);
   const tap = i => { setSelI(i); if (pi.st.on) pi.play({ capture: models[i].t.id, model: models[i].m.id }); else au.play(models[i].t.id, models[i].m.id); };
+  const cpuCosts = useCpuBlocks(models.map(x => ({ type: 'pedal-nam', variant: namVariant(x.m), stereo: false })));
+  const costOf = m => cpuCosts[blockKey('pedal-nam', namVariant(m), false)];
   return html`<div class="tn-detail">
     <section class="tn-stage board"><button class="tn-back" onClick=${onClose}>‹ Pedals</button>
       <div class="tn-spot pedal">${vis ? html`<${Drawing} svg=${namPedalSvg(p.arch, p.short, p.family === 'other' ? 'boost' : p.family, true)} align="xMidYMid" />` : ''}</div>
@@ -150,6 +157,7 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
           <button class=${cls('tn-row', au.playing(x.t.id, x.m.id) && 'on', k === selI && 'cur')} onClick=${() => tap(k)}>
             <span class="nm">${x.m.name || 'model'}<small>${x.t.amp || x.t.title}</small></span>
             ${knobsOf(x.m.name).length ? html`<i class="t-gain">knobs</i>` : ''}
+            ${costOf(x.m) ? html`<i class=${'cpu-tag lv-' + blockLevel(costPct(costOf(x.m)))} title="its share of one core on this golem · its NAM architecture">${captureCostLabel(costOf(x.m), namArch(x.m))}</i>` : ''}
             <${PlayMark} on=${au.playing(x.t.id, x.m.id)} busy=${au.loading(x.t.id, x.m.id)} /></button>`; })}</div>
         <div class="tn-kbox"><h6>On the pedal</h6>${kn.length
           ? html`<div dangerouslySetInnerHTML=${{ __html: knobsSvg(kn, col) }}></div>`
@@ -166,13 +174,16 @@ function PedalPanel({ p, vis, onClose, onT3k, onOpen }) {
 // UN EFFET INTÉGRÉ : pas de capture, son son est ses réglages — la fiche montre ses presets d'usine
 function BuiltinPanel({ e, vis, onClose }) {
   const { data } = useAsync(() => fetch('/api/block-presets/' + encodeURIComponent(e.type)).then(r => r.json()), [e.type]);
+  const cost = useCpuBlocks([{ type: e.type, stereo: false }])[blockKey(e.type, null, false)];
+  const costLine = blockCostLine(cost);
   const presets = (data && data.presets) || [];
   return html`<div class="tn-detail">
     <section class="tn-stage board"><button class="tn-back" onClick=${onClose}>‹ Pedals</button>
       <div class="tn-spot pedal">${vis ? html`<${Drawing} svg=${pedalSvg({ type: e.type, title: e.short || e.name })} align="xMidYMid" />` : ''}</div>
       <h2>${e.name}</h2>
       <div class="tn-meta"><span class="fam" style=${'--c:' + catColor(e.category)}>${CAT_LABEL[e.category] || e.category}</span>
-        <span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '')}</span></div>
+        <span>${GOLEM_FX.has(e.type) ? 'golem-fx' : String(e.plugin || 'built-in').replace(/^\w+:\s*/, '')}</span>
+        ${costLine ? html`<span class=${'cpu-range lv-' + blockLevel(costPct(cost))} title="its share of one core on this golem, mono">${costLine}</span>` : ''}</div>
     </section>
     <section class="tn-caps">
       <header><b>Factory presets</b><em>${presets.length}</em></header>

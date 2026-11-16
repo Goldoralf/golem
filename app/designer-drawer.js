@@ -7,6 +7,8 @@ import { loadVisuals, pedalSvg, visualsReady } from './golem-visuals.js';
 import { GP, namPedalSvg, rackSvg } from './tones-ui.js';
 import { searchDrawer, myCaptures, isMine } from './drawer-search.mjs';
 import { FORMATS, selectVsts, vstFormatCounts, vstGroups, recentVsts, rememberVst, pickRecent } from './vst-host-model.mjs';
+import { useCpuBlocks } from './cpu-budget.js';
+import { afterAdd, blockKey, fmtPct } from './cpu-budget-model.mjs';   // docs/cpu-budget.md, lot 2 : où irait la lane
 
 // familles d'archétypes nommés (pédales + amplis) — libellé + ordre d'affichage des sous-groupes
 const FAMILY_LABELS = { overdrive: 'Overdrive', distortion: 'Distortion', fuzz: 'Fuzz', boost: 'Boost',
@@ -49,7 +51,7 @@ const TONES_SUB = { amp: 'amps', cab: 'cabs', drive: 'pedals', preamp: 'outboard
 // ── tiroir « ajouter un bloc » : catégories → blocs → (ampli/cab) volet des sims ──
 // hw = pédales MIDI INSTALLÉES (registre, /api/mappings, sans la Whammy qui a son bloc dédié) :
 // elles paraissent dans une catégorie `hardware` qui n'existe que si le rack en a (bloc midi-pedal).
-export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, laneStereo, present, hw, onAdd, onAddPedal, onAddHw, onAddStereo, onAddVst, onClose, flat, vstHost, vstOnly }) {
+export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, laneStereo, present, hw, onAdd, onAddPedal, onAddHw, onAddStereo, onAddVst, onClose, flat, vstHost, vstOnly, cpu }) {
   // blocs `unique` (looper, pads — docs/blocks-doctrine.md) : grisés si déjà dans le preset
   const taken = t => (present || new Set()).has(t);
   // ── CONFLITS entre blocs ────────────────────────────────────────────────────────────
@@ -268,6 +270,7 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
       <span class="dr-ic">${ICON[e.type] || e.icon || '▫'}</span>
       <span class="dr-tx"><span class="dr-nm">${e.name}</span>${mk ? html`<small>${esc(mk)}</small>` : ''}
         ${cf ? html`<span class="di-why">${whyBlocked(e, cf)}</span>` : e.blocked ? html`<span class="di-why">${e.why}</span>` : ''}</span>
+      ${(h => h ? html`<span class=${'dr-cpu lv-' + h.level} title=${'this lane would go to ' + fmtPct(h.pct) + ' of a core'}>${h.text}</span>` : '')(cpuHint(e))}
       <span class="dr-add">${needsModel(e.type) ? '›' : '+'}</span></button>`; };
   const shelf = view === 'pedals' && vis;
   const pedalOf = e => { const { cf, off } = offOf(e);
@@ -278,6 +281,11 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
   // LA CATÉGORIE (maquette « Add block drawer », 2026-11-15) : un filtre All · Blocks · Captures · Mine, puis tes captures,
   // les blocs (une ligne chacun), les modèles dessinés
   const blocksAll = [...gxItems, ...oxItems];
+  // OÙ IRAIT LA LANE (docs/cpu-budget.md §3, lot 2) : la lane dans sa scène la plus lourde + le coût du bloc mesuré sur ce
+  // golem (GET /api/cpu/block, à la stéréo de la lane). `cpu` = {lanePct, stereo, name} ou null : rien ne s'affiche.
+  const cpuOn = !!(cpu && cpu.lanePct != null) && !flat && !vstOnly;
+  const cpuCosts = useCpuBlocks(cpuOn && useB ? blocksAll.map(e => ({ type: e.type, stereo: !!cpu.stereo })) : []);
+  const cpuHint = e => cpuOn ? afterAdd(cpu.lanePct, cpuCosts[blockKey(e.type, null, !!cpu.stereo)]) : null;
   const nCaps = arch.length;
   const wants = k => show === 'all' || show === k;
   const capTile = m => html`<button class="di ped drawn mine" style=${'--tc:#ff9f43'} onClick=${() => onAdd(m.type, m.tone)}
@@ -310,7 +318,7 @@ export function CategoryDrawer({ cats, fx, pedals, fam, post, voice, stereo, lan
       <a class="dk-go" href=${'#/library/tones/' + (TONES_SUB[activeCat] || 'amps')} onClick=${onClose}>Capture or import in Library ▸ Tones</a>
       <small>A VST plugin you own goes in VST Host.</small>
     </div>` : ''}
-    ${wants('blocks') && blocksAll.length ? html`<div class="dk-h">Blocks · ${blocksAll.length}</div>
+    ${wants('blocks') && blocksAll.length ? html`<div class="dk-h">Blocks · ${blocksAll.length}${cpuOn ? html`<span>CPU: lane ${esc(cpu.name || '')} at ${fmtPct(cpu.lanePct)} of a core now · → where each block would take it</span>` : ''}</div>
       ${shelf ? html`<div class="dp-row">${blocksAll.map(pedalOf)}</div>`
         : html`<div class="dk-rows">${blocksAll.map(e => rowOf(e, gxItems.includes(e)))}</div>`}` : ''}
     ${wants('captures') && arch.length ? html`<div class="dk-h">Captures · ${nCaps}<span>${activeCat === 'cab' ? 'real cabs, as impulse responses' : 'real gear, captured with NAM'}</span></div>

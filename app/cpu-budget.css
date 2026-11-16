@@ -1,0 +1,156 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* LE BUDGET CPU (docs/cpu-budget.md, lots 2-4) — chargée par l'app du rack ET par le Companion : ses couleurs
+   ont des valeurs de repli, elle ne dépend d'aucune des deux feuilles. Préfixe `cpu-` partout (piège des classes
+   génériques : une `.live` ou une `.on` d'ici déteindrait ailleurs). */
+:root { --cpu-ok: #2ecc71; --cpu-tight: #ff9f43; --cpu-red: #ff5a4d; --cpu-unk: #8a94a3; }
+
+/* — la barre contre UN cœur — */
+.cpu-bar { position: relative; display: block; flex: 1 1 auto; min-width: 40px; height: 14px; border-radius: 7px;
+  background: var(--panel2, #1c2129); overflow: hidden; }
+.cpu-bar.big { height: 16px; border-radius: 8px; flex: none; width: 100%; }
+.cpu-bar.thin { height: 8px; border-radius: 4px; }
+.cpu-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; }
+.cpu-tick { position: absolute; top: 0; bottom: 0; width: 1px; background: #4a5566; }
+
+/* — les couleurs de niveau — */
+.lv-ok { --lv: var(--cpu-ok); --lv-tx: #5fdc94; }
+.lv-tight { --lv: var(--cpu-tight); --lv-tx: #ffb366; }
+.lv-red { --lv: var(--cpu-red); --lv-tx: #ff7a70; }
+.lv-unknown { --lv: var(--cpu-unk); --lv-tx: var(--cpu-unk); }
+
+/* — la puce de verdict (en-tête du Designer) — */
+.cpu-chip { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 17px;
+  border: 1px solid var(--lv); background: color-mix(in srgb, var(--lv) 12%, transparent); color: var(--lv-tx);
+  font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; flex: none; white-space: nowrap; }
+.cpu-chip.lv-ok { background: transparent; }
+.cpu-chip.ro { cursor: default; height: 30px; }
+.cpu-chip-tx { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
+.cpu-chip-tx small { font-weight: 600; font-size: 10.5px; color: var(--muted, #8a94a3); }
+.cpu-ic { flex: none; }
+
+/* — la puce de scène (/live, Companion) : seulement tendu ou rouge — */
+.cpu-stage { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 15px;
+  border: 1px solid var(--lv); background: color-mix(in srgb, var(--lv) 12%, transparent); color: var(--lv-tx);
+  font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; flex: none; }
+.cpu-stage.next { height: 24px; padding: 0 9px; font-size: 11.5px; background: transparent; }
+.cpu-stage.short { height: 20px; padding: 0 6px; font-size: 10.5px; border-radius: 6px; letter-spacing: .04em;
+  background: color-mix(in srgb, var(--lv) 14%, transparent); }
+
+/* — les pastilles d'onglet de lane (Designer) — */
+.cpu-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--lv); margin-left: 5px;
+  vertical-align: middle; flex: none; }
+
+/* — la feuille — */
+.cpu-scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .55); display: flex; align-items: flex-end; z-index: 60; }
+.cpu-sheet { width: 100%; height: min(540px, calc(100% - 44px)); background: var(--panel, #15191f); color: var(--text, var(--txt, #e7ecf2));
+  border-top: 1px solid var(--line, #262d37); border-radius: 18px 18px 0 0; display: flex; flex-direction: column;
+  gap: 10px; padding: 14px 20px 12px; overflow: hidden; font-size: 14px; }
+.cpu-hd { display: flex; align-items: center; gap: 12px; min-height: 38px; flex: none; }
+.cpu-hd > b { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cpu-hd .grow, .cpu-ft .grow, .cpu-sheet > .grow { flex: 1 1 auto; }
+.cpu-cores { color: var(--muted, #8a94a3); font-size: 12px; white-space: nowrap; }
+.cpu-x, .cpu-back { height: 36px; min-width: 44px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line, #262d37);
+  background: var(--panel2, #1c2129); color: inherit; font: inherit; font-weight: 600; cursor: pointer; flex: none; }
+.cpu-verdict { color: var(--lv-tx); font-weight: 700; white-space: nowrap; }
+.cpu-sub { color: var(--muted, #8a94a3); font-size: 12.5px; }
+.cpu-cap { color: var(--muted, #8a94a3); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+.cpu-empty { color: var(--muted, #8a94a3); padding: 6px 2px; }
+.cpu-ft { display: flex; align-items: center; gap: 10px; color: var(--muted, #8a94a3); font-size: 12px; flex: none; flex-wrap: wrap; }
+
+.cpu-lanes { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; flex: 1 1 auto; }
+.cpu-lane { display: flex; flex-direction: column; gap: 7px; padding: 9px 12px; border-radius: 12px; text-align: left;
+  background: var(--panel2, #1c2129); border: 1px solid var(--line, #262d37); color: inherit; font: inherit; cursor: pointer; flex: none; }
+.cpu-lane.lv-tight, .cpu-lane.lv-red { border-color: color-mix(in srgb, var(--lv) 55%, var(--line, #262d37)); }
+.cpu-lane-row { display: flex; align-items: center; gap: 12px; }
+.cpu-lane-nm { width: 110px; flex: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cpu-pct { width: 50px; text-align: right; color: var(--lv-tx); flex: none; }
+.cpu-scn { color: var(--muted, #8a94a3); font-size: 12px; width: 196px; flex: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cpu-more { color: var(--muted, #8a94a3); font-size: 12px; font-weight: 700; width: 52px; text-align: right; flex: none; }
+.cpu-lane.lv-tight .cpu-more, .cpu-lane.lv-red .cpu-more { color: var(--lv-tx); }
+.cpu-blocks { display: flex; gap: 6px; flex-wrap: wrap; max-height: 28px; overflow: hidden; }
+.cpu-blk { display: inline-flex; gap: 6px; align-items: center; height: 26px; padding: 0 9px; border-radius: 7px; font-size: 12px;
+  font-weight: 600; background: var(--panel, #15191f); border: 1px solid var(--line, #262d37); white-space: nowrap; }
+.cpu-blk em { font-style: normal; font-weight: 400; color: var(--muted, #8a94a3); }
+.cpu-blk.off { background: transparent; border-style: dashed; color: #6b7480; }
+.cpu-lanes.dense { gap: 6px; }
+.cpu-lanes.dense .cpu-lane { padding: 7px 12px; gap: 5px; }
+.cpu-lanes.dense .cpu-blk { height: 22px; font-size: 11.5px; }
+.cpu-lanes.dense .cpu-blocks { max-height: 22px; }
+
+.cpu-fixes { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; }
+.cpu-fix { display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 6px 14px; border-radius: 11px;
+  background: var(--panel2, #1c2129); border: 1px solid var(--line, #262d37); flex: none; }
+.cpu-n { width: 20px; color: var(--muted, #8a94a3); font-weight: 700; flex: none; }
+.cpu-fix-tx { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.25; }
+.cpu-fix-tx b { font-weight: 600; }
+.cpu-fix-tx small { color: var(--muted, #8a94a3); font-size: 12px; }
+.cpu-gain { width: 64px; text-align: right; color: var(--lv-tx); flex: none; }
+.cpu-act { height: 38px; min-width: 88px; padding: 0 14px; border-radius: 9px; font: inherit; font-weight: 700; cursor: pointer; flex: none;
+  border: 1px solid var(--line, #262d37); background: var(--panel, #15191f); color: inherit; }
+.cpu-act.primary { border: 0; background: #3d9be9; color: #0d0f12; }
+.cpu-act.done { background: transparent; color: var(--cpu-ok); border-color: transparent; }
+.cpu-act:disabled { cursor: default; }
+
+/* — sur le téléphone, la feuille prend l'écran — */
+@media (max-width: 600px) {
+  .cpu-sheet { height: calc(100% - 24px); padding: 14px 14px 12px; }
+  .cpu-hd { flex-wrap: wrap; row-gap: 6px; }
+  .cpu-hd .grow { display: none; }
+  .cpu-hd .cpu-x { margin-left: auto; }
+  .cpu-hd .cpu-verdict, .cpu-hd .cpu-chip, .cpu-hd .cpu-cores { order: 10; }
+  .cpu-hd .cpu-verdict { width: 100%; }
+  .cpu-hd > b { font-size: 16px; }
+  .cpu-fix { padding: 8px 10px; gap: 8px; }
+  .cpu-gain { width: auto; }
+  .cpu-lane-nm { width: 80px; }
+  .cpu-scn { display: none; }
+}
+
+/* — le coût d'un bloc, en petit (feuille de bloc, Library) — */
+.cpu-cost { color: var(--muted, #8a94a3); font-size: 12px; white-space: nowrap; }
+.cpu-cost.lv-tight, .cpu-cost.lv-red { color: var(--lv-tx); }
+.cpu-tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 5px; font-size: 11.5px;
+  font-weight: 700; border: 1px solid var(--lv); color: var(--lv-tx); white-space: nowrap; flex: none; font-style: normal; }
+.cpu-tag.lv-unknown { font-weight: 600; }
+
+/* — le tiroir d'ajout : où la lane irait — */
+.dr-cpu { flex: none; font-size: 11.5px; font-weight: 700; color: var(--lv-tx); white-space: nowrap; margin-left: 4px; }
+
+/* — Library ▸ Amps : la barre d'écoute avant → après — */
+.cpu-swap { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; background: var(--panel, #15191f);
+  border: 1px solid var(--line, #262d37); flex: none; }
+.cpu-swap-hd { display: flex; align-items: center; gap: 10px; font-size: 13px; min-width: 0; }
+.cpu-swap-hd span { color: var(--muted, #8a94a3); white-space: nowrap; }
+.cpu-swap-hd b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cpu-swap-row { display: flex; align-items: center; gap: 10px; }
+.cpu-swap-row .cpu-bar { height: 12px; }
+.cpu-swap-tx { color: var(--lv-tx); white-space: nowrap; font-weight: 700; flex: none; }
+.cpu-delta { position: absolute; top: 0; bottom: 0; }
+.cpu-delta.freed { background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .18) 0 4px, transparent 4px 8px); }
+.cpu-swap small { color: var(--muted, #8a94a3); font-size: 12px; }
+
+/* — Library : la fourchette d'un ampli (« ≈ 6–18 % of a core »), parmi ses étiquettes — */
+.tn-meta .cpu-range { border-color: var(--lv); color: var(--lv-tx); font-weight: 700; }
+.tn-row .cpu-tag { margin-left: 4px; }
+
+/* — Library ▸ Add to… : une lane que la capture pousserait dans le rouge est grisée, la raison écrite — */
+.la-lane:disabled, .la-dest:disabled { opacity: .55; cursor: not-allowed; }
+.la-lane span.cpu-why, .la-dest span.cpu-why { color: var(--lv-tx); font-weight: 600; }
+
+/* — Designer : la puce dans la rangée de titre de la chaîne, à droite (la bande de stomps est centrée, absolue) — */
+.cpu-slot { margin-left: auto; display: flex; position: relative; z-index: 1; }
+.cpu-slot .cpu-chip { height: 32px; padding: 0 11px; }
+/* la puce présente, la bande de stomps passe dans le flux et se centre dans la place qui reste (sinon, centrée en
+   absolu sur toute la rangée, elle passait sous la puce) */
+.rig-lbl-row:has(.cpu-slot) .stomp-strip { position: static; transform: none; margin: 0 auto; max-width: none; min-width: 0; flex: 0 1 auto; }
+.rig-lbl-row:has(.cpu-slot) .cpu-slot { margin-left: 0; }
+
+/* — /live : la puce du suivant, dans la place du voisin (la barre BANK) ; ses lignes dans le sélecteur — */
+.live2-peek.next:has(.cpu-stage) { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.live2-peek-tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.live-pick .cpu-stage.next { margin-left: 8px; vertical-align: middle; }
+
+/* — Companion : la puce sous le morceau — */
+.c-cpu { display: flex; margin: 4px 0 2px; }
+.c-cpu .cpu-stage { height: 38px; padding: 0 14px; border-radius: 19px; font-size: 14px; }
+.c-row small .cpu-stage.next { font-family: system-ui, sans-serif; }

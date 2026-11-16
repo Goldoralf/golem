@@ -173,7 +173,10 @@ export function useAudition() {
       live.current = true;
       const d = r.demo || {};
       setSt({ on: true, ref: String(ref), model: String(model), busy: false, err: '', hearing: false, demo: d,
-        notes: ((r.info || {}).notes || []).map(k => NOTE[k] || k) });
+        notes: ((r.info || {}).notes || []).map(k => NOTE[k] || k),
+        // OÙ elle s'écoute : le preset joué (`base`), sa lane et le bloc remplacé (`info`) — la barre CPU avant → après
+        // de la fiche d'ampli les lit (docs/cpu-budget.md §3, lot 3)
+        base: r.base || null, info: r.info || null });
       if (d.phase === 'ready' && d.clip) hear(d.clip);
       else if (d.phase === 'render') follow(ref, model);
     } catch (e) {

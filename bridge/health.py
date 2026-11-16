@@ -409,6 +409,14 @@ def _f_scripts():
                  fix={"label": "Dashboard →", "go": "system/sys"})
 
 
+def _f_cpu():
+    """Le banc CPU (docs/cpu-budget.md §2) : l'âge du profil mesuré et ce qui reste à mesurer. Jamais rouge : un
+    profil absent veut dire « pas encore mesuré », pas une panne."""
+    from . import cpu_bench
+    level, text = cpu_bench.fact()
+    return _fact("cpu", "CPU budget", level, text, "config/cpu-profile.json")
+
+
 # ── la dérive de l'environnement ───────────────────────────────────────────────────────────────────────────────────
 def env_current():
     """Ce qui ne devrait pas changer tout seul. Une sonde absente rend None — et None ne compte jamais comme un
@@ -549,7 +557,7 @@ def compute():
         boot = boot_progress.doc()
     probes = (lambda: _f_engine(st), lambda: _f_audio(st), lambda: _f_dropouts(st), lambda: _f_pedalboard(st),
               lambda: _f_playing(st), _f_setlist, _f_plugins, _f_disk, lambda: _f_golemfm(boot), _f_scripts,
-              _f_environment)
+              _f_cpu, _f_environment)
     facts = []
     for fn in probes:
         try:

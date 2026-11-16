@@ -4,6 +4,10 @@
 > fixes sheet, /live, Companion, Library ▸ Amps) validated by the maintainer 2026-11-16. Coding in 4 lots (§9). The
 > maintainer asked for it after a rehearsal where scenes A and C of a patch crackled (xruns) and gfx-fuzz cut the
 > sound on an overloaded core.
+>
+> **Lot 1: CODED 2026-11-16** (`bridge/cpu_budget.py`, `bridge/cpu_bench.py`, `bridge/routes_cpu.py`, the `bench` op
+> of `golem_preview.lua`, the `cpu` fact of Health). Not yet run on a rack: the first real calibration confirms the
+> timings below. What lot 1 decided or changed is in §11.
 
 ## 1. What counts: the busiest lane, not the number of cores
 
@@ -135,3 +139,52 @@ All under `/api/cpu/`, read-only except `calibrate`. Percentages are of ONE core
    pushed into red), Pedals (cost per pedal).
 4. **/live and Companion**: a chip only when tight or red, for the loaded song and the next ones; tap = the fixes
    sheet, read-only on stage.
+
+## 11. What lot 1 coded, and where it departs from the text above
+
+- **How the bench measures.** Through the demo engine, never on the live track: a bench patch of one lane holding only
+  the measured block (catalogue defaults) is posed by the recall path, with its lane **cut in its scene** (level at
+  the floor: nothing reaches the speakers, even if a guitar is plugged in). `golem_preview` clones the lane (no
+  hardware output, unarmed), lays the reference DI (`guitar/clean`), and its `render` op with `bench: 3` renders
+  offline at full speed three times, timed with `time_precise` around the render action, then removes the clone's FX
+  and renders three times more (the baseline: reading, resampling, writing). Cost per buffer = (median with − median
+  without) / buffers rendered, minus the cost of an **empty lane** measured once (the FX golem puts on every lane).
+  "worst" = the slowest render with the block against the fastest without.
+- **Precision and limits.** A total render time cannot see the spike of one buffer: `worst_us` is the spread between
+  runs, not the worst buffer. The live engine runs during the render; its noise enters both sides and cancels on
+  average. A render that ran in real time (not full-speed offline) is refused, not recorded.
+- **Mono and stereo.** The bench measures the **stereo** instance only: a REAPER track has two channels and a plugin
+  processes both, whether the lane is mono (a mono input lands on both) or stereo. Keys are `…|stereo`; a lookup of
+  `…|mono` falls back to the stereo measure. This halves the bench time (about 75 targets, not 150).
+- **The lane model.** A lane's figure is its critical path: pre + the heaviest branch + the merge (post). Branches run
+  in parallel, the merge waits for them (§1). A branch muted by the scene still counts, by prudence: golem does not
+  assume REAPER skips the FX of a muted track (that is a preference, not verified on the rack).
+- **Fixes served:** `perf-mode` (governor not `performance`; `gain_pct: null`, the bench cannot measure the other
+  governor), `turn-off` (on at mix 0, or the same sound twice on a track), `lighter-capture` (another installed model
+  of the same tone, same name without its size suffix, with a cheaper **measured** architecture), `buffer` (the next
+  size of `AUDIO_BSIZES`, with `latency_ms`; its gain is the per-run spread spread over more samples), and a final
+  `too-heavy` sentence (`action: null`). **Not served:** `mono` (golem cannot make a plugin process one channel: it
+  picks no per-lane plugin variant and sets no pin mapping) and `split` (under the critical-path model, moving the
+  tail of a chain to a branch does not shorten it: the branch still waits for the pre — no gain to announce).
+- **Variants.** NAM: `nam:standard|lite|feather|nano` (the trainer's WaveNet sizes, read from the layers), `nam:a2`
+  (SlimmableContainer), `nam:lstm-<layers>x<size>`, `nam:wavenet-<hash>` for a custom size; one installed capture
+  per variant is measured. Every NAM block type (amp, amp-nam, pedal-nam, preamp-nam, comp-nam) uses the `nam:` keys.
+  A head with no cab downstream also costs the default cab the compile fuses to it. IR: `cab:<bucket>` and
+  `ir-fx:<bucket>`, buckets 50, 100, 200, 500, 1000, 2000, 5000 ms and `long`, measured with the longest installed IR
+  of each bucket.
+- **Not measured in lot 1:** instruments (Vital, piano, E-Piano, organ, pads, drum kit: their cost depends on what is
+  played), the capture module, blocks with `bench: pending` (they may freeze REAPER), quarantined blocks, plugins not
+  in REAPER's inventory. A lane holding one of them, on, is `unknown` unless already red.
+- **Re-measure and validity.** A measure is redone when its plugin fingerprint changes (golem-fx binary hash, the
+  identifier REAPER scanned, the NAM build) or the machine changes (CPU, cores, sample rate, buffer, engine). Until
+  then a new buffer or sample rate is corrected pro rata of the samples; another CPU or engine voids the profile.
+- **API as served (§9):** shapes unchanged. Additions: each lane also carries its own `verdict`; `GET /api/cpu/block`
+  accepts `type=amp&variant=nam:standard` as well as `type=nam&variant=standard`. `/api/cpu/` reads need a paired
+  device (`SENSITIVE_GET_PREFIX`: an estimate tells what a preset holds); `POST /api/cpu/calibrate` is admin
+  (`ADMIN_WRITES`) and, pressed by hand, skips the "10 min without a gesture" rule (someone is at the screen) but
+  keeps the rest of `reamp.busy_reason`.
+- **When.** The idle watcher (`cpu_bench.start_idle`, every 60 s; `GOLEM_CPU_BENCH=0` turns it off) starts the bench
+  whenever something is pending and the rack is free; each measure is written as it lands (resumable); the sandbox is
+  posed back at the end, only if the rig is still the bench patch. Under the Golem Engine the bench waits (§8).
+- **First calibration time, estimated:** about 75 targets × ~10 s (rebuild, 3 s settle, 2 s clone settle, six renders
+  of an 11 s DI) ≈ **12–15 min**. To be confirmed by the first run.

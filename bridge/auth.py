@@ -75,7 +75,10 @@ SENSITIVE_GET_PREFIX = ("/api/backup/", "/api/loop", "/api/take/", "/api/backing
                         # d'utilisateur) se parcourait sans jeton ; /api/separation/browse, la même fonction, était admin
                         "/api/kits/import", "/api/song-folders", "/api/inbox", "/api/storage",
                         # 2026-11-09 : les dossiers de plugins du rack (chemins absolus, nom d'utilisateur)
-                        "/api/vst-host/folders")
+                        "/api/vst-host/folders",
+                        # 2026-11-16 (docs/cpu-budget.md §9) : une estimation dit ce que contient un preset (blocs,
+                        # captures), comme /api/preset — le Companion appairé passe
+                        "/api/cpu/")
 
 # ── palier ADMIN (audit 2026-08-12, M-1) : le rôle d'un appareil (Guitar, Voice…) est un
 # INSTRUMENT, pas un privilège — et tout appareil appairé pouvait flasher le FCB, changer le
@@ -119,7 +122,9 @@ ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/re
                 # les démos d'usine par lot (docs/preset-preview.md §7) : le moteur pris une demi-heure
                 "/api/preview/batch",
                 # le rendu des blocs (docs/preset-preview.md §8) : le moteur pris, comme le lot des démos
-                "/api/preview/blocks", "/api/preview/blocks/stop")
+                "/api/preview/blocks", "/api/preview/blocks/stop",
+                # le banc CPU (docs/cpu-budget.md §2) : le moteur pris une dizaine de minutes
+                "/api/cpu/calibrate")
 ADMIN_WRITE_PREFIX = ("/api/devices/",)              # vérification du karaoké : remplace le preset joué
 ADMIN_PREFIX = ("/api/network/", "/api/auth/devices", "/api/backup", "/api/cards/",
                 # docs/separation.md : ajouter un moteur « programme », c'est faire EXÉCUTER un fichier choisi

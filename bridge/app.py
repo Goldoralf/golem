@@ -30,7 +30,7 @@ from . import drums as drums_mod
 from . import standards as standards_mod
 from . import arrangement as arrangement_mod
 from . import machine as machine_mod
-from . import routes_content, routes_dev, routes_system, routes_t3k, routes_backing, routes_network, routes_modes, routes_inputmap, routes_patches, routes_blocks, routes_kit_import, routes_standards, routes_diag, routes_connect, routes_desktop_audio, routes_separation, routes_health
+from . import routes_content, routes_dev, routes_system, routes_t3k, routes_backing, routes_network, routes_modes, routes_inputmap, routes_patches, routes_blocks, routes_kit_import, routes_standards, routes_diag, routes_connect, routes_desktop_audio, routes_separation, routes_health, routes_cpu
 from . import mcp
 from . import recall as recall_mod   # le moteur de recall (extrait d'ici — audit 2026-08-12 P2)
 from .state import state
@@ -123,6 +123,7 @@ app.include_router(routes_diag.router)      # lot 8 : paquets de diagnostic (doc
 app.include_router(routes_connect.router)   # se connecter sans taper d'adresse (docs/connect.md)
 app.include_router(routes_separation.router)  # séparation de sources sur le golem (docs/separation.md)
 app.include_router(routes_health.router)      # Settings ▸ Health : des faits datés (docs/health.md)
+app.include_router(routes_cpu.router)         # le budget CPU d'un preset (docs/cpu-budget.md §9)
 from . import routes_machine                     # cet ordinateur : fenêtre, démarrage, durcissement (docs/installer.md §4)
 app.include_router(routes_machine.router)
 state.mode = modes_mod.current()      # mode machine restauré au boot (docs/modes.md)
@@ -988,6 +989,9 @@ async def _startup():
     # les démos des presets claviers de l'utilisateur, rendues quand le rack est au repos (docs/preset-preview.md §9.2)
     from . import sound_preview
     sound_preview.start_idle()
+    # le banc CPU : ce que coûte chaque bloc sur CETTE machine, mesuré au repos (docs/cpu-budget.md §2)
+    from . import cpu_bench
+    cpu_bench.start_idle()
     # la bibliothèque se resynchronise au démarrage : ce qui a changé sans toucher le catalogue des captures (presets
     # Vital, kits, grooves, ce qu'ils disent d'eux) n'attend plus qu'une capture s'installe (golem.fm, 2026-11-15)
     from . import tones_sync as _ts

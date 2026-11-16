@@ -47,6 +47,7 @@ active setlist) is cached 60 s. Page: `app/page-health.js`; pure part: `app/heal
 | Disk (`disk`) | `rigstatus.disk()` | < 20 GB → orange, < 5 GB → red; Storage |
 | golem.fm (`golemfm`) | `boot.services.fm`, `follow_uplink.LINKED` | paired but unreachable (after 15 s) → orange, API; not paired → wait, API |
 | Scripts (`scripts`) | `presets/.lua-errors.log` (mtime since the bridge started) | an error since start → orange, with its last line |
+| CPU budget (`cpu`) | `config/cpu-profile.json`, `cpu_bench.status` ([cpu-budget.md](cpu-budget.md) §2) | never red: not calibrated or blocks left to measure → wait (with what it waits for); the last calibration stopped on an error → orange |
 | Since last boot (`environment`) | `config/.env-snapshot.json` (§4.2) | something changed since the bridge started → orange, listed |
 
 Most of this exists as scattered tiles (System ▸ Dashboard) and as the facts of the loading screen

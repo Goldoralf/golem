@@ -299,6 +299,8 @@ config/inputmaps/
 # l'identité de CE rack (id tiré au premier démarrage) et son profil (rôle, options choisies à l'installation)
 config/.rack-id
 config/profile.json
+# le profil CPU mesuré sur CETTE machine par le banc (docs/cpu-budget.md §2)
+config/cpu-profile.json
 # les setlists de l'utilisateur ; celles d'usine vivent dans library/factory/setlists
 setlists/*.json
 # états Vital compilés par preset (compile_rig) et métadonnées des samples (kits.KINDS_FILE)

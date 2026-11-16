@@ -24,6 +24,7 @@
   Commande : golem_watch relaie {"action":"preview",...} en ProjExtState golem/preview_cmd.
   Dédup par (seq, scene). Op unique :
     render {seq, scene, di:"<abs.wav>", out:"<abs.wav>", tail:5.0}
+    + `bench: N` (banc CPU, docs/cpu-budget.md §2) : N rendus chronométrés, puis N sans FX ; publie times/base/len/nfx
 
   État publié : presets/.preview.json (tmp+rename) — lu par le bridge :
     {"seq":N,"scene":"A","done":true,"wav":"<out>"}  |  {...,"error":"…"}
@@ -329,6 +330,14 @@ local function prepare(cmd)
     local last = clones[#clones].cl
     reaper.SetMediaTrackInfo_Value(last, "I_FOLDERDEPTH", reaper.GetMediaTrackInfo_Value(last, "I_FOLDERDEPTH") - depth)
   end
+  -- LE BANC CPU (docs/cpu-budget.md §2) : la lane du banc est coupée dans sa scène (niveau au plancher, rien aux
+  -- baffles) ; son clone, lui, rend à niveau — le temps ne dépend pas du niveau, mais un rendu muet ne prouve rien
+  if cmd.bench then
+    for _, c in ipairs(clones) do
+      reaper.SetMediaTrackInfo_Value(c.cl, "D_VOL", 1)
+      reaper.SetMediaTrackInfo_Value(c.cl, "B_MUTE", 0)
+    end
+  end
   -- ce qu'on a copié, au journal : une démo muette se lit ici (racine muette ? instrument absent ?)
   do
     local r = clones[1]
@@ -355,7 +364,8 @@ local function prepare(cmd)
 end
 
 -- 2e temps : le rendu hors ligne (master = les clones seuls), puis on efface les clones.
-local function finish(cmd, prep)
+-- `render_once` pose les réglages et rend UNE fois ; le fichier d'un rendu précédent est effacé avant (voir plus bas).
+local function render_once(cmd, prep)
   local out, tail = cmd.out, tonumber(cmd.tail) or 5.0
   reaper.GetSet_LoopTimeRange(true, false, 0, prep.len + tail, false)
   -- Reaper traite RENDER_FILE comme un DOSSIER et RENDER_PATTERN comme le nom -> on découpe `out`
@@ -375,12 +385,58 @@ local function finish(cmd, prep)
   -- clique — sur un rack sans écran Reaper, personne. Et le contrôle `file_exists` plus bas
   -- répondait « rendu fait » sur ce vieux fichier (daté du 09-28) : présent ne veut pas dire produit.
   os.remove(out)
-  reaper.Main_OnCommand(42230, 0)                             -- render using most recent settings
+  local t0 = reaper.time_precise()
+  reaper.Main_OnCommand(42230, 0)                             -- render using most recent settings (bloquant)
+  local dt = reaper.time_precise() - t0
   reaper.GetSetProjectInfo(0, "RENDER_SRATE", old_sr, true)
+  return dt, prep.len + tail
+end
+
+local function rendered(out)
+  if reaper.file_exists and reaper.file_exists(out) then return true end
+  local f = io.open(out, "rb"); if f then f:close(); return true end
+  return false
+end
+
+local function finish(cmd, prep)
+  render_once(cmd, prep)
   delete_clone()
-  if reaper.file_exists and reaper.file_exists(out) then return nil, out end
-  local f = io.open(out, "rb"); if f then f:close(); return nil, out end
+  if rendered(cmd.out) then return nil, cmd.out end
   return "render vide (offline à valider sur le rig)"
+end
+
+-- LE BANC CPU (docs/cpu-budget.md §2, bridge/cpu_bench.py) : `bench` rendus chronométrés de la lane clonée, puis ses FX
+-- retirés et autant de rendus de la même DI sans aucun FX (la ligne de base : lecture, écriture, rééchantillonnage).
+-- Le bridge en tire le coût par buffer. Rien ne sonne : clones sans sortie matérielle, rendu hors ligne.
+local function finish_bench(cmd, prep)
+  local n = math.max(1, math.min(10, math.floor(tonumber(cmd.bench) or 3)))
+  local nfx, clones = 0, {}
+  for i = 0, reaper.CountTracks(0) - 1 do
+    local tr = reaper.GetTrack(0, i)
+    local _, nm = reaper.GetSetMediaTrackInfo_String(tr, "P_NAME", "", false)
+    if is_clone(nm) then clones[#clones + 1] = tr; nfx = nfx + reaper.TrackFX_GetCount(tr) end
+  end
+  local times, base, len = {}, {}, 0
+  for k = 1, n do
+    local dt, l = render_once(cmd, prep)
+    times[k], len = string.format("%.6f", dt), l
+    if not rendered(cmd.out) then delete_clone(); return "render vide (banc)" end
+  end
+  for _, tr in ipairs(clones) do
+    for fx = reaper.TrackFX_GetCount(tr) - 1, 0, -1 do reaper.TrackFX_Delete(tr, fx) end
+  end
+  for k = 1, n do
+    base[k] = string.format("%.6f", (render_once(cmd, prep)))
+  end
+  os.remove(cmd.out)
+  delete_clone()
+  local sr = tonumber(cmd.sr) or reaper.GetSetProjectInfo(0, "PROJECT_SRATE", 0, false)
+  local _, bs = reaper.GetAudioDeviceInfo("BSIZE", "")
+  local _, dsr = reaper.GetAudioDeviceInfo("SRATE", "")
+  if (not sr or sr <= 0) and tonumber(dsr) then sr = tonumber(dsr) end
+  log(("banc %s : %d FX, avec [%s] s, sans [%s] s"):format(tostring(cmd.scene), nfx, table.concat(times, ","), table.concat(base, ",")))
+  return nil, cmd.out, { times = table.concat(times, ","), base = table.concat(base, ","), len = len, nfx = nfx,
+                         srate = sr or 0, bsize = tonumber(bs) or 0 }
 end
 
 -- ── boucle defer : lit la commande relayée, dédup (seq, scene) ──
@@ -412,21 +468,26 @@ local function parse(cur)
     chains = cur:match('"chains"%s*:%s*"([^"]+)"'),
     midis = cur:match('"midis"%s*:%s*"([^"]+)"'),
     strip = cur:match('"strip"%s*:%s*"([^"]+)"'),
+    bench = tonumber(cur:match('"bench"%s*:%s*(%d+)')),
   }
 end
 
-local function done(cmd, err, wav)
+local function done(cmd, err, wav, extra)
   if err then publish({ seq = cmd.seq, scene = cmd.scene, done = true, error = tostring(err) })
-  else publish({ seq = cmd.seq, scene = cmd.scene, done = true, wav = wav or cmd.out }) end
+  else
+    local t = { seq = cmd.seq, scene = cmd.scene, done = true, wav = wav or cmd.out }
+    for k, v in pairs(extra or {}) do t[k] = v end
+    publish(t)
+  end
 end
 
 local function poll()
   if pending then
     if reaper.time_precise() < pending.at then return end
     local p = pending; pending = nil
-    local okr, e_or_nil, w = pcall(finish, p.cmd, p.prep)
+    local okr, e_or_nil, w, extra = pcall(p.cmd.bench and finish_bench or finish, p.cmd, p.prep)
     if not okr then delete_clone() end
-    done(p.cmd, e_or_nil, w)
+    done(p.cmd, e_or_nil, w, extra)
     return
   end
   local ok, cur = reaper.GetProjExtState(0, "golem", "preview_cmd")

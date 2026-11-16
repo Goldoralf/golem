@@ -56,7 +56,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [karaoke.md](karaoke.md) | CODED | Playing a song's stems and processing the singer's microphone |
 | [compo.md](compo.md) | PARTLY CODED | The Riff block: capture a riff and send it to the composer |
 | [reamp.md](reamp.md) | CODED | Re-playing a recorded DI through a lane, offline |
-| [cpu-budget.md](cpu-budget.md) | PROPOSED | Will this preset play on this golem? CPU per block, per lane, per preset, measured by a calibration bench |
+| [cpu-budget.md](cpu-budget.md) | FIXED | Will this preset play on this golem? CPU per block, per lane, per preset, measured by a calibration bench |
 | [preset-preview.md](preset-preview.md) | PARTLY CODED | A short demo per scene, rendered from a reference DI |
 | [tablature-fingering.md](tablature-fingering.md) | PROPOSED | Shape-based string and fret choice for transcriptions |
 

@@ -1,9 +1,9 @@
 # CPU budget: will this preset play on this golem?
 
-> **Status: PROPOSED** (2026-11-15). The maintainer asked for it after a rehearsal where scenes A and C of a patch
-> crackled (xruns) and gfx-fuzz cut the sound on an overloaded core. Direction approved in conversation: measure,
-> do not guess; calibrate automatically; golem says what to do; show it in the Designer, the Library, /live and the
-> Companion. Nothing is coded.
+> **Status: FIXED** (2026-11-16): direction approved 2026-11-15, mockup "CPU budget mockup" (5 screens: Designer,
+> fixes sheet, /live, Companion, Library ▸ Amps) validated by the maintainer 2026-11-16. Coding in 4 lots (§9). The
+> maintainer asked for it after a rehearsal where scenes A and C of a patch crackled (xruns) and gfx-fuzz cut the
+> sound on an overloaded core.
 
 ## 1. What counts: the busiest lane, not the number of cores
 
@@ -94,3 +94,44 @@ docs/golemfm-protocol.md.
 - The thresholds 60 % / 80 % are to tune after the first measures on the rehearsal rack.
 - Should the bench also run the Golem Engine (Ardour) when it is the active engine, or only the engine in use?
 - On the Companion, is the chip enough, or does a musician want the "what to do" too?
+
+## 9. The contract between the bridge and the app (lot 1 serves it, lots 2–4 read it)
+
+All under `/api/cpu/`, read-only except `calibrate`. Percentages are of ONE core's budget for one buffer
+(`budget_us = buffer / srate × 1e6`); `null` means "not measured".
+
+- `GET /api/cpu/profile` →
+  `{machine: {cpu, cores, governor, srate, bsize, engine}, measured_at, budget_us,
+    blocks: {"<type>[:<variant>]|mono|stereo": {avg_us, worst_us, pct, at, hash}},
+    calibration: {state: "idle"|"waiting"|"running"|"done"|"failed", done, total, current, waiting_for, error}}`
+- `POST /api/cpu/calibrate` `{force?: bool, types?: [..]}` → starts the bench (refused with 409 when the rack is busy:
+  `reamp.busy_reason`), measures what is missing or changed (plugin hash, machine, srate, bsize).
+- `GET /api/cpu/estimate?preset=<id>|sandbox` →
+  `{verdict: "ok"|"tight"|"red"|"unknown", budget_us, cores, total_cores, worst: {lane, scene, pct},
+    lanes: [{id, name, pct, worst_scene, by_scene: {A: pct…}, blocks: [{id, type, label, pct, stereo, measured,
+    on: {A: bool…}}]}],
+    fixes: [{id, title, sub, gain_pct, action: {kind: "perf-mode"|"mono"|"split"|"buffer"|"lighter-capture"|
+    "turn-off", …} | null}],
+    machine: {cpu, governor, bsize, srate}, measured_at}`
+  Thresholds: ok ≤ 60 %, tight ≤ 80 %, red above (one constant, `cpu_budget.THRESHOLDS`). A lane with an unmeasured
+  block gets `verdict: "unknown"` unless the measured part is already red.
+- `GET /api/cpu/estimate-many?ids=a,b,c` → `{id: {verdict, worst: {lane, scene, pct}}}` (setlist rows, /live,
+  Companion).
+- `GET /api/cpu/swap?preset=<id>|sandbox&block=<id>&ref=<tone id>[&model=<id>]` → the lane before/after replacing
+  that block's capture: `{lane, before_pct, after_pct, verdict_after, lighter: {ref, model, pct}|null}` (Library ▸
+  Amps listening bar, Add to…).
+- A block's own cost for the Library and the drawer: `GET /api/cpu/block?type=&variant=&stereo=` →
+  `{pct, avg_us, worst_us, measured}`; a NAM capture's variant is its architecture (`nam:standard`, `nam:lite`…), read
+  from the capture.
+
+## 10. Lots
+
+1. **Bench, profile, estimate** (bridge): `bridge/cpu_budget.py` (pure estimate from a compiled plan + profile),
+   `bridge/cpu_bench.py` (the calibration, idle-gated like the demo renderer), `config/cpu-profile.json`, the routes
+   above, `golem doctor` facts. The bench never runs while someone plays.
+2. **Designer and fixes sheet** (app): the header verdict chip, a bar per lane against one core with the
+   heaviest scene, each block's share, the fixes sheet; the Add block drawer shows "this lane would go to N %".
+3. **Library**: Amps (per-capture cost and architecture, the listening bar before → after, Add to… greys a lane
+   pushed into red), Pedals (cost per pedal).
+4. **/live and Companion**: a chip only when tight or red, for the loaded song and the next ones; tap = the fixes
+   sheet, read-only on stage.

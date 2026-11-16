@@ -78,6 +78,14 @@ the effects wherever golem-fx is not installed, the rest as instruments, capture
   latency re-sync when a preset switches Live ↔ Studio, gfx-morph's `depends` that golem's descriptor format cannot
   hold (gfx-morph README §3.2), and both on the quiet-machine stall bench.
 
+### The stall bench passes (2026-11-16)
+
+`tools/check-block-stall.py` on the rack, performance governor, 6 switch-ons per wait (1.5 s and 4 s off), control
+3 ms: Emet, Met, Shem, Golem (golem-double), Glitch, Flanger (flanger-js), the x42 IR convolver (ir-fx), Spectral
+Comp, Morph, Formant, Correct (pitch-correct), and the reworked Fuzz and Dist (golem-fx 5d33aaa) all switch on with
+no freeze (max 4 ms). gfx-correct's single 519 ms freeze did not come back. The `bench: pending` key is dropped
+from the seven blocks that carried it: no catalogue block is pending any more, so golem.fm's AI may propose them.
+
 ### Catalogue v50: Formant (2026-11-15)
 
 - `formant` is a new golem-fx-only block (gfx-formant, golem-fx 048142e), category Pitch, voice and guitar lanes, 17

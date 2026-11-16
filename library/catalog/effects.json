@@ -2065,7 +2065,6 @@
   },
   {
    "type": "flanger-js",
-   "bench": "pending",
    "name": "Flanger",
    "note": "v40: the only flanger. The Calf `flanger` block was retired: golem-fx played both with one engine. Documents that still carry `flanger` are rewritten on load (bridge/option_renames.RETIRED, values converted).",
    "category": "modulation",
@@ -5229,8 +5228,7 @@
     }
    ],
    "note": "golem-fx live vocal doubler: a double one octave below the singer (by default), formants kept or moved; the dry voice is untouched and has no latency, the doubles trail by a few periods of the note. Put a de-esser and a gate BEFORE it. Expert: a second voice, character, tracking (register, sensitivity, a level threshold against stage bleed), harmony.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
-   "bench": "pending"
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "glitch",
@@ -5317,8 +5315,7 @@
     }
    ],
    "note": "golem-fx spectral glitch: it slices the sound into spectral bins and holds, scatters or reshapes them (30 effects); Sustain turns what you play into a pad. Stereo by nature: put it on a stereo lane (it also plays mono). The dry is never delayed; the wet trails by the analysis window (2,048 + 512 samples at the default size, 53 ms at 48 kHz). Its `align` setting (expert, setup only, never a scene value) delays the dry to match. Set it before playing: no footswitch action. Expert: two more effect slots, cloud, pitch, LFO, envelope, filters.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
-   "bench": "pending"
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "ir-fx",
@@ -5369,7 +5366,6 @@
     }
    ],
    "note": "Plays a captured studio unit's impulse response WHOLE, in stereo: a spring tank, an echo, a reverb box (TONE3000 outboard IR packs). Unlike the Cab block, the IR is never cut before a late echo: the echo is the sound. Dry stays at unity (an insert); Wet sets the effect. A static IR gives an echo's repeats as recorded: no feedback control and no tape wow. Put it on a stereo lane.",
-   "bench": "pending",
    "defaults": "compile"
   },
   {
@@ -5614,8 +5610,7 @@
     }
    ],
    "note": "golem-fx keyed expander-gate for high gain (the role of a keyed gate in the loop). Reads its key input when one is routed, otherwise the main input. Expert: ratio, range, detector, key filters.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
-   "bench": "pending"
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "stretch",
@@ -5892,8 +5887,7 @@
     }
    ],
    "note": "golem-fx high-headroom 808-style overdrive, to tighten a high-gain amp. Expert: headroom, asymmetry, tight, input, bass keep.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
-   "bench": "pending"
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "shem",
@@ -5920,8 +5914,7 @@
     }
    ],
    "note": "golem-fx clean, shaped tight boost in front of a high-gain amp. Linear: its output can exceed 0 dBFS, as a boost's does. Expert: voice, bright.",
-   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
-   "bench": "pending"
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
    "type": "capture-module",

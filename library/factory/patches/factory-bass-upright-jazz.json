@@ -1,0 +1,335 @@
+{
+ "id": "factory-bass-upright-jazz",
+ "name": "Upright Jazz",
+ "role": "bass",
+ "tags": [
+  "jazz"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Upright Jazz",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -24,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 20
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "b15",
+      "type": "amp",
+      "label": "Ampeg B-15",
+      "ref": "26828",
+      "model": "379842",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 600,
+       "highs": -2
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 12,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Walking",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Ballad",
+     "blocks": {},
+     "params": {
+      "eq": {
+       "highs": -4
+      },
+      "room": {
+       "mix": 18
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Solo",
+     "blocks": {},
+     "params": {
+      "eq": {
+       "midgain": 3,
+       "midfreq": 700
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Bright Pluck",
+     "blocks": {},
+     "params": {
+      "eq": {
+       "highs": 2
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Walking",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Ballad",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   },
+   "params": {
+    "eq": {
+     "highs": -4
+    },
+    "room": {
+     "mix": 18
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Solo",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C",
+     "level": 3
+    }
+   },
+   "params": {
+    "eq": {
+     "midgain": 3,
+     "midfreq": 700
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Bright Pluck",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D"
+    }
+   },
+   "params": {
+    "eq": {
+     "highs": 2
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-swing.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 160,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Opto",
+     "thresh": -24,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 20
+    }
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "b15",
+    "type": "amp",
+    "label": "Ampeg B-15",
+    "ref": "26828",
+    "model": "379842",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 35,
+     "midgain": 0,
+     "midfreq": 600,
+     "highs": -2
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 12,
+     "decay": 0.9,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "26828",
+   "model": "379842"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#c9a227",
+  "B": "#c9a227",
+  "C": "#c9a227",
+  "D": "#c9a227",
+  "9": "#c9a227",
+  "10": "#c9a227"
+ },
+ "anims": {
+  "A": "monster",
+  "B": "rain",
+  "C": "vu",
+  "D": "wave",
+  "9": "heartbeat",
+  "10": "lightning"
+ },
+ "deps": [
+  {
+   "sha256": "f5fca452dbaa7ad325390de45416cdd69ba2c7b8b62f9a39c9243f555d426e29",
+   "uid": "t3k:26828",
+   "kind": "amp-cab",
+   "bytes": 294149,
+   "name": "Ampeg B15  U47",
+   "source": "t3k",
+   "amp": "Ampeg B-15",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-b-15-fliptop-26828"
+  },
+  {
+   "sha256": "c5786de732cf905e646f67a3cbfde0c689a8ce6914c76ac4d9001cd1f7087944",
+   "uid": "local:groove-golem-swing",
+   "kind": "groove",
+   "bytes": 257,
+   "name": "Swing",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"9\": \"heartbeat\", \"A\": \"monster\", \"B\": \"rain\", \"C\": \"vu\", \"D\": \"wave\"}, \"backing\": null, \"bpm\": 160, \"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#c9a227\", \"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-swing.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Upright Jazz\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Walking\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Solo\", \"params\": {\"eq\": {\"midfreq\": 700, \"midgain\": 3}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 2}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Walking\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-C\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"eq\": {\"midfreq\": 700, \"midgain\": 3}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 2}}}]}"
+}

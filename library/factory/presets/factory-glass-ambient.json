@@ -1,0 +1,1170 @@
+{
+ "id": "factory-glass-ambient",
+ "name": "Paper Satellites",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "ds1",
+      "type": "pedal-nam",
+      "label": "Boss DS-1 Distortion",
+      "ref": "2508",
+      "model": "419260",
+      "params": {
+       "input": 0,
+       "output": -3
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "twin",
+      "type": "amp",
+      "label": "Fender Twin Reverb",
+      "ref": "43620",
+      "model": "382265",
+      "params": {
+       "input": -3,
+       "output": 0
+      }
+     },
+     {
+      "id": "trem",
+      "type": "tremolo",
+      "params": {
+       "rate": 5.5,
+       "depth": 0.6,
+       "wave": "Sine",
+       "model": "Optical"
+      }
+     },
+     {
+      "id": "grain",
+      "type": "granular",
+      "params": {
+       "grains": 16,
+       "size": 180,
+       "mix": 40,
+       "mode": "Cloud"
+      },
+      "foot": 7
+     },
+     {
+      "id": "ring",
+      "type": "ringmod",
+      "params": {
+       "carrier": "Free",
+       "freq": 0.35,
+       "mix": 0.5
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/8•",
+       "feedback": 40,
+       "mix": 18
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 26,
+       "decay": 3.5,
+       "size": 44,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Glass Clean",
+     "blocks": {
+      "ds1": false,
+      "trem": true,
+      "grain": false,
+      "ring": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Crunch Burst",
+     "blocks": {
+      "ds1": true,
+      "trem": false,
+      "grain": false,
+      "ring": false
+     },
+     "params": {
+      "verb": {
+       "mix": 12
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Frozen Pad",
+     "blocks": {
+      "ds1": false,
+      "trem": false,
+      "grain": true,
+      "ring": false
+     },
+     "params": {
+      "grain": {
+       "mix": 70
+      },
+      "verb": {
+       "mix": 34
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Ring Glitch",
+     "blocks": {
+      "ds1": false,
+      "trem": false,
+      "grain": false,
+      "ring": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Tape Echo",
+     "blocks": {
+      "ds1": false,
+      "trem": false,
+      "grain": false,
+      "ring": false
+     },
+     "params": {
+      "dly": {
+       "feedback": 55,
+       "mix": 26
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-glass-ambient",
+    "name": "Glass Ambient"
+   }
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -22,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 15
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "b15",
+      "type": "amp",
+      "label": "Ampeg B-15",
+      "ref": "26828",
+      "model": "379842",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "oct",
+      "type": "octaver",
+      "params": {
+       "direct": 0.7,
+       "octave1": 0.6,
+       "mode": "Clean",
+       "instrument": "Bass"
+      }
+     },
+     {
+      "id": "synth",
+      "type": "polysynth",
+      "params": {
+       "engine": "Mono",
+       "wave": "Saw",
+       "cutoff": 900,
+       "reso": 30,
+       "filt_env": 18,
+       "synth": -4,
+       "dry": -12
+      }
+     },
+     {
+      "id": "tape",
+      "type": "tape",
+      "params": {
+       "model": "Cassette",
+       "input": 6,
+       "mix": 100
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": -1
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Round",
+     "blocks": {
+      "oct": false,
+      "synth": false,
+      "tape": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Sub Octave",
+     "blocks": {
+      "oct": true,
+      "synth": false,
+      "tape": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Synth Bass",
+     "blocks": {
+      "oct": false,
+      "synth": true,
+      "tape": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Tape Fuzz",
+     "blocks": {
+      "oct": false,
+      "synth": false,
+      "tape": true
+     },
+     "params": {
+      "tape": {
+       "input": 14,
+       "wear": 40
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-synth-ambient",
+    "name": "Synth Ambient"
+   }
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Rhodes",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "ep",
+      "type": "ep",
+      "params": {
+       "bank": "library/dx7/synprezfm-02.syx",
+       "patch": 15,
+       "fcut": 1,
+       "res": 0,
+       "out": 0.8
+      }
+     },
+     {
+      "id": "trem-2",
+      "type": "tremolo",
+      "params": {
+       "rate": 4.5,
+       "depth": 0.5,
+       "wave": "Sine"
+      }
+     },
+     {
+      "id": "tape-2",
+      "type": "tape",
+      "params": {
+       "model": "Cassette",
+       "wear": 30,
+       "mix": 100
+      }
+     },
+     {
+      "id": "verb-2",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 24,
+       "decay": 3.2,
+       "size": 40,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Glass Rhodes",
+     "blocks": {
+      "trem-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Tape Rhodes",
+     "blocks": {
+      "trem-2": false,
+      "tape-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Dry Keys",
+     "blocks": {
+      "trem-2": false,
+      "tape-2": false
+     },
+     "params": {
+      "verb-2": {
+       "mix": 10
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Underwater",
+     "blocks": {
+      "trem-2": true,
+      "tape-2": true
+     },
+     "params": {
+      "verb-2": {
+       "mix": 36
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-glass-rhodes",
+    "name": "Glass Rhodes"
+   }
+  },
+  {
+   "id": "keys-pads-1",
+   "key": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Pads",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-lofi"
+      }
+     },
+     {
+      "id": "crush",
+      "type": "bitcrusher",
+      "params": {
+       "quant": 0.5,
+       "rate": 0.4,
+       "nonlin": 0.1
+      }
+     },
+     {
+      "id": "tape-3",
+      "type": "tape",
+      "params": {
+       "model": "Portable Cassette",
+       "wear": 40,
+       "mix": 100
+      }
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 40,
+       "mix": 18
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 15
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Beat",
+     "blocks": {
+      "crush": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-B",
+     "name": "Crushed Beat",
+     "blocks": {
+      "crush": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-C",
+     "name": "Tape Beat",
+     "blocks": {
+      "tape-3": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-D",
+     "name": "Dub Beat",
+     "blocks": {
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-electro-pads",
+    "name": "Electro Pads"
+   }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 220
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "tune",
+      "type": "pitch-correct",
+      "params": {
+       "corr": 0.4,
+       "filter": 0.15,
+       "fastmode": true,
+       "key": "A",
+       "scale": "Minor",
+       "song_key": true
+      },
+      "foot": 8
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -22,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "formant",
+      "type": "formant",
+      "params": {
+       "formant": 3,
+       "mix": 50
+      }
+     },
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "dly-3",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/4•",
+       "feedback": 40,
+       "mix": 20
+      }
+     },
+     {
+      "id": "verb-3",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 28,
+       "decay": 3.4,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Ethereal",
+     "blocks": {
+      "dly-3": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Close",
+     "blocks": {
+      "dly-3": false
+     },
+     "params": {
+      "verb-3": {
+       "mix": 16
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Robot Falsetto",
+     "blocks": {
+      "tune": true
+     },
+     "params": {
+      "tune": {
+       "corr": 1.0,
+       "filter": 0.02
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Cloud",
+     "blocks": {
+      "dly-3": true,
+      "formant": true
+     },
+     "params": {
+      "verb-3": {
+       "mix": 40
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-ethereal",
+    "name": "Ethereal Falsetto"
+   }
+  },
+  {
+   "id": "drums-1",
+   "key": "drums-1",
+   "role": "drums",
+   "name": "Drums",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-black-pearl"
+      }
+     },
+     {
+      "id": "comp-4",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 20
+      }
+     },
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "tape-4",
+      "type": "tape",
+      "params": {
+       "model": "Cassette",
+       "wear": 35,
+       "mix": 100
+      }
+     },
+     {
+      "id": "crush-2",
+      "type": "bitcrusher",
+      "params": {
+       "quant": 0.55,
+       "rate": 0.45,
+       "nonlin": 0.1
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Tape Kit",
+     "blocks": {
+      "tape-4": true,
+      "crush-2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Crushed",
+     "blocks": {
+      "tape-4": false,
+      "crush-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Dry",
+     "blocks": {
+      "tape-4": false,
+      "crush-2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Dusty",
+     "blocks": {
+      "tape-4": true,
+      "crush-2": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-drums-lofi",
+    "name": "Lo-Fi Kit"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Glass Intro",
+   "blocks": {
+    "ds1": false,
+    "trem": true,
+    "grain": false,
+    "ring": false,
+    "oct": false,
+    "synth": false,
+    "tape": false,
+    "trem-2": true,
+    "crush": false,
+    "dly-3": true,
+    "tape-4": true,
+    "crush-2": false
+   },
+   "params": {},
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -2
+    },
+    "keys-1": {
+     "state": "st-keys-1-A"
+    },
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A",
+     "level": -4
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Verse",
+   "blocks": {
+    "ds1": false,
+    "trem": false,
+    "grain": false,
+    "ring": false,
+    "oct": false,
+    "synth": true,
+    "tape": false,
+    "trem-2": false,
+    "tape-2": false,
+    "crush": true,
+    "dly-3": false,
+    "tape-4": false,
+    "crush-2": true
+   },
+   "params": {
+    "dly": {
+     "feedback": 55,
+     "mix": 26
+    },
+    "verb-2": {
+     "mix": 10
+    },
+    "verb-3": {
+     "mix": 16
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": -2
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -3
+    },
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-B"
+    },
+    "voice-1": {
+     "state": "st-voice-1-B"
+    },
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Burst",
+   "blocks": {
+    "ds1": true,
+    "trem": false,
+    "grain": false,
+    "ring": false,
+    "oct": false,
+    "synth": false,
+    "tape": true,
+    "trem-2": false,
+    "tape-2": true,
+    "tape-3": true,
+    "dly-3": true,
+    "tape-4": false,
+    "crush-2": false
+   },
+   "params": {
+    "verb": {
+     "mix": 12
+    },
+    "tape": {
+     "input": 14,
+     "wear": 40
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B",
+     "level": 1
+    },
+    "bass-1": {
+     "state": "st-bass-1-D"
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": -4
+    },
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-C"
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Frozen",
+   "blocks": {
+    "ds1": false,
+    "trem": false,
+    "grain": true,
+    "ring": false,
+    "oct": true,
+    "synth": false,
+    "tape": false,
+    "trem-2": true,
+    "tape-2": true,
+    "dly-2": true,
+    "dly-3": true,
+    "formant": true,
+    "tape-4": true,
+    "crush-2": true
+   },
+   "params": {
+    "grain": {
+     "mix": 70
+    },
+    "verb": {
+     "mix": 34
+    },
+    "verb-2": {
+     "mix": 36
+    },
+    "verb-3": {
+     "mix": 40
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-D"
+    },
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-D",
+     "level": -2
+    },
+    "voice-1": {
+     "state": "st-voice-1-D"
+    },
+    "drums-1": {
+     "state": "st-drums-1-D"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Glitch Out",
+   "blocks": {
+    "ds1": false,
+    "trem": false,
+    "grain": false,
+    "ring": true,
+    "oct": false,
+    "synth": true,
+    "tape": false,
+    "trem-2": true,
+    "crush": true,
+    "tune": true,
+    "tape-4": false,
+    "crush-2": true
+   },
+   "params": {
+    "tune": {
+     "corr": 1.0,
+     "filter": 0.02
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -3
+    },
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-B"
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
+    },
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  }
+ ],
+ "bpm": 86,
+ "style": "alternative",
+ "styles": [
+  "alternative"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-lofi.mid",
+       "library/grooves/golem-boom-bap.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#118ab2",
+  "B": "#118ab2",
+  "C": "#118ab2",
+  "D": "#118ab2",
+  "E": "#118ab2",
+  "6": "#118ab2",
+  "7": "#118ab2",
+  "8": "#118ab2",
+  "9": "#118ab2",
+  "10": "#118ab2"
+ },
+ "anims": {
+  "A": "ripple",
+  "B": "snow",
+  "C": "pulse",
+  "D": "fire",
+  "E": "scanner",
+  "6": "sheen",
+  "7": "glitch",
+  "8": "monster",
+  "9": "rain",
+  "10": "vu"
+ }
+}

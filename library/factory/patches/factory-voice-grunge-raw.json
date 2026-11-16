@@ -1,0 +1,332 @@
+{
+ "id": "factory-voice-grunge-raw",
+ "name": "Raw Grunge",
+ "role": "voice",
+ "tags": [
+  "grunge",
+  "vocal"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Raw Grunge",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -52,
+       "release": 120
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "grit",
+      "type": "morph",
+      "params": {
+       "drive": 45,
+       "morph": 20,
+       "mix": 70,
+       "object": "None"
+      },
+      "foot": 6
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 1.5,
+       "midfreq": 1800,
+       "highs": 0
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 16,
+       "decay": 1,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Raw",
+     "blocks": {
+      "grit": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Gravel",
+     "blocks": {
+      "grit": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Quiet Verse",
+     "blocks": {
+      "grit": false
+     },
+     "params": {
+      "room": {
+       "mix": 10
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Scream",
+     "blocks": {
+      "grit": true
+     },
+     "params": {
+      "grit": {
+       "drive": 65
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Raw",
+   "blocks": {
+    "grit": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Gravel",
+   "blocks": {
+    "grit": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Quiet Verse",
+   "blocks": {
+    "grit": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C",
+     "level": -1
+    }
+   },
+   "params": {
+    "room": {
+     "mix": 10
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "D",
+   "name": "Scream",
+   "blocks": {
+    "grit": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "grit": {
+     "drive": 65
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 128,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -52,
+     "release": 120
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 6500,
+     "range": 10
+    }
+   },
+   {
+    "id": "grit",
+    "type": "morph",
+    "params": {
+     "drive": 45,
+     "morph": 20,
+     "mix": 70,
+     "object": "None"
+    },
+    "foot": 6
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "FET",
+     "thresh": -20,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 15
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 110,
+     "midgain": 1.5,
+     "midfreq": 1800,
+     "highs": 0
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 16,
+     "decay": 1,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#9c6644",
+  "B": "#9c6644",
+  "C": "#9c6644",
+  "D": "#9c6644",
+  "6": "#9c6644",
+  "9": "#9c6644",
+  "10": "#9c6644"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "aurora",
+  "C": "ripple",
+  "D": "snow",
+  "6": "pulse",
+  "9": "fire",
+  "10": "scanner"
+ },
+ "deps": [
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"scanner\", \"6\": \"pulse\", \"9\": \"fire\", \"A\": \"ember\", \"B\": \"aurora\", \"C\": \"ripple\", \"D\": \"snow\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -52}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"grit\", \"params\": {\"drive\": 45, \"mix\": 70, \"morph\": 20, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 110, \"midfreq\": 1800, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -52}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"grit\", \"params\": {\"drive\": 45, \"mix\": 70, \"morph\": 20, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 110, \"midfreq\": 1800, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Raw Grunge\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"grit\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Raw\", \"params\": {}}, {\"blocks\": {\"grit\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Gravel\", \"params\": {}}, {\"blocks\": {\"grit\": false}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Quiet Verse\", \"params\": {\"room\": {\"mix\": 10}}}, {\"blocks\": {\"grit\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Scream\", \"params\": {\"grit\": {\"drive\": 65}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"grit\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Raw\"}, {\"blocks\": {\"grit\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Gravel\"}, {\"blocks\": {\"grit\": false}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": -1, \"state\": \"st-voice-1-C\"}}, \"level\": -1, \"name\": \"Quiet Verse\", \"params\": {\"room\": {\"mix\": 10}}}, {\"blocks\": {\"grit\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Scream\", \"params\": {\"grit\": {\"drive\": 65}}}]}"
+}

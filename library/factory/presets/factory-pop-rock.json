@@ -1,0 +1,1059 @@
+{
+ "id": "factory-pop-rock",
+ "name": "Paper Promises",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 2.5,
+       "makeup": 3,
+       "attack": 15
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "clean",
+         "type": "amp",
+         "label": "Fender Deluxe Reverb II",
+         "ref": "6237",
+         "model": "418153",
+         "params": {
+          "input": -2,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "crunch",
+         "type": "amp",
+         "label": "Fender Deluxe Reverb II",
+         "ref": "6237",
+         "model": "413045",
+         "params": {
+          "input": -2,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c",
+       "blocks": [
+        {
+         "id": "nylon",
+         "type": "acoustic-sim",
+         "params": {
+          "model": "Classical",
+          "body": 60,
+          "top": 40,
+          "mic": 70,
+          "mix": 100
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Classic",
+       "rate": 0.5,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 14
+      },
+      "foot": 7
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 22,
+       "decay": 1.8,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Verse Clean",
+     "blocks": {
+      "chorus": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Chorus Crunch",
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Nylon Solo",
+     "blocks": {
+      "chorus": false,
+      "dly": true
+     },
+     "params": {
+      "plate": {
+       "mix": 26
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Ballad Arp",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Bridge Drive",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-pop-chorus",
+    "name": "Pop Chorus"
+   }
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "drive",
+      "type": "emet",
+      "params": {
+       "gain": 30,
+       "tone_stack": 55,
+       "level": 0
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "svtcl",
+      "type": "amp-nam",
+      "label": "Ampeg SVT-CL",
+      "ref": "45809",
+      "model": "382790",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gkcab",
+      "type": "cab",
+      "label": "Gallien-Krueger 4x10",
+      "ref": "64815",
+      "model": "72431",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "chorus-2",
+      "type": "chorus",
+      "params": {
+       "profile": "Bass",
+       "mode": "Classic",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.3
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Pick Verse",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Chorus Drive",
+     "blocks": {
+      "drive": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "eq": {
+       "highs": -3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Chorus Bass",
+     "blocks": {
+      "chorus-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-E",
+     "name": "Melodic",
+     "blocks": {
+      "chorus-2": false
+     },
+     "params": {
+      "eq": {
+       "midgain": 2
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-pop-pick",
+    "name": "Pop Pick"
+   }
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Piano",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "piano",
+      "type": "piano",
+      "params": {
+       "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz",
+       "volume": 0
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 60,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 12
+      }
+     },
+     {
+      "id": "plate-2",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 22,
+       "decay": 1.8,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Ballad Piano",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Bright Pop",
+     "blocks": {},
+     "params": {
+      "eq-2": {
+       "highs": 3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Echo Piano",
+     "blocks": {
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Soft Bed",
+     "blocks": {},
+     "params": {
+      "eq-2": {
+       "highs": -3
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-pop-piano",
+    "name": "Pop Piano"
+   }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 200
+      }
+     },
+     {
+      "id": "tune",
+      "type": "pitch-correct",
+      "params": {
+       "corr": 0.6,
+       "filter": 0.15,
+       "fastmode": true,
+       "key": "C",
+       "scale": "Major",
+       "song_key": true
+      }
+     },
+     {
+      "id": "comp-4",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus",
+      "params": {
+       "profile": "Voice",
+       "mode": "Doubler",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 8
+     },
+     {
+      "id": "dly-3",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 22,
+       "mix": 12
+      }
+     },
+     {
+      "id": "plate-3",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 22,
+       "decay": 1.8,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Pop Verse",
+     "blocks": {
+      "double": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Chorus Double",
+     "blocks": {
+      "double": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "double": false
+     },
+     "params": {
+      "plate-3": {
+       "mix": 30
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Hard Tune",
+     "blocks": {
+      "double": false
+     },
+     "params": {
+      "tune": {
+       "corr": 1.0,
+       "filter": 0.02
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-pop-tuned",
+    "name": "Pop Tuned"
+   }
+  },
+  {
+   "id": "drums-1",
+   "key": "drums-1",
+   "role": "drums",
+   "name": "Drums",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-black-pearl"
+      }
+     },
+     {
+      "id": "comp-5",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 20
+      }
+     },
+     {
+      "id": "eq-4",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "punch",
+      "type": "transient",
+      "params": {
+       "attack": 8,
+       "sustain": 0
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Tight",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Punch",
+     "blocks": {
+      "punch": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Roomy",
+     "blocks": {
+      "punch": false
+     },
+     "params": {
+      "room": {
+       "mix": 26
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Soft",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-drums-studio-rock",
+    "name": "Studio Rock"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Verse",
+   "blocks": {
+    "chorus": true,
+    "dly": false,
+    "double": false
+   },
+   "params": {},
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "bass-1": {
+     "state": "st-bass-1-A"
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -2
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-D"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Chorus",
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "drive": true,
+    "double": true,
+    "punch": true
+   },
+   "params": {
+    "eq-2": {
+     "highs": 3
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": -3
+    },
+    "voice-1": {
+     "state": "st-voice-1-B",
+     "level": 1
+    },
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Nylon Solo",
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "drive": false,
+    "double": false
+   },
+   "params": {
+    "plate": {
+     "mix": 26
+    },
+    "eq": {
+     "highs": -3
+    },
+    "eq-2": {
+     "highs": -3
+    },
+    "plate-3": {
+     "mix": 30
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 2
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": -4
+    },
+    "voice-1": {
+     "state": "st-voice-1-C",
+     "level": -10
+    },
+    "drums-1": {
+     "state": "st-drums-1-D"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Bridge",
+   "blocks": {
+    "chorus": true,
+    "dly": true,
+    "chorus-2": false,
+    "dly-2": true,
+    "double": false,
+    "punch": false
+   },
+   "params": {
+    "eq": {
+     "midgain": 2
+    },
+    "plate-3": {
+     "mix": 30
+    },
+    "room": {
+     "mix": 26
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    },
+    "bass-1": {
+     "state": "st-bass-1-E"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -3
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Outro",
+   "blocks": {
+    "chorus": true,
+    "dly": true,
+    "drive": false,
+    "double": false
+   },
+   "params": {
+    "eq": {
+     "highs": -3
+    },
+    "plate-3": {
+     "mix": 30
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-A"
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
+    },
+    "drums-1": {
+     "state": "st-drums-1-D"
+    }
+   }
+  }
+ ],
+ "bpm": 76,
+ "style": "pop",
+ "styles": [
+  "pop"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid",
+       "library/grooves/golem-rock-chorus.mid",
+       "library/grooves/golem-six-eight.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#ffb703",
+  "B": "#ffb703",
+  "C": "#ffb703",
+  "D": "#ffb703",
+  "E": "#ffb703",
+  "6": "#ffb703",
+  "7": "#ffb703",
+  "8": "#ffb703",
+  "9": "#ffb703",
+  "10": "#ffb703"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "snow"
+ }
+}

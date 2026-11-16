@@ -222,7 +222,7 @@ def test_changer_le_kit_d_un_bloc_pads_change_la_forme():
     import os
     from bridge import recall
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    p = json.load(open(os.path.join(root, "library", "factory", "presets", "factory-loop-station.json"), encoding="utf-8"))
+    p = json.load(open(os.path.join(root, "library", "factory", "presets", "factory-loop-indie.json"), encoding="utf-8"))
 
     def pads_of(o, out):
         if isinstance(o, dict):

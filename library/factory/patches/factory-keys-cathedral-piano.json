@@ -30,11 +30,11 @@
       "id": "comp",
       "type": "comp",
       "params": {
+       "character": "Clean",
        "thresh": -22,
        "ratio": 2.5,
        "makeup": 2,
-       "attack": 15,
-       "release": 200
+       "attack": 15
       }
      },
      {
@@ -50,30 +50,31 @@
      {
       "id": "dly",
       "type": "delay",
-      "foot": 7,
       "params": {
+       "model": "Digital",
        "time": "1/4",
        "feedback": 30,
        "mix": 14
-      }
+      },
+      "foot": 7
      },
      {
       "id": "shim",
       "type": "reverb-shimmer",
-      "foot": 6,
       "params": {
        "mix": 30,
        "decay": 6,
        "shimmer": 40,
-       "pitch": 5,
        "hicut": 6000
-      }
+      },
+      "foot": 6
      },
      {
       "id": "verb",
       "type": "reverb",
       "params": {
-       "mix": 26,
+       "algo": "Cathedral",
+       "mix": 24,
        "decay": 3.4,
        "size": 44,
        "hicut": 7000
@@ -102,12 +103,7 @@
      "params": {
       "shim": {
        "mix": 34,
-       "decay": 7,
-       "shimmer": 45
-      },
-      "verb": {
-       "mix": 30,
-       "decay": 3.8
+       "decay": 7
       }
      },
      "branches": {}
@@ -125,15 +121,6 @@
        "midgain": -3,
        "midfreq": 350,
        "highs": 2
-      },
-      "comp": {
-       "thresh": -26,
-       "ratio": 4
-      },
-      "verb": {
-       "mix": 16,
-       "decay": 2.2,
-       "size": 30
       }
      },
      "branches": {}
@@ -147,21 +134,10 @@
      },
      "params": {
       "eq": {
-       "lowcut": 140,
-       "midgain": -2,
-       "highs": 1
+       "lowcut": 140
       },
       "shim": {
-       "mix": 26,
-       "decay": 6,
-       "shimmer": 40
-      },
-      "dly": {
-       "mix": 10
-      },
-      "verb": {
-       "mix": 22,
-       "decay": 3.0
+       "mix": 26
       }
      },
      "branches": {}
@@ -198,12 +174,7 @@
    "params": {
     "shim": {
      "mix": 34,
-     "decay": 7,
-     "shimmer": 45
-    },
-    "verb": {
-     "mix": 30,
-     "decay": 3.8
+     "decay": 7
     }
    }
   },
@@ -225,15 +196,6 @@
      "midgain": -3,
      "midfreq": 350,
      "highs": 2
-    },
-    "comp": {
-     "thresh": -26,
-     "ratio": 4
-    },
-    "verb": {
-     "mix": 16,
-     "decay": 2.2,
-     "size": 30
     }
    }
   },
@@ -251,21 +213,10 @@
    },
    "params": {
     "eq": {
-     "lowcut": 140,
-     "midgain": -2,
-     "highs": 1
+     "lowcut": 140
     },
     "shim": {
-     "mix": 26,
-     "decay": 6,
-     "shimmer": 40
-    },
-    "dly": {
-     "mix": 10
-    },
-    "verb": {
-     "mix": 22,
-     "decay": 3.0
+     "mix": 26
     }
    }
   }
@@ -313,11 +264,11 @@
     "id": "comp",
     "type": "comp",
     "params": {
+     "character": "Clean",
      "thresh": -22,
      "ratio": 2.5,
      "makeup": 2,
-     "attack": 15,
-     "release": 200
+     "attack": 15
     }
    },
    {
@@ -333,30 +284,31 @@
    {
     "id": "dly",
     "type": "delay",
-    "foot": 7,
     "params": {
+     "model": "Digital",
      "time": "1/4",
      "feedback": 30,
      "mix": 14
-    }
+    },
+    "foot": 7
    },
    {
     "id": "shim",
     "type": "reverb-shimmer",
-    "foot": 6,
     "params": {
      "mix": 30,
      "decay": 6,
      "shimmer": 40,
-     "pitch": 5,
      "hicut": 6000
-    }
+    },
+    "foot": 6
    },
    {
     "id": "verb",
     "type": "reverb",
     "params": {
-     "mix": 26,
+     "algo": "Cathedral",
+     "mix": 24,
      "decay": 3.4,
      "size": 44,
      "hicut": 7000
@@ -368,24 +320,24 @@
  "origin": "factory",
  "factory": true,
  "colors": {
-  "A": "#e0e1dd",
-  "B": "#e0e1dd",
-  "C": "#e0e1dd",
-  "D": "#e0e1dd",
-  "6": "#e0e1dd",
-  "7": "#e0e1dd",
-  "9": "#e0e1dd",
-  "10": "#e0e1dd"
+  "A": "#3d348b",
+  "B": "#3d348b",
+  "C": "#3d348b",
+  "D": "#3d348b",
+  "6": "#3d348b",
+  "7": "#3d348b",
+  "9": "#3d348b",
+  "10": "#3d348b"
  },
  "anims": {
-  "A": "wave",
-  "B": "stars",
-  "C": "smoke",
-  "D": "aurora",
-  "6": "snow",
-  "7": "ripple",
-  "9": "heartbeat",
-  "10": "pulse"
+  "A": "ripple",
+  "B": "snow",
+  "C": "pulse",
+  "D": "fire",
+  "6": "scanner",
+  "7": "sheen",
+  "9": "glitch",
+  "10": "monster"
  },
  "deps": [
   {
@@ -412,5 +364,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"pulse\", \"6\": \"snow\", \"7\": \"ripple\", \"9\": \"heartbeat\", \"A\": \"wave\", \"B\": \"stars\", \"C\": \"smoke\", \"D\": \"aurora\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 50, \"midfreq\": 400, \"midgain\": -1.5}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 30, \"pitch\": 5, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 3.4, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#e0e1dd\", \"6\": \"#e0e1dd\", \"7\": \"#e0e1dd\", \"9\": \"#e0e1dd\", \"A\": \"#e0e1dd\", \"B\": \"#e0e1dd\", \"C\": \"#e0e1dd\", \"D\": \"#e0e1dd\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-intro.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"makeup\": 2, \"ratio\": 2.5, \"release\": 200, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 50, \"midfreq\": 400, \"midgain\": -1.5}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 30, \"pitch\": 5, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"decay\": 3.4, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Cathedral Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Hall Piano\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Halo\", \"params\": {\"shim\": {\"decay\": 7, \"mix\": 34, \"shimmer\": 45}, \"verb\": {\"decay\": 3.8, \"mix\": 30}}}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Under\", \"params\": {\"comp\": {\"ratio\": 4, \"thresh\": -26}, \"eq\": {\"highs\": 2, \"lowcut\": 160, \"midfreq\": 350, \"midgain\": -3}, \"verb\": {\"decay\": 2.2, \"mix\": 16, \"size\": 30}}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Bloom\", \"params\": {\"dly\": {\"mix\": 10}, \"eq\": {\"highs\": 1, \"lowcut\": 140, \"midgain\": -2}, \"shim\": {\"decay\": 6, \"mix\": 26, \"shimmer\": 40}, \"verb\": {\"decay\": 3.0, \"mix\": 22}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Hall Piano\"}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Halo\", \"params\": {\"shim\": {\"decay\": 7, \"mix\": 34, \"shimmer\": 45}, \"verb\": {\"decay\": 3.8, \"mix\": 30}}}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Under\", \"params\": {\"comp\": {\"ratio\": 4, \"thresh\": -26}, \"eq\": {\"highs\": 2, \"lowcut\": 160, \"midfreq\": 350, \"midgain\": -3}, \"verb\": {\"decay\": 2.2, \"mix\": 16, \"size\": 30}}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Bloom\", \"params\": {\"dly\": {\"mix\": 10}, \"eq\": {\"highs\": 1, \"lowcut\": 140, \"midgain\": -2}, \"shim\": {\"decay\": 6, \"mix\": 26, \"shimmer\": 40}, \"verb\": {\"decay\": 3.0, \"mix\": 22}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"monster\", \"6\": \"scanner\", \"7\": \"sheen\", \"9\": \"glitch\", \"A\": \"ripple\", \"B\": \"snow\", \"C\": \"pulse\", \"D\": \"fire\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 50, \"midfreq\": 400, \"midgain\": -1.5}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 30, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cathedral\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 24, \"size\": 44}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#3d348b\", \"6\": \"#3d348b\", \"7\": \"#3d348b\", \"9\": \"#3d348b\", \"A\": \"#3d348b\", \"B\": \"#3d348b\", \"C\": \"#3d348b\", \"D\": \"#3d348b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-intro.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 50, \"midfreq\": 400, \"midgain\": -1.5}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 30, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cathedral\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 24, \"size\": 44}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Cathedral Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Hall Piano\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Halo\", \"params\": {\"shim\": {\"decay\": 7, \"mix\": 34}}}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Under\", \"params\": {\"eq\": {\"highs\": 2, \"lowcut\": 160, \"midfreq\": 350, \"midgain\": -3}}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Bloom\", \"params\": {\"eq\": {\"lowcut\": 140}, \"shim\": {\"mix\": 26}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Hall Piano\"}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Halo\", \"params\": {\"shim\": {\"decay\": 7, \"mix\": 34}}}, {\"blocks\": {\"dly\": false, \"shim\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Under\", \"params\": {\"eq\": {\"highs\": 2, \"lowcut\": 160, \"midfreq\": 350, \"midgain\": -3}}}, {\"blocks\": {\"dly\": true, \"shim\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Bloom\", \"params\": {\"eq\": {\"lowcut\": 140}, \"shim\": {\"mix\": 26}}}]}"
 }

@@ -2,83 +2,129 @@
  "id": "factory",
  "name": "Factory Golem",
  "fcb": true,
- "rev": 1,
+ "rev": 3,
  "kind": "songs",
  "presets": [
-  "factory-chill-jazz",
-  "factory-blues-night",
-  "factory-funk-session",
-  "factory-rock-classics",
-  "factory-indie-pop",
-  "factory-alt-rock",
-  "factory-metal-for-all",
-  "factory-loop-station",
-  "factory-ambient-metal"
+  "factory-jazz-club",
+  "factory-texas-blues",
+  "factory-blues-ballad",
+  "factory-ambient-djent",
+  "factory-hero-instrumental",
+  "factory-groove-metal",
+  "factory-glass-ambient",
+  "factory-loop-indie",
+  "factory-fuzz-grunge",
+  "factory-funk-rock",
+  "factory-pop-rock",
+  "factory-bass-lab",
+  "factory-nu-metal-eight"
  ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
    "id": "r:factory:0",
-   "rev": 2,
-   "preset": "factory-chill-jazz",
+   "rev": 1,
+   "preset": "factory-jazz-club",
    "title": "Rooftop Prowl",
-   "bpm": 180
+   "bpm": 160,
+   "key": "F"
   },
   {
    "id": "r:factory:1",
-   "rev": 2,
-   "preset": "factory-blues-night",
-   "title": "Rented Room Blues",
-   "bpm": 96
+   "rev": 1,
+   "preset": "factory-texas-blues",
+   "title": "Rail Yard Shuffle",
+   "bpm": 112,
+   "key": "E"
   },
   {
    "id": "r:factory:2",
-   "rev": 2,
-   "preset": "factory-funk-session",
-   "title": "Velvet Pocket",
-   "bpm": 104
+   "rev": 1,
+   "preset": "factory-blues-ballad",
+   "title": "Harbour Rain",
+   "bpm": 68,
+   "key": "Cm"
   },
   {
    "id": "r:factory:3",
-   "rev": 2,
-   "preset": "factory-rock-classics",
-   "title": "Diesel Heart",
-   "bpm": 128
+   "rev": 1,
+   "preset": "factory-ambient-djent",
+   "title": "Velvet Ossuary",
+   "bpm": 94,
+   "key": "F#m"
   },
   {
    "id": "r:factory:4",
-   "rev": 2,
-   "preset": "factory-indie-pop",
-   "title": "Paper Satellites",
-   "bpm": 118
+   "rev": 1,
+   "preset": "factory-hero-instrumental",
+   "title": "Glass Summit",
+   "bpm": 120,
+   "key": "E"
   },
   {
    "id": "r:factory:5",
-   "rev": 2,
-   "preset": "factory-alt-rock",
-   "title": "Static Bloom",
-   "bpm": 120
+   "rev": 1,
+   "preset": "factory-groove-metal",
+   "title": "Iron Thicket",
+   "bpm": 132,
+   "key": "Eb"
   },
   {
    "id": "r:factory:6",
-   "rev": 2,
-   "preset": "factory-metal-for-all",
-   "title": "Iron Tide",
-   "bpm": 140
+   "rev": 1,
+   "preset": "factory-glass-ambient",
+   "title": "Paper Satellites",
+   "bpm": 86,
+   "key": "D"
   },
   {
    "id": "r:factory:7",
-   "rev": 2,
-   "preset": "factory-loop-station",
-   "title": "One-Man Orchestra",
-   "bpm": 100
+   "rev": 1,
+   "preset": "factory-loop-indie",
+   "title": "Room With Echoes",
+   "bpm": 104,
+   "key": "A"
   },
   {
    "id": "r:factory:8",
    "rev": 1,
+   "preset": "factory-fuzz-grunge",
+   "title": "Velvet Wasp",
+   "bpm": 118,
+   "key": "Eb"
+  },
+  {
+   "id": "r:factory:9",
+   "rev": 1,
+   "preset": "factory-funk-rock",
+   "title": "Sunset Ladder",
+   "bpm": 98,
+   "key": "Em"
+  },
+  {
+   "id": "r:factory:10",
+   "rev": 1,
+   "preset": "factory-pop-rock",
+   "title": "Paper Promises",
+   "bpm": 76,
+   "key": "Cm"
+  },
+  {
+   "id": "r:factory:11",
+   "rev": 1,
+   "preset": "factory-bass-lab",
+   "title": "Low End Workshop",
+   "bpm": 100,
+   "key": "D"
+  },
+  {
+   "id": "r:factory:12",
+   "rev": 1,
    "band_song": "rs:f3f0252689f96910f01c81be0325855f",
    "title": "Golem Rising",
-   "preset": "factory-ambient-metal",
+   "key": "F#m",
+   "preset": "factory-nu-metal-eight",
    "bpm": 120,
    "tuning": "Standard",
    "arrangement": {
@@ -103,7 +149,7 @@
        "scene": "A",
        "drums": 0,
        "blocks": {
-        "dly-3": true
+        "glitch": true
        }
       },
       {
@@ -112,7 +158,7 @@
        "scene": "B",
        "drums": 1,
        "blocks": {
-        "shim-2": true
+        "chorus": true
        }
       },
       {
@@ -120,7 +166,7 @@
        "bars": 1,
        "drums": 5,
        "blocks": {
-        "ts": true,
+        "oct": true,
         "scream": true
        }
       },
@@ -130,7 +176,7 @@
        "scene": "D",
        "drums": 2,
        "blocks": {
-        "chorus-2": true
+        "dly": true
        }
       },
       {
@@ -139,7 +185,7 @@
        "scene": "C",
        "drums": 3,
        "blocks": {
-        "dly-3": true
+        "chorus-2": false
        }
       },
       {
@@ -147,7 +193,7 @@
        "bars": 1,
        "drums": 5,
        "blocks": {
-        "shim": true,
+        "oct": true,
         "scream": true
        }
       },
@@ -157,7 +203,7 @@
        "scene": "D",
        "drums": 2,
        "blocks": {
-        "echo": true
+        "formant": true
        }
       },
       {
@@ -165,7 +211,7 @@
        "bars": 1,
        "drums": 5,
        "blocks": {
-        "dly-2": true,
+        "dly": true,
         "scream": true
        }
       },
@@ -182,7 +228,7 @@
        "name": "Solo · climb",
        "bars": 4,
        "blocks": {
-        "shim": true
+        "dly": true
        }
       },
       {
@@ -191,9 +237,8 @@
        "scene": "D",
        "drums": 2,
        "blocks": {
-        "shim": true,
-        "double": true,
-        "dly-3": true
+        "formant": true,
+        "glitch": true
        }
       },
       {
@@ -202,7 +247,6 @@
        "scene": "C",
        "drums": 3,
        "blocks": {
-        "shim-2": true,
         "scream": true
        }
       },
@@ -212,14 +256,12 @@
        "drums": 6,
        "blocks": {
         "dly": true,
-        "shim": true,
-        "shim-2": true
+        "glitch": true
        }
       }
      ]
     }
    }
   }
- ],
- "factory": true
+ ]
 }

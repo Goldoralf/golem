@@ -1,0 +1,277 @@
+{
+ "id": "factory-keys-dark-pad",
+ "name": "Dark Pad",
+ "role": "keys",
+ "tags": [
+  "metal",
+  "pad",
+  "dark"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Dark Pad",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Dark_Ambient",
+       "fcut": 0.5,
+       "rmix": 0.3,
+       "dmix": 0.15,
+       "vol": 0.55
+      }
+     },
+     {
+      "id": "crush",
+      "type": "bitcrusher",
+      "params": {
+       "quant": 0.6,
+       "rate": 0.5,
+       "nonlin": 0.1
+      },
+      "foot": 6
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 24,
+       "decay": 3,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Dark Pad",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Low Drone",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.35
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Swell",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.7
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Crushed",
+     "blocks": {
+      "crush": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Dark Pad",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Low Drone",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-B"
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.35
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Swell",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": 1
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.7
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "D",
+   "name": "Crushed",
+   "blocks": {
+    "crush": true
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-D"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "chain": [
+   {
+    "id": "vital",
+    "type": "vital",
+    "params": {
+     "preset": "Dark_Ambient",
+     "fcut": 0.5,
+     "rmix": 0.3,
+     "dmix": 0.15,
+     "vol": 0.55
+    }
+   },
+   {
+    "id": "crush",
+    "type": "bitcrusher",
+    "params": {
+     "quant": 0.6,
+     "rate": 0.5,
+     "nonlin": 0.1
+    },
+    "foot": 6
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Hall",
+     "mix": 24,
+     "decay": 3,
+     "size": 30,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "6": "#6a040f",
+  "9": "#6a040f",
+  "10": "#6a040f"
+ },
+ "anims": {
+  "A": "vortex",
+  "B": "strobe",
+  "C": "stars",
+  "D": "ember",
+  "6": "aurora",
+  "9": "ripple",
+  "10": "snow"
+ },
+ "deps": [
+  {
+   "sha256": "eab877409d070c7bf54099701f894b8cfa1a14ed2941d91ed15c43289656ead1",
+   "uid": "local:synth-vital-factory",
+   "kind": "synth",
+   "bytes": 207571,
+   "name": "Dark Ambient",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Vital presets (factory)",
+   "brand": "Vital",
+   "creator": "factory"
+  },
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"snow\", \"6\": \"aurora\", \"9\": \"ripple\", \"A\": \"vortex\", \"B\": \"strobe\", \"C\": \"stars\", \"D\": \"ember\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.15, \"fcut\": 0.5, \"preset\": \"Dark_Ambient\", \"rmix\": 0.3, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.6, \"rate\": 0.5}, \"type\": \"bitcrusher\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 3, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.15, \"fcut\": 0.5, \"preset\": \"Dark_Ambient\", \"rmix\": 0.3, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.6, \"rate\": 0.5}, \"type\": \"bitcrusher\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 3, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Dark Pad\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Dark Pad\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Low Drone\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Swell\", \"params\": {\"vital\": {\"fcut\": 0.7}}}, {\"blocks\": {\"crush\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Crushed\", \"params\": {}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Dark Pad\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Low Drone\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-C\"}}, \"level\": 1, \"name\": \"Swell\", \"params\": {\"vital\": {\"fcut\": 0.7}}}, {\"blocks\": {\"crush\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Crushed\"}]}"
+}

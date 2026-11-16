@@ -1,0 +1,392 @@
+{
+ "id": "factory-voice-ethereal",
+ "name": "Ethereal Falsetto",
+ "role": "voice",
+ "tags": [
+  "ambient",
+  "alternative",
+  "falsetto"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Ethereal Falsetto",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 220
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "tune",
+      "type": "pitch-correct",
+      "params": {
+       "corr": 0.4,
+       "filter": 0.15,
+       "fastmode": true,
+       "key": "A",
+       "scale": "Minor",
+       "song_key": true
+      },
+      "foot": 8
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -22,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "formant",
+      "type": "formant",
+      "params": {
+       "formant": 3,
+       "mix": 50
+      },
+      "foot": 6
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/4•",
+       "feedback": 40,
+       "mix": 20
+      },
+      "foot": 7
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 28,
+       "decay": 3.4,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Ethereal",
+     "blocks": {
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Close",
+     "blocks": {
+      "dly": false
+     },
+     "params": {
+      "verb": {
+       "mix": 16
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Robot Falsetto",
+     "blocks": {
+      "tune": true
+     },
+     "params": {
+      "tune": {
+       "corr": 1.0,
+       "filter": 0.02
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Cloud",
+     "blocks": {
+      "dly": true,
+      "formant": true
+     },
+     "params": {
+      "verb": {
+       "mix": 40
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Ethereal",
+   "blocks": {
+    "dly": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Close",
+   "blocks": {
+    "dly": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 16
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Robot Falsetto",
+   "blocks": {
+    "tune": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   },
+   "params": {
+    "tune": {
+     "corr": 1.0,
+     "filter": 0.02
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Cloud",
+   "blocks": {
+    "dly": true,
+    "formant": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D"
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 40
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-lofi.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 84,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -58,
+     "release": 220
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 6500,
+     "range": 10
+    }
+   },
+   {
+    "id": "tune",
+    "type": "pitch-correct",
+    "params": {
+     "corr": 0.4,
+     "filter": 0.15,
+     "fastmode": true,
+     "key": "A",
+     "scale": "Minor",
+     "song_key": true
+    },
+    "foot": 8
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Opto",
+     "thresh": -22,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 15
+    }
+   },
+   {
+    "id": "formant",
+    "type": "formant",
+    "params": {
+     "formant": 3,
+     "mix": 50
+    },
+    "foot": 6
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 110,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": 2
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Tape",
+     "time": "1/4•",
+     "feedback": 40,
+     "mix": 20
+    },
+    "foot": 7
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Cloud",
+     "mix": 28,
+     "decay": 3.4,
+     "size": 30,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#118ab2",
+  "B": "#118ab2",
+  "C": "#118ab2",
+  "D": "#118ab2",
+  "6": "#118ab2",
+  "7": "#118ab2",
+  "8": "#118ab2",
+  "9": "#118ab2",
+  "10": "#118ab2"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "6": "strobe",
+  "7": "stars",
+  "8": "ember",
+  "9": "aurora",
+  "10": "ripple"
+ },
+ "deps": [
+  {
+   "sha256": "55fe071ed2c418a5a20e16e231df1155f767bbf4e766e679e2298080a670e843",
+   "uid": "local:groove-golem-lofi",
+   "kind": "groove",
+   "bytes": 262,
+   "name": "Lo-fi",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"strobe\", \"7\": \"stars\", \"8\": \"ember\", \"9\": \"aurora\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Ethereal Falsetto\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Ethereal\", \"params\": {}}, {\"blocks\": {\"dly\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Ethereal\"}, {\"blocks\": {\"dly\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"tune\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}"
+}

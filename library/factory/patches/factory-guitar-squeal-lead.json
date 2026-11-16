@@ -1,0 +1,453 @@
+{
+ "id": "factory-guitar-squeal-lead",
+ "name": "Squeal Lead",
+ "role": "guitar",
+ "tags": [
+  "metal",
+  "groove",
+  "lead"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Squeal Lead",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "met",
+      "type": "met",
+      "params": {
+       "thresh": -46,
+       "release": 80
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "x2",
+      "type": "amp",
+      "label": "Randall Warhead X2",
+      "ref": "31332",
+      "model": "382070",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "wah",
+      "type": "wah",
+      "params": {
+       "wah": 0.6,
+       "mode": "manual",
+       "q": 120
+      },
+      "foot": 6
+     },
+     {
+      "id": "whammy",
+      "type": "pitch",
+      "params": {
+       "engine": "Whammy",
+       "shift": 12,
+       "mix": 50
+      },
+      "foot": 7
+     },
+     {
+      "id": "flange",
+      "type": "flanger-js",
+      "params": {
+       "mode": "Mistress",
+       "rate": 0.25,
+       "feedback": -12,
+       "depth": 80
+      },
+      "foot": 8
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 90,
+       "midgain": 2,
+       "midfreq": 1000,
+       "highs": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 30,
+       "mix": 14
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 12,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Lead",
+     "blocks": {
+      "wah": false,
+      "whammy": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Wah Lead",
+     "blocks": {
+      "wah": true,
+      "whammy": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Octave Squeal",
+     "blocks": {
+      "wah": false,
+      "whammy": true,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Flanged Riff",
+     "blocks": {
+      "wah": false,
+      "whammy": false,
+      "flange": true
+     },
+     "params": {
+      "dly": {
+       "mix": 6
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Dive",
+     "blocks": {
+      "wah": false,
+      "whammy": true,
+      "flange": false
+     },
+     "params": {
+      "whammy": {
+       "shift": -12,
+       "mix": 100
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Lead",
+   "blocks": {
+    "wah": false,
+    "whammy": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A",
+     "level": 2
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "B",
+   "name": "Wah Lead",
+   "blocks": {
+    "wah": true,
+    "whammy": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B",
+     "level": 2
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "C",
+   "name": "Octave Squeal",
+   "blocks": {
+    "wah": false,
+    "whammy": true,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 2
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Flanged Riff",
+   "blocks": {
+    "wah": false,
+    "whammy": false,
+    "flange": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 6
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Dive",
+   "blocks": {
+    "wah": false,
+    "whammy": true,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 2
+    }
+   },
+   "params": {
+    "whammy": {
+     "shift": -12,
+     "mix": 100
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-solo.mid"
+      ],
+      "fills": [],
+      "kit": "drums-aasimonster"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "pre": [
+   {
+    "id": "met",
+    "type": "met",
+    "params": {
+     "thresh": -46,
+     "release": 80
+    }
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "x2",
+    "type": "amp",
+    "label": "Randall Warhead X2",
+    "ref": "31332",
+    "model": "382070",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "wah",
+    "type": "wah",
+    "params": {
+     "wah": 0.6,
+     "mode": "manual",
+     "q": 120
+    },
+    "foot": 6
+   },
+   {
+    "id": "whammy",
+    "type": "pitch",
+    "params": {
+     "engine": "Whammy",
+     "shift": 12,
+     "mix": 50
+    },
+    "foot": 7
+   },
+   {
+    "id": "flange",
+    "type": "flanger-js",
+    "params": {
+     "mode": "Mistress",
+     "rate": 0.25,
+     "feedback": -12,
+     "depth": 80
+    },
+    "foot": 8
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 90,
+     "midgain": 2,
+     "midfreq": 1000,
+     "highs": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/4",
+     "feedback": 30,
+     "mix": 14
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 12,
+     "decay": 0.9,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "31332",
+   "model": "382070"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "E": "#6a040f",
+  "6": "#6a040f",
+  "7": "#6a040f",
+  "8": "#6a040f",
+  "9": "#6a040f",
+  "10": "#6a040f"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "snow"
+ },
+ "deps": [
+  {
+   "sha256": "346e8548989ddcc54da682df2889c26237afdfd443b14bca34bc86609cefe31b",
+   "uid": "t3k:31332",
+   "kind": "amp-cab",
+   "bytes": 295994,
+   "name": "x2 karnivore v4",
+   "source": "t3k",
+   "amp": "Randall Warhead X2",
+   "arch": "2",
+   "brand": "Randall",
+   "creator": "frozenmammoth",
+   "url": "https://www.tone3000.com/tones/randall-x2-warhead-dimezone-full-rigs-preamp-31332"
+  },
+  {
+   "sha256": "650717904d3c1eaa411f26a192b3fcf30335e023b60bd04b4701dd4630beb70c",
+   "uid": "local:groove-golem-metal-solo",
+   "kind": "groove",
+   "bytes": 457,
+   "name": "Metal solo",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "30981243ab6c687b4b1d495306a8fa3eea12299f01ef8236fefc0ff4287c4919",
+   "uid": "local:kit-drums-aasimonster",
+   "kind": "kit",
+   "bytes": 2766,
+   "name": "drums-aasimonster",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Aasimonster",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"snow\", \"6\": \"stars\", \"7\": \"ember\", \"8\": \"aurora\", \"9\": \"ripple\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\", \"E\": \"strobe\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"id\": \"x2\", \"label\": \"Randall Warhead X2\", \"model\": \"382070\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"31332\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"wah\", \"params\": {\"mode\": \"manual\", \"q\": 120, \"wah\": 0.6}, \"type\": \"wah\"}, {\"foot\": 7, \"id\": \"whammy\", \"params\": {\"engine\": \"Whammy\", \"mix\": 50, \"shift\": 12}, \"type\": \"pitch\"}, {\"foot\": 8, \"id\": \"flange\", \"params\": {\"depth\": 80, \"feedback\": -12, \"mode\": \"Mistress\", \"rate\": 0.25}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 90, \"midfreq\": 1000, \"midgain\": 2}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"release\": 80, \"thresh\": -46}, \"type\": \"met\"}], \"split\": null}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"7\": \"#6a040f\", \"8\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\", \"E\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-aasimonster\", \"patterns\": [\"library/grooves/golem-metal-solo.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"x2\", \"label\": \"Randall Warhead X2\", \"model\": \"382070\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"31332\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"wah\", \"params\": {\"mode\": \"manual\", \"q\": 120, \"wah\": 0.6}, \"type\": \"wah\"}, {\"foot\": 7, \"id\": \"whammy\", \"params\": {\"engine\": \"Whammy\", \"mix\": 50, \"shift\": 12}, \"type\": \"pitch\"}, {\"foot\": 8, \"id\": \"flange\", \"params\": {\"depth\": 80, \"feedback\": -12, \"mode\": \"Mistress\", \"rate\": 0.25}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 90, \"midfreq\": 1000, \"midgain\": 2}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"release\": 80, \"thresh\": -46}, \"type\": \"met\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Squeal Lead\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Lead\", \"params\": {}}, {\"blocks\": {\"flange\": false, \"wah\": true, \"whammy\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Wah Lead\", \"params\": {}}, {\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": true}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Octave Squeal\", \"params\": {}}, {\"blocks\": {\"flange\": true, \"wah\": false, \"whammy\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Flanged Riff\", \"params\": {\"dly\": {\"mix\": 6}}}, {\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": true}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Dive\", \"params\": {\"whammy\": {\"mix\": 100, \"shift\": -12}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-A\"}}, \"level\": 2, \"name\": \"Lead\"}, {\"blocks\": {\"flange\": false, \"wah\": true, \"whammy\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-B\"}}, \"level\": 2, \"name\": \"Wah Lead\"}, {\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": true}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-C\"}}, \"level\": 2, \"name\": \"Octave Squeal\"}, {\"blocks\": {\"flange\": true, \"wah\": false, \"whammy\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Flanged Riff\", \"params\": {\"dly\": {\"mix\": 6}}}, {\"blocks\": {\"flange\": false, \"wah\": false, \"whammy\": true}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Dive\", \"params\": {\"whammy\": {\"mix\": 100, \"shift\": -12}}}]}"
+}

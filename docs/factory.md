@@ -47,8 +47,8 @@ factory has its own versioned source:
 
 | Kind (`factory.KINDS`) | Source | Destination | Count |
 |---|---|---|---|
-| `patches` | `library/factory/patches/*.json` | `library/patches/` | 38 |
-| `presets` | `library/factory/presets/*.json` | `presets/` | 9 |
+| `patches` | `library/factory/patches/*.json` | `library/patches/` | 51 |
+| `presets` | `library/factory/presets/*.json` | `presets/` | 13 |
 | `setlists` | `library/factory/setlists/*.json` | `setlists/` | 6 |
 | `standards` | `library/factory/standards/*.golem` | `library/standards/golem/` | 3 |
 | `grooves` | `library/factory/grooves/*.mid` (+ `meta.json`) | `library/grooves/` | 26 |
@@ -133,107 +133,54 @@ working. Hiding the factory setlist does not remove it from a mode that names it
 
 ### 5.1 Sound banks (5 setlists of `kind: "sounds"`)
 
-`factory-guitar`, `factory-bass`, `factory-keys`, `factory-voice`, `factory-drums`. Each patch has 4–5
-contrasting scenes (base, more gain or solo, the opposite extreme, effects). Guitar and bass patches use
-two complementary amps on two branches, a gate first, one saturation source, solos +2/+3 dB.
+> **Rebuilt 2026-11-16** (the maintainer: "we start again from new", on golem's own golem-fx blocks) by
+> `tools/make-factory.py`, which writes every patch, preset, bank, the factory setlist and Golem Rising. The previous
+> content left `library/factory/`; on a rack, `factory.seed` **retires** an old factory object that is no longer
+> shipped when it is untouched (its version, or its version up to machine writes, is in `history.json`) — a copy the
+> person changed stays and becomes theirs. The styles are inspirations only (never named in what ships, §1); the
+> preset names and fictitious songs come from golem.fm's plan (conception/plan-factory-golem-fx.json, not shipped).
+
+Every patch: one lane, 4–5 scenes with playing names, a theme colour, the drum machine on SW10 with a groove of its
+style and REC or Riff on SW9 (one of the two, both kinds in every bank). Guitar and bass: a gate first, one
+saturation source per state, at most one amp branch open per state, solos +2/+3 dB. Keys and voice: linear chains;
+voice saturation is Morph only. Captures are TONE3000 refs present in the tone catalogue; full rigs take no cab.
 
 | Bank | Patches (scenes) |
 |---|---|
-| Guitar (13) | Jazz Clean (Thumb · Lush · Comping · Solo · Ballad) · Singing Clean (Clean · Singing · Lead · Ballad · Chords) · Funk Clean (Chop · Envelope · Wah · Phase Solo · Clean Pad) · Texas Blues (Texas Rhythm · Lead · Vibratone · Clean · Big Ending) · Indie Chime (Arpeggio · Dotted Echo · Crunch Chorus · Big Chorus · Swell) · British Crunch (Power Chords · Treble Lead · Wall of Chords · Clean-ish) · Fuzz Wall (Intro · Big Muff Wall · Solo · Verse Crunch · Wide Wall) · Brown Lead (Rhythm · Brown Lead · Wah Lead · Flanged Riff · Clean-ish) · Modern Metal (Clean Intro · Chug · Lead · Breakdown · Stutter) · Gypsy Lead (Theme · Solo · Ballad · Rhythm · Finale — an acoustic capture, the Crooked Lantern standard on SW10, played by the pompe and the bass) · Hero Lead (Clean Arp · Rhythm Drive · Hero Lead · Big Lead — an edge-of-breakup lead: a TS9 at low drive and unity level pushing a Fender Deluxe at the edge of breakup, a slow-attack compressor, two delays low in the mix (dotted eighth centred, tape ping-pong), a plate; a bright Twin Reverb branch for the clean. One branch open per state, never two amps summed; made by `tools/make-factory-song.py` from captures already shipped) · Ambient Djent (Halo Clean · Glass Arp · Low Riff · Wall · Lead — a JC-120 full rig for the cleans, a TS9 into a Peavey 6505+ head and a Mesa 4x12 V30 for the tight low riff) · Soaring Lead (Shimmer Pad · Clean Echo · Riff Double · Soaring Lead · Halo Lead — a Twin Reverb full rig for the cleans, a TS9 into an EVH 5150 for the lead, two delays and a shimmer) |
-| Bass (7) | Jazz Warm · Vintage Round · Funk Slap · Rock Grind · Metal Bass · Synth Bass · Bi-Amp Grit (Sub Clean · Grit Blend · Tight Grit · Growl — a clean SVT and a Darkglass B7K full rig in parallel, no cab after either) |
-| Keys (8) | Jazz Piano (Salamander sfz) · Cathedral Piano (Hall Piano · Halo · Under · Bloom — the Salamander that blooms into a pad through a shimmer) · Electric Piano (DX7) · Rock Organ (tonewheel + Leslie) · 80s E-Piano (DX7) · Warm Pad (Vital) · Synth Lead (Vital) · Loop Bass & Beat (Vital + pads kit, role `keys-pads`) |
-| Voice (6) | Clean Vocal · Crooner · Pop Tuned · Rock Vocal · Metal Vocal · Halo Vocal (Falsetto Halo · Close Verse · Grit Belt · Anthem) |
-| Drums (4) | Jazz Brushes · Classic Rock · Studio Rock · Metal (electronic kit over USB MIDI) |
+| Guitar (14) | Jazz Box (Comping · Chord Melody · Solo · Ballad · Bright Swing) · Texas Shuffle (Clean Shuffle · Texas Rhythm · Lead · Vibratone · Slow Burn) · Wailing Blues (Clean Ballad · Crunch · Singing Lead · Endless Bend · Rhythm) · Ambient Djent (Halo Clean · Glass Arp · Low Riff · Wall · Lead) · Hero Lead (Clean Arp · Rhythm Drive · Hero Lead · Harmony Lead · Vocal Wah) · Groove Metal (Southern Riff · Chug Breakdown · Scooped Wall · Clean Chorus · Lead) · Squeal Lead (Lead · Wah Lead · Octave Squeal · Flanged Riff · Dive) · Glass Ambient (Glass Clean · Crunch Burst · Frozen Pad · Ring Glitch · Tape Echo) · Loop Indie (Jangle · Dotted Echo · Klon Push · Swell Pad · Lead Out) · Fuzz Grunge (Verse Crunch · Fuzz Wall · Fuzz Lead · Phased Bridge · Jet Clean) · Funk Clean (Chop · Neck Chords · Envelope · Bright Slap · Swirl) · Funk Drive (Crunch Rhythm · Dirty Chords · Wah Lead · Fuzz Solo · Flanged Crunch) · Eight-String Nu (Dream Clean · Whisper Clean · Heavy Low · Shoegaze Wall · Octave Dive) · Pop Chorus (Verse Clean · Chorus Crunch · Nylon Solo · Ballad Arp · Bridge Drive) |
+| Bass (10) | Upright Jazz (Walking · Ballad · Solo · Bright Pluck) · Blues Round (Round · Push · Warm Ballad · Growl Fill) · Prog Bi-Amp (Sub Clean · Grit Blend · Tight Grit · Growl) · Metal Grind (Grind · Tight · Clean Low · Solo Growl) · Synth Ambient (Round · Sub Octave · Synth Bass · Tape Fuzz) · Fuzz Bass (Pick Drive · Fuzz Bass · Clean Verse · Wall) · Funk Slap (Slap · Fingers Pocket · Envelope · Octave Funk · Solo Pop) · Nu Low (Clean Low · Heavy Blend · Grind Only · Chorus Low) · Pop Pick (Pick Verse · Chorus Drive · Ballad · Chorus Bass · Melodic) · Bass Lab (Sub Only · Grit Blend · Synth Layer · Full Stack · Solo Chorus) |
+| Keys (12) | Jazz Piano (Trio · Ballad · Solo · Soft) · Blues Organ (Gospel Bed · Fast Leslie · Screaming · Soft Pad) · Cathedral Piano (Hall Piano · Halo · Under · Bloom) · Hero Pad (Sky Pad · Bright · Under · Shimmer Rise) · Dark Pad (Dark Pad · Low Drone · Swell · Crushed) · Glass Rhodes (Glass Rhodes · Tape Rhodes · Dry Keys · Underwater) · Electro Pads (Beat · Crushed Beat · Tape Beat · Dub Beat) · Loop Synth & Beat (Bass & Beat · Bass Only · Filtered · Big Drop) · Strings Wash (Strings Wash · Chorus Strings · Thin · Big Swell) · Funk Clav (Clav · Envelope Clav · Phased · Stab) · Nu Haze (Haze · Glitch Haze · Low Haze · Open Haze) · Pop Piano (Ballad Piano · Bright Pop · Echo Piano · Soft Bed) |
+| Voice (10) | Crooner (Close · Ballad · Slap · Big Room) · Blues Shout (Shout · Grit · Slap Echo · Ballad) · Halo Vocal (Falsetto Halo · Close Verse · Grit Belt · Anthem) · Metal Scream (Scream · Growl · Clean Shout · Megaphone) · Ethereal Falsetto (Ethereal · Close · Robot Falsetto · Cloud) · Indie Double (Double · Single · Slap · Shout) · Raw Grunge (Raw · Gravel · Quiet Verse · Scream) · Funk Rap (Rap · Phone Verse · Chorus Double · Slap Hook) · Whisper & Scream (Whisper · Dream · Scream · Low Growl) · Pop Tuned (Pop Verse · Chorus Double · Ballad · Hard Tune) |
+| Drums (5) | Jazz Brushes (Brushes · Ride Swing · Soft · Solo) · Vintage Rock (Shuffle · Big Room · Tight · Ballad) · Studio Rock (Tight · Punch · Roomy · Soft) · Metal Kit (Blast · Breakdown · Tight · Clean Intro) · Lo-Fi Kit (Tape Kit · Crushed · Dry · Dusty) |
 
-Keys patches use a linear chain (no gate, no split); their scenes change the instrument itself
-(drawbars, filter cut-off, brightness), not only effects. On voice, the only saturation is the Grit
-block. The drum machine is never a patch: it is a preset service block.
+The drums patches play a factory kit from an electronic kit over USB MIDI (Lo-Fi Kit: tape and bitcrusher for the
+electronic styles, with the Electro Pads lane); the drum machine is never a patch, it is a preset service block.
 
-### 5.2 The `factory` setlist ("Factory Golem", 9 songs)
+### 5.2 The `factory` setlist ("Factory Golem", 13 songs)
 
-Every preset is a full band (one lane per instrument, each from a bank patch, at least one keys lane).
-Scenes are named for the song and point each lane at a lane state. Every factory preset and patch has a theme:
-one colour on every occupied cell (scenes and used switches) and an animation per cell (2026-10-20: Diesel Heart
-was the one without; that was a mistake).
+Every preset is a full band built from bank patches (each lane deposited by `patches.apply_to`), at least one keys
+lane, with its special blocks. Songs are fictitious.
 
-| # | Song (fictitious) | Key · BPM | Preset | Extra |
+| # | Song (fictitious) | Key · BPM | Preset (lanes) | Special blocks |
 |---|---|---|---|---|
-| 1 | Rooftop Prowl | F · 180 | Chill Jazz (guitar, rhythm guitar, bass, keys, drums) | Standard block on SW9, stopped by default; REC on SW10 |
-| 2 | Rented Room Blues | A · 96 | Blues Night (guitar, rhythm guitar, bass, keys, drums) | Standard block on a switch — no arrangement (a standard's form is played at the foot) |
-| 3 | Velvet Pocket | E · 104 | Funk Session | Drum machine on SW10, REC on SW9 |
-| 4 | Diesel Heart | A · 128 | Rock Classics | REC on SW9 |
-| 5 | Paper Satellites | G · 118 | Indie Pop (Pop Tuned set to G major) | — |
-| 6 | Static Bloom | E · 120 | Alt Rock | — |
-| 7 | Iron Tide | D · 140 | Metal for all (two guitars) | REC on SW10 |
-| 8 | One-Man Orchestra | A · 100 | Loop Station (keys-pads, guitar, voice) | REC on SW9; looper: keys lays bass and drums, then guitar, then voice (the line says 100, the preset 127: the line wins) |
-| 9 | Golem Rising | E · 120 | Ambient Metal (two guitars, bass, piano, voice + drum machine) | **The arrangement example**: the line plays the factory **song** (`band_song`), 13 parts that change the scene, the drum machine's groove and pedals on every instrument (below) |
+| 1 | Rooftop Prowl | F · 160 | Blue Lantern Trio (Guitar, Bass, Piano, Drums, Voice) | Standard |
+| 2 | Rail Yard Shuffle | E · 112 | Rail Yard (Guitar, Bass, Organ, Voice) | drum machine |
+| 3 | Harbour Rain | Cm · 68 | Harbour Rain (Guitar, Bass, Organ, Voice) | drum machine |
+| 4 | Velvet Ossuary | F#m · 94 | Velvet Ossuary (Guitar, Bass, Piano, Voice) | drum machine |
+| 5 | Glass Summit | E · 120 | Glass Summit (Lead Guitar, Bass, Pad, Drums) | drum machine |
+| 6 | Iron Thicket | Eb · 132 | Iron Thicket (Guitar 1, Guitar 2, Bass, Pad, Voice, Drums) | drum machine |
+| 7 | Paper Satellites | D · 86 | Paper Satellites (Guitar, Bass, Rhodes, Pads, Voice, Drums) | drum machine |
+| 8 | Room With Echoes | A · 104 | Room With Echoes (Synth & Beat, Guitar, Voice) | looper |
+| 9 | Velvet Wasp | Eb · 118 | Velvet Wasp (Guitar, Bass, Strings, Voice, Drums) | drum machine |
+| 10 | Sunset Ladder | Em · 98 | Sunset Ladder (Clean Guitar, Drive Guitar, Bass, Clav, Voice) | drum machine |
+| 11 | Paper Promises | Cm · 76 | Paper Promises (Guitar, Bass, Piano, Voice, Drums) | drum machine |
+| 12 | Low End Workshop | D · 100 | Bass Workshop (Bass, Pad) | drum machine |
+| 13 | Golem Rising | F#m · 120 | Low Tide (Guitar, Bass, Synth, Voice) | drum machine + arrangement on SW9 |
 
-**Golem Rising** (2026-10-20) is the case the factory did not show: a written song, end to end, with no stems —
-the arrangement drives the scenes, the drum machine (docs/arrangement.md §6) and pedals on each lane (§1). It is a
-**factory song**: `library/factory/songs/rs-f3f0….golem` (kind `original`, rights `own`, artist « golem »), with
-its sheet, a cover and a band photo made for golem with Nano Banana (`tools/gen-factory-song-art.py`: five stone
-golems, no human face, no text in the image). It shows in Songs with a « ◆ Factory » chip and **never goes up to
-golem.fm** (`songs.is_factory`, `sync_of` → `factory`): it belongs to golem, not to a band. The factory line plays it
-through `band_song` and keeps a copy of the sheet, so deleting the song leaves a line that still plays.
-
-Built by `tools/make-factory-song.py [--art <dir>]` (the song, the line, and the Hero Lead patch of the guitar bank)
-on the **Ambient Metal** preset (§5.2 bis, built first by `tools/make-factory-ambient-metal.py`) and its seven
-`golem-metal-*` grooves. The first version ran on a rock preset (Rock Anthem) with rock grooves; the owner found it
-limp (2026-10-20): the song kept its structure, took the metal sounds and rhythms, and Rock Anthem left the factory.
-Every toggle is checked against the preset's blocks at build time. 120 BPM, 4/4, a one-bar count-in, 57 bars
-(1 min 54):
-
-| Part | Bars | Scene | Groove | Pedals forced on |
-|---|---|---|---|---|
-| Intro | 4 | Halo Clean | intro | piano echo |
-| Verse 1 | 7 | Glass Verse | verse | piano shimmer |
-| Fill | 1 | — | fill | guitar 1 Tube Screamer, voice grit |
-| Chorus | 8 | Wall Chorus | chorus | guitar 2 chorus |
-| Verse 2 | 7 | Low Riff | breakdown | piano echo |
-| Fill | 1 | — | fill | guitar 2 shimmer, voice grit |
-| Chorus | 7 | Wall Chorus | chorus | guitar 2 quarter-note echo |
-| Fill | 1 | — | fill | guitar 2 dotted-eighth delay, voice grit |
-| Solo | 4 | Soaring Solo | solo | guitar 1 chorus |
-| Solo · climb | 4 | — | solo | guitar 2 shimmer |
-| Chorus | 8 | Wall Chorus | chorus | guitar 2 shimmer, voice doubler, piano echo |
-| Outro | 4 | Low Riff | breakdown | piano shimmer, voice grit |
-| End | 1 | — | the final hit | guitar 1 delay, guitar 2 and piano shimmer |
-
-The bass has no pedal to toggle: its states open or close the Darkglass branch, so it follows the scenes. A part
-that recalls a scene starts again from what the scene says: a toggle lasts for its part only. Levels are reasoned,
-not measured: re-amp each scene before trusting them.
-
-The song starts from the screen (▶ on /live or Songs) or **at the foot: SW9 is the Arrangement block** (a tap starts
-the song, count-in included; a tap while it runs stops everything it started). SW6–SW8 are the stomps (Shimmer, Echo,
-Grit), SW10 the drum machine.
-
-The five factory modes ship with `"foot_list": "factory"`.
-
-### 5.2 bis The `Ambient Metal` preset (2026-10-20)
-
-Modern progressive metal, the preset of « Golem Rising » (§5.2): ambient cleans, a tight low riff, a soaring lead, a piano that blooms
-into a pad, a falsetto voice. Built by `tools/make-factory-ambient-metal.py` (five new patches, each lane deposited
-from its patch). The **gear** was proposed by golem.fm's patch AI (a 6505+ head into a V30 4x12; an SVT and a
-Darkglass in bi-amp), each capture's **nature read in its .nam file** (a full rig takes no cab after it), the
-settings and gain staging set by hand. No artist name anywhere (§1).
-
-| Scene | Kind | Guitar 1 · Guitar 2 · Bass · Piano · Voice |
-|---|---|---|
-| A Halo Clean | clean | Halo Clean · Shimmer Pad · Sub Clean · Halo · Falsetto Halo |
-| B Glass Verse | clean | Glass Arp · Clean Echo · Sub Clean · Hall Piano · Close Verse |
-| C Low Riff | saturated | Low Riff · Riff Double · Tight Grit · Under · Grit Belt |
-| D Wall Chorus | saturated | Wall · Riff Double · Grit Blend · Bloom · Anthem |
-| E Soaring Solo | saturated (solo) | Wall −4 · Soaring Lead +3 · Grit Blend · Bloom −6 · Close Verse −6 |
-
-Foot: SW6 Shimmer (guitar 2 + piano), SW7 Echo (guitar 1 + voice), SW8 Grit (voice), SW9 the Arrangement, SW10 the
-drum machine with the seven `golem-metal-*` grooves (intro, verse, chorus, breakdown, solo, fill, end — in that
-order: the arrangement names a groove by its rank) on the Black Pearl kit, which plays on every install. A medium
-hold on SW10 moves to the next groove at the bar; a scene does not change the groove (only an arrangement part
-does). The parametric EQ, the tape delay, the shimmer and the vocal grit
-play on Windows and macOS through golem JSFX that keep the Linux plugins' parameters
-([platforms.md](platforms.md) §5): close in sound, not identical; the amps, dynamics, delays and reverbs play on
-every system. Levels are
-reasoned, not measured: re-amp each scene before trusting them.
+**Golem Rising** keeps its form (13 parts, 57 bars, 120 BPM, a one-bar count-in) and is redone on **Low Tide**, the
+eight-string nu metal preset: the arrangement changes the scene, the drum machine's metal groove and pedals on each
+lane at every part (clean dream intro, whisper verse, heavy low verse, shoegaze wall choruses, an octave-dive solo).
+Its `.golem` keeps the cover and band art made for it (`tools/gen-factory-song-art.py`).
 
 ### 5.3 The three Standard grids
 

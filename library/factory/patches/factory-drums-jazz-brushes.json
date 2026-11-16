@@ -3,7 +3,8 @@
  "name": "Jazz Brushes",
  "role": "drums",
  "tags": [
-  "jazz"
+  "jazz",
+  "drums"
  ],
  "kind": "patch",
  "patch_v": 2,
@@ -13,50 +14,6 @@
    "id": "drums-1",
    "role": "drums",
    "name": "Jazz Brushes",
-   "states": [
-    {
-     "id": "st-drums-1-A",
-     "name": "Trio",
-     "blocks": {},
-     "params": {},
-     "branches": {}
-    },
-    {
-     "id": "st-drums-1-B",
-     "name": "Ballad",
-     "blocks": {},
-     "params": {
-      "verb": {
-       "mix": 26,
-       "decay": 1.6
-      },
-      "eq": {
-       "highs": -3
-      }
-     },
-     "branches": {}
-    },
-    {
-     "id": "st-drums-1-C",
-     "name": "Solo",
-     "blocks": {},
-     "params": {
-      "comp": {
-       "ratio": 3
-      }
-     },
-     "branches": {}
-    },
-    {
-     "id": "st-drums-1-D",
-     "name": "Dry",
-     "blocks": {
-      "verb": false
-     },
-     "params": {},
-     "branches": {}
-    }
-   ],
    "midi": true,
    "chain": {
     "chain": [
@@ -71,41 +28,76 @@
       "id": "comp",
       "type": "comp",
       "params": {
-       "thresh": -18,
-       "ratio": 2,
-       "makeup": 1,
-       "attack": 25,
-       "release": 200
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 20
       }
      },
      {
       "id": "eq",
       "type": "eq",
       "params": {
-       "lowcut": 40,
+       "lowcut": 35,
        "midgain": 0,
        "midfreq": 800,
-       "highs": -1
+       "highs": 1
       }
      },
      {
-      "id": "verb",
+      "id": "room",
       "type": "reverb-room",
       "params": {
        "mix": 16,
        "decay": 1,
-       "size": 16,
+       "size": 14,
        "hicut": 7000
       }
      }
     ]
-   }
+   },
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Brushes",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Ride Swing",
+     "blocks": {},
+     "params": {
+      "room": {
+       "mix": 22
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Soft",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Solo",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    }
+   ]
   }
  ],
  "scenes": [
   {
    "id": "A",
-   "name": "Trio",
+   "name": "Brushes",
+   "blocks": {},
    "lanes": {
     "drums-1": {
      "state": "st-drums-1-A"
@@ -114,54 +106,49 @@
   },
   {
    "id": "B",
-   "name": "Ballad",
-   "params": {
-    "verb": {
-     "mix": 26,
-     "decay": 1.6
-    },
-    "eq": {
-     "highs": -3
-    }
-   },
+   "name": "Ride Swing",
+   "blocks": {},
    "lanes": {
     "drums-1": {
-     "level": -2,
      "state": "st-drums-1-B"
     }
    },
-   "level": -2
+   "params": {
+    "room": {
+     "mix": 22
+    }
+   }
   },
   {
    "id": "C",
-   "name": "Solo",
-   "params": {
-    "comp": {
-     "ratio": 3
-    }
-   },
+   "name": "Soft",
+   "blocks": {},
    "lanes": {
     "drums-1": {
-     "level": 2,
-     "state": "st-drums-1-C"
+     "state": "st-drums-1-C",
+     "level": -3
     }
    },
-   "level": 2
+   "level": -3
   },
   {
    "id": "D",
-   "name": "Dry",
-   "blocks": {
-    "verb": false
-   },
+   "name": "Solo",
+   "blocks": {},
    "lanes": {
     "drums-1": {
-     "state": "st-drums-1-D"
+     "state": "st-drums-1-D",
+     "level": 2
     }
-   }
+   },
+   "level": 2
   }
  ],
  "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  },
   "rec": {
    "blocks": [
     {
@@ -170,33 +157,9 @@
      "foot": 9
     }
    ]
-  },
-  "gen": {
-   "out": "1-2",
-   "blocks": [
-    {
-     "type": "standard",
-     "id": "standard",
-     "foot": 10,
-     "params": {
-      "standard": "rooftop-prowl",
-      "key": "Original",
-      "feel": "auto",
-      "motion": "comp",
-      "voicing": "rootless",
-      "arp": "Off",
-      "keys": true,
-      "bass": true,
-      "drums": false,
-      "groove": "auto",
-      "kit": "blonde-bop",
-      "choruses": 4
-     }
-    }
-   ]
   }
  },
- "bpm": 120,
+ "bpm": 160,
  "chain": {
   "chain": [
    {
@@ -210,30 +173,30 @@
     "id": "comp",
     "type": "comp",
     "params": {
-     "thresh": -18,
-     "ratio": 2,
-     "makeup": 1,
-     "attack": 25,
-     "release": 200
+     "character": "Bus",
+     "thresh": -20,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 20
     }
    },
    {
     "id": "eq",
     "type": "eq",
     "params": {
-     "lowcut": 40,
+     "lowcut": 35,
      "midgain": 0,
      "midfreq": 800,
-     "highs": -1
+     "highs": 1
     }
    },
    {
-    "id": "verb",
+    "id": "room",
     "type": "reverb-room",
     "params": {
      "mix": 16,
      "decay": 1,
-     "size": 16,
+     "size": 14,
      "hicut": 7000
     }
    }
@@ -241,23 +204,21 @@
  },
  "needs": [],
  "origin": "factory",
- "deps": [],
- "deps_sig": "{\"anims\": {\"9\": \"vu\", \"A\": \"heartbeat\", \"B\": \"snow\", \"C\": \"smoke\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-blonde-bop\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 1, \"ratio\": 2, \"release\": 200, \"thresh\": -18}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 40, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"colors\": {\"A\": \"#6d597a\", \"B\": \"#6d597a\", \"C\": \"#6d597a\", \"D\": \"#6d597a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": false, \"feel\": \"auto\", \"groove\": \"auto\", \"key\": \"Original\", \"keys\": true, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-blonde-bop\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"makeup\": 1, \"ratio\": 2, \"release\": 200, \"thresh\": -18}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 40, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 16}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Jazz Brushes\", \"role\": \"drums\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Trio\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -3}, \"verb\": {\"decay\": 1.6, \"mix\": 26}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Solo\", \"params\": {\"comp\": {\"ratio\": 3}}}, {\"blocks\": {\"verb\": false}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Dry\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Trio\"}, {\"id\": \"B\", \"lanes\": {\"drums-1\": {\"level\": -2, \"state\": \"st-drums-1-B\"}}, \"level\": -2, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -3}, \"verb\": {\"decay\": 1.6, \"mix\": 26}}}, {\"id\": \"C\", \"lanes\": {\"drums-1\": {\"level\": 2, \"state\": \"st-drums-1-C\"}}, \"level\": 2, \"name\": \"Solo\", \"params\": {\"comp\": {\"ratio\": 3}}}, {\"blocks\": {\"verb\": false}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-D\"}}, \"name\": \"Dry\"}]}",
  "factory": true,
  "colors": {
-  "A": "#6d597a",
-  "B": "#6d597a",
-  "C": "#6d597a",
-  "D": "#6d597a",
-  "9": "#6d597a",
-  "10": "#6d597a"
+  "A": "#c9a227",
+  "B": "#c9a227",
+  "C": "#c9a227",
+  "D": "#c9a227",
+  "9": "#c9a227"
  },
  "anims": {
-  "A": "heartbeat",
-  "B": "snow",
-  "C": "smoke",
-  "D": "stars",
-  "9": "vu",
-  "10": "pulse"
- }
+  "A": "monster",
+  "B": "rain",
+  "C": "vu",
+  "D": "wave",
+  "9": "heartbeat"
+ },
+ "deps": [],
+ "deps_sig": "{\"anims\": {\"9\": \"heartbeat\", \"A\": \"monster\", \"B\": \"rain\", \"C\": \"vu\", \"D\": \"wave\"}, \"backing\": null, \"bpm\": 160, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-blonde-bop\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-blonde-bop\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 1, \"hicut\": 7000, \"mix\": 16, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Jazz Brushes\", \"role\": \"drums\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Brushes\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Ride Swing\", \"params\": {\"room\": {\"mix\": 22}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Soft\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Solo\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Brushes\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Ride Swing\", \"params\": {\"room\": {\"mix\": 22}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"level\": -3, \"state\": \"st-drums-1-C\"}}, \"level\": -3, \"name\": \"Soft\"}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": 2, \"state\": \"st-drums-1-D\"}}, \"level\": 2, \"name\": \"Solo\"}]}"
 }

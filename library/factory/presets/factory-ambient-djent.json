@@ -1,0 +1,1117 @@
+{
+ "id": "factory-ambient-djent",
+ "name": "Velvet Ossuary",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "met",
+      "type": "met",
+      "params": {
+       "thresh": -50
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -26,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 20
+      }
+     },
+     {
+      "id": "ts",
+      "type": "pedal-nam",
+      "label": "Ibanez TS9 Tube Screamer",
+      "ref": "36827",
+      "model": "381617",
+      "params": {
+       "input": 0,
+       "output": -3
+      },
+      "foot": 6
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "p6505",
+         "type": "amp-nam",
+         "label": "Peavey 6505+",
+         "ref": "29230",
+         "model": "418311",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30",
+         "type": "cab",
+         "label": "Mesa 4x12 Vintage 30",
+         "ref": "45023",
+         "model": "239394",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "jc",
+         "type": "amp",
+         "label": "Roland JC-120",
+         "ref": "6530",
+         "model": "397610",
+         "params": {
+          "input": -3,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 90,
+       "midgain": 1,
+       "midfreq": 1500,
+       "highs": -1,
+       "mid2gain": -3,
+       "mid2freq": 450
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Dimension 2",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 35,
+       "mix": 16
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "params": {
+       "mix": 24,
+       "decay": 6,
+       "shimmer": 35,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 20,
+       "decay": 3.0,
+       "size": 40,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Halo Clean",
+     "blocks": {
+      "comp": true,
+      "ts": false,
+      "chorus": true,
+      "dly": true,
+      "shim": true
+     },
+     "params": {
+      "met": {
+       "thresh": -70
+      },
+      "dly": {
+       "time": "1/4",
+       "feedback": 40,
+       "mix": 20
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Glass Arp",
+     "blocks": {
+      "comp": true,
+      "ts": false,
+      "chorus": true,
+      "dly": true,
+      "shim": false
+     },
+     "params": {
+      "met": {
+       "thresh": -70
+      },
+      "dly": {
+       "time": "1/8•",
+       "feedback": 30,
+       "mix": 14
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Low Riff",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": false,
+      "shim": false
+     },
+     "params": {
+      "verb": {
+       "mix": 8,
+       "decay": 1.4,
+       "size": 24
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Wall",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": true,
+      "shim": true
+     },
+     "params": {
+      "dly": {
+       "time": "1/4",
+       "feedback": 22,
+       "mix": 8
+      },
+      "shim": {
+       "mix": 14
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Lead",
+     "blocks": {
+      "comp": false,
+      "ts": true,
+      "chorus": false,
+      "dly": true,
+      "shim": false
+     },
+     "params": {
+      "eq": {
+       "midgain": 2.5,
+       "midfreq": 900
+      },
+      "dly": {
+       "time": "1/8•",
+       "feedback": 32,
+       "mix": 18
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-ambient-djent",
+    "name": "Ambient Djent"
+   }
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "met-2",
+      "type": "met",
+      "params": {
+       "thresh": -50
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 10
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-2",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379989",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-2",
+       "blocks": [
+        {
+         "id": "b7k",
+         "type": "amp",
+         "label": "Darkglass B7K Ultra",
+         "ref": "27698",
+         "model": "413366",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 1,
+       "midfreq": 800,
+       "highs": 1
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Sub Clean",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Grit Blend",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Tight Grit",
+     "blocks": {},
+     "params": {
+      "comp-2": {
+       "ratio": 8,
+       "attack": 5
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Growl",
+     "blocks": {},
+     "params": {
+      "svt": {
+       "output": -8
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-prog-biamp",
+    "name": "Prog Bi-Amp"
+   }
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Piano",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "piano",
+      "type": "piano",
+      "params": {
+       "sfz": "library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz",
+       "volume": 0
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 50,
+       "midgain": -1.5,
+       "midfreq": 400,
+       "highs": 0
+      }
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 30,
+       "mix": 14
+      }
+     },
+     {
+      "id": "shim-2",
+      "type": "reverb-shimmer",
+      "params": {
+       "mix": 30,
+       "decay": 6,
+       "shimmer": 40,
+       "hicut": 6000
+      },
+      "foot": 7
+     },
+     {
+      "id": "verb-2",
+      "type": "reverb",
+      "params": {
+       "algo": "Cathedral",
+       "mix": 24,
+       "decay": 3.4,
+       "size": 44,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Hall Piano",
+     "blocks": {
+      "dly-2": false,
+      "shim-2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Halo",
+     "blocks": {
+      "dly-2": true,
+      "shim-2": true
+     },
+     "params": {
+      "shim-2": {
+       "mix": 34,
+       "decay": 7
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Under",
+     "blocks": {
+      "dly-2": false,
+      "shim-2": false
+     },
+     "params": {
+      "eq-3": {
+       "lowcut": 160,
+       "midgain": -3,
+       "midfreq": 350,
+       "highs": 2
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Bloom",
+     "blocks": {
+      "dly-2": true,
+      "shim-2": true
+     },
+     "params": {
+      "eq-3": {
+       "lowcut": 140
+      },
+      "shim-2": {
+       "mix": 26
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-cathedral-piano",
+    "name": "Cathedral Piano"
+   }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "release": 200
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "tune",
+      "type": "pitch-correct",
+      "params": {
+       "corr": 0.3,
+       "filter": 0.2,
+       "fastmode": true,
+       "key": "F#",
+       "scale": "Minor",
+       "song_key": true
+      }
+     },
+     {
+      "id": "scream",
+      "type": "morph",
+      "params": {
+       "drive": 55,
+       "morph": 30,
+       "box": 10,
+       "mix": 70,
+       "object": "None"
+      },
+      "foot": 8
+     },
+     {
+      "id": "comp-4",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 3.5,
+       "makeup": 4,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq-4",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "double",
+      "type": "golem-double",
+      "params": {
+       "shift": 12,
+       "voice1": -14,
+       "formant": 0
+      }
+     },
+     {
+      "id": "dly-3",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 32,
+       "mix": 16
+      }
+     },
+     {
+      "id": "shim-3",
+      "type": "reverb-shimmer",
+      "params": {
+       "mix": 22,
+       "decay": 5,
+       "shimmer": 40,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 24,
+       "decay": 2.4,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Falsetto Halo",
+     "blocks": {
+      "double": true,
+      "shim-3": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Close Verse",
+     "blocks": {
+      "double": false,
+      "shim-3": false
+     },
+     "params": {
+      "plate": {
+       "mix": 14
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Grit Belt",
+     "blocks": {
+      "scream": true,
+      "double": false,
+      "shim-3": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Anthem",
+     "blocks": {
+      "double": true,
+      "shim-3": false
+     },
+     "params": {
+      "dly-3": {
+       "mix": 14
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-halo",
+    "name": "Halo Vocal"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Piano Intro",
+   "blocks": {
+    "comp": true,
+    "ts": false,
+    "chorus": true,
+    "dly": true,
+    "shim": true,
+    "dly-2": true,
+    "shim-2": true,
+    "double": true,
+    "shim-3": true
+   },
+   "params": {
+    "met": {
+     "thresh": -70
+    },
+    "dly": {
+     "time": "1/4",
+     "feedback": 40,
+     "mix": 20
+    },
+    "shim-2": {
+     "mix": 34,
+     "decay": 7
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A",
+     "level": -4
+    },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -3
+    },
+    "keys-1": {
+     "state": "st-keys-1-B"
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Verse",
+   "blocks": {
+    "comp": true,
+    "ts": false,
+    "chorus": true,
+    "dly": true,
+    "shim": false,
+    "dly-2": false,
+    "shim-2": false,
+    "double": false,
+    "shim-3": false
+   },
+   "params": {
+    "met": {
+     "thresh": -70
+    },
+    "dly": {
+     "time": "1/8•",
+     "feedback": 30,
+     "mix": 14
+    },
+    "plate": {
+     "mix": 14
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-b-2": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -1
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -1
+    },
+    "voice-1": {
+     "state": "st-voice-1-B",
+     "level": 1
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Low Riff",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": false,
+    "shim": false,
+    "dly-2": false,
+    "shim-2": false,
+    "scream": true,
+    "double": false,
+    "shim-3": false
+   },
+   "params": {
+    "verb": {
+     "mix": 8,
+     "decay": 1.4,
+     "size": 24
+    },
+    "comp-2": {
+     "ratio": 8,
+     "attack": 5
+    },
+    "eq-3": {
+     "lowcut": 160,
+     "midgain": -3,
+     "midfreq": 350,
+     "highs": 2
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -6
+    },
+    "voice-1": {
+     "state": "st-voice-1-C",
+     "level": 1
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Wall Chorus",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": true,
+    "shim": true,
+    "dly-2": true,
+    "shim-2": true,
+    "double": true,
+    "shim-3": false
+   },
+   "params": {
+    "dly": {
+     "time": "1/4",
+     "feedback": 22,
+     "mix": 8
+    },
+    "shim": {
+     "mix": 14
+    },
+    "eq-3": {
+     "lowcut": 140
+    },
+    "shim-2": {
+     "mix": 26
+    },
+    "dly-3": {
+     "mix": 14
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": -1
+    },
+    "bass-1": {
+     "state": "st-bass-1-B",
+     "level": -1
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": -3
+    },
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 2
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Lead",
+   "blocks": {
+    "comp": false,
+    "ts": true,
+    "chorus": false,
+    "dly": true,
+    "shim": false,
+    "dly-2": true,
+    "shim-2": true,
+    "double": false,
+    "shim-3": false
+   },
+   "params": {
+    "eq": {
+     "midgain": 2.5,
+     "midfreq": 900
+    },
+    "dly": {
+     "time": "1/8•",
+     "feedback": 32,
+     "mix": 18
+    },
+    "eq-3": {
+     "lowcut": 140
+    },
+    "shim-2": {
+     "mix": 26
+    },
+    "plate": {
+     "mix": 14
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 3
+    },
+    "bass-1": {
+     "state": "st-bass-1-B",
+     "level": -2
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": -6
+    },
+    "voice-1": {
+     "state": "st-voice-1-B",
+     "level": -8
+    }
+   }
+  }
+ ],
+ "bpm": 94,
+ "style": "metal",
+ "styles": [
+  "metal"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-intro.mid",
+       "library/grooves/golem-metal-verse.mid",
+       "library/grooves/golem-metal-chorus.mid",
+       "library/grooves/golem-metal-breakdown.mid",
+       "library/grooves/golem-metal-solo.mid",
+       "library/grooves/golem-metal-fill.mid",
+       "library/grooves/golem-metal-end.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#3d348b",
+  "B": "#3d348b",
+  "C": "#3d348b",
+  "D": "#3d348b",
+  "E": "#3d348b",
+  "6": "#3d348b",
+  "7": "#3d348b",
+  "8": "#3d348b",
+  "9": "#3d348b",
+  "10": "#3d348b"
+ },
+ "anims": {
+  "A": "glitch",
+  "B": "monster",
+  "C": "rain",
+  "D": "vu",
+  "E": "wave",
+  "6": "heartbeat",
+  "7": "lightning",
+  "8": "smoke",
+  "9": "vortex",
+  "10": "strobe"
+ }
+}

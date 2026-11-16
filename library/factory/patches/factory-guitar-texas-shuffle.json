@@ -1,0 +1,616 @@
+{
+ "id": "factory-guitar-texas-shuffle",
+ "name": "Texas Shuffle",
+ "role": "guitar",
+ "tags": [
+  "blues",
+  "texas"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Texas Shuffle",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "ts",
+      "type": "pedal-nam",
+      "label": "Ibanez TS808 Tube Screamer",
+      "ref": "70280",
+      "model": "577277",
+      "params": {
+       "input": 0,
+       "output": -1
+      },
+      "foot": 6
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "super",
+         "type": "amp",
+         "label": "Fender Super Reverb",
+         "ref": "19",
+         "model": "379723",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "ods",
+         "type": "amp-nam",
+         "label": "Dumble Overdrive Special",
+         "ref": "94",
+         "model": "420125",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "cab12",
+         "type": "cab",
+         "label": "Fender Deluxe Reverb 1x12",
+         "ref": "27465",
+         "model": "220918",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 75,
+       "midgain": 1,
+       "midfreq": 800,
+       "highs": -1
+      }
+     },
+     {
+      "id": "vibratone",
+      "type": "rotary",
+      "params": {
+       "speed": "fast",
+       "cabinet": "Vibratone",
+       "drive": 10,
+       "balance": 50
+      },
+      "foot": 7
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/8",
+       "feedback": 12,
+       "mix": 12
+      },
+      "foot": 8
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Spring",
+       "mix": 18,
+       "decay": 1.6,
+       "size": 20,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Clean Shuffle",
+     "blocks": {
+      "ts": false,
+      "vibratone": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Texas Rhythm",
+     "blocks": {
+      "ts": true,
+      "vibratone": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Lead",
+     "blocks": {
+      "ts": true,
+      "vibratone": false,
+      "dly": true
+     },
+     "params": {
+      "eq": {
+       "midgain": 2.5
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Vibratone",
+     "blocks": {
+      "ts": false,
+      "vibratone": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Slow Burn",
+     "blocks": {
+      "ts": false,
+      "vibratone": false,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 26,
+       "decay": 2.2
+      },
+      "dly": {
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 14
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Clean Shuffle",
+   "blocks": {
+    "ts": false,
+    "vibratone": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Texas Rhythm",
+   "blocks": {
+    "ts": true,
+    "vibratone": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Lead",
+   "blocks": {
+    "ts": true,
+    "vibratone": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 3
+    }
+   },
+   "params": {
+    "eq": {
+     "midgain": 2.5
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Vibratone",
+   "blocks": {
+    "ts": false,
+    "vibratone": true,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Slow Burn",
+   "blocks": {
+    "ts": false,
+    "vibratone": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 2
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 26,
+     "decay": 2.2
+    },
+    "dly": {
+     "time": "1/4",
+     "feedback": 25,
+     "mix": 14
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-shuffle.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 96,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -60,
+     "release": 120
+    }
+   },
+   {
+    "id": "ts",
+    "type": "pedal-nam",
+    "label": "Ibanez TS808 Tube Screamer",
+    "ref": "70280",
+    "model": "577277",
+    "params": {
+     "input": 0,
+     "output": -1
+    },
+    "foot": 6
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "super",
+       "type": "amp",
+       "label": "Fender Super Reverb",
+       "ref": "19",
+       "model": "379723",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "ods",
+       "type": "amp-nam",
+       "label": "Dumble Overdrive Special",
+       "ref": "94",
+       "model": "420125",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "cab12",
+       "type": "cab",
+       "label": "Fender Deluxe Reverb 1x12",
+       "ref": "27465",
+       "model": "220918",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 75,
+     "midgain": 1,
+     "midfreq": 800,
+     "highs": -1
+    }
+   },
+   {
+    "id": "vibratone",
+    "type": "rotary",
+    "params": {
+     "speed": "fast",
+     "cabinet": "Vibratone",
+     "drive": 10,
+     "balance": 50
+    },
+    "foot": 7
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Tape",
+     "time": "1/8",
+     "feedback": 12,
+     "mix": 12
+    },
+    "foot": 8
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Spring",
+     "mix": 18,
+     "decay": 1.6,
+     "size": 20,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "70280",
+   "model": "577277"
+  },
+  {
+   "type": "amp",
+   "ref": "19",
+   "model": "379723"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "94",
+   "model": "420125"
+  },
+  {
+   "type": "cab",
+   "ref": "27465",
+   "model": "220918"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#d4572a",
+  "B": "#d4572a",
+  "C": "#d4572a",
+  "D": "#d4572a",
+  "E": "#d4572a",
+  "6": "#d4572a",
+  "7": "#d4572a",
+  "8": "#d4572a",
+  "9": "#d4572a",
+  "10": "#d4572a"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "snow"
+ },
+ "deps": [
+  {
+   "sha256": "1f5457f18692383c14e280fb43ba5fcf118e8d1adf04f8c4bbfa885ceb354def",
+   "uid": "t3k:70280",
+   "kind": "pedal",
+   "bytes": 299513,
+   "name": "IBANEZ TS 808 (BOOST)",
+   "source": "t3k",
+   "amp": "Ibanez TS808 Tube Screamer",
+   "arch": "2",
+   "brand": "Ibanez",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/boost-pedal-pack-70280"
+  },
+  {
+   "sha256": "8884e937d08d62072721f579b6dc6fc8cbaae4b96402c1ff4bd4450eda4aca8a",
+   "uid": "t3k:19",
+   "kind": "amp-cab",
+   "bytes": 297833,
+   "name": "Fender Super Reverb: EQ Flat, Volume 3, sm57",
+   "source": "t3k",
+   "amp": "Fender Super Reverb 1977",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/fender-super-reverb-1977-19"
+  },
+  {
+   "sha256": "3c09521c793348eed1c257761754c4346854bb5dd54ba882bdfc4ab18763955c",
+   "uid": "t3k:94",
+   "kind": "amp",
+   "bytes": 296782,
+   "name": "Spitfine-Dumble_Overdrive-EPOCHS-400-ESR-0_0_3-",
+   "source": "t3k",
+   "amp": "MG Amps - Dumble Overdrive Special",
+   "arch": "2",
+   "brand": "Dumble",
+   "creator": "spitfine",
+   "url": "https://www.tone3000.com/tones/dumble-overdrive-special-94"
+  },
+  {
+   "sha256": "b607d70fe6f79e56f9af049567071a65f73c18f66bc5c61089abda7c39e96b8b",
+   "uid": "t3k:27465",
+   "kind": "cab",
+   "bytes": 105430,
+   "name": "DELUXE REVERB OXFORD - BIG - 48 24",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb",
+   "brand": "Fender",
+   "creator": "vulturized",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-mix-ready-27465"
+  },
+  {
+   "sha256": "bf22d052ae5874a504abc68f6d859fff8c1e7906ed5f7df598cdf768bb860bf6",
+   "uid": "local:groove-golem-shuffle",
+   "kind": "groove",
+   "bytes": 281,
+   "name": "Shuffle",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"snow\", \"6\": \"stars\", \"7\": \"ember\", \"8\": \"aurora\", \"9\": \"ripple\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\", \"E\": \"strobe\"}, \"backing\": null, \"bpm\": 96, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 75, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"vibratone\", \"params\": {\"balance\": 50, \"cabinet\": \"Vibratone\", \"drive\": 10, \"speed\": \"fast\"}, \"type\": \"rotary\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Spring\", \"decay\": 1.6, \"hicut\": 7000, \"mix\": 18, \"size\": 20}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS808 Tube Screamer\", \"model\": \"577277\", \"params\": {\"input\": 0, \"output\": -1}, \"ref\": \"70280\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"super\", \"label\": \"Fender Super Reverb\", \"model\": \"379723\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"19\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ods\", \"label\": \"Dumble Overdrive Special\", \"model\": \"420125\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"94\", \"type\": \"amp-nam\"}, {\"id\": \"cab12\", \"label\": \"Fender Deluxe Reverb 1x12\", \"model\": \"220918\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#d4572a\", \"6\": \"#d4572a\", \"7\": \"#d4572a\", \"8\": \"#d4572a\", \"9\": \"#d4572a\", \"A\": \"#d4572a\", \"B\": \"#d4572a\", \"C\": \"#d4572a\", \"D\": \"#d4572a\", \"E\": \"#d4572a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-shuffle.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 75, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"vibratone\", \"params\": {\"balance\": 50, \"cabinet\": \"Vibratone\", \"drive\": 10, \"speed\": \"fast\"}, \"type\": \"rotary\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Spring\", \"decay\": 1.6, \"hicut\": 7000, \"mix\": 18, \"size\": 20}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS808 Tube Screamer\", \"model\": \"577277\", \"params\": {\"input\": 0, \"output\": -1}, \"ref\": \"70280\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"super\", \"label\": \"Fender Super Reverb\", \"model\": \"379723\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"19\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ods\", \"label\": \"Dumble Overdrive Special\", \"model\": \"420125\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"94\", \"type\": \"amp-nam\"}, {\"id\": \"cab12\", \"label\": \"Fender Deluxe Reverb 1x12\", \"model\": \"220918\", \"params\": {\"level\": 0}, \"ref\": \"27465\", \"type\": \"cab\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Texas Shuffle\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": false, \"ts\": false, \"vibratone\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean Shuffle\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"ts\": true, \"vibratone\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Texas Rhythm\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"ts\": true, \"vibratone\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Lead\", \"params\": {\"eq\": {\"midgain\": 2.5}}}, {\"blocks\": {\"dly\": false, \"ts\": false, \"vibratone\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Vibratone\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"ts\": false, \"vibratone\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Slow Burn\", \"params\": {\"dly\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.2, \"mix\": 26}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": false, \"ts\": false, \"vibratone\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Clean Shuffle\"}, {\"blocks\": {\"dly\": false, \"ts\": true, \"vibratone\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Texas Rhythm\"}, {\"blocks\": {\"dly\": true, \"ts\": true, \"vibratone\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Lead\", \"params\": {\"eq\": {\"midgain\": 2.5}}}, {\"blocks\": {\"dly\": false, \"ts\": false, \"vibratone\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Vibratone\"}, {\"blocks\": {\"dly\": true, \"ts\": false, \"vibratone\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Slow Burn\", \"params\": {\"dly\": {\"feedback\": 25, \"mix\": 14, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.2, \"mix\": 26}}}]}"
+}

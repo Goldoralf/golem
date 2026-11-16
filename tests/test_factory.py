@@ -198,7 +198,7 @@ def test_un_patch_enregistre_garde_ses_switches_rec_et_riff():
     effacer leurs switches (seuls les blocs générateurs survivaient). On ne garde que le SWITCH : les réglages de ces
     singletons restent globaux."""
     from bridge import patches, store
-    for pid, want in (("patch:factory-voice-clean", {"rec": 9}), ("patch:factory-voice-crooner", {"compo": 9})):
+    for pid, want in (("patch:factory-voice-crooner", {"rec": 9}), ("patch:factory-voice-halo", {"compo": 9})):
         p = store.load_preset(pid)
         out = patches.v2_fields(p, [p["lanes"][0]["id"]], with_config=True)
         rec = {b["type"]: b["foot"] for b in ((out.get("config") or {}).get("rec") or {}).get("blocks") or []}
@@ -417,3 +417,27 @@ def test_l_historique_livre_connait_la_version_courante_de_chaque_objet_d_usine(
             if F._sha(os.path.join(F.SRC, sub, fn)) not in set(hist.get(f"{sub}/{fn}") or []):
                 missing.append(f"{sub}/{fn}")
     assert not missing, f"run tools/gen-factory-history.py — not in history.json: {missing}"
+
+
+def test_un_ancien_objet_d_usine_qui_n_est_plus_livre_part_s_il_est_intact(tmp_path, monkeypatch):
+    """2026-11-16 : l'usine est refaite. Un ancien patch d'usine intact quitte le rack ; une copie retouchée reste (elle
+    est à la personne) ; le registre oublie les deux."""
+    from bridge import factory as F
+    src, live = tmp_path / "src", tmp_path / "live"
+    (src / "patches").mkdir(parents=True); live.mkdir()
+    (src / "patches" / "factory-new.json").write_text('{"v": "neuf"}')
+    (live / "factory-old.json").write_text('{"v": "ancien"}')
+    (live / "factory-mine.json").write_text('{"v": "retouché"}')
+    hist = {"patches/factory-old.json": [F._sha(str(live / "factory-old.json"))],
+            "patches/factory-mine.json": ["autre"]}
+    (src / "history.json").write_text(json.dumps(hist))
+    monkeypatch.setattr(F, "SRC", str(src)); monkeypatch.setattr(F, "HISTORY", str(src / "history.json"))
+    monkeypatch.setattr(F, "LEDGER", str(tmp_path / "ledger.json"))
+    monkeypatch.setitem(F.KINDS, "patches", ("patches", str(live), ".json"))
+    for k in [k for k in F.KINDS if k != "patches"]:
+        monkeypatch.setitem(F.KINDS, k, (k, str(tmp_path / ("none-" + k)), F.KINDS[k][2]))
+    (tmp_path / "ledger.json").write_text(json.dumps({"patches": ["factory-old.json", "factory-mine.json"]}))
+    r = F.seed()
+    assert r["retired"] == ["patches/factory-old.json"] and r["placed"] == ["patches/factory-new.json"]
+    assert not (live / "factory-old.json").exists() and (live / "factory-mine.json").exists()
+    assert json.loads((tmp_path / "ledger.json").read_text())["patches"] == ["factory-new.json"]

@@ -1,0 +1,626 @@
+{
+ "id": "factory-loop-indie",
+ "name": "Room With Echoes",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-pads-1",
+   "key": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Synth & Beat",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Kickbass",
+       "fcut": 0.55,
+       "rmix": 0.0,
+       "dmix": 0.0,
+       "vol": 0.65
+      }
+     },
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-house"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 10
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Bass & Beat",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-B",
+     "name": "Bass Only",
+     "blocks": {},
+     "params": {
+      "pads": {}
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-C",
+     "name": "Filtered",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.35
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-D",
+     "name": "Big Drop",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.8
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-loop-synth",
+    "name": "Loop Synth & Beat"
+   }
+  },
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "klon",
+      "type": "pedal-nam",
+      "label": "Klon Centaur",
+      "ref": "2599",
+      "model": "419209",
+      "params": {
+       "input": 0,
+       "output": -2
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "drii",
+      "type": "amp",
+      "label": "Fender Deluxe Reverb II",
+      "ref": "6237",
+      "model": "418153",
+      "params": {
+       "input": -2,
+       "output": 0
+      }
+     },
+     {
+      "id": "swell",
+      "type": "swell",
+      "params": {
+       "rise": 600,
+       "sens": 50
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Classic",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 38,
+       "mix": 20
+      },
+      "foot": 7
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 22,
+       "decay": 2.2,
+       "size": 32,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Jangle",
+     "blocks": {
+      "klon": false,
+      "swell": false,
+      "chorus": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Dotted Echo",
+     "blocks": {
+      "klon": false,
+      "swell": false,
+      "chorus": false
+     },
+     "params": {
+      "dly": {
+       "mix": 26,
+       "feedback": 45
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Klon Push",
+     "blocks": {
+      "klon": true,
+      "swell": false,
+      "chorus": false
+     },
+     "params": {
+      "dly": {
+       "mix": 12
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Swell Pad",
+     "blocks": {
+      "klon": false,
+      "swell": true,
+      "chorus": true
+     },
+     "params": {
+      "verb": {
+       "mix": 34,
+       "decay": 3.4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Lead Out",
+     "blocks": {
+      "klon": true,
+      "swell": false,
+      "chorus": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-loop-indie",
+    "name": "Loop Indie"
+   }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 120
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 3.5,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1.5
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus",
+      "params": {
+       "profile": "Voice",
+       "mode": "Doubler",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.4
+      },
+      "foot": 8
+     },
+     {
+      "id": "dly-2",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/8",
+       "feedback": 15,
+       "mix": 12
+      }
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 18,
+       "decay": 1.4,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Double",
+     "blocks": {
+      "double": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Single",
+     "blocks": {
+      "double": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Slap",
+     "blocks": {
+      "dly-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Shout",
+     "blocks": {
+      "double": true
+     },
+     "params": {
+      "comp-2": {
+       "ratio": 5
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-indie-double",
+    "name": "Indie Double"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Beat",
+   "blocks": {
+    "klon": false,
+    "swell": false,
+    "chorus": true,
+    "double": false
+   },
+   "params": {},
+   "branches": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    },
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Layer",
+   "blocks": {
+    "klon": false,
+    "swell": false,
+    "chorus": false,
+    "double": true
+   },
+   "params": {
+    "dly": {
+     "mix": 26,
+     "feedback": 45
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    },
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Push",
+   "blocks": {
+    "klon": true,
+    "swell": false,
+    "chorus": false,
+    "double": true
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.8
+    },
+    "dly": {
+     "mix": 12
+    },
+    "comp-2": {
+     "ratio": 5
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-D"
+    },
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    },
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Breathe",
+   "blocks": {
+    "klon": false,
+    "swell": true,
+    "chorus": true,
+    "dly-2": true
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.35
+    },
+    "verb": {
+     "mix": 34,
+     "decay": 3.4
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-C"
+    },
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   }
+  }
+ ],
+ "bpm": 104,
+ "style": "indie",
+ "styles": [
+  "indie"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "looper",
+     "id": "looper",
+     "foot": 10,
+     "params": {
+      "loops": [
+       {
+        "sw": 1,
+        "src": "keys-pads-1",
+        "label": "Beat"
+       },
+       {
+        "sw": 2,
+        "src": "guitar-1",
+        "label": "Guitar"
+       },
+       {
+        "sw": 3,
+        "src": "voice-1",
+        "label": "Voice"
+       },
+       {
+        "sw": 4,
+        "src": "guitar-1",
+        "label": "Guitar 2"
+       }
+      ],
+      "length": "free"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#06d6a0",
+  "B": "#06d6a0",
+  "C": "#06d6a0",
+  "D": "#06d6a0",
+  "6": "#06d6a0",
+  "7": "#06d6a0",
+  "8": "#06d6a0",
+  "9": "#06d6a0",
+  "10": "#06d6a0"
+ },
+ "anims": {
+  "A": "lightning",
+  "B": "smoke",
+  "C": "vortex",
+  "D": "strobe",
+  "6": "stars",
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "snow"
+ }
+}

@@ -2,90 +2,28 @@
  "id": "factory-guitar",
  "name": "Factory Guitar",
  "fcb": true,
- "rev": 3,
+ "rev": 4,
  "kind": "sounds",
- "presets": [
-  "patch:factory-guitar-jazz-clean",
-  "patch:factory-guitar-singing-clean",
-  "patch:factory-guitar-funk-clean",
-  "patch:factory-guitar-texas-blues",
-  "patch:factory-guitar-indie-chime",
-  "patch:factory-guitar-british-crunch",
-  "patch:factory-guitar-fuzz-wall",
-  "patch:factory-guitar-brown-lead",
-  "patch:factory-guitar-modern-metal",
-  "patch:factory-guitar-gypsy-lead",
-  "patch:factory-guitar-hero-lead",
-  "patch:factory-guitar-ambient-djent",
-  "patch:factory-guitar-soaring-lead"
- ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
-   "id": "r:factory-guitar:aaf34f6b",
+   "id": "r:factory-guitar:jazz-box",
    "rev": 1,
-   "title": "Jazz Clean",
-   "patch": "factory-guitar-jazz-clean"
+   "title": "Jazz Box",
+   "patch": "factory-guitar-jazz-box"
   },
   {
-   "id": "r:factory-guitar:c6a7f9fc",
+   "id": "r:factory-guitar:texas-shuffle",
    "rev": 1,
-   "title": "Singing Clean",
-   "patch": "factory-guitar-singing-clean"
+   "title": "Texas Shuffle",
+   "patch": "factory-guitar-texas-shuffle"
   },
   {
-   "id": "r:factory-guitar:6f975446",
+   "id": "r:factory-guitar:wailing-blues",
    "rev": 1,
-   "title": "Funk Clean",
-   "patch": "factory-guitar-funk-clean"
-  },
-  {
-   "id": "r:factory-guitar:3a6deb63",
-   "rev": 1,
-   "title": "Texas Blues",
-   "patch": "factory-guitar-texas-blues"
-  },
-  {
-   "id": "r:factory-guitar:245c77e7",
-   "rev": 1,
-   "title": "Indie Chime",
-   "patch": "factory-guitar-indie-chime"
-  },
-  {
-   "id": "r:factory-guitar:bc507fc8",
-   "rev": 1,
-   "title": "British Crunch",
-   "patch": "factory-guitar-british-crunch"
-  },
-  {
-   "id": "r:factory-guitar:1f88de6a",
-   "rev": 1,
-   "title": "Fuzz Wall",
-   "patch": "factory-guitar-fuzz-wall"
-  },
-  {
-   "id": "r:factory-guitar:6834551a",
-   "rev": 1,
-   "title": "Brown Lead",
-   "patch": "factory-guitar-brown-lead"
-  },
-  {
-   "id": "r:factory-guitar:817c8307",
-   "rev": 1,
-   "title": "Modern Metal",
-   "patch": "factory-guitar-modern-metal"
-  },
-  {
-   "id": "r:factory-guitar:gypsy01",
-   "rev": 1,
-   "title": "Gypsy Lead",
-   "patch": "factory-guitar-gypsy-lead"
-  },
-  {
-   "id": "r:factory-guitar:herolead",
-   "rev": 1,
-   "title": "Hero Lead",
-   "patch": "factory-guitar-hero-lead"
+   "title": "Wailing Blues",
+   "patch": "factory-guitar-wailing-blues"
   },
   {
    "id": "r:factory-guitar:ambient-djent",
@@ -94,11 +32,80 @@
    "patch": "factory-guitar-ambient-djent"
   },
   {
-   "id": "r:factory-guitar:soaring-lead",
+   "id": "r:factory-guitar:hero-lead",
    "rev": 1,
-   "title": "Soaring Lead",
-   "patch": "factory-guitar-soaring-lead"
+   "title": "Hero Lead",
+   "patch": "factory-guitar-hero-lead"
+  },
+  {
+   "id": "r:factory-guitar:groove-metal",
+   "rev": 1,
+   "title": "Groove Metal",
+   "patch": "factory-guitar-groove-metal"
+  },
+  {
+   "id": "r:factory-guitar:squeal-lead",
+   "rev": 1,
+   "title": "Squeal Lead",
+   "patch": "factory-guitar-squeal-lead"
+  },
+  {
+   "id": "r:factory-guitar:glass-ambient",
+   "rev": 1,
+   "title": "Glass Ambient",
+   "patch": "factory-guitar-glass-ambient"
+  },
+  {
+   "id": "r:factory-guitar:loop-indie",
+   "rev": 1,
+   "title": "Loop Indie",
+   "patch": "factory-guitar-loop-indie"
+  },
+  {
+   "id": "r:factory-guitar:fuzz-grunge",
+   "rev": 1,
+   "title": "Fuzz Grunge",
+   "patch": "factory-guitar-fuzz-grunge"
+  },
+  {
+   "id": "r:factory-guitar:funk-clean",
+   "rev": 1,
+   "title": "Funk Clean",
+   "patch": "factory-guitar-funk-clean"
+  },
+  {
+   "id": "r:factory-guitar:funk-drive",
+   "rev": 1,
+   "title": "Funk Drive",
+   "patch": "factory-guitar-funk-drive"
+  },
+  {
+   "id": "r:factory-guitar:eight-string-nu",
+   "rev": 1,
+   "title": "Eight-String Nu",
+   "patch": "factory-guitar-eight-string-nu"
+  },
+  {
+   "id": "r:factory-guitar:pop-chorus",
+   "rev": 1,
+   "title": "Pop Chorus",
+   "patch": "factory-guitar-pop-chorus"
   }
  ],
- "factory": true
+ "presets": [
+  "patch:factory-guitar-jazz-box",
+  "patch:factory-guitar-texas-shuffle",
+  "patch:factory-guitar-wailing-blues",
+  "patch:factory-guitar-ambient-djent",
+  "patch:factory-guitar-hero-lead",
+  "patch:factory-guitar-groove-metal",
+  "patch:factory-guitar-squeal-lead",
+  "patch:factory-guitar-glass-ambient",
+  "patch:factory-guitar-loop-indie",
+  "patch:factory-guitar-fuzz-grunge",
+  "patch:factory-guitar-funk-clean",
+  "patch:factory-guitar-funk-drive",
+  "patch:factory-guitar-eight-string-nu",
+  "patch:factory-guitar-pop-chorus"
+ ]
 }

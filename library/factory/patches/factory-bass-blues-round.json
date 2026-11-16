@@ -1,0 +1,333 @@
+{
+ "id": "factory-bass-blues-round",
+ "name": "Blues Round",
+ "role": "bass",
+ "tags": [
+  "blues",
+  "rock"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Blues Round",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -22,
+       "ratio": 3,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "drive",
+      "type": "emet",
+      "params": {
+       "gain": 35,
+       "tone_stack": 45,
+       "level": 0
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "svt",
+      "type": "amp",
+      "label": "Ampeg SVT 6x10",
+      "ref": "28202",
+      "model": "379985",
+      "params": {
+       "input": 0,
+       "output": -2
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 1,
+       "midfreq": 700,
+       "highs": -1
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Round",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Push",
+     "blocks": {
+      "drive": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Warm Ballad",
+     "blocks": {
+      "drive": false
+     },
+     "params": {
+      "eq": {
+       "highs": -4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Growl Fill",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "drive": {
+       "gain": 55
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Round",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Push",
+   "blocks": {
+    "drive": true
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Warm Ballad",
+   "blocks": {
+    "drive": false
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    }
+   },
+   "params": {
+    "eq": {
+     "highs": -4
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Growl Fill",
+   "blocks": {
+    "drive": true
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 2
+    }
+   },
+   "params": {
+    "drive": {
+     "gain": 55
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-shuffle.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 96,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -60,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Opto",
+     "thresh": -22,
+     "ratio": 3,
+     "makeup": 3,
+     "attack": 15
+    }
+   },
+   {
+    "id": "drive",
+    "type": "emet",
+    "params": {
+     "gain": 35,
+     "tone_stack": 45,
+     "level": 0
+    },
+    "foot": 6
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "svt",
+    "type": "amp",
+    "label": "Ampeg SVT 6x10",
+    "ref": "28202",
+    "model": "379985",
+    "params": {
+     "input": 0,
+     "output": -2
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 35,
+     "midgain": 1,
+     "midfreq": 700,
+     "highs": -1
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "28202",
+   "model": "379985"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#d4572a",
+  "B": "#d4572a",
+  "C": "#d4572a",
+  "D": "#d4572a",
+  "6": "#d4572a",
+  "9": "#d4572a",
+  "10": "#d4572a"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "heartbeat",
+  "C": "lightning",
+  "D": "smoke",
+  "6": "vortex",
+  "9": "strobe",
+  "10": "stars"
+ },
+ "deps": [
+  {
+   "sha256": "552bcb206848aebd4a69e63bb4c89df289342c5ce105e6a306343132d976b716",
+   "uid": "t3k:28202",
+   "kind": "amp-cab",
+   "bytes": 297396,
+   "name": "Ampeg SVT - MD 421",
+   "source": "t3k",
+   "amp": "Ampeg SVT Classic",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-classic-with-6x10-28202"
+  },
+  {
+   "sha256": "bf22d052ae5874a504abc68f6d859fff8c1e7906ed5f7df598cdf768bb860bf6",
+   "uid": "local:groove-golem-shuffle",
+   "kind": "groove",
+   "bytes": 281,
+   "name": "Shuffle",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"stars\", \"6\": \"vortex\", \"9\": \"strobe\", \"A\": \"wave\", \"B\": \"heartbeat\", \"C\": \"lightning\", \"D\": \"smoke\"}, \"backing\": null, \"bpm\": 96, \"chain\": {\"post\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379985\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 35, \"level\": 0, \"tone_stack\": 45}, \"type\": \"emet\"}], \"split\": null}, \"colors\": {\"10\": \"#d4572a\", \"6\": \"#d4572a\", \"9\": \"#d4572a\", \"A\": \"#d4572a\", \"B\": \"#d4572a\", \"C\": \"#d4572a\", \"D\": \"#d4572a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-shuffle.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379985\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 35, \"level\": 0, \"tone_stack\": 45}, \"type\": \"emet\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Blues Round\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Round\", \"params\": {}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Push\", \"params\": {}}, {\"blocks\": {\"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Warm Ballad\", \"params\": {\"eq\": {\"highs\": -4}}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Growl Fill\", \"params\": {\"drive\": {\"gain\": 55}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Round\"}, {\"blocks\": {\"drive\": true}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Push\"}, {\"blocks\": {\"drive\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Warm Ballad\", \"params\": {\"eq\": {\"highs\": -4}}}, {\"blocks\": {\"drive\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 2, \"state\": \"st-bass-1-D\"}}, \"level\": 2, \"name\": \"Growl Fill\", \"params\": {\"drive\": {\"gain\": 55}}}]}"
+}

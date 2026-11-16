@@ -1,0 +1,503 @@
+{
+ "id": "factory-bass-lab",
+ "name": "Bass Workshop",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 8
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -4,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379988",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "xultra",
+         "type": "amp-nam",
+         "label": "Darkglass X Ultra",
+         "ref": "71220",
+         "model": "588114",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "gkcab",
+         "type": "cab",
+         "label": "Gallien-Krueger 4x10",
+         "ref": "64815",
+         "model": "72421",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c",
+       "blocks": [
+        {
+         "id": "synth",
+         "type": "polysynth",
+         "params": {
+          "engine": "Mono",
+          "wave": "Pulse",
+          "cutoff": 1400,
+          "reso": 35,
+          "filt_env": 20,
+          "synth": -2,
+          "dry": -60
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Bass",
+       "mode": "Dimension 2",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 6
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 30,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "wide",
+      "type": "widener",
+      "params": {
+       "mode": "Double",
+       "amount": 40
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Sub Only",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Grit Blend",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Synth Layer",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Full Stack",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-E",
+     "name": "Solo Chorus",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {},
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-lab",
+    "name": "Bass Lab"
+   }
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Pad",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Sparkly_Dreamy_Pad",
+       "fcut": 0.6,
+       "rmix": 0.3,
+       "dmix": 0.2,
+       "vol": 0.6
+      }
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "params": {
+       "mix": 28,
+       "decay": 5,
+       "shimmer": 40,
+       "hicut": 6000
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4•",
+       "feedback": 30,
+       "mix": 14
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Sky Pad",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Bright",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.8
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Under",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Shimmer Rise",
+     "blocks": {
+      "shim": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-hero-pad",
+    "name": "Hero Pad"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Sub",
+   "blocks": {},
+   "params": {
+    "vital": {
+     "fcut": 0.4
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -8
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Grit",
+   "blocks": {},
+   "params": {
+    "vital": {
+     "fcut": 0.4
+    }
+   },
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -10
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Synth",
+   "blocks": {},
+   "params": {},
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -6
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Stack",
+   "blocks": {},
+   "params": {
+    "vital": {
+     "fcut": 0.4
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -8
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Solo",
+   "blocks": {
+    "chorus": true
+   },
+   "params": {},
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-E",
+     "level": 3
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -6
+    }
+   }
+  }
+ ],
+ "bpm": 100,
+ "style": "funk",
+ "styles": [
+  "funk"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-funk-16.mid",
+       "library/grooves/golem-boom-bap.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#00b4d8",
+  "B": "#00b4d8",
+  "C": "#00b4d8",
+  "D": "#00b4d8",
+  "E": "#00b4d8",
+  "6": "#00b4d8",
+  "9": "#00b4d8",
+  "10": "#00b4d8"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "9": "ember",
+  "10": "aurora"
+ }
+}

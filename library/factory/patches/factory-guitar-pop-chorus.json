@@ -1,0 +1,569 @@
+{
+ "id": "factory-guitar-pop-chorus",
+ "name": "Pop Chorus",
+ "role": "guitar",
+ "tags": [
+  "pop",
+  "rock",
+  "ballad"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Pop Chorus",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 2.5,
+       "makeup": 3,
+       "attack": 15
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "clean",
+         "type": "amp",
+         "label": "Fender Deluxe Reverb II",
+         "ref": "6237",
+         "model": "418153",
+         "params": {
+          "input": -2,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "crunch",
+         "type": "amp",
+         "label": "Fender Deluxe Reverb II",
+         "ref": "6237",
+         "model": "413045",
+         "params": {
+          "input": -2,
+          "output": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c",
+       "blocks": [
+        {
+         "id": "nylon",
+         "type": "acoustic-sim",
+         "params": {
+          "model": "Classical",
+          "body": 60,
+          "top": 40,
+          "mic": 70,
+          "mix": 100
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Classic",
+       "rate": 0.5,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 28,
+       "mix": 14
+      },
+      "foot": 7
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 22,
+       "decay": 1.8,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Verse Clean",
+     "blocks": {
+      "chorus": true,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Chorus Crunch",
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Nylon Solo",
+     "blocks": {
+      "chorus": false,
+      "dly": true
+     },
+     "params": {
+      "plate": {
+       "mix": 26
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Ballad Arp",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Bridge Drive",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-a": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Verse Clean",
+   "blocks": {
+    "chorus": true,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Chorus Crunch",
+   "blocks": {
+    "chorus": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Nylon Solo",
+   "blocks": {
+    "chorus": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 2
+    }
+   },
+   "params": {
+    "plate": {
+     "mix": 26
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Ballad Arp",
+   "blocks": {
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Bridge Drive",
+   "blocks": {
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 1
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 76,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -60,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Clean",
+     "thresh": -22,
+     "ratio": 2.5,
+     "makeup": 3,
+     "attack": 15
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "clean",
+       "type": "amp",
+       "label": "Fender Deluxe Reverb II",
+       "ref": "6237",
+       "model": "418153",
+       "params": {
+        "input": -2,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "crunch",
+       "type": "amp",
+       "label": "Fender Deluxe Reverb II",
+       "ref": "6237",
+       "model": "413045",
+       "params": {
+        "input": -2,
+        "output": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-c",
+     "blocks": [
+      {
+       "id": "nylon",
+       "type": "acoustic-sim",
+       "params": {
+        "model": "Classical",
+        "body": 60,
+        "top": 40,
+        "mic": 70,
+        "mix": 100
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Guitar Clean",
+     "mode": "Classic",
+     "rate": 0.5,
+     "depth": 4,
+     "mix": 0.35
+    },
+    "foot": 6
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/4",
+     "feedback": 28,
+     "mix": 14
+    },
+    "foot": 7
+   },
+   {
+    "id": "plate",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 22,
+     "decay": 1.8,
+     "size": 24,
+     "hicut": 8000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "6237",
+   "model": "418153"
+  },
+  {
+   "type": "amp",
+   "ref": "6237",
+   "model": "413045"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#ffb703",
+  "B": "#ffb703",
+  "C": "#ffb703",
+  "D": "#ffb703",
+  "E": "#ffb703",
+  "6": "#ffb703",
+  "7": "#ffb703",
+  "9": "#ffb703",
+  "10": "#ffb703"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "aurora",
+  "C": "ripple",
+  "D": "snow",
+  "E": "pulse",
+  "6": "fire",
+  "7": "scanner",
+  "9": "sheen",
+  "10": "glitch"
+ },
+ "deps": [
+  {
+   "sha256": "28111c873be81f2016c06ec300983edc7faec1ac60cd185156da2649fed5fd98",
+   "uid": "t3k:6237",
+   "kind": "amp-cab",
+   "bytes": 298544,
+   "name": "DRII_v3_t1_b3_p5_SM57",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb II",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "aviavi123",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-ii-clean-and-overdrive-6237"
+  },
+  {
+   "sha256": "028aa2425920d722ed3e2d54abbef4af4cc418338f832cc7b155c04b7c353b9a",
+   "uid": "t3k:6237",
+   "kind": "amp-cab",
+   "bytes": 297389,
+   "name": "DRIIcrnch_v5_g5_Mv3_t4_m7p_b3_p7_SM57",
+   "source": "t3k",
+   "amp": "Fender Deluxe Reverb II",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "aviavi123",
+   "url": "https://www.tone3000.com/tones/fender-deluxe-reverb-ii-clean-and-overdrive-6237"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"glitch\", \"6\": \"fire\", \"7\": \"scanner\", \"9\": \"sheen\", \"A\": \"ember\", \"B\": \"aurora\", \"C\": \"ripple\", \"D\": \"snow\", \"E\": \"pulse\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.5}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"clean\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"crunch\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"413045\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"nylon\", \"params\": {\"body\": 60, \"mic\": 70, \"mix\": 100, \"model\": \"Classical\", \"top\": 40}, \"type\": \"acoustic-sim\"}], \"id\": \"lane-c\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"7\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\", \"E\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.5}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"clean\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"crunch\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"413045\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"nylon\", \"params\": {\"body\": 60, \"mic\": 70, \"mix\": 100, \"model\": \"Classical\", \"top\": 40}, \"type\": \"acoustic-sim\"}], \"id\": \"lane-c\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Pop Chorus\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Verse Clean\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Chorus Crunch\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Nylon Solo\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Ballad Arp\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Bridge Drive\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Verse Clean\"}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Chorus Crunch\"}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-C\"}}, \"level\": 2, \"name\": \"Nylon Solo\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Ballad Arp\"}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-E\"}}, \"level\": 1, \"name\": \"Bridge Drive\"}]}"
+}

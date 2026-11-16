@@ -355,7 +355,8 @@ def seed(force_ids=None):
             seen.add(fn)
             placed.append(f"{kind}/{fn}")
         led[kind] = sorted(seen)
-    if placed or led != _ledger():
+    retired = _retire(led, hist)
+    if placed or retired or led != _ledger():
         _write_json_atomic(LEDGER, led, indent=1)
     if any(x.startswith("grooves/") for x in placed):
         _groove_meta([x.split("/", 1)[1][:-4] for x in placed if x.startswith("grooves/")])
@@ -369,7 +370,41 @@ def seed(force_ids=None):
             standards.invalidate()
         except Exception:
             pass
-    return {"placed": placed, "updated": updated, "present": present, "removed_by_user": skipped_user}
+    if retired:
+        log.info(f"usine : {len(retired)} ancien(s) objet(s) d'usine retiré(s), intact(s) — " + ", ".join(retired))
+    return {"placed": placed, "updated": updated, "present": present, "removed_by_user": skipped_user, "retired": retired}
+
+
+# CE QUE L'USINE NE LIVRE PLUS (2026-11-16, le mainteneur : « on repart sur du neuf ») : un patch, preset ou setlist que
+# l'usine a posé un jour et qui n'est plus livré est RETIRÉ s'il est intact (sa version, ou sa version aux écritures de la
+# machine près, figure dans l'historique). Une copie retouchée par la personne n'est jamais touchée : elle devient la
+# sienne. Le registre oublie les deux.
+RETIRABLE = ("patches", "presets", "setlists")
+
+
+def _retire(led, hist):
+    shipped = catalog()
+    retired = []
+    for kind in RETIRABLE:
+        if kind not in KINDS:
+            continue
+        sub, dst, ext = KINDS[kind]
+        gone = sorted(set(led.get(kind) or []) - set(shipped.get(kind) or []))
+        for fn in gone:
+            target = os.path.join(dst, fn)
+            if os.path.exists(target):
+                old = _sha(target) in set(hist.get(f"{sub}/{fn}") or []) or \
+                    (_canon_file(target, ext) or "") in set(hist.get(f"canon:{sub}/{fn}") or [])
+                if not old:
+                    continue                         # retouché ici : c'est à la personne, on le garde
+                try:
+                    os.remove(target)
+                except OSError:
+                    continue
+                retired.append(f"{kind}/{fn}")
+        if gone:
+            led[kind] = sorted(set(led.get(kind) or []) - set(gone))
+    return retired
 
 
 def _groove_meta(ids):

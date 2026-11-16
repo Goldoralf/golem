@@ -14,83 +14,6 @@
    "id": "guitar-1",
    "role": "guitar",
    "name": "Funk Clean",
-   "states": [
-    {
-     "id": "st-guitar-1-A",
-     "name": "Chop",
-     "blocks": {
-      "mwah": false,
-      "env": false,
-      "phaser": false
-     },
-     "params": {},
-     "branches": {
-      "lane-b": {
-       "mute": true
-      }
-     }
-    },
-    {
-     "id": "st-guitar-1-B",
-     "name": "Envelope",
-     "blocks": {
-      "mwah": false,
-      "env": true,
-      "phaser": false
-     },
-     "params": {},
-     "branches": {
-      "lane-b": {
-       "mute": true
-      }
-     }
-    },
-    {
-     "id": "st-guitar-1-C",
-     "name": "Wah",
-     "blocks": {
-      "mwah": true,
-      "env": false,
-      "phaser": false
-     },
-     "params": {},
-     "branches": {}
-    },
-    {
-     "id": "st-guitar-1-D",
-     "name": "Phase Solo",
-     "blocks": {
-      "mwah": false,
-      "env": false,
-      "phaser": true
-     },
-     "params": {},
-     "branches": {
-      "lane-a": {
-       "mute": true
-      }
-     }
-    },
-    {
-     "id": "st-guitar-1-E",
-     "name": "Clean Pad",
-     "blocks": {
-      "mwah": false,
-      "env": false,
-      "phaser": false
-     },
-     "params": {
-      "verb": {
-       "mix": 28,
-       "decay": 1.8
-      },
-      "comp": {
-       "ratio": 3
-      }
-     },
-     "branches": {}
-    }
-   ],
    "midi": false,
    "chain": {
     "pre": [
@@ -99,104 +22,169 @@
       "type": "gate",
       "params": {
        "thresh": -62,
-       "attack": 2,
-       "release": 100
-      }
-     },
-     {
-      "id": "mwah",
-      "type": "wah-color",
-      "foot": 7,
-      "params": {
-       "model": "Vox V847",
-       "wah": 0.4,
-       "mix": 100,
-       "mode": "manual"
+       "release": 120
       }
      },
      {
       "id": "comp",
       "type": "comp",
       "params": {
-       "thresh": -30,
-       "ratio": 6,
-       "makeup": 6,
-       "attack": 4,
-       "release": 110
+       "character": "Pedal",
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 4,
+       "attack": 5
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "jub",
+      "type": "amp-nam",
+      "label": "Marshall Silver Jubilee",
+      "ref": "27435",
+      "model": "106490",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gb",
+      "type": "cab",
+      "label": "Marshall 4x12 Greenback",
+      "ref": "45022",
+      "model": "239238",
+      "params": {
+       "level": 0
       }
      },
      {
       "id": "env",
       "type": "autowah",
-      "foot": 6,
       "params": {
-       "wah": 0.45
-      }
-     }
-    ],
-    "split": {
-     "mode": "merge",
-     "gain": -3,
-     "branches": [
-      {
-       "id": "lane-a",
-       "blocks": [
-        {
-         "id": "deluxe",
-         "type": "amp",
-         "label": "Fender Deluxe Reverb '65 Reissue",
-         "ref": "51649",
-         "model": "383469",
-         "params": {
-          "input": 0,
-          "output": 0
-         }
-        }
-       ]
+       "type": "Wah",
+       "peak": 5,
+       "attack": 4,
+       "release": 120
       },
-      {
-       "id": "lane-b",
-       "blocks": [
-        {
-         "id": "ac30",
-         "type": "amp",
-         "label": "VOX AC30",
-         "ref": "26584",
-         "model": "379838",
-         "params": {
-          "input": 0,
-          "output": -2
-         }
-        }
-       ]
-      }
-     ]
-    },
-    "post": [
+      "foot": 6
+     },
      {
-      "id": "phaser",
-      "type": "phaser-js",
-      "foot": 8,
+      "id": "chorus",
+      "type": "chorus",
       "params": {
-       "rate": 0.35,
-       "low": 350,
-       "high": 2000,
-       "feedback": -8,
-       "wet": -4
+       "profile": "Guitar Clean",
+       "mode": "Classic",
+       "rate": 0.8,
+       "depth": 4,
+       "mix": 0.4
+      },
+      "foot": 7
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 1,
+       "midfreq": 1200,
+       "highs": 1
       }
      },
      {
-      "id": "verb",
-      "type": "reverb-plate",
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8",
+       "feedback": 18,
+       "mix": 10
+      },
+      "foot": 8
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
       "params": {
        "mix": 12,
-       "decay": 0.6,
-       "predelay": 5,
-       "hicut": 7500
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
       }
      }
     ]
-   }
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Chop",
+     "blocks": {
+      "env": false,
+      "chorus": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Neck Chords",
+     "blocks": {
+      "env": false,
+      "chorus": true,
+      "dly": false
+     },
+     "params": {
+      "eq": {
+       "highs": -1
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Envelope",
+     "blocks": {
+      "env": true,
+      "chorus": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Bright Slap",
+     "blocks": {
+      "env": false,
+      "chorus": false,
+      "dly": true
+     },
+     "params": {
+      "eq": {
+       "highs": 3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Swirl",
+     "blocks": {
+      "env": false,
+      "chorus": true,
+      "dly": true
+     },
+     "params": {
+      "room": {
+       "mix": 20
+      }
+     },
+     "branches": {}
+    }
+   ]
   }
  ],
  "scenes": [
@@ -204,14 +192,9 @@
    "id": "A",
    "name": "Chop",
    "blocks": {
-    "mwah": false,
     "env": false,
-    "phaser": false
-   },
-   "branches": {
-    "lane-b": {
-     "mute": true
-    }
+    "chorus": false,
+    "dly": false
    },
    "lanes": {
     "guitar-1": {
@@ -221,30 +204,30 @@
   },
   {
    "id": "B",
-   "name": "Envelope",
+   "name": "Neck Chords",
    "blocks": {
-    "mwah": false,
-    "env": true,
-    "phaser": false
-   },
-   "branches": {
-    "lane-b": {
-     "mute": true
-    }
+    "env": false,
+    "chorus": true,
+    "dly": false
    },
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-B"
     }
+   },
+   "params": {
+    "eq": {
+     "highs": -1
+    }
    }
   },
   {
    "id": "C",
-   "name": "Wah",
+   "name": "Envelope",
    "blocks": {
-    "mwah": true,
-    "env": false,
-    "phaser": false
+    "env": true,
+    "chorus": false,
+    "dly": false
    },
    "lanes": {
     "guitar-1": {
@@ -254,49 +237,41 @@
   },
   {
    "id": "D",
-   "name": "Phase Solo",
+   "name": "Bright Slap",
    "blocks": {
-    "mwah": false,
     "env": false,
-    "phaser": true
-   },
-   "branches": {
-    "lane-a": {
-     "mute": true
-    }
+    "chorus": false,
+    "dly": true
    },
    "lanes": {
     "guitar-1": {
-     "level": 3,
      "state": "st-guitar-1-D"
     }
    },
-   "level": 3
+   "params": {
+    "eq": {
+     "highs": 3
+    }
+   }
   },
   {
    "id": "E",
-   "name": "Clean Pad",
+   "name": "Swirl",
    "blocks": {
-    "mwah": false,
     "env": false,
-    "phaser": false
-   },
-   "params": {
-    "verb": {
-     "mix": 28,
-     "decay": 1.8
-    },
-    "comp": {
-     "ratio": 3
-    }
+    "chorus": true,
+    "dly": true
    },
    "lanes": {
     "guitar-1": {
-     "level": -1,
      "state": "st-guitar-1-E"
     }
    },
-   "level": -1
+   "params": {
+    "room": {
+     "mix": 20
+    }
+   }
   }
  ],
  "config": {
@@ -335,143 +310,162 @@
     "type": "gate",
     "params": {
      "thresh": -62,
-     "attack": 2,
-     "release": 100
-    }
-   },
-   {
-    "id": "mwah",
-    "type": "wah-color",
-    "foot": 7,
-    "params": {
-     "model": "Vox V847",
-     "wah": 0.4,
-     "mix": 100,
-     "mode": "manual"
+     "release": 120
     }
    },
    {
     "id": "comp",
     "type": "comp",
     "params": {
-     "thresh": -30,
-     "ratio": 6,
-     "makeup": 6,
-     "attack": 4,
-     "release": 110
+     "character": "Pedal",
+     "thresh": -24,
+     "ratio": 4,
+     "makeup": 4,
+     "attack": 5
+    }
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "jub",
+    "type": "amp-nam",
+    "label": "Marshall Silver Jubilee",
+    "ref": "27435",
+    "model": "106490",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "gb",
+    "type": "cab",
+    "label": "Marshall 4x12 Greenback",
+    "ref": "45022",
+    "model": "239238",
+    "params": {
+     "level": 0
     }
    },
    {
     "id": "env",
     "type": "autowah",
-    "foot": 6,
     "params": {
-     "wah": 0.45
-    }
-   }
-  ],
-  "split": {
-   "mode": "merge",
-   "gain": -3,
-   "branches": [
-    {
-     "id": "lane-a",
-     "blocks": [
-      {
-       "id": "deluxe",
-       "type": "amp",
-       "label": "Fender Deluxe Reverb '65 Reissue",
-       "ref": "51649",
-       "model": "383469",
-       "params": {
-        "input": 0,
-        "output": 0
-       }
-      }
-     ]
+     "type": "Wah",
+     "peak": 5,
+     "attack": 4,
+     "release": 120
     },
-    {
-     "id": "lane-b",
-     "blocks": [
-      {
-       "id": "ac30",
-       "type": "amp",
-       "label": "VOX AC30",
-       "ref": "26584",
-       "model": "379838",
-       "params": {
-        "input": 0,
-        "output": -2
-       }
-      }
-     ]
-    }
-   ]
-  },
-  "post": [
+    "foot": 6
+   },
    {
-    "id": "phaser",
-    "type": "phaser-js",
-    "foot": 8,
+    "id": "chorus",
+    "type": "chorus",
     "params": {
-     "rate": 0.35,
-     "low": 350,
-     "high": 2000,
-     "feedback": -8,
-     "wet": -4
+     "profile": "Guitar Clean",
+     "mode": "Classic",
+     "rate": 0.8,
+     "depth": 4,
+     "mix": 0.4
+    },
+    "foot": 7
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 100,
+     "midgain": 1,
+     "midfreq": 1200,
+     "highs": 1
     }
    },
    {
-    "id": "verb",
-    "type": "reverb-plate",
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/8",
+     "feedback": 18,
+     "mix": 10
+    },
+    "foot": 8
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
     "params": {
      "mix": 12,
-     "decay": 0.6,
-     "predelay": 5,
-     "hicut": 7500
+     "decay": 0.8,
+     "size": 14,
+     "hicut": 7000
     }
    }
   ]
  },
  "needs": [
   {
-   "type": "amp",
-   "ref": "51649",
-   "model": "383469"
+   "type": "amp-nam",
+   "ref": "27435",
+   "model": "106490"
   },
   {
-   "type": "amp",
-   "ref": "26584",
-   "model": "379838"
+   "type": "cab",
+   "ref": "45022",
+   "model": "239238"
   }
  ],
  "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#ef476f",
+  "B": "#ef476f",
+  "C": "#ef476f",
+  "D": "#ef476f",
+  "E": "#ef476f",
+  "6": "#ef476f",
+  "7": "#ef476f",
+  "8": "#ef476f",
+  "9": "#ef476f",
+  "10": "#ef476f"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "vortex",
+  "C": "strobe",
+  "D": "stars",
+  "E": "ember",
+  "6": "aurora",
+  "7": "ripple",
+  "8": "snow",
+  "9": "pulse",
+  "10": "fire"
+ },
  "deps": [
   {
-   "sha256": "e710cbec88b07e239e45c38c1cae90178d3d65c6ca4336185893209dfb84b5b1",
-   "uid": "t3k:51649",
-   "kind": "amp-cab",
-   "bytes": 295155,
-   "name": "NEW VERSION | Fender DRRI | Clean | SM57 + Royer R-121 (No Room) | Full Rig",
+   "sha256": "c11d31d9abfc4aa9310b09a924e12c669eed9db25cd93c8d1e1ec69298c0fc43",
+   "uid": "t3k:27435",
+   "kind": "amp",
+   "bytes": 283671,
+   "name": "Clean Jubilee",
    "source": "t3k",
-   "amp": "Fender Deluxe Reverb 65 Reissue",
-   "arch": "2",
-   "brand": "Fender",
-   "creator": "gindabestari",
-   "url": "https://www.tone3000.com/tones/deluxe-reverb-65-reissue-clean-51649"
+   "amp": "Marshall Silver Jubilee Studio",
+   "brand": "Marshall",
+   "creator": "jesusalmartin",
+   "url": "https://www.tone3000.com/tones/27435"
   },
   {
-   "sha256": "e42b6e2c283f793412b12ee32216e29350db362c1debb2b187080062b848fc54",
-   "uid": "t3k:26584",
-   "kind": "amp-cab",
-   "bytes": 299010,
-   "name": "[NST] A clean VOX AC30 + 65Prince 906 1-2",
+   "sha256": "6a406b5ae6df292c16608d24c5a4d609aafb3e17cc2b3f067d1aaa86898cb84c",
+   "uid": "t3k:45022",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "M25 UL 1960TV 4x12 SM57 1.75in 0.0in SA73",
    "source": "t3k",
-   "amp": "VOX AC30",
-   "arch": "2",
-   "brand": "Vox",
-   "creator": "nst",
-   "url": "https://www.tone3000.com/tones/vox-ac30--26584"
+   "amp": "Celestion Greenback - Marshall 1960TV 4x12 SM57",
+   "brand": "Marshall",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45022"
   },
   {
    "sha256": "aa8dac161664bc666606874b2b7894b08d24885cfea0c1cef0c58621abe57a80",
@@ -497,30 +491,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"smoke\", \"6\": \"fire\", \"7\": \"sheen\", \"8\": \"aurora\", \"A\": \"vu\", \"B\": \"heartbeat\", \"C\": \"glitch\", \"D\": \"pulse\", \"E\": \"snow\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"foot\": 8, \"id\": \"phaser\", \"params\": {\"feedback\": -8, \"high\": 2000, \"low\": 350, \"rate\": 0.35, \"wet\": -4}, \"type\": \"phaser-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.6, \"hicut\": 7500, \"mix\": 12, \"predelay\": 5}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"mwah\", \"params\": {\"mix\": 100, \"mode\": \"manual\", \"model\": \"Vox V847\", \"wah\": 0.4}, \"type\": \"wah-color\"}, {\"id\": \"comp\", \"params\": {\"attack\": 4, \"makeup\": 6, \"ratio\": 6, \"release\": 110, \"thresh\": -30}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.45}, \"type\": \"autowah\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb '65 Reissue\", \"model\": \"383469\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"51649\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ac30\", \"label\": \"VOX AC30\", \"model\": \"379838\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"26584\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#ff2fa8\", \"6\": \"#ff2fa8\", \"7\": \"#ff2fa8\", \"8\": \"#ff2fa8\", \"A\": \"#ff2fa8\", \"B\": \"#ff2fa8\", \"C\": \"#ff2fa8\", \"D\": \"#ff2fa8\", \"E\": \"#ff2fa8\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 8, \"id\": \"phaser\", \"params\": {\"feedback\": -8, \"high\": 2000, \"low\": 350, \"rate\": 0.35, \"wet\": -4}, \"type\": \"phaser-js\"}, {\"id\": \"verb\", \"params\": {\"decay\": 0.6, \"hicut\": 7500, \"mix\": 12, \"predelay\": 5}, \"type\": \"reverb-plate\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 100, \"thresh\": -62}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"mwah\", \"params\": {\"mix\": 100, \"mode\": \"manual\", \"model\": \"Vox V847\", \"wah\": 0.4}, \"type\": \"wah-color\"}, {\"id\": \"comp\", \"params\": {\"attack\": 4, \"makeup\": 6, \"ratio\": 6, \"release\": 110, \"thresh\": -30}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"wah\": 0.45}, \"type\": \"autowah\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"deluxe\", \"label\": \"Fender Deluxe Reverb '65 Reissue\", \"model\": \"383469\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"51649\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"ac30\", \"label\": \"VOX AC30\", \"model\": \"379838\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"26584\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Funk Clean\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Chop\", \"params\": {}}, {\"blocks\": {\"env\": true, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": true, \"phaser\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Wah\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Phase Solo\", \"params\": {}}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Clean Pad\", \"params\": {\"comp\": {\"ratio\": 3}, \"verb\": {\"decay\": 1.8, \"mix\": 28}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Chop\"}, {\"blocks\": {\"env\": true, \"mwah\": false, \"phaser\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"env\": false, \"mwah\": true, \"phaser\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Wah\"}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Phase Solo\"}, {\"blocks\": {\"env\": false, \"mwah\": false, \"phaser\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": -1, \"state\": \"st-guitar-1-E\"}}, \"level\": -1, \"name\": \"Clean Pad\", \"params\": {\"comp\": {\"ratio\": 3}, \"verb\": {\"decay\": 1.8, \"mix\": 28}}}]}",
- "factory": true,
- "colors": {
-  "A": "#ff2fa8",
-  "B": "#ff2fa8",
-  "C": "#ff2fa8",
-  "D": "#ff2fa8",
-  "E": "#ff2fa8",
-  "6": "#ff2fa8",
-  "7": "#ff2fa8",
-  "8": "#ff2fa8",
-  "9": "#ff2fa8",
-  "10": "#ff2fa8"
- },
- "anims": {
-  "A": "vu",
-  "B": "heartbeat",
-  "C": "glitch",
-  "D": "pulse",
-  "E": "snow",
-  "6": "fire",
-  "7": "sheen",
-  "8": "aurora",
-  "9": "ripple",
-  "10": "smoke"
- }
+ "deps_sig": "{\"anims\": {\"10\": \"fire\", \"6\": \"aurora\", \"7\": \"ripple\", \"8\": \"snow\", \"9\": \"pulse\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\", \"E\": \"ember\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"id\": \"jub\", \"label\": \"Marshall Silver Jubilee\", \"model\": \"106490\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27435\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 4, \"peak\": 5, \"release\": 120, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.8}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 100, \"midfreq\": 1200, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 18, \"mix\": 10, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"Pedal\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"8\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\", \"E\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"jub\", \"label\": \"Marshall Silver Jubilee\", \"model\": \"106490\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27435\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 4, \"peak\": 5, \"release\": 120, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.8}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 100, \"midfreq\": 1200, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 18, \"mix\": 10, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"Pedal\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Funk Clean\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": false, \"dly\": false, \"env\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Chop\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"dly\": false, \"env\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Neck Chords\", \"params\": {\"eq\": {\"highs\": -1}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"env\": true}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"dly\": true, \"env\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Bright Slap\", \"params\": {\"eq\": {\"highs\": 3}}}, {\"blocks\": {\"chorus\": true, \"dly\": true, \"env\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Swirl\", \"params\": {\"room\": {\"mix\": 20}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": false, \"dly\": false, \"env\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Chop\"}, {\"blocks\": {\"chorus\": true, \"dly\": false, \"env\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Neck Chords\", \"params\": {\"eq\": {\"highs\": -1}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"env\": true}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"chorus\": false, \"dly\": true, \"env\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Bright Slap\", \"params\": {\"eq\": {\"highs\": 3}}}, {\"blocks\": {\"chorus\": true, \"dly\": true, \"env\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Swirl\", \"params\": {\"room\": {\"mix\": 20}}}]}"
 }

@@ -2,54 +2,82 @@
  "id": "factory-voice",
  "name": "Factory Voice",
  "fcb": true,
- "rev": 2,
+ "rev": 4,
  "kind": "sounds",
- "presets": [
-  "patch:factory-voice-clean",
-  "patch:factory-voice-crooner",
-  "patch:factory-voice-pop-tuned",
-  "patch:factory-voice-rock",
-  "patch:factory-voice-metal",
-  "patch:factory-voice-halo"
- ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
-   "id": "r:factory-voice:bc153439",
-   "rev": 1,
-   "title": "Clean Vocal",
-   "patch": "factory-voice-clean"
-  },
-  {
-   "id": "r:factory-voice:ec1cbc93",
+   "id": "r:factory-voice:crooner",
    "rev": 1,
    "title": "Crooner",
    "patch": "factory-voice-crooner"
   },
   {
-   "id": "r:factory-voice:9bd144e0",
+   "id": "r:factory-voice:blues-shout",
    "rev": 1,
-   "title": "Pop Tuned",
-   "patch": "factory-voice-pop-tuned"
-  },
-  {
-   "id": "r:factory-voice:b1481d6c",
-   "rev": 1,
-   "title": "Rock Vocal",
-   "patch": "factory-voice-rock"
-  },
-  {
-   "id": "r:factory-voice:914d0114",
-   "rev": 1,
-   "title": "Metal Vocal",
-   "patch": "factory-voice-metal"
+   "title": "Blues Shout",
+   "patch": "factory-voice-blues-shout"
   },
   {
    "id": "r:factory-voice:halo",
    "rev": 1,
    "title": "Halo Vocal",
    "patch": "factory-voice-halo"
+  },
+  {
+   "id": "r:factory-voice:metal-scream",
+   "rev": 1,
+   "title": "Metal Scream",
+   "patch": "factory-voice-metal-scream"
+  },
+  {
+   "id": "r:factory-voice:ethereal",
+   "rev": 1,
+   "title": "Ethereal Falsetto",
+   "patch": "factory-voice-ethereal"
+  },
+  {
+   "id": "r:factory-voice:indie-double",
+   "rev": 1,
+   "title": "Indie Double",
+   "patch": "factory-voice-indie-double"
+  },
+  {
+   "id": "r:factory-voice:grunge-raw",
+   "rev": 1,
+   "title": "Raw Grunge",
+   "patch": "factory-voice-grunge-raw"
+  },
+  {
+   "id": "r:factory-voice:funk-rap",
+   "rev": 1,
+   "title": "Funk Rap",
+   "patch": "factory-voice-funk-rap"
+  },
+  {
+   "id": "r:factory-voice:whisper-scream",
+   "rev": 1,
+   "title": "Whisper & Scream",
+   "patch": "factory-voice-whisper-scream"
+  },
+  {
+   "id": "r:factory-voice:pop-tuned",
+   "rev": 1,
+   "title": "Pop Tuned",
+   "patch": "factory-voice-pop-tuned"
   }
  ],
- "factory": true
+ "presets": [
+  "patch:factory-voice-crooner",
+  "patch:factory-voice-blues-shout",
+  "patch:factory-voice-halo",
+  "patch:factory-voice-metal-scream",
+  "patch:factory-voice-ethereal",
+  "patch:factory-voice-indie-double",
+  "patch:factory-voice-grunge-raw",
+  "patch:factory-voice-funk-rap",
+  "patch:factory-voice-whisper-scream",
+  "patch:factory-voice-pop-tuned"
+ ]
 }

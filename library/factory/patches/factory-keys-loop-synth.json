@@ -1,0 +1,436 @@
+{
+ "id": "factory-keys-loop-synth",
+ "name": "Loop Synth & Beat",
+ "role": "keys-pads",
+ "tags": [
+  "indie",
+  "loop",
+  "synth"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Loop Synth & Beat",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Kickbass",
+       "fcut": 0.55,
+       "rmix": 0.0,
+       "dmix": 0.0,
+       "vol": 0.65
+      }
+     },
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-house"
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 10
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Bass & Beat",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-B",
+     "name": "Bass Only",
+     "blocks": {},
+     "params": {
+      "pads": {}
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-C",
+     "name": "Filtered",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.35
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-D",
+     "name": "Big Drop",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.8
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Bass & Beat",
+   "blocks": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Bass Only",
+   "blocks": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-B"
+    }
+   },
+   "params": {
+    "pads": {}
+   }
+  },
+  {
+   "id": "C",
+   "name": "Filtered",
+   "blocks": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-C"
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.35
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Big Drop",
+   "blocks": {},
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.8
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 112,
+ "chain": {
+  "chain": [
+   {
+    "id": "vital",
+    "type": "vital",
+    "params": {
+     "preset": "Kickbass",
+     "fcut": 0.55,
+     "rmix": 0.0,
+     "dmix": 0.0,
+     "vol": 0.65
+    }
+   },
+   {
+    "id": "pads",
+    "type": "pads",
+    "params": {
+     "kit": "pads-house"
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Bus",
+     "thresh": -20,
+     "ratio": 3,
+     "makeup": 2,
+     "attack": 10
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#06d6a0",
+  "B": "#06d6a0",
+  "C": "#06d6a0",
+  "D": "#06d6a0",
+  "9": "#06d6a0"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "vortex",
+  "C": "strobe",
+  "D": "stars",
+  "9": "ember"
+ },
+ "deps": [
+  {
+   "sha256": "d1585127584c132ee0e45076f782d78362ba9a109754a17c48390af49f042f89",
+   "uid": "local:synth-vital-factory",
+   "kind": "synth",
+   "bytes": 185789,
+   "name": "Kickbass",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Vital presets (factory)",
+   "brand": "Vital",
+   "creator": "factory"
+  },
+  {
+   "sha256": "642a545eb9d499db330d1d6dc006c9fc99551b029aba29c803620882a62d9ee5",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 2247,
+   "name": "pads-house",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "4513d2f429409b4c5fbd51fa334563ebcc6ec4ea729f04ba246943aac1ce518d",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 49364,
+   "name": "01_kick",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "a79584ab0d12d602367e53b1f840032ed6ea1b3db19060bfd42f9522cabced4f",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 26678,
+   "name": "03_snare",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "0b416a5006e0b0f053c304597fa824356205829fc65636b2925b9bccc51dccb2",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 8270,
+   "name": "06_hat_closed",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "686692274ee05a7d91fd15af2b0c3cebd239eed58ed69a28fa930739932c96a9",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 54744,
+   "name": "08_hat_open",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "6f6ded2397d6ef08c3282b51deb2887a747a8c5409f4cffbb34b79493bda664c",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 34386,
+   "name": "04_clap",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "bd0b5414a853849db6c25d4508f9753dd7c4c5021f0e013bee93026acbcb36db",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 15920,
+   "name": "05_rim",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "b0be5e25bcc011d46de0474808dcc3dfbf5d99332c90bf072b1868ec42964626",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 48834,
+   "name": "10_tom_mid",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "a3edd770535e4e002595eea6e7dd0f98dadbb07330b3fb5739d33d961d997af4",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 147522,
+   "name": "14_crash",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "31006d21c671768a4e71ad6d86069b70b9e1423f78c3716148bc27fe8f90879c",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 70710,
+   "name": "02_kick_sub",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "a9f9cff5f02c3844ce8e1cdae13f68e7ac31ba4731a85fde852fa6398c6c35b9",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 14514,
+   "name": "07_hat_pedal",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "7a845c22a098214c470f67831f29062730d1835fbc791289c61e4231c6933cfd",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 48834,
+   "name": "09_tom_low",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "515505578b0d6554ab49cb976e5384149ce33a594c56e1d12598abe27dd3f776",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 48834,
+   "name": "11_tom_high",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "61724782eb766d6a8c3335b8fb915c6cdf69d57e37ee434f04c8058ab9cd971c",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 83492,
+   "name": "12_ride",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "1e93684b889a7c76df3615e4f06f622fc051e67132b0421d81536c9e6ac0e7ce",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 109104,
+   "name": "15_crash2",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "cf51ee60c8f97826bc8fc495229c0a9528a9882622e21b31ed5c591e4582a8dd",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 64284,
+   "name": "13_ride_bell",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "8634b7a64e7a6a24c2dd6bb879050b1035d40ad8d5c08938c12dddfea052bf40",
+   "uid": "local:kit-pads-house",
+   "kind": "kit",
+   "bytes": 26700,
+   "name": "16_cowbell",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "House",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"9\": \"ember\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Loop Synth & Beat\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Bass & Beat\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Bass Only\", \"params\": {\"pads\": {}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Big Drop\", \"params\": {\"vital\": {\"fcut\": 0.8}}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Bass & Beat\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Bass Only\", \"params\": {\"pads\": {}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-C\"}}, \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": 1, \"state\": \"st-keys-pads-1-D\"}}, \"level\": 1, \"name\": \"Big Drop\", \"params\": {\"vital\": {\"fcut\": 0.8}}}]}"
+}

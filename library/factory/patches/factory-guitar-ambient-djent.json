@@ -20,39 +20,34 @@
    "chain": {
     "pre": [
      {
-      "id": "gate",
-      "type": "gate",
+      "id": "met",
+      "type": "met",
       "params": {
-       "thresh": -50,
-       "attack": 1,
-       "hold": 30,
-       "release": 70,
-       "hyst": -4
+       "thresh": -50
       }
      },
      {
       "id": "comp",
       "type": "comp",
       "params": {
+       "character": "Clean",
        "thresh": -26,
        "ratio": 3,
        "makeup": 3,
-       "attack": 20,
-       "release": 180
+       "attack": 20
       }
      },
      {
       "id": "ts",
       "type": "pedal-nam",
-      "variant": "tube-screamer",
-      "foot": 6,
       "label": "Ibanez TS9 Tube Screamer",
       "ref": "36827",
       "model": "381617",
       "params": {
        "input": 0,
        "output": -3
-      }
+      },
+      "foot": 6
      }
     ],
     "split": {
@@ -63,7 +58,7 @@
        "id": "lane-a",
        "blocks": [
         {
-         "id": "peavey",
+         "id": "p6505",
          "type": "amp-nam",
          "label": "Peavey 6505+",
          "ref": "29230",
@@ -76,7 +71,7 @@
         {
          "id": "v30",
          "type": "cab",
-         "label": "Mesa 4x12 Celestion V30",
+         "label": "Mesa 4x12 Vintage 30",
          "ref": "45023",
          "model": "239394",
          "params": {
@@ -92,8 +87,8 @@
          "id": "jc",
          "type": "amp",
          "label": "Roland JC-120",
-         "ref": "10912",
-         "model": "379739",
+         "ref": "6530",
+         "model": "397610",
          "params": {
           "input": -3,
           "output": 0
@@ -108,45 +103,56 @@
       "id": "eq",
       "type": "eq",
       "params": {
-       "lowcut": 90.0,
-       "lows": 0.0,
-       "midgain": 1.0,
-       "midfreq": 1500.0,
-       "mid2gain": -3.0,
-       "mid2freq": 450.0,
-       "highs": 0.0
+       "lowcut": 90,
+       "midgain": 1,
+       "midfreq": 1500,
+       "highs": -1,
+       "mid2gain": -3,
+       "mid2freq": 450
       }
      },
      {
       "id": "chorus",
       "type": "chorus",
-      "foot": 8,
       "params": {
-       "rate": 0.35,
-       "delay_base": 18.0,
-       "depth": 4.5,
-       "mix": 0.32,
-       "voices": "3"
-      }
+       "profile": "Guitar Clean",
+       "mode": "Dimension 2",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 8
      },
      {
       "id": "dly",
       "type": "delay",
-      "foot": 7,
       "params": {
+       "model": "Digital",
        "time": "1/8•",
        "feedback": 35,
        "mix": 16
+      },
+      "foot": 7
+     },
+     {
+      "id": "shim",
+      "type": "reverb-shimmer",
+      "params": {
+       "mix": 24,
+       "decay": 6,
+       "shimmer": 35,
+       "hicut": 6000
       }
      },
      {
       "id": "verb",
       "type": "reverb",
       "params": {
-       "mix": 22,
-       "decay": 3.2,
+       "algo": "Hall",
+       "mix": 20,
+       "decay": 3.0,
        "size": 40,
-       "hicut": 6500
+       "hicut": 7000
       }
      }
     ]
@@ -159,28 +165,17 @@
       "comp": true,
       "ts": false,
       "chorus": true,
-      "dly": true
+      "dly": true,
+      "shim": true
      },
      "params": {
-      "gate": {
-       "thresh": -66
-      },
-      "eq": {
-       "lowcut": 80.0,
-       "midgain": 0.0,
-       "midfreq": 500.0,
-       "mid2gain": -1.0,
-       "mid2freq": 1000.0
+      "met": {
+       "thresh": -70
       },
       "dly": {
        "time": "1/4",
        "feedback": 40,
        "mix": 20
-      },
-      "verb": {
-       "mix": 30,
-       "decay": 3.8,
-       "size": 46
       }
      },
      "branches": {
@@ -196,28 +191,17 @@
       "comp": true,
       "ts": false,
       "chorus": true,
-      "dly": true
+      "dly": true,
+      "shim": false
      },
      "params": {
-      "gate": {
-       "thresh": -66
-      },
-      "eq": {
-       "lowcut": 80.0,
-       "midgain": 0.0,
-       "midfreq": 500.0,
-       "mid2gain": -1.0,
-       "mid2freq": 1000.0
+      "met": {
+       "thresh": -70
       },
       "dly": {
        "time": "1/8•",
        "feedback": 30,
        "mix": 14
-      },
-      "verb": {
-       "mix": 20,
-       "decay": 2.6,
-       "size": 36
       }
      },
      "branches": {
@@ -233,13 +217,10 @@
       "comp": false,
       "ts": true,
       "chorus": false,
-      "dly": false
+      "dly": false,
+      "shim": false
      },
      "params": {
-      "gate": {
-       "thresh": -48,
-       "release": 50
-      },
       "verb": {
        "mix": 8,
        "decay": 1.4,
@@ -259,7 +240,8 @@
       "comp": false,
       "ts": true,
       "chorus": false,
-      "dly": true
+      "dly": true,
+      "shim": true
      },
      "params": {
       "dly": {
@@ -267,9 +249,8 @@
        "feedback": 22,
        "mix": 8
       },
-      "verb": {
-       "mix": 16,
-       "decay": 2.6
+      "shim": {
+       "mix": 14
       }
      },
      "branches": {
@@ -285,23 +266,18 @@
       "comp": false,
       "ts": true,
       "chorus": false,
-      "dly": true
+      "dly": true,
+      "shim": false
      },
      "params": {
       "eq": {
        "midgain": 2.5,
-       "midfreq": 900.0,
-       "mid2gain": -1.0,
-       "mid2freq": 1000.0
+       "midfreq": 900
       },
       "dly": {
        "time": "1/8•",
        "feedback": 32,
        "mix": 18
-      },
-      "verb": {
-       "mix": 20,
-       "decay": 2.8
       }
      },
      "branches": {
@@ -321,7 +297,8 @@
     "comp": true,
     "ts": false,
     "chorus": true,
-    "dly": true
+    "dly": true,
+    "shim": true
    },
    "lanes": {
     "guitar-1": {
@@ -329,25 +306,13 @@
     }
    },
    "params": {
-    "gate": {
-     "thresh": -66
-    },
-    "eq": {
-     "lowcut": 80.0,
-     "midgain": 0.0,
-     "midfreq": 500.0,
-     "mid2gain": -1.0,
-     "mid2freq": 1000.0
+    "met": {
+     "thresh": -70
     },
     "dly": {
      "time": "1/4",
      "feedback": 40,
      "mix": 20
-    },
-    "verb": {
-     "mix": 30,
-     "decay": 3.8,
-     "size": 46
     }
    },
    "branches": {
@@ -363,7 +328,8 @@
     "comp": true,
     "ts": false,
     "chorus": true,
-    "dly": true
+    "dly": true,
+    "shim": false
    },
    "lanes": {
     "guitar-1": {
@@ -371,25 +337,13 @@
     }
    },
    "params": {
-    "gate": {
-     "thresh": -66
-    },
-    "eq": {
-     "lowcut": 80.0,
-     "midgain": 0.0,
-     "midfreq": 500.0,
-     "mid2gain": -1.0,
-     "mid2freq": 1000.0
+    "met": {
+     "thresh": -70
     },
     "dly": {
      "time": "1/8•",
      "feedback": 30,
      "mix": 14
-    },
-    "verb": {
-     "mix": 20,
-     "decay": 2.6,
-     "size": 36
     }
    },
    "branches": {
@@ -405,7 +359,8 @@
     "comp": false,
     "ts": true,
     "chorus": false,
-    "dly": false
+    "dly": false,
+    "shim": false
    },
    "lanes": {
     "guitar-1": {
@@ -413,10 +368,6 @@
     }
    },
    "params": {
-    "gate": {
-     "thresh": -48,
-     "release": 50
-    },
     "verb": {
      "mix": 8,
      "decay": 1.4,
@@ -436,7 +387,8 @@
     "comp": false,
     "ts": true,
     "chorus": false,
-    "dly": true
+    "dly": true,
+    "shim": true
    },
    "lanes": {
     "guitar-1": {
@@ -449,9 +401,8 @@
      "feedback": 22,
      "mix": 8
     },
-    "verb": {
-     "mix": 16,
-     "decay": 2.6
+    "shim": {
+     "mix": 14
     }
    },
    "branches": {
@@ -467,7 +418,8 @@
     "comp": false,
     "ts": true,
     "chorus": false,
-    "dly": true
+    "dly": true,
+    "shim": false
    },
    "lanes": {
     "guitar-1": {
@@ -478,18 +430,12 @@
    "params": {
     "eq": {
      "midgain": 2.5,
-     "midfreq": 900.0,
-     "mid2gain": -1.0,
-     "mid2freq": 1000.0
+     "midfreq": 900
     },
     "dly": {
      "time": "1/8•",
      "feedback": 32,
      "mix": 18
-    },
-    "verb": {
-     "mix": 20,
-     "decay": 2.8
     }
    },
    "branches": {
@@ -532,39 +478,34 @@
  "chain": {
   "pre": [
    {
-    "id": "gate",
-    "type": "gate",
+    "id": "met",
+    "type": "met",
     "params": {
-     "thresh": -50,
-     "attack": 1,
-     "hold": 30,
-     "release": 70,
-     "hyst": -4
+     "thresh": -50
     }
    },
    {
     "id": "comp",
     "type": "comp",
     "params": {
+     "character": "Clean",
      "thresh": -26,
      "ratio": 3,
      "makeup": 3,
-     "attack": 20,
-     "release": 180
+     "attack": 20
     }
    },
    {
     "id": "ts",
     "type": "pedal-nam",
-    "variant": "tube-screamer",
-    "foot": 6,
     "label": "Ibanez TS9 Tube Screamer",
     "ref": "36827",
     "model": "381617",
     "params": {
      "input": 0,
      "output": -3
-    }
+    },
+    "foot": 6
    }
   ],
   "split": {
@@ -575,7 +516,7 @@
      "id": "lane-a",
      "blocks": [
       {
-       "id": "peavey",
+       "id": "p6505",
        "type": "amp-nam",
        "label": "Peavey 6505+",
        "ref": "29230",
@@ -588,7 +529,7 @@
       {
        "id": "v30",
        "type": "cab",
-       "label": "Mesa 4x12 Celestion V30",
+       "label": "Mesa 4x12 Vintage 30",
        "ref": "45023",
        "model": "239394",
        "params": {
@@ -604,8 +545,8 @@
        "id": "jc",
        "type": "amp",
        "label": "Roland JC-120",
-       "ref": "10912",
-       "model": "379739",
+       "ref": "6530",
+       "model": "397610",
        "params": {
         "input": -3,
         "output": 0
@@ -620,45 +561,56 @@
     "id": "eq",
     "type": "eq",
     "params": {
-     "lowcut": 90.0,
-     "lows": 0.0,
-     "midgain": 1.0,
-     "midfreq": 1500.0,
-     "mid2gain": -3.0,
-     "mid2freq": 450.0,
-     "highs": 0.0
+     "lowcut": 90,
+     "midgain": 1,
+     "midfreq": 1500,
+     "highs": -1,
+     "mid2gain": -3,
+     "mid2freq": 450
     }
    },
    {
     "id": "chorus",
     "type": "chorus",
-    "foot": 8,
     "params": {
-     "rate": 0.35,
-     "delay_base": 18.0,
-     "depth": 4.5,
-     "mix": 0.32,
-     "voices": "3"
-    }
+     "profile": "Guitar Clean",
+     "mode": "Dimension 2",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.35
+    },
+    "foot": 8
    },
    {
     "id": "dly",
     "type": "delay",
-    "foot": 7,
     "params": {
+     "model": "Digital",
      "time": "1/8•",
      "feedback": 35,
      "mix": 16
+    },
+    "foot": 7
+   },
+   {
+    "id": "shim",
+    "type": "reverb-shimmer",
+    "params": {
+     "mix": 24,
+     "decay": 6,
+     "shimmer": 35,
+     "hicut": 6000
     }
    },
    {
     "id": "verb",
     "type": "reverb",
     "params": {
-     "mix": 22,
-     "decay": 3.2,
+     "algo": "Hall",
+     "mix": 20,
+     "decay": 3.0,
      "size": 40,
-     "hicut": 6500
+     "hicut": 7000
     }
    }
   ]
@@ -681,8 +633,8 @@
   },
   {
    "type": "amp",
-   "ref": "10912",
-   "model": "379739"
+   "ref": "6530",
+   "model": "397610"
   }
  ],
  "origin": "factory",
@@ -700,16 +652,16 @@
   "10": "#3d348b"
  },
  "anims": {
-  "A": "aurora",
-  "B": "wave",
-  "C": "pulse",
-  "D": "smoke",
-  "E": "sheen",
-  "6": "vu",
-  "7": "rain",
-  "8": "ripple",
+  "A": "fire",
+  "B": "scanner",
+  "C": "sheen",
+  "D": "glitch",
+  "E": "monster",
+  "6": "rain",
+  "7": "vu",
+  "8": "wave",
   "9": "heartbeat",
-  "10": "stars"
+  "10": "lightning"
  },
  "deps": [
   {
@@ -751,17 +703,16 @@
    "url": "https://www.tone3000.com/tones/45023"
   },
   {
-   "sha256": "cf3b8c5bb67bc6f3b5a75558a2a33e8377149b68a97942a04c0696574951b1b4",
-   "uid": "t3k:10912",
+   "sha256": "436937c084316d1324158e9eca813334da43d3c08e4ce6b559840e3bf887a4f5",
+   "uid": "t3k:6530",
    "kind": "amp-cab",
-   "bytes": 297482,
-   "name": "Roland JC 120B Jazz Chorus: Bright On, Royer R-101",
+   "bytes": 296657,
+   "name": "Roland JC-120 Jazz Chorus",
    "source": "t3k",
-   "amp": "Roland 120B Jazz Chorus",
    "arch": "2",
    "brand": "Roland",
    "creator": "tone3000",
-   "url": "https://www.tone3000.com/tones/roland-jc-120b-jazz-chorus-10912"
+   "url": "https://www.tone3000.com/tones/roland-jc-120-jazz-chorus-6530"
   },
   {
    "sha256": "3586df063bb39b0483aa2f8e23a165f1f654bf9427d1568103a2702d52de8ebb",
@@ -787,5 +738,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"stars\", \"6\": \"vu\", \"7\": \"rain\", \"8\": \"ripple\", \"9\": \"heartbeat\", \"A\": \"aurora\", \"B\": \"wave\", \"C\": \"pulse\", \"D\": \"smoke\", \"E\": \"sheen\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 450, \"f2\": 1500, \"f3\": 6500, \"g1\": -3, \"g2\": 1, \"g3\": -2.5, \"lowcut\": 90, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 18, \"rate\": 0.35, \"voices\": 3, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 3.2, \"hicut\": 6500, \"mix\": 22, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 30, \"hyst\": -4, \"release\": 70, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 3, \"ratio\": 3, \"release\": 180, \"thresh\": -26}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"peavey\", \"label\": \"Peavey 6505+\", \"model\": \"418311\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"29230\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"379739\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"10912\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#3d348b\", \"6\": \"#3d348b\", \"7\": \"#3d348b\", \"8\": \"#3d348b\", \"9\": \"#3d348b\", \"A\": \"#3d348b\", \"B\": \"#3d348b\", \"C\": \"#3d348b\", \"D\": \"#3d348b\", \"E\": \"#3d348b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-verse.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 450, \"f2\": 1500, \"f3\": 6500, \"g1\": -3, \"g2\": 1, \"g3\": -2.5, \"lowcut\": 90, \"lowcut_on\": true, \"treble\": 0}, \"type\": \"eq-para\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"dry\": 0, \"length\": 18, \"rate\": 0.35, \"voices\": 3, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 3.2, \"hicut\": 6500, \"mix\": 22, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"attack\": 1, \"hold\": 30, \"hyst\": -4, \"release\": 70, \"thresh\": -50}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"makeup\": 3, \"ratio\": 3, \"release\": 180, \"thresh\": -26}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"36827\", \"type\": \"pedal-nam\", \"variant\": \"tube-screamer\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"peavey\", \"label\": \"Peavey 6505+\", \"model\": \"418311\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"29230\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Celestion V30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"379739\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"10912\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Ambient Djent\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Halo Clean\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 20, \"time\": \"1/4\"}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 80}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 3.8, \"mix\": 30, \"size\": 46}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Glass Arp\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/8•\"}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 80}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 2.6, \"mix\": 20, \"size\": 36}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Low Riff\", \"params\": {\"gate\": {\"release\": 50, \"thresh\": -48}, \"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Wall\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 8, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.6, \"mix\": 16}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}, \"eq\": {\"f2\": 900, \"g1\": -1, \"g2\": 2.5}, \"verb\": {\"decay\": 2.8, \"mix\": 20}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Halo Clean\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 20, \"time\": \"1/4\"}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 80}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 3.8, \"mix\": 30, \"size\": 46}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Glass Arp\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/8•\"}, \"eq\": {\"g1\": -1, \"g2\": 0, \"g3\": -1, \"lowcut\": 80}, \"gate\": {\"thresh\": -66}, \"verb\": {\"decay\": 2.6, \"mix\": 20, \"size\": 36}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Low Riff\", \"params\": {\"gate\": {\"release\": 50, \"thresh\": -48}, \"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Wall\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 8, \"time\": \"1/4\"}, \"verb\": {\"decay\": 2.6, \"mix\": 16}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-E\"}}, \"level\": 3, \"name\": \"Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}, \"eq\": {\"f2\": 900, \"g1\": -1, \"g2\": 2.5}, \"verb\": {\"decay\": 2.8, \"mix\": 20}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"6\": \"rain\", \"7\": \"vu\", \"8\": \"wave\", \"9\": \"heartbeat\", \"A\": \"fire\", \"B\": \"scanner\", \"C\": \"sheen\", \"D\": \"glitch\", \"E\": \"monster\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 90, \"mid2freq\": 450, \"mid2gain\": -3, \"midfreq\": 1500, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Dimension 2\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 24, \"shimmer\": 35}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 3.0, \"hicut\": 7000, \"mix\": 20, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -26}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"36827\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"p6505\", \"label\": \"Peavey 6505+\", \"model\": \"418311\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"29230\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#3d348b\", \"6\": \"#3d348b\", \"7\": \"#3d348b\", \"8\": \"#3d348b\", \"9\": \"#3d348b\", \"A\": \"#3d348b\", \"B\": \"#3d348b\", \"C\": \"#3d348b\", \"D\": \"#3d348b\", \"E\": \"#3d348b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-verse.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 90, \"mid2freq\": 450, \"mid2gain\": -3, \"midfreq\": 1500, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Dimension 2\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"shim\", \"params\": {\"decay\": 6, \"hicut\": 6000, \"mix\": 24, \"shimmer\": 35}, \"type\": \"reverb-shimmer\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 3.0, \"hicut\": 7000, \"mix\": 20, \"size\": 40}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -26}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"ts\", \"label\": \"Ibanez TS9 Tube Screamer\", \"model\": \"381617\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"36827\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"p6505\", \"label\": \"Peavey 6505+\", \"model\": \"418311\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"29230\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Ambient Djent\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"shim\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Halo Clean\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 20, \"time\": \"1/4\"}, \"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"shim\": false, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Glass Arp\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/8•\"}, \"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Low Riff\", \"params\": {\"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"shim\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Wall\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 8, \"time\": \"1/4\"}, \"shim\": {\"mix\": 14}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}, \"eq\": {\"midfreq\": 900, \"midgain\": 2.5}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"shim\": true, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Halo Clean\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 20, \"time\": \"1/4\"}, \"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": true, \"comp\": true, \"dly\": true, \"shim\": false, \"ts\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Glass Arp\", \"params\": {\"dly\": {\"feedback\": 30, \"mix\": 14, \"time\": \"1/8•\"}, \"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": false, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Low Riff\", \"params\": {\"verb\": {\"decay\": 1.4, \"mix\": 8, \"size\": 24}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"shim\": true, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Wall\", \"params\": {\"dly\": {\"feedback\": 22, \"mix\": 8, \"time\": \"1/4\"}, \"shim\": {\"mix\": 14}}}, {\"blocks\": {\"chorus\": false, \"comp\": false, \"dly\": true, \"shim\": false, \"ts\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-E\"}}, \"level\": 3, \"name\": \"Lead\", \"params\": {\"dly\": {\"feedback\": 32, \"mix\": 18, \"time\": \"1/8•\"}, \"eq\": {\"midfreq\": 900, \"midgain\": 2.5}}}]}"
 }

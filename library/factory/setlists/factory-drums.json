@@ -2,40 +2,47 @@
  "id": "factory-drums",
  "name": "Factory Drums",
  "fcb": true,
- "rev": 2,
+ "rev": 4,
  "kind": "sounds",
- "presets": [
-  "patch:factory-drums-jazz-brushes",
-  "patch:factory-drums-classic-rock",
-  "patch:factory-drums-studio-rock",
-  "patch:factory-drums-metal"
- ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
-   "id": "r:factory-drums:06d62477",
+   "id": "r:factory-drums:jazz-brushes",
    "rev": 1,
    "title": "Jazz Brushes",
    "patch": "factory-drums-jazz-brushes"
   },
   {
-   "id": "r:factory-drums:4b76da22",
+   "id": "r:factory-drums:vintage-rock",
    "rev": 1,
-   "title": "Classic Rock",
-   "patch": "factory-drums-classic-rock"
+   "title": "Vintage Rock",
+   "patch": "factory-drums-vintage-rock"
   },
   {
-   "id": "r:factory-drums:c54f4ddc",
+   "id": "r:factory-drums:studio-rock",
    "rev": 1,
    "title": "Studio Rock",
    "patch": "factory-drums-studio-rock"
   },
   {
-   "id": "r:factory-drums:24434b39",
+   "id": "r:factory-drums:metal",
    "rev": 1,
-   "title": "Metal",
+   "title": "Metal Kit",
    "patch": "factory-drums-metal"
+  },
+  {
+   "id": "r:factory-drums:lofi",
+   "rev": 1,
+   "title": "Lo-Fi Kit",
+   "patch": "factory-drums-lofi"
   }
  ],
- "factory": true
+ "presets": [
+  "patch:factory-drums-jazz-brushes",
+  "patch:factory-drums-vintage-rock",
+  "patch:factory-drums-studio-rock",
+  "patch:factory-drums-metal",
+  "patch:factory-drums-lofi"
+ ]
 }

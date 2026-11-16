@@ -1,0 +1,295 @@
+{
+ "id": "factory-keys-nu-pad",
+ "name": "Nu Haze",
+ "role": "keys",
+ "tags": [
+  "nu-metal",
+  "pad",
+  "electronic"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Nu Haze",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "vital",
+      "type": "vital",
+      "params": {
+       "preset": "Retro_Ambient_Pluck",
+       "fcut": 0.5,
+       "rmix": 0.25,
+       "dmix": 0.25,
+       "vol": 0.55
+      }
+     },
+     {
+      "id": "glitch",
+      "type": "glitch",
+      "params": {
+       "mix": 40
+      },
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 35,
+       "mix": 16
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 26,
+       "decay": 3.5,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Haze",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Glitch Haze",
+     "blocks": {
+      "glitch": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Low Haze",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Open Haze",
+     "blocks": {},
+     "params": {
+      "vital": {
+       "fcut": 0.75
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Haze",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Glitch Haze",
+   "blocks": {
+    "glitch": true
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Low Haze",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -3
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.3
+    }
+   },
+   "level": -3
+  },
+  {
+   "id": "D",
+   "name": "Open Haze",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.75
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-intro.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "chain": [
+   {
+    "id": "vital",
+    "type": "vital",
+    "params": {
+     "preset": "Retro_Ambient_Pluck",
+     "fcut": 0.5,
+     "rmix": 0.25,
+     "dmix": 0.25,
+     "vol": 0.55
+    }
+   },
+   {
+    "id": "glitch",
+    "type": "glitch",
+    "params": {
+     "mix": 40
+    },
+    "foot": 6
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/4",
+     "feedback": 35,
+     "mix": 16
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Cloud",
+     "mix": 26,
+     "decay": 3.5,
+     "size": 30,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#5a189a",
+  "B": "#5a189a",
+  "C": "#5a189a",
+  "D": "#5a189a",
+  "6": "#5a189a",
+  "9": "#5a189a",
+  "10": "#5a189a"
+ },
+ "anims": {
+  "A": "smoke",
+  "B": "vortex",
+  "C": "strobe",
+  "D": "stars",
+  "6": "ember",
+  "9": "aurora",
+  "10": "ripple"
+ },
+ "deps": [
+  {
+   "sha256": "7d0a07aa244ec6c5e5344a39c2e888f1f82b641b360594f90cb5219c1ba16251",
+   "uid": "local:synth-vital-factory",
+   "kind": "synth",
+   "bytes": 218601,
+   "name": "Retro Ambient Pluck",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Vital presets (factory)",
+   "brand": "Vital",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d6a93ab27eaa4e2639fbf0eb01b4cb75e32df8f467b74f90b6ec4c11fa009798",
+   "uid": "local:groove-golem-metal-intro",
+   "kind": "groove",
+   "bytes": 287,
+   "name": "Metal intro",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"ember\", \"9\": \"aurora\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-intro.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Nu Haze\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Haze\", \"params\": {}}, {\"blocks\": {\"glitch\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Glitch Haze\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Low Haze\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Open Haze\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Haze\"}, {\"blocks\": {\"glitch\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Glitch Haze\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Low Haze\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Open Haze\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}"
+}

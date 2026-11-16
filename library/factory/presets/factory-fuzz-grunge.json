@@ -1,0 +1,957 @@
+{
+ "id": "factory-fuzz-grunge",
+ "name": "Velvet Wasp",
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -52,
+       "release": 90
+      }
+     },
+     {
+      "id": "muff",
+      "type": "pedal-nam",
+      "label": "EHX Op-Amp Big Muff",
+      "ref": "37818",
+      "model": "413514",
+      "params": {
+       "input": 0,
+       "output": -4
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "jmp",
+      "type": "amp-nam",
+      "label": "Marshall JMP 2204",
+      "ref": "70525",
+      "model": "577107",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gb",
+      "type": "cab",
+      "label": "Marshall 4x12 Greenback",
+      "ref": "45022",
+      "model": "239238",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "phase",
+      "type": "phaser-js",
+      "params": {
+       "model": "Script 90",
+       "rate": 0.4,
+       "feedback": -6,
+       "wet": -3
+      },
+      "foot": 7
+     },
+     {
+      "id": "flange",
+      "type": "flanger-js",
+      "params": {
+       "mode": "Mistress",
+       "rate": 0.18,
+       "feedback": -14,
+       "depth": 70
+      },
+      "foot": 8
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 80,
+       "midgain": -1,
+       "midfreq": 700,
+       "highs": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 10
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Verse Crunch",
+     "blocks": {
+      "muff": false,
+      "phase": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Fuzz Wall",
+     "blocks": {
+      "muff": true,
+      "phase": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Fuzz Lead",
+     "blocks": {
+      "muff": true,
+      "phase": false,
+      "flange": false
+     },
+     "params": {
+      "eq": {
+       "midgain": 3,
+       "midfreq": 800
+      },
+      "dly": {
+       "mix": 18
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Phased Bridge",
+     "blocks": {
+      "muff": true,
+      "phase": true,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Jet Clean",
+     "blocks": {
+      "muff": false,
+      "phase": false,
+      "flange": true
+     },
+     "params": {
+      "jmp": {
+       "input": -10
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-fuzz-grunge",
+    "name": "Fuzz Grunge"
+   }
+  },
+  {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -56,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -22,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "muff-2",
+      "type": "pedal-nam",
+      "label": "EHX Op-Amp Big Muff",
+      "ref": "37818",
+      "model": "413514",
+      "params": {
+       "input": 0,
+       "output": -4
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "svt",
+      "type": "amp",
+      "label": "Ampeg SVT 6x10",
+      "ref": "28202",
+      "model": "379986",
+      "params": {
+       "input": 0,
+       "output": -2
+      }
+     },
+     {
+      "id": "eq-2",
+      "type": "eq",
+      "params": {
+       "lowcut": 40,
+       "midgain": 1,
+       "midfreq": 700,
+       "highs": 0
+      }
+     }
+    ]
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Pick Drive",
+     "blocks": {
+      "muff-2": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Fuzz Bass",
+     "blocks": {
+      "muff-2": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Clean Verse",
+     "blocks": {
+      "muff-2": false
+     },
+     "params": {
+      "svt": {
+       "output": -4
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Wall",
+     "blocks": {
+      "muff-2": true
+     },
+     "params": {
+      "eq-2": {
+       "midgain": 2
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-fuzz",
+    "name": "Fuzz Bass"
+   }
+  },
+  {
+   "id": "keys-1",
+   "key": "keys-1",
+   "role": "keys",
+   "name": "Strings",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "ep",
+      "type": "ep",
+      "params": {
+       "bank": "library/dx7/synprezfm-02.syx",
+       "patch": 20,
+       "fcut": 1,
+       "res": 0,
+       "out": 0.8
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Keys",
+       "mode": "Ensemble",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.5
+      }
+     },
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 120,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": -2
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 24,
+       "decay": 2.6,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Strings Wash",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Chorus Strings",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Thin",
+     "blocks": {},
+     "params": {
+      "eq-3": {
+       "lowcut": 200
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Big Swell",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {
+      "verb": {
+       "mix": 34
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-keys-strings-wash",
+    "name": "Strings Wash"
+   }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -52,
+       "release": 120
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "grit",
+      "type": "morph",
+      "params": {
+       "drive": 45,
+       "morph": 20,
+       "mix": 70,
+       "object": "None"
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "eq-4",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 1.5,
+       "midfreq": 1800,
+       "highs": 0
+      }
+     },
+     {
+      "id": "room-2",
+      "type": "reverb-room",
+      "params": {
+       "mix": 16,
+       "decay": 1,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Raw",
+     "blocks": {
+      "grit": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Gravel",
+     "blocks": {
+      "grit": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Quiet Verse",
+     "blocks": {
+      "grit": false
+     },
+     "params": {
+      "room-2": {
+       "mix": 10
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Scream",
+     "blocks": {
+      "grit": true
+     },
+     "params": {
+      "grit": {
+       "drive": 65
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-grunge-raw",
+    "name": "Raw Grunge"
+   }
+  },
+  {
+   "id": "drums-1",
+   "key": "drums-1",
+   "role": "drums",
+   "name": "Drums",
+   "in_sel": "usb",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "kit",
+      "type": "drumkit",
+      "params": {
+       "kit": "drums-black-pearl"
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 20
+      }
+     },
+     {
+      "id": "eq-5",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "punch",
+      "type": "transient",
+      "params": {
+       "attack": 8,
+       "sustain": 0
+      }
+     },
+     {
+      "id": "room-3",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.9,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": true,
+   "in_role": null,
+   "in_nth": null,
+   "states": [
+    {
+     "id": "st-drums-1-A",
+     "name": "Tight",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-B",
+     "name": "Punch",
+     "blocks": {
+      "punch": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-C",
+     "name": "Roomy",
+     "blocks": {
+      "punch": false
+     },
+     "params": {
+      "room-3": {
+       "mix": 26
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-drums-1-D",
+     "name": "Soft",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-drums-studio-rock",
+    "name": "Studio Rock"
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Quiet Verse",
+   "blocks": {
+    "muff": false,
+    "phase": false,
+    "flange": false,
+    "muff-2": false,
+    "grit": false
+   },
+   "params": {
+    "svt": {
+     "output": -4
+    },
+    "eq-3": {
+     "lowcut": 200
+    },
+    "room-2": {
+     "mix": 10
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -6
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
+    },
+    "drums-1": {
+     "state": "st-drums-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Loud Chorus",
+   "blocks": {
+    "muff": true,
+    "phase": false,
+    "flange": false,
+    "muff-2": true,
+    "grit": true,
+    "punch": true
+   },
+   "params": {},
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B"
+    },
+    "keys-1": {
+     "state": "st-keys-1-A",
+     "level": -4
+    },
+    "voice-1": {
+     "state": "st-voice-1-B",
+     "level": 1
+    },
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Solo",
+   "blocks": {
+    "muff": true,
+    "phase": false,
+    "flange": false,
+    "muff-2": true,
+    "chorus": true,
+    "grit": false,
+    "punch": true
+   },
+   "params": {
+    "eq": {
+     "midgain": 3,
+     "midfreq": 800
+    },
+    "dly": {
+     "mix": 18
+    },
+    "eq-2": {
+     "midgain": 2
+    },
+    "verb": {
+     "mix": 34
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 3
+    },
+    "bass-1": {
+     "state": "st-bass-1-D"
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": -4
+    },
+    "voice-1": {
+     "state": "st-voice-1-A",
+     "level": -10
+    },
+    "drums-1": {
+     "state": "st-drums-1-B"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Bridge",
+   "blocks": {
+    "muff": true,
+    "phase": true,
+    "flange": false,
+    "muff-2": false,
+    "chorus": true,
+    "grit": false,
+    "punch": false
+   },
+   "params": {
+    "room-3": {
+     "mix": 26
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    },
+    "bass-1": {
+     "state": "st-bass-1-A"
+    },
+    "keys-1": {
+     "state": "st-keys-1-B",
+     "level": -3
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Jet Outro",
+   "blocks": {
+    "muff": false,
+    "phase": false,
+    "flange": true,
+    "muff-2": false,
+    "chorus": true,
+    "grit": true,
+    "punch": false
+   },
+   "params": {
+    "jmp": {
+     "input": -10
+    },
+    "svt": {
+     "output": -4
+    },
+    "verb": {
+     "mix": 34
+    },
+    "grit": {
+     "drive": 65
+    },
+    "room-3": {
+     "mix": 26
+    }
+   },
+   "branches": {},
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C"
+    },
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": -2
+    },
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    },
+    "drums-1": {
+     "state": "st-drums-1-C"
+    }
+   }
+  }
+ ],
+ "bpm": 118,
+ "style": "grunge",
+ "styles": [
+  "grunge"
+ ],
+ "factory": true,
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid",
+       "library/grooves/golem-rock-chorus.mid",
+       "library/grooves/golem-rock-fill.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "click_out": "1-2",
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "params": {
+      "in1": true,
+      "in2": false,
+      "usb": false,
+      "rec_mode": "tracks_di",
+      "mix": true,
+      "count_in": 0,
+      "transcribe": "manual"
+     },
+     "foot": 9
+    },
+    {
+     "id": "click-global",
+     "type": "click",
+     "bypass": true,
+     "params": {
+      "level": 0.0,
+      "beats": 4
+     }
+    },
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "params": {
+      "keep_s": 30,
+      "transcribe": true
+     }
+    }
+   ]
+  },
+  "arr": {
+   "blocks": [
+    {
+     "id": "arrangement",
+     "type": "arrangement",
+     "params": {
+      "advance": "bars",
+      "sections": []
+     }
+    }
+   ]
+  }
+ },
+ "colors": {
+  "A": "#9c6644",
+  "B": "#9c6644",
+  "C": "#9c6644",
+  "D": "#9c6644",
+  "E": "#9c6644",
+  "6": "#9c6644",
+  "7": "#9c6644",
+  "8": "#9c6644",
+  "9": "#9c6644",
+  "10": "#9c6644"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "heartbeat",
+  "C": "lightning",
+  "D": "smoke",
+  "E": "vortex",
+  "6": "strobe",
+  "7": "stars",
+  "8": "ember",
+  "9": "aurora",
+  "10": "ripple"
+ }
+}

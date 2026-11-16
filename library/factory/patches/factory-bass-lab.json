@@ -1,0 +1,534 @@
+{
+ "id": "factory-bass-lab",
+ "name": "Bass Lab",
+ "role": "bass",
+ "tags": [
+  "bass",
+  "progressive",
+  "synth"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Bass Lab",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -58,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -24,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 8
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -4,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379988",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "xultra",
+         "type": "amp-nam",
+         "label": "Darkglass X Ultra",
+         "ref": "71220",
+         "model": "588114",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "gkcab",
+         "type": "cab",
+         "label": "Gallien-Krueger 4x10",
+         "ref": "64815",
+         "model": "72421",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-c",
+       "blocks": [
+        {
+         "id": "synth",
+         "type": "polysynth",
+         "params": {
+          "engine": "Mono",
+          "wave": "Pulse",
+          "cutoff": 1400,
+          "reso": 35,
+          "filt_env": 20,
+          "synth": -2,
+          "dry": -60
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Bass",
+       "mode": "Dimension 2",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 6
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 30,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     },
+     {
+      "id": "wide",
+      "type": "widener",
+      "params": {
+       "mode": "Double",
+       "amount": 40
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Sub Only",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      },
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Grit Blend",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Synth Layer",
+     "blocks": {},
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Full Stack",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-E",
+     "name": "Solo Chorus",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {},
+     "branches": {
+      "lane-c": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Sub Only",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    },
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Grit Blend",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   },
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Synth Layer",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C"
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Full Stack",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 1
+    }
+   },
+   "level": 1
+  },
+  {
+   "id": "E",
+   "name": "Solo Chorus",
+   "blocks": {
+    "chorus": true
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-E",
+     "level": 3
+    }
+   },
+   "branches": {
+    "lane-c": {
+     "mute": true
+    }
+   },
+   "level": 3
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-funk-16.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 100,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -58,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "FET",
+     "thresh": -24,
+     "ratio": 4,
+     "makeup": 3,
+     "attack": 8
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -4,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "svt",
+       "type": "amp",
+       "label": "Ampeg SVT 6x10",
+       "ref": "28202",
+       "model": "379988",
+       "params": {
+        "input": 0,
+        "output": -2
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "xultra",
+       "type": "amp-nam",
+       "label": "Darkglass X Ultra",
+       "ref": "71220",
+       "model": "588114",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "gkcab",
+       "type": "cab",
+       "label": "Gallien-Krueger 4x10",
+       "ref": "64815",
+       "model": "72421",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-c",
+     "blocks": [
+      {
+       "id": "synth",
+       "type": "polysynth",
+       "params": {
+        "engine": "Mono",
+        "wave": "Pulse",
+        "cutoff": 1400,
+        "reso": 35,
+        "filt_env": 20,
+        "synth": -2,
+        "dry": -60
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Bass",
+     "mode": "Dimension 2",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.35
+    },
+    "foot": 6
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 30,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": 1
+    }
+   },
+   {
+    "id": "wide",
+    "type": "widener",
+    "params": {
+     "mode": "Double",
+     "amount": 40
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "28202",
+   "model": "379988"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "71220",
+   "model": "588114"
+  },
+  {
+   "type": "cab",
+   "ref": "64815",
+   "model": "72421"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#00b4d8",
+  "B": "#00b4d8",
+  "C": "#00b4d8",
+  "D": "#00b4d8",
+  "E": "#00b4d8",
+  "6": "#00b4d8",
+  "9": "#00b4d8",
+  "10": "#00b4d8"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "9": "ember",
+  "10": "aurora"
+ },
+ "deps": [
+  {
+   "sha256": "5d4ea3c752b0addf7dad7c40ecfe4a5504e0dba606cc7b2cdcdbb9b7561e990b",
+   "uid": "t3k:28202",
+   "kind": "amp-cab",
+   "bytes": 297797,
+   "name": "Ampeg SVT - Ultra Lo SM57",
+   "source": "t3k",
+   "amp": "Ampeg SVT Classic",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-classic-with-6x10-28202"
+  },
+  {
+   "sha256": "5973554db39b483905e89abdc8d81916aa42988a8b27126f4c39a0065a434d95",
+   "uid": "t3k:71220",
+   "kind": "amp",
+   "bytes": 294919,
+   "name": "DarkglassXUltra",
+   "source": "t3k",
+   "amp": "Darkglass Harmonic Booster",
+   "arch": "2",
+   "brand": "Darkglass",
+   "creator": "primalnerd",
+   "url": "https://www.tone3000.com/tones/darkglass-x-ultra-71220"
+  },
+  {
+   "sha256": "a1409f62eb14346660f0fd4be37d7aa57cde1ad2164a69d1feda3576a937da24",
+   "uid": "t3k:64815",
+   "kind": "cab",
+   "bytes": 183404,
+   "name": "Mid Contour_dc",
+   "source": "t3k",
+   "amp": "Gallien Krueger - RB800",
+   "brand": "Gallien-Krueger",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/gallien-krueger-rb800-070-irs-64815"
+  },
+  {
+   "sha256": "aa8dac161664bc666606874b2b7894b08d24885cfea0c1cef0c58621abe57a80",
+   "uid": "local:groove-golem-funk-16",
+   "kind": "groove",
+   "bytes": 441,
+   "name": "Funk 16",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"stars\", \"9\": \"ember\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\", \"E\": \"strobe\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Dimension 2\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"wide\", \"params\": {\"amount\": 40, \"mode\": \"Double\"}, \"type\": \"widener\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379988\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"xultra\", \"label\": \"Darkglass X Ultra\", \"model\": \"588114\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"71220\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72421\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"synth\", \"params\": {\"cutoff\": 1400, \"dry\": -60, \"engine\": \"Mono\", \"filt_env\": 20, \"reso\": 35, \"synth\": -2, \"wave\": \"Pulse\"}, \"type\": \"polysynth\"}], \"id\": \"lane-c\"}], \"gain\": -4, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#00b4d8\", \"6\": \"#00b4d8\", \"9\": \"#00b4d8\", \"A\": \"#00b4d8\", \"B\": \"#00b4d8\", \"C\": \"#00b4d8\", \"D\": \"#00b4d8\", \"E\": \"#00b4d8\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Dimension 2\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"wide\", \"params\": {\"amount\": 40, \"mode\": \"Double\"}, \"type\": \"widener\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379988\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"xultra\", \"label\": \"Darkglass X Ultra\", \"model\": \"588114\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"71220\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72421\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}], \"id\": \"lane-b\"}, {\"blocks\": [{\"id\": \"synth\", \"params\": {\"cutoff\": 1400, \"dry\": -60, \"engine\": \"Mono\", \"filt_env\": 20, \"reso\": 35, \"synth\": -2, \"wave\": \"Pulse\"}, \"type\": \"polysynth\"}], \"id\": \"lane-c\"}], \"gain\": -4, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Bass Lab\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Sub Only\", \"params\": {}}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-B\", \"name\": \"Grit Blend\", \"params\": {}}, {\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Synth Layer\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Full Stack\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"st-bass-1-E\", \"name\": \"Solo Chorus\", \"params\": {}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}, \"lane-c\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Sub Only\"}, {\"blocks\": {}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Grit Blend\"}, {\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Synth Layer\"}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Full Stack\"}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-c\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-E\"}}, \"level\": 3, \"name\": \"Solo Chorus\"}]}"
+}

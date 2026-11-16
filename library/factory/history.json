@@ -4,11 +4,18 @@
   "d9b242e4c2b47e4ea24bd04e2bfc134660ff6e923013c421b06f66c8719cec96",
   "a8a7c2c62f9a4547ab55949ff4f27395df17d98381afa365ad3b5c28f565b221"
  ],
+ "canon:patches/factory-bass-blues-round.json": [
+  "cc8accb74a72d72f9061e96f10e4f2276ed2a6d1bb28c7a24284da00261bfeee"
+ ],
  "canon:patches/factory-bass-funk-slap.json": [
   "426d073198cda98bed10e8cbbfa15a3dc1fe47eec9787e762bfb0a40198d7686",
   "253b8f60842108b56fb02d22d8f51e70c6055ee4a2257987b50894757f9dc9ff",
   "804ba5f243b1a1a7434c6a43526b1b4e8031885fe462754d29eb3f82d6966994",
-  "c5fe5d3facec4e313586afdee5ee092c3a8b0cb791e3276149cc1dc1b6aaad8a"
+  "c5fe5d3facec4e313586afdee5ee092c3a8b0cb791e3276149cc1dc1b6aaad8a",
+  "fa68cb7ad5876616f2dede3a0fba3242a9f3025c9b19d5f11976711adabee504"
+ ],
+ "canon:patches/factory-bass-fuzz.json": [
+  "1fd8a1a0c8070fb6c44288e26da951fb8e35f89302bab3dbda73eb60409a73fb"
  ],
  "canon:patches/factory-bass-jazz-warm.json": [
   "080efb3f265f5fee7df9655cce129ebef5e49cc2108cd3dffa0bae6b7695d22b",
@@ -20,6 +27,12 @@
   "4a1a9e69fa39c76eccbd3d3519a8dc04129735ce4201fd19889b6be40b3b9b03",
   "5dc84d425e6671db10a457f5e70c1d67c37dd712c87e4ec810853c11eb97713c"
  ],
+ "canon:patches/factory-bass-lab.json": [
+  "a372d4e4f584379a1cb77f96206cb93488891ffb1c170c3a171d168ea27355d3"
+ ],
+ "canon:patches/factory-bass-metal-grind.json": [
+  "e0a562207c3907007f11f54f98669a7250351effd374ed7ede4fc9d95aa151d0"
+ ],
  "canon:patches/factory-bass-metal.json": [
   "20b8e177fbbdf5a5689cb7265f3a7f013d86464e794e9b3ace5ca2be36f317e4",
   "4a6f400f8ac9affe671502cda8e436f7d3135165acad07f912d929b98c571ca2",
@@ -27,10 +40,22 @@
   "68b42ec6f498e1afd33faeb5f5fe91383c97db78e85f20dcd2795e87b1833c80",
   "928fea9a04b1ddbc412b16a51f99fc0c06771e71b8a9aa285ed37ba927085e6e"
  ],
+ "canon:patches/factory-bass-nu-low.json": [
+  "6571f9ef59a89e39a5127b875387cac726bd5727119a8c382abdc31bdb391c49"
+ ],
+ "canon:patches/factory-bass-pop-pick.json": [
+  "3b1d547cbf16f3e5f3f6d8599202c0287fc3b45b672ea8276569b3b317d5bc13"
+ ],
+ "canon:patches/factory-bass-prog-biamp.json": [
+  "b529be2e9d6b3a36e46c0fe842e341c6f3e9fb04aa2486ecb43764168f3dbbad"
+ ],
  "canon:patches/factory-bass-rock-grind.json": [
   "de9a930d96d53c07b3fcd835b4ba16e14f1e39efa31a6fa42691a0f079d5d209",
   "145c5d9e643ae3ffe2615863a3d110d7e708e5e807f8e6d2d54274c510d3a619",
   "da0c4112aaeb8f34d9cb014d40b92c5fbf7f0fc2c7763b2e87892faf8ba92068"
+ ],
+ "canon:patches/factory-bass-synth-ambient.json": [
+  "20034f6e985eb720a2d23059960addec358b61eb90325d4c5dc8e558bd02c54a"
  ],
  "canon:patches/factory-bass-synth.json": [
   "502a6762a5fa05eb9d46d3817560d87a60f87cefa2835e552cece4de4fb3e330",
@@ -39,6 +64,9 @@
   "2649a8ef11b16919a2267a8a729a64dd872432ba5113df78ebfd2167273bb33a",
   "989f4c8d4367212c5f289317e8e1c6af50d22155f210c1da1422b1f8b926c763",
   "30f7660abdc8c66198a036c27f93a6b4a3687b1c0268557d72d571bd0b88058b"
+ ],
+ "canon:patches/factory-bass-upright-jazz.json": [
+  "764182a7b6f3480f8a3b105ddab38f64fa32fbfd13b8b6e293dc8ff232ee99fd"
  ],
  "canon:patches/factory-bass-vintage-round.json": [
   "57ea4300c1e6ac8f008ecc17b5fceda122869ff81738b720cb1ec41aadb2f7b3",
@@ -57,24 +85,34 @@
   "7e5cfddae8543d075c4f8832cd03f5c070580aae6cd60b36c0123ef11518ef7f",
   "7b2eafbfe56dd11c2e369b9821b26375de4e7d2c42170ba058f82b41122ec300",
   "6fe1392d790a25bbd277708b25945ff298e1761507817c20dc384378c29d877a",
-  "fd0d5f22d0390cd52e07bc9e335102926b29cf2a726a19f2240c926f58b94501"
+  "fd0d5f22d0390cd52e07bc9e335102926b29cf2a726a19f2240c926f58b94501",
+  "44b7b3bffadfb1f0a7b60718f7c2977391c785df08a7ba4b5aee0389832e5f1e"
+ ],
+ "canon:patches/factory-drums-lofi.json": [
+  "187303c0bcda35a8c64cc79cfb69151c776950891a276c0c618029fe00821953"
  ],
  "canon:patches/factory-drums-metal.json": [
   "93823bdcc8922d8bbda1343f487f114a34e7aab89fc1ebf7d87ff4a3495e2278",
   "a87f973ff8599d0ebabfb3aa600313b3258d590cf42204b1dc663b3a85adbb35",
   "347ce2a6f8507577a867e61b522c41faa192715a413c32e75b4144a3946f9fc8",
-  "b4ab128c759c3d134344ec43d96f71131b4f6166be367c9b3dbb89a896f9d567"
+  "b4ab128c759c3d134344ec43d96f71131b4f6166be367c9b3dbb89a896f9d567",
+  "3a7e6b61024ad1e796d8b9b12e44e8479882a1c400c284e09e731e98764d4bb9"
  ],
  "canon:patches/factory-drums-studio-rock.json": [
   "123c57a90d3e8b73b3bae6f06b2c40d516720564728189c81f164dbcfb8abbf6",
   "4643124f6003f2d0d6653e6763c28725aa63f413cc8f0e649d79f78a11506cbd",
   "0851acf99f7d7c4f446fca9f6f3200538d86e3e4c5dea42e84b48c02692d6bb0",
   "5183a4850b9f331303a0aacd677b49c6c6b18c26793c41ee1143496006028ca9",
-  "63966934225c31f4725caed26a2028fa08152af7bbb936ebb6e8201a0ef3bf81"
+  "63966934225c31f4725caed26a2028fa08152af7bbb936ebb6e8201a0ef3bf81",
+  "488c960a1160e2797f108f34ca82e51b1648e8223516859ef26f7d4fdc12643e"
+ ],
+ "canon:patches/factory-drums-vintage-rock.json": [
+  "67e0970f2529c8ae09872b7b6ef5b0ed50c50b9230f75368dbce5b91bb0d93e9"
  ],
  "canon:patches/factory-guitar-ambient-djent.json": [
   "be3371d80e1685f0dab0fcf3c4c62017d5f1bedb70030ba398000e024625a63f",
-  "776dace3660a70869fe83a4b44f463df9a4f43fe8e9a95babe33c7485e9204db"
+  "776dace3660a70869fe83a4b44f463df9a4f43fe8e9a95babe33c7485e9204db",
+  "086cc1f4cd9082df4fd06c18fe608b21c61e5f32d7279aca961859ee02b65cfa"
  ],
  "canon:patches/factory-guitar-british-crunch.json": [
   "d5dc55f9477998c1c9687f9c48eb202e90c5699051d547d615a9b2c7dd3191b9",
@@ -91,11 +129,21 @@
   "493905b06ab3adf13917feadd3e47381885c1bffd3e122306b78682c756573d9",
   "98e5ee74668f155d538850ef2ba57579a466419ee47dcd808a5171e326f8c5ae"
  ],
+ "canon:patches/factory-guitar-eight-string-nu.json": [
+  "65150ed6fab7cad321d88ba32b7de18b00abe1c0a947577474f369779c19726e"
+ ],
  "canon:patches/factory-guitar-funk-clean.json": [
   "03599a8046d91df829c6a9fdb19198cd70652a6f0cb62f1b796b765f7864d595",
   "30ac9ff534c34edfa5c4c664970c54ededaaabca689b5187c1d80e5bb313a6e2",
   "3093e4713a1788cb52682b20d8ad23b4ae1b9a115f98e6e029f56762f26abac6",
-  "b730244296b80242deadb20117590e0f0a2a12238920742a94910abf01d78b7c"
+  "b730244296b80242deadb20117590e0f0a2a12238920742a94910abf01d78b7c",
+  "88aafe0f3e1157416c18045d5726819d8db27046c6fbe47fd5643020b6eff0f4"
+ ],
+ "canon:patches/factory-guitar-funk-drive.json": [
+  "5610a271aca15d24803f7ea6ec3861feef9e520dff0299268ef492f5f7d10c0d"
+ ],
+ "canon:patches/factory-guitar-fuzz-grunge.json": [
+  "3e25f39caa882605fcbffa1f909140d2a2c9aa1532fe17b280a3e3fa9baa6f0f"
  ],
  "canon:patches/factory-guitar-fuzz-wall.json": [
   "3794658508310a7d20c90d49f9a1aa23cec264d0a66450f66cc8552bf21b5032",
@@ -105,6 +153,12 @@
   "2378fe4b84a042d8cd0658880c3cba2f2e04da63afffdb1dc4a869a673aaf715",
   "bac03c7be3b340e4dcc00519535ac6e591f8a3a4b81687d4fd191365941e4fe7"
  ],
+ "canon:patches/factory-guitar-glass-ambient.json": [
+  "09aaba69909c07f36a3be84c90035f66b3016148d5bd7f2f2f94462eb419cd1d"
+ ],
+ "canon:patches/factory-guitar-groove-metal.json": [
+  "b356a4821d15b6522612ee57769a46c1b4b321ff217de65a7d9387888c569482"
+ ],
  "canon:patches/factory-guitar-gypsy-lead.json": [
   "dafb5b69a1e46312165cb8ab696ca3e53d2c0ed5814a956c9cb6a7c8b1e1453d",
   "c9b0dbfc56132469826658c1122e9c268fe145726573633193668af5a3b79049",
@@ -113,7 +167,8 @@
  "canon:patches/factory-guitar-hero-lead.json": [
   "ae75d828d02ec17581c9570e88b4e2a5df4b44e85ae820713de5c33e7b7e5798",
   "50547d88e420a705ba917a84cc858b26821b4c95e0a412e21397c9a4ee3ebcc8",
-  "35fc560b4db189590b7c257203be975266c58bcec5d75207a38530e4ba457e16"
+  "35fc560b4db189590b7c257203be975266c58bcec5d75207a38530e4ba457e16",
+  "ec89201581be12346b366ef6651cdb2783db9e2035315985fc311f1fd30fefef"
  ],
  "canon:patches/factory-guitar-indie-chime.json": [
   "1479d59d5e42c73e96bcf6c4da9a09c1842e74fd78d0e07c090519db82ca143f",
@@ -121,6 +176,9 @@
   "07583b4458c77be13bf93ff701e477d6cd6f6530ffc1e12d610d34cb560fdf4e",
   "033b4ef077a1f26b98b61ce4abf449074b8025752ad4d63d24044a8ed4b3d14e",
   "7e93b6a326ca171da65dad3a44ee63055dd179fe2ddf64923ff72e626879cbc0"
+ ],
+ "canon:patches/factory-guitar-jazz-box.json": [
+  "82ce8f0d970f2ef6e086bfe18ba00ac11ecc46129851a3878fc07a09fcb6648c"
  ],
  "canon:patches/factory-guitar-jazz-clean.json": [
   "6548f6bbd2379377cd812de31c2b2663789b4a9994dcbe525a6cd76237746b63",
@@ -130,6 +188,9 @@
   "23a6ee2c53f8257c67f33fd705d5bd1cffe731522efdcaf04ec0323506ce9c51",
   "d0dbea5a5ac05583079dd4d7cf94e96bd2f55b8257efc8b3c2213deec073e42f"
  ],
+ "canon:patches/factory-guitar-loop-indie.json": [
+  "6057528c72aa1b37a1ad03500c39ece35c8c0eb6a5c960b460f59273556a5c5b"
+ ],
  "canon:patches/factory-guitar-modern-metal.json": [
   "5820a16e25bf61935e1e508b9cc150a73c6f36c28a1308974f863aaecfe40ce4",
   "1b1300d2d8affb86dfa1ce7e41bde15a9a2227473b3ccea468322bfe3459d68a",
@@ -137,6 +198,9 @@
   "06d3191501cfe0e155cdb95b3a86941c38d6630b89f9046101e45373130ce00d",
   "d4d2a6ff4c2a1b9e685c85b54049a133edbb6f75fe54ba1c3264140ab99a9f58",
   "fb5579811f3ca52428996f343c4773da08372788957519865be9778694694ae9"
+ ],
+ "canon:patches/factory-guitar-pop-chorus.json": [
+  "ab3f773a0d41e2c67921feba787c56f05ca9b12a4910a42e16342f0f458d5a33"
  ],
  "canon:patches/factory-guitar-singing-clean.json": [
   "32dcad69afc5e4a6b273c9b0b58632472ed54838c5ae69b6e52328f2d949b68d",
@@ -152,6 +216,9 @@
   "12ed1a1e875d51d3152d5db9ec1f09b464af4d2c25e9c264d007211a7b14f880",
   "4cd5c1eec9902ee2246950a0c712f4954a64ff3ec325815e18a7d350a8f0a165"
  ],
+ "canon:patches/factory-guitar-squeal-lead.json": [
+  "721cebc2b1df0ebd359e4935c4a9e89df95f9bdb796ac1e8900b9acefb474383"
+ ],
  "canon:patches/factory-guitar-texas-blues.json": [
   "b62882f0e57f4bef0bbce65e126a6c5f8641df479ddfe74aedec8bf2d369a6c3",
   "d12eebe86c03ed853a2d31e5638698a4a74ca9018aa73b48437ccd45773eb298",
@@ -159,6 +226,12 @@
   "410bb6bf658e422924e4a05de4f437ec5872f53f964992dafb7882b3a1f314dc",
   "c064271deaeff88c03d5add43a4706f21850d8092c09a7793db64d7989f62beb",
   "c96992a3a5972b1c26c95637f275e503a27dba35f15be2ab80808c9481740e2d"
+ ],
+ "canon:patches/factory-guitar-texas-shuffle.json": [
+  "08d4587f3b651dc01cbfba10f8488badfdccf2703c29ea1155bc05a22b66c795"
+ ],
+ "canon:patches/factory-guitar-wailing-blues.json": [
+  "7256e377527431a6cb58c94afe13698ed719c1fa759a31bad04e7303d868bf08"
  ],
  "canon:patches/factory-keys-80s-epiano.json": [
   "5a838c5345920500de1fbe1f3b09b7a9950737edde55c265d206d3e4cda037b3",
@@ -168,8 +241,15 @@
   "4d066ce3c7f3e3abd94e3caf26caf2bb8b5c14f5e556c91bf21b48c8ebc21240",
   "9c1fda263243d5eab551a65fd55665eee1696de3194f3e183b42687e9cb39197"
  ],
+ "canon:patches/factory-keys-blues-organ.json": [
+  "89c9195391558e34ed76a99cec1354720bc55d646fcd05b515541e3277fdb555"
+ ],
  "canon:patches/factory-keys-cathedral-piano.json": [
-  "38ba9860a550537f43b7e59e149c107b7f5897ba7a8c298ef7a0fe9799a9909e"
+  "38ba9860a550537f43b7e59e149c107b7f5897ba7a8c298ef7a0fe9799a9909e",
+  "f3487499684c2c5b73962156306e0b8453ddbfa1275c68b30fd1077bcd26cfac"
+ ],
+ "canon:patches/factory-keys-dark-pad.json": [
+  "d9d5f403cdfd75d96444e37ff844ba8bbb8debcd32978bf2f7d96cb6f74333b7"
  ],
  "canon:patches/factory-keys-electric-piano.json": [
   "6baee7bf7e08bc08738cb24fd5d229b97bfce686bc58a3aa7b5cdff27888188e",
@@ -178,13 +258,26 @@
   "2b9667f1a59dbdb9dd9d77c7c1f4ba3b1758ddc6f97474129ec142203cbe3136",
   "9d195b1fcc82f3b16777074277a9f1c318fda4d285f3747ada767372f2caf825"
  ],
+ "canon:patches/factory-keys-electro-pads.json": [
+  "76d028cfcab7ace7aef0019835fa83a33cf48b6b12bb0359f827b5c1838f9c16"
+ ],
+ "canon:patches/factory-keys-funk-clav.json": [
+  "9cf9bd5a969bdd831e253dd23f172b32e0edf0d447f9da931af6aeff8b3473d8"
+ ],
+ "canon:patches/factory-keys-glass-rhodes.json": [
+  "70118b51da3fe5ce51f5158c2856f450b6c550c0d2257a19efedf5b54e64abce"
+ ],
+ "canon:patches/factory-keys-hero-pad.json": [
+  "1eea9a962142d29a893077bdfa0fe2542c91d5d3d3e3694ff0cf7f86ce1d790a"
+ ],
  "canon:patches/factory-keys-jazz-piano.json": [
   "af64fa1ba3cf8a2acf1ea4dcc04540fb97cb0c27c43ff3166c37981a239d63c5",
   "c80b666d42e35b59f7a41010a9e568a66463a47d0aa30220553a2e435c354b08",
   "e15d4cba2305654e8128f62178d78f235bcbc697c7ee50c8cf5f085f492248c7",
   "ddb0dc55b341eef4f671e80c0052750b6c978b18a5905a791bf364f727b1a997",
   "4ec8b98a974aea6d1f472c2201cba3564a99294d12d1896afba1c6505a4e38f8",
-  "87d2ca4d812c6a9c5849a20dd38e8d18d07678ba32986dd0827e58d6e7e1d45e"
+  "87d2ca4d812c6a9c5849a20dd38e8d18d07678ba32986dd0827e58d6e7e1d45e",
+  "85bdcf4efc54ed482fe70d63346ec6c1609e025080607ce9d2c009c1b12efb4b"
  ],
  "canon:patches/factory-keys-loop-bass-beat.json": [
   "38c76558749c8be36c9031d0278534ad435e8213c1e3cee394ecbeb532fc8d48",
@@ -193,6 +286,15 @@
   "a9c7550a4193bf41d032502eb16dec2491865723296a85bfbe5ec5e2e30696f0",
   "2230006145a0186fbfba26d86d66f60186a8e6aff20ed77ff9f16f7e96371019"
  ],
+ "canon:patches/factory-keys-loop-synth.json": [
+  "8b6a894240b8c1d1609926c6d6163faa7e3ca5c729be8e6ef2cc83eb93070529"
+ ],
+ "canon:patches/factory-keys-nu-pad.json": [
+  "3c4a84ca47ce658b151810619bc290444026bee397959fd4afb93e4fe69c0e32"
+ ],
+ "canon:patches/factory-keys-pop-piano.json": [
+  "31730a430bc6c1f6bec587c61f302fbc4b5d4576dd8e98ac7fecffc0e25362cb"
+ ],
  "canon:patches/factory-keys-rock-organ.json": [
   "d4b791a190b9f82c5e37b45cf9b2b69bddf0c29819299902d00e3e0b5c0f5d0a",
   "7b92670ea89496cdfe2789b2dde6f85954a2ab5cbe6e3c2d36beb3d377e6e181",
@@ -200,6 +302,9 @@
   "a187a199501e65302262fcb20776c3f8e290bd1b477fa22bbb792aa9ae028060",
   "dc1afb9b341b70200ff2a81f8400cb72f958a27b3eca9758a974eaf4702c047e",
   "fd99462c5a96ee13a30ffd456927d603f0737f2f03cca05e1e53585481a860f3"
+ ],
+ "canon:patches/factory-keys-strings-wash.json": [
+  "27c1b082b58533f21020537237bad7f15b2ed563be436f3836be0b3f80cca041"
  ],
  "canon:patches/factory-keys-synth-lead.json": [
   "16312295c4bafef408757575daf37a2853aa0a1c3d2575d87a6498ea19429bd6",
@@ -214,6 +319,9 @@
   "d3f62ddcd0f38589d803caa808fd7e84124529bb3f0a02b410c6b8d00abc9652",
   "e460300b4dfb69bb71d1bd3f0e2ba6656e6a81cc3b76314c72feb54cc4f17c14"
  ],
+ "canon:patches/factory-voice-blues-shout.json": [
+  "335a4941ef303481a3e5d81cb2c871798224e2a52c91d764a5d28c69f9fe6587"
+ ],
  "canon:patches/factory-voice-clean.json": [
   "89f811c28fbc45d11b56d4292b880077d4cdb90ac3392cf4ad1b2e6bee189bec",
   "0dc3d5c42c11555c47169cf3496062de034f0957bd6188e561887b38f34216ad",
@@ -226,11 +334,28 @@
   "7c09fba0684f280594e1fa53762a5f5ec4ee53aecb50cef03ce1f34892b19b86",
   "9e0b5af028090689aade76165576ed1032b89210d8d659a8f08c37218c703cad",
   "eb1413d060ec4e28716911387d936b59bcacd2a318a8071c9797475448e1a1eb",
-  "e167b705a10668d388bf153abdd247f101dac64c143a3961752315cd11d43766"
+  "e167b705a10668d388bf153abdd247f101dac64c143a3961752315cd11d43766",
+  "ea8db77dd867465ee3faf92e1d490b11ade367e2fa1fe3ab3ddad08cad8558a3"
+ ],
+ "canon:patches/factory-voice-ethereal.json": [
+  "29d0f2d00dda34187e038f06745f9471731ba4f7b291a28272f005f982700488"
+ ],
+ "canon:patches/factory-voice-funk-rap.json": [
+  "cdbd05e7bee068f9b11626ddca77dcb520da383e31e3f3b7d1a112875c1b92e2"
+ ],
+ "canon:patches/factory-voice-grunge-raw.json": [
+  "88e328df39e3b66c9ab4bff14b062cfbced0c969e9790ab592891f704ab4f928"
  ],
  "canon:patches/factory-voice-halo.json": [
   "853d4752a780785dbb72baa5d2fdedddb5c9d6ef2def25845e0093c22fb38941",
-  "788192ebd61bc82bba306c5443f07b5dff7cef701bc7838d298a291cb6efd1e7"
+  "788192ebd61bc82bba306c5443f07b5dff7cef701bc7838d298a291cb6efd1e7",
+  "2dbee5f228ee4161bbf7e1db7237b969f6f995d3f424defde6fe765d12efed81"
+ ],
+ "canon:patches/factory-voice-indie-double.json": [
+  "24b970e54ffb5c9711686f12e1122db33e22dddfd62373a1f5fba8cd49799698"
+ ],
+ "canon:patches/factory-voice-metal-scream.json": [
+  "efde65e2919434251eea5fc2e65df28811332cff2fafba30332412cae8db1e86"
  ],
  "canon:patches/factory-voice-metal.json": [
   "0114af9fccfcd2de5cec17f12a73c2e07062f0f6e4a20bb8a71a16fa54d00719",
@@ -244,7 +369,8 @@
   "7a02795d3fa3364f4b880a942981c3df4743499f609a509f603c3be424de165c",
   "320ae2b60755d649e524944dd87a2fd8c93b249e453b83f7c92e72ba822ae229",
   "9e461f14fd00174b5462d061567dcf39c95822c5e6f4d0dcc4af19b368a6dda2",
-  "8f889fc8bf8551bb1980cbcb7a999d4dd8cda8ccfbe9fd4797e852e7f199c910"
+  "8f889fc8bf8551bb1980cbcb7a999d4dd8cda8ccfbe9fd4797e852e7f199c910",
+  "60aedc20534fc162ec1cb8ae16a0fd31e827527d91f80f58ff3f618ded586fb3"
  ],
  "canon:patches/factory-voice-rock.json": [
   "1ea744a38e4b2c0fe1da752c79882a7092377a9c47cb3a2903e133cd7f0ff5c7",
@@ -253,6 +379,9 @@
   "6cec96522f3e1911b51ff549deb2887410744f999d5b06eee1f33ddd7bc961f0",
   "c00a2cf2578bcba633d42152207767d33e7a589ae5c69a4b3d3e6ace24e1a4c3"
  ],
+ "canon:patches/factory-voice-whisper-scream.json": [
+  "6693f62d786176610c047e1412380ba7b50e27b39e4576ca780674a57d7abe03"
+ ],
  "canon:presets/factory-alt-rock.json": [
   "69ca11dfcb70eab3beec08b126beca589cc074864bc49c55235610e1886371f4",
   "ff70a5bf221cae67ceb3f87a0e0c72926895fddedac81561224807ee1ff42b9e",
@@ -260,10 +389,19 @@
   "80a19ec0145c86b9b2b79904fa8b6e6308e6d2fef1436691b44c02ba2fe0797d",
   "b9a9c77c930826deed439e8885f87b9c4fddbcad5015e4351c76e5af38953291"
  ],
+ "canon:presets/factory-ambient-djent.json": [
+  "fc6e9d9900a681ca363b058392ed9aa1daa61b2bbb8f8b86029ce4152abd5e07"
+ ],
  "canon:presets/factory-ambient-metal.json": [
   "20bb7c916bf54213ee591840c86ae7e0f1e0bd1cb888beb1b6e0397c6a649257",
   "c98b95421e86cc49a13eafd283deddf43a9df088c8fd9eec419580ddd72919d3",
   "7307155dbd2fba1c34f30a01b10b24da776c6b2bb468118e374ca783698ff78d"
+ ],
+ "canon:presets/factory-bass-lab.json": [
+  "7eef9427212f1d9f7ba24f98bbabdd3ac3d1c272a1993aded82995594519f393"
+ ],
+ "canon:presets/factory-blues-ballad.json": [
+  "d71d9cfdc11ee5b952e97621c499c5cb2d24ec4084fd0ec251f9762652220341"
  ],
  "canon:presets/factory-blues-night.json": [
   "63aa527bfca7055cb7a85c3c90adad716c23147df7623ea89e9f73b655c6f00c",
@@ -279,6 +417,9 @@
   "c8463be3d2f0eb4f0319302f06c521239631ddcbf5827ca068ec06431c00be02",
   "e24a4f16a249cdc815d085895a75dd9aa2e47e74dfe76d827d9e65bbbda5f157"
  ],
+ "canon:presets/factory-funk-rock.json": [
+  "01d521fc547e84f302e155b5ba75db1fb34340e8490b9437a1d630805d4229a7"
+ ],
  "canon:presets/factory-funk-session.json": [
   "34c756ed127da89f918de808b717701cd577a10a7d2821230fcf97fb407e51b6",
   "7e2988f2a34406b003687fdd58a7b86b86d203dd99eeb794634566d86d59a217",
@@ -287,11 +428,29 @@
   "aaf3b3162ece9775c01b898feb13d43f65b1acaa4ec9c9e73d9bfb931f00a91a",
   "4b79ea56ec5e6b600fbcf93f9a7e9f4db717b9bbdf8cfe19c7d42489081e1a52"
  ],
+ "canon:presets/factory-fuzz-grunge.json": [
+  "4003752996279a0daea25603f920e83bc605c3a7abccd7e66d4487916791c74e"
+ ],
+ "canon:presets/factory-glass-ambient.json": [
+  "78bc418e909df087f0b155f1df82c00427ee76eacad727542430b10095a54e50"
+ ],
+ "canon:presets/factory-groove-metal.json": [
+  "ec3741c7c5d09cf0cc0098d7b0f00ede9c76c653fbfa23f55e933bf1233909f6"
+ ],
+ "canon:presets/factory-hero-instrumental.json": [
+  "79a07dbf0ca497406ebca65a1bbe2da2612d7f863c117d2d38bb04aaff191e8b"
+ ],
  "canon:presets/factory-indie-pop.json": [
   "e707677aa9b7d24bd6152dfd26721102ccb27561ed97fcf2c5a1b38f8d6afbcb",
   "31773ada8a75c1e71a50e16a41391a626881844c5a8159a0d9d0f9b43b10e4fb",
   "e9fc5cadd5f16c73040b9392cd89f3059c107af82ee4f30d2a42aef363d28dca",
   "b9ed08c324b2c4135967f29464af996ec419f177abbcc0e8df049f155993d898"
+ ],
+ "canon:presets/factory-jazz-club.json": [
+  "482169260ee55641b5cfbf98a28020b6d90823c81cbdfe26d46f0fb1f6bfa0d3"
+ ],
+ "canon:presets/factory-loop-indie.json": [
+  "bf64c2f7c3498d5959dd68b50b3952d39cd55b84a4a425120434ca5be83ab55b"
  ],
  "canon:presets/factory-loop-station.json": [
   "c27d296fd6c8cb2abbda6b9cb68f2baa1ed75672c6f72cea3a4196c1fba8ce69",
@@ -312,36 +471,51 @@
   "ab6249f10a2100e606b6b4abe8bdc915136c540a73c35e201b495e45b0dbf2aa",
   "2d3df07acf37e32c7aabba77f441cfcb6ee15f61855ff19d1edff4f3b9d3b4d2"
  ],
+ "canon:presets/factory-nu-metal-eight.json": [
+  "5ebad70c75b756aef3fcf8ac7ae3303e84452028cdfc074b548fbf5066395667"
+ ],
+ "canon:presets/factory-pop-rock.json": [
+  "eb67db652c1272ee07e6a4188c2ecfa7d9b00c1b7c9b433a2a3e3bc6b37b8a79"
+ ],
  "canon:presets/factory-rock-classics.json": [
   "00d2622cf66737c9d70659178aadda6ca29d83bee83b9072e73f64640d04ea40",
   "928e4a5b4982f1580971625eea1b31e47b4de7dfe41bde8490352f6a8495e6a2",
   "47ede86799e38ae2c0e3e7e4ab95db65029d9519f350e2c4adc65837117ad328",
   "ce5084bbcec7b0871882db8a6dc57e7e32f9db62b30e6773beb7b3617ee27e09"
  ],
+ "canon:presets/factory-texas-blues.json": [
+  "7f15c694646e33e055a5f33d1447b46c4467018a7d32b72999b7a31b2eb4d369"
+ ],
  "canon:setlists/factory-bass.json": [
   "4694c9251867fa7cb5c5aac2779e1e19dfdc1b19af16c159974d1b14fe72421a",
-  "9a1de2e54951b7873074ba95f6fa637edca35ff4a6318dfdf786487de59056fb"
+  "9a1de2e54951b7873074ba95f6fa637edca35ff4a6318dfdf786487de59056fb",
+  "4b77b62c09a6a5d6c2cd5ef4afc0cc40fa200e397aa45a96f3d37371e4e31a60"
  ],
  "canon:setlists/factory-drums.json": [
-  "cb7f8f745323578177cf14f2455ccc499c4a51039e71b00d802b354ea50a41ed"
+  "cb7f8f745323578177cf14f2455ccc499c4a51039e71b00d802b354ea50a41ed",
+  "879b007b3c6893098b53ecb97abc95d76d8688f6fcc63c1b3ed3d7eaa60bd4d5"
  ],
  "canon:setlists/factory-guitar.json": [
   "72cc18bc4b2dfd628c0581e2de403670f84dfd7f19e6b43751b3b38db7954d0f",
   "bf5708290b0fc5f6342f4db31993677ab262f84b0d1da821686894675a42726e",
-  "49e40701b134b4b32e64d9b9d6985e215da234ec80eb0798ac16d0c05ec18fbd"
+  "49e40701b134b4b32e64d9b9d6985e215da234ec80eb0798ac16d0c05ec18fbd",
+  "15730935a0f53470b6b5993dfd5fb9578ac25f7176eba17c56922f588339bf4f"
  ],
  "canon:setlists/factory-keys.json": [
   "808874d00b1eb58ee211ab440d90c9c45a0f411366b71c886abeabb0c376e375",
-  "33462ec89e5e29c3ccdac7c042ca01f2bb8afa076da5dc7cbdb997fa2cd7029a"
+  "33462ec89e5e29c3ccdac7c042ca01f2bb8afa076da5dc7cbdb997fa2cd7029a",
+  "e57f3fd4d87074e92143f2e54807903a5a90b9715a38bf1a96b4c8e65be907a6"
  ],
  "canon:setlists/factory-voice.json": [
   "8738cf0fa74df934ed2a6700412450828a14b1785fb07701e1e657b7d097f76b",
-  "f7d0bedc0c1b01016661af32ddef0af3ee23c3ea8790ac8c8d54595b070f0160"
+  "f7d0bedc0c1b01016661af32ddef0af3ee23c3ea8790ac8c8d54595b070f0160",
+  "14b5cd9cd9c9cc28cb0a6ba26376e1fd3029a0e5184896dadd643e30c58fd3d8"
  ],
  "canon:setlists/factory.json": [
   "3a27b7a3afb5950acc85d6172ad46e9adc2d8f3df7edbf3472a30f9310faf1b7",
   "c7363a06d7243ae7c34d31235a0cba08a0fd6740c028cd03814264ae46138b21",
-  "33972cca6614d79e6dda9b5455c0bccfb04229a15f086c6b735fceefa508e460"
+  "33972cca6614d79e6dda9b5455c0bccfb04229a15f086c6b735fceefa508e460",
+  "d7682caa587dcf101636cbbb15e48627c8f0702c10df9bcd2b1376ccd1616fec"
  ],
  "dx7/synprezfm-02.syx": [
   "4f34bb8cf79309e8befd570f6ec910c97ebc4973e7264c83e8dbf02acad9e75e"
@@ -428,6 +602,9 @@
   "9ae552942ec1e0d1a6cc2cdc4d761b84b5c54633206dd7ab9ecb9ebdb7f11cf7",
   "b9e68a75c29d6c5801952836e3be8f930ca18ba2ccffcec5c39395a51e02d409"
  ],
+ "patches/factory-bass-blues-round.json": [
+  "fcd40496ead82c1eb6b1a99134c6a1d69919aa635f64bcffe5d89598a8c610b0"
+ ],
  "patches/factory-bass-funk-slap.json": [
   "053caa779ae1be6ccdb476c77c6c1c9d713c7c4b1d0c4fd7ead8ffb0acea715f",
   "10ba54f1f56eab6ab0f2f6e5dfb8d2dae9a835e6fa433f216d7947402fff870b",
@@ -435,7 +612,11 @@
   "7ae8da718e9a66e84a4f85310be1efe5000efbfc8afd64c85d2fc00d9f40e4d5",
   "9b23e5fdf89eafdaa05e8bb2975ee0cf67595cf49d68c2d124d9162531d65b5e",
   "02543394218a8d237f3597ce4947437b23533adb9b70f0d2727a067e42f0c972",
-  "f82b20852226dd07352780bf43f7525ab2082c7332be81bb79c3531dcb499f5b"
+  "f82b20852226dd07352780bf43f7525ab2082c7332be81bb79c3531dcb499f5b",
+  "ae1d0ae574c118275a18d713f25654e4a6091e790eb73569995280b703e92472"
+ ],
+ "patches/factory-bass-fuzz.json": [
+  "f68402c44dfb2ccbdf41d1c96c65c56213b1317a0cad92a139e714762ce41102"
  ],
  "patches/factory-bass-jazz-warm.json": [
   "b97955e139be8151116ecc9656db0a8b5b3a66402c7c5ba0fad153e108117879",
@@ -447,6 +628,12 @@
   "6e859ae412e914c2d45fa46f03b807923a68beb3465b5121e59656c31508d656",
   "769bfd178d60a0bd7e98bd2f4b9bc44802b345ac5c2e863262c2cfec4a52dc84"
  ],
+ "patches/factory-bass-lab.json": [
+  "0e37f353c7fc0945ab616c364aaa98bed0f85d671acdfdc12a389a255da1f432"
+ ],
+ "patches/factory-bass-metal-grind.json": [
+  "677afd07d1fa352d1ebf2270082c119f329feb0ed2863876921f478051cd2ba9"
+ ],
  "patches/factory-bass-metal.json": [
   "6ca17b86e2ef58e5a13ccb49dd9a180cdf41e08f42f3ed134320322be576303b",
   "42c57a5c6be3f05493b085cedaf6cbae0f89193c61f7ae10773df213dabdfdb5",
@@ -455,11 +642,23 @@
   "d7bbdc0c1bb7a3c3808a21e4aa75b9b0bddc9cae0770692a6d8d451709f94f1a",
   "55330ea30acf8b411861be09639dfb8425b0bb91646f15cf9e5e3d48fcaef5ab"
  ],
+ "patches/factory-bass-nu-low.json": [
+  "d9ca3996717eca2903df84328570f7ab29790f4f407face6602420563aeb7613"
+ ],
+ "patches/factory-bass-pop-pick.json": [
+  "b19488f7217ffa761fc7fdf02ada4194d75c7ba5d2ab3533bf680375946c11af"
+ ],
+ "patches/factory-bass-prog-biamp.json": [
+  "a69fdb5d78b5004061cb9a2c6047a81e17d8cf59297129570b179dfb7f1be77e"
+ ],
  "patches/factory-bass-rock-grind.json": [
   "0214e6f6eb029dd01ede67b587f68f0ec193ebd05cfcd002c1210ececbb872d7",
   "17e7c34e830b9a6696675746f0939014093cce156c7d141bf6bdcd91e8c3af21",
   "3cedaccbea14d4cd4889ff2bc24e75680755dc9956920782bd84cb903f16b815",
   "13cf128888d1168fa40291ee2fad4f5857f883f378bfe66165bdbd670763c8e5"
+ ],
+ "patches/factory-bass-synth-ambient.json": [
+  "b8aa3344d2dacccf616226494c7b6dd4887261dcf702059efbde3c8b4988fa17"
  ],
  "patches/factory-bass-synth.json": [
   "bad124fcbf72549205446e5f419093ae5401cbc5de78f2e53294fd69ded38c8f",
@@ -469,6 +668,9 @@
   "e3dc74570f6610b8a26b4dcc9ccdeababa7fed6125a802eb79971b2ea63a2f28",
   "9f10c441d4b3172b0361b2dd96441e5f37ba65cb399462f131c01ed62e0d2c82",
   "c2a4d57a7dc8faa3c0bfde767aeda7367199306744bbf2e28c5e44206ad33bb1"
+ ],
+ "patches/factory-bass-upright-jazz.json": [
+  "b2e1f53b6b3182faab0ca41fb1dbf69f9ae4059a99c49c6ae64b49813e61160d"
  ],
  "patches/factory-bass-vintage-round.json": [
   "d2ec89b2b67f57a142c731c3f78ba1ca1bad177ed3642909d275e2558e266f38",
@@ -490,14 +692,19 @@
   "bcf6f041ff7b9eae94a3dd77b156d214825fdfc8c7a8caaa969e897db722b2b0",
   "fd3643e123728bff16945513325e062dee097e784c3d2b3b683c21331ec36cce",
   "b751b49e5ca4c9b84fb505f8e193f6317aa7bb7ef63f3b9039945487632b81b8",
-  "9e52027e510b0c6e118a81703124445558a58deabb9b146ce63bb0b086237647"
+  "9e52027e510b0c6e118a81703124445558a58deabb9b146ce63bb0b086237647",
+  "666933f1c92cad936375ab7d9cb609dd3abb6ec4d29a65905891b20e97dde9ec"
+ ],
+ "patches/factory-drums-lofi.json": [
+  "0277b2de55e067374d511e6a429e309548961e35e1ff8895ac6e0fadd048863b"
  ],
  "patches/factory-drums-metal.json": [
   "cf466013d4770c143e231ef256fd4e3f0c11c2a5c9e1d9d0cc0fbdba48f0d4f3",
   "3670d2c4adc6956c490c4be1735521824d0bc2b81362bf56cd96b1e814686ccf",
   "eccfddd22092c9d1caf3f45622abb84cd14760de6d278129c8baec21807b9ffa",
   "7b18ed57721c948f079c33706dc7e199ce8e87c64880501f6fd3e29ce211c0f4",
-  "ccad53b940a91a3b5bde1135073484dc8fc9d3fb17032a41c9ed9556e8eacdbe"
+  "ccad53b940a91a3b5bde1135073484dc8fc9d3fb17032a41c9ed9556e8eacdbe",
+  "8fea866ccae2ba46dba2f4bab7a3190c7f54210abf83d58c4cfbbd1e6570701d"
  ],
  "patches/factory-drums-studio-rock.json": [
   "d204d94dfdde214316426ae7ce9cab3c1a57d2e4999039910e25e35193dc6b73",
@@ -505,11 +712,16 @@
   "49e32bceffdbffbf6112bddf5f49a4bf5bf01aae675a3d0cb71e92af0872a896",
   "ae7a5bc1ecb51b6fe1a29f0a9288a07cd1cc5a2243deeefb994fbd87c5d1cc68",
   "39dfe82a6098b049816d3e9c9995334833cc8e652a7945fec6011ea4ece06323",
-  "d4a12703e5d77ea5044f8220c17c445c7f8b0655ed65ddec1f45f9bad391e694"
+  "d4a12703e5d77ea5044f8220c17c445c7f8b0655ed65ddec1f45f9bad391e694",
+  "a07e1d7f76a4e9e5714f4822b60913c809ddcee739d0a8ec7751015efcae246c"
+ ],
+ "patches/factory-drums-vintage-rock.json": [
+  "9fe933cd66c08e3fde9d98155ebf6f6e9dfadf812d48fb60953affe2592e3e31"
  ],
  "patches/factory-guitar-ambient-djent.json": [
   "a3effdadc8ba0c42ebd15c8d62fdc1c7e48ba04ba499f68590470e0c300c1107",
-  "69d13cc0aadcca1fe791ac32b4427e5d58c37e9563e752106aa5cf057e6d1e51"
+  "69d13cc0aadcca1fe791ac32b4427e5d58c37e9563e752106aa5cf057e6d1e51",
+  "50d47fffc4d83e7aadc3306058b6e311b546b1f2531519b626ee1a67d3255e6a"
  ],
  "patches/factory-guitar-british-crunch.json": [
   "8892b479061025a9f5948772d2f7a0219e11967dcb894d80f35498a786de8f2d",
@@ -529,6 +741,9 @@
   "39ac6165d668e5fbb927fa52e96f946e7f15fa93a1be95e35c99512eb5d57f68",
   "17dd55da06c04a585b3709591a6222eb2acfb03a30ed3b32dd65ecbee219c5b1"
  ],
+ "patches/factory-guitar-eight-string-nu.json": [
+  "1561b146777edb60f0469e0b806c65228f1d20c6c7586871e27746fd834757a9"
+ ],
  "patches/factory-guitar-funk-clean.json": [
   "c2e28fc1e720a741adb59205a5b0cfdfcc08b1036290dd52da4d68b2a1ef1aff",
   "38e259258f12e1f1e822e7d2c469b7ba8574a7c19357affcbc1e56ca9bf838d0",
@@ -536,7 +751,14 @@
   "b0fe2f059d5009644a353eab2243121a108012f384515d4ef8321d4be1f95a3d",
   "cd9bf470bb0fdf23f23f0949f8da2ee160621e9480b08d78f9edfabffa0eac6d",
   "76c7b8743c99f85ca9fcef3529efa72da667808e35c64ce1f24794507170bf19",
-  "5ec3c6dfd1b409672bd826faf8e7015366f2666cda18123fc13f95f05387b9d2"
+  "5ec3c6dfd1b409672bd826faf8e7015366f2666cda18123fc13f95f05387b9d2",
+  "14e08b2fcc32001582f9b98c3df373dc9cddc862cf8eb52557cce49e0db5781b"
+ ],
+ "patches/factory-guitar-funk-drive.json": [
+  "d80670b4c16821d2f817d1edf2c90bce7e203d7ff99e5155feab059251413c9d"
+ ],
+ "patches/factory-guitar-fuzz-grunge.json": [
+  "19cd1269dfae286f7fdc12cfb82bb21774d0b4c722a35e16e520dd0a299599ce"
  ],
  "patches/factory-guitar-fuzz-wall.json": [
   "321c3c3ca69ed345499c34bd067ad6506bd7fd9138fcc2da7fad25a9a45551ad",
@@ -547,6 +769,12 @@
   "b4074bf2758e4101f4e38b7c495e69717b1473f9d520cac871e4b103019f958f",
   "afb328bb536712297d68d377ffdabfa46a9062dd3f5750033f6b15cdd8e42b96"
  ],
+ "patches/factory-guitar-glass-ambient.json": [
+  "0bc1b7ab28fbfb9fe9f4278d588b83f6d9c0f1e58bdc6aeff77b572f9b68feba"
+ ],
+ "patches/factory-guitar-groove-metal.json": [
+  "4e5956cf74ddea527c51e2d53ea1e61233bfce3726023c369661092c64061f86"
+ ],
  "patches/factory-guitar-gypsy-lead.json": [
   "5189c004b93a884d907edb1024961b001eaf7255193270bf6b910582e264621d",
   "2a05b275c2cecc85c676a25d36c14b31631fa3afa08009b61d727d58204f098e",
@@ -555,7 +783,8 @@
  "patches/factory-guitar-hero-lead.json": [
   "87197aba028c17323f409c52d10fc21f03945a10271b1820e413677ca22b1680",
   "e3a974bce71ee45602f2a9414de9ba40e7602e4732fc5ca79bea1409c8622c44",
-  "6dfff9f7cc18d519421e2fb296642c70af18469e97a32c8a6696c6ad62307bd6"
+  "6dfff9f7cc18d519421e2fb296642c70af18469e97a32c8a6696c6ad62307bd6",
+  "7b6c5627be52e0e31b525f6b0049ef414d6f59af9613cc0c5c1c83110d9f9dcf"
  ],
  "patches/factory-guitar-indie-chime.json": [
   "902b47b993ed0f909006d34ff4b31776f07f4220872728e31ca57cea0ed6c708",
@@ -567,6 +796,9 @@
   "98a6cf5388e9244aef203cfacbea0cc456ad350f60c8c4dd28611a4eb477be3b",
   "7935a98fd3b7ac328f098167e1429b1bb0a829bd6c9f8d3b98b3df477474b47a"
  ],
+ "patches/factory-guitar-jazz-box.json": [
+  "6212d62add9c6abaf71521cc89ecd3d7088ae764648901ab7650ab1d307ffc24"
+ ],
  "patches/factory-guitar-jazz-clean.json": [
   "df9cba3f098b334e229912cd9c188d37e12dfc47d9d81c37390f25f640838ec3",
   "9ffc1e0a4a306726bf0fb4734de9eb7bee855b21f04ec21e63be2dc0a4e662b5",
@@ -577,6 +809,9 @@
   "6c31f420357d1f96ce59372dffb5b1352446932bdd94d11fef0e746877801132",
   "f18c8a6232686e1a7dea8677ab4f8f03eafe2d21ce09a9fa72e6709ccd6afd04"
  ],
+ "patches/factory-guitar-loop-indie.json": [
+  "9213801ead53cec4c6098a8ba34a47d198ad42388497a9647842d66f1efae4e3"
+ ],
  "patches/factory-guitar-modern-metal.json": [
   "9a437961374dc8b0349c567fe1ac1dd278804e3d831b1785d8c87c9184f30cc4",
   "f6ea87cc12da12e2b4ffd923ab11c6611db10ac67340f98c63188a933ddecdec",
@@ -586,6 +821,9 @@
   "5ca2c37d505e2da0d08ea0b1ea2ae9212dd6ba9516229590a84946362afb7d45",
   "5adf888774ea32343e1bd0a4ae81948e32746c167fb23d77b37027dcdf81a3c1",
   "12711dcec6cbb1bb25b54b6c0c49eeb9488548b2085c1622a36202d490f9c403"
+ ],
+ "patches/factory-guitar-pop-chorus.json": [
+  "9ca78c4e5ec2b850e0ab0deb9315ae04e82f3d15c81548c0e637ed8bae65fb1c"
  ],
  "patches/factory-guitar-singing-clean.json": [
   "4c18cb91712ef212ddc339d4f058b75bdd768717dee651995aaa0fbcb2b8246f",
@@ -601,6 +839,9 @@
   "a951068298dfe5ccb285dc9ef56f05927ddd503edb6876ec0cdc8f0d9aa666e3",
   "28409822d30b9a5859c7871bd8111749d0cbba12044237321cb4a4660e40612e"
  ],
+ "patches/factory-guitar-squeal-lead.json": [
+  "93cbd0eedf73bd776ceefc214f9b9cb92cd711236864984953ab9e398d89a6ec"
+ ],
  "patches/factory-guitar-texas-blues.json": [
   "ba2fb93077230d8b0e7b88de9263bdab53f9e382b04bb7eecb798586634a6940",
   "f64ea179fb266bd5d6dbc322f1b70cb1d87c16a636e1fd6863357989eaea825c",
@@ -611,6 +852,12 @@
   "d6ec29dc5afa2c5a2b57ccdcdb04a7976b1fa2a1b7f6f2ab77606e80200a3ea5",
   "e7c84f5fbf1f5a038be79d35c070fc6e757bfc665d65a8d4bf88d12f75558e21"
  ],
+ "patches/factory-guitar-texas-shuffle.json": [
+  "c37d40760a554c6ee822e2370b3074af86e93175562047407ba2bc7a37e2f378"
+ ],
+ "patches/factory-guitar-wailing-blues.json": [
+  "52abe135f5076cb8bff637d9bbe8f149a0ae042635618fc648c03204f9ede7d4"
+ ],
  "patches/factory-keys-80s-epiano.json": [
   "c8c63d03c49fbcfba7d06f6d7eba5faf17bf778d706d907dba700fa8525ce4eb",
   "4320ece17122d6c5d61c160ee5f57797c785d24692a7459a7066d0a1d1507179",
@@ -619,8 +866,15 @@
   "4331cba32e24f5982b583133a3ee8f6c9181aa90f5b7203439e796d62897f7a0",
   "22e5914bc31ae69d1020b4e852243974ac5ed85ec76c582f8e4f6649a331a4a1"
  ],
+ "patches/factory-keys-blues-organ.json": [
+  "88a139cbe74ddb2bce2f5ecd8b57a30c085d9b4762cd1d2528cea7171721bac9"
+ ],
  "patches/factory-keys-cathedral-piano.json": [
-  "7ec3d0734304f2b9e3b0bfd8ea099a6bea1e40f344757133ff81c3991ace7f5e"
+  "7ec3d0734304f2b9e3b0bfd8ea099a6bea1e40f344757133ff81c3991ace7f5e",
+  "445320b427caafc7eb026005934eaf9d305d46b209e65c0af4f093e2ba11c20b"
+ ],
+ "patches/factory-keys-dark-pad.json": [
+  "b2d0c561677685c4dfcd92430bccd63238a839a9541d6876d558cefa91c90e17"
  ],
  "patches/factory-keys-electric-piano.json": [
   "2c6a786d275f899d7c2767b5b70773c005bc26b4c7d39291479a7212fda2b7f2",
@@ -631,13 +885,26 @@
   "6419088c62609dfe19908c9a7274b5b0416ba109be82bee6ffe09d6ff22760a7",
   "cfc6ce1c44442ce240ba544688d1cf6014af3c52fd6b3ee76a86e649f4614c61"
  ],
+ "patches/factory-keys-electro-pads.json": [
+  "353a61238c3e20658f2e13d97a5a3eb2e9fb043458345345f118d99e8e73e207"
+ ],
+ "patches/factory-keys-funk-clav.json": [
+  "ef1a51f69e39413f396caca8477fc3f70df9d30fd5795651278f659471e24107"
+ ],
+ "patches/factory-keys-glass-rhodes.json": [
+  "9624e8bb7916d08435f3eb43cd27453c33f51d1e4f8c787be5cee642e27b4ff5"
+ ],
+ "patches/factory-keys-hero-pad.json": [
+  "ca50ddfb5955c7e6da042e7ba6da8b0071bfeeb9c74273e26ee340f4548783ed"
+ ],
  "patches/factory-keys-jazz-piano.json": [
   "ac68051db360b688e46adb3f9f5c0d8a76a303c8e1db021400b04391d3fb282e",
   "e87df73736a06981681845bd2eecb63180f4986050677c32a4d2831f2e3d3c90",
   "371df1ef7be97408f94f92c98eb696e8e2a952bd55cec6d6a382615f7ba3a9e0",
   "e89aea418891b5449682dcc967a34856be5901ad73d4e113f4559e606a6a23fe",
   "831e1dd9afb489c73505cd228b0cb94ef774b1b7721219973175c7b741a0bf3a",
-  "a7f6f6911c8a6d7af1ec173c91675a1131fcd6be4bc3e46379270cf5dc806c29"
+  "a7f6f6911c8a6d7af1ec173c91675a1131fcd6be4bc3e46379270cf5dc806c29",
+  "a7139c006e807f25c83c8c668bc7299cc55385af0b17d8883b0f53c4b96e4590"
  ],
  "patches/factory-keys-loop-bass-beat.json": [
   "f8b1f02599f1670777d66bbeab0aa0d3eebdfbb7e2db597838b60f8fcd006eea",
@@ -648,6 +915,15 @@
   "7c5f1c52396c169515fede2f688f5e53e93ec0d652cee6ff007b591be0cbeea2",
   "e5beb8136d0ff89a744601c238034261abb9fe5832588c4efc279a8c94b57222"
  ],
+ "patches/factory-keys-loop-synth.json": [
+  "0ae8e282c7e5d86bfc921cdf919c2e1c8ecc5dba55b9debfcef26bc257fd1485"
+ ],
+ "patches/factory-keys-nu-pad.json": [
+  "bfda6791eaa26d9b76af01c49745594cef832d3d2e9fbf9e50030a66e5674720"
+ ],
+ "patches/factory-keys-pop-piano.json": [
+  "68cbd7df825502870490666d6f533e5c9dbcd40fbe3e240d0b1727138b684fd8"
+ ],
  "patches/factory-keys-rock-organ.json": [
   "38bd4be89500776cac5addb5db36a674d6e3b1ab6c56cf3ce5418b49e87aaa96",
   "de7e2465fcd700b40fb787000af1c43a2a4cdb0f6a8e27b439072bb40746c8c1",
@@ -656,6 +932,9 @@
   "02e4e46946298b42f0aab6af4ddf53f8964399d86a6339ddbdcfb0adb8879093",
   "df09ebf860182848b6b3d0f8c82c1ef8b25ff8aa17921cf6aed16bcfb232308d",
   "9efc9870783442a4d1e14659a3f91d4e647959bab2b137b16def688d2fd8655f"
+ ],
+ "patches/factory-keys-strings-wash.json": [
+  "28becb6ed86a06fb35e54125ca65209b4bd638a08df8288c6996bd2313e96051"
  ],
  "patches/factory-keys-synth-lead.json": [
   "914ee0e0e7f01096d115a55d9ad9e8f0be12a9936d6183bf09494860ffeb8013",
@@ -674,6 +953,9 @@
   "0fd6f2ae0b3220400386b077a9a6dcf0da01581ce47c49c4469daf77f46c9ea7",
   "a162da1567a9037c6fa6382f7399765f1549a02d9df7490bb2806c60f3d366ad"
  ],
+ "patches/factory-voice-blues-shout.json": [
+  "fa4e3f3ad05e4f416122f1443e9948af23dfe909232bd828bcd90cbfc6b0bbce"
+ ],
  "patches/factory-voice-clean.json": [
   "a377e791bf01f7da93f3ed1a3f1886741b4eea49c8b97daac4b349c69f1f403a",
   "ca9e903866ccf0c92bf46b02a586de4b755ee255d7b599d5ae6e08703f43f0ef",
@@ -689,11 +971,28 @@
   "0fae6ca577b614ba7881117b2e83887390fd97e18bc1bb9e6b7a90226d4fa186",
   "7dbf65abb27d5710b7bcfca3ff67f65a87783d2c2f10ea756fab5138314956cb",
   "289077d1d83abfbde2f0ec39c4e76fe0cb31b0ce4647b4aca77f1b750c9f0f28",
-  "e0efe454883f7471d187adc2e9db603c639046c1ee3be2903bd9876b217c8141"
+  "e0efe454883f7471d187adc2e9db603c639046c1ee3be2903bd9876b217c8141",
+  "f8697dbcc3f625d2fbb010ffc5c0835d80d4a4cd1df2273f354db1312aa78a23"
+ ],
+ "patches/factory-voice-ethereal.json": [
+  "7000a839c4bd0da4a237a5ca6e91fe084bba0d80ad00764431ccc509c71e257c"
+ ],
+ "patches/factory-voice-funk-rap.json": [
+  "62254221ad8075169d554466a08b297641d0e6c7e949ab49ca3ddb6e831ae0b7"
+ ],
+ "patches/factory-voice-grunge-raw.json": [
+  "99aab4f750bd91f0e4888aa98cef008be1679cd2f2279505e456793d5692c956"
  ],
  "patches/factory-voice-halo.json": [
   "16a8e7ed3090bce913c3b5d5d7ee92b1fbf293029d7c5655401046a588fa0589",
-  "b13c3b3ec8217959037d90c2995e64f94ad018ac8e549aae5c7af1b2e936d4ef"
+  "b13c3b3ec8217959037d90c2995e64f94ad018ac8e549aae5c7af1b2e936d4ef",
+  "4ac135a614edd887e8410b504f9e742e20b70ec1946d8b5e0a599a180717e81f"
+ ],
+ "patches/factory-voice-indie-double.json": [
+  "f29b5064ba6af89dbb46f74c4b4097a5e182f0a52548a98475ab070c7f74de2d"
+ ],
+ "patches/factory-voice-metal-scream.json": [
+  "0c8db61106e9f813f14926644a1de85950f909b0fa60b67e4506f3113d624ce6"
  ],
  "patches/factory-voice-metal.json": [
   "06681e4482aca11e7e5dc180548c59ab393c89196eda3b40ebb9bd265f0f7b3a",
@@ -709,7 +1008,8 @@
   "0afd98c18aac8412f7e801d75fd3f1268230c70cef29d99cfad19a961a74566e",
   "d381bfa43f063cfee256715cdcc7191e8f159e0c1b48fdfdd64dc7f8068c8d8e",
   "6d2c862cf46438c362f4dc04f7de1f13a63ef3c6a6f75457d343e65e3153354d",
-  "6a31fcd5af5e86b56e5b1a5c18e4bae2bb1b8845bd923ac55674efb92cf59c91"
+  "6a31fcd5af5e86b56e5b1a5c18e4bae2bb1b8845bd923ac55674efb92cf59c91",
+  "9b46a141b9f8d87f65f4d78e61d746e697b4edb21dda6300ac69f82175fc0459"
  ],
  "patches/factory-voice-rock.json": [
   "8a6a2d97075eced884325c8214b1b906e402b27b6bd351ca610aa318f31c38c7",
@@ -719,6 +1019,9 @@
   "a70b1cd892905a96d23a90ddc162ed108815258839d8bfb84d0f2075f351e8fd",
   "bf2185ea85a78b8eeb7c67ce8ec00f49349539637d77be067a8943833a688577"
  ],
+ "patches/factory-voice-whisper-scream.json": [
+  "f5615e2ad2c203ae883760611b25f6ced758b6d1baddc7a7ab92679e986e1831"
+ ],
  "presets/factory-alt-rock.json": [
   "4f4f9056a09f4b2c0a9d3f737e97f9b59765e387cb1348c6f3b92f2cb8bde3d1",
   "ccb056cbffbbe745c62e693548e47ad6bb23ed237d17a7dbb0302e29dcd9e518",
@@ -726,10 +1029,19 @@
   "5248cd9c638ad3bd0cbb3a13f8dfc2a6f0445fcd715e18f8a9050a38d25007aa",
   "67d603e354e5b842bb102109e4b9259f0711d3513eac6cc7109191e90aaf0fdc"
  ],
+ "presets/factory-ambient-djent.json": [
+  "ed9483427b32246ea2ba5a688aeab52e6ef32ef7159b74b9ec1deb58e7cbf55d"
+ ],
  "presets/factory-ambient-metal.json": [
   "5edf554f58b678b1069b2d23ea68b7713189245f3db1aec25e09b1b97979ba13",
   "02135d87d10fd964eb7a65c0154b569b0bd6c9b70d4aa7d10e1c01f0c70191a6",
   "80ff4a9d3127eb19d337258e4106680a8ae158f4c25633bbb05d8f95422d3661"
+ ],
+ "presets/factory-bass-lab.json": [
+  "94a3e3f63c7181d475693b9ff35395c45a2825bc2c7490d81cf3ac69a59ac31a"
+ ],
+ "presets/factory-blues-ballad.json": [
+  "addc2e82c3615ca0b2f1617409381c84f6e2c1abad4a1690b8a431231ab00753"
  ],
  "presets/factory-blues-night.json": [
   "94e064b8a32d5e4b076413259732ad86ca275373c92fbd70e7bd2f6680cd48c4",
@@ -745,6 +1057,9 @@
   "72c372d16a6dda632a7c114211f9ad140bf13a9e868266d93262d4d87fe7a25c",
   "d03b3c01f294b26bf9cec4f0fa5aa724d8fc91a330e0764854e07fae961c6955"
  ],
+ "presets/factory-funk-rock.json": [
+  "c8f27f45dc2270e12dad11f7567a9fc09d2eab4b3283cf5fe65853176fdb1617"
+ ],
  "presets/factory-funk-session.json": [
   "05ba27719b97d172eaefa79563d0c70a3a4515f3d4141a614e46febe0c37746a",
   "7dffcfb726d1906a13915ff3d3b1cfba4d75baa71143183281b52739a7aebf12",
@@ -753,12 +1068,30 @@
   "98f6f6b8f609c570333b2577facea6417213c9843e3ba2a1e534b4f0d59f71ef",
   "33eb94709c7fc8c817edd3767b68329c418e017728e3e0b2c30b2b523acb04fc"
  ],
+ "presets/factory-fuzz-grunge.json": [
+  "925499a158cc98af3e885692a4bfb069d2b8081b176a15365f71de27d1cce941"
+ ],
+ "presets/factory-glass-ambient.json": [
+  "1208b0bb77cec5c69ddb71657f0cd5d142b6f472e1d73c668529890d5faf4e0e"
+ ],
+ "presets/factory-groove-metal.json": [
+  "a0a9aaa17ef8e1a8909ce7c50c25f2652ed53a2e8621e1ccabb1d83584499a69"
+ ],
+ "presets/factory-hero-instrumental.json": [
+  "50ebcca8233f0922c72d991cf0ff926c3c61f7c649ffa943fb098e16f87526f7"
+ ],
  "presets/factory-indie-pop.json": [
   "5d60f87444c8b9ebaa636905d373901db5cbf6c55d5894ed35282ca37a4429ff",
   "3a584c0ab9ff475898aedb987aac9fc6ae2a9a1bd78740931e81cf896d3edcbf",
   "29e5669beef51c4a28534faa75f5872f7914455ddee0310991052a31c2060876",
   "94d31dae57c7a7cf638baba9043b9d6ebff8f306c7de0ed3d3f1407d6890a505",
   "bd9a9c704d39ea2cef767ed06e2c577f13c448d4f60e56ce8e69f074af82934c"
+ ],
+ "presets/factory-jazz-club.json": [
+  "f56b8b8dc4fec16bba6161722a38d0fb73453310531eaeaeef66a242e76694f0"
+ ],
+ "presets/factory-loop-indie.json": [
+  "cd3ef9f7ed323cbf4921504859b9f329977a9a2b4c01d4a028de9b6dd68b85b8"
  ],
  "presets/factory-loop-station.json": [
   "01ba1c1cd6a0915f3582a563f7bae75eeb4fa8cee41b4d934d4942dd5ef46311",
@@ -779,6 +1112,12 @@
   "0ce146ff2576a3d05f56bb697b51956e2cda60525ba0598397c7cd984576f8bf",
   "675255633ecb5c101c10707762f5b61bd6a24d044f716a3f8eb63bb637b0ef56"
  ],
+ "presets/factory-nu-metal-eight.json": [
+  "907b69b7dd1b9d69de4949a98c636836bc623f8a194b4fcfd65ad9d0d05f7136"
+ ],
+ "presets/factory-pop-rock.json": [
+  "92ec5573a168204619825eed63a1ab1cd656ae72f83047d24cc4c3c63cabda2f"
+ ],
  "presets/factory-rock-classics.json": [
   "b91572531127538b9b3e2c1d1a02972ecdf753ad562516d55fa363a64b82daf8",
   "d858d67f0100226190f3a4453bb18703200ed7faf15a4fbdd997881164fb35cd",
@@ -787,34 +1126,44 @@
   "0903003b4c901f1d4d9a30b661e4013d49263609abf54e8d8c170f062815a03a",
   "70336a0d5f11c927f831261cf7725e5ea6b8c3271958e092a5feaca488f6d96b"
  ],
+ "presets/factory-texas-blues.json": [
+  "25b05a7c50465b130f861a28c508bed535bc50af98cf1dc40326899b9bd77d95"
+ ],
  "setlists/factory-bass.json": [
   "30e8823a6f4757248f9cd6d8bc10538ac393626b3c89e6c1683feb4e64429306",
-  "e4e6ed63c83ae65054ddb845988a4d9d447cc62be024464e7014fb4646dff864"
+  "e4e6ed63c83ae65054ddb845988a4d9d447cc62be024464e7014fb4646dff864",
+  "3e26ca0050b48d2bdb02003152d00fa42c671e4c5f5932e80839bf6c17b378f2"
  ],
  "setlists/factory-drums.json": [
-  "53a9e9205f229f8d61813b4c7e71363d0fd057009152a6c282a6ea64fd11261a"
+  "53a9e9205f229f8d61813b4c7e71363d0fd057009152a6c282a6ea64fd11261a",
+  "2a2901b48ebd6afd0426cc42ae63ee889abf3c8f3b7bf14c0c72674caa83578c"
  ],
  "setlists/factory-guitar.json": [
   "7c8e6f4a509b10cb295591e8cdc1b5f5b1319343a85927a6f620255fd32f159f",
   "9bd9db71ad8ac7079ab1a53dbbad6798d1c7a43cf1dfc0f0d1fdf48383b42fd7",
-  "c8cf22e651956a49ab915b99ef2fc858566c176cffd4dbdef6defd762946e092"
+  "c8cf22e651956a49ab915b99ef2fc858566c176cffd4dbdef6defd762946e092",
+  "96b33a44f1db4690746d5b32c8d439604e206ceaf071e3e15365499b43150c22"
  ],
  "setlists/factory-keys.json": [
   "4c2c08e1020178b15d92d534413b071cc8bf21683f03340f0604219e4c8b42ff",
-  "2066638abd585894e042eb63c9b24d65e132585ccc36f9578d6260e385fa20a0"
+  "2066638abd585894e042eb63c9b24d65e132585ccc36f9578d6260e385fa20a0",
+  "9fafea0dd1db8216a8288f90aad401a631cadd102e6c68db861e33444f5b2547"
  ],
  "setlists/factory-voice.json": [
   "d71bf4d34568cc5c6cb5871a9d1cc61a15c24d8abff8d0b8be5ca6bf52d4b47a",
-  "26cd2221ad0c4820aae5fdfb2348e8b976f4a152a15bf7cd323683c3c7552405"
+  "26cd2221ad0c4820aae5fdfb2348e8b976f4a152a15bf7cd323683c3c7552405",
+  "248f1408272e85dafebf22a39efa5468099bb8a28021f7c4e6be644c09e3a65e"
  ],
  "setlists/factory.json": [
   "fd04ad2407a88c0dd57ae3d021ab17e2e835c1546ae4f4ab0db40b2892a55d55",
   "2cfb1c55ed96d88b3916ae5512dbab1bece96c231cdc87ef184c7a7fa78d4d89",
-  "911ef08db811feb06f449c33f2cac13d899b6eb114cb6f092c05d9cd771cfd3b"
+  "911ef08db811feb06f449c33f2cac13d899b6eb114cb6f092c05d9cd771cfd3b",
+  "5b08b30ad4eb914b6981429c85f6fa45b5e5f880f698149a388eb2008c689228"
  ],
  "songs/rs-f3f0252689f96910f01c81be0325855f.golem": [
   "053837b582986e82f20e23062ea41e83389267a9e13e92b13bbc1ef175fbc065",
-  "0aceb5ef48c4e2f2eb299cc30e5c81b0bfd1db6d624cf54a8b0e08a10a92fdb5"
+  "0aceb5ef48c4e2f2eb299cc30e5c81b0bfd1db6d624cf54a8b0e08a10a92fdb5",
+  "fe47d1fe6697b543739996fffdf60999be30b630d0dda9fc81742cc9ca12f276"
  ],
  "standards/crooked-lantern.golem": [
   "ec80a753bffdc7c8774588585cd097a5fe5275b81d2933a2b9c513ae7d2db086"

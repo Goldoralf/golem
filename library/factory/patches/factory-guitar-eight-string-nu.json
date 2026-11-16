@@ -1,0 +1,613 @@
+{
+ "id": "factory-guitar-eight-string-nu",
+ "name": "Eight-String Nu",
+ "role": "guitar",
+ "tags": [
+  "nu-metal",
+  "metal",
+  "eight-string",
+  "shoegaze"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Eight-String Nu",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "met",
+      "type": "met",
+      "params": {
+       "thresh": -46,
+       "hold": 20,
+       "release": 90
+      }
+     }
+    ],
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a",
+       "blocks": [
+        {
+         "id": "rect",
+         "type": "amp-nam",
+         "label": "Mesa Dual Rectifier",
+         "ref": "70207",
+         "model": "576906",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "v30",
+         "type": "cab",
+         "label": "Mesa 4x12 Vintage 30",
+         "ref": "45023",
+         "model": "239394",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b",
+       "blocks": [
+        {
+         "id": "jc",
+         "type": "amp",
+         "label": "Roland JC-120",
+         "ref": "6530",
+         "model": "397610",
+         "params": {
+          "input": -3,
+          "output": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
+    "post": [
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 60,
+       "midgain": -2,
+       "midfreq": 600,
+       "highs": 1
+      }
+     },
+     {
+      "id": "oct",
+      "type": "pitch",
+      "params": {
+       "engine": "Whammy",
+       "shift": -12,
+       "mix": 45
+      },
+      "foot": 8
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Dimension 3",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.4
+      },
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/4",
+       "feedback": 35,
+       "mix": 16
+      },
+      "foot": 7
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Cloud",
+       "mix": 24,
+       "decay": 3.2,
+       "size": 42,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Dream Clean",
+     "blocks": {
+      "oct": false,
+      "chorus": true,
+      "dly": true
+     },
+     "params": {
+      "met": {
+       "thresh": -70
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Whisper Clean",
+     "blocks": {
+      "oct": false,
+      "chorus": false,
+      "dly": false
+     },
+     "params": {
+      "met": {
+       "thresh": -70
+      },
+      "verb": {
+       "mix": 14
+      }
+     },
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Heavy Low",
+     "blocks": {
+      "oct": false,
+      "chorus": false,
+      "dly": false
+     },
+     "params": {
+      "verb": {
+       "mix": 8,
+       "decay": 1.2
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Shoegaze Wall",
+     "blocks": {
+      "oct": false,
+      "chorus": true,
+      "dly": true
+     },
+     "params": {
+      "verb": {
+       "mix": 30,
+       "decay": 3.8
+      }
+     },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Octave Dive",
+     "blocks": {
+      "oct": true,
+      "chorus": false,
+      "dly": true
+     },
+     "params": {},
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Dream Clean",
+   "blocks": {
+    "oct": false,
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "params": {
+    "met": {
+     "thresh": -70
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Whisper Clean",
+   "blocks": {
+    "oct": false,
+    "chorus": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "params": {
+    "met": {
+     "thresh": -70
+    },
+    "verb": {
+     "mix": 14
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Heavy Low",
+   "blocks": {
+    "oct": false,
+    "chorus": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 8,
+     "decay": 1.2
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Shoegaze Wall",
+   "blocks": {
+    "oct": false,
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 30,
+     "decay": 3.8
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Octave Dive",
+   "blocks": {
+    "oct": true,
+    "chorus": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E",
+     "level": 2
+    }
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-metal-chorus.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 120,
+ "chain": {
+  "pre": [
+   {
+    "id": "met",
+    "type": "met",
+    "params": {
+     "thresh": -46,
+     "hold": 20,
+     "release": 90
+    }
+   }
+  ],
+  "split": {
+   "mode": "merge",
+   "gain": -3,
+   "branches": [
+    {
+     "id": "lane-a",
+     "blocks": [
+      {
+       "id": "rect",
+       "type": "amp-nam",
+       "label": "Mesa Dual Rectifier",
+       "ref": "70207",
+       "model": "576906",
+       "params": {
+        "input": 0,
+        "output": 0
+       }
+      },
+      {
+       "id": "v30",
+       "type": "cab",
+       "label": "Mesa 4x12 Vintage 30",
+       "ref": "45023",
+       "model": "239394",
+       "params": {
+        "level": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "lane-b",
+     "blocks": [
+      {
+       "id": "jc",
+       "type": "amp",
+       "label": "Roland JC-120",
+       "ref": "6530",
+       "model": "397610",
+       "params": {
+        "input": -3,
+        "output": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "post": [
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 60,
+     "midgain": -2,
+     "midfreq": 600,
+     "highs": 1
+    }
+   },
+   {
+    "id": "oct",
+    "type": "pitch",
+    "params": {
+     "engine": "Whammy",
+     "shift": -12,
+     "mix": 45
+    },
+    "foot": 8
+   },
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Guitar Clean",
+     "mode": "Dimension 3",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.4
+    },
+    "foot": 6
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Tape",
+     "time": "1/4",
+     "feedback": 35,
+     "mix": 16
+    },
+    "foot": 7
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Cloud",
+     "mix": 24,
+     "decay": 3.2,
+     "size": 42,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "70207",
+   "model": "576906"
+  },
+  {
+   "type": "cab",
+   "ref": "45023",
+   "model": "239394"
+  },
+  {
+   "type": "amp",
+   "ref": "6530",
+   "model": "397610"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#5a189a",
+  "B": "#5a189a",
+  "C": "#5a189a",
+  "D": "#5a189a",
+  "E": "#5a189a",
+  "6": "#5a189a",
+  "7": "#5a189a",
+  "8": "#5a189a",
+  "9": "#5a189a",
+  "10": "#5a189a"
+ },
+ "anims": {
+  "A": "wave",
+  "B": "heartbeat",
+  "C": "lightning",
+  "D": "smoke",
+  "E": "vortex",
+  "6": "strobe",
+  "7": "stars",
+  "8": "ember",
+  "9": "aurora",
+  "10": "ripple"
+ },
+ "deps": [
+  {
+   "sha256": "aa1bb3301ce1bdf24c673354ab814a79cf178a91096600e6b2321fdf16f0fa30",
+   "uid": "t3k:70207",
+   "kind": "amp",
+   "bytes": 295131,
+   "name": "MESADUAL - RED - MODERN - GAIN 5",
+   "source": "t3k",
+   "amp": "Mesa Boogie Dual Rectifier",
+   "arch": "2",
+   "brand": "Mesa/Boogie",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/mesa-dual-rectifier-rev-g-1998-full-gain-pack-70207"
+  },
+  {
+   "sha256": "86e4b4cad67b65b96f5c091dee33e5594d9707bafffd2099c4bcde05800bd198",
+   "uid": "t3k:45023",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "V30 UL 4FB 4x12 SM57 0.50in 0.0in SA73",
+   "source": "t3k",
+   "amp": "Celestion Vintage 30 - 2002 Mesa Boogie 4x12 - SM57",
+   "brand": "Celestion",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45023"
+  },
+  {
+   "sha256": "436937c084316d1324158e9eca813334da43d3c08e4ce6b559840e3bf887a4f5",
+   "uid": "t3k:6530",
+   "kind": "amp-cab",
+   "bytes": 296657,
+   "name": "Roland JC-120 Jazz Chorus",
+   "source": "t3k",
+   "arch": "2",
+   "brand": "Roland",
+   "creator": "tone3000",
+   "url": "https://www.tone3000.com/tones/roland-jc-120-jazz-chorus-6530"
+  },
+  {
+   "sha256": "1ff30ef63eb7dc2ce27659188626195b830c2e217df6322796d14de1c612e546",
+   "uid": "local:groove-golem-metal-chorus",
+   "kind": "groove",
+   "bytes": 393,
+   "name": "Metal chorus",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"strobe\", \"7\": \"stars\", \"8\": \"ember\", \"9\": \"aurora\", \"A\": \"wave\", \"B\": \"heartbeat\", \"C\": \"lightning\", \"D\": \"smoke\", \"E\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 600, \"midgain\": -2}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"oct\", \"params\": {\"engine\": \"Whammy\", \"mix\": 45, \"shift\": -12}, \"type\": \"pitch\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Dimension 3\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 42}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 20, \"release\": 90, \"thresh\": -46}, \"type\": \"met\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"rect\", \"label\": \"Mesa Dual Rectifier\", \"model\": \"576906\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"70207\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"7\": \"#5a189a\", \"8\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\", \"E\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 600, \"midgain\": -2}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"oct\", \"params\": {\"engine\": \"Whammy\", \"mix\": 45, \"shift\": -12}, \"type\": \"pitch\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Dimension 3\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 42}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 20, \"release\": 90, \"thresh\": -46}, \"type\": \"met\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"rect\", \"label\": \"Mesa Dual Rectifier\", \"model\": \"576906\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"70207\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239394\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Eight-String Nu\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"dly\": true, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Dream Clean\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Whisper Clean\", \"params\": {\"met\": {\"thresh\": -70}, \"verb\": {\"mix\": 14}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Heavy Low\", \"params\": {\"verb\": {\"decay\": 1.2, \"mix\": 8}}}, {\"blocks\": {\"chorus\": true, \"dly\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Shoegaze Wall\", \"params\": {\"verb\": {\"decay\": 3.8, \"mix\": 30}}}, {\"blocks\": {\"chorus\": false, \"dly\": true, \"oct\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Octave Dive\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"dly\": true, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Dream Clean\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"oct\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Whisper Clean\", \"params\": {\"met\": {\"thresh\": -70}, \"verb\": {\"mix\": 14}}}, {\"blocks\": {\"chorus\": false, \"dly\": false, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Heavy Low\", \"params\": {\"verb\": {\"decay\": 1.2, \"mix\": 8}}}, {\"blocks\": {\"chorus\": true, \"dly\": true, \"oct\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Shoegaze Wall\", \"params\": {\"verb\": {\"decay\": 3.8, \"mix\": 30}}}, {\"blocks\": {\"chorus\": false, \"dly\": true, \"oct\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Octave Dive\"}]}"
+}

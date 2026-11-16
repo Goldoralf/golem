@@ -1,0 +1,451 @@
+{
+ "id": "factory-guitar-jazz-box",
+ "name": "Jazz Box",
+ "role": "guitar",
+ "tags": [
+  "jazz",
+  "clean"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Jazz Box",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -62,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -24,
+       "ratio": 2.5,
+       "makeup": 2,
+       "attack": 25
+      }
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "twin",
+      "type": "amp",
+      "label": "Fender Twin Reverb",
+      "ref": "43620",
+      "model": "382264",
+      "params": {
+       "input": -3,
+       "output": 0
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 70,
+       "midgain": 0,
+       "midfreq": 700,
+       "highs": -4
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Guitar Clean",
+       "mode": "Dimension 1",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.25
+      },
+      "foot": 7
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 16,
+       "decay": 1.2,
+       "size": 24,
+       "hicut": 8000
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/4",
+       "feedback": 20,
+       "mix": 10
+      },
+      "foot": 6
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Comping",
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Chord Melody",
+     "blocks": {
+      "chorus": true,
+      "dly": false
+     },
+     "params": {
+      "plate": {
+       "mix": 22,
+       "decay": 1.6
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Solo",
+     "blocks": {
+      "chorus": false,
+      "dly": true
+     },
+     "params": {
+      "eq": {
+       "midgain": 2.5,
+       "midfreq": 900,
+       "highs": -3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Ballad",
+     "blocks": {
+      "chorus": true,
+      "dly": true
+     },
+     "params": {
+      "plate": {
+       "mix": 28,
+       "decay": 2.2
+      },
+      "dly": {
+       "mix": 14
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Bright Swing",
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
+     "params": {
+      "eq": {
+       "highs": -1,
+       "midgain": 1
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Comping",
+   "blocks": {
+    "chorus": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Chord Melody",
+   "blocks": {
+    "chorus": true,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "params": {
+    "plate": {
+     "mix": 22,
+     "decay": 1.6
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Solo",
+   "blocks": {
+    "chorus": false,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 2
+    }
+   },
+   "params": {
+    "eq": {
+     "midgain": 2.5,
+     "midfreq": 900,
+     "highs": -3
+    }
+   },
+   "level": 2
+  },
+  {
+   "id": "D",
+   "name": "Ballad",
+   "blocks": {
+    "chorus": true,
+    "dly": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "params": {
+    "plate": {
+     "mix": 28,
+     "decay": 2.2
+    },
+    "dly": {
+     "mix": 14
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Bright Swing",
+   "blocks": {
+    "chorus": false,
+    "dly": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   },
+   "params": {
+    "eq": {
+     "highs": -1,
+     "midgain": 1
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-swing.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 160,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -62,
+     "release": 120
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Opto",
+     "thresh": -24,
+     "ratio": 2.5,
+     "makeup": 2,
+     "attack": 25
+    }
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "twin",
+    "type": "amp",
+    "label": "Fender Twin Reverb",
+    "ref": "43620",
+    "model": "382264",
+    "params": {
+     "input": -3,
+     "output": 0
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 70,
+     "midgain": 0,
+     "midfreq": 700,
+     "highs": -4
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Guitar Clean",
+     "mode": "Dimension 1",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.25
+    },
+    "foot": 7
+   },
+   {
+    "id": "plate",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 16,
+     "decay": 1.2,
+     "size": 24,
+     "hicut": 8000
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Tape",
+     "time": "1/4",
+     "feedback": 20,
+     "mix": 10
+    },
+    "foot": 6
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp",
+   "ref": "43620",
+   "model": "382264"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#c9a227",
+  "B": "#c9a227",
+  "C": "#c9a227",
+  "D": "#c9a227",
+  "E": "#c9a227",
+  "6": "#c9a227",
+  "7": "#c9a227",
+  "9": "#c9a227",
+  "10": "#c9a227"
+ },
+ "anims": {
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe",
+  "6": "stars",
+  "7": "ember",
+  "9": "aurora",
+  "10": "ripple"
+ },
+ "deps": [
+  {
+   "sha256": "292eba4f31f1a05da60f13354a752d5b154f07ad75f8baa7e793a0a0d7cdef2c",
+   "uid": "t3k:43620",
+   "kind": "amp-cab",
+   "bytes": 298239,
+   "name": "Fender Twin Reverb",
+   "source": "t3k",
+   "arch": "2",
+   "brand": "Fender",
+   "creator": "henriquemarcosaugusto03",
+   "url": "https://www.tone3000.com/tones/fender-twin-reverb-43620"
+  },
+  {
+   "sha256": "c5786de732cf905e646f67a3cbfde0c689a8ce6914c76ac4d9001cd1f7087944",
+   "uid": "local:groove-golem-swing",
+   "kind": "groove",
+   "bytes": 257,
+   "name": "Swing",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"stars\", \"7\": \"ember\", \"9\": \"aurora\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\", \"E\": \"strobe\"}, \"backing\": null, \"bpm\": 160, \"chain\": {\"post\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382264\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -4, \"lowcut\": 70, \"midfreq\": 700, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.25, \"mode\": \"Dimension 1\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.2, \"hicut\": 8000, \"mix\": 16, \"size\": 24}, \"type\": \"reverb-plate\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 20, \"mix\": 10, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"character\": \"Opto\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#c9a227\", \"6\": \"#c9a227\", \"7\": \"#c9a227\", \"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\", \"E\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-swing.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382264\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -4, \"lowcut\": 70, \"midfreq\": 700, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.25, \"mode\": \"Dimension 1\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.2, \"hicut\": 8000, \"mix\": 16, \"size\": 24}, \"type\": \"reverb-plate\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 20, \"mix\": 10, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 25, \"character\": \"Opto\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Jazz Box\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Comping\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"dly\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Chord Melody\", \"params\": {\"plate\": {\"decay\": 1.6, \"mix\": 22}}}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": -3, \"midfreq\": 900, \"midgain\": 2.5}}}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Ballad\", \"params\": {\"dly\": {\"mix\": 14}, \"plate\": {\"decay\": 2.2, \"mix\": 28}}}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Bright Swing\", \"params\": {\"eq\": {\"highs\": -1, \"midgain\": 1}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": false, \"dly\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Comping\"}, {\"blocks\": {\"chorus\": true, \"dly\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Chord Melody\", \"params\": {\"plate\": {\"decay\": 1.6, \"mix\": 22}}}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-C\"}}, \"level\": 2, \"name\": \"Solo\", \"params\": {\"eq\": {\"highs\": -3, \"midfreq\": 900, \"midgain\": 2.5}}}, {\"blocks\": {\"chorus\": true, \"dly\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Ballad\", \"params\": {\"dly\": {\"mix\": 14}, \"plate\": {\"decay\": 2.2, \"mix\": 28}}}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Bright Swing\", \"params\": {\"eq\": {\"highs\": -1, \"midgain\": 1}}}]}"
+}

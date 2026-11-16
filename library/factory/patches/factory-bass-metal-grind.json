@@ -1,0 +1,370 @@
+{
+ "id": "factory-bass-metal-grind",
+ "name": "Metal Grind",
+ "role": "bass",
+ "tags": [
+  "metal",
+  "groove"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "bass-1",
+   "role": "bass",
+   "name": "Metal Grind",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "met",
+      "type": "met",
+      "params": {
+       "thresh": -46
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -24,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 8
+      }
+     },
+     {
+      "id": "drive",
+      "type": "shem",
+      "params": {
+       "grind": 8,
+       "voice": "Full"
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "svtcl",
+      "type": "amp-nam",
+      "label": "Ampeg SVT-CL",
+      "ref": "45809",
+      "model": "382799",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gkcab",
+      "type": "cab",
+      "label": "Gallien-Krueger 4x10",
+      "ref": "64815",
+      "model": "72421",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 40,
+       "midgain": -2,
+       "midfreq": 500,
+       "highs": 2
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Grind",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Tight",
+     "blocks": {},
+     "params": {
+      "met": {
+       "thresh": -40
+      },
+      "comp": {
+       "ratio": 8
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Clean Low",
+     "blocks": {
+      "drive": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Solo Growl",
+     "blocks": {
+      "drive": true
+     },
+     "params": {
+      "drive": {
+       "grind": 14
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Grind",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Tight",
+   "blocks": {},
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-B"
+    }
+   },
+   "params": {
+    "met": {
+     "thresh": -40
+    },
+    "comp": {
+     "ratio": 8
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Clean Low",
+   "blocks": {
+    "drive": false
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-C",
+     "level": -1
+    }
+   },
+   "level": -1
+  },
+  {
+   "id": "D",
+   "name": "Solo Growl",
+   "blocks": {
+    "drive": true
+   },
+   "lanes": {
+    "bass-1": {
+     "state": "st-bass-1-D",
+     "level": 2
+    }
+   },
+   "params": {
+    "drive": {
+     "grind": 14
+    }
+   },
+   "level": 2
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-aasimonster"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "pre": [
+   {
+    "id": "met",
+    "type": "met",
+    "params": {
+     "thresh": -46
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "FET",
+     "thresh": -24,
+     "ratio": 5,
+     "makeup": 3,
+     "attack": 8
+    }
+   },
+   {
+    "id": "drive",
+    "type": "shem",
+    "params": {
+     "grind": 8,
+     "voice": "Full"
+    },
+    "foot": 6
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "svtcl",
+    "type": "amp-nam",
+    "label": "Ampeg SVT-CL",
+    "ref": "45809",
+    "model": "382799",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "gkcab",
+    "type": "cab",
+    "label": "Gallien-Krueger 4x10",
+    "ref": "64815",
+    "model": "72421",
+    "params": {
+     "level": 0
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 40,
+     "midgain": -2,
+     "midfreq": 500,
+     "highs": 2
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "amp-nam",
+   "ref": "45809",
+   "model": "382799"
+  },
+  {
+   "type": "cab",
+   "ref": "64815",
+   "model": "72421"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "6": "#6a040f",
+  "9": "#6a040f",
+  "10": "#6a040f"
+ },
+ "anims": {
+  "A": "sheen",
+  "B": "glitch",
+  "C": "monster",
+  "D": "rain",
+  "6": "vu",
+  "9": "wave",
+  "10": "heartbeat"
+ },
+ "deps": [
+  {
+   "sha256": "38c6830c081ff9433184c1a16f9edb79d1d9090950eba1933c5163e2fc688ebc",
+   "uid": "t3k:45809",
+   "kind": "amp",
+   "bytes": 295350,
+   "name": "SVT DIRTY",
+   "source": "t3k",
+   "amp": "AMPEG SVT-CL",
+   "arch": "2",
+   "brand": "Ampeg",
+   "creator": "deathblossomaudio",
+   "url": "https://www.tone3000.com/tones/ampeg-svt-cl-bass-head-45809"
+  },
+  {
+   "sha256": "a1409f62eb14346660f0fd4be37d7aa57cde1ad2164a69d1feda3576a937da24",
+   "uid": "t3k:64815",
+   "kind": "cab",
+   "bytes": 183404,
+   "name": "Mid Contour_dc",
+   "source": "t3k",
+   "amp": "Gallien Krueger - RB800",
+   "brand": "Gallien-Krueger",
+   "creator": "arlingtonaudio",
+   "url": "https://www.tone3000.com/tones/gallien-krueger-rb800-070-irs-64815"
+  },
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "30981243ab6c687b4b1d495306a8fa3eea12299f01ef8236fefc0ff4287c4919",
+   "uid": "local:kit-drums-aasimonster",
+   "kind": "kit",
+   "bytes": 2766,
+   "name": "drums-aasimonster",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Aasimonster",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"vu\", \"9\": \"wave\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"monster\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382799\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72421\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 40, \"midfreq\": 500, \"midgain\": -2}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -46}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"grind\": 8, \"voice\": \"Full\"}, \"type\": \"shem\"}], \"split\": null}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-aasimonster\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382799\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72421\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 40, \"midfreq\": 500, \"midgain\": -2}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -46}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"grind\": 8, \"voice\": \"Full\"}, \"type\": \"shem\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Metal Grind\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Grind\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Tight\", \"params\": {\"comp\": {\"ratio\": 8}, \"met\": {\"thresh\": -40}}}, {\"blocks\": {\"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Clean Low\", \"params\": {}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Solo Growl\", \"params\": {\"drive\": {\"grind\": 14}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Grind\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Tight\", \"params\": {\"comp\": {\"ratio\": 8}, \"met\": {\"thresh\": -40}}}, {\"blocks\": {\"drive\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-C\"}}, \"level\": -1, \"name\": \"Clean Low\"}, {\"blocks\": {\"drive\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 2, \"state\": \"st-bass-1-D\"}}, \"level\": 2, \"name\": \"Solo Growl\", \"params\": {\"drive\": {\"grind\": 14}}}]}"
+}

@@ -1,0 +1,345 @@
+{
+ "id": "factory-voice-metal-scream",
+ "name": "Metal Scream",
+ "role": "voice",
+ "tags": [
+  "metal",
+  "scream"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Metal Scream",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -45,
+       "release": 90
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "scream",
+      "type": "morph",
+      "params": {
+       "drive": 65,
+       "morph": 40,
+       "box": 0,
+       "mix": 100,
+       "object": "None"
+      },
+      "foot": 6
+     },
+     {
+      "id": "radio",
+      "type": "radio",
+      "params": {
+       "model": "Megaphone",
+       "drive": 30
+      },
+      "foot": 7
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -20,
+       "ratio": 5,
+       "makeup": 3,
+       "attack": 5
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 120,
+       "midgain": 2,
+       "midfreq": 2000,
+       "highs": 1
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 10,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Scream",
+     "blocks": {
+      "scream": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Growl",
+     "blocks": {
+      "scream": true
+     },
+     "params": {
+      "scream": {
+       "morph": 70,
+       "drive": 75
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Clean Shout",
+     "blocks": {
+      "scream": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Megaphone",
+     "blocks": {
+      "scream": false,
+      "radio": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Scream",
+   "blocks": {
+    "scream": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Growl",
+   "blocks": {
+    "scream": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   },
+   "params": {
+    "scream": {
+     "morph": 70,
+     "drive": 75
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Clean Shout",
+   "blocks": {
+    "scream": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Megaphone",
+   "blocks": {
+    "scream": false,
+    "radio": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-half-time.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 140,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -45,
+     "release": 90
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 6500,
+     "range": 10
+    }
+   },
+   {
+    "id": "scream",
+    "type": "morph",
+    "params": {
+     "drive": 65,
+     "morph": 40,
+     "box": 0,
+     "mix": 100,
+     "object": "None"
+    },
+    "foot": 6
+   },
+   {
+    "id": "radio",
+    "type": "radio",
+    "params": {
+     "model": "Megaphone",
+     "drive": 30
+    },
+    "foot": 7
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "FET",
+     "thresh": -20,
+     "ratio": 5,
+     "makeup": 3,
+     "attack": 5
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 120,
+     "midgain": 2,
+     "midfreq": 2000,
+     "highs": 1
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 10,
+     "decay": 0.8,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "6": "#6a040f",
+  "7": "#6a040f",
+  "9": "#6a040f",
+  "10": "#6a040f"
+ },
+ "anims": {
+  "A": "sheen",
+  "B": "glitch",
+  "C": "monster",
+  "D": "rain",
+  "6": "vu",
+  "7": "wave",
+  "9": "heartbeat",
+  "10": "lightning"
+ },
+ "deps": [
+  {
+   "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
+   "uid": "local:groove-golem-half-time",
+   "kind": "groove",
+   "bytes": 263,
+   "name": "Half-time",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"6\": \"vu\", \"7\": \"wave\", \"9\": \"heartbeat\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"monster\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 90, \"thresh\": -45}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"box\": 0, \"drive\": 65, \"mix\": 100, \"morph\": 40, \"object\": \"None\"}, \"type\": \"morph\"}, {\"foot\": 7, \"id\": \"radio\", \"params\": {\"drive\": 30, \"model\": \"Megaphone\"}, \"type\": \"radio\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 120, \"midfreq\": 2000, \"midgain\": 2}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"7\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 90, \"thresh\": -45}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"box\": 0, \"drive\": 65, \"mix\": 100, \"morph\": 40, \"object\": \"None\"}, \"type\": \"morph\"}, {\"foot\": 7, \"id\": \"radio\", \"params\": {\"drive\": 30, \"model\": \"Megaphone\"}, \"type\": \"radio\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 120, \"midfreq\": 2000, \"midgain\": 2}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Metal Scream\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Scream\", \"params\": {}}, {\"blocks\": {\"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Growl\", \"params\": {\"scream\": {\"drive\": 75, \"morph\": 70}}}, {\"blocks\": {\"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Clean Shout\", \"params\": {}}, {\"blocks\": {\"radio\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Megaphone\", \"params\": {}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"scream\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Scream\"}, {\"blocks\": {\"scream\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Growl\", \"params\": {\"scream\": {\"drive\": 75, \"morph\": 70}}}, {\"blocks\": {\"scream\": false}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Clean Shout\"}, {\"blocks\": {\"radio\": true, \"scream\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Megaphone\"}]}"
+}

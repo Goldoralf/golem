@@ -1,0 +1,463 @@
+{
+ "id": "factory-keys-electro-pads",
+ "name": "Electro Pads",
+ "role": "keys-pads",
+ "tags": [
+  "ambient",
+  "electronic",
+  "pads"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-pads-1",
+   "role": "keys-pads",
+   "name": "Electro Pads",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "pads",
+      "type": "pads",
+      "params": {
+       "kit": "pads-lofi"
+      }
+     },
+     {
+      "id": "crush",
+      "type": "bitcrusher",
+      "params": {
+       "quant": 0.5,
+       "rate": 0.4,
+       "nonlin": 0.1
+      },
+      "foot": 6
+     },
+     {
+      "id": "tape",
+      "type": "tape",
+      "params": {
+       "model": "Portable Cassette",
+       "wear": 40,
+       "mix": 100
+      },
+      "foot": 7
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 40,
+       "mix": 18
+      },
+      "foot": 8
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Bus",
+       "thresh": -20,
+       "ratio": 3,
+       "makeup": 2,
+       "attack": 15
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-pads-1-A",
+     "name": "Beat",
+     "blocks": {
+      "crush": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-B",
+     "name": "Crushed Beat",
+     "blocks": {
+      "crush": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-C",
+     "name": "Tape Beat",
+     "blocks": {
+      "tape": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-pads-1-D",
+     "name": "Dub Beat",
+     "blocks": {
+      "dly": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Beat",
+   "blocks": {
+    "crush": false
+   },
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Crushed Beat",
+   "blocks": {
+    "crush": true
+   },
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Tape Beat",
+   "blocks": {
+    "tape": true
+   },
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Dub Beat",
+   "blocks": {
+    "dly": true
+   },
+   "lanes": {
+    "keys-pads-1": {
+     "state": "st-keys-pads-1-D",
+     "level": -1
+    }
+   },
+   "level": -1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": []
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 84,
+ "chain": {
+  "chain": [
+   {
+    "id": "pads",
+    "type": "pads",
+    "params": {
+     "kit": "pads-lofi"
+    }
+   },
+   {
+    "id": "crush",
+    "type": "bitcrusher",
+    "params": {
+     "quant": 0.5,
+     "rate": 0.4,
+     "nonlin": 0.1
+    },
+    "foot": 6
+   },
+   {
+    "id": "tape",
+    "type": "tape",
+    "params": {
+     "model": "Portable Cassette",
+     "wear": 40,
+     "mix": 100
+    },
+    "foot": 7
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/8•",
+     "feedback": 40,
+     "mix": 18
+    },
+    "foot": 8
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Bus",
+     "thresh": -20,
+     "ratio": 3,
+     "makeup": 2,
+     "attack": 15
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#118ab2",
+  "B": "#118ab2",
+  "C": "#118ab2",
+  "D": "#118ab2",
+  "6": "#118ab2",
+  "7": "#118ab2",
+  "8": "#118ab2",
+  "9": "#118ab2"
+ },
+ "anims": {
+  "A": "vu",
+  "B": "wave",
+  "C": "heartbeat",
+  "D": "lightning",
+  "6": "smoke",
+  "7": "vortex",
+  "8": "strobe",
+  "9": "stars"
+ },
+ "deps": [
+  {
+   "sha256": "5e27c4c8e62efbcd11f605d183490fd9914032a4677291ce883bd7d8cdfcb6f1",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 2229,
+   "name": "pads-lofi",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "71b9e258816bf175520adb193e5f25b6f0c3704b769adceac9461a80c862e321",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 46698,
+   "name": "01_kick",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "63bda70ba5d0a984d3c7de81986ff746b1a77fe6105b215ea43f21cde0408b93",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 26678,
+   "name": "03_snare",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "a7f7c9e58199d87f550b39078942f503b499c51ce1070ce5182d36c11128c614",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 8270,
+   "name": "06_hat_closed",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "d1fbfe7cffaf9dedb70c3749ad5d61c39a87a03b5820372c739debb0d08a6c7a",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 54744,
+   "name": "08_hat_open",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "a8401e833a7ae5f81a9fe08ef874fc605ba54a1c7a8e20c2f05d0ff18c6224d2",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 32222,
+   "name": "04_clap",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "e90f1c698fac449e87ab7411d33167cb4cb38e5162137f44f747885f5da2e9eb",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 15920,
+   "name": "05_rim",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "2427d2ac8fc80098d59eca38b2f7d0ca28d04a1a573c147e9983bd5c3440a5b8",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 47552,
+   "name": "10_tom_mid",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "2cc84eeae1388ea3978a97522049bfb12bf8818b9e52607f3cdbc85ffaaa5ccf",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 147522,
+   "name": "14_crash",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "c70c985c41e8ac9f642051b37a1cd530fb4d29f60ee33575698801842bcc08d8",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 70710,
+   "name": "02_kick_sub",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "69da63458c11a6074bdfc8c98eef4fcc5e7bd021cf9f39a1e8c68cc99cc1c42f",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 14514,
+   "name": "07_hat_pedal",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "5109ccbf699258853c297618cec561f397ac86c4102dd01438bf009de67565c9",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 47552,
+   "name": "09_tom_low",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "62e07e902a8d850537b87b48d9dadc0279f53de8313b430e3bbbe4bfb0b79e58",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 47552,
+   "name": "11_tom_high",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "3f565f19e3df31091e3c2ffa8e100431da3fc666a62731cd11e6d59727a3f5d2",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 83492,
+   "name": "12_ride",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "80e2917ce601f199c8ae02846682e9f5525352d8c115ef1199c5644be1ff16cc",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 109104,
+   "name": "15_crash2",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "b424e34a8b3536750bada83850ce5a0ca44b46ba8d46a8a27f9ff07767d84ccf",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 64284,
+   "name": "13_ride_bell",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  },
+  {
+   "sha256": "7843f2278917e81f6dfc51cb1f727d0fac345eb42495f5cfb4c47e6f23c6a52f",
+   "uid": "local:kit-pads-lofi",
+   "kind": "kit",
+   "bytes": 24032,
+   "name": "16_cowbell",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Lo-fi",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"6\": \"smoke\", \"7\": \"vortex\", \"8\": \"strobe\", \"9\": \"stars\", \"A\": \"vu\", \"B\": \"wave\", \"C\": \"heartbeat\", \"D\": \"lightning\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Electro Pads\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {\"crush\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Beat\", \"params\": {}}, {\"blocks\": {\"crush\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Crushed Beat\", \"params\": {}}, {\"blocks\": {\"tape\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Tape Beat\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Dub Beat\", \"params\": {}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {\"crush\": false}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Beat\"}, {\"blocks\": {\"crush\": true}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Crushed Beat\"}, {\"blocks\": {\"tape\": true}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-C\"}}, \"name\": \"Tape Beat\"}, {\"blocks\": {\"dly\": true}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": -1, \"state\": \"st-keys-pads-1-D\"}}, \"level\": -1, \"name\": \"Dub Beat\"}]}"
+}

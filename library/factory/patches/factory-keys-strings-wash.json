@@ -1,0 +1,295 @@
+{
+ "id": "factory-keys-strings-wash",
+ "name": "Strings Wash",
+ "role": "keys",
+ "tags": [
+  "grunge",
+  "strings",
+  "pad"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "keys-1",
+   "role": "keys",
+   "name": "Strings Wash",
+   "midi": true,
+   "chain": {
+    "chain": [
+     {
+      "id": "ep",
+      "type": "ep",
+      "params": {
+       "bank": "library/dx7/synprezfm-02.syx",
+       "patch": 20,
+       "fcut": 1,
+       "res": 0,
+       "out": 0.8
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Keys",
+       "mode": "Ensemble",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.5
+      },
+      "foot": 6
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 120,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": -2
+      }
+     },
+     {
+      "id": "verb",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 24,
+       "decay": 2.6,
+       "size": 30,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-keys-1-A",
+     "name": "Strings Wash",
+     "blocks": {},
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-B",
+     "name": "Chorus Strings",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-C",
+     "name": "Thin",
+     "blocks": {},
+     "params": {
+      "eq": {
+       "lowcut": 200
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-keys-1-D",
+     "name": "Big Swell",
+     "blocks": {
+      "chorus": true
+     },
+     "params": {
+      "verb": {
+       "mix": 34
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Strings Wash",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Chorus Strings",
+   "blocks": {
+    "chorus": true
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Thin",
+   "blocks": {},
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-C",
+     "level": -3
+    }
+   },
+   "params": {
+    "eq": {
+     "lowcut": 200
+    }
+   },
+   "level": -3
+  },
+  {
+   "id": "D",
+   "name": "Big Swell",
+   "blocks": {
+    "chorus": true
+   },
+   "lanes": {
+    "keys-1": {
+     "state": "st-keys-1-D",
+     "level": 1
+    }
+   },
+   "params": {
+    "verb": {
+     "mix": 34
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 128,
+ "chain": {
+  "chain": [
+   {
+    "id": "ep",
+    "type": "ep",
+    "params": {
+     "bank": "library/dx7/synprezfm-02.syx",
+     "patch": 20,
+     "fcut": 1,
+     "res": 0,
+     "out": 0.8
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Keys",
+     "mode": "Ensemble",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.5
+    },
+    "foot": 6
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 120,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": -2
+    }
+   },
+   {
+    "id": "verb",
+    "type": "reverb",
+    "params": {
+     "algo": "Hall",
+     "mix": 24,
+     "decay": 2.6,
+     "size": 30,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#9c6644",
+  "B": "#9c6644",
+  "C": "#9c6644",
+  "D": "#9c6644",
+  "6": "#9c6644",
+  "9": "#9c6644",
+  "10": "#9c6644"
+ },
+ "anims": {
+  "A": "lightning",
+  "B": "smoke",
+  "C": "vortex",
+  "D": "strobe",
+  "6": "stars",
+  "9": "ember",
+  "10": "aurora"
+ },
+ "deps": [
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"stars\", \"9\": \"ember\", \"A\": \"lightning\", \"B\": \"smoke\", \"C\": \"vortex\", \"D\": \"strobe\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Strings Wash\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Strings Wash\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Chorus Strings\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Thin\", \"params\": {\"eq\": {\"lowcut\": 200}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Big Swell\", \"params\": {\"verb\": {\"mix\": 34}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Strings Wash\"}, {\"blocks\": {\"chorus\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Chorus Strings\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Thin\", \"params\": {\"eq\": {\"lowcut\": 200}}}, {\"blocks\": {\"chorus\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Big Swell\", \"params\": {\"verb\": {\"mix\": 34}}}]}"
+}

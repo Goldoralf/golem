@@ -1,0 +1,514 @@
+{
+ "id": "factory-guitar-fuzz-grunge",
+ "name": "Fuzz Grunge",
+ "role": "guitar",
+ "tags": [
+  "grunge",
+  "alternative",
+  "fuzz"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Fuzz Grunge",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -52,
+       "release": 90
+      }
+     },
+     {
+      "id": "muff",
+      "type": "pedal-nam",
+      "label": "EHX Op-Amp Big Muff",
+      "ref": "37818",
+      "model": "413514",
+      "params": {
+       "input": 0,
+       "output": -4
+      },
+      "foot": 6
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "jmp",
+      "type": "amp-nam",
+      "label": "Marshall JMP 2204",
+      "ref": "70525",
+      "model": "577107",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gb",
+      "type": "cab",
+      "label": "Marshall 4x12 Greenback",
+      "ref": "45022",
+      "model": "239238",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "phase",
+      "type": "phaser-js",
+      "params": {
+       "model": "Script 90",
+       "rate": 0.4,
+       "feedback": -6,
+       "wet": -3
+      },
+      "foot": 7
+     },
+     {
+      "id": "flange",
+      "type": "flanger-js",
+      "params": {
+       "mode": "Mistress",
+       "rate": 0.18,
+       "feedback": -14,
+       "depth": 70
+      },
+      "foot": 8
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 80,
+       "midgain": -1,
+       "midfreq": 700,
+       "highs": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 25,
+       "mix": 10
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Verse Crunch",
+     "blocks": {
+      "muff": false,
+      "phase": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Fuzz Wall",
+     "blocks": {
+      "muff": true,
+      "phase": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Fuzz Lead",
+     "blocks": {
+      "muff": true,
+      "phase": false,
+      "flange": false
+     },
+     "params": {
+      "eq": {
+       "midgain": 3,
+       "midfreq": 800
+      },
+      "dly": {
+       "mix": 18
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Phased Bridge",
+     "blocks": {
+      "muff": true,
+      "phase": true,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Jet Clean",
+     "blocks": {
+      "muff": false,
+      "phase": false,
+      "flange": true
+     },
+     "params": {
+      "jmp": {
+       "input": -10
+      }
+     },
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Verse Crunch",
+   "blocks": {
+    "muff": false,
+    "phase": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Fuzz Wall",
+   "blocks": {
+    "muff": true,
+    "phase": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Fuzz Lead",
+   "blocks": {
+    "muff": true,
+    "phase": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 3
+    }
+   },
+   "params": {
+    "eq": {
+     "midgain": 3,
+     "midfreq": 800
+    },
+    "dly": {
+     "mix": 18
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Phased Bridge",
+   "blocks": {
+    "muff": true,
+    "phase": true,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   }
+  },
+  {
+   "id": "E",
+   "name": "Jet Clean",
+   "blocks": {
+    "muff": false,
+    "phase": false,
+    "flange": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   },
+   "params": {
+    "jmp": {
+     "input": -10
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 128,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -52,
+     "release": 90
+    }
+   },
+   {
+    "id": "muff",
+    "type": "pedal-nam",
+    "label": "EHX Op-Amp Big Muff",
+    "ref": "37818",
+    "model": "413514",
+    "params": {
+     "input": 0,
+     "output": -4
+    },
+    "foot": 6
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "jmp",
+    "type": "amp-nam",
+    "label": "Marshall JMP 2204",
+    "ref": "70525",
+    "model": "577107",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "gb",
+    "type": "cab",
+    "label": "Marshall 4x12 Greenback",
+    "ref": "45022",
+    "model": "239238",
+    "params": {
+     "level": 0
+    }
+   },
+   {
+    "id": "phase",
+    "type": "phaser-js",
+    "params": {
+     "model": "Script 90",
+     "rate": 0.4,
+     "feedback": -6,
+     "wet": -3
+    },
+    "foot": 7
+   },
+   {
+    "id": "flange",
+    "type": "flanger-js",
+    "params": {
+     "mode": "Mistress",
+     "rate": 0.18,
+     "feedback": -14,
+     "depth": 70
+    },
+    "foot": 8
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 80,
+     "midgain": -1,
+     "midfreq": 700,
+     "highs": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/4",
+     "feedback": 25,
+     "mix": 10
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 14,
+     "decay": 0.8,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "37818",
+   "model": "413514"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "70525",
+   "model": "577107"
+  },
+  {
+   "type": "cab",
+   "ref": "45022",
+   "model": "239238"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#9c6644",
+  "B": "#9c6644",
+  "C": "#9c6644",
+  "D": "#9c6644",
+  "E": "#9c6644",
+  "6": "#9c6644",
+  "7": "#9c6644",
+  "8": "#9c6644",
+  "9": "#9c6644",
+  "10": "#9c6644"
+ },
+ "anims": {
+  "A": "snow",
+  "B": "pulse",
+  "C": "fire",
+  "D": "scanner",
+  "E": "sheen",
+  "6": "glitch",
+  "7": "monster",
+  "8": "rain",
+  "9": "vu",
+  "10": "wave"
+ },
+ "deps": [
+  {
+   "sha256": "3d7f8fb8aa47fc2256ffb741442e66dde2a39ead7ff038c58202bfe83009c1e9",
+   "uid": "t3k:37818",
+   "kind": "pedal",
+   "bytes": 294104,
+   "name": "EHX IC Big Muff V-6 T-5 S-10",
+   "source": "t3k",
+   "amp": "Electro-Harmonix Op-Amp Big Muff",
+   "arch": "2",
+   "brand": "Custom / Other",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/electro-harmonix-op-amp-big-muff-37818"
+  },
+  {
+   "sha256": "c8e9d09f009ed85de6f0d24a3922c69747a188ad1ce4b63dadbba4c2f5b36085",
+   "uid": "t3k:70525",
+   "kind": "amp",
+   "bytes": 294970,
+   "name": "[AMP] JMP2204-Mar4x12-HI Classic Hits - DI",
+   "source": "t3k",
+   "amp": "Marshall JMP 2204 50W",
+   "arch": "2",
+   "brand": "Marshall",
+   "creator": "2dor",
+   "url": "https://www.tone3000.com/tones/1980-marshall-jmp-2204-el34-multiload-community-pack-amp-head-70525"
+  },
+  {
+   "sha256": "6a406b5ae6df292c16608d24c5a4d609aafb3e17cc2b3f067d1aaa86898cb84c",
+   "uid": "t3k:45022",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "M25 UL 1960TV 4x12 SM57 1.75in 0.0in SA73",
+   "source": "t3k",
+   "amp": "Celestion Greenback - Marshall 1960TV 4x12 SM57",
+   "brand": "Marshall",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45022"
+  },
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"wave\", \"6\": \"glitch\", \"7\": \"monster\", \"8\": \"rain\", \"9\": \"vu\", \"A\": \"snow\", \"B\": \"pulse\", \"C\": \"fire\", \"D\": \"scanner\", \"E\": \"sheen\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"post\": [{\"id\": \"jmp\", \"label\": \"Marshall JMP 2204\", \"model\": \"577107\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"70525\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"feedback\": -6, \"model\": \"Script 90\", \"rate\": 0.4, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 8, \"id\": \"flange\", \"params\": {\"depth\": 70, \"feedback\": -14, \"mode\": \"Mistress\", \"rate\": 0.18}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 80, \"midfreq\": 700, \"midgain\": -1}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 10, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 90, \"thresh\": -52}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}], \"split\": null}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"7\": \"#9c6644\", \"8\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\", \"E\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"jmp\", \"label\": \"Marshall JMP 2204\", \"model\": \"577107\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"70525\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"feedback\": -6, \"model\": \"Script 90\", \"rate\": 0.4, \"wet\": -3}, \"type\": \"phaser-js\"}, {\"foot\": 8, \"id\": \"flange\", \"params\": {\"depth\": 70, \"feedback\": -14, \"mode\": \"Mistress\", \"rate\": 0.18}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 80, \"midfreq\": 700, \"midgain\": -1}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 10, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 90, \"thresh\": -52}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Fuzz Grunge\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"flange\": false, \"muff\": false, \"phase\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Verse Crunch\", \"params\": {}}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Fuzz Wall\", \"params\": {}}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Fuzz Lead\", \"params\": {\"dly\": {\"mix\": 18}, \"eq\": {\"midfreq\": 800, \"midgain\": 3}}}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Phased Bridge\", \"params\": {}}, {\"blocks\": {\"flange\": true, \"muff\": false, \"phase\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Jet Clean\", \"params\": {\"jmp\": {\"input\": -10}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"flange\": false, \"muff\": false, \"phase\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Verse Crunch\"}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Fuzz Wall\"}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Fuzz Lead\", \"params\": {\"dly\": {\"mix\": 18}, \"eq\": {\"midfreq\": 800, \"midgain\": 3}}}, {\"blocks\": {\"flange\": false, \"muff\": true, \"phase\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Phased Bridge\"}, {\"blocks\": {\"flange\": true, \"muff\": false, \"phase\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Jet Clean\", \"params\": {\"jmp\": {\"input\": -10}}}]}"
+}

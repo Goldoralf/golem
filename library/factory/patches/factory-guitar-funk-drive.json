@@ -1,0 +1,531 @@
+{
+ "id": "factory-guitar-funk-drive",
+ "name": "Funk Drive",
+ "role": "guitar",
+ "tags": [
+  "funk",
+  "rock",
+  "drive"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Funk Drive",
+   "midi": false,
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -56,
+       "release": 120
+      }
+     },
+     {
+      "id": "ds1",
+      "type": "pedal-nam",
+      "label": "Boss DS-1 Distortion",
+      "ref": "2508",
+      "model": "419263",
+      "params": {
+       "input": 0,
+       "output": -3
+      },
+      "foot": 6
+     },
+     {
+      "id": "fuzz",
+      "type": "fuzz",
+      "params": {
+       "fuzz": 75,
+       "tone": 10,
+       "level": -3,
+       "model": "Si Four"
+      },
+      "foot": 8
+     }
+    ],
+    "split": null,
+    "post": [
+     {
+      "id": "jub",
+      "type": "amp-nam",
+      "label": "Marshall Silver Jubilee",
+      "ref": "27435",
+      "model": "106491",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gb",
+      "type": "cab",
+      "label": "Marshall 4x12 Greenback",
+      "ref": "45022",
+      "model": "239238",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "wah",
+      "type": "wah",
+      "params": {
+       "wah": 0.5,
+       "mode": "manual"
+      },
+      "foot": 7
+     },
+     {
+      "id": "flange",
+      "type": "flanger-js",
+      "params": {
+       "mode": "Mistress",
+       "rate": 0.2,
+       "feedback": -14
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 90,
+       "midgain": 1.5,
+       "midfreq": 1000,
+       "highs": 0
+      }
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/4",
+       "feedback": 22,
+       "mix": 12
+      }
+     },
+     {
+      "id": "room",
+      "type": "reverb-room",
+      "params": {
+       "mix": 14,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Crunch Rhythm",
+     "blocks": {
+      "ds1": false,
+      "fuzz": false,
+      "wah": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Dirty Chords",
+     "blocks": {
+      "ds1": true,
+      "fuzz": false,
+      "wah": false,
+      "flange": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Wah Lead",
+     "blocks": {
+      "ds1": true,
+      "fuzz": false,
+      "wah": true,
+      "flange": false
+     },
+     "params": {
+      "dly": {
+       "mix": 16
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Fuzz Solo",
+     "blocks": {
+      "ds1": false,
+      "fuzz": true,
+      "wah": false,
+      "flange": false
+     },
+     "params": {
+      "dly": {
+       "mix": 18
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Flanged Crunch",
+     "blocks": {
+      "ds1": false,
+      "fuzz": false,
+      "wah": false,
+      "flange": true
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Crunch Rhythm",
+   "blocks": {
+    "ds1": false,
+    "fuzz": false,
+    "wah": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Dirty Chords",
+   "blocks": {
+    "ds1": true,
+    "fuzz": false,
+    "wah": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Wah Lead",
+   "blocks": {
+    "ds1": true,
+    "fuzz": false,
+    "wah": true,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": 3
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 16
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "D",
+   "name": "Fuzz Solo",
+   "blocks": {
+    "ds1": false,
+    "fuzz": true,
+    "wah": false,
+    "flange": false
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": 3
+    }
+   },
+   "params": {
+    "dly": {
+     "mix": 18
+    }
+   },
+   "level": 3
+  },
+  {
+   "id": "E",
+   "name": "Flanged Crunch",
+   "blocks": {
+    "ds1": false,
+    "fuzz": false,
+    "wah": false,
+    "flange": true
+   },
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-funk-16.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "compo-global",
+     "type": "compo",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 100,
+ "chain": {
+  "pre": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -56,
+     "release": 120
+    }
+   },
+   {
+    "id": "ds1",
+    "type": "pedal-nam",
+    "label": "Boss DS-1 Distortion",
+    "ref": "2508",
+    "model": "419263",
+    "params": {
+     "input": 0,
+     "output": -3
+    },
+    "foot": 6
+   },
+   {
+    "id": "fuzz",
+    "type": "fuzz",
+    "params": {
+     "fuzz": 75,
+     "tone": 10,
+     "level": -3,
+     "model": "Si Four"
+    },
+    "foot": 8
+   }
+  ],
+  "split": null,
+  "post": [
+   {
+    "id": "jub",
+    "type": "amp-nam",
+    "label": "Marshall Silver Jubilee",
+    "ref": "27435",
+    "model": "106491",
+    "params": {
+     "input": 0,
+     "output": 0
+    }
+   },
+   {
+    "id": "gb",
+    "type": "cab",
+    "label": "Marshall 4x12 Greenback",
+    "ref": "45022",
+    "model": "239238",
+    "params": {
+     "level": 0
+    }
+   },
+   {
+    "id": "wah",
+    "type": "wah",
+    "params": {
+     "wah": 0.5,
+     "mode": "manual"
+    },
+    "foot": 7
+   },
+   {
+    "id": "flange",
+    "type": "flanger-js",
+    "params": {
+     "mode": "Mistress",
+     "rate": 0.2,
+     "feedback": -14
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 90,
+     "midgain": 1.5,
+     "midfreq": 1000,
+     "highs": 0
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/4",
+     "feedback": 22,
+     "mix": 12
+    }
+   },
+   {
+    "id": "room",
+    "type": "reverb-room",
+    "params": {
+     "mix": 14,
+     "decay": 0.8,
+     "size": 14,
+     "hicut": 7000
+    }
+   }
+  ]
+ },
+ "needs": [
+  {
+   "type": "pedal-nam",
+   "ref": "2508",
+   "model": "419263"
+  },
+  {
+   "type": "amp-nam",
+   "ref": "27435",
+   "model": "106491"
+  },
+  {
+   "type": "cab",
+   "ref": "45022",
+   "model": "239238"
+  }
+ ],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#ef476f",
+  "B": "#ef476f",
+  "C": "#ef476f",
+  "D": "#ef476f",
+  "E": "#ef476f",
+  "6": "#ef476f",
+  "7": "#ef476f",
+  "8": "#ef476f",
+  "9": "#ef476f",
+  "10": "#ef476f"
+ },
+ "anims": {
+  "A": "vu",
+  "B": "wave",
+  "C": "heartbeat",
+  "D": "lightning",
+  "E": "smoke",
+  "6": "vortex",
+  "7": "strobe",
+  "8": "stars",
+  "9": "ember",
+  "10": "aurora"
+ },
+ "deps": [
+  {
+   "sha256": "78811048dc556dff6f7e2a440d18381a6aabb33e51fb6e5d4a167e78cc9c62b7",
+   "uid": "t3k:2508",
+   "kind": "pedal",
+   "bytes": 294254,
+   "name": "GP Boss DS-1 Distortion T06 D08",
+   "source": "t3k",
+   "amp": "Boss DS-1 Distortion",
+   "arch": "2",
+   "brand": "Boss",
+   "creator": "gpso",
+   "url": "https://www.tone3000.com/tones/boss-ds-1-distortion-pack-2508"
+  },
+  {
+   "sha256": "fc42e6cae106bde90f9b8ee21700bcd6aba1f25a64287a07bff6795e2dbe2d03",
+   "uid": "t3k:27435",
+   "kind": "amp",
+   "bytes": 282501,
+   "name": "Crunch Jubilee",
+   "source": "t3k",
+   "amp": "Marshall Silver Jubilee Studio",
+   "brand": "Marshall",
+   "creator": "jesusalmartin",
+   "url": "https://www.tone3000.com/tones/27435"
+  },
+  {
+   "sha256": "6a406b5ae6df292c16608d24c5a4d609aafb3e17cc2b3f067d1aaa86898cb84c",
+   "uid": "t3k:45022",
+   "kind": "cab",
+   "bytes": 72080,
+   "name": "M25 UL 1960TV 4x12 SM57 1.75in 0.0in SA73",
+   "source": "t3k",
+   "amp": "Celestion Greenback - Marshall 1960TV 4x12 SM57",
+   "brand": "Marshall",
+   "creator": "outmodedelectronics",
+   "url": "https://www.tone3000.com/tones/45022"
+  },
+  {
+   "sha256": "aa8dac161664bc666606874b2b7894b08d24885cfea0c1cef0c58621abe57a80",
+   "uid": "local:groove-golem-funk-16",
+   "kind": "groove",
+   "bytes": 441,
+   "name": "Funk 16",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"vortex\", \"7\": \"strobe\", \"8\": \"stars\", \"9\": \"ember\", \"A\": \"vu\", \"B\": \"wave\", \"C\": \"heartbeat\", \"D\": \"lightning\", \"E\": \"smoke\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"id\": \"jub\", \"label\": \"Marshall Silver Jubilee\", \"model\": \"106491\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27435\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"wah\", \"params\": {\"mode\": \"manual\", \"wah\": 0.5}, \"type\": \"wah\"}, {\"id\": \"flange\", \"params\": {\"feedback\": -14, \"mode\": \"Mistress\", \"rate\": 0.2}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 90, \"midfreq\": 1000, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419263\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}, {\"foot\": 8, \"id\": \"fuzz\", \"params\": {\"fuzz\": 75, \"level\": -3, \"model\": \"Si Four\", \"tone\": 10}, \"type\": \"fuzz\"}], \"split\": null}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"8\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\", \"E\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"jub\", \"label\": \"Marshall Silver Jubilee\", \"model\": \"106491\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27435\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"wah\", \"params\": {\"mode\": \"manual\", \"wah\": 0.5}, \"type\": \"wah\"}, {\"id\": \"flange\", \"params\": {\"feedback\": -14, \"mode\": \"Mistress\", \"rate\": 0.2}, \"type\": \"flanger-js\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 90, \"midfreq\": 1000, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419263\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}, {\"foot\": 8, \"id\": \"fuzz\", \"params\": {\"fuzz\": 75, \"level\": -3, \"model\": \"Si Four\", \"tone\": 10}, \"type\": \"fuzz\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Funk Drive\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"ds1\": false, \"flange\": false, \"fuzz\": false, \"wah\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Crunch Rhythm\", \"params\": {}}, {\"blocks\": {\"ds1\": true, \"flange\": false, \"fuzz\": false, \"wah\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Dirty Chords\", \"params\": {}}, {\"blocks\": {\"ds1\": true, \"flange\": false, \"fuzz\": false, \"wah\": true}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Wah Lead\", \"params\": {\"dly\": {\"mix\": 16}}}, {\"blocks\": {\"ds1\": false, \"flange\": false, \"fuzz\": true, \"wah\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Fuzz Solo\", \"params\": {\"dly\": {\"mix\": 18}}}, {\"blocks\": {\"ds1\": false, \"flange\": true, \"fuzz\": false, \"wah\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Flanged Crunch\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"ds1\": false, \"flange\": false, \"fuzz\": false, \"wah\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Crunch Rhythm\"}, {\"blocks\": {\"ds1\": true, \"flange\": false, \"fuzz\": false, \"wah\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Dirty Chords\"}, {\"blocks\": {\"ds1\": true, \"flange\": false, \"fuzz\": false, \"wah\": true}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Wah Lead\", \"params\": {\"dly\": {\"mix\": 16}}}, {\"blocks\": {\"ds1\": false, \"flange\": false, \"fuzz\": true, \"wah\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Fuzz Solo\", \"params\": {\"dly\": {\"mix\": 18}}}, {\"blocks\": {\"ds1\": false, \"flange\": true, \"fuzz\": false, \"wah\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Flanged Crunch\"}]}"
+}

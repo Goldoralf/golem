@@ -4,7 +4,7 @@
  "role": "voice",
  "tags": [
   "pop",
-  "electro"
+  "vocal"
  ],
  "kind": "patch",
  "patch_v": 2,
@@ -14,67 +14,6 @@
    "id": "voice-1",
    "role": "voice",
    "name": "Pop Tuned",
-   "states": [
-    {
-     "id": "st-voice-1-A",
-     "name": "Natural",
-     "blocks": {
-      "tune": true,
-      "double": false,
-      "dly": false
-     },
-     "params": {},
-     "branches": {}
-    },
-    {
-     "id": "st-voice-1-B",
-     "name": "Hard Tune",
-     "blocks": {
-      "tune": true,
-      "double": false,
-      "dly": true
-     },
-     "params": {
-      "tune": {
-       "corr": 1.0,
-       "filter": 0.02,
-       "fastmode": true
-      }
-     },
-     "branches": {}
-    },
-    {
-     "id": "st-voice-1-C",
-     "name": "Double",
-     "blocks": {
-      "tune": true,
-      "double": true,
-      "dly": true
-     },
-     "params": {},
-     "branches": {}
-    },
-    {
-     "id": "st-voice-1-D",
-     "name": "Ambient",
-     "blocks": {
-      "tune": true,
-      "double": true,
-      "dly": true
-     },
-     "params": {
-      "verb": {
-       "mix": 32,
-       "decay": 3.0
-      },
-      "dly": {
-       "time": "1/4•",
-       "feedback": 40
-      }
-     },
-     "branches": {}
-    }
-   ],
    "midi": false,
    "chain": {
     "chain": [
@@ -82,46 +21,42 @@
       "id": "gate",
       "type": "gate",
       "params": {
-       "thresh": -55,
-       "attack": 2,
+       "thresh": -58,
        "release": 200
       }
      },
      {
       "id": "tune",
       "type": "pitch-correct",
-      "foot": 7,
       "params": {
        "corr": 0.6,
        "filter": 0.15,
-       "fastmode": false,
+       "fastmode": true,
        "key": "C",
        "scale": "Major",
-       "offset": 0
-      }
+       "song_key": true
+      },
+      "foot": 7
      },
      {
       "id": "comp",
       "type": "comp",
       "params": {
+       "character": "Clean",
        "thresh": -20,
        "ratio": 3,
        "makeup": 3,
-       "attack": 10,
-       "release": 140
+       "attack": 15
       }
      },
      {
       "id": "eq",
       "type": "eq",
       "params": {
-       "lowcut": 100.0,
-       "lows": 0.0,
-       "midgain": 0.0,
-       "midfreq": 1000.0,
-       "mid2gain": -2.0,
-       "mid2freq": 250.0,
-       "highs": 2.0
+       "lowcut": 100,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 2
       }
      },
      {
@@ -129,54 +64,99 @@
       "type": "deesser",
       "params": {
        "thresh": -28,
-       "freq": 7000,
+       "freq": 6500,
        "range": 10
       }
      },
      {
       "id": "double",
       "type": "chorus",
-      "foot": 8,
       "params": {
-       "rate": 0.35,
-       "delay_base": 20.0,
-       "depth": 5.0,
-       "mix": 0.32,
-       "voices": "2"
-      }
+       "profile": "Voice",
+       "mode": "Doubler",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 6
      },
      {
       "id": "dly",
       "type": "delay",
-      "foot": 6,
       "params": {
+       "model": "Digital",
        "time": "1/4",
-       "feedback": 28,
-       "mix": 16
+       "feedback": 22,
+       "mix": 12
       }
      },
      {
-      "id": "verb",
+      "id": "plate",
       "type": "reverb-plate",
       "params": {
-       "mix": 20,
+       "mix": 22,
        "decay": 1.8,
-       "predelay": 25,
-       "hicut": 8500
+       "size": 24,
+       "hicut": 8000
       }
      }
     ]
-   }
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Pop Verse",
+     "blocks": {
+      "double": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Chorus Double",
+     "blocks": {
+      "double": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "double": false
+     },
+     "params": {
+      "plate": {
+       "mix": 30
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Hard Tune",
+     "blocks": {
+      "double": false
+     },
+     "params": {
+      "tune": {
+       "corr": 1.0,
+       "filter": 0.02
+      }
+     },
+     "branches": {}
+    }
+   ]
   }
  ],
  "scenes": [
   {
    "id": "A",
-   "name": "Natural",
+   "name": "Pop Verse",
    "blocks": {
-    "tune": true,
-    "double": false,
-    "dly": false
+    "double": false
    },
    "lanes": {
     "voice-1": {
@@ -186,68 +166,52 @@
   },
   {
    "id": "B",
+   "name": "Chorus Double",
+   "blocks": {
+    "double": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Ballad",
+   "blocks": {
+    "double": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   },
+   "params": {
+    "plate": {
+     "mix": 30
+    }
+   }
+  },
+  {
+   "id": "D",
    "name": "Hard Tune",
    "blocks": {
-    "tune": true,
-    "double": false,
-    "dly": true
+    "double": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    }
    },
    "params": {
     "tune": {
      "corr": 1.0,
-     "filter": 0.02,
-     "fastmode": true
-    }
-   },
-   "lanes": {
-    "voice-1": {
-     "level": 1,
-     "state": "st-voice-1-B"
+     "filter": 0.02
     }
    },
    "level": 1
-  },
-  {
-   "id": "C",
-   "name": "Double",
-   "blocks": {
-    "tune": true,
-    "double": true,
-    "dly": true
-   },
-   "lanes": {
-    "voice-1": {
-     "level": 1,
-     "state": "st-voice-1-C"
-    }
-   },
-   "level": 1
-  },
-  {
-   "id": "D",
-   "name": "Ambient",
-   "blocks": {
-    "tune": true,
-    "double": true,
-    "dly": true
-   },
-   "params": {
-    "verb": {
-     "mix": 32,
-     "decay": 3.0
-    },
-    "dly": {
-     "time": "1/4•",
-     "feedback": 40
-    }
-   },
-   "lanes": {
-    "voice-1": {
-     "level": -1,
-     "state": "st-voice-1-D"
-    }
-   },
-   "level": -1
   }
  ],
  "config": {
@@ -260,7 +224,7 @@
      "foot": 10,
      "params": {
       "patterns": [
-       "library/grooves/golem-four-on-the-floor.mid"
+       "library/grooves/golem-rock-8.mid"
       ],
       "fills": [],
       "kit": "drums-black-pearl"
@@ -278,53 +242,49 @@
    ]
   }
  },
- "bpm": 118,
+ "bpm": 76,
  "chain": {
   "chain": [
    {
     "id": "gate",
     "type": "gate",
     "params": {
-     "thresh": -55,
-     "attack": 2,
+     "thresh": -58,
      "release": 200
     }
    },
    {
     "id": "tune",
     "type": "pitch-correct",
-    "foot": 7,
     "params": {
      "corr": 0.6,
      "filter": 0.15,
-     "fastmode": false,
+     "fastmode": true,
      "key": "C",
      "scale": "Major",
-     "offset": 0
-    }
+     "song_key": true
+    },
+    "foot": 7
    },
    {
     "id": "comp",
     "type": "comp",
     "params": {
+     "character": "Clean",
      "thresh": -20,
      "ratio": 3,
      "makeup": 3,
-     "attack": 10,
-     "release": 140
+     "attack": 15
     }
    },
    {
     "id": "eq",
     "type": "eq",
     "params": {
-     "lowcut": 100.0,
-     "lows": 0.0,
-     "midgain": 0.0,
-     "midfreq": 1000.0,
-     "mid2gain": -2.0,
-     "mid2freq": 250.0,
-     "highs": 2.0
+     "lowcut": 100,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": 2
     }
    },
    {
@@ -332,53 +292,74 @@
     "type": "deesser",
     "params": {
      "thresh": -28,
-     "freq": 7000,
+     "freq": 6500,
      "range": 10
     }
    },
    {
     "id": "double",
     "type": "chorus",
-    "foot": 8,
     "params": {
-     "rate": 0.35,
-     "delay_base": 20.0,
-     "depth": 5.0,
-     "mix": 0.32,
-     "voices": "2"
-    }
+     "profile": "Voice",
+     "mode": "Doubler",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.35
+    },
+    "foot": 6
    },
    {
     "id": "dly",
     "type": "delay",
-    "foot": 6,
     "params": {
+     "model": "Digital",
      "time": "1/4",
-     "feedback": 28,
-     "mix": 16
+     "feedback": 22,
+     "mix": 12
     }
    },
    {
-    "id": "verb",
+    "id": "plate",
     "type": "reverb-plate",
     "params": {
-     "mix": 20,
+     "mix": 22,
      "decay": 1.8,
-     "predelay": 25,
-     "hicut": 8500
+     "size": 24,
+     "hicut": 8000
     }
    }
   ]
  },
  "needs": [],
  "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#ffb703",
+  "B": "#ffb703",
+  "C": "#ffb703",
+  "D": "#ffb703",
+  "6": "#ffb703",
+  "7": "#ffb703",
+  "9": "#ffb703",
+  "10": "#ffb703"
+ },
+ "anims": {
+  "A": "snow",
+  "B": "pulse",
+  "C": "fire",
+  "D": "scanner",
+  "6": "sheen",
+  "7": "glitch",
+  "9": "monster",
+  "10": "rain"
+ },
  "deps": [
   {
-   "sha256": "165f2cf0f259a1812ed50146696a922c422e379f044f520a6eebf02a52bcd588",
-   "uid": "local:groove-golem-four-on-the-floor",
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
    "kind": "groove",
-   "bytes": 281,
-   "name": "Four on the floor",
+   "bytes": 265,
+   "name": "Rock 8",
    "source": "golemfm",
    "factory": true,
    "brand": "GoleM",
@@ -397,22 +378,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"6\": \"ember\", \"7\": \"aurora\", \"8\": \"rain\", \"A\": \"fire\", \"B\": \"stars\", \"C\": \"vortex\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 118, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": false, \"filter\": 0.15, \"key\": \"C\", \"offset\": 0, \"scale\": \"Major\"}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 140, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 4000, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.35, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 8500, \"mix\": 20, \"predelay\": 25}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#ff70a6\", \"7\": \"#ff70a6\", \"8\": \"#ff70a6\", \"A\": \"#ff70a6\", \"B\": \"#ff70a6\", \"C\": \"#ff70a6\", \"D\": \"#ff70a6\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-four-on-the-floor.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"attack\": 2, \"release\": 200, \"thresh\": -55}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": false, \"filter\": 0.15, \"key\": \"C\", \"offset\": 0, \"scale\": \"Major\"}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"makeup\": 3, \"ratio\": 3, \"release\": 140, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"bass\": 0, \"f1\": 250, \"f2\": 1000, \"f3\": 4000, \"g1\": -2, \"g2\": 0, \"g3\": 2, \"lowcut\": 100, \"lowcut_on\": true, \"treble\": 2}, \"type\": \"eq-para\"}, {\"id\": \"ess\", \"params\": {\"freq\": 7000, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"double\", \"params\": {\"dry\": 0, \"length\": 20, \"rate\": 0.35, \"voices\": 2, \"wet\": -10}, \"type\": \"chorus-js\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 16, \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"decay\": 1.8, \"hicut\": 8500, \"mix\": 20, \"predelay\": 25}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Pop Tuned\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"double\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Natural\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"fastmode\": true, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Double\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Ambient\", \"params\": {\"dly\": {\"feedback\": 40, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 3.0, \"mix\": 32}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"double\": false, \"tune\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Natural\"}, {\"blocks\": {\"dly\": true, \"double\": false, \"tune\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-B\"}}, \"level\": 1, \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"fastmode\": true, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Double\"}, {\"blocks\": {\"dly\": true, \"double\": true, \"tune\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": -1, \"state\": \"st-voice-1-D\"}}, \"level\": -1, \"name\": \"Ambient\", \"params\": {\"dly\": {\"feedback\": 40, \"time\": \"1/4•\"}, \"verb\": {\"decay\": 3.0, \"mix\": 32}}}]}",
- "factory": true,
- "colors": {
-  "A": "#ff70a6",
-  "B": "#ff70a6",
-  "C": "#ff70a6",
-  "D": "#ff70a6",
-  "9": "#ff70a6",
-  "10": "#ff70a6"
- },
- "anims": {
-  "A": "fire",
-  "B": "stars",
-  "C": "vortex",
-  "D": "scanner",
-  "9": "glitch",
-  "10": "rain"
- }
+ "deps_sig": "{\"anims\": {\"10\": \"rain\", \"6\": \"sheen\", \"7\": \"glitch\", \"9\": \"monster\", \"A\": \"snow\", \"B\": \"pulse\", \"C\": \"fire\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 200, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": true, \"filter\": 0.15, \"key\": \"C\", \"scale\": \"Major\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"7\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 200, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 7, \"id\": \"tune\", \"params\": {\"corr\": 0.6, \"fastmode\": true, \"filter\": 0.15, \"key\": \"C\", \"scale\": \"Major\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 22, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Pop Tuned\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Pop Verse\", \"params\": {}}, {\"blocks\": {\"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Chorus Double\", \"params\": {}}, {\"blocks\": {\"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Ballad\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"double\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Pop Verse\"}, {\"blocks\": {\"double\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Chorus Double\"}, {\"blocks\": {\"double\": false}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Ballad\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"double\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Hard Tune\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}]}"
 }

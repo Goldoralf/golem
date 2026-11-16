@@ -2,68 +2,96 @@
  "id": "factory-keys",
  "name": "Factory Keys",
  "fcb": true,
- "rev": 2,
+ "rev": 4,
  "kind": "sounds",
- "presets": [
-  "patch:factory-keys-jazz-piano",
-  "patch:factory-keys-electric-piano",
-  "patch:factory-keys-rock-organ",
-  "patch:factory-keys-80s-epiano",
-  "patch:factory-keys-warm-pad",
-  "patch:factory-keys-synth-lead",
-  "patch:factory-keys-loop-bass-beat",
-  "patch:factory-keys-cathedral-piano"
- ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
-   "id": "r:factory-keys:9977416c",
+   "id": "r:factory-keys:jazz-piano",
    "rev": 1,
    "title": "Jazz Piano",
    "patch": "factory-keys-jazz-piano"
   },
   {
-   "id": "r:factory-keys:34496e36",
+   "id": "r:factory-keys:blues-organ",
    "rev": 1,
-   "title": "Electric Piano",
-   "patch": "factory-keys-electric-piano"
-  },
-  {
-   "id": "r:factory-keys:b039b464",
-   "rev": 1,
-   "title": "Rock Organ",
-   "patch": "factory-keys-rock-organ"
-  },
-  {
-   "id": "r:factory-keys:a34ebfc3",
-   "rev": 1,
-   "title": "80s E-Piano",
-   "patch": "factory-keys-80s-epiano"
-  },
-  {
-   "id": "r:factory-keys:b9aadcde",
-   "rev": 1,
-   "title": "Warm Pad",
-   "patch": "factory-keys-warm-pad"
-  },
-  {
-   "id": "r:factory-keys:5ff0ffe5",
-   "rev": 1,
-   "title": "Synth Lead",
-   "patch": "factory-keys-synth-lead"
-  },
-  {
-   "id": "r:factory-keys:fb0fb3a2",
-   "rev": 1,
-   "title": "Loop Bass & Beat",
-   "patch": "factory-keys-loop-bass-beat"
+   "title": "Blues Organ",
+   "patch": "factory-keys-blues-organ"
   },
   {
    "id": "r:factory-keys:cathedral-piano",
    "rev": 1,
    "title": "Cathedral Piano",
    "patch": "factory-keys-cathedral-piano"
+  },
+  {
+   "id": "r:factory-keys:hero-pad",
+   "rev": 1,
+   "title": "Hero Pad",
+   "patch": "factory-keys-hero-pad"
+  },
+  {
+   "id": "r:factory-keys:dark-pad",
+   "rev": 1,
+   "title": "Dark Pad",
+   "patch": "factory-keys-dark-pad"
+  },
+  {
+   "id": "r:factory-keys:glass-rhodes",
+   "rev": 1,
+   "title": "Glass Rhodes",
+   "patch": "factory-keys-glass-rhodes"
+  },
+  {
+   "id": "r:factory-keys:electro-pads",
+   "rev": 1,
+   "title": "Electro Pads",
+   "patch": "factory-keys-electro-pads"
+  },
+  {
+   "id": "r:factory-keys:loop-synth",
+   "rev": 1,
+   "title": "Loop Synth & Beat",
+   "patch": "factory-keys-loop-synth"
+  },
+  {
+   "id": "r:factory-keys:strings-wash",
+   "rev": 1,
+   "title": "Strings Wash",
+   "patch": "factory-keys-strings-wash"
+  },
+  {
+   "id": "r:factory-keys:funk-clav",
+   "rev": 1,
+   "title": "Funk Clav",
+   "patch": "factory-keys-funk-clav"
+  },
+  {
+   "id": "r:factory-keys:nu-pad",
+   "rev": 1,
+   "title": "Nu Haze",
+   "patch": "factory-keys-nu-pad"
+  },
+  {
+   "id": "r:factory-keys:pop-piano",
+   "rev": 1,
+   "title": "Pop Piano",
+   "patch": "factory-keys-pop-piano"
   }
  ],
- "factory": true
+ "presets": [
+  "patch:factory-keys-jazz-piano",
+  "patch:factory-keys-blues-organ",
+  "patch:factory-keys-cathedral-piano",
+  "patch:factory-keys-hero-pad",
+  "patch:factory-keys-dark-pad",
+  "patch:factory-keys-glass-rhodes",
+  "patch:factory-keys-electro-pads",
+  "patch:factory-keys-loop-synth",
+  "patch:factory-keys-strings-wash",
+  "patch:factory-keys-funk-clav",
+  "patch:factory-keys-nu-pad",
+  "patch:factory-keys-pop-piano"
+ ]
 }

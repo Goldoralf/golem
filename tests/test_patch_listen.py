@@ -88,12 +88,12 @@ def test_la_di_se_choisit_par_les_tags_avant_le_style():
 def test_claviers_et_batterie_choisissent_leur_reference_midi():
     import glob
     import json as _j
-    want = {"factory-keys-80s-epiano": "keys/epiano", "factory-keys-cathedral-piano": "keys/piano",
-            "factory-keys-electric-piano": "keys/epiano", "factory-keys-jazz-piano": "keys/piano",
-            "factory-keys-rock-organ": "keys/organ", "factory-keys-synth-lead": "keys/lead",
-            "factory-keys-warm-pad": "keys/pad", "factory-drums-classic-rock": "drums/rock",
+    want = {"factory-keys-glass-rhodes": "keys/epiano", "factory-keys-cathedral-piano": "keys/piano",
+            "factory-keys-funk-clav": "keys/epiano", "factory-keys-jazz-piano": "keys/piano",
+            "factory-keys-blues-organ": "keys/organ", "factory-keys-loop-synth": "keys/lead",
+            "factory-keys-hero-pad": "keys/pad", "factory-drums-vintage-rock": "drums/rock",
             "factory-drums-jazz-brushes": "drums/jazz", "factory-drums-metal": "drums/metal",
-            "factory-drums-studio-rock": "drums/rock"}
+            "factory-drums-studio-rock": "drums/rock", "factory-drums-lofi": "drums/rock"}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for path in glob.glob(os.path.join(root, "library", "factory", "patches", "factory-*.json")):
         d = _j.load(open(path))

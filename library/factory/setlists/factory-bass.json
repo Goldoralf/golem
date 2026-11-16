@@ -2,61 +2,82 @@
  "id": "factory-bass",
  "name": "Factory Bass",
  "fcb": true,
- "rev": 2,
+ "rev": 4,
  "kind": "sounds",
- "presets": [
-  "patch:factory-bass-jazz-warm",
-  "patch:factory-bass-vintage-round",
-  "patch:factory-bass-funk-slap",
-  "patch:factory-bass-rock-grind",
-  "patch:factory-bass-metal",
-  "patch:factory-bass-synth",
-  "patch:factory-bass-biamp-grit"
- ],
  "origin": "factory",
+ "factory": true,
  "lines": [
   {
-   "id": "r:factory-bass:750e6d4a",
+   "id": "r:factory-bass:upright-jazz",
    "rev": 1,
-   "title": "Jazz Warm",
-   "patch": "factory-bass-jazz-warm"
+   "title": "Upright Jazz",
+   "patch": "factory-bass-upright-jazz"
   },
   {
-   "id": "r:factory-bass:a17fdc40",
+   "id": "r:factory-bass:blues-round",
    "rev": 1,
-   "title": "Vintage Round",
-   "patch": "factory-bass-vintage-round"
+   "title": "Blues Round",
+   "patch": "factory-bass-blues-round"
   },
   {
-   "id": "r:factory-bass:f896db24",
+   "id": "r:factory-bass:prog-biamp",
+   "rev": 1,
+   "title": "Prog Bi-Amp",
+   "patch": "factory-bass-prog-biamp"
+  },
+  {
+   "id": "r:factory-bass:metal-grind",
+   "rev": 1,
+   "title": "Metal Grind",
+   "patch": "factory-bass-metal-grind"
+  },
+  {
+   "id": "r:factory-bass:synth-ambient",
+   "rev": 1,
+   "title": "Synth Ambient",
+   "patch": "factory-bass-synth-ambient"
+  },
+  {
+   "id": "r:factory-bass:fuzz",
+   "rev": 1,
+   "title": "Fuzz Bass",
+   "patch": "factory-bass-fuzz"
+  },
+  {
+   "id": "r:factory-bass:funk-slap",
    "rev": 1,
    "title": "Funk Slap",
    "patch": "factory-bass-funk-slap"
   },
   {
-   "id": "r:factory-bass:8facbe32",
+   "id": "r:factory-bass:nu-low",
    "rev": 1,
-   "title": "Rock Grind",
-   "patch": "factory-bass-rock-grind"
+   "title": "Nu Low",
+   "patch": "factory-bass-nu-low"
   },
   {
-   "id": "r:factory-bass:c441628f",
+   "id": "r:factory-bass:pop-pick",
    "rev": 1,
-   "title": "Metal Bass",
-   "patch": "factory-bass-metal"
+   "title": "Pop Pick",
+   "patch": "factory-bass-pop-pick"
   },
   {
-   "id": "r:factory-bass:3d2bfea6",
+   "id": "r:factory-bass:lab",
    "rev": 1,
-   "title": "Synth Bass",
-   "patch": "factory-bass-synth"
-  },
-  {
-   "id": "r:factory-bass:biamp-grit",
-   "rev": 1,
-   "title": "Bi-Amp Grit",
-   "patch": "factory-bass-biamp-grit"
+   "title": "Bass Lab",
+   "patch": "factory-bass-lab"
   }
  ],
- "factory": true
+ "presets": [
+  "patch:factory-bass-upright-jazz",
+  "patch:factory-bass-blues-round",
+  "patch:factory-bass-prog-biamp",
+  "patch:factory-bass-metal-grind",
+  "patch:factory-bass-synth-ambient",
+  "patch:factory-bass-fuzz",
+  "patch:factory-bass-funk-slap",
+  "patch:factory-bass-nu-low",
+  "patch:factory-bass-pop-pick",
+  "patch:factory-bass-lab"
+ ]
 }

@@ -65,7 +65,11 @@ the NAM capture's architecture, the cab IR's length). So golem **measures** on t
 - **How long**: about 60 block types × 2 (mono and stereo) × a few seconds each, so **roughly 5 to 10 minutes** the
   first time on a desktop CPU. After that, only what changed: a new pedal takes a few seconds. This estimate is to be
   confirmed by the first run.
-- **The profile**: `config/cpu-profile.json` (local state, never committed). It holds:
+- **The profile**: `config/cpu-profile.json` (local state, never committed) — one **per engine**: REAPER's is this
+  file, the Golem Engine's is `config/cpu-profile-ardour.json` (2026-11-17; a block does not cost the same on the two
+  engines, and one file made every switch re-measure everything). On the Golem Engine the bench does not time an
+  offline render: it plays the DI in real time and reads what each plugin of the lane cost per buffer
+  ([`ardour-plan.md`](ardour-plan.md) §7d). It holds:
   - the machine: CPU model, cores, governor at measure time, sample rate, buffer;
   - one entry per block: type, variant, mono/stereo, µs per buffer (average and worst), the plugin's hash and the
     date.
@@ -92,6 +96,64 @@ it, and a sentence where it can't.
 4. **Split the lane**: move the heavy part of the chain to a branch, which goes on another track and another core.
 5. **A bigger buffer** (256, 384): more room, more latency. golem says how many ms that adds.
 6. Otherwise: "this preset is too heavy for this golem", with the lane and the block that weighs most.
+
+## 4 bis. Performance mode follows golem
+
+> **Status: CODED** (decided by the maintainer on 2026-11-17, after a measure on the rack).
+
+**The measure.** One heavy patch (Eight-String Nu), the Golem Engine, 192 samples, the same laptop:
+
+| CPU governor | Scene A | Scene D |
+|---|---|---|
+| `powersave` | 83–99 % engine load, 1–2 dropouts a minute (heard) | 99–100 %, 94 dropouts a minute |
+| `performance` | 37–46 %, none | 43–70 %, none |
+
+The plugins themselves cost 48 % of a cycle by their own counters: the rest was the processor slowing down between
+bursts of work.
+
+**The rule** (`bridge/routes_system.py`, `wants_boost`). golem puts the processor in performance mode **while it
+runs**, under both engines, and gives the previous mode back when it stops. Asking for permission when the load
+reaches 90 % was the alternative: it comes too late (dropouts are already there), in the middle of a song, and the
+load depends on the scene.
+
+- **On battery**: no automatism — the battery is the musician's. Health says so and the ⚡ button stays.
+- **A switch** turns the automatism off (System ▸ Dashboard, "Automatic"; `config/perf.json`, local state). Turning the
+  boost off by hand turns the automatism off too: the guard would otherwise turn it back on within 20 s.
+- **A mode that asks for it** (Gig, Show: `perf_boost`) wins over both.
+- **The guard** (`perf_guard_tick`, every 20 s from the monitor loop): on a laptop the system
+  (`power-profiles-daemon`) puts the governor back to `powersave` on its own; the boost set at start vanished
+  within the hour, silently. The guard sets it again and logs each drift once.
+- **Giving it back**: when golem turns the boost on it notes the governor it found (`presets/.perf-prev`);
+  `golem stop` (`provision/lib-engine.sh`, `golem_perf_restore`) restores it. Not on `golem restart`. Without the
+  mark, golem turned nothing on and touches nothing.
+- **Health** has a "Performance mode" fact: a warning when the processor saves power while golem runs, with the
+  reason (on battery, switched off, or the passwordless sudo rule missing: `provision/setup-perf-sudo.sh`).
+- A dedicated rack keeps its boot service (`golem-perf.service`); nothing changes for it.
+
+**The calibration must run in the mode the musician plays in**: the profile records the governor it was measured
+under, and the estimate offers "Turn on performance mode" when the two differ.
+
+## 4 ter. Under the Golem Engine: what a block costs when off, and the engine's own share
+
+> **Status: CODED** (2026-11-17, asked by the maintainer: the figure shown must look like the engine's load).
+
+Measured on the rack (Eight-String Nu, performance mode, counters reset per scene): the plugins on the critical path
+cost 15–20 % of a cycle, the estimate said 9–16 %, the engine announced 32–44 %. Two shares were missing:
+
+- **A block switched off may still run.** A VST3 that carries its own bypass keeps processing (it keeps its tails):
+  Shimmer off 127 µs, Delay 45, Kill Switch 41 — while Chorus and Pitch off cost 0. Nothing is guessed: the bench
+  cuts its render in quarters, three passes on and **one pass with the block off** (`off_us` in the profile), and
+  the estimate adds it for a bypassed block. Never on a **muted branch**: the engine puts it to sleep (0 µs, measured).
+- **The engine's fixed share** (graph, service and take tracks, threads): the load the engine announces with the
+  empty bench lane, read when the empty lane is measured (`engine_idle` in the profile; 11.3 % here). Added to every
+  lane; `engine_pct` in the estimate says how much of the figure it is.
+
+Result after recalibration: estimate **33 / 31 / 30 / 35 / 30 %** (A–E) against **42 / 44 / 36 / 44 / 32 %** announced
+by the engine while idle on each scene — the engine's figure moves by ±6 points on its own. The remaining gap (the
+fixed share grows with the rig's routes) is **not modelled**. REAPER's profile has neither field: nothing changes there.
+
+The Volume block is the one golem already puts on every lane: it is measured as part of the empty lane, not as
+"did not load" (every patch stayed "not measured" until then).
 
 ## 5. Checking the prediction while playing
 

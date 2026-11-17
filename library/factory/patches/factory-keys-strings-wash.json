@@ -68,7 +68,9 @@
     {
      "id": "st-keys-1-A",
      "name": "Strings Wash",
-     "blocks": {},
+     "blocks": {
+      "chorus": false
+     },
      "params": {},
      "branches": {}
     },
@@ -84,10 +86,17 @@
     {
      "id": "st-keys-1-C",
      "name": "Thin",
-     "blocks": {},
+     "blocks": {
+      "chorus": false
+     },
      "params": {
       "eq": {
-       "lowcut": 200
+       "lowcut": 400,
+       "highs": 3
+      },
+      "verb": {
+       "mix": 10,
+       "decay": 1.4
       }
      },
      "branches": {}
@@ -100,7 +109,12 @@
      },
      "params": {
       "verb": {
-       "mix": 34
+       "mix": 42,
+       "decay": 5
+      },
+      "eq": {
+       "lowcut": 80,
+       "highs": 1
       }
      },
      "branches": {}
@@ -112,7 +126,9 @@
   {
    "id": "A",
    "name": "Strings Wash",
-   "blocks": {},
+   "blocks": {
+    "chorus": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-A"
@@ -134,7 +150,9 @@
   {
    "id": "C",
    "name": "Thin",
-   "blocks": {},
+   "blocks": {
+    "chorus": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-C",
@@ -143,7 +161,12 @@
    },
    "params": {
     "eq": {
-     "lowcut": 200
+     "lowcut": 400,
+     "highs": 3
+    },
+    "verb": {
+     "mix": 10,
+     "decay": 1.4
     }
    },
    "level": -3
@@ -157,15 +180,20 @@
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-D",
-     "level": 1
+     "level": 2
     }
    },
    "params": {
     "verb": {
-     "mix": 34
+     "mix": 42,
+     "decay": 5
+    },
+    "eq": {
+     "lowcut": 80,
+     "highs": 1
     }
    },
-   "level": 1
+   "level": 2
   }
  ],
  "config": {
@@ -291,5 +319,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"stars\", \"9\": \"ember\", \"A\": \"lightning\", \"B\": \"smoke\", \"C\": \"vortex\", \"D\": \"strobe\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Strings Wash\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Strings Wash\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Chorus Strings\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Thin\", \"params\": {\"eq\": {\"lowcut\": 200}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Big Swell\", \"params\": {\"verb\": {\"mix\": 34}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Strings Wash\"}, {\"blocks\": {\"chorus\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Chorus Strings\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Thin\", \"params\": {\"eq\": {\"lowcut\": 200}}}, {\"blocks\": {\"chorus\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Big Swell\", \"params\": {\"verb\": {\"mix\": 34}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"aurora\", \"6\": \"stars\", \"9\": \"ember\", \"A\": \"lightning\", \"B\": \"smoke\", \"C\": \"vortex\", \"D\": \"strobe\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 20, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 120, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.6, \"hicut\": 7000, \"mix\": 24, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Strings Wash\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Strings Wash\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Chorus Strings\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Thin\", \"params\": {\"eq\": {\"highs\": 3, \"lowcut\": 400}, \"verb\": {\"decay\": 1.4, \"mix\": 10}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Big Swell\", \"params\": {\"eq\": {\"highs\": 1, \"lowcut\": 80}, \"verb\": {\"decay\": 5, \"mix\": 42}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"chorus\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Strings Wash\"}, {\"blocks\": {\"chorus\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Chorus Strings\"}, {\"blocks\": {\"chorus\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Thin\", \"params\": {\"eq\": {\"highs\": 3, \"lowcut\": 400}, \"verb\": {\"decay\": 1.4, \"mix\": 10}}}, {\"blocks\": {\"chorus\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-D\"}}, \"level\": 2, \"name\": \"Big Swell\", \"params\": {\"eq\": {\"highs\": 1, \"lowcut\": 80}, \"verb\": {\"decay\": 5, \"mix\": 42}}}]}"
 }

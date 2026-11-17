@@ -64,7 +64,9 @@
     {
      "id": "st-keys-1-A",
      "name": "Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {},
      "branches": {}
     },
@@ -80,10 +82,16 @@
     {
      "id": "st-keys-1-C",
      "name": "Low Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.3
+       "fcut": 0.18,
+       "transpose": -12
+      },
+      "dly": {
+       "mix": 6
       }
      },
      "branches": {}
@@ -91,10 +99,20 @@
     {
      "id": "st-keys-1-D",
      "name": "Open Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.75
+       "fcut": 0.95
+      },
+      "dly": {
+       "mix": 30,
+       "feedback": 50
+      },
+      "verb": {
+       "mix": 38,
+       "decay": 6
       }
      },
      "branches": {}
@@ -106,7 +124,9 @@
   {
    "id": "A",
    "name": "Haze",
-   "blocks": {},
+   "blocks": {
+    "glitch": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-A"
@@ -128,7 +148,9 @@
   {
    "id": "C",
    "name": "Low Haze",
-   "blocks": {},
+   "blocks": {
+    "glitch": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-C",
@@ -137,7 +159,11 @@
    },
    "params": {
     "vital": {
-     "fcut": 0.3
+     "fcut": 0.18,
+     "transpose": -12
+    },
+    "dly": {
+     "mix": 6
     }
    },
    "level": -3
@@ -145,7 +171,9 @@
   {
    "id": "D",
    "name": "Open Haze",
-   "blocks": {},
+   "blocks": {
+    "glitch": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-D",
@@ -154,7 +182,15 @@
    },
    "params": {
     "vital": {
-     "fcut": 0.75
+     "fcut": 0.95
+    },
+    "dly": {
+     "mix": 30,
+     "feedback": 50
+    },
+    "verb": {
+     "mix": 38,
+     "decay": 6
     }
    },
    "level": 1
@@ -291,5 +327,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"ember\", \"9\": \"aurora\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-intro.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Nu Haze\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Haze\", \"params\": {}}, {\"blocks\": {\"glitch\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Glitch Haze\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Low Haze\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Open Haze\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Haze\"}, {\"blocks\": {\"glitch\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Glitch Haze\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Low Haze\", \"params\": {\"vital\": {\"fcut\": 0.3}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Open Haze\", \"params\": {\"vital\": {\"fcut\": 0.75}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"ember\", \"9\": \"aurora\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-intro.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.25, \"fcut\": 0.5, \"preset\": \"Retro_Ambient_Pluck\", \"rmix\": 0.25, \"vol\": 0.55}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"glitch\", \"params\": {\"mix\": 40}, \"type\": \"glitch\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 35, \"mix\": 16, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Nu Haze\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"glitch\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Haze\", \"params\": {}}, {\"blocks\": {\"glitch\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Glitch Haze\", \"params\": {}}, {\"blocks\": {\"glitch\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Low Haze\", \"params\": {\"dly\": {\"mix\": 6}, \"vital\": {\"fcut\": 0.18, \"transpose\": -12}}}, {\"blocks\": {\"glitch\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Open Haze\", \"params\": {\"dly\": {\"feedback\": 50, \"mix\": 30}, \"verb\": {\"decay\": 6, \"mix\": 38}, \"vital\": {\"fcut\": 0.95}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"glitch\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Haze\"}, {\"blocks\": {\"glitch\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Glitch Haze\"}, {\"blocks\": {\"glitch\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-C\"}}, \"level\": -3, \"name\": \"Low Haze\", \"params\": {\"dly\": {\"mix\": 6}, \"vital\": {\"fcut\": 0.18, \"transpose\": -12}}}, {\"blocks\": {\"glitch\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Open Haze\", \"params\": {\"dly\": {\"feedback\": 50, \"mix\": 30}, \"verb\": {\"decay\": 6, \"mix\": 38}, \"vital\": {\"fcut\": 0.95}}}]}"
 }

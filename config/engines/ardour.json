@@ -14,10 +14,10 @@
     "win32": {"available": false, "reason": "Linux only for now"},
     "darwin": {"available": false, "reason": "Linux only for now"}
   },
-  "summary": "Free, nothing to buy. Early: NAM heads, IR cabs, tape delay and volume play; other blocks come next.",
+  "summary": "Free, nothing to buy. Plays golem's presets, scenes, takes, backing, looper and drums. Younger than REAPER: no plugin windows yet.",
   "capabilities": {
-    "lanes": "planned", "nam_ir": "yes", "recording": "planned", "backing": "planned", "click": "planned",
-    "midi_clock": "planned", "looper": "no", "drum_machine": "no", "samples": "no", "standards": "no",
-    "riff": "no", "kill_switch": "yes", "previews": "planned", "reamp": "planned"
+    "lanes": "yes", "nam_ir": "yes", "recording": "yes", "backing": "yes", "click": "yes",
+    "midi_clock": "yes", "looper": "yes", "drum_machine": "yes", "samples": "yes", "standards": "yes",
+    "riff": "yes", "kill_switch": "yes", "previews": "yes", "reamp": "yes"
   }
 }

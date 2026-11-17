@@ -49,3 +49,23 @@ test('pages : 16 tiennent sur un écran ; au-delà, 14 par page pour laisser la 
   assert.equal(paginate(many.slice(0, 8), 0).rows, 4);                   // deux colonnes égales
   assert.equal(pageOfItem(many, 'x15'), 1);
 });
+
+test('◀ ▶ parcourent la liste où l\'on a choisi, dans son ordre', async () => {
+  const { cycleItems, neighbour, validSel } = await import('./browser-model.mjs');
+  const ls = railLists(SL, "presets", "factory");
+  const ids = l => l.map(x => x.id);
+  // la setlist retenue contient l'élément ouvert : son ordre, pas A→Z
+  assert.deepEqual(ids(cycleItems('factory', PRESETS, ls, 'p-metal')), ['p-jazz', 'p-metal', 'p-loop']);
+  assert.equal(neighbour(cycleItems('factory', PRESETS, ls, 'p-metal'), 'p-metal', 1).id, 'p-loop');
+  assert.equal(neighbour(cycleItems('factory', PRESETS, ls, 'p-loop'), 'p-loop', 1).id, 'p-jazz');   // en boucle
+  // l'élément ouvert n'est pas dans la setlist retenue : celle qui le contient
+  assert.ok(ids(cycleItems('factory', PRESETS, ls, 'p-kite')).includes('p-kite'));
+  // rien de retenu, ou une setlist disparue : pareil
+  assert.deepEqual(ids(cycleItems(null, PRESETS, ls, 'p-metal')), ['p-jazz', 'p-metal', 'p-loop']);
+  assert.deepEqual(ids(cycleItems('gone', PRESETS, ls, 'p-metal')), ['p-jazz', 'p-metal', 'p-loop']);
+  assert.equal(validSel('gone', ls), null);
+  assert.equal(validSel('all', ls), 'all');
+  // dans aucune setlist : tout, A→Z
+  assert.equal(cycleItems('factory', PRESETS, ls, 'p-solo').length, PRESETS.length);
+  assert.equal(neighbour([], 'x', 1), null);
+});

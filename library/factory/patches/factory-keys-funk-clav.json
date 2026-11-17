@@ -86,7 +86,8 @@
      "id": "st-keys-1-B",
      "name": "Envelope Clav",
      "blocks": {
-      "env": true
+      "env": true,
+      "phase": false
      },
      "params": {},
      "branches": {}
@@ -95,6 +96,7 @@
      "id": "st-keys-1-C",
      "name": "Phased",
      "blocks": {
+      "env": false,
       "phase": true
      },
      "params": {},
@@ -104,11 +106,20 @@
      "id": "st-keys-1-D",
      "name": "Stab",
      "blocks": {
-      "env": false
+      "env": false,
+      "phase": false
      },
      "params": {
       "comp": {
-       "ratio": 6
+       "ratio": 8,
+       "thresh": -28,
+       "makeup": 5
+      },
+      "ep": {
+       "fcut": 0.55
+      },
+      "room": {
+       "mix": 0
       }
      },
      "branches": {}
@@ -134,7 +145,8 @@
    "id": "B",
    "name": "Envelope Clav",
    "blocks": {
-    "env": true
+    "env": true,
+    "phase": false
    },
    "lanes": {
     "keys-1": {
@@ -146,6 +158,7 @@
    "id": "C",
    "name": "Phased",
    "blocks": {
+    "env": false,
     "phase": true
    },
    "lanes": {
@@ -158,20 +171,29 @@
    "id": "D",
    "name": "Stab",
    "blocks": {
-    "env": false
+    "env": false,
+    "phase": false
    },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-D",
-     "level": 1
+     "level": 2
     }
    },
    "params": {
     "comp": {
-     "ratio": 6
+     "ratio": 8,
+     "thresh": -28,
+     "makeup": 5
+    },
+    "ep": {
+     "fcut": 0.55
+    },
+    "room": {
+     "mix": 0
     }
    },
-   "level": 1
+   "level": 2
   }
  ],
  "config": {
@@ -276,7 +298,7 @@
   "A": "scanner",
   "B": "sheen",
   "C": "glitch",
-  "D": "monster",
+  "D": "sheen",
   "6": "rain",
   "7": "vu",
   "9": "wave",
@@ -307,5 +329,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"rain\", \"7\": \"vu\", \"9\": \"wave\", \"A\": \"scanner\", \"B\": \"sheen\", \"C\": \"glitch\", \"D\": \"monster\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 28, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"peak\": 5, \"release\": 100, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"model\": \"Script 90\", \"rate\": 0.5}, \"type\": \"phaser-js\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 28, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"peak\": 5, \"release\": 100, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"model\": \"Script 90\", \"rate\": 0.5}, \"type\": \"phaser-js\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Funk Clav\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"env\": false, \"phase\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Clav\", \"params\": {}}, {\"blocks\": {\"env\": true}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Envelope Clav\", \"params\": {}}, {\"blocks\": {\"phase\": true}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Phased\", \"params\": {}}, {\"blocks\": {\"env\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Stab\", \"params\": {\"comp\": {\"ratio\": 6}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"env\": false, \"phase\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Clav\"}, {\"blocks\": {\"env\": true}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Envelope Clav\"}, {\"blocks\": {\"phase\": true}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Phased\"}, {\"blocks\": {\"env\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Stab\", \"params\": {\"comp\": {\"ratio\": 6}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"rain\", \"7\": \"vu\", \"9\": \"wave\", \"A\": \"scanner\", \"B\": \"sheen\", \"C\": \"glitch\", \"D\": \"sheen\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 28, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"peak\": 5, \"release\": 100, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"model\": \"Script 90\", \"rate\": 0.5}, \"type\": \"phaser-js\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 28, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"peak\": 5, \"release\": 100, \"type\": \"Wah\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"phase\", \"params\": {\"model\": \"Script 90\", \"rate\": 0.5}, \"type\": \"phaser-js\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Funk Clav\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"env\": false, \"phase\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Clav\", \"params\": {}}, {\"blocks\": {\"env\": true, \"phase\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Envelope Clav\", \"params\": {}}, {\"blocks\": {\"env\": false, \"phase\": true}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Phased\", \"params\": {}}, {\"blocks\": {\"env\": false, \"phase\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Stab\", \"params\": {\"comp\": {\"makeup\": 5, \"ratio\": 8, \"thresh\": -28}, \"ep\": {\"fcut\": 0.55}, \"room\": {\"mix\": 0}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"env\": false, \"phase\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Clav\"}, {\"blocks\": {\"env\": true, \"phase\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Envelope Clav\"}, {\"blocks\": {\"env\": false, \"phase\": true}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Phased\"}, {\"blocks\": {\"env\": false, \"phase\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 2, \"state\": \"st-keys-1-D\"}}, \"level\": 2, \"name\": \"Stab\", \"params\": {\"comp\": {\"makeup\": 5, \"ratio\": 8, \"thresh\": -28}, \"ep\": {\"fcut\": 0.55}, \"room\": {\"mix\": 0}}}]}"
 }

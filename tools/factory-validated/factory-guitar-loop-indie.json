@@ -1,0 +1,280 @@
+{
+ "anims": {
+  "10": "strobe",
+  "6": "heartbeat",
+  "7": "lightning",
+  "8": "smoke",
+  "9": "vortex",
+  "A": "glitch",
+  "B": "ripple",
+  "C": "rain",
+  "D": "vu",
+  "E": "wave"
+ },
+ "bpm": 112,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "params": {
+     "release": 120,
+     "thresh": -60
+    },
+    "type": "gate"
+   },
+   {
+    "foot": 6,
+    "id": "klon",
+    "label": "Klon Centaur",
+    "model": "419209",
+    "params": {
+     "input": 0,
+     "output": -2
+    },
+    "ref": "2599",
+    "type": "pedal-nam"
+   },
+   {
+    "id": "drii",
+    "label": "Fender Deluxe Reverb II",
+    "model": "418153",
+    "params": {
+     "input": -2,
+     "output": 0
+    },
+    "ref": "6237",
+    "type": "amp"
+   },
+   {
+    "foot": 8,
+    "id": "swell",
+    "params": {
+     "rise": 600,
+     "sens": 50
+    },
+    "type": "swell"
+   },
+   {
+    "foot": 7,
+    "id": "chorus",
+    "params": {
+     "depth": 4,
+     "mix": 0.35,
+     "mode": "Classic",
+     "profile": "Guitar Clean",
+     "rate": 0.6
+    },
+    "type": "chorus"
+   },
+   {
+    "id": "dly",
+    "params": {
+     "feedback": 38,
+     "mix": 20,
+     "model": "Digital",
+     "time": "1/8•"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "verb",
+    "params": {
+     "algo": "Hall",
+     "decay": 2.2,
+     "hicut": 7000,
+     "mix": 22,
+     "size": 32
+    },
+    "type": "reverb"
+   }
+  ]
+ },
+ "colors": {
+  "10": "#06d6a0",
+  "6": "#06d6a0",
+  "7": "#06d6a0",
+  "8": "#06d6a0",
+  "9": "#06d6a0",
+  "A": "#06d6a0",
+  "B": "#06d6a0",
+  "C": "#06d6a0",
+  "D": "#06d6a0",
+  "E": "#06d6a0"
+ },
+ "gen": [
+  {
+   "foot": 10,
+   "id": "drums",
+   "params": {
+    "fills": [],
+    "kit": "drums-black-pearl",
+    "patterns": [
+     "library/grooves/golem-rock-8.mid"
+    ]
+   },
+   "type": "drums"
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": false,
+    "swell": false
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "name": "Jangle"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "klon": false,
+    "swell": false
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "name": "Dotted Echo",
+   "params": {
+    "dly": {
+     "feedback": 45,
+     "mix": 26
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "klon": true,
+    "swell": false
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "name": "Klon Push",
+   "params": {
+    "dly": {
+     "mix": 12
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": false,
+    "swell": true
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "name": "Swell Pad",
+   "params": {
+    "verb": {
+     "decay": 3.4,
+     "mix": 34
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": true,
+    "swell": false
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 2,
+   "name": "Lead Out"
+  }
+ ],
+ "states": [
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": false,
+    "swell": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-A",
+   "name": "Jangle",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "klon": false,
+    "swell": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-B",
+   "name": "Dotted Echo",
+   "params": {
+    "dly": {
+     "feedback": 45,
+     "mix": 26
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "klon": true,
+    "swell": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-C",
+   "name": "Klon Push",
+   "params": {
+    "dly": {
+     "mix": 12
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": false,
+    "swell": true
+   },
+   "branches": {},
+   "id": "st-guitar-1-D",
+   "name": "Swell Pad",
+   "params": {
+    "verb": {
+     "decay": 3.4,
+     "mix": 34
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "klon": true,
+    "swell": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-E",
+   "name": "Lead Out",
+   "params": {}
+  }
+ ]
+}

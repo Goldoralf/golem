@@ -14,81 +14,200 @@
     "pre": [
      {
       "id": "gate",
-      "type": "gate",
       "params": {
-       "thresh": -62,
-       "release": 120
-      }
+       "release": 120,
+       "thresh": -62
+      },
+      "type": "gate"
      },
      {
       "id": "comp",
-      "type": "comp",
       "params": {
-       "character": "Opto",
-       "thresh": -24,
-       "ratio": 2.5,
+       "attack": 20,
+       "auto_release": true,
+       "character": "Clean",
+       "drive": 0,
+       "knee": 10,
+       "link": 100,
        "makeup": 2,
-       "attack": 25
-      }
-     }
-    ],
-    "split": null,
-    "post": [
+       "mix": 100,
+       "range": 6,
+       "ratio": 2,
+       "release": 200,
+       "sc_hpf": 0,
+       "sc_listen": false,
+       "thresh": -24
+      },
+      "type": "comp"
+     },
      {
       "id": "twin",
-      "type": "amp",
       "label": "Fender Twin Reverb",
-      "ref": "43620",
       "model": "382264",
       "params": {
        "input": -3,
        "output": 0
-      }
+      },
+      "ref": "43620",
+      "type": "amp"
+     },
+     {
+      "id": "radio-b58p",
+      "params": {
+       "band": 0,
+       "battery": 100,
+       "bypass": false,
+       "channel": "Model",
+       "codec": 50,
+       "distance": 20,
+       "drive": 0,
+       "dropouts": 0,
+       "level": 0,
+       "mains": "50 Hz",
+       "mic": "Model",
+       "mix": 100,
+       "model": "Gramophone",
+       "noise": 0,
+       "rattle": 0,
+       "resonance": 100,
+       "roger": false,
+       "room": "Model",
+       "speaker": "Model",
+       "squelch": 25,
+       "squelch_tail": 100,
+       "tune": 0,
+       "whistle": -80
+      },
+      "type": "radio"
      },
      {
       "id": "eq",
-      "type": "eq",
       "params": {
-       "lowcut": 70,
+       "air": 0,
+       "airfreq": 12000,
+       "auto_gain": false,
+       "harsh_freq": 3500,
+       "harsh_range": 6,
+       "harsh_thresh": 0,
+       "highcut": 22000,
+       "highcut_slope": "12 dB/oct",
+       "highfreq": 5000,
+       "highs": 0,
+       "lowcut": 80,
+       "lowcut_slope": "12 dB/oct",
+       "lowfreq": 120,
+       "lows": 0,
+       "mid2freq": 2500,
+       "mid2gain": 0,
+       "mid2q": 0.7,
+       "midfreq": 800,
        "midgain": 0,
-       "midfreq": 700,
-       "highs": -4
-      }
+       "midprop": 50,
+       "midq": 0.67,
+       "output": 0,
+       "tilt": 0
+      },
+      "type": "eq"
      },
      {
       "id": "chorus",
-      "type": "chorus",
       "params": {
-       "profile": "Guitar Clean",
-       "mode": "Dimension 1",
-       "rate": 0.6,
        "depth": 4,
-       "mix": 0.25
+       "mix": 0.25,
+       "mode": "Dimension 1",
+       "profile": "Guitar Clean",
+       "rate": 0.6
       },
+      "type": "chorus",
       "foot": 7
      },
      {
-      "id": "plate",
-      "type": "reverb-plate",
+      "id": "phaser-js-37nf",
       "params": {
-       "mix": 16,
+       "bass_keep": 0,
+       "color": 50,
+       "depth": 100,
+       "dry": 0,
+       "env_att": 10,
+       "env_rel": 300,
+       "env_sens": 50,
+       "fb_polarity": "+",
+       "feedback": -3,
+       "high": 1600,
+       "lamp_lag": 30,
+       "lfo2": "Same",
+       "low": 440,
+       "manual": 50,
+       "model": "Script 90",
+       "rate": 0.6,
+       "rate2": 0.3,
+       "routing": "Series",
+       "shape": "Sine",
+       "skew": 50,
+       "spread": 0,
+       "stages": "4",
+       "stereo_phase": 0,
+       "sweep_src": "LFO",
+       "sync": "Off",
+       "tone": 50,
+       "vibe_mode": "Chorus",
+       "wet": 0
+      },
+      "type": "phaser-js"
+     },
+     {
+      "id": "sustainer-faku",
+      "params": {
+       "bloom": 0,
+       "bypass": false,
+       "carry": true,
+       "chord": "Strongest",
+       "color": 50,
+       "delay": 400,
+       "distance": 1.5,
+       "drift": 0,
+       "dry": 0,
+       "duck": 0,
+       "feed": false,
+       "harmonic": "Octave",
+       "lowest": 70,
+       "max_time": 15,
+       "mode": "Feedback",
+       "mute_sens": 50,
+       "release": 150,
+       "rise": 1000,
+       "source": "Main",
+       "thresh": -66,
+       "tone": 0,
+       "trails": true,
+       "trigger": "Auto"
+      },
+      "type": "sustainer"
+     },
+     {
+      "id": "plate",
+      "params": {
        "decay": 1.2,
-       "size": 24,
-       "hicut": 8000
-      }
+       "hicut": 8000,
+       "mix": 16,
+       "size": 24
+      },
+      "type": "reverb-plate"
      },
      {
       "id": "dly",
-      "type": "delay",
       "params": {
-       "model": "Tape",
-       "time": "1/4",
        "feedback": 20,
-       "mix": 10
+       "mix": 10,
+       "model": "Tape",
+       "time": "1/4"
       },
+      "type": "delay",
       "foot": 6
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "guitar",
@@ -99,7 +218,10 @@
      "name": "Comping",
      "blocks": {
       "chorus": false,
-      "dly": false
+      "dly": false,
+      "phaser-js-37nf": false,
+      "radio-b58p": false,
+      "sustainer-faku": false
      },
      "params": {},
      "branches": {}
@@ -109,12 +231,14 @@
      "name": "Chord Melody",
      "blocks": {
       "chorus": true,
-      "dly": false
+      "dly": false,
+      "phaser-js-37nf": false,
+      "sustainer-faku": false
      },
      "params": {
       "plate": {
-       "mix": 22,
-       "decay": 1.6
+       "decay": 1.6,
+       "mix": 22
       }
      },
      "branches": {}
@@ -124,15 +248,11 @@
      "name": "Solo",
      "blocks": {
       "chorus": false,
-      "dly": true
+      "dly": true,
+      "radio-b58p": false,
+      "sustainer-faku": false
      },
-     "params": {
-      "eq": {
-       "midgain": 2.5,
-       "midfreq": 900,
-       "highs": -3
-      }
-     },
+     "params": {},
      "branches": {}
     },
     {
@@ -140,15 +260,17 @@
      "name": "Ballad",
      "blocks": {
       "chorus": true,
-      "dly": true
+      "dly": true,
+      "phaser-js-37nf": false,
+      "sustainer-faku": false
      },
      "params": {
-      "plate": {
-       "mix": 28,
-       "decay": 2.2
-      },
       "dly": {
        "mix": 14
+      },
+      "plate": {
+       "decay": 2.2,
+       "mix": 28
       }
      },
      "branches": {}
@@ -157,15 +279,12 @@
      "id": "st-guitar-1-E",
      "name": "Bright Swing",
      "blocks": {
-      "chorus": false,
-      "dly": false
+      "chorus": true,
+      "dly": false,
+      "phaser-js-37nf": false,
+      "radio-b58p": false
      },
-     "params": {
-      "eq": {
-       "highs": -1,
-       "midgain": 1
-      }
-     },
+     "params": {},
      "branches": {}
     }
    ],
@@ -201,10 +320,7 @@
        "makeup": 3,
        "attack": 20
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "b15",
       "type": "amp",
@@ -236,7 +352,9 @@
        "hicut": 7000
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "bass",
@@ -255,10 +373,15 @@
      "blocks": {},
      "params": {
       "eq-2": {
-       "highs": -4
+       "highs": -7,
+       "lows": 2
       },
       "room": {
-       "mix": 18
+       "mix": 26,
+       "decay": 1.6
+      },
+      "comp-2": {
+       "ratio": 2
       }
      },
      "branches": {}
@@ -269,8 +392,16 @@
      "blocks": {},
      "params": {
       "eq-2": {
-       "midgain": 3,
-       "midfreq": 700
+       "midgain": 5,
+       "midfreq": 900,
+       "highs": 1
+      },
+      "comp-2": {
+       "ratio": 5,
+       "makeup": 4
+      },
+      "room": {
+       "mix": 18
       }
      },
      "branches": {}
@@ -281,7 +412,13 @@
      "blocks": {},
      "params": {
       "eq-2": {
-       "highs": 2
+       "highs": 6,
+       "midgain": 2,
+       "midfreq": 1800,
+       "lowcut": 60
+      },
+      "room": {
+       "mix": 5
       }
      },
      "branches": {}
@@ -331,12 +468,32 @@
       }
      },
      {
+      "id": "tape",
+      "type": "tape",
+      "params": {
+       "model": "Home Reel",
+       "wear": 45,
+       "mix": 100
+      }
+     },
+     {
       "id": "room-2",
       "type": "reverb-room",
       "params": {
        "mix": 18,
        "decay": 1.1,
        "size": 16,
+       "hicut": 7000
+      }
+     },
+     {
+      "id": "hall",
+      "type": "reverb",
+      "params": {
+       "algo": "Hall",
+       "mix": 34,
+       "decay": 3.2,
+       "size": 40,
        "hicut": 7000
       }
      }
@@ -351,18 +508,26 @@
     {
      "id": "st-keys-1-A",
      "name": "Trio",
-     "blocks": {},
+     "blocks": {
+      "hall": false,
+      "tape": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-1-B",
      "name": "Ballad",
-     "blocks": {},
+     "blocks": {
+      "hall": true,
+      "tape": false
+     },
      "params": {
       "room-2": {
-       "mix": 26,
-       "decay": 1.6
+       "mix": 8
+      },
+      "eq-3": {
+       "highs": -4
       }
      },
      "branches": {}
@@ -370,17 +535,42 @@
     {
      "id": "st-keys-1-C",
      "name": "Solo",
-     "blocks": {},
-     "params": {},
+     "blocks": {
+      "hall": false,
+      "tape": false
+     },
+     "params": {
+      "eq-3": {
+       "midgain": 4,
+       "midfreq": 2500,
+       "highs": 3
+      },
+      "comp-3": {
+       "ratio": 4,
+       "makeup": 4
+      },
+      "room-2": {
+       "mix": 10
+      }
+     },
      "branches": {}
     },
     {
      "id": "st-keys-1-D",
      "name": "Soft",
-     "blocks": {},
+     "blocks": {
+      "hall": false,
+      "tape": true
+     },
      "params": {
       "eq-3": {
-       "highs": -3
+       "highs": -9,
+       "midgain": -2,
+       "midfreq": 3000
+      },
+      "room-2": {
+       "mix": 24,
+       "decay": 1.4
       }
      },
      "branches": {}
@@ -460,6 +650,9 @@
      "params": {
       "room-3": {
        "mix": 22
+      },
+      "eq-4": {
+       "highs": 3
       }
      },
      "branches": {}
@@ -468,14 +661,34 @@
      "id": "st-drums-1-C",
      "name": "Soft",
      "blocks": {},
-     "params": {},
+     "params": {
+      "eq-4": {
+       "highs": -3
+      },
+      "comp-4": {
+       "ratio": 2
+      }
+     },
      "branches": {}
     },
     {
      "id": "st-drums-1-D",
      "name": "Solo",
      "blocks": {},
-     "params": {},
+     "params": {
+      "comp-4": {
+       "ratio": 6,
+       "thresh": -24
+      },
+      "room-3": {
+       "mix": 10,
+       "decay": 0.7
+      },
+      "eq-4": {
+       "midgain": 2,
+       "midfreq": 2500
+      }
+     },
      "branches": {}
     }
    ],
@@ -563,14 +776,18 @@
     {
      "id": "st-voice-1-A",
      "name": "Close",
-     "blocks": {},
+     "blocks": {
+      "dly-2": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-voice-1-B",
      "name": "Ballad",
-     "blocks": {},
+     "blocks": {
+      "dly-2": false
+     },
      "params": {
       "plate-2": {
        "mix": 30,
@@ -591,7 +808,9 @@
     {
      "id": "st-voice-1-D",
      "name": "Big Room",
-     "blocks": {},
+     "blocks": {
+      "dly-2": false
+     },
      "params": {
       "plate-2": {
        "mix": 34
@@ -612,12 +831,17 @@
    "name": "Head",
    "blocks": {
     "chorus": true,
-    "dly": false
+    "dly": false,
+    "phaser-js-37nf": false,
+    "sustainer-faku": false,
+    "hall": false,
+    "tape": false,
+    "dly-2": false
    },
    "params": {
     "plate": {
-     "mix": 22,
-     "decay": 1.6
+     "decay": 1.6,
+     "mix": 22
     }
    },
    "branches": {},
@@ -645,19 +869,28 @@
    "name": "Guitar Solo",
    "blocks": {
     "chorus": false,
-    "dly": true
+    "dly": true,
+    "radio-b58p": false,
+    "sustainer-faku": false,
+    "hall": false,
+    "tape": true,
+    "dly-2": false
    },
    "params": {
-    "eq": {
-     "midgain": 2.5,
-     "midfreq": 900,
-     "highs": -3
-    },
     "eq-3": {
-     "highs": -3
+     "highs": -9,
+     "midgain": -2,
+     "midfreq": 3000
+    },
+    "room-2": {
+     "mix": 24,
+     "decay": 1.4
     },
     "room-3": {
      "mix": 22
+    },
+    "eq-4": {
+     "highs": 3
     }
    },
    "branches": {},
@@ -687,11 +920,32 @@
    "name": "Piano Solo",
    "blocks": {
     "chorus": false,
-    "dly": false
+    "dly": false,
+    "phaser-js-37nf": false,
+    "radio-b58p": false,
+    "sustainer-faku": false,
+    "hall": false,
+    "tape": false,
+    "dly-2": false
    },
    "params": {
+    "eq-3": {
+     "midgain": 4,
+     "midfreq": 2500,
+     "highs": 3
+    },
+    "comp-3": {
+     "ratio": 4,
+     "makeup": 4
+    },
+    "room-2": {
+     "mix": 10
+    },
     "room-3": {
      "mix": 22
+    },
+    "eq-4": {
+     "highs": 3
     }
    },
    "branches": {},
@@ -721,25 +975,43 @@
    "name": "Ballad",
    "blocks": {
     "chorus": true,
-    "dly": true
+    "dly": true,
+    "phaser-js-37nf": false,
+    "sustainer-faku": false,
+    "hall": true,
+    "tape": false,
+    "dly-2": false
    },
    "params": {
-    "plate": {
-     "mix": 28,
-     "decay": 2.2
-    },
     "dly": {
      "mix": 14
     },
+    "plate": {
+     "decay": 2.2,
+     "mix": 28
+    },
     "eq-2": {
-     "highs": -4
+     "highs": -7,
+     "lows": 2
     },
     "room": {
-     "mix": 18
-    },
-    "room-2": {
      "mix": 26,
      "decay": 1.6
+    },
+    "comp-2": {
+     "ratio": 2
+    },
+    "room-2": {
+     "mix": 8
+    },
+    "eq-3": {
+     "highs": -4
+    },
+    "eq-4": {
+     "highs": -3
+    },
+    "comp-4": {
+     "ratio": 2
     },
     "plate-2": {
      "mix": 30,
@@ -771,15 +1043,41 @@
    "name": "Bass Solo",
    "blocks": {
     "chorus": false,
-    "dly": false
+    "dly": false,
+    "phaser-js-37nf": false,
+    "radio-b58p": false,
+    "sustainer-faku": false,
+    "hall": false,
+    "tape": true,
+    "dly-2": false
    },
    "params": {
     "eq-2": {
-     "midgain": 3,
-     "midfreq": 700
+     "midgain": 5,
+     "midfreq": 900,
+     "highs": 1
+    },
+    "comp-2": {
+     "ratio": 5,
+     "makeup": 4
+    },
+    "room": {
+     "mix": 18
     },
     "eq-3": {
+     "highs": -9,
+     "midgain": -2,
+     "midfreq": 3000
+    },
+    "room-2": {
+     "mix": 24,
+     "decay": 1.4
+    },
+    "eq-4": {
      "highs": -3
+    },
+    "comp-4": {
+     "ratio": 2
     }
    },
    "branches": {},
@@ -830,6 +1128,8 @@
       "keys": true,
       "bass": true,
       "drums": true,
+      "guitar": false,
+      "pompe": "auto",
       "groove": "auto",
       "kit": "blonde-bop",
       "choruses": 4
@@ -904,7 +1204,7 @@
   "C": "scanner",
   "D": "sheen",
   "E": "glitch",
-  "6": "monster",
+  "6": "snow",
   "7": "rain",
   "8": "vu",
   "9": "wave",

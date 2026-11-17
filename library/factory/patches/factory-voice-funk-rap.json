@@ -104,6 +104,8 @@
      "id": "st-voice-1-A",
      "name": "Rap",
      "blocks": {
+      "dly": false,
+      "double": false,
       "radio": false
      },
      "params": {},
@@ -113,6 +115,8 @@
      "id": "st-voice-1-B",
      "name": "Phone Verse",
      "blocks": {
+      "dly": false,
+      "double": false,
       "radio": true
      },
      "params": {},
@@ -122,7 +126,9 @@
      "id": "st-voice-1-C",
      "name": "Chorus Double",
      "blocks": {
-      "double": true
+      "dly": false,
+      "double": true,
+      "radio": false
      },
      "params": {},
      "branches": {}
@@ -131,7 +137,9 @@
      "id": "st-voice-1-D",
      "name": "Slap Hook",
      "blocks": {
-      "dly": true
+      "dly": true,
+      "double": false,
+      "radio": false
      },
      "params": {},
      "branches": {}
@@ -144,6 +152,8 @@
    "id": "A",
    "name": "Rap",
    "blocks": {
+    "dly": false,
+    "double": false,
     "radio": false
    },
    "lanes": {
@@ -156,6 +166,8 @@
    "id": "B",
    "name": "Phone Verse",
    "blocks": {
+    "dly": false,
+    "double": false,
     "radio": true
    },
    "lanes": {
@@ -168,7 +180,9 @@
    "id": "C",
    "name": "Chorus Double",
    "blocks": {
-    "double": true
+    "dly": false,
+    "double": true,
+    "radio": false
    },
    "lanes": {
     "voice-1": {
@@ -180,7 +194,9 @@
    "id": "D",
    "name": "Slap Hook",
    "blocks": {
-    "dly": true
+    "dly": true,
+    "double": false,
+    "radio": false
    },
    "lanes": {
     "voice-1": {
@@ -326,7 +342,7 @@
   "7": "scanner",
   "8": "sheen",
   "9": "glitch",
-  "10": "monster"
+  "10": "ember"
  },
  "deps": [
   {
@@ -353,5 +369,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"monster\", \"6\": \"fire\", \"7\": \"scanner\", \"8\": \"sheen\", \"9\": \"glitch\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 5, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"radio\", \"params\": {\"model\": \"Telephone\"}, \"type\": \"radio\"}, {\"foot\": 7, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"8\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 5, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"radio\", \"params\": {\"model\": \"Telephone\"}, \"type\": \"radio\"}, {\"foot\": 7, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Funk Rap\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"radio\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Rap\", \"params\": {}}, {\"blocks\": {\"radio\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Phone Verse\", \"params\": {}}, {\"blocks\": {\"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Chorus Double\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Slap Hook\", \"params\": {}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"radio\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Rap\"}, {\"blocks\": {\"radio\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Phone Verse\"}, {\"blocks\": {\"double\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Chorus Double\"}, {\"blocks\": {\"dly\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Slap Hook\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"fire\", \"7\": \"scanner\", \"8\": \"sheen\", \"9\": \"glitch\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 5, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"radio\", \"params\": {\"model\": \"Telephone\"}, \"type\": \"radio\"}, {\"foot\": 7, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"8\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -55}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 5, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 5, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"radio\", \"params\": {\"model\": \"Telephone\"}, \"type\": \"radio\"}, {\"foot\": 7, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Funk Rap\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"double\": false, \"radio\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Rap\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"double\": false, \"radio\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Phone Verse\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"double\": true, \"radio\": false}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Chorus Double\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": false, \"radio\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Slap Hook\", \"params\": {}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"double\": false, \"radio\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Rap\"}, {\"blocks\": {\"dly\": false, \"double\": false, \"radio\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Phone Verse\"}, {\"blocks\": {\"dly\": false, \"double\": true, \"radio\": false}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Chorus Double\"}, {\"blocks\": {\"dly\": true, \"double\": false, \"radio\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Slap Hook\"}]}"
 }

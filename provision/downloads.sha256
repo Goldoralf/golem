@@ -29,6 +29,6 @@ a314fdb9e70626a273b5e6661ed0f63a57226c277c05b460e8656655359b0237  https://github
 # rustup (provision/install-spectral.sh, audit 2026-11-04 M8) : l'installateur versionné, plus de curl | sh non vérifié
 20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c  https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-gnu/rustup-init
 e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c  https://static.rust-lang.org/rustup/archive/1.28.2/aarch64-unknown-linux-gnu/rustup-init
-# golem-fx (les effets de golem, GPL-3) — release golem-fx-0.5 de Goldoralf/golem-binaries (golem-fx ca0d494, vérifiée
-# par golem-fx, 2026-11-15) ; provision/install-golem-fx.sh. Windows et macOS : leurs pins.json (clé golem_fx).
-b5ee25ebc8f206ee2929940fba876554c3b5da3dbb342332d72b8338740ade62  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.5/golem-fx-linux-x86_64.tar.gz
+# golem-fx (les effets de golem, GPL-3) — release golem-fx-0.6 de Goldoralf/golem-binaries (golem-fx e7e9ecc, empreinte
+# recalculée sur l'archive et comparée au SHA256SUMS de la release, 2026-11-17) ; provision/install-golem-fx.sh. Windows et macOS : leurs pins.json (clé golem_fx).
+397d8d101ef82698405bb984f16fec5b19b655f57ccd52f8adbf14dcf16d9fbf  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.6/golem-fx-linux-x86_64.tar.gz

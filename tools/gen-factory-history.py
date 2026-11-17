@@ -55,7 +55,7 @@ def main():
             def add(blob):
                 if _sha(blob) not in shas:
                     shas.append(_sha(blob))
-                c = F.canon_sha(blob, ext) if canon is not None else None
+                c = F.canon_sha(blob, ext, sub) if canon is not None else None
                 if c and c not in canon:
                     canon.append(c)
 

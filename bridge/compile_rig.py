@@ -700,6 +700,15 @@ def compile_preset(preset: dict) -> str:
             _expand_stretch(t["blocks"])                   # Spread/Compress -> leurs interrupteurs de module
             _clamp_params(t["blocks"])                     # filet : jamais de param hors plage au rig
             _drop_engine_only(t["blocks"])                 # potards du seul Golem Engine : retirés sous REAPER
+            # LE BAFFLE PAR DÉFAUT D'UNE TÊTE SEULE, dit dans le plan (2026-11-16) : REAPER le fond dans le cœur de la
+            # piste (.RfxChain) ; le Golem Engine pose un plugin par bloc et ne lit pas ce cœur — sans ce champ, une
+            # tête sans baffle y jouait nue. Même règle que _core_plan ; golem_rig.lua ignore le champ.
+            for b in t["blocks"]:
+                if (b.get("type") in AMP_TYPES and b.get("ref") and not b.get("_wrong_kind")
+                        and not path_has_cab and not _carries_cab(b)):
+                    ir = _safe_asset(_resolve(b.get("cab") or DEFAULT_CAB, comps))
+                    if ir and os.path.isfile(ir):
+                        b["default_ir"] = ir
             multi = multi_core(t["blocks"])            # ≥ 2 amplis/cabs : une instance par bloc (voir AMP_TYPES)
             if COMPILE_TARGET in ("win32", "darwin"):
                 native_core = (_native_multi_core if multi else _native_core_for)(t["blocks"], comps, path_has_cab)

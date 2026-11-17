@@ -95,3 +95,20 @@ def test_la_route_lance_puis_rend_le_statut(rack, monkeypatch):
     assert R.silence_act({}).status_code == 409
     assert R.silence_act({"action": "clear"}) == {"ok": True}
     assert R.silence_status()["phase"] == "idle"
+
+
+def test_un_moteur_qui_ne_nomme_pas_comme_reaper_marque_ses_pistes():
+    # le Golem Engine : `root` = l'entrée de la carte qu'une lane écoute, `rig` = une route du rig ; ni chunk ni dumpfx
+    st = {"audio": {"ok": True}, "engine_name": "Golem Engine"}
+    peaks = {"golem:in2": {"inst": -80, "root": True, "rig": False, "mute": False, "hw_sends": 0},
+             "GoleM:bass-1": {"inst": -90, "root": False, "rig": True, "mute": False, "hw_sends": 2}}
+    v = S.verdict(st, peaks, None, None)
+    assert v["code"] == "input" and "armed" not in v["text"]          # l'armement d'une piste : une affaire de REAPER
+    peaks["golem:in2"]["inst"] = -10
+    assert S.verdict(st, peaks, None, None)["code"] == "chain"
+    v = S.verdict({**st, "missing": [{"track": "GoleM:bass-1", "fx": 1, "plugin": "ir", "param": "its file"}]}, peaks, None, None)
+    assert v["code"] == "chain" and "its file is empty" in v["text"]
+    peaks["GoleM:bass-1"]["inst"] = -12
+    v = S.verdict(st, peaks, None, None)
+    assert v["code"] == "downstream" and v["stage"] == "after Golem Engine"
+    assert S.verdict(st, {}, None, None)["title"] == "Golem Engine did not answer the probe."

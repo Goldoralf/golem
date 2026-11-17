@@ -1,0 +1,410 @@
+{
+ "anims": {
+  "10": "wave",
+  "6": "glitch",
+  "7": "vortex",
+  "8": "rain",
+  "9": "vu",
+  "A": "snow",
+  "B": "pulse",
+  "C": "fire",
+  "D": "scanner",
+  "E": "sheen"
+ },
+ "bpm": 132,
+ "chain": {
+  "post": [
+   {
+    "foot": 8,
+    "id": "wah",
+    "params": {
+     "mode": "manual",
+     "wah": 0.5
+    },
+    "type": "wah"
+   },
+   {
+    "foot": 7,
+    "id": "harm",
+    "params": {
+     "engine": "Poly",
+     "harmony": "Scale",
+     "key": "E",
+     "mix": 35,
+     "scale": "Major",
+     "shift": 4
+    },
+    "type": "pitch"
+   },
+   {
+    "id": "eq",
+    "params": {
+     "highs": -2,
+     "lowcut": 90,
+     "midfreq": 900,
+     "midgain": 2
+    },
+    "type": "eq"
+   },
+   {
+    "id": "dly",
+    "params": {
+     "feedback": 30,
+     "mix": 16,
+     "model": "Digital",
+     "time": "1/8•"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "echo",
+    "params": {
+     "feedback": 35,
+     "mix": 10,
+     "model": "Tape",
+     "time": "1/4"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "verb",
+    "params": {
+     "algo": "Plate",
+     "decay": 2.6,
+     "hicut": 7000,
+     "mix": 20,
+     "size": 34
+    },
+    "type": "reverb"
+   }
+  ],
+  "pre": [
+   {
+    "id": "gate",
+    "params": {
+     "release": 120,
+     "thresh": -56
+    },
+    "type": "gate"
+   },
+   {
+    "id": "comp",
+    "params": {
+     "attack": 30,
+     "character": "Clean",
+     "makeup": 3,
+     "ratio": 2.5,
+     "thresh": -26
+    },
+    "type": "comp"
+   },
+   {
+    "id": "chorus",
+    "params": {
+     "depth": 4,
+     "mix": 0.3,
+     "mode": "Dimension 1",
+     "profile": "Guitar Clean",
+     "rate": 0.6
+    },
+    "type": "chorus"
+   },
+   {
+    "foot": 6,
+    "id": "ts",
+    "label": "Ibanez TS9 Tube Screamer",
+    "model": "381617",
+    "params": {
+     "input": 0,
+     "output": -1
+    },
+    "ref": "36827",
+    "type": "pedal-nam"
+   }
+  ],
+  "split": {
+   "branches": [
+    {
+     "blocks": [
+      {
+       "id": "bogner",
+       "label": "Bogner Ecstasy 101B",
+       "model": "398704",
+       "params": {
+        "input": 0,
+        "output": 0
+       },
+       "ref": "6510",
+       "type": "amp-nam"
+      },
+      {
+       "id": "v30",
+       "label": "Mesa 4x12 Vintage 30",
+       "model": "239394",
+       "params": {
+        "level": 0
+       },
+       "ref": "45023",
+       "type": "cab"
+      }
+     ],
+     "id": "lane-a"
+    },
+    {
+     "blocks": [
+      {
+       "id": "drri",
+       "label": "Fender Deluxe Reverb 65",
+       "model": "383455",
+       "params": {
+        "input": -2,
+        "output": 0
+       },
+       "ref": "51649",
+       "type": "amp"
+      }
+     ],
+     "id": "lane-b"
+    }
+   ],
+   "gain": -3,
+   "mode": "merge"
+  }
+ },
+ "colors": {
+  "10": "#0081a7",
+  "6": "#0081a7",
+  "7": "#0081a7",
+  "8": "#0081a7",
+  "9": "#0081a7",
+  "A": "#0081a7",
+  "B": "#0081a7",
+  "C": "#0081a7",
+  "D": "#0081a7",
+  "E": "#0081a7"
+ },
+ "gen": [
+  {
+   "foot": 10,
+   "id": "drums",
+   "params": {
+    "fills": [],
+    "kit": "drums-black-pearl",
+    "patterns": [
+     "library/grooves/golem-rock-solo.mid"
+    ]
+   },
+   "type": "drums"
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "chorus": true,
+    "comp": true,
+    "echo": true,
+    "harm": false,
+    "ts": false,
+    "wah": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "name": "Clean Arp"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "echo": false,
+    "harm": false,
+    "ts": false,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "name": "Rhythm Drive"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "harm": false,
+    "ts": true,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 3,
+   "name": "Hero Lead"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": false,
+    "harm": true,
+    "ts": true,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-D"
+    }
+   },
+   "level": 3,
+   "name": "Harmony Lead"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "harm": false,
+    "ts": true,
+    "wah": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 3,
+   "name": "Vocal Wah"
+  }
+ ],
+ "states": [
+  {
+   "blocks": {
+    "chorus": true,
+    "comp": true,
+    "echo": true,
+    "harm": false,
+    "ts": false,
+    "wah": false
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-A",
+   "name": "Clean Arp",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "echo": false,
+    "harm": false,
+    "ts": false,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-B",
+   "name": "Rhythm Drive",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "harm": false,
+    "ts": true,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-C",
+   "name": "Hero Lead",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": false,
+    "harm": true,
+    "ts": true,
+    "wah": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-D",
+   "name": "Harmony Lead",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "echo": true,
+    "harm": false,
+    "ts": true,
+    "wah": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-E",
+   "name": "Vocal Wah",
+   "params": {}
+  }
+ ]
+}

@@ -190,3 +190,12 @@ test('« Add to… » pose un son à sa place : ampli remplacé, pédale devant,
   r = applyLibraryBlock(n, { kind: 'block', role: 'bass', block: { type: 'cab', ref: '2', model: '21' } });
   assert.equal(r.lane, 'guitar-1');
 });
+
+test('sans split, les blocs de post suivent pre — rien ne disparaît de la chaîne affichée', async () => {
+  const { richChain } = await import('./designer-model.js');
+  const c = richChain({ pre: [{ id: 'gate', type: 'gate' }], split: null, post: [{ id: 'amp', type: 'amp' }, { id: 'eq', type: 'eq' }] });
+  assert.deepEqual(c.pre.map(b => b.id), ['gate', 'amp', 'eq']);
+  assert.deepEqual(c.post, []);
+  const s = richChain({ pre: [], split: { mode: 'merge', branches: [{ blocks: [] }, { blocks: [] }] }, post: [{ id: 'eq', type: 'eq' }] });
+  assert.deepEqual(s.post.map(b => b.id), ['eq']);       // derrière un split, post reste post
+});

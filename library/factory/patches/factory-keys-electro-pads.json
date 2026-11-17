@@ -74,7 +74,9 @@
      "id": "st-keys-pads-1-A",
      "name": "Beat",
      "blocks": {
-      "crush": false
+      "crush": false,
+      "dly": false,
+      "tape": false
      },
      "params": {},
      "branches": {}
@@ -83,7 +85,9 @@
      "id": "st-keys-pads-1-B",
      "name": "Crushed Beat",
      "blocks": {
-      "crush": true
+      "crush": true,
+      "dly": false,
+      "tape": false
      },
      "params": {},
      "branches": {}
@@ -92,6 +96,8 @@
      "id": "st-keys-pads-1-C",
      "name": "Tape Beat",
      "blocks": {
+      "crush": false,
+      "dly": false,
       "tape": true
      },
      "params": {},
@@ -101,7 +107,9 @@
      "id": "st-keys-pads-1-D",
      "name": "Dub Beat",
      "blocks": {
-      "dly": true
+      "crush": false,
+      "dly": true,
+      "tape": false
      },
      "params": {},
      "branches": {}
@@ -114,7 +122,9 @@
    "id": "A",
    "name": "Beat",
    "blocks": {
-    "crush": false
+    "crush": false,
+    "dly": false,
+    "tape": false
    },
    "lanes": {
     "keys-pads-1": {
@@ -126,7 +136,9 @@
    "id": "B",
    "name": "Crushed Beat",
    "blocks": {
-    "crush": true
+    "crush": true,
+    "dly": false,
+    "tape": false
    },
    "lanes": {
     "keys-pads-1": {
@@ -138,6 +150,8 @@
    "id": "C",
    "name": "Tape Beat",
    "blocks": {
+    "crush": false,
+    "dly": false,
     "tape": true
    },
    "lanes": {
@@ -150,7 +164,9 @@
    "id": "D",
    "name": "Dub Beat",
    "blocks": {
-    "dly": true
+    "crush": false,
+    "dly": true,
+    "tape": false
    },
    "lanes": {
     "keys-pads-1": {
@@ -459,5 +475,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"6\": \"smoke\", \"7\": \"vortex\", \"8\": \"strobe\", \"9\": \"stars\", \"A\": \"vu\", \"B\": \"wave\", \"C\": \"heartbeat\", \"D\": \"lightning\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Electro Pads\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {\"crush\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Beat\", \"params\": {}}, {\"blocks\": {\"crush\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Crushed Beat\", \"params\": {}}, {\"blocks\": {\"tape\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Tape Beat\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Dub Beat\", \"params\": {}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {\"crush\": false}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Beat\"}, {\"blocks\": {\"crush\": true}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Crushed Beat\"}, {\"blocks\": {\"tape\": true}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-C\"}}, \"name\": \"Tape Beat\"}, {\"blocks\": {\"dly\": true}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": -1, \"state\": \"st-keys-pads-1-D\"}}, \"level\": -1, \"name\": \"Dub Beat\"}]}"
+ "deps_sig": "{\"anims\": {\"6\": \"smoke\", \"7\": \"vortex\", \"8\": \"strobe\", \"9\": \"stars\", \"A\": \"vu\", \"B\": \"wave\", \"C\": \"heartbeat\", \"D\": \"lightning\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"pads\", \"params\": {\"kit\": \"pads-lofi\"}, \"type\": \"pads\"}, {\"foot\": 6, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.5, \"rate\": 0.4}, \"type\": \"bitcrusher\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Portable Cassette\", \"wear\": 40}, \"type\": \"tape\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Electro Pads\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {\"crush\": false, \"dly\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Beat\", \"params\": {}}, {\"blocks\": {\"crush\": true, \"dly\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Crushed Beat\", \"params\": {}}, {\"blocks\": {\"crush\": false, \"dly\": false, \"tape\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Tape Beat\", \"params\": {}}, {\"blocks\": {\"crush\": false, \"dly\": true, \"tape\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Dub Beat\", \"params\": {}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {\"crush\": false, \"dly\": false, \"tape\": false}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Beat\"}, {\"blocks\": {\"crush\": true, \"dly\": false, \"tape\": false}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Crushed Beat\"}, {\"blocks\": {\"crush\": false, \"dly\": false, \"tape\": true}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-C\"}}, \"name\": \"Tape Beat\"}, {\"blocks\": {\"crush\": false, \"dly\": true, \"tape\": false}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": -1, \"state\": \"st-keys-pads-1-D\"}}, \"level\": -1, \"name\": \"Dub Beat\"}]}"
 }

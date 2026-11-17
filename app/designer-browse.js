@@ -3,7 +3,7 @@
 // recherche, il rend le patch choisi au parent. 2026-10-14 : le rail des setlists de SONS à gauche et des rangées de
 // 48 px — la grammaire du navigateur de presets (mockups/browser-setlists.html) ; l'instrument devient UN menu.
 import { html, cls, esc, useState, useEffect } from './lib.js';
-import { railLists, itemsFor, openSel, paginate, pageOfItem, matches } from './browser-model.mjs';
+import { railLists, itemsFor, paginate, pageOfItem, matches, readBrowse, writeBrowse, validSel } from './browser-model.mjs';
 import { useSetlists, SetlistRail, BrowseRow, Pager, FeatureMenu, FeatIcons, hasFeat } from './browser-rail.js';
 
 // Les QUATRE instruments d'un patch neuf — la même liste que le « + Add » de l'onglet Patches
@@ -33,16 +33,20 @@ export function PatchBrowser({ patches, patchMode, into, role: role0, setRole, q
   const active = sl && sl.active;
   const lists = sl ? railLists(sl.setlists, 'patches', active) : [];
   // la lane ⚙ d'un patch porte aussi des blocs de service (docs/patches.md §3) : le menu « With » les filtre
-  const [feat, setFeat] = useState('any');
+  const [feat, setFeat0] = useState(() => readBrowse('patches').feat || 'any');   // retenu d'une ouverture à l'autre
+  const setFeat = f => { setFeat0(f); writeBrowse('patches', { feat: f }); };
   const ofRole = r => all.filter(x => r === 'all' || (x.role || 'guitar') === r);
   const pool = ofRole(role).filter(x => hasFeat(x, feat));
   const curId = patchMode && patchMode.id;
-  const [sel, setSel] = useState(null);
+  const [sel, setSel0] = useState(null);
+  const setSel = s => { setSel0(s); writeBrowse('patches', { sel: s }); };
   const [page, setPage] = useState(0);
   useEffect(() => {
     if (!sl || sel !== null) return;
-    const s = openSel(lists, null);                 // les patches s'ouvrent sur « All » (l'instrument filtre déjà)
-    setSel(s); setPage(pageOfItem(itemsFor(s, pool, lists), curId));
+    // la setlist choisie la dernière fois, tant qu'elle existe et qu'elle a quelque chose pour ce filtre ; sinon « All »
+    const kept = validSel(readBrowse('patches').sel, lists);
+    const s = kept && (kept === 'all' || itemsFor(kept, pool, lists).length) ? kept : 'all';
+    setSel0(s); setPage(pageOfItem(itemsFor(s, pool, lists), curId));
   }, [sl]);
   const searching = !!(q && q.trim());
   const view = searching ? 'all' : (sel || 'all');

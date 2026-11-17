@@ -19,6 +19,7 @@ import { IoSheet, LaneTabs, addChoicesFor, sheetRowsFor as _sheetRowsFor, laneOb
 import { DrumsetSheet, DrumsetHead, drumsetPlan, formsFor, elLabel, KIT_MIX } from './designer-drumset.js';
 import { PatchBrowser } from './designer-browse.js';
 import { PresetBrowser } from './designer-browser.js';
+import { railLists, cycleItems, neighbour, readBrowse } from './browser-model.mjs';
 import { BankPicker } from './page-setlists.js';
 import { ParamSheet, PresetSettings, NameSheet, SceneSheet, ScenePlus, Picker, OUT_OPTS, loopRows } from './designer-sheets.js';
 const VCAP_ICON = '◈', VCAP_COLOR = '#8b9fd7';   // capture d'un VST : la marque du bloc VST d'origine
@@ -390,15 +391,18 @@ export function DesignerPage({ rig, sub }) {
   };
   // les flèches restent DANS LE RÔLE : un guitariste qui compare ses sons ne veut pas atterrir
   // sur une ligne de voix. Même filtre que l'onglet Patches.
+  // ET DANS LA LISTE OÙ L'ON A CHOISI (2026-11-16) : la setlist retenue par le sélecteur, dans son ordre numéroté —
+  // les flèches parcouraient tous les patches dans l'ordre de l'API, sans rapport avec la liste affichée.
   const patchPeers = () => allPatches.filter(x => (x.role || 'guitar') === (patchMode ? (patchMode.role || patchMode.realm) : 'guitar'));
-  const cyclePatch = d => { const l = patchPeers(); if (!l.length) return;
-    const i = l.findIndex(x => x.id === (patchMode || {}).id);
-    openPatchDoc(l[((i < 0 ? 0 : i) + d + l.length) % l.length]); };
+  const browseLists = kind => railLists((setlistsD || {}).setlists, kind, (setlistsD || {}).active);
+  const cyclePatch = d => { const cur = (patchMode || {}).id;
+    const x = neighbour(cycleItems(readBrowse('patches').sel, patchPeers(), browseLists('patches'), cur), cur, d);
+    if (x) openPatchDoc(x); };
   const openPatchDoc = x => { skipSave.current = true; setSel(null); setDrawer(null);
     setP(patchDraft(x)); setScene(0); setPatchBrowse(false); };
   // parcourt la liste des presets (flèches) sans ouvrir le panneau
-  const cyclePreset = d => { const l = presets || []; if (!l.length) return;
-    const i = l.findIndex(pr => pr.id === p.id); const j = ((i < 0 ? 0 : i) + d + l.length) % l.length; loadPreset(l[j].id); };
+  const cyclePreset = d => { const x = neighbour(cycleItems(readBrowse('presets').sel, presets || [], browseLists('presets'), p.id), p.id, d);
+    if (x) loadPreset(x.id); };
   // ÉDITER UNE SCÈNE, C'EST ÉDITER SON ÉTAT (docs/band-scenes.md) : une tranche de lane modifiée dans une
   // scène se recopie dans les autres scènes qui pointent le même état — « Pick » reste le même son partout
   const upd = mut => setP(prev => { const n = structuredClone(prev); mut(n); propagateLaneStates(prev, n); return n; });
@@ -1476,11 +1480,14 @@ export function DesignerPage({ rig, sub }) {
       { preset: bodyOf(), lane: patchMode.realm, name,
         // l'IDENTITÉ suit : un patch essayé depuis golem.fm est sauvé sous SON id, pas sous un id
         // dérivé du nom — sinon chaque reprise fabrique un objet de plus (paper-kite-ii, -iii…)
-        patch_id: patchMode.source_id || undefined, origin: patchMode.origin || undefined }).catch(() => null);
+        patch_id: patchMode.source_id || undefined, origin: patchMode.origin || undefined }).catch(e => (e && e.body) || null);
     if (r && r.patch) { skipSave.current = true;
       setP({ ...r.preset, __patch: { ...patchMode, id: r.patch.id, name: r.patch.name } });
       reloadPatches(); flash('✓ patch created'); }
-    else flash('✗ create failed');
+    // le refus DIT sa raison : « create failed » seul laissait chercher (2026-11-16, banc de basse sans bloc —
+    // le bloc Rec vit dans la lane de config, pas dans le patch)
+    else flash(r && /has no blocks/.test(r.error || '') ? '✗ empty patch — add a block to the chain first'
+      : '✗ ' + ((r && r.error) || 'create failed'));
   };
   const updatePatch = async () => {
     if (!patchMode) return;
@@ -2454,6 +2461,7 @@ export function DesignerPage({ rig, sub }) {
                 onClick=${() => setCpuSheet({ lane: ['tight', 'red'].includes(levelOf(((cpuEst.lanes || []).find(x => x.id === curLane.id) || {}).pct)) ? curLane.id : null })} /></span>` : ''}
             </div>
             ${dview === 'pedals' && !curLane.midi ? html`<${PedalView} lane=${curLane.id} chain=${curLane.chain} catalog=${effects}
+                genre=${p.style || (p.styles || [])[0] || (p.tags || [])[0] || ''} seed=${p.id + '/' + curLane.id} nameOf=${fxShort}
                 sceneState=${pedalState(curLane)} values=${pedalVals(curLane)}
                 onToggle=${ref => { const b = blockAt(p, ref); if (!b) return;
                   fxDef(b.type).scene_invariant ? toggleBypass(ref) : setSceneBlock(ref, !blockOn(b)); }}

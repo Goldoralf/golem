@@ -13,6 +13,7 @@ Writes:
   app/glyphs.js                                 GLYPHS = {type: {svg, uni, label}} (svg: inner markup on a 24 grid)
   app/vendor/golem-visuals/golem-pedals.js      the renderers, as golem-fx ships them (plain scripts)
   app/vendor/golem-visuals/golem-stage.js
+  app/vendor/golem-visuals/golem-rig.js         the rig by sections (GolemRig) — vendored, not used by the app yet
   app/vendor/golem-visuals/visuals-data.js
   app/vendor/golem-visuals/SOURCE.json          golem-fx commit, date
   app/vendor/golem-visuals/assets/kits/*.webp   the drum kits' photographs (drumKit), with their PROMPTS.md
@@ -71,7 +72,7 @@ def main():
     if not (vis / "js" / "golem-pedals.js").is_file():
         raise SystemExit(f"no golem-fx visuals in {vis}")
     DEST.mkdir(parents=True, exist_ok=True)
-    for rel, name in (("js/golem-pedals.js", "golem-pedals.js"), ("js/golem-stage.js", "golem-stage.js"),
+    for rel, name in (("js/golem-pedals.js", "golem-pedals.js"), ("js/golem-stage.js", "golem-stage.js"), ("js/golem-rig.js", "golem-rig.js"),
                       ("data/visuals-data.js", "visuals-data.js")):
         (DEST / name).write_bytes((vis / rel).read_bytes())
     # les PHOTOS des kits de batterie (drumKit, golem-fx 00ccb5d, 2026-11-15) : des images, pas du code — et leurs

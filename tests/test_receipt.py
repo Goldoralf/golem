@@ -409,6 +409,8 @@ ALLOW = {
               "un script du dépôt (modifiable par l'utilisateur). Le profil golem-ap et dnsmasq-shared.d/golem-name.conf "
               "sont retrouvés par leur nom à la désinstallation.",
     "start.sh": "lit le binaire REAPER (~/opt/REAPER), n'écrit rien d'installé",
+    "lib-engine.sh": "EXÉCUTE la copie root-owned /usr/local/sbin/golem-perf-mode (posée et notée au reçu par "
+                     "setup-perf-sudo.sh) pour rendre le mode performance à `golem stop` ; n'écrit rien d'installé",
     "golem": "lanceur à l'exécution ; son profil de navigateur (~/.local/share/golem/browser) est noté par "
              "install-desktop.sh",
     "desktop.py": "Windows / macOS — le reçu commence par Linux (docs/uninstall.md, statut)",

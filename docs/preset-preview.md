@@ -26,7 +26,7 @@ generated from the Setlists/Patches pages and by golem.fm jobs.
 ```
 
 Flat keys `<role>/<bucket>`. Buckets the code selects: `guitar/clean|crunch|high-gain|djent`,
-`bass/finger|pick`, `voice/male|female`, and the **MIDI references** (`kind: "midi"`, 2026-11-03)
+`bass/finger|pick|sustain`, `voice/male|female`, and the **MIDI references** (`kind: "midi"`, 2026-11-03)
 `keys/piano|epiano|organ|pad|lead` and `drums/rock|funk|jazz|metal`. Those are composed by
 `tools/make-midi-refs.py` — the script is the score, rerun it to rebuild them identically — and played by the
 patch's instrument instead of re-amped; their selection is by tags too (the instrument named first: organ, pad,
@@ -171,6 +171,13 @@ envelope carries `preview_fingerprint` so golem.fm can show a demo as possibly s
   careful rule on the scene's **name** — *solo*/*lead* → the lead DI, *clean* → the clean DI. A tag never puts a
   whole patch in solo any more (Singing Clean, tagged *lead*, played the solo on every scene). Only when the DI is
   chosen automatically, only with DIs that exist. The demo records `refs: {scene: ref}`.
+- **The bass has three phrases — CODED 2026-11-16** (recorded on the rack, `library/di-refs/bass/*.flac`).
+  `bass/finger` is a fingerstyle riff (jazz, and metal riffs played with fingers), `bass/pick` a continuous pick line
+  (rock, metal), `bass/sustain` long held notes — **everything else**, and the default of a bass patch. A patch gets
+  its phrase from its tags (`_BASS_TAGS`: *jazz* → finger; *rock, metal, punk, djent, grunge* → pick; otherwise
+  sustain). There is no rule on the scene name for a bass: only the factory casting decides scene by scene
+  (`demo-casting.json`, the ten bass patches). One wanted exception: Funk Slap keeps the finger riff on its attack
+  scenes (an envelope filter does not open on a held note). No slap phrase.
 
 ## 8. What a block plays — drum machine and standard
 

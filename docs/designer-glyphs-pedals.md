@@ -32,6 +32,18 @@ No second settings grid. The pedal view edits through the existing model:
 - **knobs drawn on a pedal** show the block's real values (scene first, golem-fx pedals; since 2026-11-13, docs/golem-fx-sheet.md) and do not turn: at 1024 × 600, under a finger, they are too small;
 - **adding, moving or removing a block** stays in the Blocks view.
 
+**By sections since 2026-11-17 (CODED).** The view no longer draws one line of pedals with the amp at the end
+(`GolemStage.render`): golem-fx's `GolemRig` cuts the lane into **sections**, each in its natural view — the pedals
+from above at their real footprint (`Pedals · pre`, `Pedals · post`), the heads and cabs from the front, the amps of a
+split side by side (`Heads / Cabs`), the outboard captures in a rack. `app/golem-visuals.js` `rigSections` gives one
+tab per section the chain has (the amp first shown); the floor follows the song's genre (`rigFloor`). Under the
+scene, the **chain in signal order** as small chips (`signalOrder`): the sections sort blocks by kind and lose that
+order; the chips of the shown section are lit, and a chip opens its section. The gestures are unchanged (same
+`data-idx` paths and branch tapes): tap = on/off in the scene, long press = the block's sheet, a branch tape = mute.
+Checked at render, 1024×600, no scroll, writes intercepted: the three tabs of Eight-String Nu, a chip changing the
+section, a tap on a pedal sending the scene write. Not done: MIDI lanes (keys, drums) still have no pedal view,
+though `GolemRig` can draw their instrument; the rack / board choice for outboard is fixed to rack.
+
 ## 3. What was open, and how it closed
 
 1. ~~**Two amps.**~~ Done in golem-fx 4d16160. `GolemStage.render` takes `{split: {mode, gain, branches}}`: a SPLIT

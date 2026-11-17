@@ -1,0 +1,15 @@
+{
+  "linux-x86_64": {
+    "file": "linux-x86_64.zip",
+    "sha256": "7c16e812a0f88abf48f8de48badb5b610300882d2dd32d9539c88abc26e60da5",
+    "binary_sha256": "53cab4847996b2581a50d23741248f0d3c7efe3b4ebafa1996362d49dd93eeca",
+    "sources": {
+      "lv2.cpp": "efea63c4a182e8886836d7954e42ca8197c2e8cd2047356491ee828b0ae5d84d",
+      "golem-capture.ttl": "50a247fa7e29021a45712159f209a8b073d37f06230e8b82a1bfa2bf84e11edc",
+      "manifest.ttl": "4797b5fb077ddbfc5f20c731e11b6a34e3066e190f3899298eed22ff12da16dd",
+      "CMakeLists.txt": "9d13e3d20119aabc9179bef5fca7cd4c1883a9e3b173767db51704efb16f188b",
+      "engine.cpp": "ba62517484b98dc58b0877ee2ebb475812daa7772e977e7e64493b02504cbbfe",
+      "engine.h": "8e6dadb0495dea3a03035a8828b53faf438c9e08338f39babc22f6ebd02b6f9b"
+    }
+  }
+}

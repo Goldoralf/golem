@@ -1,6 +1,8 @@
 # Ardour engine — action plan
 
-> **Status: FIXED** (plan validated 2026-11-10, decisions in §6) — A0 measured (§7), A1 in progress (§7b). The principle and
+> **Status: FIXED** (plan validated 2026-11-10, decisions in §6) — A0 measured (§7), A1 and A2 coded (§7b, §7c); state on
+> 2026-11-17 in §7d: the factory's 52 patches measured on the engine, the A2 leftovers, the keys instruments, the command
+> guard and recording coded, the other services to do. The principle and
 > the feature map are in [`ardour-engine.md`](ardour-engine.md); how an engine is described and chosen
 > is in [`audio-engine-choice.md`](audio-engine-choice.md). This page says **how** we build it, in
 > what order, and how each step is proven.
@@ -134,6 +136,19 @@ substitutes and close the OS gap too.
 
 ## 4. How sound is proven — without asking anyone to listen first
 
+**DECIDED 2026-11-13 (maintainer) — supersedes the parity thresholds below: we do not aim at the same sound
+everywhere.** golem-fx effects are new sounds (2026-11-12), and two engines need not null against each other. The
+benches below stay, **to catch engine bugs**: a setting that never reaches the plugin, a scene not applied, a block
+missing, a level jump when the rack switches engines. A deep null is a hint, a poor one is not a failure; nobody
+chases a third-octave. An instrument is closed (A3) when:
+
+1. every block its role is offered **plays on the Golem Engine**: it is placed, follows its settings, its scenes and
+   the foot (`check-engine-blocks.py`, `check-engine-ardour.py`, `check-rig-materialize.py --engine golem-engine`);
+2. **no level jump**: each factory scene of that role within ±1 dB of the same scene under REAPER
+   (`check-rig-materialize.py --render --against`, level only);
+3. the maintainer has **listened** to the golem-fx effects of that role and says yes or no: their sound is a choice,
+   not a measurement.
+
 A new bench, `tools/check-engine-parity.py`, generalising `check-core-parity.py`:
 
 1. **Render** a DI (or a MIDI ref) through a block, a preset or a scene in REAPER (its own REAPER with
@@ -210,8 +225,9 @@ Order: **guitar → bass → voice → keys → drums → keys-pads**. For each 
 3. Every factory preset with that role: all scenes rendered with the matching DI, compared to REAPER.
 4. Designer UI: the drawer hides what the engine lacks (capabilities), nothing else changes.
 
-- **Gate per instrument**: every offered block green on the bench or hidden with a reason; every factory
-  lane of that role within thresholds; for T2 blocks, your A/B listening says yes.
+- **Gate per instrument** (2026-11-13, §4): every offered block plays on the engine or is hidden with a reason; no
+  factory scene of that role jumps by more than 1 dB between engines; the maintainer has listened to its golem-fx
+  effects. Sameness of sound is not a criterion.
 
 ### A4 — Services (L, feature by feature)
 
@@ -716,8 +732,10 @@ commit; the measured models below stay as reference.)
 - **Result** (12 guitar patches, 60 scenes, Gypsy Lead skipped: a cab without capture in the factory content, both
   engines): every scene without a free-phase block nulls at −68 to −107 dB (NAM, cabs, eq-para, octaver, wahs, plate,
   delay-tape at 120 BPM). Free-phase blocks (hall, room, shimmer, rotary, phaser) stay within ~0.3 dB per third-octave
-  except the Calf phaser on Fuzz Wall (~4 dB at 80 Hz). **Open**: scenes with delay-tape on Singing Clean and Texas
-  Blues null at only ~−25 dB.
+  except the Calf phaser on Fuzz Wall (~4 dB at 80 Hz). Scenes with delay-tape on Singing Clean and Texas Blues
+  null at only ~−25 dB — **closed 2026-11-13, not a defect**: the delay-tape alone nulls at −276 dB
+  (`check-engine-parity.py delay-tape`), the levels of every scene are within ±0.06 dB except a free-running Leslie
+  scene (+1.2 dB), and sameness of sound is no longer a goal (§4).
 - **Two REAPER bugs found by the comparison, fixed (maintainer's go)**: (1) autowah's Wah does not exist on GxAutoWah;
   golem_rig fell back to the parameter's numeric rank, landed on the plugin's BYPASS port and switched the effect off
   in every patch that sets Wah (Funk Clean scene B never had its autowah on Linux) — catalog v36
@@ -820,6 +838,635 @@ chorus-js, pitch-shift-js, guitar-drive and capture-module freeze nothing (≤ 4
 flanger-js (REAPER's JS flanger) froze once in 26 (521 ms) and stays pending — the maintainer's call: no rerun under
 REAPER; the flag is settled when the Golem Engine becomes the default, where gfx-flanger plays it (stall-free); pitch-spectral is not installed on this
 machine, not measured. `check-block-stall.py` now warns when the load average is high.
+
+## 7d. Inventory 2026-11-16 — what REAPER gained while the Golem Engine stood still
+
+**Status: MEASURED (inventory), order PROPOSED.** The fork's last commit is 2026-11-13 and the rack has run REAPER
+since that evening. Three days of work went into the bridge and the REAPER side. This section lists the gap, read on
+the three contact surfaces and measured on the bench; nothing was coded for it.
+
+**Measured** — `check-rig-materialize.py --engine golem-engine --working-tree` (its own engine, dummy backend, the
+rack untouched), the 52 factory patches of the working tree:
+
+| | |
+|---|---|
+| materialized, scene A→B applied | **42**, 0 failed, 191 s |
+| skipped: an instrument the engine lacks | 9 keys patches — `vital` (4), `ep` (3), `organ` (1), `pads` (2) |
+| skipped: content not on this machine | 1 (Aasimonster kit samples; not an engine gap) |
+| settings refused by the engine plan in the 42 | **none** (only `sfz`, resolved by the compiler, and "no MIDI device", the bench has none) |
+| services missing in **every** materialized patch | `rec`, `click`, `compo`, `arrangement` (42/42), `drums` (28), `standard` (11) |
+
+So the core kept up: the catalog moved from v44 to v50 and every block of the audio lanes still lands with its
+settings, per-scene settings included (`apply_state`). What the engine lacks is what it never had.
+
+**Surface 1 — commands.** The Golem Engine adapter accepts 12 actions (`ArdourEngine.actions`); any other is dropped
+with one log line. The bridge sends about 45 kinds. By family:
+
+| Family | Actions REAPER answers | Golem Engine | Phase |
+|---|---|---|---|
+| Rig | `rig_recall`, `scene_apply`, `stomp`, verify, dump | yes | done |
+| Bench and health | `gapmeter`, `dspstats`, `plugins`, `audio_set` | yes | done |
+| Output mixer | `mixer_apply` (`bridge/mixer.py`: output trims, XR18) | **no** | A2 leftover |
+| Health probes | `peaks` (`check-silence`), `meters`, `midi_reinit`, `audio_reset`, `fxinventory` | **no** | A2 leftover |
+| Recording | `perf_rec` (takes, DI tracks, `.perfsrc.json`) | no | A4 |
+| Click, MIDI clock | `click` | no | A4 |
+| Backing, arrangement | `backing` | no | A4 |
+| Drum machine | `drums`, `drumlearn` | no | A4 |
+| Standards, Riff | `standard`, chord sequencer | no | A4 |
+| Samples, pads | `sample`, `sample_preview` | no | A4 |
+| Looper | its own command file and gmem ring | no | A4 |
+| Tuner | `tuner` | no | A4 |
+| Listening without playing | `preview` — patch, preset lane, keys sound, kit, capture audition, reamp, **CPU calibration bench** | no | A4 |
+| VST Host | `vst_list`, `vst_open`, `vst_params`, `vst_state`, `plugin_window` | no | A4 |
+| Capture wizard | `capture_params` | no | A4 |
+
+**Surface 2 — the compiled plan** (`<id>.rig.json`, the same file for both engines). Fields `golem_rig.lua` reads and
+neither `ardour_plan.py` nor the watcher mentions:
+
+- lanes: `mono_fallback`, `in_sel`, `midi_avoid`, `midi_strict`, `midi_ch.pads`;
+- instruments: `vital_chunk`, `vitalium_state`, `dx7_bank`, `dx7_patch`, `kit_pads`, `engines`, `kits` and the
+  per-kit fields beyond the AVL translator (`kit_mix`, `kit_bleed`, `drum_lost`, `drum_slot`);
+- services carried by the plan: `looper`, `knobs` (EXP and knob tap);
+- REAPER-only plumbing, nothing to port: `rfxchain`, `core_types`, `core_ids` (one NAM per amp, 2026-11-15 — the
+  Golem Engine already inserts one plugin per block).
+
+Not ported from that commit: **a head without a cab gets its default IR** (`default_ir`). To check on the engine.
+
+**Surface 3 — telemetry.** The watcher writes `.livemap.json`, `.rig-check.json`, `.clock.json`, the ack and its own
+`.engine-*.json`. The bridge also reads, from REAPER only: `.rig-plugins.json`, `.knobmap.json`, `.keys-midi.json`,
+`.midi.json`, `.peaks.json`, `.fx-inventory.json`, and one state file per service (`.perf.json`, `.perfsrc.json`,
+`.backing.json`, `.click.json`, `.drums.json`, `.standard.json`, `.sample.json`, `.looper.json`, `.tuner.json`,
+`.preview.json`).
+
+**What the three days added, and where it lands:**
+
+| Added under REAPER (2026-11-13 → 16) | On the Golem Engine |
+|---|---|
+| Catalog v45–v50: ~20 golem-fx blocks, legacy blocks retired, IR Effect, Formant, Morph | follows — one shared table, bench green |
+| One NAM per amp on a lane | not needed; default IR of a cab-less head to check |
+| Per-scene settings used by the whole factory | applied |
+| Factory: drum machine or Standard on SW10, Rec or Riff on SW9, in every patch | **absent** — every factory patch arrives without them |
+| Demos: patch, lane, keys sound, kit, capture audition | absent (`preview`) |
+| Drum kits: import, General MIDI safety net | AVL kits only; imported SFZ kits and DrumGizmo to do |
+| CPU budget: calibration bench and estimate | calibrated under REAPER only; the engine needs its own profile |
+| Bass DIs, factory casting, two branches at most | engine-neutral |
+
+**Proposed order** (everything is to be coded; this is the sequence, each lot with its own short plan and bench):
+
+1. **A2 leftovers**: output mixer, health probes (`peaks`, `meters`, MIDI and audio reset), default IR check.
+2. **A3 keys**: `vital`, `ep`, `organ`, `pads` and the keyboard zones — 9 factory patches wait on them. Bass and voice
+   lanes already materialize; their gate (levels against REAPER, listening) can run in parallel.
+3. **A4 in the order the factory needs it** — this revises D6 ("looper and click first"): recording and click, then
+   drum machine and Standard (SW10 of every patch), Riff, backing and arrangement, then `preview` (demos, audition,
+   CPU calibration), samples, looper, tuner, VST Host, capture wizard.
+4. **A guard so the gap cannot reopen silently**: a test that lists every action the bridge sends and fails on one no
+   engine has classified (plays it, or declares it missing with its feature).
+
+**2026-11-16 — lot 1, the A2 leftovers (CODED, proven on the real engine, dummy backend).**
+`tools/check-engine-ardour.py` now opens the dummy card that plays a sine on its inputs and passes 47 checks.
+
+- **Output mixer** (`docs/mixer.md`). A route of Ardour has no level per output, so the two stages add up on the fader:
+  scene level + mixer trim (attenuation only, −60 dB = silence), and the two mutes combine. The engine plan names the
+  mixer source of each route that goes to the card (`mixer: "in<input>"`); the trims of the rig travel with every
+  recall and scene (`plan.mixer`, read from `config/mixer.json`) and hot with `mixer_apply`. The dump reports
+  `mixer` and `level_db` next to the real fader. The recording mix that follows the main mix comes with recording (A4).
+- **Default cab of a head without a cab.** REAPER fuses it into the track's core; the engine inserts one plugin per
+  block and never read that core, so such a head played bare. The compiler now says the file in the plan
+  (`default_ir` on the amp block, ignored by `golem_rig.lua`), the engine plan inserts a cab right behind the head,
+  in the head's state, outside the live map (`shadow`), and a stomp on the head toggles it too.
+- **Why no sound** (`bridge/silence.py`). The watcher answers `peaks` in REAPER's row shape with two marks the
+  bridge reads instead of track names: `root` (a card input a lane listens to — the `golem:inN` meter tracks) and
+  `rig`. The verdict names the engine that plays, drops the "track armed" clue where the engine has no such probe,
+  and takes missing files from the rig check instead of `dumpfx`.
+- **Reopen the sound card / MIDI devices** (`audio_reset`, `midi_reinit`): the backend stopped and started with the
+  session and its links kept; each MIDI lane closes and reopens its keyboard. The pedalboard is read by the bridge
+  and is not concerned.
+
+Not done in this lot: the per-block meter probe (`meters`, a dev route) and the wording of Health ▸ Fix, which still
+says "REAPER" in its plans.
+
+**2026-11-16 — lot 2, the keys instruments (CODED, each one heard on the real engine, dummy backend).** The bench
+(`tools/check-engine-ardour.py`, 73 checks) mounts each instrument on a MIDI lane, writes a note into the track and
+reads the peak on its route.
+
+| Block | On the Golem Engine | How its content gets in |
+|---|---|---|
+| `vital` | Vital VST3 | its state is a **VST3 preset file**: the compiler already splices the `.vital` into a REAPER `vst_chunk`; the adapter keeps the component state and writes `~/.vst3/presets/Vital Audio/Vital/golem-<block>.vstpreset` (`ardour.write_presets`), the watcher loads it (`preset_by_uri` + `load_preset`) — again when a scene changes the sound, no rebuild |
+| `organ` | setBfree LV2 (`b_synth`) | it has no control port: the registration is **Control Changes** computed by the table of `b3-ctl.jsfx` (`bridge/engine/keys_midi.py`), written into the plugin (`write_immediate_event`) |
+| `ep` | Dexed VST3 | the watcher can write 1024 bytes at most, a 32-voice cartridge is 4104: the **chosen voice** is unpacked from the cartridge and sent as a one-voice SysEx (163 bytes); a scene with another patch sends another voice |
+| `pads` | sfizz | the kit becomes a **SFZ file** the adapter writes (`ardour.write_content`): one region per pad, `oneshot` and `gate`; `toggle` does not exist in SFZ, it plays as a one-shot and the plan says so |
+| keyboard zone | `golem Zone` (Lua DSP, port of `note-zone.jsfx`) | in front of each instrument: low note, high note, transpose |
+| arpeggiator | `golem Arp` (Lua DSP, written for golem) | between the zone and the instrument, **always there**: "Off" passes everything, a scene turns it on without a rebuild (REAPER must insert the stock `midi_arp`, hence rebuild). Same named settings as `ARP_CONFIGS`; its tempo is the song's, set by the watcher |
+
+- **One lane, several instruments** (`ardour_plan.expand_keys`, the rule of `golem_rig.lua`): two instruments, or an
+  instrument and pads when the controller separates them by channel, get one MIDI track each — opened on the same
+  keyboard, listening to its own channel — and a bus that sums them, carries the lane's audio effects, the scene level
+  and the mixer source. REAPER uses a root track that forwards MIDI; here each track opens the keyboard itself.
+- A lane with one kind of sound listens to its channel only (keys or pads), as under REAPER.
+- Plugins the engine adds for a block (`<id>~zone`, `<id>~arp`, `<id>~ir`) are `shadow`: they stay out of the live map.
+  Consequence: zone and arpeggiator settings follow scenes and edits, but have no fast OSC path.
+- `pads` no longer depends on the `samples` feature (`config/engines/features.json`): the engine plays it.
+- New watcher commands: `midi_send` (messages into a block's plugin or a track's input), `peaks` with `clear` and a
+  resettable maximum. The dump reports `preset`, `midi`, `plugin` per block and `midi_mask` per MIDI track.
+
+**Factory bench after this lot** (`check-rig-materialize.py --engine golem-engine --working-tree`): **51 of 52
+patches materialize, 0 failed** — the nine keys patches included, no setting refused; the one skipped lacks its
+samples on this machine. Every patch still arrives without its services (`rec`, `click`, `compo`, `arrangement`: 51;
+`drums`: 34; `standard`: 12) — lot 3.
+
+**OPEN — one freeze in three full runs.** The second full run stopped answering while it materialized Hero Lead (the
+24th recall of the run): one real-time thread of the engine at 100 % CPU, the watcher waiting, for ten minutes until
+killed. Hero Lead alone three times, the fifteen guitar patches in a row, and a third full run all passed. Not
+reproduced, cause unknown (a plugin spinning in its process call is the likely shape); the first run of the day, before
+this lot, had passed too. To hunt with a core of the stuck process (`gcore`, ptrace is restricted for `gdb -p`).
+
+The Vital preset file is written in the user's VST3 preset folder, the only place Ardour reads: the factory bench
+therefore writes `golem-<block>.vstpreset` there too (removed by hand after these runs) — to isolate.
+
+Not proven by the bench: the channel filter by ear (a note written into a track enters after its filter; the mask is
+read instead), and a real keyboard on these lanes. Not ported: the AKAI knob map (`knobs`, `.knobmap.json`), the
+DrumGizmo kit, imported SFZ drum kits.
+
+**2026-11-16 — lot 4, the guard (CODED).** `bridge/engine/actions.py` classifies every command the bridge sends, for
+the Golem Engine: handled by its watcher, waiting for a feature of `config/engines/features.json`, or not applicable
+with its reason. `tests/test_engine_actions.py` scans the bridge for `{"action": "<name>"}` and fails on a command
+that is not classified, on a classification that no longer matches `ArdourEngine.actions`, and on a feature declared
+"yes" whose command is not handled. Adding a command on the REAPER side now forces the question.
+
+**2026-11-17 — lot 3, first service: recording (CODED, proven on the real engine with the dummy card that plays a
+sine).** `perf_rec` is handled by the watcher; the descriptor declares `recording: yes`, so the Rec block is offered.
+
+- **How.** An Ardour track records its input. Each take track is connected to the **output ports** of the routes
+  that go to the card — after the plugins, the scene level and the mixer trim: `Mix` (all of them, stereo),
+  `Input-N` (the lane of input N, modes `tracks` and `tracks_di`), `DI-Sandbox-Input-N` (the raw card input, mono,
+  `tracks_di`). Names are the ones REAPER writes; what is taken comes from `presets/.perfsrc.json`, frozen at the
+  start. `in_ms` delays the start (count-in), a stop during it cancels.
+- **Files.** Ardour writes one mono file per channel. At the stop the watcher lists what it wrote
+  (`presets/.engine-take.json`) and launches `bridge/engine/take_finalize.py` **outside itself** (assembling an
+  hour of rehearsal must not freeze scenes): left + right joined into one stereo WAV with ffmpeg, files moved to
+  `recordings/perf-<date>/` (or the flat `perf-<date>.wav` in mix mode), then `presets/.perf.json` says the take is
+  finished — until then it is reported as recording. An error is written there, never swallowed.
+- **A recall during a take.** Ardour does not let routes be rebuilt while it records: a keyed gate's sidechain is
+  refused, and the bench crashed once (core: `IO::connection_change` called from the audio thread on a route being
+  destroyed). So the take **pauses** — record off, transport still rolling — the rig is rebuilt, the take resumes; its
+  tracks then hold several segments, which the assembler puts back at their positions (the hole is the moment the rig
+  was not sounding anyway). Each segment is trimmed to its region: the engine's file holds more (one second of DI was
+  doubled at the resume before that).
+- **Routes are disconnected before they are removed**, and the engine is given 120 ms to drain its connection queue
+  (`clear_routes`) — the fix for the crash above, for every rebuild, take or not.
+- Take tracks precede the routes of a rig rebuilt during the take on the OSC surface: strip numbers account for
+  them (`ssid_of`), and the live map is rewritten when they leave.
+- Bench (`check-engine-ardour.py`, `rec_bench`): a multitrack take with a recall in the middle, a mix-only take, an
+  unchecked input, a muted mixer strip (the mix follows the mixer, the DI stays raw at −18.0 dBFS), OSC knobs after
+  the take.
+
+Not in this lot: the **MIDI capture** of keys and drums lanes (`MIDI-….mid`), the service tracks in a take (backing,
+drum machine, standard: they do not exist on this engine yet), `with_backing`, the BWF timestamp, the recording mix
+following the mixer per source in `tracks` mode.
+
+**Limit found on the way — the peak probe.** `peaks` reads Ardour's route meters. Their resettable maximum can keep
+a transient from before the reset. The bench therefore judges takes against recorded files, never against the meter.
+The silence hunt uses the same probe, with a −60 dBFS threshold: its "signal leaves the engine" verdict needs a check
+at the rack before it is trusted on this engine. 
+**CLOSED 2026-11-17 — "the same rig does not come out at the same level from one recall to the next".** Recorded files
+showed 5 to 30 dB between two takes in a row. Hunted on recorded files, stage by stage; two causes, neither in the
+engine's gain:
+
+1. **The bench's test tone was random.** The bench asked for the dummy device "Sine Wave 1K"; the watcher's device
+   matching took the first partial match, "Sine Wave", whose frequency is drawn at random at every backend start
+   (20 Hz to 9.6 kHz). An amp and a cab do not weigh every frequency the same: the level changed with each engine run
+   and each "reopen the sound card". The bench now names "Sine Wave 1K, 1/3 Oct" exactly (397 Hz on input 1).
+2. **A ghost echo at every recall — a real defect, fixed.** While a rig was being built, its card input was already
+   connected: for a moment the signal crossed the rig with every branch open and every block on, before the scene
+   state was applied, and a delay kept it. Measured: −46 dBFS of echo on a bus whose two branches are muted, with a
+   bypassed delay (its trails). The watcher now connects the card input (and the keyboard of a MIDI lane) **last, once
+   the scene is applied** (`materialize`, `inputs`). After the fix: −91 dBFS on that bus, and the bench rig at
+   −28.6 dBFS over 19 recalls in a row — stopped, with the transport rolling, during mix and multitrack takes.
+
+What looked like a muted branch leaking, or a bus reading a stale buffer, was that echo. `rec_bench` now holds a firm
+check: two takes in a row within 1 dB.
+
+**2026-11-17 — lot 3, second service: the click (CODED, proven on the real engine).** `click` is handled; the
+descriptor declares `click: yes`.
+
+- A **permanent route** `golem:click`, created when the engine starts and never removed by a recall, with one
+  processor: `golem Click` (Lua DSP, `golem/engine/scripts/golem_click.lua`), a port of the counter and the sound of
+  `golem_click.jsfx` — a fractional sample accumulator that runs with the transport stopped, the bar as
+  numerator / denominator / subdivisions, accents by beat groups (bit mask), the silent clock, the four levels.
+- Its output goes to the pair or channel the command names (`"1-2"`, `"3-4"`, `"3"`), relinked only when it changes.
+  A field missing from a command keeps its value. The tempo is the song's: the watcher pushes it when it sets the
+  session tempo. State in `presets/.click.json`, with the audio thread's witnesses (steps emitted, tempo seen), read
+  from the processor's shared memory.
+- The click route takes the strip after the input meters on the OSC surface (`SERVICE_ROUTES`); it is not a source of
+  a take, so the metronome never ends up in a recording.
+- Bench (`click_bench`): route present at start, 7/8 in 3+2+2 taken, steps counted at the engine's tempo with the
+  transport stopped, sound on its route, silent clock, off.
+
+Not in this lot: the click **played** by a standard's grid or by a song's beat map (`song`, notes 76–78), the section
+anchor and the transport resync (`sync`, `anchor`: stored, not used) — they come with standards and backing — and the
+MIDI clock out.
+
+**2026-11-17 — the fader was in front of the plugins (a defect of the engine since A2, FIXED).** The watcher added
+plugins with `add_processor_by_index (proc, -1)`, which Ardour understands as "at the end" — **after the fader**. The
+scene level and the mixer trim, both set on the fader, therefore acted before the amp: they changed its drive, not the
+volume, and the fader of an instrument track acted on nothing. Measured on a pushed NAM (input +12 dB): a scene level of
++6 dB came out at −1.0 dB, −12 dB at −1.1 dB. Plugins are now inserted **before the fader** (`golem_chain.lua`,
+`fader_index` / `pre`: the visible index of the fader, as `Route::before_processor_for_index` counts); only the safety
+limiter stays behind it. After the fix: +6.0 and −12.0 dB. A firm check sits in `rec_bench`. Consequence to hear at
+the rack: on the Golem Engine, scenes with a level and mixer trims now sound like REAPER's; they did not before.
+
+**2026-11-17 — lot 3, third service: the drum machine (CODED, proven on the real engine).** `drums` is handled; the
+descriptor declares `drum_machine: yes`, so the Drums block is offered.
+
+- A **permanent MIDI track** `golem:drums` (created at start after the click; strips: input meters, click, drums, then
+  the rig): `golem Drumseq` (Lua DSP, a port of `golem_drumseq.jsfx`: a tick playhead that runs with the transport
+  stopped, variation at the next bar, a fill once then back, the song sequence in loop or once) then the kit's plugin.
+- Under REAPER `golem_drums.lua` parses the grooves' `.mid` and the kit descriptor itself; here the watcher reads
+  nothing: the adapter completes each `play` (`ardour.drums_play`, `bridge/engine/drum_bank.py`) with the bank
+  **already unfolded** into events (same rules: 960 ticks, note-ons only, bar from the first time signature, length
+  rounded up to the bar, a silent slot for an unreadable file, the GM note map for a non-GM kit) and the kit's plugin.
+  The watcher writes the bank into the sequencer's shared memory, then the command, the nonce last.
+- **Kits**: AVL kits by their LV2; SFZ kits and sample kits (`rs5k`, a bare list of samples) through sfizz — for
+  sample kits golem writes the SFZ. **DrumGizmo kits (Aasimonster) do not play yet**: the plan says so and the
+  sequencer still runs.
+- The kit plugin is rebuilt only when the kit changes. State in `presets/.drums.json` (`playing`, `idx`, `mode`,
+  `step`), twice a second.
+- **Mixer and takes.** The `drums` and `click` strips of the mixer act on the faders of their routes (`SERVICE_MIX`).
+  A take hears the drum machine in its mix and gives it its own track (`Drums.wav`); the click never enters a take.
+- Bench (`drums_bench`): a factory groove in an AVL kit with the transport stopped, the variation at the bar, the fill
+  and its return, stop, a sample kit playing a one-step song once, a DrumGizmo kit reported, the drum track in a take
+  with the click sounding beside it, the mixer strip lowering it by 12 dB.
+
+Not in this lot: the per-microphone mix of a multi-mic kit (`mix`, `master`), the learning of an e-drum module
+(`drumlearn`), the arrangement driving the grooves section by section (it reuses `play` and `variation`, not tried).
+
+**2026-11-17 — lot 3, fourth service: standards (CODED, proven on the real engine).** `standard` is handled; the
+descriptor declares `standards: yes`, so the Standard block is offered.
+
+- The bridge still renders the chart (`bridge/standards.py` → `presets/.standard.seq`); the engine only plays it.
+- **One clock.** Under REAPER one sequencer instance per part reads the same shared bank. Here a single
+  `golem Chordseq` (Lua DSP, port of `golem_chordseq.jsfx`) sits on `golem:std` and emits **every part on its own
+  channel**; its MIDI output feeds one permanent track per part, each listening to its channel: `golem:std:keys`
+  (1, sfizz and the Salamander piano), `:bass` (2, ACE Reasonable Synth — REAPER uses ReaSynth), `:drums` (10, the AVL
+  kit of the command), `:guitar` (4, sfizz and the pompe). The parts cannot drift.
+- Instruments are inserted at the first chart that asks for them (the piano loads a gigabyte) and stay. A part the
+  chart does not ask for is muted **and its instrument sleeps**. End of chart or stop: every sounding note is
+  released at its place in the cycle.
+- **The click is played by the chart** (lane 3 → channel 16 → `golem Click` in `Grid` mode, its own counter silent),
+  as under REAPER: two free clocks at the same tempo are never in phase. Chart stopped or finished, the click takes
+  its counter back.
+- The files of the piano and the pompe are named by the bridge in the command (`ardour.standard_instruments`).
+  Mixer strips `std-keys`, `std-bass`, `std-drums`, `std-guitar`; in a take, each playing part has its track
+  (`Standard-Keys.wav`…) and enters the mix. State in `presets/.standard.json`.
+- Strips on the OSC surface: input meters, click, drums, the five standard routes, then the rig.
+- Bench (`standard_bench`): a two-bar chart with the four parts and a click lane — each part heard on its track, the
+  click played by the chart, a part not asked for silent, stop without a hanging note, the click back on its counter,
+  the end of a chart without loop.
+
+Not in this lot: the **armed start** with a take's transport (`arm`: the chart starts at once, and says so), the tempo
+held for a standard take, the keys' arpeggiator (`arp`), the balance of the synth bass against the piano (−10 dB on
+its fader, −4 dB with the pompe alone: REAPER's ReaSynth values, **to be set by ear** on this synth).
+
+**2026-11-17 — service blocks and hardware MIDI blocks are playable on the engine (CODED).** A service block (Rec,
+Click, Drum machine, Standard) has no plugin in `effects-golem-engine.json`; `ArdourEngine.plays` answered "not here"
+for it even with its feature declared, so the Designer and the factory bench still listed it as missing. It now
+answers by the **feature** (`config/engines/features.json` + the descriptor's capability). A block the **bridge**
+plays itself — the Whammy DT, a MIDI pedal (`engine: midi` in the catalog) — plays on every engine and is no longer
+reported by the engine plan.
+
+**2026-11-17 — lot 3, fifth service: the tuner (CODED, proven on the real engine).** `tuner` and `extstate`
+(`tuner_in`) are handled.
+
+- `golem Tuner` (Lua DSP, `golem/engine/scripts/golem_tuner.lua`) is a port of golem's detector — same thresholds,
+  same state machine: 15 Hz high-pass and 1600 Hz low-pass, YIN on the signal decimated to ~8 kHz and spread over
+  several cycles under an iteration budget, the descent to the dip, parabolic interpolation, full-rate refinement for
+  high strings, no note under −62 dBFS. The audio passes untouched.
+- One instance sits **asleep** on each input meter track (`golem:in1…3`), inserted once at start: arming the tuner
+  wakes the one of the input the bridge names and never rebuilds the graph while someone plays.
+- Reading in `presets/.tuner.json` (`note`, `octave`, `cents`, `freq`, `conf`), ten times a second at most, the
+  note ↔ silence flip at once.
+- Outside the engine (lupa): B0 of a five-string bass to E5 within 0.05 Hz, silence reported. On the engine
+  (`tuner_bench`): the dummy card's 396.85 Hz read as G4 +21 cents, the input changed on the fly, off.
+
+Limit: three input meter tracks exist, so the tuner listens to inputs 1 to 3.
+
+**2026-11-17 — lot 3, sixth service: backing tracks (CODED, proven on the real engine) — with a sixth fork patch.**
+`backing` is handled; the descriptor declares `backing: yes`. The Arrangement block, which the bridge leads with the
+click, the drum machine and the backing, is offered too (`plays`: a `virtual` block with no feature of its own).
+
+- **Fork patch 6 `[headless] [upstreamable]`** (the maintainer allowed source changes on 2026-11-17). Ardour's Lua has
+  no way to put a file on a track: the GUI does it through `Editor::do_embed`. Added `ARDOUR.LuaAPI.place_audio_file
+  (Session, track, path, position)` — an external source (the file stays where it is), one region of the whole file,
+  no fades, wrapped in the auditioner's on-the-fly resampler when its rate differs — and the binding of
+  `Session:set_auto_loop_location` (a fresh session has no loop range). The fork is rebuilt (`python3 ./waf build`,
+  73 s); binaries of before are kept in the scratchpad of this session only.
+- A permanent bus `golem:backing` to outputs 1/2 and one track per stem (the six of golem.fm at start, any other on
+  demand — an original has one stem per instrument). Strips on the OSC surface are no longer assumed: the watcher
+  **counts** what precedes the rig at each rebuild (`RIG.base`).
+- **Stems are decoded once by the bridge** (`ardour.backing_load`): Ardour reads a placed mp3 but *seeking* in it costs
+  a decode from the start — the transport started at the third try, a seek or a loop dragged. Each stem becomes a WAV at
+  the engine's rate in `assets/.cache/backing-wav/<key>/` (decodes in parallel: 2.4 s for six stems of 4 minutes the
+  first time, nothing after), and the cache keeps the last four songs (~280 MB a song).
+- Ops as under REAPER: `load` (default mix, then the command's), `unload`, `seek`, `loop` A/B (Ardour's loop range,
+  loop-is-mode so that arming it stopped does not roll), `jump` (the rehearsal's section jump: backwards, a loop lifted
+  at the first wrap; forwards, a seek on reaching the boundary), `mix` per stem, `mute` of the bus. End of song: stop,
+  back to zero, counted (`ends`). State in `presets/.backing.json`.
+- **Transport.** "stop" then "start" from the bridge: Ardour refuses a locate while it is stopping, so the rewind is
+  sent 0.4 s after a stop; "start" is `/locate 0`, not `/goto_start` (the session's range start, which a take made in
+  the middle of a song had moved to 101 s).
+- **Takes.** A take and the backing share the transport. A take started while the backing plays grafts onto it
+  without rewinding; a loaded backing the take did not ask for, and that was not playing, is muted for the take and
+  restored after; the backing has its track in a multitrack take (`Backing-Track.wav`) and enters the mix. Mixer strip
+  `backing`.
+- Bench (`backing_bench`, 13 checks): a six-stem song loaded, played, seek, loop A/B held and lifted, a backward and a
+  forward jump, per-stem mix, a take over a playing backing, stop and rewind, end of song, unload.
+
+Not in this lot: the **song's click** (the beat map `ticks` of a backing played by the click: the click runs free),
+and the arrangement tried end to end on this engine — its pieces are there, the whole was not played.
+
+**2026-11-17 — lot 3, seventh service: listening without playing (CODED, proven on the real engine).** `preview` is
+handled; the descriptor declares `previews: yes`.
+
+- REAPER clones the lane and renders it **offline**. An offline render in Ardour freewheels the engine: the whole
+  rack would go silent. Here the render is done **in real time, in the lane itself**, for the length of the phrase:
+  a DI is played by a track (`golem:preview:di`, placed with `place_audio_file`) **in place of the card input** — the
+  lane and the keys of its gates listen to it; a MIDI phrase is played by `golem Midiplay` (a new Lua DSP, sample
+  accurate, one shot) inserted at the head of each MIDI track of the lane, on that track's channel. The lane's output
+  is **disconnected from the card** — the room hears nothing — and recorded; the mixer trim is lifted for the render.
+- The machinery is the take's (transport, stop, assembler): the assembler writes the WAV where the bridge asked and
+  says so in `presets/.preview.json`. Then everything is put back: card input, outputs, gate keys, mixer trim, and the
+  render's tracks and players are removed.
+- A kind of render that is not there yet answers at once with an error (`bench`, block renders with a drum machine or
+  a standard playing, per-track renders), so the bridge does not wait for a timeout.
+- Cost: real time. A scene takes its phrase plus its tail (about 15 s), where REAPER's offline render is faster than
+  the music. The musician's lane is busy meanwhile — the bridge already takes the rig for a batch.
+- Bench (`preview_bench`): a 220 Hz DI rendered through the bench lane (not the card's 397 Hz), the lane back on the
+  card afterwards, an unsupported render reported at once, a MIDI phrase played by the organ, the player gone.
+
+Not in this lot: the CPU calibration bench (`bench: N` — the estimate stays calibrated under REAPER), the demo of a
+block (drum machine, standard), the kit demos, the audition of a capture and the reamp of a take, which use other
+forms of the command.
+
+**2026-11-17 — lot 3, eighth service: samples (CODED, proven on the real engine).** `sample` and `sample_preview` are
+handled; the descriptor declares `samples: yes`.
+
+- A permanent MIDI track `golem:sample` with sfizz, on outputs 1/2. REAPER builds one sampler per sound; here the
+  watcher writes **one SFZ file** — one region per sound, each on its own note, a block after the other — rewritten
+  only when a block's list changes. Launching = a note-on written into sfizz; `stop`, or another sound of the same
+  block, releases it. The adapter gives the files as absolute paths and their **durations** (`audio_seconds`): they
+  tell the watcher when a sound has ended (`presets/.sample.json`, same shape as under REAPER). `in_ms` delays a start
+  (a song aligns a cue on its beat).
+- `sample_preview` (the Library's audition) is a block of its own that never shows in the state.
+- A launched sample has its track in a take (`Sample`), its strip in the mixer (`sample`) and its row in the silence
+  hunt.
+- **Level.** sfizz plays a file 4.1 dB under its level (measured in a take, mono and stereo alike: 3 dB of centre pan
+  law plus 1.1 dB); the kit compensates, so a sample comes out at the level of its file (bench: within 1 dB — the bench retriggers the sound during the take, and the overlap of the two moves the peak by up to 0.9 dB).
+  The pads and drum kits that also go through sfizz are **not** compensated: their level is set by their blocks.
+- **Fork patch 7 — live notes survive the transport.** Starting a take cut a sample that was ringing: Ardour sends
+  all-notes-off on every MIDI track and resolves plugin MIDI on a transport stop or locate — right for a timeline, wrong
+  for instruments played live. `ARDOUR_MIDI_KEEP_NOTES_ON_TRANSPORT` (set by `run.sh`) skips both
+  (`midi_track.cc`, `plugin.cc`). It also protects a held organ chord when a take or a backing track starts or stops.
+- Bench (`sample_bench`): play, stop before the end, a short sound ending by itself, a delayed start, the level in a
+  take, a sound that survives the start of a take, the Library audition.
+
+**2026-11-17 — lot 3, ninth service: the looper (CODED, proven on the real engine).** The descriptor declares
+`looper: yes`; the bridge side (`bridge/looper.py`, the foot, /live) is unchanged.
+
+- **`golem Looper`** (`golem/engine/scripts/golem_looper.lua` in the fork) is a new Lua DSP, 8 inputs (4 stereo pairs),
+  stereo output. It takes the **contract** of `golem_super8`, not its code: the same command notes written into a
+  parameter `GoleM Cmd` (`seq×128 + note`), the same parameter order (`GoleM Tempo`, `GoleM Mode`, `GoleM Loop 1-4 dB`,
+  `GoleM Loops level`), so `LooperControl` drives it as it drives the JSFX — count-in bar, first loop snapped to the
+  bar, Rec → Dub, per-loop level. Its state is in the plugin's shared memory.
+- The audio lives in the same shared memory (8 channels × 120 s, 184 MB at 48 kHz, never cleared in one go): each pair
+  knows the **region** it has written and plays only that; the rest of a partial loop is zeroed in small pieces. The
+  recording fades in over one block and out over 30 ms — the tail of a first loop falls onto its head (a crossfade at
+  the seam). A first loop closes by itself at the end of the memory.
+- **`golem:looper`** is a permanent bus created at engine start: loops survive recalls. The engine plan carries the
+  loop table (`ardour_plan.looper_loops`: one row = one pair = the lane **input** it listens to, resolved as REAPER
+  does); the watcher connects the lane's **output** (post-fader) to the pair's inputs after each rebuild, mutes the bus
+  when the preset has no looper, and says "boucle MUETTE" when a row's lane is not in the preset.
+- **Commands.** The watcher publishes the address in `presets/.looper.json` (strip, plugin 0, parameter 0) after every
+  recall, with the state (`len`, `pos`, `firstrec`, `countin`, `slots`), four times a second while a loop runs. The
+  adapter knows the looper's parameter ranges at that address (`ArdourEngine.LOOPER_RANGES`), so the bridge's OSC
+  writes reach it; the file fallback `presets/.looper-cmd.json` (`seq`, `notes`, `cfg`) is honoured too.
+- The looper has its strip in the mixer (`looper`), its track in a take (`Looper`) and its row in the silence hunt,
+  only while the preset has one.
+- Differences from REAPER, assumed: the loop records the lane **after the mixer trim** (here the trim is on the lane's
+  fader); a command lands at the start of an audio block (≤ 5 ms at 256 samples), the count-in and the snapping are
+  exact to the sample in length; no undo, as under REAPER.
+- Bench (`looper_bench`): address published, rec → play over OSC, a second loop of the same lane, per-loop level,
+  survival across a recall, the file fallback, play all, clear all, count-in then a loop of exactly 2.000 s at
+  120 BPM. Tests: `tests/test_engine_lua_dsp.py` runs the DSP on a fake host.
+
+**2026-11-17 — lot 3, tenth service: the VST Host (CODED, proven on the real engine).** `vst_list`, `vst_params` and
+`vst_state` are handled; `vst_open` is not (a headless engine has no plugin window).
+
+- **Inventory.** `vst_list` lists the VST3 plugins Ardour knows, named **as REAPER names them** (`VST3: Name (Vendor)`,
+  `VST3i:` for an instrument): the Designer's page and the catalogue matching work unchanged, and a patch made under
+  REAPER finds its plugin here by name. The engine hosts VST3 only: a CLAP block is skipped with its reason.
+- **The block.** `ardour_plan.plan_host` plans a `vst-host` block outside the engine table: the plugin by its name
+  (the watcher resolves the class id), the **knobs** the musician chose (`{i, name}`, value normalized under `p<i>`),
+  found by their name first, by their rank otherwise. The livemap carries them, so the screen and the EXP pedal drive
+  them like a catalogue knob. `vst_params` reads the real parameters of the instance (normalized, with toggle/step).
+- **Not there, and said:** the plugin's **native state** — `vst_state` answers that it cannot be captured, and a state
+  captured under REAPER (`_vst_chunk`) is not loaded: the plan lists it as skipped and the plugin starts from its
+  default state. Parameter ranks may differ between the two engines for a plugin that hides parameters: the name is
+  tried first for that reason.
+- **First-use bench (CODED 2026-11-17, proven).** `bridge/plugin_trial.py` tried an unknown plugin in a separate
+  REAPER; its verdict says nothing about Ardour. On the Golem Engine the same bench runs on a **second Golem Engine**
+  (`trial_engine`): a throwaway root, the dummy backend, no OSC surface (`GOLEM_ENGINE_NO_OSC`), no output — the
+  engine that plays is not touched. Its watcher (`plugin_trial` action) puts the plugin on a track, switches it off and
+  on four times, and measures at each gesture the time the audio clock **lost** (wall time minus processed samples).
+  Verdicts: more than 50 ms lost → "stopped the audio engine for N ms"; the process dead → "crashed the audio engine";
+  the trace stuck → "froze the audio engine"; plugin not found → no verdict. About 9 s per plugin. **One verdict per
+  engine** in `config/vst-trials.json` (key `golem-engine|<plugin>`): a plugin cleared under REAPER is tried again here.
+  Proof: `golem Stall`, a test Lua DSP of the fork that blocks the audio thread on purpose, is refused (299 ms
+  measured); golem FX Delay and Vital pass (≤ 10 ms).
+- Bench (`host_bench`): the inventory, a golem-fx plugin hosted by name, its knob in the livemap, its value read back,
+  driven over OSC, the state and a missing block answered honestly; `trial_bench`: the stalling plugin refused, a
+  healthy one cleared, a missing one not judged.
+
+**2026-11-17 — lot 3, eleventh service: the Riff block, audio lanes (CODED, proven on the real engine).** The descriptor
+declares `riff: yes`. The Riff has no command of its own: it is a take (`perf_rec`) armed by the bridge, with its click
+— a file — and its optional bed loaded in the backing (`backing load` with `files`), started together from zero.
+
+- Nothing had to be added to the watcher: the take already names its files as REAPER does (`Input-N.wav`,
+  `DI-Sandbox-Input-N.wav`, `Backing-Track.wav`), honours `backing: true` and starts the transport at 0.
+- Bench (`riff_bench`): an armed take has the files the Riff uploads, and the "1" of the click falls in the recording
+  where it is in its file (1.000 s, within 5 ms) — the property golem.fm relies on to lay the take on the riff.
+- **MIDI in a take (CODED 2026-11-17, proven).** A MIDI lane's keyboard is recorded by a MIDI take track opened on
+  the same device (one per lane input, all channels, before the zone, the arpeggiator and the instrument); the
+  assembler turns the engine's file (musical time at the session tempo) into `MIDI-Input-N.mid`, one format-0 file
+  aligned on the take, tempo first — as `golem_perfrec` does. A keyboard that played no note leaves no file.
+  Bench (`miditake_bench`): the dummy card's MIDI generator feeds an organ lane (`midi_in: "port:<engine port>"`, a
+  bench form); the take holds the notes and the lane's sound, and each rise of the sound follows its note by less
+  than 80 ms (measured: about 30 ms — the instrument's attack and one audio period; not corrected).
+  **Not verified:** with a real keyboard on ALSA, and a riff uploaded and transcribed from that file.
+
+**2026-11-17 — capture modules (CODED, proven on the real engine with a capture of this rack).** `capture_params` is
+handled. The reader of a controllable capture is a CLAP plugin; Ardour does not host CLAP. `native/capture-lv2` builds
+the **same reader** (same `engine.cpp`, same pinned NAM core) as an LV2 — `https://golem.fm/lv2/capture`, mono, 32
+normalized controls, the capture given as a file property. The engine table maps `capture-module` to it;
+`ardour_plan.plan_capture` gives the controls their values in the capture's order, `write_captures` decodes the
+compiler's state file into the JSON the LV2 reads, and the watcher writes `capture_params` on `Control NN`.
+Bench (`capture_bench`, skipped with a line when the machine has no `.gcap`): the reader placed with the capture's
+values, the model loaded (325 ms) and **sounding**, a knob moved while playing. Not compared sample for sample with
+the CLAP reader under REAPER.
+
+**2026-11-17 — end to end through a real bridge (`tools/check-rig-materialize.py --engine golem-engine`).** Until now
+each service was proven against the engine alone. Three rounds now go through a throwaway bridge, by the real path:
+
+- **A whole song** (`--arrangement`, new): ▶ Play on the factory song *Golem Rising* — the bridge recalls its preset,
+  counts one bar in, and its conductor (`bridge/arrangement.py`) lays the scene, the forced blocks and the groove of
+  each part at its boundary; then Stop. Measured: part 2 arrives **+6 to +12 ms** from its boundary on the Golem Engine
+  (+17 ms under REAPER, same round), the rig is on the part's scene, the drum machine plays the part's groove and
+  stops with the song.
+  - It found a **bridge bug on both engines**: ▶ Play on a song whose preset was not the loaded one answered
+    "no arrangement in this preset" — the recall of the preset erased the song the route had just set
+    (`recall.do_recall`). Fixed: a Songs-page song set for the preset being recalled stays.
+- **A riff with its bed** (`--compo-bed`, now allowed on this engine): armed takes with the click file and the bed in
+  the backing — the bed's first sample and the take's downbeat are **0 samples** apart in `Mix.wav`, at −6, −60 and
+  0 dB; a bed with a wrong hash refuses the take; a take without a bed is silent after the count-in.
+- **A standard take** (`--standard-take`, now allowed): the **armed start of a standard** is coded. `standard play`
+  with `arm: true` sets the take's tempo and arms `golem Chordseq`; the grid leaves **with the transport**. What the
+  engine reads from the timeline (the riff's click file) comes out ahead by the output latency so that it lands
+  right; notes generated live would come out late by as much (measured: 280 samples). The armed grid therefore runs
+  ahead by `Session:worst_output_latency()` and starts **inside the transport's latency preroll** — fork patch 8 binds
+  `Session:remaining_latency_preroll`. Measured against the riff's click: **0.5 ms** (24 samples; budget 1 ms), tick 0
+  sounds, and a looped grid resumes after its count-in. The preset's tempo comes back at `standard stop`.
+
+- **Demos** (`--demos`, new): `POST /api/preview/batch` on a guitar patch (reference DI), a keys patch and a drums
+  patch (MIDI phrases) — the bridge lays each scene, the engine renders it in real time (about 28 s per scene), the
+  files arrive: 5, 4 and 4 demos, none silent (peaks −11 to −1 dB). Not compared by ear with REAPER's demos.
+
+The factory pass on the current tree: 51 patches materialized, 0 failed, 1 skipped (the Aasimonster samples).
+
+**2026-11-17 (afternoon) — the remaining list, closed.**
+
+- **Capture reader, bundled.** `native/capture-lv2/bin` holds the compiled LV2 with its hashes; golem's setup installs
+  it with the CLAP reader, only where the Golem Engine is present (`provision/capture_player.py`).
+- **The other forms of `preview`.**
+  - *Block and kit demos* (`chains`, `midis`): phrases played in the **live service tracks** (`Drums`,
+    `Standard Keys`…) by `golem Midiplay`, their outputs taken off the card and recorded; `drums op load` puts a kit
+    without playing. Engine bench: a drum phrase rendered through its kit. Through the bridge
+    (`check-rig-materialize --listen-forms`): the block demos of a factory preset rendered by `POST /api/preview/blocks`.
+  - *CPU calibration bench* (`bench: N`): REAPER renders offline and times it; this engine plays the DI in real time
+    and **reads what each plugin of the lane cost per buffer** (Ardour's own counters): `avg_us`, `worst_us`, `nfx`,
+    buffer and rate come back in `.preview.json`, and `bridge/cpu_bench.py` takes them as they are. The bench is no
+    longer REAPER-only: its targets are the types of the engine table whose plugin is installed, and a target's
+    fingerprint carries the engine's version. Through the bridge: `POST /api/cpu/calibrate` measured the empty lane
+    (77 µs per 1024-sample buffer on this laptop, on the dummy backend).
+  - *Audition of a capture* and *reamp of a take* use the DI form already proven; the descriptor declares
+    `reamp: yes`. **Not run end to end** (a reamp needs a golem.fm job).
+- **A whole song, complete** (`--arrangement`, second round): a backing (stems of a song of this golem), a sample cue
+  at bar 2 and "Record with the song". The backing plays with the song, the cue fires, the take runs and holds
+  `Backing-Track.wav` and `Sample.wav`. The samples track is now always recorded and kept only if a sample rang
+  during the take (a cue can fire the first sound of a block in the middle of a take).
+- **VST Host: the plugin's native state.** `vst_state` makes the engine save the state as a VST3 preset; the bridge
+  reads it and stores it **in REAPER's `vst_chunk` layout** (component size, 1, state; controller size, 0, state —
+  checked on the 118 Vital states the compiler grafts), so a patch carries its plugin state from one engine to the
+  other. At recall `write_host_states` writes it back as a preset of the plugin (`golem-<block>`), found through the
+  inventory the watcher now publishes at start (`ident`, `vendor`, `pname`). Bench: Vital hosted with a factory
+  sound — what is read back from the engine is that sound, not the default. A state that is not a VST3 state is
+  refused, never guessed.
+- **Plugin windows: not possible, and said.** The engine has no display; the button answers "The Golem Engine has no
+  plugin windows — set the plugin with its knobs, or open it under REAPER".
+
+**2026-11-17 — on the real card (Universal Audio Volt 276, ALSA, MPK Mini plugged; the Nitro was not).**
+`check-rig-materialize --engine golem-engine --real-card` — the rack stopped, **no engine output linked** (no sound):
+
+- The engine opens the card: 2 in / 2 out, 48 kHz, the rack's buffer (192 samples, 8.0 ms), its threads in real-time
+  priority. The lane of the instrument mapped on the card (bass, input 2) listens to `capture_2`; the round now follows
+  the card's input map instead of assuming a guitar. The factory pass on the real card: 36 patches, the guitar ones
+  skipped (no guitar in this card's map today).
+- **The keyboard**: the MPK Mini is opened by the engine for a keys lane (the bench needs the rack's
+  `config/devices.json`, which says which keyboard plays the Keys lanes).
+- **A take of the real inputs**: the files arrive at 48 kHz; the DI carries the preamp's noise floor (−69 dB), not
+  digital zero.
+- **Dropouts (xruns) at 192 samples.** At rest: **0** in a minute, with or without a rig. Around a take: **5** —
+  creating then removing the take's tracks rebuilt the engine's graph while the rig played. **Fixed**: the take tracks
+  are now **permanent** (17, created once at engine start: mix, three lanes and their DIs, the services, a MIDI
+  track, the demo track); a take only connects and arms them, then empties their playlists. Measured again, twice:
+  **0** around a take, 0 at rest. A track the pool does not have is still created on demand. (A pooled track must
+  never be renamed: renamed at take start, it gave no region once a recall passed during the take.)
+- The idle looper cost 42 µs per cycle for nothing; at rest it now only writes silence.
+- The buffer changes hot (1024 → 256, 0.6 s); the engine killed and restarted remounts its patch in 4.3–4.8 s. One
+  run showed Health in "warn" right after the remount (the OSC link not yet heard), the next "ok".
+- **At the switch from REAPER** (done from the app on the rack, 15:11): the engine failed twice with "Failed to open
+  audio device" — REAPER had not released the card yet — and started at the third launch; Health kept a watcher-error
+  warning. The watcher now retries opening the card for 12 s (**not verified on a real switch**).
+
+- **A bench next to a rack that runs the Golem Engine.** The OSC surface took the next free port (3820) silently
+  while the bench's adapter kept sending to 3819 — **the rack's engine**: a bench run started and stopped the rack's
+  transport and wrote a plugin parameter to a strip the rack did not have (no backing was loaded, nothing was
+  recording). Fixed: fork patch 9, `ARDOUR_OSC_PORT` (no fallback when set), passed by `run.sh` from
+  `GOLEM_ENGINE_OSC`; both benches now take a free port of their own. Checked next to the live rack: the bench passes,
+  the rack's transport and dropout counter do not move.
+
+- **The rack itself on the Golem Engine** (switched from the app, real card, outputs linked), after the musician played:
+  - *The switch.* REAPER → Golem Engine → REAPER → Golem Engine through `POST /api/engine`: each switch ends "done" and
+    the patch is remounted. The engine opened the card at the first try on the second switch (the retry for a card
+    still held was not exercised). Health says "started but not answering" for a few seconds after a start, then ok.
+  - *Dropouts counted for what they are.* The engine makes about 37 xruns while it starts and a few each time a rig is
+    laid — the sound is cut then anyway — and Health showed "Audio dropouts: 37" in red after every start. The watcher
+    now publishes only the dropouts of **playing**: those of the start and of a rebuild (and 0.7 s after) are left out
+    (`xruns` in the status; `xruns_all` keeps the engine's raw count). Measured on the rack: 0 published after a
+    restart, 0 in a minute at rest with the outputs linked.
+  - *A reamp* (`tools/check-reamp-align.py`, the real path of the job without golem.fm): the render had the DI's rate
+    and length, and its three impulses fall **22 samples (0.46 ms)** from the DI's, constant — budget 1 ms. It first
+    failed: the bridge reads a render with Python's `wave`, which does not read the float WAV the engine writes; a
+    render is now written as 24-bit PCM (a take keeps the engine's format).
+  - *CPU calibration, whole* (`POST /api/cpu/calibrate` on the rack, 25 minutes): **72 of 73 targets measured** at
+    192 samples — the empty lane 21 µs per buffer, the costliest a NAM WaveNet capture at 792 µs, fuzz 602 µs, of a
+    4000 µs budget. It first measured nothing: the bench lane was a guitar lane and the card carries voice and bass
+    today; it now takes the input of whichever instrument the card has. Not measured: `volume` — at its default the
+    block puts no plugin in the lane on this engine, so there is nothing to time.
+  - *A restart that left the engine without its service tracks* (16:00 and 20:33). No input meters, click, drum
+    machine, looper nor take tracks: eight errors in a row at start. **Cause found at the second occurrence**: stopped
+    cleanly, the engine saves its session — its service and take tracks with it; at the next start their ports
+    already exist ("Port already exists") and none can be created. The watcher now **removes every route a reloaded
+    session holds** before creating its own (`purge_routes`): three restarts of the rack's engine in a row, 38 stale
+    routes removed each time, every service created. (A first guess — the audio backend not running yet — was wrong;
+    the wait for `AudioEngine:running()` stays as a guard.)
+  - *The engine fell at a rig recall* (four times on the rack this day: 19:06, 20:10 twice, 20:31; the bridge
+    relaunched it each time). The log names it: a golem-fx plugin (Rust, nih-plug) panics "already mutably
+    borrowed" in `VST3PI::activate` — on a latency change Ardour re-activates the component from the butler thread
+    while the audio thread is inside `process()`. Fork patch 10: that re-activation takes the plugin's process lock
+    (`connect_and_run` try-locks and skips the cycle). Since the rebuild: 13 recalls of the heavy patch, no fall.
+    A race: **not proven gone**.
+  - *MIDI clock out* (asked by the maintainer the same evening; it was the last feature marked "planned"). A
+    permanent MIDI track `golem:clock` with the script `golem Clock`: 0xF8 at 24 per quarter note at the preset's
+    tempo, **transport stopped**, as `golem_clock.lua` does under REAPER. It is linked to the **output of each
+    keyboard a MIDI lane opened** (REAPER looks for "MPK"/"akai" by name; here any keyboard), re-linked when the
+    list changes (checked every 2 s). No Start/Stop: a free-running clock. Bench: counted at the engine's tempo with
+    the transport stopped. On the rack: linked to the MPK Mini's output at the recall of a keys patch, 242 ticks in
+    6 s at 100 BPM, and the kernel counted 201 bytes sent to the keyboard in 5 s (`/proc/asound/card4/midi0`).
+    **Not checked by ear**: nobody played an arpeggio against it. First version forgot that a recall removes every
+    route it does not know — the track vanished at the first recall; it is now in the list `clear_routes` keeps.
+  - *The processor's power mode* decides whether a heavy patch drops out: see [`cpu-budget.md`](cpu-budget.md) §4 bis
+    (performance mode now follows golem, under both engines).
+  - *The estimate against the engine.* The bench first published a block's single worst cycle as its "worst" cost (a
+    gate: 19 µs on average, 152 at worst) and the estimate adds the worsts: Eight-String Nu read 132 % while the
+    engine held. The bench now cuts the render in **three passes** and gives their median and the slowest, as
+    REAPER's three renders do. Recalibrated in performance mode (72 of 73): the estimate reads **15 % (scene A) and
+    16 % (D)**; the lane's plugins really cost **14 % and 23 %** (their own counters, live). The engine's own load
+    figure is higher — 40 % and 51 % — because it counts the whole cycle (graph, threads, 35 routes), about 26
+    points more than the plugins. **Open**: the estimate does not count that fixed share, nor the amp of a muted
+    branch, which this engine keeps running.
+  - *CPU profile.* One profile **per engine** now (`config/cpu-profile-ardour.json`; REAPER keeps
+    `config/cpu-profile.json`): a single file made every switch re-measure everything.
+
+Not judged here: the sound itself compared with REAPER, the foot controller, a keyboard actually played into a take.
+
+**What is left.**
+
+| What | Why |
+|---|---|
+| Real hardware, by ear and by hand | The card, the keyboard's opening, a take and the dropouts are measured (above). Not judged: the sound compared with REAPER, the foot controller, a played keyboard in a take, the Nitro. |
+| A capture audition, and a reamp **job** from golem.fm | The reamp render is proven on the rack (aligned, 0.46 ms); the audition uses the same form; neither the job's download/upload nor an audition was played. |
+| The LV2 reader for another architecture | Bundled for Linux x64 only. |
+| DrumGizmo kits, the song click (beat map), `drumlearn` | Unchanged since their lots. |
+| One full bench run in four failed from a keys recall on | Cause not captured; not reproduced since. |
 
 ## 8. Risks
 

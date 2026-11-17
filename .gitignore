@@ -290,6 +290,7 @@ config/separation.json
 config/click.json
 config/compo.json
 config/recorder.json
+config/perf.json
 # la carte son ACTIVE de cette machine (écrite à l'adoption, page Soundcard)
 config/io.json
 # registre des cartes RENCONTRÉES sur cette machine (bridge/cards.py)
@@ -301,6 +302,7 @@ config/.rack-id
 config/profile.json
 # le profil CPU mesuré sur CETTE machine par le banc (docs/cpu-budget.md §2)
 config/cpu-profile.json
+config/cpu-profile-*.json
 # les setlists de l'utilisateur ; celles d'usine vivent dans library/factory/setlists
 setlists/*.json
 # états Vital compilés par preset (compile_rig) et métadonnées des samples (kits.KINDS_FILE)

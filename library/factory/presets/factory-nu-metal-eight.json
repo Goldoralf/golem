@@ -14,116 +14,197 @@
     "pre": [
      {
       "id": "met",
-      "type": "met",
       "params": {
-       "thresh": -46,
        "hold": 20,
-       "release": 90
-      }
+       "release": 90,
+       "thresh": -46
+      },
+      "type": "met"
+     },
+     {
+      "id": "emet-7ncs",
+      "params": {
+       "asym": 0,
+       "bass_keep": 0,
+       "gain": 0,
+       "headroom": 0,
+       "input": 0,
+       "level": 0,
+       "tight": 20,
+       "tone_stack": 50
+      },
+      "type": "emet"
+     },
+     {
+      "id": "shem-ogmr",
+      "params": {
+       "bright": 0,
+       "grind": 10,
+       "voice": "Focused"
+      },
+      "type": "shem"
      }
     ],
     "split": {
-     "mode": "merge",
-     "gain": -3,
      "branches": [
       {
-       "id": "lane-a",
        "blocks": [
         {
          "id": "rect",
-         "type": "amp-nam",
          "label": "Mesa Dual Rectifier",
-         "ref": "70207",
          "model": "576906",
          "params": {
           "input": 0,
           "output": 0
-         }
+         },
+         "ref": "70207",
+         "type": "amp-nam"
         },
         {
          "id": "v30",
-         "type": "cab",
          "label": "Mesa 4x12 Vintage 30",
-         "ref": "45023",
          "model": "239394",
          "params": {
           "level": 0
-         }
+         },
+         "ref": "45023",
+         "type": "cab"
         }
-       ]
+       ],
+       "id": "lane-a"
       },
       {
-       "id": "lane-b",
        "blocks": [
         {
          "id": "jc",
-         "type": "amp",
          "label": "Roland JC-120",
-         "ref": "6530",
          "model": "397610",
          "params": {
           "input": -3,
           "output": 0
-         }
+         },
+         "ref": "6530",
+         "type": "amp"
         }
-       ]
+       ],
+       "id": "lane-b"
       }
-     ]
+     ],
+     "gain": -3,
+     "mode": "merge"
     },
     "post": [
      {
       "id": "eq",
-      "type": "eq",
       "params": {
+       "highs": 1,
        "lowcut": 60,
-       "midgain": -2,
        "midfreq": 600,
-       "highs": 1
-      }
+       "midgain": -2
+      },
+      "type": "eq"
      },
      {
       "id": "oct",
-      "type": "pitch",
       "params": {
        "engine": "Whammy",
-       "shift": -12,
-       "mix": 45
+       "mix": 45,
+       "shift": -12
       },
+      "type": "pitch",
       "foot": 8
      },
      {
       "id": "chorus",
-      "type": "chorus",
       "params": {
-       "profile": "Guitar Clean",
-       "mode": "Dimension 3",
-       "rate": 0.6,
        "depth": 4,
-       "mix": 0.4
+       "mix": 0.4,
+       "mode": "Dimension 3",
+       "profile": "Guitar Clean",
+       "rate": 0.6
       },
+      "type": "chorus",
       "foot": 6
      },
      {
-      "id": "dly",
-      "type": "delay",
+      "id": "reverb-shimmer-ikua",
       "params": {
-       "model": "Tape",
-       "time": "1/4",
-       "feedback": 35,
-       "mix": 16
+       "bass_mult": 1,
+       "bloom": 70,
+       "bypass": false,
+       "character": "Grainy",
+       "decay": 8,
+       "detune": 6,
+       "duck": 0,
+       "freeze": "Off",
+       "glide": 50,
+       "hicut": 6000,
+       "kill_dry": false,
+       "lowcut": 150,
+       "mix": 45,
+       "mod_rate": 50,
+       "moddepth": 25,
+       "pitch": 7,
+       "pitch2": 12,
+       "placement": "Regen",
+       "predelay": 20,
+       "shimmer": 55,
+       "size": 80,
+       "space": "Cathedral",
+       "swell": 0,
+       "tone": 50,
+       "trails": true,
+       "voice2": 60,
+       "voice_pan": 50,
+       "wet_level": 0,
+       "width": 100
       },
+      "type": "reverb-shimmer"
+     },
+     {
+      "id": "killswitch-4gqg",
+      "params": {
+       "accent": 0,
+       "bypass": false,
+       "depth": 100,
+       "kill": false,
+       "length": 50,
+       "offset": 0,
+       "pattern": 65535,
+       "rate": 8,
+       "restart": false,
+       "sens": 50,
+       "shape": "Gate",
+       "smooth": 1,
+       "steps": 16,
+       "swing": 0,
+       "sync": "1/16",
+       "trigger": "Engage",
+       "width": 0
+      },
+      "type": "killswitch"
+     },
+     {
+      "id": "dly",
+      "params": {
+       "feedback": 35,
+       "mix": 16,
+       "model": "Tape",
+       "time": "1/4"
+      },
+      "type": "delay",
       "foot": 7
      },
      {
       "id": "verb",
-      "type": "reverb",
       "params": {
        "algo": "Cloud",
-       "mix": 24,
        "decay": 3.2,
-       "size": 42,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 24,
+       "size": 42
+      },
+      "type": "reverb"
      }
     ]
    },
@@ -135,9 +216,12 @@
      "id": "st-guitar-1-A",
      "name": "Dream Clean",
      "blocks": {
-      "oct": false,
       "chorus": true,
-      "dly": true
+      "dly": true,
+      "emet-7ncs": false,
+      "killswitch-4gqg": false,
+      "met": false,
+      "oct": false
      },
      "params": {
       "met": {
@@ -154,9 +238,11 @@
      "id": "st-guitar-1-B",
      "name": "Whisper Clean",
      "blocks": {
-      "oct": false,
       "chorus": false,
-      "dly": false
+      "dly": false,
+      "killswitch-4gqg": false,
+      "met": true,
+      "oct": false
      },
      "params": {
       "met": {
@@ -176,14 +262,16 @@
      "id": "st-guitar-1-C",
      "name": "Heavy Low",
      "blocks": {
-      "oct": false,
       "chorus": false,
-      "dly": false
+      "dly": false,
+      "killswitch-4gqg": false,
+      "oct": false,
+      "reverb-shimmer-ikua": false
      },
      "params": {
       "verb": {
-       "mix": 8,
-       "decay": 1.2
+       "decay": 1.2,
+       "mix": 8
       }
      },
      "branches": {
@@ -196,14 +284,15 @@
      "id": "st-guitar-1-D",
      "name": "Shoegaze Wall",
      "blocks": {
-      "oct": false,
       "chorus": true,
-      "dly": true
+      "dly": true,
+      "killswitch-4gqg": false,
+      "oct": false
      },
      "params": {
       "verb": {
-       "mix": 30,
-       "decay": 3.8
+       "decay": 3.8,
+       "mix": 30
       }
      },
      "branches": {
@@ -216,11 +305,18 @@
      "id": "st-guitar-1-E",
      "name": "Octave Dive",
      "blocks": {
-      "oct": true,
       "chorus": false,
-      "dly": true
+      "dly": true,
+      "emet-7ncs": false,
+      "met": false,
+      "oct": true,
+      "reverb-shimmer-ikua": false
      },
-     "params": {},
+     "params": {
+      "killswitch-4gqg": {
+       "trigger": "Engage"
+      }
+     },
      "branches": {
       "lane-b": {
        "mute": true
@@ -330,7 +426,9 @@
     {
      "id": "st-bass-1-A",
      "name": "Clean Low",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": false
+     },
      "params": {},
      "branches": {
       "lane-b-2": {
@@ -341,14 +439,18 @@
     {
      "id": "st-bass-1-B",
      "name": "Heavy Blend",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-bass-1-C",
      "name": "Grind Only",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": false
+     },
      "params": {},
      "branches": {
       "lane-a-2": {
@@ -434,7 +536,9 @@
     {
      "id": "st-keys-1-A",
      "name": "Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {},
      "branches": {}
     },
@@ -450,10 +554,16 @@
     {
      "id": "st-keys-1-C",
      "name": "Low Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.3
+       "fcut": 0.18,
+       "transpose": -12
+      },
+      "dly-2": {
+       "mix": 6
       }
      },
      "branches": {}
@@ -461,10 +571,20 @@
     {
      "id": "st-keys-1-D",
      "name": "Open Haze",
-     "blocks": {},
+     "blocks": {
+      "glitch": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.75
+       "fcut": 0.95
+      },
+      "dly-2": {
+       "mix": 30,
+       "feedback": 50
+      },
+      "verb-2": {
+       "mix": 38,
+       "decay": 6
       }
      },
      "branches": {}
@@ -573,8 +693,9 @@
      "id": "st-voice-1-A",
      "name": "Whisper",
      "blocks": {
-      "scream": false,
-      "formant": false
+      "dly-3": false,
+      "formant": false,
+      "scream": false
      },
      "params": {
       "plate": {
@@ -587,9 +708,9 @@
      "id": "st-voice-1-B",
      "name": "Dream",
      "blocks": {
-      "scream": false,
+      "dly-3": true,
       "formant": true,
-      "dly-3": true
+      "scream": false
      },
      "params": {
       "plate": {
@@ -602,8 +723,9 @@
      "id": "st-voice-1-C",
      "name": "Scream",
      "blocks": {
-      "scream": true,
-      "formant": false
+      "dly-3": false,
+      "formant": false,
+      "scream": true
      },
      "params": {},
      "branches": {}
@@ -612,8 +734,9 @@
      "id": "st-voice-1-D",
      "name": "Low Growl",
      "blocks": {
-      "scream": true,
-      "formant": true
+      "dly-3": false,
+      "formant": true,
+      "scream": true
      },
      "params": {
       "formant": {
@@ -635,12 +758,17 @@
    "id": "A",
    "name": "Dream Clean",
    "blocks": {
-    "oct": false,
     "chorus": true,
     "dly": true,
+    "emet-7ncs": false,
+    "killswitch-4gqg": false,
+    "met": false,
+    "oct": false,
     "chorus-2": true,
-    "scream": false,
-    "formant": false
+    "glitch": false,
+    "dly-3": false,
+    "formant": false,
+    "scream": false
    },
    "params": {
     "met": {
@@ -679,13 +807,16 @@
    "id": "B",
    "name": "Whisper Verse",
    "blocks": {
-    "oct": false,
     "chorus": false,
     "dly": false,
+    "killswitch-4gqg": false,
+    "met": true,
+    "oct": false,
+    "chorus-2": false,
     "glitch": true,
-    "scream": false,
+    "dly-3": true,
     "formant": true,
-    "dly-3": true
+    "scream": false
    },
    "params": {
     "met": {
@@ -727,19 +858,28 @@
    "id": "C",
    "name": "Heavy Low",
    "blocks": {
-    "oct": false,
     "chorus": false,
     "dly": false,
-    "scream": true,
-    "formant": false
+    "killswitch-4gqg": false,
+    "oct": false,
+    "reverb-shimmer-ikua": false,
+    "chorus-2": false,
+    "glitch": false,
+    "dly-3": false,
+    "formant": false,
+    "scream": true
    },
    "params": {
     "verb": {
-     "mix": 8,
-     "decay": 1.2
+     "decay": 1.2,
+     "mix": 8
     },
     "vital": {
-     "fcut": 0.3
+     "fcut": 0.18,
+     "transpose": -12
+    },
+    "dly-2": {
+     "mix": 6
     }
    },
    "branches": {
@@ -768,20 +908,31 @@
    "id": "D",
    "name": "Shoegaze Wall",
    "blocks": {
-    "oct": false,
     "chorus": true,
     "dly": true,
-    "scream": false,
+    "killswitch-4gqg": false,
+    "oct": false,
+    "chorus-2": false,
+    "glitch": false,
+    "dly-3": true,
     "formant": true,
-    "dly-3": true
+    "scream": false
    },
    "params": {
     "verb": {
-     "mix": 30,
-     "decay": 3.8
+     "decay": 3.8,
+     "mix": 30
     },
     "vital": {
-     "fcut": 0.75
+     "fcut": 0.95
+    },
+    "dly-2": {
+     "mix": 30,
+     "feedback": 50
+    },
+    "verb-2": {
+     "mix": 38,
+     "decay": 6
     },
     "plate": {
      "mix": 30
@@ -817,13 +968,22 @@
    "id": "E",
    "name": "Octave Dive",
    "blocks": {
-    "oct": true,
     "chorus": false,
     "dly": true,
-    "scream": true,
-    "formant": true
+    "emet-7ncs": false,
+    "met": false,
+    "oct": true,
+    "reverb-shimmer-ikua": false,
+    "chorus-2": false,
+    "glitch": false,
+    "dly-3": false,
+    "formant": true,
+    "scream": true
    },
    "params": {
+    "killswitch-4gqg": {
+     "trigger": "Engage"
+    },
     "formant": {
      "formant": -5,
      "growl": 40

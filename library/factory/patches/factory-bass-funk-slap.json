@@ -34,10 +34,7 @@
        "makeup": 4,
        "attack": 3
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "rb800",
       "type": "amp-nam",
@@ -94,7 +91,9 @@
        "lows": 3
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "states": [
     {
@@ -116,7 +115,14 @@
      },
      "params": {
       "eq": {
-       "highs": -3
+       "highs": -6,
+       "lows": 0,
+       "midgain": 2,
+       "midfreq": 800
+      },
+      "comp": {
+       "ratio": 3,
+       "attack": 15
       }
      },
      "branches": {}
@@ -150,7 +156,9 @@
      },
      "params": {
       "eq": {
-       "highs": 4
+       "highs": 6,
+       "midgain": 1,
+       "midfreq": 1500
       }
      },
      "branches": {}
@@ -186,7 +194,14 @@
    },
    "params": {
     "eq": {
-     "highs": -3
+     "highs": -6,
+     "lows": 0,
+     "midgain": 2,
+     "midfreq": 800
+    },
+    "comp": {
+     "ratio": 3,
+     "attack": 15
     }
    }
   },
@@ -233,7 +248,9 @@
    },
    "params": {
     "eq": {
-     "highs": 4
+     "highs": 6,
+     "midgain": 1,
+     "midfreq": 1500
     }
    },
    "level": 3
@@ -288,10 +305,7 @@
      "makeup": 4,
      "attack": 3
     }
-   }
-  ],
-  "split": null,
-  "post": [
+   },
    {
     "id": "rb800",
     "type": "amp-nam",
@@ -348,7 +362,9 @@
      "lows": 3
     }
    }
-  ]
+  ],
+  "split": null,
+  "post": []
  },
  "needs": [
   {
@@ -381,7 +397,7 @@
   "C": "scanner",
   "D": "sheen",
   "E": "glitch",
-  "6": "monster",
+  "6": "strobe",
   "7": "rain",
   "9": "vu",
   "10": "wave"
@@ -436,5 +452,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"wave\", \"6\": \"monster\", \"7\": \"rain\", \"9\": \"vu\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\", \"E\": \"glitch\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [{\"id\": \"rb800\", \"label\": \"Gallien-Krueger RB800\", \"model\": \"419204\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2694\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72415\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"high\": 1800, \"low\": 200, \"peak\": 6, \"release\": 100, \"type\": \"Low-pass\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 0.8, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.5}, \"type\": \"octaver\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"lows\": 3, \"midfreq\": 500, \"midgain\": -3}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 6, \"thresh\": -26}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\", \"E\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"rb800\", \"label\": \"Gallien-Krueger RB800\", \"model\": \"419204\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2694\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72415\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"high\": 1800, \"low\": 200, \"peak\": 6, \"release\": 100, \"type\": \"Low-pass\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 0.8, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.5}, \"type\": \"octaver\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"lows\": 3, \"midfreq\": 500, \"midgain\": -3}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 6, \"thresh\": -26}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Funk Slap\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Slap\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Fingers Pocket\", \"params\": {\"eq\": {\"highs\": -3}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Octave Funk\", \"params\": {}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-E\", \"name\": \"Solo Pop\", \"params\": {\"eq\": {\"highs\": 4}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Slap\"}, {\"blocks\": {\"env\": false, \"oct\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Fingers Pocket\", \"params\": {\"eq\": {\"highs\": -3}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"env\": false, \"oct\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Octave Funk\"}, {\"blocks\": {\"env\": true, \"oct\": false}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-E\"}}, \"level\": 3, \"name\": \"Solo Pop\", \"params\": {\"eq\": {\"highs\": 4}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"wave\", \"6\": \"strobe\", \"7\": \"rain\", \"9\": \"vu\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\", \"E\": \"glitch\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 6, \"thresh\": -26}, \"type\": \"comp\"}, {\"id\": \"rb800\", \"label\": \"Gallien-Krueger RB800\", \"model\": \"419204\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2694\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72415\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"high\": 1800, \"low\": 200, \"peak\": 6, \"release\": 100, \"type\": \"Low-pass\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 0.8, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.5}, \"type\": \"octaver\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"lows\": 3, \"midfreq\": 500, \"midgain\": -3}, \"type\": \"eq\"}], \"split\": null}, \"colors\": {\"10\": \"#ef476f\", \"6\": \"#ef476f\", \"7\": \"#ef476f\", \"9\": \"#ef476f\", \"A\": \"#ef476f\", \"B\": \"#ef476f\", \"C\": \"#ef476f\", \"D\": \"#ef476f\", \"E\": \"#ef476f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-funk-16.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 3, \"character\": \"FET\", \"makeup\": 4, \"ratio\": 6, \"thresh\": -26}, \"type\": \"comp\"}, {\"id\": \"rb800\", \"label\": \"Gallien-Krueger RB800\", \"model\": \"419204\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"2694\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72415\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 6, \"id\": \"env\", \"params\": {\"attack\": 3, \"high\": 1800, \"low\": 200, \"peak\": 6, \"release\": 100, \"type\": \"Low-pass\"}, \"type\": \"autowah\"}, {\"foot\": 7, \"id\": \"oct\", \"params\": {\"direct\": 0.8, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.5}, \"type\": \"octaver\"}, {\"id\": \"eq\", \"params\": {\"highs\": 3, \"lowcut\": 35, \"lows\": 3, \"midfreq\": 500, \"midgain\": -3}, \"type\": \"eq\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Funk Slap\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Slap\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Fingers Pocket\", \"params\": {\"comp\": {\"attack\": 15, \"ratio\": 3}, \"eq\": {\"highs\": -6, \"lows\": 0, \"midfreq\": 800, \"midgain\": 2}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Envelope\", \"params\": {}}, {\"blocks\": {\"env\": false, \"oct\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Octave Funk\", \"params\": {}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"branches\": {}, \"id\": \"st-bass-1-E\", \"name\": \"Solo Pop\", \"params\": {\"eq\": {\"highs\": 6, \"midfreq\": 1500, \"midgain\": 1}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"env\": false, \"oct\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Slap\"}, {\"blocks\": {\"env\": false, \"oct\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Fingers Pocket\", \"params\": {\"comp\": {\"attack\": 15, \"ratio\": 3}, \"eq\": {\"highs\": -6, \"lows\": 0, \"midfreq\": 800, \"midgain\": 2}}}, {\"blocks\": {\"env\": true, \"oct\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Envelope\"}, {\"blocks\": {\"env\": false, \"oct\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Octave Funk\"}, {\"blocks\": {\"env\": true, \"oct\": false}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-E\"}}, \"level\": 3, \"name\": \"Solo Pop\", \"params\": {\"eq\": {\"highs\": 6, \"midfreq\": 1500, \"midgain\": 1}}}]}"
 }

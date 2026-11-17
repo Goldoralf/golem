@@ -36,10 +36,7 @@
        "makeup": 3,
        "attack": 15
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "b15",
       "type": "amp",
@@ -96,7 +93,9 @@
        "highs": -1
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "states": [
     {
@@ -264,10 +263,7 @@
      "makeup": 3,
      "attack": 15
     }
-   }
-  ],
-  "split": null,
-  "post": [
+   },
    {
     "id": "b15",
     "type": "amp",
@@ -324,7 +320,9 @@
      "highs": -1
     }
    }
-  ]
+  ],
+  "split": null,
+  "post": []
  },
  "needs": [
   {
@@ -355,7 +353,7 @@
   "7": "scanner",
   "8": "sheen",
   "9": "glitch",
-  "10": "monster"
+  "10": "scanner"
  },
  "deps": [
   {
@@ -395,5 +393,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"monster\", \"6\": \"fire\", \"7\": \"scanner\", \"8\": \"sheen\", \"9\": \"glitch\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"oct\", \"params\": {\"direct\": 0.7, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.6}, \"type\": \"octaver\"}, {\"foot\": 7, \"id\": \"synth\", \"params\": {\"cutoff\": 900, \"dry\": -12, \"engine\": \"Mono\", \"filt_env\": 18, \"reso\": 30, \"synth\": -4, \"wave\": \"Saw\"}, \"type\": \"polysynth\"}, {\"foot\": 8, \"id\": \"tape\", \"params\": {\"input\": 6, \"mix\": 100, \"model\": \"Cassette\"}, \"type\": \"tape\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"oct\", \"params\": {\"direct\": 0.7, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.6}, \"type\": \"octaver\"}, {\"foot\": 7, \"id\": \"synth\", \"params\": {\"cutoff\": 900, \"dry\": -12, \"engine\": \"Mono\", \"filt_env\": 18, \"reso\": 30, \"synth\": -4, \"wave\": \"Saw\"}, \"type\": \"polysynth\"}, {\"foot\": 8, \"id\": \"tape\", \"params\": {\"input\": 6, \"mix\": 100, \"model\": \"Cassette\"}, \"type\": \"tape\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Synth Ambient\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Round\", \"params\": {}}, {\"blocks\": {\"oct\": true, \"synth\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Sub Octave\", \"params\": {}}, {\"blocks\": {\"oct\": false, \"synth\": true, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Synth Bass\", \"params\": {}}, {\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Tape Fuzz\", \"params\": {\"tape\": {\"input\": 14, \"wear\": 40}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Round\"}, {\"blocks\": {\"oct\": true, \"synth\": false, \"tape\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Sub Octave\"}, {\"blocks\": {\"oct\": false, \"synth\": true, \"tape\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Synth Bass\"}, {\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Tape Fuzz\", \"params\": {\"tape\": {\"input\": 14, \"wear\": 40}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"scanner\", \"6\": \"fire\", \"7\": \"scanner\", \"8\": \"sheen\", \"9\": \"glitch\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"oct\", \"params\": {\"direct\": 0.7, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.6}, \"type\": \"octaver\"}, {\"foot\": 7, \"id\": \"synth\", \"params\": {\"cutoff\": 900, \"dry\": -12, \"engine\": \"Mono\", \"filt_env\": 18, \"reso\": 30, \"synth\": -4, \"wave\": \"Saw\"}, \"type\": \"polysynth\"}, {\"foot\": 8, \"id\": \"tape\", \"params\": {\"input\": 6, \"mix\": 100, \"model\": \"Cassette\"}, \"type\": \"tape\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"split\": null}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"foot\": 6, \"id\": \"oct\", \"params\": {\"direct\": 0.7, \"instrument\": \"Bass\", \"mode\": \"Clean\", \"octave1\": 0.6}, \"type\": \"octaver\"}, {\"foot\": 7, \"id\": \"synth\", \"params\": {\"cutoff\": 900, \"dry\": -12, \"engine\": \"Mono\", \"filt_env\": 18, \"reso\": 30, \"synth\": -4, \"wave\": \"Saw\"}, \"type\": \"polysynth\"}, {\"foot\": 8, \"id\": \"tape\", \"params\": {\"input\": 6, \"mix\": 100, \"model\": \"Cassette\"}, \"type\": \"tape\"}, {\"id\": \"eq\", \"params\": {\"highs\": -1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Synth Ambient\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Round\", \"params\": {}}, {\"blocks\": {\"oct\": true, \"synth\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Sub Octave\", \"params\": {}}, {\"blocks\": {\"oct\": false, \"synth\": true, \"tape\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Synth Bass\", \"params\": {}}, {\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Tape Fuzz\", \"params\": {\"tape\": {\"input\": 14, \"wear\": 40}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Round\"}, {\"blocks\": {\"oct\": true, \"synth\": false, \"tape\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Sub Octave\"}, {\"blocks\": {\"oct\": false, \"synth\": true, \"tape\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Synth Bass\"}, {\"blocks\": {\"oct\": false, \"synth\": false, \"tape\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Tape Fuzz\", \"params\": {\"tape\": {\"input\": 14, \"wear\": 40}}}]}"
 }

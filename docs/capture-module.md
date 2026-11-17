@@ -44,6 +44,10 @@ Windows/Linux x64 readers are in [`native/capture`](../native/capture/README.md)
 Other Linux architectures compile the same reader during provisioning. macOS/ARM
 need hardware validation; an unsupported desktop does not build a reader at launch.
 
+On the Golem Engine (Ardour, which hosts no CLAP) the same reader is built as an LV2
+([`native/capture-lv2`](../native/capture-lv2/README.md)), bundled for Linux x64 and installed by golem's setup
+where the Golem Engine is present.
+
 The CLAP processor runs NAM HyperWaveNet directly. Knob changes update conditioned
 weights without file generation, Python, Torch, subprocesses or model reloads.
 Model histories are preserved. Knobs have an 8 ms smoothing constant; stage bypass

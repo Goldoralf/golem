@@ -34,6 +34,15 @@
        "makeup": 3,
        "attack": 10
       }
+     },
+     {
+      "id": "boost",
+      "type": "shem",
+      "params": {
+       "grind": 10,
+       "voice": "Full"
+      },
+      "foot": 6
      }
     ],
     "split": {
@@ -91,7 +100,9 @@
     {
      "id": "st-bass-1-A",
      "name": "Sub Clean",
-     "blocks": {},
+     "blocks": {
+      "boost": false
+     },
      "params": {},
      "branches": {
       "lane-b": {
@@ -102,29 +113,43 @@
     {
      "id": "st-bass-1-B",
      "name": "Grit Blend",
-     "blocks": {},
+     "blocks": {
+      "boost": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-bass-1-C",
      "name": "Tight Grit",
-     "blocks": {},
+     "blocks": {
+      "boost": false
+     },
      "params": {
       "comp": {
        "ratio": 8,
        "attack": 5
+      },
+      "met": {
+       "thresh": -42
       }
      },
-     "branches": {}
+     "branches": {
+      "lane-a": {
+       "mute": true
+      }
+     }
     },
     {
      "id": "st-bass-1-D",
      "name": "Growl",
-     "blocks": {},
+     "blocks": {
+      "boost": true
+     },
      "params": {
-      "svt": {
-       "output": -8
+      "eq": {
+       "midgain": 4,
+       "midfreq": 1000
       }
      },
      "branches": {}
@@ -136,7 +161,9 @@
   {
    "id": "A",
    "name": "Sub Clean",
-   "blocks": {},
+   "blocks": {
+    "boost": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-A",
@@ -153,7 +180,9 @@
   {
    "id": "B",
    "name": "Grit Blend",
-   "blocks": {},
+   "blocks": {
+    "boost": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-B"
@@ -163,7 +192,9 @@
   {
    "id": "C",
    "name": "Tight Grit",
-   "blocks": {},
+   "blocks": {
+    "boost": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-C",
@@ -174,6 +205,14 @@
     "comp": {
      "ratio": 8,
      "attack": 5
+    },
+    "met": {
+     "thresh": -42
+    }
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
     }
    },
    "level": 1
@@ -181,7 +220,9 @@
   {
    "id": "D",
    "name": "Growl",
-   "blocks": {},
+   "blocks": {
+    "boost": true
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-D",
@@ -189,8 +230,9 @@
     }
    },
    "params": {
-    "svt": {
-     "output": -8
+    "eq": {
+     "midgain": 4,
+     "midfreq": 1000
     }
    },
    "level": 1
@@ -244,6 +286,15 @@
      "makeup": 3,
      "attack": 10
     }
+   },
+   {
+    "id": "boost",
+    "type": "shem",
+    "params": {
+     "grind": 10,
+     "voice": "Full"
+    },
+    "foot": 6
    }
   ],
   "split": {
@@ -316,6 +367,7 @@
   "B": "#3d348b",
   "C": "#3d348b",
   "D": "#3d348b",
+  "6": "#3d348b",
   "9": "#3d348b",
   "10": "#3d348b"
  },
@@ -324,8 +376,9 @@
   "B": "fire",
   "C": "scanner",
   "D": "sheen",
-  "9": "glitch",
-  "10": "monster"
+  "6": "glitch",
+  "9": "ember",
+  "10": "rain"
  },
  "deps": [
   {
@@ -378,5 +431,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"monster\", \"9\": \"glitch\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#3d348b\", \"9\": \"#3d348b\", \"A\": \"#3d348b\", \"B\": \"#3d348b\", \"C\": \"#3d348b\", \"D\": \"#3d348b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-breakdown.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Prog Bi-Amp\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Sub Clean\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Grit Blend\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Growl\", \"params\": {\"svt\": {\"output\": -8}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Sub Clean\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Grit Blend\"}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Growl\", \"params\": {\"svt\": {\"output\": -8}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"rain\", \"6\": \"glitch\", \"9\": \"ember\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 10, \"voice\": \"Full\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#3d348b\", \"6\": \"#3d348b\", \"9\": \"#3d348b\", \"A\": \"#3d348b\", \"B\": \"#3d348b\", \"C\": \"#3d348b\", \"D\": \"#3d348b\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-breakdown.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -50}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -24}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 10, \"voice\": \"Full\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"b7k\", \"label\": \"Darkglass B7K Ultra\", \"model\": \"413366\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27698\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Prog Bi-Amp\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"boost\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Sub Clean\", \"params\": {}}, {\"blocks\": {\"boost\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Grit Blend\", \"params\": {}}, {\"blocks\": {\"boost\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}, \"met\": {\"thresh\": -42}}}, {\"blocks\": {\"boost\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Growl\", \"params\": {\"eq\": {\"midfreq\": 1000, \"midgain\": 4}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"boost\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Sub Clean\"}, {\"blocks\": {\"boost\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Grit Blend\"}, {\"blocks\": {\"boost\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Tight Grit\", \"params\": {\"comp\": {\"attack\": 5, \"ratio\": 8}, \"met\": {\"thresh\": -42}}}, {\"blocks\": {\"boost\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Growl\", \"params\": {\"eq\": {\"midfreq\": 1000, \"midgain\": 4}}}]}"
 }

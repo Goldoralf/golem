@@ -68,3 +68,35 @@ export function pageOfItem(items, id) {
 }
 
 export const matches = (x, q) => !q || `${x.name || ''} ${x.artist || ''}`.toLowerCase().includes(q.trim().toLowerCase());
+
+// CE QUE LE SÉLECTEUR RETIENT d'une ouverture à l'autre (2026-11-16 : « il ne garde pas mes derniers choix ») : la
+// setlist du rail, le menu « With » et, pour les patches, l'instrument. Par écran (localStorage), un catalogue = une clé.
+const memKey = kind => 'golem.browse.' + kind;
+export function readBrowse(kind) {
+  try { const d = JSON.parse(localStorage.getItem(memKey(kind)) || '{}'); return d && typeof d === 'object' ? d : {}; }
+  catch (e) { return {}; }
+}
+export function writeBrowse(kind, patch) {
+  try { localStorage.setItem(memKey(kind), JSON.stringify({ ...readBrowse(kind), ...patch })); } catch (e) { /* navigation privée */ }
+}
+
+// la sélection retenue vaut encore si sa setlist existe toujours
+export const validSel = (sel, lists) => (sel === 'all' || sel === 'none' || lists.some(l => l.id === sel)) ? sel : null;
+
+// LA LISTE QUE PARCOURENT ◀ ▶ du top menu : celle où l'on a choisi (la setlist retenue, dans SON ordre) ; si l'élément
+// ouvert n'y est pas, la setlist qui le contient (celle du pied d'abord), sinon tout, A→Z. Sans doublon : un élément
+// posé deux fois dans une setlist ferait tourner les flèches en rond.
+export function cycleItems(sel, pool, lists, currentId) {
+  const uniq = l => l.filter((x, i) => l.findIndex(y => y.id === x.id) === i);
+  let l = sel && validSel(sel, lists) ? itemsFor(sel, pool, lists) : [];
+  if (currentId ? !l.some(x => x.id === currentId) : !l.length) l = itemsFor(openSel(lists, currentId), pool, lists);
+  if (!l.length) l = itemsFor('all', pool, lists);
+  return uniq(l);
+}
+
+// le voisin dans cette liste (d = ±1), en boucle ; l'élément ouvert absent de la liste → le premier
+export function neighbour(items, currentId, d) {
+  if (!items.length) return null;
+  const i = items.findIndex(x => x.id === currentId);
+  return i < 0 ? items[0] : items[(i + d + items.length) % items.length];
+}

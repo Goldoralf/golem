@@ -98,6 +98,16 @@ def _pas_de_boost_cpu_de_la_machine(monkeypatch):
     gouverneur de la machine. Un test de bascule ne touche jamais au processeur du poste."""
     from bridge.engine import switch
     monkeypatch.setattr(switch, "_boost", lambda state, why: None)
+    # 2026-11-17 : le boost suit golem sous les deux moteurs, et un gardien le repose — aucun test ne lance sudo ni ne
+    # lit la batterie, le gouverneur ou le réglage du poste (un test qui les veut les pose lui-même)
+    # Ce sont les deux appelants AUTOMATIQUES qui sont neutralisés (apply_perf lui-même reste vrai : ses tests le jouent
+    # avec un plan d'alimentation factice), et Health lit un état fixe plutôt que le gouverneur du poste.
+    from bridge import routes_system
+    monkeypatch.setattr(routes_system, "apply_perf_for_mode", lambda mode, why="": None)
+    monkeypatch.setattr(routes_system, "perf_guard_tick", lambda mode, now=None: False)
+    monkeypatch.setattr(routes_system, "perf_status", lambda mode=None: {
+        "governor": "performance", "on": True, "wanted": True, "reason": "golem is running", "auto": True,
+        "on_battery": False, "available": True})
 
 
 @pytest.fixture(autouse=True)

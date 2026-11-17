@@ -81,6 +81,18 @@ def block_us(components, stereo, profile, bsize):
     return total
 
 
+def block_off_us(components, stereo, profile, bsize):
+    """Ce qu'un bloc ÉTEINT coûte encore (0 si rien n'a été mesuré éteint : REAPER, ou un profil d'avant). Sous le Golem
+    Engine un plugin qui porte son propre bypass continue de tourner : le banc le mesure (`off_us`, cpu_bench)."""
+    total = 0.0
+    for kind, variant in components or []:
+        e = lookup(profile, kind, variant, stereo)
+        off = float((e or {}).get("off_us") or 0.0)
+        eb = (e or {}).get("bsize")
+        total += off * ((float(bsize) / float(eb)) if eb and bsize else 1.0)
+    return total
+
+
 def _verdict_of(pct):
     if pct is None:
         return "unknown"
@@ -96,11 +108,16 @@ def _r(x, n=1):
 
 
 # ── une lane, une scène ──────────────────────────────────────────────────────────────────────────────────────────
-def _track_cost(track, cost_of, skip=None):
-    """(µs des blocs ON mesurés, un bloc ON non mesuré ?, travail total) d'une piste dans une scène."""
+def _track_cost(track, cost_of, skip=None, off_of=None):
+    """(µs des blocs ON mesurés, un bloc ON non mesuré ?, travail total) d'une piste dans une scène. `off_of` : ce qu'un
+    bloc éteint coûte encore — jamais sur une branche muette, que le moteur endort (ses plugins désactivés : 0 µs)."""
     us, unknown = 0.0, False
     for b in track.get("blocks") or []:
-        if b.get("bypass") or (skip and b.get("id") in skip):
+        if skip and b.get("id") in skip:
+            continue
+        if b.get("bypass"):
+            if off_of and not (track.get("role") == "branch" and track.get("mute") is True):
+                us += off_of(b)
             continue
         c = cost_of(b)
         if c is None:
@@ -110,11 +127,11 @@ def _track_cost(track, cost_of, skip=None):
     return us, unknown
 
 
-def lane_path_us(tracks, cost_of, skip=None):
+def lane_path_us(tracks, cost_of, skip=None, off_of=None):
     """(chemin critique en µs, inconnu ?, travail total en µs) — pré + max(branches) + merge/post."""
     serial, branches, unknown, work = 0.0, [], False, 0.0
     for t in tracks or []:
-        us, unk = _track_cost(t, cost_of, skip)
+        us, unk = _track_cost(t, cost_of, skip, off_of)
         unknown = unknown or unk
         work += us
         if t.get("role") == "branch":
@@ -147,6 +164,13 @@ def estimate(scene_plans, profile, machine=None, alternatives=None, bsizes=None)
     def pct(us):
         return (us / budget * 100.0) if (budget and us is not None) else None
 
+    # LA PART FIXE DU MOTEUR (profil du Golem Engine : `engine_idle`, mesurée lane vide) : ce que le moteur charge sans
+    # un seul bloc. Ajoutée à chaque lane — le pourcentage affiché est alors celui que le moteur annonce en jouant.
+    fixed_us = float(((profile or {}).get("engine_idle") or {}).get("us") or 0.0)
+
+    def off_for(stereo):
+        return lambda b: block_off_us(b.get("_cpu"), stereo, profile, bsize)
+
     scenes = [sid for sid, _p in scene_plans]
     total_by_scene = {}
     for sid, plan in scene_plans:
@@ -160,8 +184,8 @@ def estimate(scene_plans, profile, machine=None, alternatives=None, bsizes=None)
                                   "blocks": {}, "border": [], "by_scene": {}, "unknown": {}}
                 order.append(lid)
             L["tracks"][sid] = p.get("tracks") or []
-            us, unk, work = lane_path_us(L["tracks"][sid], cost_for(stereo))
-            L["by_scene"][sid], L["unknown"][sid] = us, unk
+            us, unk, work = lane_path_us(L["tracks"][sid], cost_for(stereo), off_of=off_for(stereo))
+            L["by_scene"][sid], L["unknown"][sid] = us + fixed_us, unk
             total += work
             for t in p.get("tracks") or []:
                 for b in t.get("blocks") or []:
@@ -210,7 +234,7 @@ def estimate(scene_plans, profile, machine=None, alternatives=None, bsizes=None)
                    bsizes or (64, 96, 128, 192, 256, 384, 512)) if budget else []
     return {"verdict": verdict, "budget_us": _r(budget), "cores": machine.get("cores") or pm.get("cores"),
             "total_cores": round(tot / budget, 2) if budget else None, "worst": worst, "lanes": out_lanes,
-            "fixes": fixes,
+            "fixes": fixes, "engine_pct": _r(pct(fixed_us)) if fixed_us else None,
             "machine": {"cpu": pm.get("cpu") or machine.get("cpu"), "governor": machine.get("governor") or pm.get("governor"),
                         "bsize": bsize, "srate": srate},
             "measured_at": profile.get("measured_at")}

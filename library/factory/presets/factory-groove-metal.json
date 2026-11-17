@@ -14,116 +14,131 @@
     "pre": [
      {
       "id": "met",
-      "type": "met",
       "params": {
-       "thresh": -44,
        "hold": 10,
-       "release": 60
-      }
+       "release": 60,
+       "thresh": -44
+      },
+      "type": "met"
      },
      {
       "id": "boost",
-      "type": "shem",
       "params": {
        "grind": 4,
        "voice": "Focused"
       },
+      "type": "shem",
       "foot": 6
      }
     ],
     "split": {
-     "mode": "merge",
-     "gain": -3,
      "branches": [
       {
-       "id": "lane-a",
        "blocks": [
         {
-         "id": "rg100",
-         "type": "amp-nam",
-         "label": "Randall RG-100",
-         "ref": "6779",
-         "model": "418633",
+         "id": "x2",
+         "label": "Randall Warhead X2",
+         "model": "380970",
          "params": {
           "input": 0,
           "output": 0
-         }
-        },
-        {
-         "id": "v30",
-         "type": "cab",
-         "label": "Mesa 4x12 Vintage 30",
-         "ref": "45023",
-         "model": "239438",
-         "params": {
-          "level": 0
-         }
+         },
+         "ref": "31332",
+         "type": "amp"
         }
-       ]
+       ],
+       "id": "lane-a"
       },
       {
-       "id": "lane-b",
        "blocks": [
         {
          "id": "jc",
-         "type": "amp",
-         "label": "Roland JC-120",
-         "ref": "6530",
-         "model": "397610",
+         "label": "Roland JC-120B",
+         "model": "379740",
          "params": {
-          "input": -3,
+          "input": -2,
           "output": 0
-         }
+         },
+         "ref": "10912",
+         "type": "amp"
         }
-       ]
+       ],
+       "id": "lane-b"
       }
-     ]
+     ],
+     "gain": -3,
+     "mode": "merge"
     },
     "post": [
      {
       "id": "geq",
-      "type": "eq-graphic",
       "params": {
-       "layout": "Guitar 7",
-       "gt_100": 2,
-       "gt_200": 1,
-       "gt_400": -4,
-       "gt_800": -6,
-       "gt_1k6": -2,
-       "gt_3k2": 3,
-       "gt_6k4": 2
-      }
+       "amount": 100,
+       "auto_gain": false,
+       "g1": 0,
+       "g10": 0,
+       "g11": 0,
+       "g2": 0,
+       "g3": 0,
+       "g4": 2,
+       "g5": -4,
+       "g6": -5,
+       "g7": -2,
+       "g8": 0,
+       "g9": 2,
+       "gb_10k": 0,
+       "gb_120": 0,
+       "gb_400": 0,
+       "gb_4k5": 0,
+       "gb_50": 0,
+       "gb_500": 0,
+       "gb_800": 0,
+       "gt_100": 0,
+       "gt_1k6": 0,
+       "gt_200": 0,
+       "gt_3k2": 0,
+       "gt_400": 0,
+       "gt_6k4": 0,
+       "gt_800": 0,
+       "highcut": 22000,
+       "highcut_slope": "12 dB/oct",
+       "layout": "Octave 11",
+       "level": 0,
+       "lowcut": 10,
+       "lowcut_slope": "12 dB/oct"
+      },
+      "type": "eq-graphic"
      },
      {
       "id": "chorus",
-      "type": "chorus",
       "params": {
-       "profile": "Guitar Clean",
-       "mode": "Classic",
-       "rate": 0.6,
        "depth": 4,
-       "mix": 0.4
-      }
+       "mix": 0.4,
+       "mode": "Classic",
+       "profile": "Guitar Clean",
+       "rate": 0.6
+      },
+      "type": "chorus"
      },
      {
       "id": "dly",
-      "type": "delay",
       "params": {
-       "model": "Digital",
-       "time": "1/4",
        "feedback": 25,
-       "mix": 12
-      }
+       "mix": 12,
+       "model": "Digital",
+       "time": "1/4"
+      },
+      "type": "delay"
      },
      {
       "id": "room",
-      "type": "reverb-room",
       "params": {
-       "mix": 10,
        "decay": 0.7,
-       "size": 14,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 10,
+       "size": 14
+      },
+      "type": "reverb-room"
      }
     ]
    },
@@ -136,7 +151,7 @@
      "name": "Southern Riff",
      "blocks": {
       "boost": true,
-      "chorus": false,
+      "chorus": true,
       "dly": false
      },
      "params": {},
@@ -157,10 +172,6 @@
      "params": {
       "met": {
        "thresh": -40
-      },
-      "geq": {
-       "gt_400": -6,
-       "gt_800": -8
       }
      },
      "branches": {
@@ -211,12 +222,7 @@
       "chorus": false,
       "dly": true
      },
-     "params": {
-      "geq": {
-       "gt_800": -2,
-       "gt_1k6": 2
-      }
-     },
+     "params": {},
      "branches": {
       "lane-b": {
        "mute": true
@@ -240,87 +246,86 @@
     "pre": [
      {
       "id": "met-2",
-      "type": "met",
       "params": {
-       "thresh": -46,
-       "release": 80
-      }
-     }
-    ],
-    "split": null,
-    "post": [
+       "release": 80,
+       "thresh": -46
+      },
+      "type": "met"
+     },
      {
-      "id": "x2",
-      "type": "amp",
+      "id": "x2-2",
       "label": "Randall Warhead X2",
-      "ref": "31332",
       "model": "382070",
       "params": {
        "input": 0,
        "output": 0
-      }
+      },
+      "ref": "31332",
+      "type": "amp"
      },
      {
       "id": "wah",
-      "type": "wah",
       "params": {
-       "wah": 0.6,
        "mode": "manual",
-       "q": 120
+       "q": 120,
+       "wah": 0.6
       },
+      "type": "wah",
       "foot": 8
      },
      {
       "id": "whammy",
-      "type": "pitch",
       "params": {
        "engine": "Whammy",
-       "shift": 12,
-       "mix": 50
+       "mix": 50,
+       "shift": 12
       },
+      "type": "pitch",
       "foot": 7
      },
      {
       "id": "flange",
-      "type": "flanger-js",
       "params": {
-       "mode": "Mistress",
-       "rate": 0.25,
+       "depth": 80,
        "feedback": -12,
-       "depth": 80
-      }
+       "mode": "Mistress",
+       "rate": 0.25
+      },
+      "type": "flanger-js"
      },
      {
       "id": "eq",
-      "type": "eq",
       "params": {
+       "highs": 0,
        "lowcut": 90,
-       "midgain": 2,
        "midfreq": 1000,
-       "highs": 0
-      }
+       "midgain": 2
+      },
+      "type": "eq"
      },
      {
       "id": "dly-2",
-      "type": "delay",
       "params": {
-       "model": "Digital",
-       "time": "1/4",
        "feedback": 30,
-       "mix": 14
-      }
+       "mix": 14,
+       "model": "Digital",
+       "time": "1/4"
+      },
+      "type": "delay"
      },
      {
       "id": "room-2",
-      "type": "reverb-room",
       "params": {
-       "mix": 12,
        "decay": 0.9,
-       "size": 14,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 12,
+       "size": 14
+      },
+      "type": "reverb-room"
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "guitar",
@@ -330,9 +335,9 @@
      "id": "st-guitar-2-A",
      "name": "Lead",
      "blocks": {
+      "flange": false,
       "wah": false,
-      "whammy": false,
-      "flange": false
+      "whammy": false
      },
      "params": {},
      "branches": {}
@@ -341,9 +346,9 @@
      "id": "st-guitar-2-B",
      "name": "Wah Lead",
      "blocks": {
+      "flange": false,
       "wah": true,
-      "whammy": false,
-      "flange": false
+      "whammy": false
      },
      "params": {},
      "branches": {}
@@ -352,9 +357,9 @@
      "id": "st-guitar-2-C",
      "name": "Octave Squeal",
      "blocks": {
+      "flange": false,
       "wah": false,
-      "whammy": true,
-      "flange": false
+      "whammy": true
      },
      "params": {},
      "branches": {}
@@ -363,9 +368,9 @@
      "id": "st-guitar-2-D",
      "name": "Flanged Riff",
      "blocks": {
+      "flange": true,
       "wah": false,
-      "whammy": false,
-      "flange": true
+      "whammy": false
      },
      "params": {
       "dly-2": {
@@ -378,14 +383,14 @@
      "id": "st-guitar-2-E",
      "name": "Dive",
      "blocks": {
+      "flange": false,
       "wah": false,
-      "whammy": true,
-      "flange": false
+      "whammy": true
      },
      "params": {
       "whammy": {
-       "shift": -12,
-       "mix": 100
+       "mix": 100,
+       "shift": -12
       }
      },
      "branches": {}
@@ -427,34 +432,60 @@
       "id": "drive",
       "type": "shem",
       "params": {
-       "grind": 8,
+       "grind": 10,
        "voice": "Full"
       }
      }
     ],
-    "split": null,
+    "split": {
+     "mode": "merge",
+     "gain": -3,
+     "branches": [
+      {
+       "id": "lane-a-2",
+       "blocks": [
+        {
+         "id": "svt",
+         "type": "amp",
+         "label": "Ampeg SVT 6x10",
+         "ref": "28202",
+         "model": "379988",
+         "params": {
+          "input": 0,
+          "output": -2
+         }
+        }
+       ]
+      },
+      {
+       "id": "lane-b-2",
+       "blocks": [
+        {
+         "id": "aou",
+         "type": "amp",
+         "label": "Darkglass Alpha Omega Ultra",
+         "ref": "2420",
+         "model": "425030",
+         "params": {
+          "input": 0,
+          "output": 0
+         }
+        },
+        {
+         "id": "gkcab",
+         "type": "cab",
+         "label": "Gallien-Krueger 4x10",
+         "ref": "64815",
+         "model": "72421",
+         "params": {
+          "level": 0
+         }
+        }
+       ]
+      }
+     ]
+    },
     "post": [
-     {
-      "id": "svtcl",
-      "type": "amp-nam",
-      "label": "Ampeg SVT-CL",
-      "ref": "45809",
-      "model": "382799",
-      "params": {
-       "input": 0,
-       "output": 0
-      }
-     },
-     {
-      "id": "gkcab",
-      "type": "cab",
-      "label": "Gallien-Krueger 4x10",
-      "ref": "64815",
-      "model": "72421",
-      "params": {
-       "level": 0
-      }
-     },
      {
       "id": "eq-2",
       "type": "eq",
@@ -474,23 +505,32 @@
     {
      "id": "st-bass-1-A",
      "name": "Grind",
-     "blocks": {},
+     "blocks": {
+      "drive": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-bass-1-B",
      "name": "Tight",
-     "blocks": {},
+     "blocks": {
+      "drive": false
+     },
      "params": {
       "met-3": {
        "thresh": -40
       },
       "comp": {
-       "ratio": 8
+       "ratio": 8,
+       "attack": 4
       }
      },
-     "branches": {}
+     "branches": {
+      "lane-a-2": {
+       "mute": true
+      }
+     }
     },
     {
      "id": "st-bass-1-C",
@@ -499,7 +539,11 @@
       "drive": false
      },
      "params": {},
-     "branches": {}
+     "branches": {
+      "lane-b-2": {
+       "mute": true
+      }
+     }
     },
     {
      "id": "st-bass-1-D",
@@ -508,8 +552,10 @@
       "drive": true
      },
      "params": {
-      "drive": {
-       "grind": 14
+      "eq-2": {
+       "midgain": 3,
+       "midfreq": 1000,
+       "highs": 3
       }
      },
      "branches": {}
@@ -544,8 +590,8 @@
       "id": "crush",
       "type": "bitcrusher",
       "params": {
-       "quant": 0.6,
-       "rate": 0.5,
+       "quant": 0.75,
+       "rate": 0.45,
        "nonlin": 0.1
       }
      },
@@ -571,17 +617,26 @@
     {
      "id": "st-keys-1-A",
      "name": "Dark Pad",
-     "blocks": {},
+     "blocks": {
+      "crush": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-1-B",
      "name": "Low Drone",
-     "blocks": {},
+     "blocks": {
+      "crush": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.35
+       "fcut": 0.2,
+       "transpose": -12,
+       "rmix": 0.15
+      },
+      "verb": {
+       "mix": 14
       }
      },
      "branches": {}
@@ -589,10 +644,17 @@
     {
      "id": "st-keys-1-C",
      "name": "Swell",
-     "blocks": {},
+     "blocks": {
+      "crush": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.7
+       "fcut": 0.9,
+       "rmix": 0.5
+      },
+      "verb": {
+       "mix": 40,
+       "decay": 6
       }
      },
      "branches": {}
@@ -700,6 +762,7 @@
      "id": "st-voice-1-A",
      "name": "Scream",
      "blocks": {
+      "radio": false,
       "scream": true
      },
      "params": {},
@@ -709,6 +772,7 @@
      "id": "st-voice-1-B",
      "name": "Growl",
      "blocks": {
+      "radio": false,
       "scream": true
      },
      "params": {
@@ -723,6 +787,7 @@
      "id": "st-voice-1-C",
      "name": "Clean Shout",
      "blocks": {
+      "radio": false,
       "scream": false
      },
      "params": {},
@@ -732,8 +797,8 @@
      "id": "st-voice-1-D",
      "name": "Megaphone",
      "blocks": {
-      "scream": false,
-      "radio": true
+      "radio": true,
+      "scream": false
      },
      "params": {},
      "branches": {}
@@ -810,17 +875,28 @@
     {
      "id": "st-drums-1-A",
      "name": "Blast",
-     "blocks": {},
+     "blocks": {
+      "room-4": true
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-drums-1-B",
      "name": "Breakdown",
-     "blocks": {},
+     "blocks": {
+      "room-4": true
+     },
      "params": {
       "comp-3": {
        "ratio": 6
+      },
+      "room-4": {
+       "mix": 18,
+       "decay": 1.2
+      },
+      "punch": {
+       "sustain": 0
       }
      },
      "branches": {}
@@ -837,8 +913,22 @@
     {
      "id": "st-drums-1-D",
      "name": "Clean Intro",
-     "blocks": {},
-     "params": {},
+     "blocks": {
+      "room-4": true
+     },
+     "params": {
+      "room-4": {
+       "mix": 22,
+       "decay": 1.5
+      },
+      "punch": {
+       "attack": 0,
+       "sustain": 0
+      },
+      "eq-4": {
+       "highs": -2
+      }
+     },
      "branches": {}
     }
    ],
@@ -856,11 +946,14 @@
     "boost": false,
     "chorus": true,
     "dly": true,
+    "flange": true,
     "wah": false,
     "whammy": false,
-    "flange": true,
     "drive": false,
-    "scream": false
+    "crush": false,
+    "radio": false,
+    "scream": false,
+    "room-4": true
    },
    "params": {
     "met": {
@@ -868,10 +961,24 @@
     },
     "dly-2": {
      "mix": 6
+    },
+    "room-4": {
+     "mix": 22,
+     "decay": 1.5
+    },
+    "punch": {
+     "attack": 0,
+     "sustain": 0
+    },
+    "eq-4": {
+     "highs": -2
     }
    },
    "branches": {
     "lane-a": {
+     "mute": true
+    },
+    "lane-b-2": {
      "mute": true
     }
    },
@@ -904,11 +1011,14 @@
    "name": "Groove Riff",
    "blocks": {
     "boost": true,
-    "chorus": false,
+    "chorus": true,
     "dly": false,
+    "flange": true,
     "wah": false,
     "whammy": false,
-    "flange": true,
+    "drive": false,
+    "crush": false,
+    "radio": false,
     "scream": true,
     "room-4": false
    },
@@ -917,7 +1027,12 @@
      "mix": 6
     },
     "vital": {
-     "fcut": 0.35
+     "fcut": 0.2,
+     "transpose": -12,
+     "rmix": 0.15
+    },
+    "verb": {
+     "mix": 14
     }
    },
    "branches": {
@@ -955,18 +1070,18 @@
     "boost": true,
     "chorus": false,
     "dly": false,
+    "flange": true,
     "wah": false,
     "whammy": false,
-    "flange": true,
-    "scream": true
+    "drive": false,
+    "crush": false,
+    "radio": false,
+    "scream": true,
+    "room-4": true
    },
    "params": {
     "met": {
      "thresh": -40
-    },
-    "geq": {
-     "gt_400": -6,
-     "gt_800": -8
     },
     "dly-2": {
      "mix": 6
@@ -975,10 +1090,16 @@
      "thresh": -40
     },
     "comp": {
-     "ratio": 8
+     "ratio": 8,
+     "attack": 4
     },
     "vital": {
-     "fcut": 0.35
+     "fcut": 0.2,
+     "transpose": -12,
+     "rmix": 0.15
+    },
+    "verb": {
+     "mix": 14
     },
     "scream": {
      "morph": 70,
@@ -986,10 +1107,20 @@
     },
     "comp-3": {
      "ratio": 6
+    },
+    "room-4": {
+     "mix": 18,
+     "decay": 1.2
+    },
+    "punch": {
+     "sustain": 0
     }
    },
    "branches": {
     "lane-b": {
+     "mute": true
+    },
+    "lane-a-2": {
      "mute": true
     }
    },
@@ -1023,10 +1154,14 @@
     "boost": false,
     "chorus": false,
     "dly": false,
+    "flange": false,
     "wah": false,
     "whammy": true,
-    "flange": false,
-    "scream": true
+    "drive": false,
+    "crush": false,
+    "radio": false,
+    "scream": true,
+    "room-4": true
    },
    "params": {},
    "branches": {
@@ -1066,11 +1201,14 @@
     "boost": false,
     "chorus": false,
     "dly": false,
+    "flange": false,
     "wah": true,
     "whammy": false,
-    "flange": false,
+    "drive": false,
+    "crush": false,
+    "radio": true,
     "scream": false,
-    "radio": true
+    "room-4": true
    },
    "params": {},
    "branches": {
@@ -1193,7 +1331,7 @@
  },
  "anims": {
   "A": "glitch",
-  "B": "monster",
+  "B": "glitch",
   "C": "rain",
   "D": "vu",
   "E": "wave",

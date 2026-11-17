@@ -1,0 +1,308 @@
+{
+ "anims": {
+  "10": "fire",
+  "6": "aurora",
+  "7": "ripple",
+  "8": "snow",
+  "9": "pulse",
+  "A": "smoke",
+  "B": "vortex",
+  "C": "strobe",
+  "D": "stars",
+  "E": "ember"
+ },
+ "bpm": 100,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "params": {
+     "release": 120,
+     "thresh": -62
+    },
+    "type": "gate"
+   },
+   {
+    "id": "comp",
+    "params": {
+     "attack": 5,
+     "character": "Pedal",
+     "makeup": 4,
+     "ratio": 4,
+     "thresh": -24
+    },
+    "type": "comp"
+   },
+   {
+    "id": "jub",
+    "label": "Marshall Silver Jubilee",
+    "model": "106490",
+    "params": {
+     "input": 0,
+     "output": 0
+    },
+    "ref": "27435",
+    "type": "amp-nam"
+   },
+   {
+    "id": "gb",
+    "label": "Marshall 4x12 Greenback",
+    "model": "239238",
+    "params": {
+     "level": 0
+    },
+    "ref": "45022",
+    "type": "cab"
+   },
+   {
+    "foot": 6,
+    "id": "env",
+    "params": {
+     "attack": 3,
+     "bass_keep": 0,
+     "direction": "Down",
+     "drive": 0,
+     "high": 2200,
+     "level": 3,
+     "low": 300,
+     "mix": 100,
+     "peak": 5,
+     "poles": "2",
+     "rate": 1,
+     "release": 200,
+     "response": "Smooth",
+     "source": "Envelope",
+     "sync": "Off",
+     "type": "Band-pass",
+     "wah": 0.5
+    },
+    "type": "autowah"
+   },
+   {
+    "foot": 7,
+    "id": "chorus",
+    "params": {
+     "depth": 4,
+     "mix": 0.4,
+     "mode": "Classic",
+     "profile": "Guitar Clean",
+     "rate": 0.8
+    },
+    "type": "chorus"
+   },
+   {
+    "id": "eq",
+    "params": {
+     "highs": 1,
+     "lowcut": 100,
+     "midfreq": 1200,
+     "midgain": 1
+    },
+    "type": "eq"
+   },
+   {
+    "foot": 8,
+    "id": "dly",
+    "params": {
+     "feedback": 18,
+     "mix": 10,
+     "model": "Digital",
+     "time": "1/8"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "room",
+    "params": {
+     "decay": 0.8,
+     "hicut": 7000,
+     "mix": 12,
+     "size": 14
+    },
+    "type": "reverb-room"
+   }
+  ]
+ },
+ "colors": {
+  "10": "#ef476f",
+  "6": "#ef476f",
+  "7": "#ef476f",
+  "8": "#ef476f",
+  "9": "#ef476f",
+  "A": "#ef476f",
+  "B": "#ef476f",
+  "C": "#ef476f",
+  "D": "#ef476f",
+  "E": "#ef476f"
+ },
+ "gen": [
+  {
+   "foot": 10,
+   "id": "drums",
+   "params": {
+    "fills": [],
+    "kit": "drums-black-pearl",
+    "patterns": [
+     "library/grooves/golem-funk-16.mid"
+    ]
+   },
+   "type": "drums"
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "env": false
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "name": "Chop"
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "dly": false,
+    "env": false
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "name": "Neck Chords",
+   "params": {
+    "eq": {
+     "highs": -1
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "env": true
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "name": "Envelope"
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "env": false
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "name": "Bright Slap",
+   "params": {
+    "eq": {
+     "highs": 3
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "dly": true,
+    "env": false
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-E"
+    }
+   },
+   "name": "Swirl",
+   "params": {
+    "room": {
+     "mix": 20
+    }
+   }
+  }
+ ],
+ "states": [
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "env": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-A",
+   "name": "Chop",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "dly": false,
+    "env": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-B",
+   "name": "Neck Chords",
+   "params": {
+    "eq": {
+     "highs": -1
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": false,
+    "env": true
+   },
+   "branches": {},
+   "id": "st-guitar-1-C",
+   "name": "Envelope",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "chorus": false,
+    "dly": true,
+    "env": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-D",
+   "name": "Bright Slap",
+   "params": {
+    "eq": {
+     "highs": 3
+    }
+   }
+  },
+  {
+   "blocks": {
+    "chorus": true,
+    "dly": true,
+    "env": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-E",
+   "name": "Swirl",
+   "params": {
+    "room": {
+     "mix": 20
+    }
+   }
+  }
+ ]
+}

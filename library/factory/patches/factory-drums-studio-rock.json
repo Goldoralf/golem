@@ -71,7 +71,9 @@
     {
      "id": "st-drums-1-A",
      "name": "Tight",
-     "blocks": {},
+     "blocks": {
+      "punch": false
+     },
      "params": {},
      "branches": {}
     },
@@ -92,7 +94,8 @@
      },
      "params": {
       "room": {
-       "mix": 26
+       "mix": 26,
+       "decay": 1.3
       }
      },
      "branches": {}
@@ -100,8 +103,17 @@
     {
      "id": "st-drums-1-D",
      "name": "Soft",
-     "blocks": {},
-     "params": {},
+     "blocks": {
+      "punch": false
+     },
+     "params": {
+      "eq": {
+       "highs": -3
+      },
+      "comp": {
+       "ratio": 2
+      }
+     },
      "branches": {}
     }
    ]
@@ -111,7 +123,9 @@
   {
    "id": "A",
    "name": "Tight",
-   "blocks": {},
+   "blocks": {
+    "punch": false
+   },
    "lanes": {
     "drums-1": {
      "state": "st-drums-1-A"
@@ -143,18 +157,29 @@
    },
    "params": {
     "room": {
-     "mix": 26
+     "mix": 26,
+     "decay": 1.3
     }
    }
   },
   {
    "id": "D",
    "name": "Soft",
-   "blocks": {},
+   "blocks": {
+    "punch": false
+   },
    "lanes": {
     "drums-1": {
      "state": "st-drums-1-D",
      "level": -3
+    }
+   },
+   "params": {
+    "eq": {
+     "highs": -3
+    },
+    "comp": {
+     "ratio": 2
     }
    },
    "level": -3
@@ -241,11 +266,11 @@
  "anims": {
   "A": "sheen",
   "B": "glitch",
-  "C": "monster",
+  "C": "rain",
   "D": "rain",
   "6": "vu",
   "9": "wave"
  },
  "deps": [],
- "deps_sig": "{\"anims\": {\"6\": \"vu\", \"9\": \"wave\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"monster\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"punch\", \"params\": {\"attack\": 8, \"sustain\": 0}, \"type\": \"transient\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"punch\", \"params\": {\"attack\": 8, \"sustain\": 0}, \"type\": \"transient\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Studio Rock\", \"role\": \"drums\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Tight\", \"params\": {}}, {\"blocks\": {\"punch\": true}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Punch\", \"params\": {}}, {\"blocks\": {\"punch\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Roomy\", \"params\": {\"room\": {\"mix\": 26}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Soft\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Tight\"}, {\"blocks\": {\"punch\": true}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Punch\"}, {\"blocks\": {\"punch\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Roomy\", \"params\": {\"room\": {\"mix\": 26}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -3, \"state\": \"st-drums-1-D\"}}, \"level\": -3, \"name\": \"Soft\"}]}"
+ "deps_sig": "{\"anims\": {\"6\": \"vu\", \"9\": \"wave\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"rain\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"punch\", \"params\": {\"attack\": 8, \"sustain\": 0}, \"type\": \"transient\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"punch\", \"params\": {\"attack\": 8, \"sustain\": 0}, \"type\": \"transient\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Studio Rock\", \"role\": \"drums\", \"states\": [{\"blocks\": {\"punch\": false}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Tight\", \"params\": {}}, {\"blocks\": {\"punch\": true}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Punch\", \"params\": {}}, {\"blocks\": {\"punch\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Roomy\", \"params\": {\"room\": {\"decay\": 1.3, \"mix\": 26}}}, {\"blocks\": {\"punch\": false}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Soft\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -3}}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {\"punch\": false}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Tight\"}, {\"blocks\": {\"punch\": true}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Punch\"}, {\"blocks\": {\"punch\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Roomy\", \"params\": {\"room\": {\"decay\": 1.3, \"mix\": 26}}}, {\"blocks\": {\"punch\": false}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -3, \"state\": \"st-drums-1-D\"}}, \"level\": -3, \"name\": \"Soft\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -3}}}]}"
 }

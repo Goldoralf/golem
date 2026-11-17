@@ -77,9 +77,17 @@ def _peaks_max(seconds, samples=SAMPLES):
             name = r["track"].split(" ", 1)[1] if " " in str(r.get("track", "")) else str(r.get("track", ""))
             cur = best.setdefault(name, {"inst": -150.0})
             cur.update({k: r.get(k) for k in ("vol_db", "mute", "hw_sends", "sends")})
+            cur.update({k: r[k] for k in ("root", "rig") if k in r})    # les marques d'un moteur qui ne nomme pas comme REAPER
             cur["inst"] = max(cur["inst"], float(r.get("instL", -150)), float(r.get("instR", -150)))
         time.sleep(max(0.0, seconds / samples))
     return best
+
+
+def _engine_name(eng):
+    """Le nom du moteur qui joue, pour l'écran (« REAPER », « Golem Engine »)."""
+    with contextlib.suppress(Exception):
+        return (eng.descriptor() or {}).get("name") or "REAPER"
+    return "REAPER"
 
 
 def _chunk_facts(track):
@@ -119,16 +127,35 @@ def _fx_facts():
     return out
 
 
+def is_rig(name, row):
+    """Une piste DU RIG ? REAPER : son nom (« Sandbox #… ») ; un moteur qui nomme autrement le dit dans la sonde (`rig`)."""
+    return bool(row["rig"]) if "rig" in row else str(name).startswith("Sandbox #")
+
+
+def is_root(name, row):
+    """L'ENTRÉE d'une lane ? REAPER : la piste racine « Sandbox #Input N » ; ailleurs la marque `root` de la sonde (le
+    Golem Engine : ses pistes golem:inN, vumètre à l'entrée de la carte)."""
+    if "root" in row:
+        return bool(row["root"])
+    return str(name).startswith("Sandbox #Input ") and "/" not in name and "#merge" not in name
+
+
+def _roots(peaks):
+    return sorted(n for n in peaks if is_root(n, peaks[n]))
+
+
 def verdict(st, peaks, chunk, fx, waited=True):
     """Le verdict, du plus amont au plus aval — en anglais, pour l'écran. `level` : bad = le rig ou la carte ;
-    ok = le signal sort de REAPER, le rig n'y est pour rien."""
+    ok = le signal sort du moteur, le rig n'y est pour rien. `st["engine_name"]` : le moteur qui joue (REAPER par
+    défaut) ; `fx` : les fichiers lus sur les plugins (REAPER, dumpfx) ou `st["missing"]`, déjà établi (rig-check)."""
     au = (st.get("audio") or {}) if isinstance(st, dict) else {}
-    roots = sorted(n for n in peaks if n.startswith("Sandbox #Input ") and "/" not in n and "#merge" not in n)
+    eng = (st.get("engine_name") if isinstance(st, dict) else None) or "REAPER"
+    roots = _roots(peaks)
     root_sig = any(peaks[n]["inst"] > SILENT_DB for n in roots)
-    outs = [n for n in peaks if n.startswith("Sandbox #") and (peaks[n].get("hw_sends") or 0) > 0 and not peaks[n].get("mute")]
+    outs = [n for n in peaks if is_rig(n, peaks[n]) and (peaks[n].get("hw_sends") or 0) > 0 and not peaks[n].get("mute")]
     out_sig = any(peaks[n]["inst"] > SILENT_DB for n in outs)
-    down_sig = any(peaks[n]["inst"] > SILENT_DB for n in peaks if n.startswith("Sandbox #") and n not in roots)
-    missing = []
+    down_sig = any(peaks[n]["inst"] > SILENT_DB for n in peaks if is_rig(n, peaks[n]) and n not in roots)
+    missing = list((st.get("missing") if isinstance(st, dict) else None) or [])
     for tname, rows in (fx or {}).items():
         if not str(tname).startswith("Sandbox #"):
             continue
@@ -139,23 +166,25 @@ def verdict(st, peaks, chunk, fx, waited=True):
     if au.get("ok") is False:
         return {"code": "card", "level": "bad", "stage": "sound card",
                 "title": "The sound card is lost — not the rig.",
-                "text": f"The audio thread stopped ({au.get('why') or 'no witness'}). Reset the audio device or restart REAPER from the Dashboard."}
+                "text": f"The audio thread stopped ({au.get('why') or 'no witness'}). Reset the audio device or restart {eng} from the Dashboard."}
     if not peaks:
         return {"code": "probe", "level": "bad", "stage": "engine",
-                "title": "REAPER did not answer the probe.",
-                "text": "The engine may be frozen: a plugin that stalls on load (quarantine it), or restart REAPER from the Dashboard."}
+                "title": f"{eng} did not answer the probe.",
+                "text": f"The engine may be frozen: a plugin that stalls on load (quarantine it), or restart {eng} from the Dashboard."}
     if not root_sig:
-        rec = " · ".join(f"{n}: {(chunk.get(n) or {}).get('rec') or 'REC ?'}" for n in roots) or "no input track"
+        rec = " · ".join(f"{n}: {((chunk or {}).get(n) or {}).get('rec') or 'REC ?'}" for n in roots) or "no input track"
+        # l'armement d'une piste est une affaire de REAPER : un moteur qui n'a pas cette sonde (chunk None) n'en parle pas
+        armed = f", and that the track is armed ({rec})" if chunk is not None else ""
         return {"code": "input", "level": "bad", "stage": "input",
                 "title": "No signal reaches the input tracks.",
-                "text": (f"Nothing above {int(SILENT_DB)} dBFS on the inputs while you played: check the cable, the card's input and its gain, "
-                         f"and that the track is armed ({rec}).") + ("" if waited else " Measured without anyone playing — normal when idle.")}
+                "text": (f"Nothing above {int(SILENT_DB)} dBFS on the inputs while you played: check the cable, the card's input and its gain"
+                         f"{armed}.") + ("" if waited else " Measured without anyone playing — normal when idle.")}
     if not outs:
         return {"code": "routing", "level": "bad", "stage": "output routing",
                 "title": "No live track has a hardware output.",
                 "text": "The signal has nowhere to go: the output routing — the mixer, the card's output patch, or a lane without an OUT."}
     if out_sig:
-        return {"code": "downstream", "level": "ok", "stage": "after REAPER",
+        return {"code": "downstream", "level": "ok", "stage": f"after {eng}",
                 "title": "The signal leaves the golem — the silence is after it.",
                 "text": "A track with a hardware output carries level. Look at the card's MONITOR knob, the system volume, the cables and the monitors — the rig is fine."}
     if not down_sig:
@@ -177,26 +206,36 @@ def hunt(seconds=4.0, waited=True):
     """La chasse, synchrone (appelée dans un fil par `start`) : état, crêtes pendant `seconds`, chunk des pistes
     d'entrée, fichiers des NAM/IR, verdict ; rapport écrit dans presets/.silence-<hhmmss>.json."""
     from .state import state
+    from . import engine
+    eng = engine.active()
+    name = _engine_name(eng)
     st = {"reaper_running": state.reaper_running, "reaper_connected": state.reaper_connected, "audio": state.audio,
           "latency_ms": state.latency_ms, "xruns": state.xruns, "rig_check": state.rig_check,
-          "preset_id": state.preset_id, "preset_name": state.preset_name, "scene_id": state.scene_id}
+          "preset_id": state.preset_id, "preset_name": state.preset_name, "scene_id": state.scene_id,
+          "engine": eng.id, "engine_name": name}
     report = {"t": time.strftime("%Y-%m-%d %H:%M:%S"), "state": st, "seconds": seconds}
     if not state.reaper_running:
-        report["verdict"] = {"code": "engine", "level": "bad", "stage": "engine", "title": "REAPER is not running.",
+        report["verdict"] = {"code": "engine", "level": "bad", "stage": "engine", "title": f"{name} is not running.",
                              "text": "The only case where restarting is the answer: start it from the Dashboard."}
         report["tracks"] = []
         return report
     _set(phase="listening", play_until=round(time.time() + seconds, 3))
     peaks = _peaks_max(seconds)
     _set(phase="reading", play_until=None)
-    roots = sorted(n for n in peaks if n.startswith("Sandbox #Input ") and "/" not in n and "#merge" not in n)
-    chunk = {n: _chunk_facts(n) for n in roots} if peaks else {}
-    fx = _fx_facts() if peaks else None
+    roots = _roots(peaks)
+    # les sondes de REAPER (chunk d'une piste, valeurs lues sur les plugins) n'existent que là où le moteur les a ; un
+    # autre moteur dit ses fichiers manquants par sa vérification du rig (.rig-check.json, lue sur les plugins aussi)
+    chunk = ({n: _chunk_facts(n) for n in roots} if peaks else {}) if eng.supports("chunkdump") else None
+    fx = _fx_facts() if peaks and eng.supports("dumpfx") else None
+    if not eng.supports("dumpfx"):
+        st["missing"] = [{"track": i.get("track"), "fx": i.get("fx"), "plugin": i.get("kind") or "file",
+                          "param": "its file", "expected": i.get("expected")}
+                         for i in ((state.rig_check or {}).get("issues") or []) if isinstance(i, dict)]
     report["verdict"] = verdict(st, peaks, chunk, fx, waited=waited)
     report["tracks"] = [{"name": n, "peak_db": round(p["inst"], 1), "vol_db": p.get("vol_db"), "mute": bool(p.get("mute")),
                          "hw_sends": p.get("hw_sends"), "sends": p.get("sends")}
-                        for n, p in sorted(peaks.items()) if n.startswith("Sandbox #")]
-    report["chunk"] = chunk
+                        for n, p in sorted(peaks.items()) if is_rig(n, p) or is_root(n, p)]
+    report["chunk"] = chunk or {}
     report["missing"] = report["verdict"].get("missing") or []
     try:
         path = os.path.join(C.PRESETS_DIR, time.strftime(".silence-%H%M%S.json"))
@@ -217,7 +256,8 @@ def start(seconds=4.0, waited=True):
         if _S["phase"] in ("listening", "reading"):
             return {"ok": False, "why": "a hunt is already running"}
     if not state.reaper_running:
-        return {"ok": False, "why": "REAPER is not running — start it from the Dashboard, there is nothing to measure"}
+        from . import engine
+        return {"ok": False, "why": f"{_engine_name(engine.active())} is not running — start it from the Dashboard, there is nothing to measure"}
     why = None
     with contextlib.suppress(Exception):
         from . import reamp

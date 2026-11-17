@@ -34,10 +34,7 @@
        "makeup": 3,
        "attack": 20
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "b15",
       "type": "amp",
@@ -69,7 +66,9 @@
        "hicut": 7000
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "states": [
     {
@@ -85,10 +84,15 @@
      "blocks": {},
      "params": {
       "eq": {
-       "highs": -4
+       "highs": -7,
+       "lows": 2
       },
       "room": {
-       "mix": 18
+       "mix": 26,
+       "decay": 1.6
+      },
+      "comp": {
+       "ratio": 2
       }
      },
      "branches": {}
@@ -99,8 +103,16 @@
      "blocks": {},
      "params": {
       "eq": {
-       "midgain": 3,
-       "midfreq": 700
+       "midgain": 5,
+       "midfreq": 900,
+       "highs": 1
+      },
+      "comp": {
+       "ratio": 5,
+       "makeup": 4
+      },
+      "room": {
+       "mix": 18
       }
      },
      "branches": {}
@@ -111,7 +123,13 @@
      "blocks": {},
      "params": {
       "eq": {
-       "highs": 2
+       "highs": 6,
+       "midgain": 2,
+       "midfreq": 1800,
+       "lowcut": 60
+      },
+      "room": {
+       "mix": 5
       }
      },
      "branches": {}
@@ -136,17 +154,24 @@
    "blocks": {},
    "lanes": {
     "bass-1": {
-     "state": "st-bass-1-B"
+     "state": "st-bass-1-B",
+     "level": -1
     }
    },
    "params": {
     "eq": {
-     "highs": -4
+     "highs": -7,
+     "lows": 2
     },
     "room": {
-     "mix": 18
+     "mix": 26,
+     "decay": 1.6
+    },
+    "comp": {
+     "ratio": 2
     }
-   }
+   },
+   "level": -1
   },
   {
    "id": "C",
@@ -160,8 +185,16 @@
    },
    "params": {
     "eq": {
-     "midgain": 3,
-     "midfreq": 700
+     "midgain": 5,
+     "midfreq": 900,
+     "highs": 1
+    },
+    "comp": {
+     "ratio": 5,
+     "makeup": 4
+    },
+    "room": {
+     "mix": 18
     }
    },
    "level": 3
@@ -177,7 +210,13 @@
    },
    "params": {
     "eq": {
-     "highs": 2
+     "highs": 6,
+     "midgain": 2,
+     "midfreq": 1800,
+     "lowcut": 60
+    },
+    "room": {
+     "mix": 5
     }
    }
   }
@@ -187,15 +226,24 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
+     "type": "standard",
+     "id": "standard",
      "foot": 10,
      "params": {
-      "patterns": [
-       "library/grooves/golem-swing.mid"
-      ],
-      "fills": [],
-      "kit": "drums-black-pearl"
+      "standard": "rooftop-prowl",
+      "key": "Original",
+      "feel": "swing",
+      "motion": "comp",
+      "voicing": "rootless",
+      "arp": "Off",
+      "keys": true,
+      "bass": false,
+      "drums": true,
+      "guitar": false,
+      "pompe": "auto",
+      "groove": "auto",
+      "kit": "blonde-bop",
+      "choruses": 4
      }
     }
    ]
@@ -231,10 +279,7 @@
      "makeup": 3,
      "attack": 20
     }
-   }
-  ],
-  "split": null,
-  "post": [
+   },
    {
     "id": "b15",
     "type": "amp",
@@ -266,7 +311,9 @@
      "hicut": 7000
     }
    }
-  ]
+  ],
+  "split": null,
+  "post": []
  },
  "needs": [
   {
@@ -286,7 +333,7 @@
   "10": "#c9a227"
  },
  "anims": {
-  "A": "monster",
+  "A": "strobe",
   "B": "rain",
   "C": "vu",
   "D": "wave",
@@ -306,30 +353,7 @@
    "brand": "Ampeg",
    "creator": "tone3000",
    "url": "https://www.tone3000.com/tones/ampeg-b-15-fliptop-26828"
-  },
-  {
-   "sha256": "c5786de732cf905e646f67a3cbfde0c689a8ce6914c76ac4d9001cd1f7087944",
-   "uid": "local:groove-golem-swing",
-   "kind": "groove",
-   "bytes": 257,
-   "name": "Swing",
-   "source": "golemfm",
-   "factory": true,
-   "brand": "GoleM",
-   "creator": "factory"
-  },
-  {
-   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
-   "uid": "local:kit-drums-black-pearl",
-   "kind": "kit",
-   "bytes": 919,
-   "name": "drums-black-pearl",
-   "source": "golemfm",
-   "factory": true,
-   "amp": "Black Pearl",
-   "brand": "GoleM",
-   "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"9\": \"heartbeat\", \"A\": \"monster\", \"B\": \"rain\", \"C\": \"vu\", \"D\": \"wave\"}, \"backing\": null, \"bpm\": 160, \"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"colors\": {\"10\": \"#c9a227\", \"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-swing.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Upright Jazz\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Walking\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Solo\", \"params\": {\"eq\": {\"midfreq\": 700, \"midgain\": 3}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 2}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Walking\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -4}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-C\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"eq\": {\"midfreq\": 700, \"midgain\": 3}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 2}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"9\": \"heartbeat\", \"A\": \"strobe\", \"B\": \"rain\", \"C\": \"vu\", \"D\": \"wave\"}, \"backing\": null, \"bpm\": 160, \"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"split\": null}, \"colors\": {\"10\": \"#c9a227\", \"9\": \"#c9a227\", \"A\": \"#c9a227\", \"B\": \"#c9a227\", \"C\": \"#c9a227\", \"D\": \"#c9a227\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": false, \"choruses\": 4, \"drums\": true, \"feel\": \"swing\", \"groove\": \"auto\", \"guitar\": false, \"key\": \"Original\", \"keys\": true, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"pompe\": \"auto\", \"standard\": \"rooftop-prowl\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -24}, \"type\": \"comp\"}, {\"id\": \"b15\", \"label\": \"Ampeg B-15\", \"model\": \"379842\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"26828\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 35, \"midfreq\": 600, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 12, \"size\": 14}, \"type\": \"reverb-room\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Upright Jazz\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Walking\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Ballad\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -7, \"lows\": 2}, \"room\": {\"decay\": 1.6, \"mix\": 26}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Solo\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 5}, \"eq\": {\"highs\": 1, \"midfreq\": 900, \"midgain\": 5}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 6, \"lowcut\": 60, \"midfreq\": 1800, \"midgain\": 2}, \"room\": {\"mix\": 5}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Walking\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-B\"}}, \"level\": -1, \"name\": \"Ballad\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -7, \"lows\": 2}, \"room\": {\"decay\": 1.6, \"mix\": 26}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 3, \"state\": \"st-bass-1-C\"}}, \"level\": 3, \"name\": \"Solo\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 5}, \"eq\": {\"highs\": 1, \"midfreq\": 900, \"midgain\": 5}, \"room\": {\"mix\": 18}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Bright Pluck\", \"params\": {\"eq\": {\"highs\": 6, \"lowcut\": 60, \"midfreq\": 1800, \"midgain\": 2}, \"room\": {\"mix\": 5}}}]}"
 }

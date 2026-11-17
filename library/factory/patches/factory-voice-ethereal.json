@@ -107,7 +107,9 @@
      "id": "st-voice-1-A",
      "name": "Ethereal",
      "blocks": {
-      "dly": true
+      "dly": true,
+      "formant": false,
+      "tune": true
      },
      "params": {},
      "branches": {}
@@ -116,7 +118,9 @@
      "id": "st-voice-1-B",
      "name": "Close",
      "blocks": {
-      "dly": false
+      "dly": false,
+      "formant": false,
+      "tune": true
      },
      "params": {
       "verb": {
@@ -129,6 +133,8 @@
      "id": "st-voice-1-C",
      "name": "Robot Falsetto",
      "blocks": {
+      "dly": false,
+      "formant": false,
       "tune": true
      },
      "params": {
@@ -144,7 +150,8 @@
      "name": "Cloud",
      "blocks": {
       "dly": true,
-      "formant": true
+      "formant": true,
+      "tune": true
      },
      "params": {
       "verb": {
@@ -161,7 +168,9 @@
    "id": "A",
    "name": "Ethereal",
    "blocks": {
-    "dly": true
+    "dly": true,
+    "formant": false,
+    "tune": true
    },
    "lanes": {
     "voice-1": {
@@ -173,7 +182,9 @@
    "id": "B",
    "name": "Close",
    "blocks": {
-    "dly": false
+    "dly": false,
+    "formant": false,
+    "tune": true
    },
    "lanes": {
     "voice-1": {
@@ -190,6 +201,8 @@
    "id": "C",
    "name": "Robot Falsetto",
    "blocks": {
+    "dly": false,
+    "formant": false,
     "tune": true
    },
    "lanes": {
@@ -209,7 +222,8 @@
    "name": "Cloud",
    "blocks": {
     "dly": true,
-    "formant": true
+    "formant": true,
+    "tune": true
    },
    "lanes": {
     "voice-1": {
@@ -388,5 +402,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"strobe\", \"7\": \"stars\", \"8\": \"ember\", \"9\": \"aurora\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Ethereal Falsetto\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Ethereal\", \"params\": {}}, {\"blocks\": {\"dly\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Ethereal\"}, {\"blocks\": {\"dly\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"tune\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ripple\", \"6\": \"strobe\", \"7\": \"stars\", \"8\": \"ember\", \"9\": \"aurora\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 8, \"id\": \"tune\", \"params\": {\"corr\": 0.4, \"fastmode\": true, \"filter\": 0.15, \"key\": \"A\", \"scale\": \"Minor\", \"song_key\": true}, \"type\": \"pitch-correct\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 3, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"formant\", \"params\": {\"formant\": 3, \"mix\": 50}, \"type\": \"formant\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 110, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 20, \"model\": \"Tape\", \"time\": \"1/4•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.4, \"hicut\": 7000, \"mix\": 28, \"size\": 30}, \"type\": \"reverb\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Ethereal Falsetto\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": true, \"formant\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Ethereal\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"formant\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"dly\": false, \"formant\": false, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"tune\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": true, \"formant\": false, \"tune\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Ethereal\"}, {\"blocks\": {\"dly\": false, \"formant\": false, \"tune\": true}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Close\", \"params\": {\"verb\": {\"mix\": 16}}}, {\"blocks\": {\"dly\": false, \"formant\": false, \"tune\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Robot Falsetto\", \"params\": {\"tune\": {\"corr\": 1.0, \"filter\": 0.02}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"tune\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-D\"}}, \"name\": \"Cloud\", \"params\": {\"verb\": {\"mix\": 40}}}]}"
 }

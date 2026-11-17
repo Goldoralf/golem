@@ -27,6 +27,7 @@ export function loadVisuals(catalog) {
       document.head.appendChild(l);
     }
     await script('visuals-data.js'); await script('golem-pedals.js'); await script('golem-stage.js');
+    await script('golem-rig.js');                       // le rig par sections (GolemRig) : la vue pédalier du Designer
     // les PHOTOS des kits de batterie (drumKit, docs/drums-library.md §1) : servies à côté des renderers
     if (window.GolemPedals.kitAssets) window.GolemPedals.kitAssets.base = new URL(BASE + 'assets/kits/', location.href).href;
     if (!document.getElementById('gp-defs')) {
@@ -116,7 +117,7 @@ function patchRenderers() {
   P.__golem = true;
 }
 
-export const visualsReady = () => !!(typeof window !== 'undefined' && window.GolemPedals && window.GolemStage);
+export const visualsReady = () => !!(typeof window !== 'undefined' && window.GolemPedals && window.GolemStage && window.GolemRig);
 
 // UN DESSIN STABLE (2026-11-13 : « en mode Pedals, ça n'ajoute pas ») : golem-fx numérote les ids de chaque dessin
 // (gpm1-…, gpm2-…), donc deux appels pour la même pédale rendent deux TEXTES différents. Le tiroir est redessiné à chaque
@@ -159,10 +160,10 @@ export function pedalValues(def, params) {
 
 /** Le pédalier d'une lane (chaîne lanes-v2 + état de scène {blocks, branches}) : SVG (chaîne). `values` = {id du bloc:
  *  ses valeurs de pédale (pedalValues)} — les pédales golem-fx montrent alors les réglages du bloc. */
-export function stageSvg(chain, laneState, opts, values) {
+/** Les éléments d'une lane tels que golem-fx les dessine (GolemStage.fromGolem), avec le libellé des captures
+ *  d'outboard et les valeurs des pédales. Commun à la file (stageSvg) et au rig par sections (rigSections). */
+function stageItems(chain, laneState, values) {
   const S = window.GolemStage;
-  if (!S) return '';
-  const o = Object.assign({ floor: 'stage', guitar: true }, opts || {});
   // le libellé d'une capture d'outboard (« BAE 1073 ») : fromGolem ne le passe pas, le module série 500 en a besoin
   const labels = {};
   const scan = x => { if (Array.isArray(x)) x.forEach(scan); else if (x && typeof x === 'object') {
@@ -176,6 +177,32 @@ export function stageSvg(chain, laneState, opts, values) {
       Array.isArray(br) ? br.map(withVals) : Object.assign({}, br, { items: (br.items || []).map(withVals) })) }) });
     return values && it.id != null && values[it.id] ? Object.assign({}, it, { values: values[it.id] }) : it;
   };
-  return remember(_stages, JSON.stringify([chain, laneState, o, [...GOLEM_FX].sort(), values || null]),
-    () => S.render(S.fromGolem(chain, laneState).map(withVals), o));
+  return S.fromGolem(chain, laneState).map(withVals);
 }
+
+export function stageSvg(chain, laneState, opts, values) {
+  const S = window.GolemStage;
+  if (!S) return '';
+  const o = Object.assign({ floor: 'stage', guitar: true }, opts || {});
+  return remember(_stages, JSON.stringify([chain, laneState, o, [...GOLEM_FX].sort(), values || null]),
+    () => S.render(stageItems(chain, laneState, values), o));
+}
+
+/** LE RIG PAR SECTIONS (golem-fx GolemRig, 2026-11-17) : la lane découpée en sections, chacune dans sa vue naturelle —
+ *  les pédales vues de dessus à leur taille réelle (« pre », « post »), l'ampli de face (« amp »), l'outboard en rack
+ *  (« outboard »). Rend [{key, label, svg}] : seules les sections que la chaîne a ; les chemins `data-idx` et les
+ *  scotchs de branche sont ceux de la file, les gestes de la vue pédalier ne changent pas. */
+export function rigSections(chain, laneState, opts, values) {
+  const S = window.GolemStage, R = window.GolemRig;
+  if (!S || !R) return [];
+  const o = Object.assign({ floor: 'stage', outboard: 'rack' }, opts || {});
+  return remember(_stages, 'rig:' + JSON.stringify([chain, laneState, o, [...GOLEM_FX].sort(), values || null]), () => {
+    const secs = R.sections(stageItems(chain, laneState, values), { outboard: o.outboard, features: 'tab' });
+    return secs.map(sec => ({ key: sec.key, label: sec.label, count: (sec.items || []).length,
+      paths: (sec.items || []).map(it => String(it.idx)),          // les chemins des éléments dessinés dans la section
+      svg: R.render(sec, { floor: o.floor, seed: o.seed, outboard: o.outboard }) }));
+  });
+}
+
+/** Le sol d'un rig d'après le genre du morceau (GolemRig.floorFor) ; « stage » sans genre ou sans moteur. */
+export const rigFloor = genre => (window.GolemRig && genre ? window.GolemRig.floorFor(String(genre)) : 'stage');

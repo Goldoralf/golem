@@ -1498,12 +1498,18 @@ def _midi_pedals_glue(baked):
     state.midi_pedals = seen
 
 
-def _hw_pedals_glue(baked):
+def _hw_pedals_glue(baked, force=False):
     """Point d'entrée INJECTÉ dans le moteur (recall_mod.init) : Whammy nominatif d'abord,
     générique ensuite. Isolés l'un de l'autre — une exception d'un moteur ne prive pas l'autre
-    de son émission (le moteur enveloppe déjà l'ensemble d'un suppress, jamais fatal)."""
+    de son émission (le moteur enveloppe déjà l'ensemble d'un suppress, jamais fatal).
+
+    ⚠ `force` DOIT ÊTRE ACCEPTÉ ET TRANSMIS (2026-11-16). Le moteur appelle ce point d'entrée avec
+    `force=preset_changed` ; cette fonction ne prenait que `baked` -> TypeError à CHAQUE émission, avalé par le
+    suppress du moteur : ni la Whammy ni les pédales génériques ne recevaient plus rien d'un rappel, d'une scène
+    ou d'une retouche du Designer. Seul le switch au pied (_toggle_whammy) parlait encore à la pédale. Vécu :
+    « je change le mode dans le tiroir, rien ne se passe, comme si le MIDI n'était pas actif »."""
     try:
-        _whammy_dt_glue(baked)
+        _whammy_dt_glue(baked, force=force)
     finally:
         _midi_pedals_glue(baked)
 
@@ -2248,8 +2254,14 @@ async def recall(request: Request, body: dict):
         return JSONResponse({"error": f"preset {pid} introuvable"}, status_code=404)
     # hors boucle (exécuteur du moteur) : le WebSocket et les autres requêtes vivent pendant
     # le bake/compile — et on ATTEND la fin pour renvoyer un snapshot déjà à jour.
-    await recall_mod.recall_async(pid, body.get("scene"))
+    ok = await recall_mod.recall_async(pid, body.get("scene"))
     await _broadcast()
+    if not ok:
+        # LE REFUS SE DIT (2026-11-09) : do_recall rend False quand la compilation est refusée (ids de blocs
+        # dupliqués, lane impossible à monter…) — on répondait quand même « ok », et un banc a mesuré l'ancien rig
+        # en croyant mesurer le nouveau. 422 + l'erreur du moteur, et l'état pour qui veut l'afficher.
+        return JSONResponse({"ok": False, "error": state.rig_error or "recall refused", "state": state.snapshot()},
+                            status_code=422)
     return {"ok": True, "state": state.snapshot()}
 
 

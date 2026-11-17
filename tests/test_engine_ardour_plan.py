@@ -206,7 +206,7 @@ def test_dans_le_designer_un_type_sans_plugin_ici_est_pas_encore():
         engine.use(prev)
     assert "amp-nam" not in gate and "cab" not in gate                  # dans la table : ils jouent
     assert gate["surge-freqshift"] == ("planned", "Golem Engine")           # Surge XT : pas sur ce moteur
-    assert gate["looper"][1] == "Golem Engine"                          # fonction du moteur non déclarée
+    assert "looper" not in gate and "compo" not in gate                  # leurs fonctions sont déclarées : ils jouent
     assert st["reason"] == "engine" and st["why"] == "not available on Golem Engine yet"
 
 
@@ -442,3 +442,281 @@ def test_un_gate_a_cle_recoit_l_entree_de_sa_lane():
     plan = P.build(rig)
     blocks = {b["id"]: b for t in plan["tracks"] for b in t["blocks"]}
     assert blocks["met"]["key_input"] == 3 and "key_input" not in blocks["dly"]
+
+
+def test_une_tete_sans_baffle_emporte_son_baffle_par_defaut():
+    # REAPER fond ce baffle dans le cœur de la piste ; ici un plugin par bloc : le compileur dit le fichier, le plan
+    # pose un cab juste derrière la tête, dans le même état qu'elle, hors du livemap (`shadow`)
+    rig = {"id": "p", "paths": [{"id": "g", "input": 1, "tracks": [{"role": "main", "name": "G:g", "input": 1, "out_sel": "1-2",
+           "blocks": [{"id": "head", "type": "amp-nam", "file": "/m.nam", "bypass": True, "default_ir": "/cab.wav"},
+                      {"id": "g1", "type": "gate"}]}]}]}
+    blocks = P.build(rig, CAT, TABLE)["tracks"][0]["blocks"]
+    assert [b["id"] for b in blocks] == ["head", "head~ir"]
+    ir = blocks[1]
+    assert ir["type"] == "cab" and ir["files"] == {"urn:ir#ir": "/cab.wav"} and ir["shadow"] is True
+    assert ir["enabled"] is False                              # il suit la tête, éteinte dans cette scène
+
+
+def test_une_route_qui_sort_dit_sa_tranche_du_mixer():
+    tr = {t["name"]: t for t in P.build({"id": "p", "paths": [dict(split_rig()["paths"][0], input=2)]}, CAT, TABLE)["tracks"]}
+    assert tr["G:g#merge"]["mixer"] == "in2"                   # la route qui va à la carte porte le trim du rig
+    assert "mixer" not in tr["G:g"] and "mixer" not in tr["G:g/lane-a"]
+
+
+# ── lot 2 : les instruments de clavier (docs/ardour-plan.md §7d) ─────────────────────────────────────────────────────
+KCAT = {"organ": {"type": "organ", "params": [{"id": "db16", "name": "1: Drawbar 16", "min": 0, "max": 8},
+                                              {"id": "zone_lo", "name": "Zone Low"}, {"id": "arp", "type": "enum"}]},
+        "vital": {"type": "vital", "params": [{"id": "preset", "type": "enum", "dynamic": "vital-presets"},
+                                              {"id": "vol", "name": "Volume", "min": 0, "max": 1, "map": {"mode": "raw"}},
+                                              {"id": "transpose", "name": "Transpose"}, {"id": "arp", "type": "enum"}]},
+        "ep": {"type": "ep", "params": [{"id": "bank", "type": "enum", "dynamic": "dx7-banks"}, {"id": "patch", "name": "Patch"}]},
+        "pads": {"type": "pads", "params": [{"id": "kit", "type": "kitref"}]},
+        "comp": {"type": "comp", "params": []}}
+KTABLE = {"organ": {"lv2": "urn:b3", "midi": "organ", "zone": True, "arp": True},
+          "vital": {"vst3": "ABABABABABABABABABABABABABABABAB", "zone": True, "arp": True, "preset": {"from": "vital_chunk", "vendor": "V", "name": "Vital"}},
+          "ep": {"vst3": "DX", "midi": "dx7", "zone": True},
+          "pads": {"lv2": "urn:sfizz", "pads": "urn:sfizz:sfzfile"}, "comp": {"lua": "comp"}}
+
+
+def keys_lane(*blocks, midi_ch=None, role="keys"):
+    return {"id": "p", "paths": [{"id": "k", "input": 3, "tracks": [
+        {"role": "main", "name": "G:k", "input": 3, "midi": True, "midi_in": None, "midi_role": role,
+         "midi_ch": midi_ch or {"keys": 1}, "level": -2, "out_sel": "1-2", "blocks": list(blocks)}]}]}
+
+
+def test_un_instrument_emporte_sa_zone_et_son_arpegiateur():
+    b = {"id": "o", "type": "organ", "params": {"db16": 5, "zone_lo": 48, "zone_hi": 72, "transpose": -12, "arp": "Up-Down 1/16"}}
+    plan = P.build(keys_lane(b), KCAT, KTABLE)
+    blocks = plan["tracks"][0]["blocks"]
+    assert [x["id"] for x in blocks] == ["o~zone", "o~arp", "o"]          # la zone, puis l'arp, puis l'instrument
+    zone = {p["label"]: p["value"] for p in blocks[0]["params"]}
+    assert zone == {"Zone Low": 48, "Zone High": 72, "Transpose": -12} and blocks[0]["shadow"] is True
+    arp = {p["label"]: p["value"] for p in blocks[1]["params"]}
+    assert arp == {"On": 1, "Rate": 4, "Mode": 3, "Octaves": 0, "Length": 0.7} and blocks[1]["bpm"] == "BPM"
+    # la registration part en MIDI, rien de tout cela n'est un port du plugin ni un refus
+    assert blocks[2]["params"] == [] and blocks[2]["midi"][0] == [0xB0, 70, 127 - 79]
+    assert [s for s in plan["skipped"] if s.get("id")] == []     # (le seul refus : aucun clavier branché, dit par la lane)
+    off = P.build(keys_lane({"id": "o", "type": "organ", "params": {"arp": "Off"}}), KCAT, KTABLE)["tracks"][0]["blocks"][1]
+    assert off["params"][0] == {"pid": "arp", "label": "On", "value": 0}
+
+
+def test_la_registration_de_l_orgue_suit_la_table_de_b3_ctl():
+    from bridge.engine import keys_midi as K
+    cc = {c: v for _, c, v in K.organ_cc({"db16": 8, "db8": 0, "leslie": "fast", "vibrato": "C3", "perc": True,
+                                          "perc_harm": "2nd", "drive": True, "character": 100})}
+    assert cc[70] == 0 and cc[72] == 127                       # tirettes inversées : tirée = 0, rentrée = 127
+    assert cc[1] == 110 and cc[95] == 80 and cc[92] == 5 * 23 + 11 and cc[80] == 127 and cc[83] == 0
+    assert cc[65] == 127 and cc[93] == 127
+    assert 92 not in {c for _, c, _ in K.organ_cc({"vibrato": "off"})}     # coupé : seul le routage part (CC95 = 0)
+
+
+def test_la_voix_du_dx7_est_depliee_de_la_cartouche(tmp_path):
+    from bridge.engine import keys_midi as K
+    voice = bytearray(128)
+    voice[11] = 0b1110                                         # opérateur 6 : courbe gauche 2, droite 3
+    voice[12] = (9 << 3) | 5                                   # detune 9, rate scaling 5
+    voice[15] = (17 << 1) | 1                                  # coarse 17, mode fixe
+    voice[110], voice[111], voice[116] = 21, 0b1011, (5 << 4) | (3 << 1) | 1
+    voice[118:128] = b"GOLEM TEST"
+    bank = bytes([0xF0, 0x43, 0x00, 0x09, 0x20, 0x00]) + bytes(128) + bytes(voice) + bytes(128 * 30) + bytes([0, 0xF7])
+    syx = K.dx7_voice_sysex(bank, 1)
+    assert len(syx) == 163 and syx[:6] == [0xF0, 0x43, 0, 0, 1, 0x1B] and syx[-1] == 0xF7
+    d = syx[6:-2]
+    assert d[11:13] == [2, 3] and d[13] == 5 and d[20] == 9 and d[17:19] == [1, 17]
+    assert d[134:137] == [21, 3, 1] and d[141:144] == [1, 3, 5] and bytes(d[145:155]) == b"GOLEM TEST"
+    assert (sum(d) + syx[-2]) & 0x7F == 0                       # somme de contrôle du DX7
+    f = tmp_path / "c.syx"
+    f.write_bytes(bank)
+    blk = P.build(keys_lane({"id": "e", "type": "ep", "dx7_bank": str(f), "dx7_patch": 1, "params": {"bank": "c", "patch": 1}}),
+                  KCAT, KTABLE)["tracks"][0]["blocks"][-1]
+    assert blk["midi"] == [syx] and blk["params"] == []
+    with pytest.raises(ValueError):
+        K.dx7_voice_sysex(b"\x00" * 4104, 0)
+
+
+def test_l_etat_de_vital_devient_un_preset_vst3(tmp_path, monkeypatch):
+    import base64
+    comp = b"VstW" + bytes(range(64))
+    (tmp_path / "x.vital.b64").write_text(base64.b64encode(b"\x00" * 8 + comp + b"\x00" * 8).decode())
+    plan = P.build(keys_lane({"id": "v 1", "type": "vital", "vital_chunk": "x.vital.b64", "params": {"preset": "P", "vol": 0.5}}),
+                   KCAT, KTABLE)
+    blk = plan["tracks"][0]["blocks"][-1]
+    assert blk["preset"] == {"chunk": "x.vital.b64", "vendor": "V", "name": "Vital", "uid": "ABABABABABABABABABABABABABABABAB"}
+    assert [p["pid"] for p in blk["params"]] == ["vol"]         # `preset` n'est pas un port : il ne part ni ne se refuse
+    monkeypatch.setattr(A, "preset_dir", lambda vendor, name: str(tmp_path / vendor / name))
+    A.write_presets(plan, chunk_dir=str(tmp_path))
+    out = blk["preset"]
+    assert out["uri"].startswith("VST3-S:ABABABABABABABABABABABABABABABAB:golem-v") and len(out["sig"]) == 16
+    data = (tmp_path / "V" / "Vital" / (out["uri"].rsplit(":", 1)[1] + ".vstpreset")).read_bytes()
+    assert data[:4] == b"VST3" and data[8:40] == b"ABABABABABABABABABABABABABABABAB" and data[48:48 + len(comp)] == comp and b"List" in data[-28:]
+    # un état illisible est dit et retiré : le synthé garde son son par défaut
+    bad = P.build(keys_lane({"id": "v", "type": "vital", "vital_chunk": "absent.b64", "params": {}}), KCAT, KTABLE)
+    A.write_presets(bad, chunk_dir=str(tmp_path))
+    assert "preset" not in bad["tracks"][0]["blocks"][-1]
+
+
+def test_les_pads_sont_un_kit_sfz(tmp_path):
+    pads = {"id": "pd", "type": "pads", "params": {"kit": "k"}, "kit_pads": [
+        {"note": 36, "file": "/s/kick.wav", "mode": "oneshot", "level": 0}, {"note": 38, "file": "/s/sn.wav", "mode": "gate", "level": -3},
+        {"note": 40, "file": "/s/lp.wav", "mode": "toggle", "level": 0}]}
+    plan = P.build(keys_lane(pads, midi_ch={"keys": 1, "pads": 10}, role="keys-pads"), KCAT, KTABLE)
+    tr = plan["tracks"][0]
+    assert tr["midi"]["channel"] == 10                          # un kit de pads seul n'écoute que le canal des pads
+    text = tr["blocks"][0]["write"]["text"]
+    assert "<region> sample=/s/kick.wav key=36 volume=0 loop_mode=one_shot" in text
+    assert "<region> sample=/s/sn.wav key=38 volume=-3\n" in text
+    assert [s["why"] for s in plan["skipped"] if s.get("id")] == ["pad 40: toggle plays as a one-shot on this engine"]
+    A.write_content(plan, "patch:x", out_dir=str(tmp_path))
+    path = tr["blocks"][0]["files"]["urn:sfizz:sfzfile"]
+    assert open(path).read() == text and "write" not in tr["blocks"][0]
+
+
+def test_une_lane_a_deux_instruments_est_depliee():
+    organ = {"id": "o", "type": "organ", "params": {}}
+    pads = {"id": "pd", "type": "pads", "params": {}, "kit_pads": []}
+    plan = P.build(keys_lane(organ, pads, {"id": "c", "type": "comp"}, midi_ch={"keys": 1, "pads": 10}, role="keys-pads"),
+                   KCAT, KTABLE)
+    tr = {t["name"]: t for t in plan["tracks"]}
+    assert list(tr) == ["G:k#merge", "G:k/o", "G:k/pd"]
+    merge = tr["G:k#merge"]
+    assert merge["kind"] == "bus" and merge["from"] == ["G:k/o", "G:k/pd"] and merge["out"] == [1, 2]
+    assert merge["gain_db"] == -2 and merge["mixer"] == "in3" and [b["id"] for b in merge["blocks"]] == ["c"]
+    assert tr["G:k/o"]["kind"] == "midi" and tr["G:k/o"]["midi"]["channel"] == 1 and tr["G:k/o"]["out"] is None
+    assert [b["id"] for b in tr["G:k/o"]["blocks"]] == ["o~zone", "o~arp", "o"]
+    assert tr["G:k/pd"]["midi"]["channel"] == 10
+    # un seul instrument : la lane reste une piste, sur le canal des touches
+    one = P.build(keys_lane(organ, {"id": "c", "type": "comp"}, midi_ch={"keys": 1, "pads": 10}, role="keys-pads"), KCAT, KTABLE)
+    assert [t["name"] for t in one["tracks"]] == ["G:k"] and one["tracks"][0]["midi"]["channel"] == 1
+
+
+def test_un_bloc_de_service_joue_quand_sa_fonction_est_declaree_et_un_bloc_midi_toujours(monkeypatch):
+    eng = A.ArdourEngine(link=object())
+    caps = {"recording": "yes", "looper": "no", "standards": "planned"}
+    monkeypatch.setattr(eng, "descriptor", lambda: {"name": "Golem Engine", "capabilities": caps})
+    assert eng.plays("rec") is True                      # pas de plugin dans la table : sa fonction le porte
+    assert eng.plays("looper") is False and eng.plays("standard") is False
+    assert eng.plays("whammy-dt") is True                # joué par le bridge (MIDI matériel) : sur tous les moteurs
+    assert eng.plays("amp-nam") is True and eng.plays("stretch") is False
+    blk, skipped = P.plan_block({"id": "w", "type": "whammy-dt"}, {"whammy-dt": {"type": "whammy-dt", "engine": "midi"}}, TABLE)
+    assert blk is None and skipped == []                 # rien à poser dans le moteur, et rien à signaler
+
+
+def test_la_table_de_boucles_dit_quelle_entree_nourrit_quelle_paire():
+    rig = {"id": "p", "paths": [{"id": "guitar-1", "input": 2, "tracks": [{"role": "main", "name": "GoleM:p", "input": 2, "blocks": [], "out": 1}]}]}
+    assert "looper" not in P.build(rig, catalog={}, table={})                       # pas de looper dans le preset
+    rig["looper"] = {"enabled": True, "loops": [{"sw": 1, "src": "guitar-1"}, {"sw": 2, "src": "guitar-1"},
+                                                {"sw": 3, "src": "k"}, {"sw": 4, "src": "keys-9"}, {"sw": 5, "src": "1"}]}
+    # l'ordre des lignes fait la paire ; plusieurs lignes peuvent écouter la même lane ; une lane absente : None ; 4 au plus
+    assert P.build(rig, catalog={}, table={})["looper"] == {"loops": [{"input": 2}, {"input": 2}, {"input": 3}, {"input": None}]}
+    rig["looper"] = {"enabled": True}                                               # sans table : le défaut 1 / 2 / k
+    assert P.build(rig, catalog={}, table={})["looper"] == {"loops": [{"input": 1}, {"input": 2}, {"input": 3}]}
+    rig["looper"] = None
+    assert "looper" not in P.build(rig, catalog={}, table={})
+
+
+def test_un_bloc_vst_host_est_planifie_par_le_nom_de_son_plugin():
+    b = {"id": "h1", "type": "vst-host", "plugin": "VST3: Fancy Verb (Acme)", "foot": 7, "bypass": True,
+         "knobs": [{"i": 3, "name": "Decay"}, {"i": 8, "name": "Mix"}, {"i": "x"}, {"i": True}],
+         "params": {"p3": 0.4, "p8": 7, "p9": 0.2, "_vst_chunk": "AAAA"}}
+    blk, skipped = P.plan_block(b, {}, {})
+    assert blk["plugin"] == {"host": "VST3: Fancy Verb (Acme)"} and blk["enabled"] is False and blk["foot"] == 7
+    # les potards CHOISIS seulement, par rang et par nom, en normalisé borné ; les autres clés ne sont pas des potards
+    assert blk["params"] == [{"pid": "p3", "index": 3, "name": "Decay", "norm": 0.4}, {"pid": "p8", "index": 8, "name": "Mix", "norm": 1.0}]
+    assert blk["known"] == [{"pid": "p3", "index": 3, "name": "Decay"}, {"pid": "p8", "index": 8, "name": "Mix"}]
+    assert skipped == [] and blk["host_state"] == {"chunk": "AAAA", "plugin": "VST3: Fancy Verb (Acme)"}   # son état part avec lui
+    blk, skipped = P.plan_block({"id": "h2", "type": "vst-host", "plugin": "CLAP: Thing (Acme)"}, {}, {})
+    assert blk is None and skipped[0]["why"] == "only VST3 plugins are hosted on the Golem Engine"
+    assert P.plan_block({"id": "h3", "type": "vst-host"}, {}, {})[1][0]["why"] == "no plugin chosen"
+
+
+# ── le banc du premier usage sur le Golem Engine (trial_engine) : le JUGE, sur un faux moteur ────────────────────────
+def _fake_engine(tmp_path, body):
+    """Un faux run.sh : il dit « démarré », attend la commande, puis joue `body` (bash ; $OUT = le fichier de résultat)."""
+    sh = tmp_path / "run.sh"
+    sh.write_text("#!/bin/bash\nROOT=$1\necho 'x démarré. surveille' > $ROOT/presets/.watch.log\n"
+                  "while [ ! -f $ROOT/presets/.command.json ]; do sleep 0.05; done\nOUT=$ROOT/presets/.trial.json\n" + body + "\n")
+    return str(sh)
+
+
+@pytest.mark.parametrize("body, want", [
+    ("echo '{\"done\":true,\"stall_ms\":12,\"noise_ms\":3}' > $OUT; sleep 5", (True, None, {"stall_ms": 9, "engine": "golem-engine"})),
+    ("echo '{\"done\":true,\"stall_ms\":420,\"noise_ms\":5}' > $OUT; sleep 5",
+     (False, "stopped the audio engine for 415 ms when switched on or off", {"stall_ms": 415, "engine": "golem-engine"})),
+    ("echo '{\"step\":\"on 2\"}' > $OUT; exit 3", (False, "crashed the audio engine", {"at": "on 2", "engine": "golem-engine"})),
+    ("echo '{\"step\":\"off 1\"}' > $OUT; sleep 30", (False, "froze the audio engine", {"at": "off 1", "engine": "golem-engine"})),
+])
+def test_le_banc_du_golem_engine_juge_gel_plantage_et_trou(tmp_path, monkeypatch, body, want):
+    from bridge import plugin_trial as T
+    monkeypatch.setattr(T, "FROZEN_S", 0.6)
+    assert T.trial_engine("VST3: X (Y)", script=_fake_engine(tmp_path, body)) == want
+
+
+def test_le_banc_du_golem_engine_ne_juge_pas_un_plugin_introuvable(tmp_path):
+    from bridge import plugin_trial as T
+    with pytest.raises(RuntimeError, match="plugin not found"):
+        T.trial_engine("VST3: X (Y)", script=_fake_engine(tmp_path, "echo '{\"error\":\"plugin not found\"}' > $OUT; sleep 5"))
+
+
+def test_un_verdict_par_moteur(tmp_path, monkeypatch):
+    from bridge import engine, plugin_trial as T
+    monkeypatch.setattr(T, "TRIALS", str(tmp_path / "vst-trials.json"))
+    monkeypatch.setattr(T.sys, "platform", "linux")
+    monkeypatch.delenv("GOLEM_VST_TRIAL", raising=False)
+    T._record("VST3: X (Y)", True)                                       # essayé sous le moteur du moment (pas Ardour)
+    assert T.verdict("VST3: X (Y)")["ok"] is True and not T.pending("VST3: X (Y)")
+    prev = engine.use(A.ArdourEngine(link=object()))
+    try:
+        assert T.pending("VST3: X (Y)") is True                          # le verdict de REAPER ne vaut pas ici
+        T._record("VST3: X (Y)", False, "froze the audio engine")
+        assert T.failed("VST3: X (Y)") == "froze the audio engine"
+    finally:
+        engine.use(prev)
+    assert T.failed("VST3: X (Y)") is None                               # et celui d'ici ne refuse rien sous REAPER
+    assert sorted(json.loads((tmp_path / "vst-trials.json").read_text())) == ["VST3: X (Y)", "golem-engine|VST3: X (Y)"]
+
+
+def test_une_capture_pilotable_est_planifiee_pour_le_lecteur_lv2(tmp_path):
+    import base64
+    table = P.load_table()
+    chunk = tmp_path / "abc.b64"
+    chunk.write_bytes(base64.b64encode(json.dumps({"bundle": {"format": "golem-capture-1"}}).encode()))
+    b = {"id": "cap", "type": "capture-module", "capture_chunk": str(chunk), "capture_values": [0.25, 1.0, 7], "foot": 6}
+    blk, skipped = P.plan_block(b, {}, table)
+    assert skipped == [] and blk["plugin"] == {"lv2": "https://golem.fm/lv2/capture"} and blk["foot"] == 6
+    # les valeurs normalisées, dans l'ordre des contrôles de la capture, bornées, sur « Control NN »
+    assert blk["params"] == [{"pid": "c0", "label": "Control 01", "value": 0.25}, {"pid": "c1", "label": "Control 02", "value": 1.0},
+                             {"pid": "c2", "label": "Control 03", "value": 1.0}]
+    plan = {"tracks": [{"blocks": [blk]}]}
+    A.write_captures(plan)                                              # l'adaptateur : le JSON que lit le LV2
+    out = str(tmp_path / "abc.json")
+    assert blk["files"] == {"https://golem.fm/lv2/capture#bundle": out} and "capture" not in blk
+    assert json.loads(open(out).read()) == {"bundle": {"format": "golem-capture-1"}}
+    assert P.plan_block({"id": "x", "type": "capture-module"}, {}, table)[1][0]["why"] == "capture file missing"
+
+
+def test_l_etat_natif_d_un_plugin_va_et_vient_au_format_du_patch(tmp_path, monkeypatch):
+    import base64
+    comp, ctrl = b"C" * 300, b"K" * 20
+    raw = A.reaper_vst3_chunk(comp, ctrl)
+    assert A.reaper_vst3_parts(raw) == (comp, ctrl) and A.reaper_vst3_parts(raw + b"x") is None and A.reaper_vst3_parts(b"abc") is None
+    uid = "ABCDEF0123456789ABCDEF0123456789"
+    assert A.read_vstpreset(A.vstpreset(uid, comp, ctrl)) == (uid, comp, ctrl)
+    assert A.read_vstpreset(A.vstpreset(uid, comp)) == (uid, comp, b"")
+    assert A._legal('Acme: FX/2 .') == "Acme_ FX_2"
+    # le plan : l'état écrit comme preset du plugin, là où le moteur le lira ; le bloc reçoit son uri
+    monkeypatch.setattr(A, "preset_dir", lambda vendor, name: str(tmp_path / vendor / name))
+    (tmp_path / "p").mkdir()
+    (tmp_path / "p" / ".vst-host-list.json").write_text(json.dumps({"plugins": [
+        {"name": "VST3: Fancy Verb (Acme)", "ident": uid, "vendor": "Acme", "pname": "Fancy Verb"}]}))
+    blk = {"id": "h1", "host_state": {"chunk": base64.b64encode(raw).decode(), "plugin": "VST3: Fancy Verb (Acme)"}}
+    A.write_host_states({"tracks": [{"blocks": [blk]}]}, presets_dir=str(tmp_path / "p"))
+    f = tmp_path / "Acme" / "Fancy Verb" / "golem-h1.vstpreset"
+    assert blk["preset"]["uri"] == f"VST3-S:{uid}:golem-h1" and "host_state" not in blk and A.read_vstpreset(f.read_bytes())[1:] == (comp, ctrl)
+    # la capture : le preset que le moteur vient d'écrire -> l'état du patch, et le fichier est retiré
+    (tmp_path / "Acme" / "Fancy Verb" / "golem-state-7.vstpreset").write_bytes(A.vstpreset(uid, b"NEW", b""))
+    chunk = A.host_state_chunk({"preset_label": "golem-state-7", "vendor": "Acme", "pname": "Fancy Verb"})
+    assert A.reaper_vst3_parts(base64.b64decode(chunk)) == (b"NEW", b"") and not (tmp_path / "Acme" / "Fancy Verb" / "golem-state-7.vstpreset").exists()
+    # un état qui n'est pas celui d'un VST3, un plugin inconnu de l'inventaire : pas de preset, le plugin garde son défaut
+    blk = {"id": "h2", "host_state": {"chunk": base64.b64encode(b"junk").decode(), "plugin": "VST3: Fancy Verb (Acme)"}}
+    A.write_host_states({"tracks": [{"blocks": [blk]}]}, presets_dir=str(tmp_path / "p"))
+    assert "preset" not in blk

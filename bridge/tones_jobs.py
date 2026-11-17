@@ -483,7 +483,7 @@ def _preset_delete(job):
 
 
 def _patch_preview(job):
-    """`{action:"patch-preview", sha, role, patch_id, ref?}` (golem.fm, Store : pas de publication sans
+    """`{action:"patch-preview", sha, role, patch_id, ref?, scene?, max_s?}` (golem.fm, Store : pas de publication sans
     écoute enregistrée par le rack de l'auteur — décision 2026-09-15). Le blob = le document du
     patch, comme patch-try. Le rack construit le preset d'essai (une lane du rôle), le pose SOUS UN ID
     TEMPORAIRE dans presets/ (le moteur de preview charge par id), re-ampe la DI de référence du rôle
@@ -491,7 +491,10 @@ def _patch_preview(job):
     de l'eau, puis efface le preset temporaire et ses clips. Le moteur live est PRIS pendant le rendu
     (~45 s par scène) et REMIS après (reapply_sandbox) ; l'edit-buffer du Designer n'est jamais écrit.
     Ack {patch_id, di, instrument, fingerprint, scenes{id:{sha256,duration}}, missing[]}. Refus dits :
-    mode verrouillé/gig, prise en cours, rôle keys (rendu MIDI non supporté), DI de référence absente."""
+    mode verrouillé/gig, prise en cours, DI de référence absente, scène inconnue.
+    2026-11-17 (golem.fm, écrans « Hear it » et cartes de patch — décidé par le mainteneur) : `scene` ne rend QUE cette
+    scène ; `max_s` (3 à 30 s) coupe le clip en extrait ; un rôle MIDI (claviers, batterie) se rend par sa phrase MIDI
+    de référence (entrée « k »), comme « Listen » dans le Designer."""
     from . import preview as preview_mod
     from .state import state
     from .store import _write_json_atomic, _safe_id
@@ -504,9 +507,14 @@ def _patch_preview(job):
     patch_id = P._safe_id(str(job.get("patch_id") or job.get("name") or "patch"))
     pid = _safe_id(f"preview-{patch_id}")
     preset, role, lane, scenes, settled, missing = _trial_preset(job, ".patch-preview.tmp", pid=pid)
-    if lane.get("midi"):
-        raise RuntimeError("keys preview needs MIDI rendering — not supported yet")
-    in_key = str(lane.get("in_sel") or "1")
+    in_key = "k" if lane.get("midi") else str(lane.get("in_sel") or "1")
+    only = str(job["scene"]) if job.get("scene") not in (None, "") else None
+    max_s = None
+    if job.get("max_s") not in (None, ""):
+        try:
+            max_s = min(30.0, max(3.0, float(job["max_s"])))
+        except (TypeError, ValueError):
+            raise RuntimeError("max_s must be a number of seconds") from None
     ppath = os.path.join(C.PRESETS_DIR, f"{pid}.json")
     _write_json_atomic(ppath, preset)
     jid = job_id(job)
@@ -521,7 +529,8 @@ def _patch_preview(job):
             with __import__("contextlib").suppress(Exception):
                 _req("POST", f"/api/ext/tones/jobs/{jid}/progress", body={"scene": sc, "clip": one})
     try:
-        preview_mod.generate(pid, next(_pv_seq), on_scene=on_scene, in_key=in_key, ref=job.get("ref"))
+        preview_mod.generate(pid, next(_pv_seq), on_scene=on_scene, in_key=in_key, ref=job.get("ref"),
+                             only=only, max_s=max_s)
         st = preview_mod.status()
         if st.get("phase") != "done":
             raise RuntimeError(st.get("error") or "generation failed")
@@ -541,7 +550,7 @@ def _patch_preview(job):
     di_name = ((preview_mod._di_index().get(pv.get("ref") or "") or {}).get("name")) or None
     return {"_log": f"patch '{patch_id}' previewed ({len(clips)} scene·s, DI {pv.get('ref')})",
             "patch_id": patch_id, "di": pv.get("ref"), "di_name": di_name, "instrument": pv.get("instrument") or role,
-            "fingerprint": pv.get("fingerprint"), "scenes": clips,
+            "fingerprint": pv.get("fingerprint"), "scenes": clips, "max_s": max_s,
             "missing": missing, "matched": settled["matched"], "installed": settled["installed"],
             "suggested": settled.get("suggested", [])}
 

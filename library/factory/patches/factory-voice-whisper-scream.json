@@ -105,8 +105,9 @@
      "id": "st-voice-1-A",
      "name": "Whisper",
      "blocks": {
-      "scream": false,
-      "formant": false
+      "dly": false,
+      "formant": false,
+      "scream": false
      },
      "params": {
       "plate": {
@@ -119,9 +120,9 @@
      "id": "st-voice-1-B",
      "name": "Dream",
      "blocks": {
-      "scream": false,
+      "dly": true,
       "formant": true,
-      "dly": true
+      "scream": false
      },
      "params": {
       "plate": {
@@ -134,8 +135,9 @@
      "id": "st-voice-1-C",
      "name": "Scream",
      "blocks": {
-      "scream": true,
-      "formant": false
+      "dly": false,
+      "formant": false,
+      "scream": true
      },
      "params": {},
      "branches": {}
@@ -144,8 +146,9 @@
      "id": "st-voice-1-D",
      "name": "Low Growl",
      "blocks": {
-      "scream": true,
-      "formant": true
+      "dly": false,
+      "formant": true,
+      "scream": true
      },
      "params": {
       "formant": {
@@ -163,8 +166,9 @@
    "id": "A",
    "name": "Whisper",
    "blocks": {
-    "scream": false,
-    "formant": false
+    "dly": false,
+    "formant": false,
+    "scream": false
    },
    "lanes": {
     "voice-1": {
@@ -181,9 +185,9 @@
    "id": "B",
    "name": "Dream",
    "blocks": {
-    "scream": false,
+    "dly": true,
     "formant": true,
-    "dly": true
+    "scream": false
    },
    "lanes": {
     "voice-1": {
@@ -200,8 +204,9 @@
    "id": "C",
    "name": "Scream",
    "blocks": {
-    "scream": true,
-    "formant": false
+    "dly": false,
+    "formant": false,
+    "scream": true
    },
    "lanes": {
     "voice-1": {
@@ -215,8 +220,9 @@
    "id": "D",
    "name": "Low Growl",
    "blocks": {
-    "scream": true,
-    "formant": true
+    "dly": false,
+    "formant": true,
+    "scream": true
    },
    "lanes": {
     "voice-1": {
@@ -367,7 +373,7 @@
   "D": "scanner",
   "6": "sheen",
   "7": "glitch",
-  "8": "monster",
+  "8": "glitch",
   "9": "rain",
   "10": "vu"
  },
@@ -396,5 +402,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"vu\", \"6\": \"sheen\", \"7\": \"glitch\", \"8\": \"monster\", \"9\": \"rain\", \"A\": \"snow\", \"B\": \"pulse\", \"C\": \"fire\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 180, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 7, \"id\": \"formant\", \"params\": {\"formant\": -3, \"growl\": 0, \"mix\": 60}, \"type\": \"formant\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"drive\": 60, \"mix\": 90, \"morph\": 35, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 2, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"7\": \"#5a189a\", \"8\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 180, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 7, \"id\": \"formant\", \"params\": {\"formant\": -3, \"growl\": 0, \"mix\": 60}, \"type\": \"formant\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"drive\": 60, \"mix\": 90, \"morph\": 35, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 2, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Whisper & Scream\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"formant\": false, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Whisper\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Dream\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"formant\": false, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Scream\", \"params\": {}}, {\"blocks\": {\"formant\": true, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Low Growl\", \"params\": {\"formant\": {\"formant\": -5, \"growl\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"formant\": false, \"scream\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Whisper\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"scream\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Dream\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"formant\": false, \"scream\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Scream\"}, {\"blocks\": {\"formant\": true, \"scream\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Low Growl\", \"params\": {\"formant\": {\"formant\": -5, \"growl\": 40}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"vu\", \"6\": \"sheen\", \"7\": \"glitch\", \"8\": \"glitch\", \"9\": \"rain\", \"A\": \"snow\", \"B\": \"pulse\", \"C\": \"fire\", \"D\": \"scanner\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 180, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 7, \"id\": \"formant\", \"params\": {\"formant\": -3, \"growl\": 0, \"mix\": 60}, \"type\": \"formant\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"drive\": 60, \"mix\": 90, \"morph\": 35, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 2, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"7\": \"#5a189a\", \"8\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 180, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"foot\": 7, \"id\": \"formant\", \"params\": {\"formant\": -3, \"growl\": 0, \"mix\": 60}, \"type\": \"formant\"}, {\"foot\": 6, \"id\": \"scream\", \"params\": {\"drive\": 60, \"mix\": 90, \"morph\": 35, \"object\": \"None\"}, \"type\": \"morph\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 4, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 2, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 2, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Whisper & Scream\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"formant\": false, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Whisper\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"scream\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Dream\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"dly\": false, \"formant\": false, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Scream\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"formant\": true, \"scream\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Low Growl\", \"params\": {\"formant\": {\"formant\": -5, \"growl\": 40}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"formant\": false, \"scream\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Whisper\", \"params\": {\"plate\": {\"mix\": 26}}}, {\"blocks\": {\"dly\": true, \"formant\": true, \"scream\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Dream\", \"params\": {\"plate\": {\"mix\": 30}}}, {\"blocks\": {\"dly\": false, \"formant\": false, \"scream\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-C\"}}, \"level\": 1, \"name\": \"Scream\"}, {\"blocks\": {\"dly\": false, \"formant\": true, \"scream\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Low Growl\", \"params\": {\"formant\": {\"formant\": -5, \"growl\": 40}}}]}"
 }

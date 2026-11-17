@@ -31,6 +31,8 @@ fi
 . "$HERE/provision/lib-engine.sh"
 ENGINE="$(golem_engine "$HERE")"
 if [ "$ENGINE" = ardour ]; then
+  # le lecteur LV2 des captures pilotables voyage avec golem ; posé avant que le moteur ne scanne ses plugins
+  python3 -c 'from provision.capture_player import install_lv2_bundled; install_lv2_bundled()' 2>/dev/null || true
   start_golem_engine "$HERE" || true
   IP=$(hostname -I 2>/dev/null | awk '{print $1}')
   echo "✓ prêt → http://localhost:${PORT}/app/   ${IP:+· réseau http://${IP}:${PORT}/app/}"

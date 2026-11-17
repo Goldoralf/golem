@@ -5,24 +5,28 @@
 // le rail fait leur travail. La même grammaire que le navigateur de patches (designer-browse.js).
 import { html, useState, useEffect, cls, esc, genreLabel } from './lib.js';
 import { SCENE_IDS } from './designer-model.js';
-import { railLists, itemsFor, openSel, paginate, pageOfItem, matches } from './browser-model.mjs';
+import { railLists, itemsFor, openSel, paginate, pageOfItem, matches, readBrowse, writeBrowse, validSel } from './browser-model.mjs';
 import { useSetlists, SetlistRail, BrowseRow, Pager, FeatureMenu, FeatIcons, FEAT, hasFeat } from './browser-rail.js';
 
 export function PresetBrowser({ presets: all, current, onLoad, onClose, onSwitch }) {
-  const [feat, setFeat] = useState('any');           // le menu « With » (browser-rail.js)
+  const [feat, setFeat0] = useState(() => readBrowse('presets').feat || 'any');   // le menu « With », retenu
+  const setFeat = f => { setFeat0(f); writeBrowse('presets', { feat: f }); };
   const presets = all.filter(pr => hasFeat(pr, feat));
   const sl = useSetlists();
   const active = sl && sl.active;
   const lists = sl ? railLists(sl.setlists, 'presets', active) : [];
-  const [sel, setSel] = useState(null);                  // null = pas encore ouvert (setlists en route)
+  const [sel, setSel0] = useState(null);                 // null = pas encore ouvert (setlists en route)
+  const setSel = s => { setSel0(s); writeBrowse('presets', { sel: s }); };
   const [q, setQ] = useState('');
   const [page, setPage] = useState(0);
   const SC5 = SCENE_IDS.slice(0, 5);
-  // à l'ouverture : la setlist qui contient le preset joué (celle du pied d'abord), à SA page
+  // à l'ouverture : la setlist choisie la dernière fois si elle a quelque chose pour ce filtre, sinon celle qui
+  // contient le preset joué (celle du pied d'abord) — à SA page
   useEffect(() => {
     if (!sl || sel !== null) return;
-    const s = openSel(lists, current);
-    setSel(s); setPage(pageOfItem(itemsFor(s, presets, lists), current));
+    const kept = validSel(readBrowse('presets').sel, lists);
+    const s = kept && (kept === 'all' || itemsFor(kept, presets, lists).length) ? kept : openSel(lists, current);
+    setSel0(s); setPage(pageOfItem(itemsFor(s, presets, lists), current));
   }, [sl]);
   const searching = q.trim() !== '';
   const view = searching ? 'all' : (sel || 'all');       // la recherche porte toujours sur TOUT

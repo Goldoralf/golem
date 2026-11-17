@@ -17,205 +17,209 @@
    "name": "Glass Ambient",
    "midi": false,
    "chain": {
-    "pre": [
+    "chain": [
      {
       "id": "gate",
-      "type": "gate",
       "params": {
-       "thresh": -60,
-       "release": 120
-      }
+       "release": 120,
+       "thresh": -60
+      },
+      "type": "gate"
      },
      {
+      "id": "fuzz-a9to",
+      "params": {
+       "bass_keep": 0,
+       "bias": 0,
+       "buffer": false,
+       "bypass": false,
+       "fuzz": 70,
+       "guitar_vol": 100,
+       "input": 0,
+       "leakage": 100,
+       "level": 0,
+       "mids": 0,
+       "mix": 100,
+       "model": "Si Four",
+       "pickup": "Single Coil",
+       "sag": 0,
+       "stack": "Classic",
+       "temp": 25,
+       "tone": 0,
+       "voltage": 18
+      },
+      "type": "fuzz"
+     },
+     {
+      "foot": 6,
       "id": "ds1",
-      "type": "pedal-nam",
       "label": "Boss DS-1 Distortion",
-      "ref": "2508",
       "model": "419260",
       "params": {
        "input": 0,
        "output": -3
       },
-      "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+      "ref": "2508",
+      "type": "pedal-nam"
+     },
      {
       "id": "twin",
-      "type": "amp",
       "label": "Fender Twin Reverb",
-      "ref": "43620",
       "model": "382265",
       "params": {
        "input": -3,
        "output": 0
-      }
+      },
+      "ref": "43620",
+      "type": "amp"
      },
      {
+      "foot": 7,
       "id": "trem",
-      "type": "tremolo",
       "params": {
-       "rate": 5.5,
        "depth": 0.6,
-       "wave": "Sine",
-       "model": "Optical"
+       "model": "Optical",
+       "rate": 5.5,
+       "wave": "Sine"
       },
-      "foot": 7
-     },
-     {
-      "id": "grain",
-      "type": "granular",
-      "params": {
-       "grains": 16,
-       "size": 180,
-       "mix": 40,
-       "mode": "Cloud"
-      },
-      "foot": 8
+      "type": "tremolo"
      },
      {
       "id": "ring",
-      "type": "ringmod",
       "params": {
        "carrier": "Free",
        "freq": 0.35,
        "mix": 0.5
-      }
+      },
+      "type": "ringmod"
      },
      {
       "id": "dly",
-      "type": "delay",
       "params": {
-       "model": "Tape",
-       "time": "1/8•",
        "feedback": 40,
-       "mix": 18
-      }
+       "mix": 18,
+       "model": "Tape",
+       "time": "1/8•"
+      },
+      "type": "delay"
      },
      {
       "id": "verb",
-      "type": "reverb",
       "params": {
        "algo": "Cloud",
-       "mix": 26,
        "decay": 3.5,
-       "size": 44,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 26,
+       "size": 44
+      },
+      "type": "reverb"
      }
     ]
    },
    "states": [
     {
-     "id": "st-guitar-1-A",
-     "name": "Glass Clean",
      "blocks": {
       "ds1": false,
-      "trem": true,
-      "grain": false,
-      "ring": false
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": true
      },
-     "params": {},
-     "branches": {}
+     "branches": {},
+     "id": "st-guitar-1-A",
+     "name": "Glass Clean",
+     "params": {}
     },
     {
-     "id": "st-guitar-1-B",
-     "name": "Crunch Burst",
      "blocks": {
       "ds1": true,
-      "trem": false,
-      "grain": false,
-      "ring": false
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": false
      },
+     "branches": {},
+     "id": "st-guitar-1-B",
+     "name": "Crunch Burst",
      "params": {
       "verb": {
        "mix": 12
       }
-     },
-     "branches": {}
+     }
     },
     {
-     "id": "st-guitar-1-C",
-     "name": "Frozen Pad",
      "blocks": {
       "ds1": false,
-      "trem": false,
-      "grain": true,
-      "ring": false
+      "ring": false,
+      "trem": false
      },
+     "branches": {},
+     "id": "st-guitar-1-C",
+     "name": "Frozen Pad",
      "params": {
-      "grain": {
-       "mix": 70
-      },
       "verb": {
        "mix": 34
       }
-     },
-     "branches": {}
+     }
     },
     {
+     "blocks": {
+      "ds1": false,
+      "ring": true,
+      "trem": false
+     },
+     "branches": {},
      "id": "st-guitar-1-D",
      "name": "Ring Glitch",
-     "blocks": {
-      "ds1": false,
-      "trem": false,
-      "grain": false,
-      "ring": true
-     },
-     "params": {},
-     "branches": {}
+     "params": {}
     },
     {
+     "blocks": {
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": false
+     },
+     "branches": {},
      "id": "st-guitar-1-E",
      "name": "Tape Echo",
-     "blocks": {
-      "ds1": false,
-      "trem": false,
-      "grain": false,
-      "ring": false
-     },
      "params": {
       "dly": {
        "feedback": 55,
        "mix": 26
       }
-     },
-     "branches": {}
+     }
     }
    ]
   }
  ],
  "scenes": [
   {
-   "id": "A",
-   "name": "Glass Clean",
    "blocks": {
     "ds1": false,
-    "trem": true,
-    "grain": false,
-    "ring": false
+    "fuzz-a9to": false,
+    "ring": false,
+    "trem": true
    },
+   "id": "A",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-A"
     }
-   }
+   },
+   "name": "Glass Clean"
   },
   {
-   "id": "B",
-   "name": "Crunch Burst",
    "blocks": {
     "ds1": true,
-    "trem": false,
-    "grain": false,
-    "ring": false
+    "fuzz-a9to": false,
+    "ring": false,
+    "trem": false
    },
+   "id": "B",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-B"
     }
    },
+   "name": "Crunch Burst",
    "params": {
     "verb": {
      "mix": 12
@@ -223,65 +227,59 @@
    }
   },
   {
-   "id": "C",
-   "name": "Frozen Pad",
    "blocks": {
     "ds1": false,
-    "trem": false,
-    "grain": true,
-    "ring": false
+    "ring": false,
+    "trem": false
    },
+   "id": "C",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-C"
     }
    },
+   "name": "Frozen Pad",
    "params": {
-    "grain": {
-     "mix": 70
-    },
     "verb": {
      "mix": 34
     }
    }
   },
   {
-   "id": "D",
-   "name": "Ring Glitch",
    "blocks": {
     "ds1": false,
-    "trem": false,
-    "grain": false,
-    "ring": true
+    "ring": true,
+    "trem": false
    },
+   "id": "D",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-D"
     }
-   }
+   },
+   "name": "Ring Glitch"
   },
   {
-   "id": "E",
-   "name": "Tape Echo",
    "blocks": {
-    "ds1": false,
-    "trem": false,
-    "grain": false,
-    "ring": false
+    "fuzz-a9to": false,
+    "ring": false,
+    "trem": false
    },
+   "id": "E",
    "lanes": {
     "guitar-1": {
-     "state": "st-guitar-1-E",
-     "level": 1
+     "level": 1,
+     "state": "st-guitar-1-E"
     }
    },
+   "level": 1,
+   "name": "Tape Echo",
    "params": {
     "dly": {
      "feedback": 55,
      "mix": 26
     }
-   },
-   "level": 1
+   }
   }
  ],
  "config": {
@@ -289,16 +287,16 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
      "foot": 10,
+     "id": "drums",
      "params": {
+      "fills": [],
+      "kit": "drums-black-pearl",
       "patterns": [
        "library/grooves/golem-lofi.mid"
-      ],
-      "fills": [],
-      "kit": "drums-black-pearl"
-     }
+      ]
+     },
+     "type": "drums"
     }
    ]
   },
@@ -314,92 +312,102 @@
  },
  "bpm": 84,
  "chain": {
-  "pre": [
+  "chain": [
    {
     "id": "gate",
-    "type": "gate",
     "params": {
-     "thresh": -60,
-     "release": 120
-    }
+     "release": 120,
+     "thresh": -60
+    },
+    "type": "gate"
    },
    {
+    "id": "fuzz-a9to",
+    "params": {
+     "bass_keep": 0,
+     "bias": 0,
+     "buffer": false,
+     "bypass": false,
+     "fuzz": 70,
+     "guitar_vol": 100,
+     "input": 0,
+     "leakage": 100,
+     "level": 0,
+     "mids": 0,
+     "mix": 100,
+     "model": "Si Four",
+     "pickup": "Single Coil",
+     "sag": 0,
+     "stack": "Classic",
+     "temp": 25,
+     "tone": 0,
+     "voltage": 18
+    },
+    "type": "fuzz"
+   },
+   {
+    "foot": 6,
     "id": "ds1",
-    "type": "pedal-nam",
     "label": "Boss DS-1 Distortion",
-    "ref": "2508",
     "model": "419260",
     "params": {
      "input": 0,
      "output": -3
     },
-    "foot": 6
-   }
-  ],
-  "split": null,
-  "post": [
+    "ref": "2508",
+    "type": "pedal-nam"
+   },
    {
     "id": "twin",
-    "type": "amp",
     "label": "Fender Twin Reverb",
-    "ref": "43620",
     "model": "382265",
     "params": {
      "input": -3,
      "output": 0
-    }
+    },
+    "ref": "43620",
+    "type": "amp"
    },
    {
+    "foot": 7,
     "id": "trem",
-    "type": "tremolo",
     "params": {
-     "rate": 5.5,
      "depth": 0.6,
-     "wave": "Sine",
-     "model": "Optical"
+     "model": "Optical",
+     "rate": 5.5,
+     "wave": "Sine"
     },
-    "foot": 7
-   },
-   {
-    "id": "grain",
-    "type": "granular",
-    "params": {
-     "grains": 16,
-     "size": 180,
-     "mix": 40,
-     "mode": "Cloud"
-    },
-    "foot": 8
+    "type": "tremolo"
    },
    {
     "id": "ring",
-    "type": "ringmod",
     "params": {
      "carrier": "Free",
      "freq": 0.35,
      "mix": 0.5
-    }
+    },
+    "type": "ringmod"
    },
    {
     "id": "dly",
-    "type": "delay",
     "params": {
-     "model": "Tape",
-     "time": "1/8•",
      "feedback": 40,
-     "mix": 18
-    }
+     "mix": 18,
+     "model": "Tape",
+     "time": "1/8•"
+    },
+    "type": "delay"
    },
    {
     "id": "verb",
-    "type": "reverb",
     "params": {
      "algo": "Cloud",
-     "mix": 26,
      "decay": 3.5,
-     "size": 44,
-     "hicut": 7000
-    }
+     "hicut": 7000,
+     "mix": 26,
+     "size": 44
+    },
+    "type": "reverb"
    }
   ]
  },
@@ -425,7 +433,6 @@
   "E": "#118ab2",
   "6": "#118ab2",
   "7": "#118ab2",
-  "8": "#118ab2",
   "9": "#118ab2",
   "10": "#118ab2"
  },
@@ -434,10 +441,9 @@
   "B": "scanner",
   "C": "sheen",
   "D": "glitch",
-  "E": "monster",
+  "E": "ember",
   "6": "rain",
   "7": "vu",
-  "8": "wave",
   "9": "heartbeat",
   "10": "lightning"
  },
@@ -492,5 +498,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"6\": \"rain\", \"7\": \"vu\", \"8\": \"wave\", \"9\": \"heartbeat\", \"A\": \"fire\", \"B\": \"scanner\", \"C\": \"sheen\", \"D\": \"glitch\", \"E\": \"monster\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"post\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"foot\": 7, \"id\": \"trem\", \"params\": {\"depth\": 0.6, \"model\": \"Optical\", \"rate\": 5.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 8, \"id\": \"grain\", \"params\": {\"grains\": 16, \"mix\": 40, \"mode\": \"Cloud\", \"size\": 180}, \"type\": \"granular\"}, {\"id\": \"ring\", \"params\": {\"carrier\": \"Free\", \"freq\": 0.35, \"mix\": 0.5}, \"type\": \"ringmod\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Tape\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419260\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}], \"split\": null}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"8\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\", \"E\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"foot\": 7, \"id\": \"trem\", \"params\": {\"depth\": 0.6, \"model\": \"Optical\", \"rate\": 5.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 8, \"id\": \"grain\", \"params\": {\"grains\": 16, \"mix\": 40, \"mode\": \"Cloud\", \"size\": 180}, \"type\": \"granular\"}, {\"id\": \"ring\", \"params\": {\"carrier\": \"Free\", \"freq\": 0.35, \"mix\": 0.5}, \"type\": \"ringmod\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Tape\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419260\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Glass Ambient\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": false, \"trem\": true}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Glass Clean\", \"params\": {}}, {\"blocks\": {\"ds1\": true, \"grain\": false, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Crunch Burst\", \"params\": {\"verb\": {\"mix\": 12}}}, {\"blocks\": {\"ds1\": false, \"grain\": true, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Frozen Pad\", \"params\": {\"grain\": {\"mix\": 70}, \"verb\": {\"mix\": 34}}}, {\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": true, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Ring Glitch\", \"params\": {}}, {\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Tape Echo\", \"params\": {\"dly\": {\"feedback\": 55, \"mix\": 26}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": false, \"trem\": true}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Glass Clean\"}, {\"blocks\": {\"ds1\": true, \"grain\": false, \"ring\": false, \"trem\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Crunch Burst\", \"params\": {\"verb\": {\"mix\": 12}}}, {\"blocks\": {\"ds1\": false, \"grain\": true, \"ring\": false, \"trem\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Frozen Pad\", \"params\": {\"grain\": {\"mix\": 70}, \"verb\": {\"mix\": 34}}}, {\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": true, \"trem\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Ring Glitch\"}, {\"blocks\": {\"ds1\": false, \"grain\": false, \"ring\": false, \"trem\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-E\"}}, \"level\": 1, \"name\": \"Tape Echo\", \"params\": {\"dly\": {\"feedback\": 55, \"mix\": 26}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"lightning\", \"6\": \"rain\", \"7\": \"vu\", \"9\": \"heartbeat\", \"A\": \"fire\", \"B\": \"scanner\", \"C\": \"sheen\", \"D\": \"glitch\", \"E\": \"ember\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"fuzz-a9to\", \"params\": {\"bass_keep\": 0, \"bias\": 0, \"buffer\": false, \"bypass\": false, \"fuzz\": 70, \"guitar_vol\": 100, \"input\": 0, \"leakage\": 100, \"level\": 0, \"mids\": 0, \"mix\": 100, \"model\": \"Si Four\", \"pickup\": \"Single Coil\", \"sag\": 0, \"stack\": \"Classic\", \"temp\": 25, \"tone\": 0, \"voltage\": 18}, \"type\": \"fuzz\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419260\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}, {\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"foot\": 7, \"id\": \"trem\", \"params\": {\"depth\": 0.6, \"model\": \"Optical\", \"rate\": 5.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"id\": \"ring\", \"params\": {\"carrier\": \"Free\", \"freq\": 0.35, \"mix\": 0.5}, \"type\": \"ringmod\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Tape\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\", \"E\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"fuzz-a9to\", \"params\": {\"bass_keep\": 0, \"bias\": 0, \"buffer\": false, \"bypass\": false, \"fuzz\": 70, \"guitar_vol\": 100, \"input\": 0, \"leakage\": 100, \"level\": 0, \"mids\": 0, \"mix\": 100, \"model\": \"Si Four\", \"pickup\": \"Single Coil\", \"sag\": 0, \"stack\": \"Classic\", \"temp\": 25, \"tone\": 0, \"voltage\": 18}, \"type\": \"fuzz\"}, {\"foot\": 6, \"id\": \"ds1\", \"label\": \"Boss DS-1 Distortion\", \"model\": \"419260\", \"params\": {\"input\": 0, \"output\": -3}, \"ref\": \"2508\", \"type\": \"pedal-nam\"}, {\"id\": \"twin\", \"label\": \"Fender Twin Reverb\", \"model\": \"382265\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"43620\", \"type\": \"amp\"}, {\"foot\": 7, \"id\": \"trem\", \"params\": {\"depth\": 0.6, \"model\": \"Optical\", \"rate\": 5.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"id\": \"ring\", \"params\": {\"carrier\": \"Free\", \"freq\": 0.35, \"mix\": 0.5}, \"type\": \"ringmod\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 40, \"mix\": 18, \"model\": \"Tape\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.5, \"hicut\": 7000, \"mix\": 26, \"size\": 44}, \"type\": \"reverb\"}]}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Glass Ambient\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"ds1\": false, \"fuzz-a9to\": false, \"ring\": false, \"trem\": true}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Glass Clean\", \"params\": {}}, {\"blocks\": {\"ds1\": true, \"fuzz-a9to\": false, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Crunch Burst\", \"params\": {\"verb\": {\"mix\": 12}}}, {\"blocks\": {\"ds1\": false, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Frozen Pad\", \"params\": {\"verb\": {\"mix\": 34}}}, {\"blocks\": {\"ds1\": false, \"ring\": true, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Ring Glitch\", \"params\": {}}, {\"blocks\": {\"fuzz-a9to\": false, \"ring\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Tape Echo\", \"params\": {\"dly\": {\"feedback\": 55, \"mix\": 26}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"ds1\": false, \"fuzz-a9to\": false, \"ring\": false, \"trem\": true}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Glass Clean\"}, {\"blocks\": {\"ds1\": true, \"fuzz-a9to\": false, \"ring\": false, \"trem\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Crunch Burst\", \"params\": {\"verb\": {\"mix\": 12}}}, {\"blocks\": {\"ds1\": false, \"ring\": false, \"trem\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Frozen Pad\", \"params\": {\"verb\": {\"mix\": 34}}}, {\"blocks\": {\"ds1\": false, \"ring\": true, \"trem\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Ring Glitch\"}, {\"blocks\": {\"fuzz-a9to\": false, \"ring\": false, \"trem\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 1, \"state\": \"st-guitar-1-E\"}}, \"level\": 1, \"name\": \"Tape Echo\", \"params\": {\"dly\": {\"feedback\": 55, \"mix\": 26}}}]}"
 }

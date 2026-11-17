@@ -1,0 +1,369 @@
+{
+ "anims": {
+  "10": "ember",
+  "6": "smoke",
+  "7": "vortex",
+  "8": "strobe",
+  "9": "stars",
+  "A": "rain",
+  "B": "vu",
+  "C": "wave",
+  "D": "heartbeat",
+  "E": "lightning"
+ },
+ "bpm": 140,
+ "chain": {
+  "post": [
+   {
+    "id": "geq",
+    "params": {
+     "amount": 100,
+     "auto_gain": false,
+     "g1": 0,
+     "g10": 0,
+     "g11": 0,
+     "g2": 0,
+     "g3": 0,
+     "g4": 2,
+     "g5": -4,
+     "g6": -5,
+     "g7": -2,
+     "g8": 0,
+     "g9": 2,
+     "gb_10k": 0,
+     "gb_120": 0,
+     "gb_400": 0,
+     "gb_4k5": 0,
+     "gb_50": 0,
+     "gb_500": 0,
+     "gb_800": 0,
+     "gt_100": 0,
+     "gt_1k6": 0,
+     "gt_200": 0,
+     "gt_3k2": 0,
+     "gt_400": 0,
+     "gt_6k4": 0,
+     "gt_800": 0,
+     "highcut": 22000,
+     "highcut_slope": "12 dB/oct",
+     "layout": "Octave 11",
+     "level": 0,
+     "lowcut": 10,
+     "lowcut_slope": "12 dB/oct"
+    },
+    "type": "eq-graphic"
+   },
+   {
+    "foot": 8,
+    "id": "chorus",
+    "params": {
+     "depth": 4,
+     "mix": 0.4,
+     "mode": "Classic",
+     "profile": "Guitar Clean",
+     "rate": 0.6
+    },
+    "type": "chorus"
+   },
+   {
+    "foot": 7,
+    "id": "dly",
+    "params": {
+     "feedback": 25,
+     "mix": 12,
+     "model": "Digital",
+     "time": "1/4"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "room",
+    "params": {
+     "decay": 0.7,
+     "hicut": 7000,
+     "mix": 10,
+     "size": 14
+    },
+    "type": "reverb-room"
+   }
+  ],
+  "pre": [
+   {
+    "id": "met",
+    "params": {
+     "hold": 10,
+     "release": 60,
+     "thresh": -44
+    },
+    "type": "met"
+   },
+   {
+    "foot": 6,
+    "id": "boost",
+    "params": {
+     "grind": 4,
+     "voice": "Focused"
+    },
+    "type": "shem"
+   }
+  ],
+  "split": {
+   "branches": [
+    {
+     "blocks": [
+      {
+       "id": "x2",
+       "label": "Randall Warhead X2",
+       "model": "380970",
+       "params": {
+        "input": 0,
+        "output": 0
+       },
+       "ref": "31332",
+       "type": "amp"
+      }
+     ],
+     "id": "lane-a"
+    },
+    {
+     "blocks": [
+      {
+       "id": "jc",
+       "label": "Roland JC-120B",
+       "model": "379740",
+       "params": {
+        "input": -2,
+        "output": 0
+       },
+       "ref": "10912",
+       "type": "amp"
+      }
+     ],
+     "id": "lane-b"
+    }
+   ],
+   "gain": -3,
+   "mode": "merge"
+  }
+ },
+ "colors": {
+  "10": "#6a040f",
+  "6": "#6a040f",
+  "7": "#6a040f",
+  "8": "#6a040f",
+  "9": "#6a040f",
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "E": "#6a040f"
+ },
+ "gen": [
+  {
+   "foot": 10,
+   "id": "drums",
+   "params": {
+    "fills": [],
+    "kit": "drums-aasimonster",
+    "patterns": [
+     "library/grooves/golem-half-time.mid"
+    ]
+   },
+   "type": "drums"
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": true,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "name": "Southern Riff"
+  },
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B"
+    }
+   },
+   "name": "Chug Breakdown",
+   "params": {
+    "met": {
+     "thresh": -40
+    }
+   }
+  },
+  {
+   "blocks": {
+    "boost": false,
+    "chorus": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "name": "Scooped Wall"
+  },
+  {
+   "blocks": {
+    "boost": false,
+    "chorus": true,
+    "dly": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "name": "Clean Chorus",
+   "params": {
+    "met": {
+     "thresh": -70
+    }
+   }
+  },
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": false,
+    "dly": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 3,
+   "name": "Lead"
+  }
+ ],
+ "states": [
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": true,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-A",
+   "name": "Southern Riff",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-B",
+   "name": "Chug Breakdown",
+   "params": {
+    "met": {
+     "thresh": -40
+    }
+   }
+  },
+  {
+   "blocks": {
+    "boost": false,
+    "chorus": false,
+    "dly": false
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-C",
+   "name": "Scooped Wall",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "boost": false,
+    "chorus": true,
+    "dly": true
+   },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-D",
+   "name": "Clean Chorus",
+   "params": {
+    "met": {
+     "thresh": -70
+    }
+   }
+  },
+  {
+   "blocks": {
+    "boost": true,
+    "chorus": false,
+    "dly": true
+   },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "st-guitar-1-E",
+   "name": "Lead",
+   "params": {}
+  }
+ ]
+}

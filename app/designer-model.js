@@ -491,7 +491,10 @@ export const blank = () => toLanesV2(migrateConfig({ id: 'nouveau-preset', name:
 export const LEGACY_LANES = [['guitar', '1', 'Input 1'], ['voice', '2', 'Input 2'], ['keys', 'k', 'Keys']];
 export const MIDI_ROLES = ['keys', 'pads', 'keys-pads'];
 export const richChain = c => { c = c || {};
-  if ('pre' in c || 'split' in c || 'post' in c) return ensureIds({ pre: c.pre || [], split: c.split || null, post: c.post || [] });
+  // sans split, `post` SUIT `pre` (2026-11-16) : le Designer ne dessine `post` que derrière un split — un document
+  // {pre, split: null, post} (l'usine du 16/11) montait coupé après `pre`, l'ampli invisible alors qu'il jouait
+  if ('pre' in c || 'split' in c || 'post' in c) return ensureIds(c.split ? { pre: c.pre || [], split: c.split, post: c.post || [] }
+    : { pre: [...(c.pre || []), ...(c.post || [])], split: null, post: [] });
   return ensureIds({ pre: (c.chain || []).map(b => typeof b === 'string' ? { type: b, id: bid(b) } : b), split: null, post: [] }); };
 // LA LANE EST-ELLE ENCORE LE PATCH ? (2026-10-21) Le dépôt d'un patch dans un preset renomme ses blocs (`eq` -> `eq-2`,
 // un id par preset) et réattribue les switchs (`foot` appartient au pédalier du preset) : comparer le JSON brut disait

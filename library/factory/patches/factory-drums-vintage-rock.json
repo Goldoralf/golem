@@ -63,7 +63,9 @@
     {
      "id": "st-drums-1-A",
      "name": "Shuffle",
-     "blocks": {},
+     "blocks": {
+      "room": true
+     },
      "params": {},
      "branches": {}
     },
@@ -75,7 +77,9 @@
      },
      "params": {
       "room": {
-       "mix": 28
+       "mix": 32,
+       "decay": 1.8,
+       "size": 30
       }
      },
      "branches": {}
@@ -86,14 +90,28 @@
      "blocks": {
       "room": false
      },
-     "params": {},
+     "params": {
+      "comp": {
+       "ratio": 6
+      }
+     },
      "branches": {}
     },
     {
      "id": "st-drums-1-D",
      "name": "Ballad",
-     "blocks": {},
-     "params": {},
+     "blocks": {
+      "room": true
+     },
+     "params": {
+      "room": {
+       "mix": 26,
+       "decay": 1.6
+      },
+      "eq": {
+       "highs": -2
+      }
+     },
      "branches": {}
     }
    ]
@@ -103,7 +121,9 @@
   {
    "id": "A",
    "name": "Shuffle",
-   "blocks": {},
+   "blocks": {
+    "room": true
+   },
    "lanes": {
     "drums-1": {
      "state": "st-drums-1-A"
@@ -123,7 +143,9 @@
    },
    "params": {
     "room": {
-     "mix": 28
+     "mix": 32,
+     "decay": 1.8,
+     "size": 30
     }
    }
   },
@@ -137,16 +159,32 @@
     "drums-1": {
      "state": "st-drums-1-C"
     }
+   },
+   "params": {
+    "comp": {
+     "ratio": 6
+    }
    }
   },
   {
    "id": "D",
    "name": "Ballad",
-   "blocks": {},
+   "blocks": {
+    "room": true
+   },
    "lanes": {
     "drums-1": {
      "state": "st-drums-1-D",
      "level": -2
+    }
+   },
+   "params": {
+    "room": {
+     "mix": 26,
+     "decay": 1.6
+    },
+    "eq": {
+     "highs": -2
     }
    },
    "level": -2
@@ -155,7 +193,29 @@
  "config": {
   "gen": {
    "out": "1-2",
-   "blocks": []
+   "blocks": [
+    {
+     "type": "standard",
+     "id": "standard",
+     "foot": 10,
+     "params": {
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "swing",
+      "motion": "comp",
+      "voicing": "full",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": false,
+      "guitar": false,
+      "pompe": "auto",
+      "groove": "auto",
+      "kit": "red-zeppelin",
+      "choruses": 4
+     }
+    }
+   ]
   },
   "rec": {
    "blocks": [
@@ -220,7 +280,8 @@
   "C": "#d4572a",
   "D": "#d4572a",
   "6": "#d4572a",
-  "9": "#d4572a"
+  "9": "#d4572a",
+  "10": "#d4572a"
  },
  "anims": {
   "A": "vortex",
@@ -228,8 +289,9 @@
   "C": "stars",
   "D": "ember",
   "6": "aurora",
-  "9": "ripple"
+  "9": "ripple",
+  "10": "snow"
  },
  "deps": [],
- "deps_sig": "{\"anims\": {\"6\": \"aurora\", \"9\": \"ripple\", \"A\": \"vortex\", \"B\": \"strobe\", \"C\": \"stars\", \"D\": \"ember\"}, \"backing\": null, \"bpm\": 96, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-red-zeppelin\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"room\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 20, \"size\": 20}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#d4572a\", \"9\": \"#d4572a\", \"A\": \"#d4572a\", \"B\": \"#d4572a\", \"C\": \"#d4572a\", \"D\": \"#d4572a\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-red-zeppelin\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"room\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 20, \"size\": 20}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Vintage Rock\", \"role\": \"drums\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Shuffle\", \"params\": {}}, {\"blocks\": {\"room\": true}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Big Room\", \"params\": {\"room\": {\"mix\": 28}}}, {\"blocks\": {\"room\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Tight\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Ballad\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Shuffle\"}, {\"blocks\": {\"room\": true}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Big Room\", \"params\": {\"room\": {\"mix\": 28}}}, {\"blocks\": {\"room\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Tight\"}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -2, \"state\": \"st-drums-1-D\"}}, \"level\": -2, \"name\": \"Ballad\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"snow\", \"6\": \"aurora\", \"9\": \"ripple\", \"A\": \"vortex\", \"B\": \"strobe\", \"C\": \"stars\", \"D\": \"ember\"}, \"backing\": null, \"bpm\": 96, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-red-zeppelin\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"room\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 20, \"size\": 20}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#d4572a\", \"6\": \"#d4572a\", \"9\": \"#d4572a\", \"A\": \"#d4572a\", \"B\": \"#d4572a\", \"C\": \"#d4572a\", \"D\": \"#d4572a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": false, \"feel\": \"swing\", \"groove\": \"auto\", \"guitar\": false, \"key\": \"Original\", \"keys\": true, \"kit\": \"red-zeppelin\", \"motion\": \"comp\", \"pompe\": \"auto\", \"standard\": \"rented-room-blues\", \"voicing\": \"full\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-red-zeppelin\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"room\", \"params\": {\"decay\": 1.2, \"hicut\": 7000, \"mix\": 20, \"size\": 20}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Vintage Rock\", \"role\": \"drums\", \"states\": [{\"blocks\": {\"room\": true}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Shuffle\", \"params\": {}}, {\"blocks\": {\"room\": true}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Big Room\", \"params\": {\"room\": {\"decay\": 1.8, \"mix\": 32, \"size\": 30}}}, {\"blocks\": {\"room\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Tight\", \"params\": {\"comp\": {\"ratio\": 6}}}, {\"blocks\": {\"room\": true}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -2}, \"room\": {\"decay\": 1.6, \"mix\": 26}}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {\"room\": true}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Shuffle\"}, {\"blocks\": {\"room\": true}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Big Room\", \"params\": {\"room\": {\"decay\": 1.8, \"mix\": 32, \"size\": 30}}}, {\"blocks\": {\"room\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Tight\", \"params\": {\"comp\": {\"ratio\": 6}}}, {\"blocks\": {\"room\": true}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -2, \"state\": \"st-drums-1-D\"}}, \"level\": -2, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -2}, \"room\": {\"decay\": 1.6, \"mix\": 26}}}]}"
 }

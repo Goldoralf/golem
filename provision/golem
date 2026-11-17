@@ -201,6 +201,8 @@ stop() {   # $1 = keepwin (restart) : la pile meurt, la fenêtre reste — elle 
   . "$HERE/provision/lib-engine.sh"
   [ -n "$(golem_engine_pid "$HERE")" ] && { echo "→ arrêt Golem Engine…"; stop_golem_engine "$HERE" || true; }
   echo "→ arrêt bridge…"
+  # le mode performance que golem avait allumé est rendu — pas sur un `restart` : golem repart dans la seconde
+  [ "${1:-}" = keepwin ] || golem_perf_restore "$HERE"
   pkill -f "uvicorn bridge.app" 2>/dev/null || true
   pkill -x aseqdump 2>/dev/null || true
   # l'écran virtuel de Reaper : sinon un Xvfb orphelin survit à chaque cycle

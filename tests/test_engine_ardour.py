@@ -26,7 +26,10 @@ def surface():
 
 
 @pytest.fixture
-def eng(surface):
+def eng(surface, monkeypatch, tmp_path):
+    # jamais le fichier du RACK : quand il tourne sur le Golem Engine, son presets/.looper.json donnait une plage à un
+    # potard que ce test croit inconnu (2026-11-17)
+    monkeypatch.setattr(A.C, "LOOPER_FILE", str(tmp_path / "no-looper.json"))
     e = A.ArdourEngine()
     e.recv_port = free_udp_port()
     e._link = ReaperLink("127.0.0.1", surface.port, e.recv_port, e._dispatch)
@@ -49,7 +52,7 @@ def test_mute_volume_transport_refresh_aux_adresses_d_ardour(eng, surface):
     eng.transport("start")
     got = surface.wait(5)
     assert got[:5] == [("/strip/mute", 2, 1), ("/strip/fader", 1, pytest.approx(0.8)), ("/transport_play",),
-                       ("/transport_stop",), ("/goto_start",)]
+                       ("/transport_stop",), ("/locate", 0, 0)]
 
 
 def test_un_potard_sans_plage_connue_est_refuse(eng, surface):
@@ -143,3 +146,20 @@ def test_golem_engine_force_le_moteur_en_dev(monkeypatch):
     monkeypatch.setenv("GOLEM_ENGINE", "ardour")
     assert engine.get().id == "ardour"
     monkeypatch.setattr(engine, "_active", None)
+
+
+def test_le_looper_est_pilote_a_l_adresse_que_le_veilleur_publie(eng, surface, tmp_path, monkeypatch):
+    """bridge/looper.py écrit ses commandes en normalisé, par décalage depuis « GoleM Cmd » : l'adaptateur connaît les
+    plages du looper (celles des sliders de golem_super8) là où presets/.looper.json dit qu'il est."""
+    f = tmp_path / ".looper.json"
+    f.write_text(json.dumps({"present": True, "track": 19, "fx": 0, "cmd_param": 0}))
+    monkeypatch.setattr(A.C, "LOOPER_FILE", str(f))
+    eng.set_fx_param(19, 0, 0, (5 * 128 + 36) / 16383.0)       # la commande : seq 5, note 36 — exacte à l'arrivée
+    eng.set_fx_param(19, 0, 1, 120 / 400.0)                    # le tempo
+    eng.set_fx_param(19, 0, 3, 0.5)                            # « GoleM Loop 1 dB » : -30
+    got = surface.wait(3)
+    assert got[0] == ("/strip/plugin/parameter", 19, 1, 1, pytest.approx(676.0, abs=1e-3))
+    assert got[1] == ("/strip/plugin/parameter", 19, 1, 2, pytest.approx(120.0))
+    assert got[2] == ("/strip/plugin/parameter", 19, 1, 4, pytest.approx(-30.0))
+    assert eng.set_fx_param(19, 0, 8, 0.5) is False            # au-delà de ses paramètres : inconnu
+    assert eng.set_fx_param(18, 0, 0, 0.5) is False            # une autre piste : inconnue

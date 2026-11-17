@@ -1,0 +1,452 @@
+{
+ "id": "factory-guitar-gypsy-acoustic",
+ "name": "Gypsy Acoustic",
+ "role": "guitar",
+ "tags": [
+  "jazz",
+  "manouche",
+  "acoustic"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "guitar-1",
+   "role": "guitar",
+   "name": "Gypsy Acoustic",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "params": {
+       "release": 120,
+       "thresh": -62
+      },
+      "type": "gate"
+     },
+     {
+      "id": "comp",
+      "params": {
+       "attack": 20,
+       "character": "Opto",
+       "makeup": 2,
+       "ratio": 2.5,
+       "thresh": -22
+      },
+      "type": "comp"
+     },
+     {
+      "id": "shem-8icm",
+      "params": {
+       "bright": 0,
+       "grind": 2,
+       "voice": "Focused"
+      },
+      "type": "shem"
+     },
+     {
+      "id": "acoustic",
+      "params": {
+       "body": 50,
+       "bypass": false,
+       "comp": 0,
+       "decay": 50,
+       "level": 0,
+       "low_cut": 20,
+       "mic": 75,
+       "mix": 0,
+       "model": "Dreadnought",
+       "pickup": "Single Coil",
+       "pickup_pos": "Neck",
+       "piezo": 0,
+       "quack": 0,
+       "room": 0,
+       "size": 100,
+       "top": 50,
+       "twelve": false,
+       "twelve_delay": 2.5,
+       "twelve_detune": 4,
+       "twelve_level": 0,
+       "width": 40
+      },
+      "type": "acoustic-sim"
+     },
+     {
+      "id": "tremolo-vl3w",
+      "params": {
+       "blend": 1,
+       "depth": 0.6,
+       "drive": 0.4,
+       "duck": 0.3,
+       "duty": 0.5,
+       "level": 1.5,
+       "model": "Bias",
+       "rate": 4,
+       "stereo_phase": 0,
+       "sync": "Off",
+       "wave": "Sine",
+       "xover": 400
+      },
+      "type": "tremolo"
+     },
+     {
+      "id": "eq",
+      "params": {
+       "highs": 1,
+       "lowcut": 90,
+       "midfreq": 1800,
+       "midgain": 1
+      },
+      "type": "eq"
+     },
+     {
+      "foot": 6,
+      "id": "dly",
+      "params": {
+       "feedback": 12,
+       "mix": 10,
+       "model": "Tape",
+       "time": "1/8"
+      },
+      "type": "delay"
+     },
+     {
+      "id": "room",
+      "params": {
+       "decay": 0.9,
+       "hicut": 7000,
+       "mix": 14,
+       "size": 14
+      },
+      "type": "reverb-room"
+     }
+    ]
+   },
+   "states": [
+    {
+     "blocks": {
+      "dly": false,
+      "tremolo-vl3w": false
+     },
+     "branches": {},
+     "id": "st-guitar-1-A",
+     "name": "Theme",
+     "params": {}
+    },
+    {
+     "blocks": {
+      "tremolo-vl3w": false
+     },
+     "branches": {},
+     "id": "st-guitar-1-B",
+     "name": "Chorus",
+     "params": {
+      "eq": {
+       "highs": 2,
+       "midfreq": 2200,
+       "midgain": 2.5
+      }
+     }
+    },
+    {
+     "blocks": {
+      "dly": true
+     },
+     "branches": {},
+     "id": "st-guitar-1-C",
+     "name": "Ballad",
+     "params": {
+      "room": {
+       "decay": 1.5,
+       "mix": 24
+      }
+     }
+    },
+    {
+     "blocks": {
+      "shem-8icm": false
+     },
+     "branches": {},
+     "id": "st-guitar-1-D",
+     "name": "Nylon",
+     "params": {}
+    },
+    {
+     "blocks": {
+      "shem-8icm": false,
+      "tremolo-vl3w": false
+     },
+     "branches": {},
+     "id": "st-guitar-1-E",
+     "name": "Rhythm",
+     "params": {
+      "eq": {
+       "highs": 0,
+       "midgain": 0
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "dly": false,
+    "tremolo-vl3w": false
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A"
+    }
+   },
+   "name": "Theme"
+  },
+  {
+   "blocks": {
+    "tremolo-vl3w": false
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 2,
+   "name": "Chorus",
+   "params": {
+    "eq": {
+     "highs": 2,
+     "midfreq": 2200,
+     "midgain": 2.5
+    }
+   }
+  },
+  {
+   "blocks": {
+    "dly": true
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C"
+    }
+   },
+   "name": "Ballad",
+   "params": {
+    "room": {
+     "decay": 1.5,
+     "mix": 24
+    }
+   }
+  },
+  {
+   "blocks": {
+    "shem-8icm": false
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "name": "Nylon"
+  },
+  {
+   "blocks": {
+    "shem-8icm": false,
+    "tremolo-vl3w": false
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": -2,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": -2,
+   "name": "Rhythm",
+   "params": {
+    "eq": {
+     "highs": 0,
+     "midgain": 0
+    }
+   }
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "foot": 10,
+     "id": "standard",
+     "params": {
+      "arp": "Off",
+      "bass": true,
+      "choruses": 4,
+      "drums": false,
+      "feel": "swing",
+      "groove": "auto",
+      "guitar": true,
+      "key": "Original",
+      "keys": false,
+      "kit": "blonde-bop",
+      "motion": "comp",
+      "pompe": "auto",
+      "standard": "crooked-lantern",
+      "voicing": "rootless"
+     },
+     "type": "standard"
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 200,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "params": {
+     "release": 120,
+     "thresh": -62
+    },
+    "type": "gate"
+   },
+   {
+    "id": "comp",
+    "params": {
+     "attack": 20,
+     "character": "Opto",
+     "makeup": 2,
+     "ratio": 2.5,
+     "thresh": -22
+    },
+    "type": "comp"
+   },
+   {
+    "id": "shem-8icm",
+    "params": {
+     "bright": 0,
+     "grind": 2,
+     "voice": "Focused"
+    },
+    "type": "shem"
+   },
+   {
+    "id": "acoustic",
+    "params": {
+     "body": 50,
+     "bypass": false,
+     "comp": 0,
+     "decay": 50,
+     "level": 0,
+     "low_cut": 20,
+     "mic": 75,
+     "mix": 0,
+     "model": "Dreadnought",
+     "pickup": "Single Coil",
+     "pickup_pos": "Neck",
+     "piezo": 0,
+     "quack": 0,
+     "room": 0,
+     "size": 100,
+     "top": 50,
+     "twelve": false,
+     "twelve_delay": 2.5,
+     "twelve_detune": 4,
+     "twelve_level": 0,
+     "width": 40
+    },
+    "type": "acoustic-sim"
+   },
+   {
+    "id": "tremolo-vl3w",
+    "params": {
+     "blend": 1,
+     "depth": 0.6,
+     "drive": 0.4,
+     "duck": 0.3,
+     "duty": 0.5,
+     "level": 1.5,
+     "model": "Bias",
+     "rate": 4,
+     "stereo_phase": 0,
+     "sync": "Off",
+     "wave": "Sine",
+     "xover": 400
+    },
+    "type": "tremolo"
+   },
+   {
+    "id": "eq",
+    "params": {
+     "highs": 1,
+     "lowcut": 90,
+     "midfreq": 1800,
+     "midgain": 1
+    },
+    "type": "eq"
+   },
+   {
+    "foot": 6,
+    "id": "dly",
+    "params": {
+     "feedback": 12,
+     "mix": 10,
+     "model": "Tape",
+     "time": "1/8"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "room",
+    "params": {
+     "decay": 0.9,
+     "hicut": 7000,
+     "mix": 14,
+     "size": 14
+    },
+    "type": "reverb-room"
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#b08968",
+  "B": "#b08968",
+  "C": "#b08968",
+  "D": "#b08968",
+  "E": "#b08968",
+  "6": "#b08968",
+  "9": "#b08968",
+  "10": "#b08968"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "aurora",
+  "C": "ripple",
+  "D": "snow",
+  "E": "pulse",
+  "6": "fire",
+  "9": "scanner",
+  "10": "sheen"
+ },
+ "deps": [],
+ "deps_sig": "{\"anims\": {\"10\": \"sheen\", \"6\": \"fire\", \"9\": \"scanner\", \"A\": \"ember\", \"B\": \"aurora\", \"C\": \"ripple\", \"D\": \"snow\", \"E\": \"pulse\"}, \"backing\": null, \"bpm\": 200, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"shem-8icm\", \"params\": {\"bright\": 0, \"grind\": 2, \"voice\": \"Focused\"}, \"type\": \"shem\"}, {\"id\": \"acoustic\", \"params\": {\"body\": 50, \"bypass\": false, \"comp\": 0, \"decay\": 50, \"level\": 0, \"low_cut\": 20, \"mic\": 75, \"mix\": 0, \"model\": \"Dreadnought\", \"pickup\": \"Single Coil\", \"pickup_pos\": \"Neck\", \"piezo\": 0, \"quack\": 0, \"room\": 0, \"size\": 100, \"top\": 50, \"twelve\": false, \"twelve_delay\": 2.5, \"twelve_detune\": 4, \"twelve_level\": 0, \"width\": 40}, \"type\": \"acoustic-sim\"}, {\"id\": \"tremolo-vl3w\", \"params\": {\"blend\": 1, \"depth\": 0.6, \"drive\": 0.4, \"duck\": 0.3, \"duty\": 0.5, \"level\": 1.5, \"model\": \"Bias\", \"rate\": 4, \"stereo_phase\": 0, \"sync\": \"Off\", \"wave\": \"Sine\", \"xover\": 400}, \"type\": \"tremolo\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 90, \"midfreq\": 1800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 10, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"10\": \"#b08968\", \"6\": \"#b08968\", \"9\": \"#b08968\", \"A\": \"#b08968\", \"B\": \"#b08968\", \"C\": \"#b08968\", \"D\": \"#b08968\", \"E\": \"#b08968\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": false, \"feel\": \"swing\", \"groove\": \"auto\", \"guitar\": true, \"key\": \"Original\", \"keys\": false, \"kit\": \"blonde-bop\", \"motion\": \"comp\", \"pompe\": \"auto\", \"standard\": \"crooked-lantern\", \"voicing\": \"rootless\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -62}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Opto\", \"makeup\": 2, \"ratio\": 2.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"shem-8icm\", \"params\": {\"bright\": 0, \"grind\": 2, \"voice\": \"Focused\"}, \"type\": \"shem\"}, {\"id\": \"acoustic\", \"params\": {\"body\": 50, \"bypass\": false, \"comp\": 0, \"decay\": 50, \"level\": 0, \"low_cut\": 20, \"mic\": 75, \"mix\": 0, \"model\": \"Dreadnought\", \"pickup\": \"Single Coil\", \"pickup_pos\": \"Neck\", \"piezo\": 0, \"quack\": 0, \"room\": 0, \"size\": 100, \"top\": 50, \"twelve\": false, \"twelve_delay\": 2.5, \"twelve_detune\": 4, \"twelve_level\": 0, \"width\": 40}, \"type\": \"acoustic-sim\"}, {\"id\": \"tremolo-vl3w\", \"params\": {\"blend\": 1, \"depth\": 0.6, \"drive\": 0.4, \"duck\": 0.3, \"duty\": 0.5, \"level\": 1.5, \"model\": \"Bias\", \"rate\": 4, \"stereo_phase\": 0, \"sync\": \"Off\", \"wave\": \"Sine\", \"xover\": 400}, \"type\": \"tremolo\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 90, \"midfreq\": 1800, \"midgain\": 1}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 12, \"mix\": 10, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.9, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Gypsy Acoustic\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": false, \"tremolo-vl3w\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Theme\", \"params\": {}}, {\"blocks\": {\"tremolo-vl3w\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Chorus\", \"params\": {\"eq\": {\"highs\": 2, \"midfreq\": 2200, \"midgain\": 2.5}}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Ballad\", \"params\": {\"room\": {\"decay\": 1.5, \"mix\": 24}}}, {\"blocks\": {\"shem-8icm\": false}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Nylon\", \"params\": {}}, {\"blocks\": {\"shem-8icm\": false, \"tremolo-vl3w\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Rhythm\", \"params\": {\"eq\": {\"highs\": 0, \"midgain\": 0}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": false, \"tremolo-vl3w\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Theme\"}, {\"blocks\": {\"tremolo-vl3w\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-B\"}}, \"level\": 2, \"name\": \"Chorus\", \"params\": {\"eq\": {\"highs\": 2, \"midfreq\": 2200, \"midgain\": 2.5}}}, {\"blocks\": {\"dly\": true}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Ballad\", \"params\": {\"room\": {\"decay\": 1.5, \"mix\": 24}}}, {\"blocks\": {\"shem-8icm\": false}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Nylon\"}, {\"blocks\": {\"shem-8icm\": false, \"tremolo-vl3w\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": -2, \"state\": \"st-guitar-1-E\"}}, \"level\": -2, \"name\": \"Rhythm\", \"params\": {\"eq\": {\"highs\": 0, \"midgain\": 0}}}]}"
+}

@@ -68,9 +68,10 @@ def test_tout_va_bien_tout_est_vert_et_le_verdict_le_dit(rack):
     d = H.facts(fresh=True)
     levels = {f["id"]: f["level"] for f in d["facts"]}
     assert levels == {"engine": "ok", "audio": "ok", "dropouts": "ok", "pedalboard": "ok", "playing": "ok", "setlist": "ok",
-                      "plugins": "ok", "disk": "ok", "golemfm": "ok", "scripts": "ok", "cpu": "wait", "environment": "wait"}
+                      "plugins": "ok", "disk": "ok", "golemfm": "ok", "scripts": "ok", "perf": "ok", "cpu": "wait",
+                      "environment": "wait"}
     assert d["verdict"]["level"] == "ok" and d["verdict"]["title"] == "Everything checks out."
-    assert d["verdict"]["counts"] == {"ok": 10, "warn": 0, "bad": 0, "wait": 2, "total": 12}
+    assert d["verdict"]["counts"] == {"ok": 11, "warn": 0, "bad": 0, "wait": 2, "total": 13}
     assert _by(d, "cpu")["text"].startswith("not calibrated yet"), "un profil absent attend, il n'alarme pas"
     assert all(f["source"] for f in d["facts"]), "chaque fait nomme sa source"
     assert "Volt 276 · 48 kHz · 128 samples · 2.7 ms" == _by(d, "audio")["text"]
@@ -210,5 +211,5 @@ def test_la_route_est_un_get_sensible_mais_le_pouls_reste_public(monkeypatch):
 def test_la_route_rend_les_faits_du_cache(rack):
     from bridge import routes_health as R
     d = R.health_facts()
-    assert d["verdict"]["level"] == "ok" and len(d["facts"]) == 12
+    assert d["verdict"]["level"] == "ok" and len(d["facts"]) == 13
     assert R.health_facts(fresh=1)["at"] >= d["at"]

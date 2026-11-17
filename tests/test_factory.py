@@ -441,3 +441,72 @@ def test_un_ancien_objet_d_usine_qui_n_est_plus_livre_part_s_il_est_intact(tmp_p
     assert r["retired"] == ["patches/factory-old.json"] and r["placed"] == ["patches/factory-new.json"]
     assert not (live / "factory-old.json").exists() and (live / "factory-mine.json").exists()
     assert json.loads((tmp_path / "ledger.json").read_text())["patches"] == ["factory-new.json"]
+
+
+def _usine_refaite(tmp_path, monkeypatch, local_setlist):
+    """Une usine refaite : l'ancien patch n'est plus livré, la setlist d'usine désigne le nouveau. Rend (patches, setlists)."""
+    from bridge import factory as F
+    src, pat, sls = tmp_path / "src", tmp_path / "patches", tmp_path / "setlists"
+    (src / "patches").mkdir(parents=True); (src / "setlists").mkdir(); pat.mkdir(); sls.mkdir()
+    (src / "patches" / "factory-new.json").write_text('{"v": "neuf"}')
+    (pat / "factory-old.json").write_text('{"v": "ancien"}')
+    old_sl = {"id": "factory", "name": "Factory", "origin": "factory", "factory": True,
+              "lines": [{"id": "r:1", "patch": "factory-old"}]}
+    new_sl = dict(old_sl, lines=[{"id": "r:1", "patch": "factory-new"}])
+    (src / "setlists" / "factory.json").write_text(json.dumps(new_sl))
+    (sls / "factory.json").write_text(json.dumps(local_setlist(old_sl)))
+    old_bytes = json.dumps(old_sl).encode()
+    hist = {"patches/factory-old.json": [F._sha(str(pat / "factory-old.json"))],
+            "setlists/factory.json": [F.hashlib.sha256(old_bytes).hexdigest()],
+            "canon:setlists/factory.json": [F.canon_sha(old_bytes, ".json", "setlists")]}
+    (src / "history.json").write_text(json.dumps(hist))
+    monkeypatch.setattr(F, "SRC", str(src)); monkeypatch.setattr(F, "HISTORY", str(src / "history.json"))
+    monkeypatch.setattr(F, "LEDGER", str(tmp_path / "ledger.json"))
+    monkeypatch.setattr(F.C, "SETLISTS_DIR", str(sls))
+    monkeypatch.setitem(F.KINDS, "patches", ("patches", str(pat), ".json"))
+    monkeypatch.setitem(F.KINDS, "setlists", ("setlists", str(sls), ".json"))
+    for k in [k for k in F.KINDS if k not in ("patches", "setlists")]:
+        monkeypatch.setitem(F.KINDS, k, (k, str(tmp_path / ("none-" + k)), F.KINDS[k][2]))
+    (tmp_path / "ledger.json").write_text(json.dumps({"patches": ["factory-old.json"], "setlists": ["factory.json"]}))
+    return pat, sls
+
+
+def test_une_setlist_d_usine_que_seul_le_rack_a_ecrite_suit_l_usine(tmp_path, monkeypatch):
+    """2026-11-16 : l'usine refaite, les six setlists d'usine sont restées les anciennes — le rack y avait écrit ses dates
+    et `origin: local`, elles passaient pour retouchées — alors que leurs patches étaient retirés : plus une bank ne
+    chargeait, « the first preset could not be loaded ». Ces écritures-là ne sont pas une retouche."""
+    from bridge import factory as F
+    pat, sls = _usine_refaite(tmp_path, monkeypatch, lambda sl: dict(
+        {k: v for k, v in sl.items() if k != "factory"}, origin="local",
+        created_at="2026-10-13T16:42:46", updated_at="2026-10-13T16:42:46"))
+    assert F.edited() == []
+    r = F.seed()
+    assert r["updated"] == ["setlists/factory.json"] and r["retired"] == ["patches/factory-old.json"]
+    assert json.loads((sls / "factory.json").read_text())["lines"][0]["patch"] == "factory-new"
+    assert (pat / "factory-new.json").exists() and not (pat / "factory-old.json").exists()
+
+
+def test_un_objet_retire_encore_designe_par_une_setlist_reste(tmp_path, monkeypatch):
+    """La setlist d'usine VRAIMENT retouchée (une ligne ajoutée) ne bouge pas — et le patch qu'elle joue non plus, même
+    retiré de l'usine : aucune mise à jour ne laisse une bank morte."""
+    from bridge import factory as F
+    pat, sls = _usine_refaite(tmp_path, monkeypatch, lambda sl: dict(
+        sl, lines=sl["lines"] + [{"id": "r:2", "preset": "mine"}]))
+    r = F.seed()
+    assert r["updated"] == [] and r["retired"] == []
+    assert (pat / "factory-old.json").exists() and (pat / "factory-new.json").exists()
+    assert [e["file"] for e in F.edited()] == ["factory.json"]
+    assert json.loads((tmp_path / "ledger.json").read_text())["patches"] == ["factory-new.json"]   # il est à la personne
+
+
+def test_un_split_d_usine_a_deux_branches_au_plus():
+    # règle du produit (2026-11-16) : le Designer dessine deux branches — une troisième jouait sans se voir
+    import glob
+    import json
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for kind in ("patches", "presets"):
+        for f in glob.glob(os.path.join(root, "library", "factory", kind, "*.json")):
+            for lane in json.load(open(f, encoding="utf-8")).get("lanes") or []:
+                n = len((((lane.get("chain") or {}).get("split")) or {}).get("branches") or [])
+                assert n <= 2, f"{os.path.basename(f)} : {n} branches"
+

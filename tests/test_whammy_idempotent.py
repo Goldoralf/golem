@@ -96,3 +96,20 @@ def test_un_preset_SANS_bloc_whammy_eteint_toujours(glue):
     g, sent = glue
     g([{"type": "amp"}])
     assert ("OFF",) in sent
+
+
+def test_le_point_d_entree_du_moteur_accepte_ce_que_le_moteur_lui_passe():
+    """2026-11-16 : le moteur appelle la glu injectée avec `force=…` ; `_hw_pedals_glue` ne prenait que `baked`, le
+    TypeError était avalé par un suppress, et plus aucune émission n'atteignait la pédale. On exécute le VRAI point
+    d'entrée avec l'appel du VRAI moteur, lu dans recall.py."""
+    import re
+    app = (ROOT / "bridge/app.py").read_text(encoding="utf8")
+    i = app.index("def _hw_pedals_glue")
+    j = app.index("\ndef ", i + 1)
+    got = []
+    ns = {"_whammy_dt_glue": lambda baked, force=False: got.append(("whammy", force)),
+          "_midi_pedals_glue": lambda baked: got.append(("pedals",))}
+    exec(compile(app[i:j], "app.py", "exec"), ns)
+    call = re.search(r"_whammy_dt_glue\(baked[^)]*\)", (ROOT / "bridge/recall.py").read_text(encoding="utf8")).group(0)
+    eval(call, {"_whammy_dt_glue": ns["_hw_pedals_glue"], "baked": [], "preset_changed": True})
+    assert got == [("whammy", True), ("pedals",)]

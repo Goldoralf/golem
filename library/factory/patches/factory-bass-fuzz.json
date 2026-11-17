@@ -38,6 +38,15 @@
       }
      },
      {
+      "id": "drive",
+      "type": "emet",
+      "params": {
+       "gain": 40,
+       "tone_stack": 55,
+       "level": 0
+      }
+     },
+     {
       "id": "muff",
       "type": "pedal-nam",
       "label": "EHX Op-Amp Big Muff",
@@ -48,10 +57,7 @@
        "output": -4
       },
       "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "svt",
       "type": "amp",
@@ -73,13 +79,16 @@
        "highs": 0
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "states": [
     {
      "id": "st-bass-1-A",
      "name": "Pick Drive",
      "blocks": {
+      "drive": true,
       "muff": false
      },
      "params": {},
@@ -89,6 +98,7 @@
      "id": "st-bass-1-B",
      "name": "Fuzz Bass",
      "blocks": {
+      "drive": false,
       "muff": true
      },
      "params": {},
@@ -98,11 +108,16 @@
      "id": "st-bass-1-C",
      "name": "Clean Verse",
      "blocks": {
+      "drive": false,
       "muff": false
      },
      "params": {
-      "svt": {
-       "output": -4
+      "eq": {
+       "highs": -5,
+       "midgain": -1
+      },
+      "comp": {
+       "ratio": 2
       }
      },
      "branches": {}
@@ -111,11 +126,14 @@
      "id": "st-bass-1-D",
      "name": "Wall",
      "blocks": {
+      "drive": true,
       "muff": true
      },
      "params": {
       "eq": {
-       "midgain": 2
+       "midgain": 4,
+       "midfreq": 900,
+       "lows": 2
       }
      },
      "branches": {}
@@ -128,6 +146,7 @@
    "id": "A",
    "name": "Pick Drive",
    "blocks": {
+    "drive": true,
     "muff": false
    },
    "lanes": {
@@ -140,6 +159,7 @@
    "id": "B",
    "name": "Fuzz Bass",
    "blocks": {
+    "drive": false,
     "muff": true
    },
    "lanes": {
@@ -152,25 +172,31 @@
    "id": "C",
    "name": "Clean Verse",
    "blocks": {
+    "drive": false,
     "muff": false
    },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-C",
-     "level": -1
+     "level": -2
     }
    },
    "params": {
-    "svt": {
-     "output": -4
+    "eq": {
+     "highs": -5,
+     "midgain": -1
+    },
+    "comp": {
+     "ratio": 2
     }
    },
-   "level": -1
+   "level": -2
   },
   {
    "id": "D",
    "name": "Wall",
    "blocks": {
+    "drive": true,
     "muff": true
    },
    "lanes": {
@@ -181,7 +207,9 @@
    },
    "params": {
     "eq": {
-     "midgain": 2
+     "midgain": 4,
+     "midfreq": 900,
+     "lows": 2
     }
    },
    "level": 1
@@ -238,6 +266,15 @@
     }
    },
    {
+    "id": "drive",
+    "type": "emet",
+    "params": {
+     "gain": 40,
+     "tone_stack": 55,
+     "level": 0
+    }
+   },
+   {
     "id": "muff",
     "type": "pedal-nam",
     "label": "EHX Op-Amp Big Muff",
@@ -248,10 +285,7 @@
      "output": -4
     },
     "foot": 6
-   }
-  ],
-  "split": null,
-  "post": [
+   },
    {
     "id": "svt",
     "type": "amp",
@@ -273,7 +307,9 @@
      "highs": 0
     }
    }
-  ]
+  ],
+  "split": null,
+  "post": []
  },
  "needs": [
   {
@@ -358,5 +394,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"strobe\", \"9\": \"stars\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"post\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379986\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 40, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}], \"split\": null}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379986\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 40, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Fuzz Bass\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"muff\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Pick Drive\", \"params\": {}}, {\"blocks\": {\"muff\": true}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Fuzz Bass\", \"params\": {}}, {\"blocks\": {\"muff\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Clean Verse\", \"params\": {\"svt\": {\"output\": -4}}}, {\"blocks\": {\"muff\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Wall\", \"params\": {\"eq\": {\"midgain\": 2}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"muff\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Pick Drive\"}, {\"blocks\": {\"muff\": true}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Fuzz Bass\"}, {\"blocks\": {\"muff\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-C\"}}, \"level\": -1, \"name\": \"Clean Verse\", \"params\": {\"svt\": {\"output\": -4}}}, {\"blocks\": {\"muff\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Wall\", \"params\": {\"eq\": {\"midgain\": 2}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"strobe\", \"9\": \"stars\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 128, \"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"drive\", \"params\": {\"gain\": 40, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}, {\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379986\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 40, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"split\": null}, \"colors\": {\"10\": \"#9c6644\", \"6\": \"#9c6644\", \"9\": \"#9c6644\", \"A\": \"#9c6644\", \"B\": \"#9c6644\", \"C\": \"#9c6644\", \"D\": \"#9c6644\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -56}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"drive\", \"params\": {\"gain\": 40, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}, {\"foot\": 6, \"id\": \"muff\", \"label\": \"EHX Op-Amp Big Muff\", \"model\": \"413514\", \"params\": {\"input\": 0, \"output\": -4}, \"ref\": \"37818\", \"type\": \"pedal-nam\"}, {\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379986\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 0, \"lowcut\": 40, \"midfreq\": 700, \"midgain\": 1}, \"type\": \"eq\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Fuzz Bass\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"drive\": true, \"muff\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Pick Drive\", \"params\": {}}, {\"blocks\": {\"drive\": false, \"muff\": true}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Fuzz Bass\", \"params\": {}}, {\"blocks\": {\"drive\": false, \"muff\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Clean Verse\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -5, \"midgain\": -1}}}, {\"blocks\": {\"drive\": true, \"muff\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Wall\", \"params\": {\"eq\": {\"lows\": 2, \"midfreq\": 900, \"midgain\": 4}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"drive\": true, \"muff\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Pick Drive\"}, {\"blocks\": {\"drive\": false, \"muff\": true}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Fuzz Bass\"}, {\"blocks\": {\"drive\": false, \"muff\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": -2, \"state\": \"st-bass-1-C\"}}, \"level\": -2, \"name\": \"Clean Verse\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -5, \"midgain\": -1}}}, {\"blocks\": {\"drive\": true, \"muff\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-D\"}}, \"level\": 1, \"name\": \"Wall\", \"params\": {\"eq\": {\"lows\": 2, \"midfreq\": 900, \"midgain\": 4}}}]}"
 }

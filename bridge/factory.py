@@ -58,13 +58,18 @@ def _sha(path):
 # « retouchés », dont des patches que personne n'avait ouverts — refresh_deps() y avait écrit les `deps` de SA bibliothèque
 # (poids d'une IR locale, capture absente), le Designer les liaisons d'entrée de SA carte, le Rec SA config. Bloqués, ils
 # ne suivaient plus l'usine. L'empreinte CANONIQUE les ignore ; tout le reste (chaîne, réglages, scènes) reste une retouche.
+# Une SETLIST aussi (2026-11-16) : le rack y écrit ses dates et la marque d'origine dès qu'il la lit. Les six setlists
+# d'usine passaient pour « retouchées » sur une machine où personne ne les avait ouvertes : elles n'ont pas suivi la refonte
+# de l'usine et pointaient sur des patches retirés — plus une bank ne chargeait.
 _LOCAL_TOP = ("deps", "deps_sig", "unresolved")
+_LOCAL_SETLIST = ("created_at", "updated_at", "origin", "factory")
 _LOCAL_LANE = ("in_sel", "in_name", "in_role", "in_nth", "bind_error")
 _LOCAL_FALSY = ("stereo", "disabled")                   # `false` écrit par l'écran = absent dans l'usine
 
 
-def canon_sha(data, ext=".json"):
-    """Empreinte d'un objet d'usine (octets) sans ce que la machine y écrit. None hors JSON ou illisible."""
+def canon_sha(data, ext=".json", sub=None):
+    """Empreinte d'un objet d'usine (octets) sans ce que la machine y écrit. None hors JSON ou illisible.
+    `sub` : le sous-dossier d'usine (« setlists »…) — ce que la machine écrit dépend de la sorte."""
     if ext != ".json":
         return None
     try:
@@ -73,7 +78,7 @@ def canon_sha(data, ext=".json"):
         return None
     if not isinstance(d, dict):
         return None
-    for k in _LOCAL_TOP:
+    for k in _LOCAL_TOP + (_LOCAL_SETLIST if sub == "setlists" else ()):
         d.pop(k, None)
     if isinstance(d.get("config"), dict):
         d["config"].pop("rec", None)
@@ -87,12 +92,12 @@ def canon_sha(data, ext=".json"):
     return hashlib.sha256(json.dumps(d, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
-def _canon_file(path, ext):
+def _canon_file(path, ext, sub=None):
     if ext != ".json":
         return None
     try:
         with open(path, "rb") as f:
-            return canon_sha(f.read(), ext)
+            return canon_sha(f.read(), ext, sub)
     except OSError:
         return None
 
@@ -120,10 +125,10 @@ def _status(sub, fn, ext, target, hist):
         return "current"
     if have in set(hist.get(f"{sub}/{fn}") or []):
         return "old"
-    mine = _canon_file(target, ext)
+    mine = _canon_file(target, ext, sub)
     if mine is None:
         return "edited"
-    if mine == _canon_file(src, ext):
+    if mine == _canon_file(src, ext, sub):
         return "current"
     if mine in set(hist.get(f"canon:{sub}/{fn}") or []):
         return "old-local"
@@ -382,9 +387,56 @@ def seed(force_ids=None):
 RETIRABLE = ("patches", "presets", "setlists")
 
 
+def _still_used():
+    """Les ids (« patch:x » ou « x ») que quelque chose DÉSIGNE encore sur cette machine : les lignes de chaque setlist
+    posée et l'accueil de démarrage. Un objet d'usine retiré mais encore désigné reste en place (il devient celui de la
+    personne) : le retirer laissait une setlist gardée — la sienne, ou une d'usine retouchée — pleine de banks mortes."""
+    used = set()
+    try:
+        names = [f for f in os.listdir(C.SETLISTS_DIR) if f.endswith(".json") and not f.startswith(".")]
+    except OSError:
+        names = []
+    for fn in names:
+        try:
+            with open(os.path.join(C.SETLISTS_DIR, fn), encoding="utf-8") as f:
+                sl = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if not isinstance(sl, dict):
+            continue
+        for ln in list(sl.get("lines") or []) + list(sl.get("presets") or []):
+            if isinstance(ln, dict):
+                # ce que la ligne JOUE vraiment : une ligne de chanson joue le preset de SA fiche (setlists.pid_of),
+                # pas celui qu'elle recopie — une chanson d'usine retouchée ici nomme encore l'ancien preset
+                try:
+                    from . import setlists as _sl
+                    played = _sl.pid_of(ln)
+                except Exception:
+                    played = ""
+                if played:
+                    used.add(str(played))
+                if ln.get("patch"):
+                    used.add("patch:" + str(ln["patch"]))
+                if ln.get("preset"):
+                    used.add(str(ln["preset"]))
+            elif ln:
+                used.add(str(ln))
+    try:
+        from . import startup_home
+        home = (startup_home.get() or {}).get("home") or {}
+        if home.get("kind") in ("preset", "patch") and home.get("id"):
+            used.add(str(home["id"]))
+        if home.get("kind") in ("setlist", "song", "bank"):
+            used.add("setlist:" + str(home.get("setlist") or home.get("id") or ""))
+    except Exception:
+        pass
+    return used
+
+
 def _retire(led, hist):
     shipped = catalog()
-    retired = []
+    retired, kept = [], []
+    used = _still_used()                                 # après la pose : les setlists d'usine intactes ont déjà suivi
     for kind in RETIRABLE:
         if kind not in KINDS:
             continue
@@ -394,9 +446,14 @@ def _retire(led, hist):
             target = os.path.join(dst, fn)
             if os.path.exists(target):
                 old = _sha(target) in set(hist.get(f"{sub}/{fn}") or []) or \
-                    (_canon_file(target, ext) or "") in set(hist.get(f"canon:{sub}/{fn}") or [])
+                    (_canon_file(target, ext, sub) or "") in set(hist.get(f"canon:{sub}/{fn}") or [])
                 if not old:
                     continue                         # retouché ici : c'est à la personne, on le garde
+                oid = fn[: -len(ext)]
+                ref = {"patches": "patch:" + oid, "presets": oid, "setlists": "setlist:" + oid}[kind]
+                if ref in used:
+                    kept.append(f"{kind}/{fn}")
+                    continue                         # encore désigné ici : on ne laisse pas une bank morte derrière
                 try:
                     os.remove(target)
                 except OSError:
@@ -404,6 +461,9 @@ def _retire(led, hist):
                 retired.append(f"{kind}/{fn}")
         if gone:
             led[kind] = sorted(set(led.get(kind) or []) - set(gone))
+    if kept:
+        log.info(f"usine : {len(kept)} ancien(s) objet(s) gardé(s), encore désigné(s) par une setlist ou l'accueil — "
+                 + ", ".join(kept))
     return retired
 
 

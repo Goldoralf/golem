@@ -650,6 +650,10 @@ async def _monitor_audio():
                 _diag_event("chip", chip="PEDAL?", on=bool(pb.get("stale")))
             state.pedalboard = pb
             changed = True
+        # le gardien du mode performance : repose le boost que le système aurait retiré (routes_system.perf_guard_tick)
+        with contextlib.suppress(Exception):
+            from . import routes_system as _rs
+            await loop.run_in_executor(None, _rs.perf_guard_tick, state.mode)
         gov = await loop.run_in_executor(None, _read_governor)
         boost = None if gov is None else (gov == "performance")
         if boost != state.cpu_boost:

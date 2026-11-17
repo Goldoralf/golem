@@ -35,6 +35,8 @@ def install_bundled():
     """Le démarrage desktop ne déclenche jamais un build réseau pour une plateforme non livrée."""
     manifest_file = SOURCE / "bin" / "manifest.json"
     manifest = json.loads(manifest_file.read_text(encoding="utf-8")) if manifest_file.is_file() else {}
+    with __import__("contextlib").suppress(Exception):   # le lecteur LV2 du Golem Engine, là où ce moteur est installé
+        install_lv2_bundled()
     return install() if platform_key() in manifest else None
 
 
@@ -89,5 +91,57 @@ def install(destination=None):
     return path
 
 
+# ── le MÊME lecteur en LV2, pour le Golem Engine (native/capture-lv2) ────────────────────────────────────────────
+LV2_SOURCE = ROOT / "native" / "capture-lv2"
+LV2_FILES = ("golem-capture.so", "manifest.ttl", "golem-capture.ttl")
+
+
+def engine_present():
+    """Le Golem Engine est-il sur cette machine ? (son lanceur ; GOLEM_ENGINE_DIR comme bridge/engine/ardour.py)"""
+    import os
+    return (Path(os.environ.get("GOLEM_ENGINE_DIR") or Path.home() / "golem-engine") / "golem" / "engine" / "run.sh").is_file()
+
+
+def install_lv2_bundled(destination=None, force=False):
+    """Le lecteur LV2 livré (Linux), copié vérifié dans ~/.lv2/golem-capture.lv2 — seulement là où le Golem Engine est
+    installé (`force` pour l'imposer) : REAPER joue le CLAP, il n'a que faire d'un second lecteur dans sa liste LV2.
+    Rend le dossier posé, ou None (pas Linux, pas de moteur, plateforme non livrée : jamais de build réseau ici —
+    tools/build-capture-lv2.sh le fait à la main)."""
+    if sys.platform != "linux" or not (force or engine_present()):
+        return None
+    manifest_file = LV2_SOURCE / "bin" / "manifest.json"
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8")) if manifest_file.is_file() else {}
+    entry = manifest.get(platform_key())
+    if not entry:
+        return None
+    archive = LV2_SOURCE / "bin" / entry["file"]
+    if hashlib.sha256(archive.read_bytes()).hexdigest() != entry["sha256"]:
+        raise RuntimeError("Bundled LV2 capture player checksum mismatch")
+    target = Path(destination) if destination else Path.home() / ".lv2" / "golem-capture.lv2"
+    existed = target.exists()
+    target.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(archive) as z:
+        for name in LV2_FILES:                             # une liste exacte : rien d'autre n'est extrait
+            data = z.read("golem-capture.lv2/" + name)
+            path = target / name
+            if not path.is_file() or path.read_bytes() != data:
+                tmp = path.with_name(path.name + ".tmp")
+                tmp.write_bytes(data)
+                tmp.chmod(0o755 if name.endswith(".so") else 0o644)
+                tmp.replace(path)
+    if destination is None:
+        try:                                               # le reçu d'installation : désinstallable comme le reste
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("golem_receipt", Path(__file__).with_name("receipt.py"))
+            receipt = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(receipt)
+            if receipt.exists():
+                receipt.add(str(target), "dir", "capture_player.py", "capture-player-lv2", existed=existed)
+        except Exception as exc:
+            print(f"⚠ install receipt not updated ({exc})", file=sys.stderr)
+    return target
+
+
 if __name__ == "__main__":
     print(install())
+    print(install_lv2_bundled())

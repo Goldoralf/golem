@@ -67,6 +67,7 @@
      "id": "st-keys-1-A",
      "name": "Glass Rhodes",
      "blocks": {
+      "tape": false,
       "trem": true
      },
      "params": {},
@@ -76,8 +77,8 @@
      "id": "st-keys-1-B",
      "name": "Tape Rhodes",
      "blocks": {
-      "trem": false,
-      "tape": true
+      "tape": true,
+      "trem": false
      },
      "params": {},
      "branches": {}
@@ -86,8 +87,8 @@
      "id": "st-keys-1-C",
      "name": "Dry Keys",
      "blocks": {
-      "trem": false,
-      "tape": false
+      "tape": false,
+      "trem": false
      },
      "params": {
       "verb": {
@@ -100,8 +101,8 @@
      "id": "st-keys-1-D",
      "name": "Underwater",
      "blocks": {
-      "trem": true,
-      "tape": true
+      "tape": true,
+      "trem": true
      },
      "params": {
       "verb": {
@@ -118,6 +119,7 @@
    "id": "A",
    "name": "Glass Rhodes",
    "blocks": {
+    "tape": false,
     "trem": true
    },
    "lanes": {
@@ -130,8 +132,8 @@
    "id": "B",
    "name": "Tape Rhodes",
    "blocks": {
-    "trem": false,
-    "tape": true
+    "tape": true,
+    "trem": false
    },
    "lanes": {
     "keys-1": {
@@ -143,8 +145,8 @@
    "id": "C",
    "name": "Dry Keys",
    "blocks": {
-    "trem": false,
-    "tape": false
+    "tape": false,
+    "trem": false
    },
    "lanes": {
     "keys-1": {
@@ -161,8 +163,8 @@
    "id": "D",
    "name": "Underwater",
    "blocks": {
-    "trem": true,
-    "tape": true
+    "tape": true,
+    "trem": true
    },
    "lanes": {
     "keys-1": {
@@ -299,5 +301,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"glitch\", \"6\": \"fire\", \"7\": \"scanner\", \"9\": \"sheen\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 30}, \"type\": \"tape\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 40}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 30}, \"type\": \"tape\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 40}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Glass Rhodes\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Glass Rhodes\", \"params\": {}}, {\"blocks\": {\"tape\": true, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Tape Rhodes\", \"params\": {}}, {\"blocks\": {\"tape\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Dry Keys\", \"params\": {\"verb\": {\"mix\": 10}}}, {\"blocks\": {\"tape\": true, \"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Underwater\", \"params\": {\"verb\": {\"mix\": 36}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"trem\": true}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Glass Rhodes\"}, {\"blocks\": {\"tape\": true, \"trem\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Tape Rhodes\"}, {\"blocks\": {\"tape\": false, \"trem\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Dry Keys\", \"params\": {\"verb\": {\"mix\": 10}}}, {\"blocks\": {\"tape\": true, \"trem\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Underwater\", \"params\": {\"verb\": {\"mix\": 36}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"glitch\", \"6\": \"fire\", \"7\": \"scanner\", \"9\": \"sheen\", \"A\": \"aurora\", \"B\": \"ripple\", \"C\": \"snow\", \"D\": \"pulse\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 30}, \"type\": \"tape\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 40}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#118ab2\", \"6\": \"#118ab2\", \"7\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-lofi.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"ep\", \"params\": {\"bank\": \"library/dx7/synprezfm-02.syx\", \"fcut\": 1, \"out\": 0.8, \"patch\": 15, \"res\": 0}, \"type\": \"ep\"}, {\"foot\": 6, \"id\": \"trem\", \"params\": {\"depth\": 0.5, \"rate\": 4.5, \"wave\": \"Sine\"}, \"type\": \"tremolo\"}, {\"foot\": 7, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 30}, \"type\": \"tape\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Cloud\", \"decay\": 3.2, \"hicut\": 7000, \"mix\": 24, \"size\": 40}, \"type\": \"reverb\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Glass Rhodes\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"tape\": false, \"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Glass Rhodes\", \"params\": {}}, {\"blocks\": {\"tape\": true, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Tape Rhodes\", \"params\": {}}, {\"blocks\": {\"tape\": false, \"trem\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Dry Keys\", \"params\": {\"verb\": {\"mix\": 10}}}, {\"blocks\": {\"tape\": true, \"trem\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Underwater\", \"params\": {\"verb\": {\"mix\": 36}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"tape\": false, \"trem\": true}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Glass Rhodes\"}, {\"blocks\": {\"tape\": true, \"trem\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Tape Rhodes\"}, {\"blocks\": {\"tape\": false, \"trem\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Dry Keys\", \"params\": {\"verb\": {\"mix\": 10}}}, {\"blocks\": {\"tape\": true, \"trem\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-D\"}}, \"name\": \"Underwater\", \"params\": {\"verb\": {\"mix\": 36}}}]}"
 }

@@ -48,6 +48,17 @@
       }
      },
      {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Keys",
+       "mode": "Classic",
+       "rate": 0.5,
+       "depth": 4,
+       "mix": 0.35
+      }
+     },
+     {
       "id": "dly",
       "type": "delay",
       "params": {
@@ -74,17 +85,32 @@
     {
      "id": "st-keys-1-A",
      "name": "Ballad Piano",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-1-B",
      "name": "Bright Pop",
-     "blocks": {},
+     "blocks": {
+      "chorus": true,
+      "dly": false
+     },
      "params": {
       "eq": {
-       "highs": 3
+       "highs": 5,
+       "midgain": 2,
+       "midfreq": 3000
+      },
+      "comp": {
+       "ratio": 5,
+       "makeup": 4
+      },
+      "plate": {
+       "mix": 12
       }
      },
      "branches": {}
@@ -93,18 +119,32 @@
      "id": "st-keys-1-C",
      "name": "Echo Piano",
      "blocks": {
+      "chorus": false,
       "dly": true
      },
-     "params": {},
+     "params": {
+      "dly": {
+       "mix": 26,
+       "feedback": 40
+      }
+     },
      "branches": {}
     },
     {
      "id": "st-keys-1-D",
      "name": "Soft Bed",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "dly": false
+     },
      "params": {
       "eq": {
-       "highs": -3
+       "highs": -8,
+       "lowcut": 120
+      },
+      "plate": {
+       "mix": 38,
+       "decay": 3
       }
      },
      "branches": {}
@@ -116,7 +156,10 @@
   {
    "id": "A",
    "name": "Ballad Piano",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "dly": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-A"
@@ -126,34 +169,58 @@
   {
    "id": "B",
    "name": "Bright Pop",
-   "blocks": {},
+   "blocks": {
+    "chorus": true,
+    "dly": false
+   },
    "lanes": {
     "keys-1": {
-     "state": "st-keys-1-B"
+     "state": "st-keys-1-B",
+     "level": 1
     }
    },
    "params": {
     "eq": {
-     "highs": 3
+     "highs": 5,
+     "midgain": 2,
+     "midfreq": 3000
+    },
+    "comp": {
+     "ratio": 5,
+     "makeup": 4
+    },
+    "plate": {
+     "mix": 12
     }
-   }
+   },
+   "level": 1
   },
   {
    "id": "C",
    "name": "Echo Piano",
    "blocks": {
+    "chorus": false,
     "dly": true
    },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-C"
     }
+   },
+   "params": {
+    "dly": {
+     "mix": 26,
+     "feedback": 40
+    }
    }
   },
   {
    "id": "D",
    "name": "Soft Bed",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "dly": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-D",
@@ -162,7 +229,12 @@
    },
    "params": {
     "eq": {
-     "highs": -3
+     "highs": -8,
+     "lowcut": 120
+    },
+    "plate": {
+     "mix": 38,
+     "decay": 3
     }
    },
    "level": -3
@@ -226,6 +298,17 @@
      "midgain": 0,
      "midfreq": 800,
      "highs": 1
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Keys",
+     "mode": "Classic",
+     "rate": 0.5,
+     "depth": 4,
+     "mix": 0.35
     }
    },
    {
@@ -297,5 +380,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"stars\", \"6\": \"vortex\", \"9\": \"strobe\", \"A\": \"wave\", \"B\": \"heartbeat\", \"C\": \"lightning\", \"D\": \"smoke\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Pop Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Ballad Piano\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Bright Pop\", \"params\": {\"eq\": {\"highs\": 3}}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Echo Piano\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Soft Bed\", \"params\": {\"eq\": {\"highs\": -3}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Ballad Piano\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Bright Pop\", \"params\": {\"eq\": {\"highs\": 3}}}, {\"blocks\": {\"dly\": true}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Echo Piano\"}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-D\"}}, \"level\": -3, \"name\": \"Soft Bed\", \"params\": {\"eq\": {\"highs\": -3}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"stars\", \"6\": \"vortex\", \"9\": \"strobe\", \"A\": \"wave\", \"B\": \"heartbeat\", \"C\": \"lightning\", \"D\": \"smoke\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Keys\", \"rate\": 0.5}, \"type\": \"chorus\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"piano\", \"params\": {\"sfz\": \"library/sfz/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-V3+20200602.sfz\", \"volume\": 0}, \"type\": \"piano\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 60, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Keys\", \"rate\": 0.5}, \"type\": \"chorus\"}, {\"foot\": 6, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.8, \"hicut\": 8000, \"mix\": 22, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Pop Piano\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Ballad Piano\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"dly\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Bright Pop\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 5}, \"eq\": {\"highs\": 5, \"midfreq\": 3000, \"midgain\": 2}, \"plate\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Echo Piano\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Soft Bed\", \"params\": {\"eq\": {\"highs\": -8, \"lowcut\": 120}, \"plate\": {\"decay\": 3, \"mix\": 38}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"chorus\": false, \"dly\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Ballad Piano\"}, {\"blocks\": {\"chorus\": true, \"dly\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-B\"}}, \"level\": 1, \"name\": \"Bright Pop\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 5}, \"eq\": {\"highs\": 5, \"midfreq\": 3000, \"midgain\": 2}, \"plate\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": false, \"dly\": true}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-C\"}}, \"name\": \"Echo Piano\", \"params\": {\"dly\": {\"feedback\": 40, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"dly\": false}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": -3, \"state\": \"st-keys-1-D\"}}, \"level\": -3, \"name\": \"Soft Bed\", \"params\": {\"eq\": {\"highs\": -8, \"lowcut\": 120}, \"plate\": {\"decay\": 3, \"mix\": 38}}}]}"
 }

@@ -98,6 +98,69 @@
    "C": "guitar/lead-clean",
    "D": "guitar/clean",
    "E": "guitar/crunch"
+  },
+  "factory-bass-upright-jazz": {
+   "A": "bass/finger",
+   "B": "bass/sustain",
+   "C": "bass/finger",
+   "D": "bass/finger"
+  },
+  "factory-bass-blues-round": {
+   "A": "bass/sustain",
+   "B": "bass/pick",
+   "C": "bass/sustain",
+   "D": "bass/pick"
+  },
+  "factory-bass-prog-biamp": {
+   "A": "bass/sustain",
+   "B": "bass/finger",
+   "C": "bass/finger",
+   "D": "bass/pick"
+  },
+  "factory-bass-metal-grind": {
+   "A": "bass/pick",
+   "B": "bass/finger",
+   "C": "bass/sustain",
+   "D": "bass/pick"
+  },
+  "factory-bass-synth-ambient": {
+   "A": "bass/sustain",
+   "B": "bass/sustain",
+   "C": "bass/sustain",
+   "D": "bass/finger"
+  },
+  "factory-bass-fuzz": {
+   "A": "bass/pick",
+   "B": "bass/pick",
+   "C": "bass/sustain",
+   "D": "bass/pick"
+  },
+  "factory-bass-funk-slap": {
+   "A": "bass/finger",
+   "B": "bass/finger",
+   "C": "bass/finger",
+   "D": "bass/finger",
+   "E": "bass/sustain"
+  },
+  "factory-bass-nu-low": {
+   "A": "bass/sustain",
+   "B": "bass/finger",
+   "C": "bass/pick",
+   "D": "bass/sustain"
+  },
+  "factory-bass-pop-pick": {
+   "A": "bass/pick",
+   "B": "bass/pick",
+   "C": "bass/sustain",
+   "D": "bass/sustain",
+   "E": "bass/sustain"
+  },
+  "factory-bass-lab": {
+   "A": "bass/sustain",
+   "B": "bass/finger",
+   "C": "bass/sustain",
+   "D": "bass/pick",
+   "E": "bass/sustain"
   }
  }
 }

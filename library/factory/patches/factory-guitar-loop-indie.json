@@ -17,206 +17,203 @@
    "name": "Loop Indie",
    "midi": false,
    "chain": {
-    "pre": [
+    "chain": [
      {
       "id": "gate",
-      "type": "gate",
       "params": {
-       "thresh": -60,
-       "release": 120
-      }
+       "release": 120,
+       "thresh": -60
+      },
+      "type": "gate"
      },
      {
+      "foot": 6,
       "id": "klon",
-      "type": "pedal-nam",
       "label": "Klon Centaur",
-      "ref": "2599",
       "model": "419209",
       "params": {
        "input": 0,
        "output": -2
       },
-      "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+      "ref": "2599",
+      "type": "pedal-nam"
+     },
      {
       "id": "drii",
-      "type": "amp",
       "label": "Fender Deluxe Reverb II",
-      "ref": "6237",
       "model": "418153",
       "params": {
        "input": -2,
        "output": 0
-      }
+      },
+      "ref": "6237",
+      "type": "amp"
      },
      {
+      "foot": 8,
       "id": "swell",
-      "type": "swell",
       "params": {
        "rise": 600,
        "sens": 50
       },
-      "foot": 8
+      "type": "swell"
      },
      {
+      "foot": 7,
       "id": "chorus",
-      "type": "chorus",
       "params": {
-       "profile": "Guitar Clean",
-       "mode": "Classic",
-       "rate": 0.6,
        "depth": 4,
-       "mix": 0.35
+       "mix": 0.35,
+       "mode": "Classic",
+       "profile": "Guitar Clean",
+       "rate": 0.6
       },
-      "foot": 7
+      "type": "chorus"
      },
      {
       "id": "dly",
-      "type": "delay",
       "params": {
-       "model": "Digital",
-       "time": "1/8•",
        "feedback": 38,
-       "mix": 20
-      }
+       "mix": 20,
+       "model": "Digital",
+       "time": "1/8•"
+      },
+      "type": "delay"
      },
      {
       "id": "verb",
-      "type": "reverb",
       "params": {
        "algo": "Hall",
-       "mix": 22,
        "decay": 2.2,
-       "size": 32,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 22,
+       "size": 32
+      },
+      "type": "reverb"
      }
     ]
    },
    "states": [
     {
+     "blocks": {
+      "chorus": true,
+      "klon": false,
+      "swell": false
+     },
+     "branches": {},
      "id": "st-guitar-1-A",
      "name": "Jangle",
-     "blocks": {
-      "klon": false,
-      "swell": false,
-      "chorus": true
-     },
-     "params": {},
-     "branches": {}
+     "params": {}
     },
     {
+     "blocks": {
+      "chorus": false,
+      "klon": false,
+      "swell": false
+     },
+     "branches": {},
      "id": "st-guitar-1-B",
      "name": "Dotted Echo",
-     "blocks": {
-      "klon": false,
-      "swell": false,
-      "chorus": false
-     },
      "params": {
       "dly": {
-       "mix": 26,
-       "feedback": 45
+       "feedback": 45,
+       "mix": 26
       }
-     },
-     "branches": {}
+     }
     },
     {
+     "blocks": {
+      "chorus": false,
+      "klon": true,
+      "swell": false
+     },
+     "branches": {},
      "id": "st-guitar-1-C",
      "name": "Klon Push",
-     "blocks": {
-      "klon": true,
-      "swell": false,
-      "chorus": false
-     },
      "params": {
       "dly": {
        "mix": 12
       }
-     },
-     "branches": {}
+     }
     },
     {
+     "blocks": {
+      "chorus": true,
+      "klon": false,
+      "swell": true
+     },
+     "branches": {},
      "id": "st-guitar-1-D",
      "name": "Swell Pad",
-     "blocks": {
-      "klon": false,
-      "swell": true,
-      "chorus": true
-     },
      "params": {
       "verb": {
-       "mix": 34,
-       "decay": 3.4
+       "decay": 3.4,
+       "mix": 34
       }
-     },
-     "branches": {}
+     }
     },
     {
+     "blocks": {
+      "chorus": true,
+      "klon": true,
+      "swell": false
+     },
+     "branches": {},
      "id": "st-guitar-1-E",
      "name": "Lead Out",
-     "blocks": {
-      "klon": true,
-      "swell": false,
-      "chorus": true
-     },
-     "params": {},
-     "branches": {}
+     "params": {}
     }
    ]
   }
  ],
  "scenes": [
   {
-   "id": "A",
-   "name": "Jangle",
    "blocks": {
+    "chorus": true,
     "klon": false,
-    "swell": false,
-    "chorus": true
+    "swell": false
    },
+   "id": "A",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-A"
     }
-   }
+   },
+   "name": "Jangle"
   },
   {
-   "id": "B",
-   "name": "Dotted Echo",
    "blocks": {
+    "chorus": false,
     "klon": false,
-    "swell": false,
-    "chorus": false
+    "swell": false
    },
+   "id": "B",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-B"
     }
    },
+   "name": "Dotted Echo",
    "params": {
     "dly": {
-     "mix": 26,
-     "feedback": 45
+     "feedback": 45,
+     "mix": 26
     }
    }
   },
   {
-   "id": "C",
-   "name": "Klon Push",
    "blocks": {
+    "chorus": false,
     "klon": true,
-    "swell": false,
-    "chorus": false
+    "swell": false
    },
+   "id": "C",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-C"
     }
    },
+   "name": "Klon Push",
    "params": {
     "dly": {
      "mix": 12
@@ -224,40 +221,40 @@
    }
   },
   {
-   "id": "D",
-   "name": "Swell Pad",
    "blocks": {
+    "chorus": true,
     "klon": false,
-    "swell": true,
-    "chorus": true
+    "swell": true
    },
+   "id": "D",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-D"
     }
    },
+   "name": "Swell Pad",
    "params": {
     "verb": {
-     "mix": 34,
-     "decay": 3.4
+     "decay": 3.4,
+     "mix": 34
     }
    }
   },
   {
-   "id": "E",
-   "name": "Lead Out",
    "blocks": {
+    "chorus": true,
     "klon": true,
-    "swell": false,
-    "chorus": true
+    "swell": false
    },
+   "id": "E",
    "lanes": {
     "guitar-1": {
-     "state": "st-guitar-1-E",
-     "level": 2
+     "level": 2,
+     "state": "st-guitar-1-E"
     }
    },
-   "level": 2
+   "level": 2,
+   "name": "Lead Out"
   }
  ],
  "config": {
@@ -265,16 +262,16 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
      "foot": 10,
+     "id": "drums",
      "params": {
+      "fills": [],
+      "kit": "drums-black-pearl",
       "patterns": [
        "library/grooves/golem-rock-8.mid"
-      ],
-      "fills": [],
-      "kit": "drums-black-pearl"
-     }
+      ]
+     },
+     "type": "drums"
     }
    ]
   },
@@ -290,82 +287,79 @@
  },
  "bpm": 112,
  "chain": {
-  "pre": [
+  "chain": [
    {
     "id": "gate",
-    "type": "gate",
     "params": {
-     "thresh": -60,
-     "release": 120
-    }
+     "release": 120,
+     "thresh": -60
+    },
+    "type": "gate"
    },
    {
+    "foot": 6,
     "id": "klon",
-    "type": "pedal-nam",
     "label": "Klon Centaur",
-    "ref": "2599",
     "model": "419209",
     "params": {
      "input": 0,
      "output": -2
     },
-    "foot": 6
-   }
-  ],
-  "split": null,
-  "post": [
+    "ref": "2599",
+    "type": "pedal-nam"
+   },
    {
     "id": "drii",
-    "type": "amp",
     "label": "Fender Deluxe Reverb II",
-    "ref": "6237",
     "model": "418153",
     "params": {
      "input": -2,
      "output": 0
-    }
+    },
+    "ref": "6237",
+    "type": "amp"
    },
    {
+    "foot": 8,
     "id": "swell",
-    "type": "swell",
     "params": {
      "rise": 600,
      "sens": 50
     },
-    "foot": 8
+    "type": "swell"
    },
    {
+    "foot": 7,
     "id": "chorus",
-    "type": "chorus",
     "params": {
-     "profile": "Guitar Clean",
-     "mode": "Classic",
-     "rate": 0.6,
      "depth": 4,
-     "mix": 0.35
+     "mix": 0.35,
+     "mode": "Classic",
+     "profile": "Guitar Clean",
+     "rate": 0.6
     },
-    "foot": 7
+    "type": "chorus"
    },
    {
     "id": "dly",
-    "type": "delay",
     "params": {
-     "model": "Digital",
-     "time": "1/8•",
      "feedback": 38,
-     "mix": 20
-    }
+     "mix": 20,
+     "model": "Digital",
+     "time": "1/8•"
+    },
+    "type": "delay"
    },
    {
     "id": "verb",
-    "type": "reverb",
     "params": {
      "algo": "Hall",
-     "mix": 22,
      "decay": 2.2,
-     "size": 32,
-     "hicut": 7000
-    }
+     "hicut": 7000,
+     "mix": 22,
+     "size": 32
+    },
+    "type": "reverb"
    }
   ]
  },
@@ -397,7 +391,7 @@
  },
  "anims": {
   "A": "glitch",
-  "B": "monster",
+  "B": "ripple",
   "C": "rain",
   "D": "vu",
   "E": "wave",
@@ -458,5 +452,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"strobe\", \"6\": \"heartbeat\", \"7\": \"lightning\", \"8\": \"smoke\", \"9\": \"vortex\", \"A\": \"glitch\", \"B\": \"monster\", \"C\": \"rain\", \"D\": \"vu\", \"E\": \"wave\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"post\": [{\"id\": \"drii\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"swell\", \"params\": {\"rise\": 600, \"sens\": 50}, \"type\": \"swell\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 20, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.2, \"hicut\": 7000, \"mix\": 22, \"size\": 32}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2599\", \"type\": \"pedal-nam\"}], \"split\": null}, \"colors\": {\"10\": \"#06d6a0\", \"6\": \"#06d6a0\", \"7\": \"#06d6a0\", \"8\": \"#06d6a0\", \"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\", \"E\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"drii\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"swell\", \"params\": {\"rise\": 600, \"sens\": 50}, \"type\": \"swell\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 20, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.2, \"hicut\": 7000, \"mix\": 22, \"size\": 32}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2599\", \"type\": \"pedal-nam\"}], \"split\": null}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Loop Indie\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Jangle\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"klon\": false, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Dotted Echo\", \"params\": {\"dly\": {\"feedback\": 45, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"klon\": true, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Klon Push\", \"params\": {\"dly\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Swell Pad\", \"params\": {\"verb\": {\"decay\": 3.4, \"mix\": 34}}}, {\"blocks\": {\"chorus\": true, \"klon\": true, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead Out\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Jangle\"}, {\"blocks\": {\"chorus\": false, \"klon\": false, \"swell\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Dotted Echo\", \"params\": {\"dly\": {\"feedback\": 45, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"klon\": true, \"swell\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Klon Push\", \"params\": {\"dly\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Swell Pad\", \"params\": {\"verb\": {\"decay\": 3.4, \"mix\": 34}}}, {\"blocks\": {\"chorus\": true, \"klon\": true, \"swell\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Lead Out\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"strobe\", \"6\": \"heartbeat\", \"7\": \"lightning\", \"8\": \"smoke\", \"9\": \"vortex\", \"A\": \"glitch\", \"B\": \"ripple\", \"C\": \"rain\", \"D\": \"vu\", \"E\": \"wave\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2599\", \"type\": \"pedal-nam\"}, {\"id\": \"drii\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"swell\", \"params\": {\"rise\": 600, \"sens\": 50}, \"type\": \"swell\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 20, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.2, \"hicut\": 7000, \"mix\": 22, \"size\": 32}, \"type\": \"reverb\"}]}, \"colors\": {\"10\": \"#06d6a0\", \"6\": \"#06d6a0\", \"7\": \"#06d6a0\", \"8\": \"#06d6a0\", \"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\", \"E\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"klon\", \"label\": \"Klon Centaur\", \"model\": \"419209\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"2599\", \"type\": \"pedal-nam\"}, {\"id\": \"drii\", \"label\": \"Fender Deluxe Reverb II\", \"model\": \"418153\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"6237\", \"type\": \"amp\"}, {\"foot\": 8, \"id\": \"swell\", \"params\": {\"rise\": 600, \"sens\": 50}, \"type\": \"swell\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.35, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 38, \"mix\": 20, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.2, \"hicut\": 7000, \"mix\": 22, \"size\": 32}, \"type\": \"reverb\"}]}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Loop Indie\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-A\", \"name\": \"Jangle\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"klon\": false, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-B\", \"name\": \"Dotted Echo\", \"params\": {\"dly\": {\"feedback\": 45, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"klon\": true, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-C\", \"name\": \"Klon Push\", \"params\": {\"dly\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": true}, \"branches\": {}, \"id\": \"st-guitar-1-D\", \"name\": \"Swell Pad\", \"params\": {\"verb\": {\"decay\": 3.4, \"mix\": 34}}}, {\"blocks\": {\"chorus\": true, \"klon\": true, \"swell\": false}, \"branches\": {}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead Out\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": false}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Jangle\"}, {\"blocks\": {\"chorus\": false, \"klon\": false, \"swell\": false}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Dotted Echo\", \"params\": {\"dly\": {\"feedback\": 45, \"mix\": 26}}}, {\"blocks\": {\"chorus\": false, \"klon\": true, \"swell\": false}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Klon Push\", \"params\": {\"dly\": {\"mix\": 12}}}, {\"blocks\": {\"chorus\": true, \"klon\": false, \"swell\": true}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Swell Pad\", \"params\": {\"verb\": {\"decay\": 3.4, \"mix\": 34}}}, {\"blocks\": {\"chorus\": true, \"klon\": true, \"swell\": false}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 2, \"state\": \"st-guitar-1-E\"}}, \"level\": 2, \"name\": \"Lead Out\"}]}"
 }

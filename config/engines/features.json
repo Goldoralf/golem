@@ -9,7 +9,7 @@
   "_blocks_doc": "Les types de blocs qu'une fonction porte : un moteur qui ne déclare pas cette fonction « yes » rend ces blocs indisponibles (raison « engine », docs/block-status.md). Un type absent d'ici ne dépend d'aucune fonction.",
   "blocks": {
     "recording": ["rec"], "backing": ["backing-track"], "click": ["click"], "looper": ["looper"],
-    "drum_machine": ["drums"], "samples": ["sample", "pads"], "standards": ["standard"], "riff": ["compo"],
+    "drum_machine": ["drums"], "samples": ["sample"], "standards": ["standard"], "riff": ["compo"],
     "kill_switch": ["killswitch"]
   }
 }

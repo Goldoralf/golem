@@ -632,8 +632,9 @@ def test_patch_preview_rend_chaque_scene_et_ne_laisse_rien(rack, monkeypatch):
     monkeypatch.setattr(J, "_settle_captures", lambda blocks, budget_s=0: {"matched": [], "installed": [], "failed": []})
     seen = {}
 
-    def fake_generate(pid, seq, on_scene=None, in_key="1", ref=None):
+    def fake_generate(pid, seq, on_scene=None, in_key="1", ref=None, only=None, max_s=None):
         seen.update(pid=pid, in_key=in_key, ref=ref)
+        assert only is None and max_s is None                                    # sans `scene` ni `max_s` : tout, entier
         p = json.load(open(os.path.join(C.PRESETS_DIR, pid + ".json")))         # le preset temporaire EXISTE pendant le rendu
         p["preview"] = {"ref": ref or "guitar/crunch", "instrument": "guitar", "fingerprint": "fp1", "scenes": {"A": "previews/x/A.opus", "B": "previews/x/B.opus"}}
         json.dump(p, open(os.path.join(C.PRESETS_DIR, pid + ".json"), "w"))
@@ -666,3 +667,43 @@ def test_patch_preview_refuse_en_le_disant(rack, monkeypatch):
     with pytest.raises(RuntimeError, match="reference DI missing"):
         J._patch_preview({"action": "patch-preview", "sha": "x", "role": "guitar", "patch_id": "p"})
     assert not os.path.exists(os.path.join(C.PRESETS_DIR, "preview-p.json"))
+
+
+def test_patch_preview_une_seule_scene_un_extrait_et_un_role_midi(rack, monkeypatch):
+    """2026-11-17 (golem.fm « Hear it ») : `scene` ne rend que celle-là, `max_s` est borné 3-30 s et passé à l'encodeur,
+    et un rôle MIDI (claviers) n'est plus refusé : il se rend par l'entrée « k »."""
+    from bridge import preview as PV
+    _blob(monkeypatch, {"schema_version": 2, "role": "keys", "chain": [{"type": "comp", "id": "c1"}],
+                        "scenes": [{"id": "A", "name": "A"}, {"id": "B", "name": "B"}]})
+    monkeypatch.setattr(J, "_settle_captures", lambda blocks, budget_s=0: {"matched": [], "installed": [], "failed": []})
+    seen = {}
+
+    def fake_generate(pid, seq, on_scene=None, in_key="1", ref=None, only=None, max_s=None):
+        seen.update(in_key=in_key, only=only, max_s=max_s)
+        p = json.load(open(os.path.join(C.PRESETS_DIR, pid + ".json")))
+        p["preview"] = {"alt": {"k": {"ref": "keys/piano", "instrument": "keys", "fingerprint": "fp2",
+                                      "scenes": {"B": "previews/x/B.opus"}}}}
+        json.dump(p, open(os.path.join(C.PRESETS_DIR, pid + ".json"), "w"))
+        on_scene("B", "previews/x/B.opus")
+    monkeypatch.setattr(PV, "generate", fake_generate)
+    monkeypatch.setattr(PV, "status", lambda: {"phase": "done"})
+    monkeypatch.setattr(PV, "push_clip", lambda pid, sc, rel: {"sha256": "s-" + sc, "duration": 12.0})
+    monkeypatch.setattr(PV, "_di_index", lambda: {})
+    r = J._patch_preview({"action": "patch-preview", "sha": "x", "role": "keys", "patch_id": "~draft", "scene": "B", "max_s": 99})
+    assert seen == {"in_key": "k", "only": "B", "max_s": 30.0}
+    assert r["scenes"] == {"B": {"sha256": "s-B", "duration": 12.0}} and r["di"] == "keys/piano" and r["max_s"] == 30.0
+    with pytest.raises(RuntimeError, match="max_s"):
+        J._patch_preview({"action": "patch-preview", "sha": "x", "role": "keys", "patch_id": "d", "max_s": "long"})
+
+
+def test_l_extrait_est_coupe_a_la_duree_demandee(tmp_path):
+    import shutil
+    import subprocess
+    from bridge import preview as PV
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg absent")
+    wav = str(tmp_path / "a.wav")
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=frequency=220:duration=8", wav], check=True, capture_output=True)
+    assert PV._encode_opus(wav, str(tmp_path / "full.opus")) and PV._encode_opus(wav, str(tmp_path / "cut.opus"), max_s=3.0)
+    assert abs(PV._clip_duration(str(tmp_path / "full.opus")) - 8.0) < 0.3
+    assert abs(PV._clip_duration(str(tmp_path / "cut.opus")) - 3.0) < 0.3

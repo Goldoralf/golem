@@ -106,3 +106,29 @@ def test_le_lien_n_ecoute_que_la_ou_reaper_parle_et_n_ouvre_rien_a_la_constructi
     local, remote = _link(), _link(host="192.168.1.20")
     assert local._addr == ("127.0.0.1", 9000) and remote._addr == ("0.0.0.0", 9000)
     assert local._server is None and remote._server is None
+
+
+# ── /api/recall : un rappel refusé par le moteur ne répond plus « ok » ───────────────────────────────────────────
+def _fake_recall(monkeypatch, ok, err=None):
+    monkeypatch.setattr(A.state, "rig_error", None, raising=False)
+
+    async def recall_async(pid, scene):
+        A.state.rig_error = err
+        return ok
+    monkeypatch.setattr(A.recall_mod, "recall_async", recall_async)
+    monkeypatch.setattr(A, "load_preset", lambda pid: {"id": pid})
+    monkeypatch.setattr(A.state, "snapshot", lambda: {"rig_error": A.state.rig_error})
+
+
+def test_un_rappel_refuse_repond_422_avec_l_erreur_du_moteur(monkeypatch, quiet):
+    """2026-11-09 : un patch aux ids de blocs dupliqués était refusé à la compilation, et /api/recall disait
+    `ok: true` — un banc a mesuré l'ancien rig en croyant mesurer le nouveau."""
+    _fake_recall(monkeypatch, False, "ids de blocs dupliqués : gate")
+    r = asyncio.run(A.recall(None, {"preset": "patch:x", "scene": "A"}))
+    assert r.status_code == 422
+    assert _body(r)["ok"] is False and "dupliqués" in _body(r)["error"] and _body(r)["state"]["rig_error"]
+
+
+def test_un_rappel_accepte_repond_ok(monkeypatch, quiet):
+    _fake_recall(monkeypatch, True)
+    assert asyncio.run(A.recall(None, {"preset": "patch:x"}))["ok"] is True

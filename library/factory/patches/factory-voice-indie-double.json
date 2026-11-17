@@ -96,6 +96,7 @@
      "id": "st-voice-1-A",
      "name": "Double",
      "blocks": {
+      "dly": false,
       "double": true
      },
      "params": {},
@@ -105,6 +106,7 @@
      "id": "st-voice-1-B",
      "name": "Single",
      "blocks": {
+      "dly": false,
       "double": false
      },
      "params": {},
@@ -114,7 +116,8 @@
      "id": "st-voice-1-C",
      "name": "Slap",
      "blocks": {
-      "dly": true
+      "dly": true,
+      "double": false
      },
      "params": {},
      "branches": {}
@@ -123,6 +126,7 @@
      "id": "st-voice-1-D",
      "name": "Shout",
      "blocks": {
+      "dly": false,
       "double": true
      },
      "params": {
@@ -140,6 +144,7 @@
    "id": "A",
    "name": "Double",
    "blocks": {
+    "dly": false,
     "double": true
    },
    "lanes": {
@@ -152,6 +157,7 @@
    "id": "B",
    "name": "Single",
    "blocks": {
+    "dly": false,
     "double": false
    },
    "lanes": {
@@ -164,7 +170,8 @@
    "id": "C",
    "name": "Slap",
    "blocks": {
-    "dly": true
+    "dly": true,
+    "double": false
    },
    "lanes": {
     "voice-1": {
@@ -176,6 +183,7 @@
    "id": "D",
    "name": "Shout",
    "blocks": {
+    "dly": false,
     "double": true
    },
    "lanes": {
@@ -298,12 +306,12 @@
  "anims": {
   "A": "sheen",
   "B": "glitch",
-  "C": "monster",
+  "C": "vu",
   "D": "rain",
   "6": "vu",
   "7": "wave",
   "9": "heartbeat"
  },
  "deps": [],
- "deps_sig": "{\"anims\": {\"6\": \"vu\", \"7\": \"wave\", \"9\": \"heartbeat\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"monster\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 15, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 18, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#06d6a0\", \"7\": \"#06d6a0\", \"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 15, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 18, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Indie Double\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Double\", \"params\": {}}, {\"blocks\": {\"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Single\", \"params\": {}}, {\"blocks\": {\"dly\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Slap\", \"params\": {}}, {\"blocks\": {\"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Shout\", \"params\": {\"comp\": {\"ratio\": 5}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"double\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Double\"}, {\"blocks\": {\"double\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Single\"}, {\"blocks\": {\"dly\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Slap\"}, {\"blocks\": {\"double\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Shout\", \"params\": {\"comp\": {\"ratio\": 5}}}]}"
+ "deps_sig": "{\"anims\": {\"6\": \"vu\", \"7\": \"wave\", \"9\": \"heartbeat\", \"A\": \"sheen\", \"B\": \"glitch\", \"C\": \"vu\", \"D\": \"rain\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 15, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 18, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"6\": \"#06d6a0\", \"7\": \"#06d6a0\", \"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 3.5, \"thresh\": -22}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 15, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/8\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 18, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Indie Double\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Double\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Single\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Slap\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Shout\", \"params\": {\"comp\": {\"ratio\": 5}}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"double\": true}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Double\"}, {\"blocks\": {\"dly\": false, \"double\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Single\"}, {\"blocks\": {\"dly\": true, \"double\": false}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Slap\"}, {\"blocks\": {\"dly\": false, \"double\": true}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Shout\", \"params\": {\"comp\": {\"ratio\": 5}}}]}"
 }

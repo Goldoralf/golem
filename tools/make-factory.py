@@ -89,27 +89,126 @@ def drums_service(grooves, kit="drums-black-pearl"):
     return {"type": "drums", "id": "drums", "foot": 10, "params": {"patterns": [G + g + ".mid" for g in grooves], "fills": [], "kit": kit}}
 
 
+# LE STANDARD DES PATCHES JAZZ ET BLUES (2026-11-16, le mainteneur) : sur SW10, à la place de la boîte à rythmes — une grille
+# d'usine et le combo qui l'accompagne, sans la partie de l'instrument du patch (on ne s'accompagne pas soi-même).
+# pid -> (grille, kit, voicing). Le feel reste « swing » : le blues lent à 66 se joue en triolets, comme un 12/8.
+PATCH_STD = {
+    "factory-guitar-jazz-box": ("rooftop-prowl", "blonde-bop", "rootless"),
+    "factory-guitar-texas-shuffle": ("rented-room-blues", "black-pearl", "full"),
+    "factory-guitar-wailing-blues": ("rented-room-blues", "black-pearl", "full"),
+    "factory-bass-upright-jazz": ("rooftop-prowl", "blonde-bop", "rootless"),
+    "factory-bass-blues-round": ("rented-room-blues", "black-pearl", "full"),
+    "factory-keys-jazz-piano": ("rooftop-prowl", "blonde-bop", "rootless"),
+    "factory-keys-blues-organ": ("rented-room-blues", "black-pearl", "full"),
+    "factory-voice-crooner": ("rooftop-prowl", "blonde-bop", "rootless"),
+    "factory-voice-blues-shout": ("rented-room-blues", "black-pearl", "full"),
+    "factory-drums-jazz-brushes": ("rooftop-prowl", "blonde-bop", "rootless"),
+    "factory-drums-vintage-rock": ("rented-room-blues", "red-zeppelin", "full"),
+}
+
+
+def _patch_gen(pid, role, groove, kit, gen):
+    """Le bloc de SW10 d'un patch : celui qu'on lui donne, sinon son Standard, sinon la boîte à rythmes."""
+    if gen is not None:
+        return gen
+    if pid in PATCH_STD:
+        chart, skit, voicing = PATCH_STD[pid]
+        parts = {"keys": True, "bass": True, "drums": True}
+        own = {"bass": "bass", "keys": "keys", "drums": "drums"}.get(role)
+        if own:
+            parts[own] = False
+        return [std(chart, skit, "swing", voicing=voicing, **parts)]
+    return [] if role == "drums" or groove is None else [drums_service([groove], kit)]
+
+
 def _anims(cells, seed):
     """Une animation par case, tirée de la palette d'usine, stable d'une génération à l'autre."""
     h = int(hashlib.sha256(seed.encode()).hexdigest(), 16)
-    return {c: ANIMS[(h + i * 7) % len(ANIMS)] for i, c in enumerate(cells)}
+    # « monster » est l'animation d'une case VIERGE sur /live (page-live.js, EMPTY_ANIM) : une case occupée qui la
+    # porte se lit comme vide. Le tirage garde ses 19 rangs (les autres cases ne bougent pas) ; celui qui tombe sur
+    # le monstre en prend une autre, tirée d'un autre morceau du même hachage.
+    rest = [a for a in ANIMS if a != "monster"]
+    out = {}
+    for i, c in enumerate(cells):
+        a = ANIMS[(h + i * 7) % len(ANIMS)]
+        out[c] = rest[((h >> 16) + i * 5) % len(rest)] if a == "monster" else a
+    return out
 
 
 PATCHES = {}
 
 
-def patch(pid, name, role, tags, chain, states, *, color, groove, bpm=120, service="rec", midi=False, kit="drums-black-pearl"):
+def _explicit(pid, chain, states):
+    # CHAQUE ÉTAT DIT TOUT (2026-11-16) : un bloc qu'une scène ne cite pas reste ALLUMÉ au rig (scene_bake) — écrit
+    # « Crushed : crush on » sans l'éteindre ailleurs, le bitcrusher jouait dans les quatre scènes et « Crushed » ne
+    # changeait rien. Un bloc qu'un état bascule est donc écrit dans TOUS : éteint s'il a un switch (un effet qu'on
+    # enclenche), allumé sinon (une room qu'une seule scène coupe). Et deux scènes au même contenu sont refusées.
+    feet_of = {b["id"]: b.get("foot") for b in lane_blocks(chain)}
+    toggled = sorted(set().union(*[set(s[2]) for s in states]))
+    states = [(sid, nm, {**{b: not feet_of.get(b) for b in toggled}, **bl}, pa, br, lvl) for sid, nm, bl, pa, br, lvl in states]
+    seen = {}
+    for sid, nm, bl, pa, br, _lvl in states:
+        key = json.dumps([bl, pa, br], sort_keys=True)
+        assert key not in seen, f"{pid} : la scène « {nm} » ne change rien par rapport à « {seen[key]} » (même contenu, au niveau près)"
+        seen[key] = nm
+    return states
+
+
+# ── LES SONS VALIDÉS À L'OREILLE (2026-11-16) ─────────────────────────────────────────────────────────────────────
+# Un patch d'usine retouché dans le Designer puis validé au rig a sa chaîne, ses états et ses scènes dans
+# tools/factory-validated/<id>.json (écrit par `--validate`, docs/factory.md §5.1) : ce fichier REMPLACE alors ce que la
+# fonction du patch décrit plus bas, qui ne reste que comme point de départ lisible. Le générateur garde la main sur
+# l'identité, le thème, le bloc de SW10 quand le fichier n'en dit rien, les dépendances — et les presets reprennent la
+# lane validée, par les NOMS d'états : un état renommé fait échouer la génération, on le voit tout de suite.
+VALIDATED = os.path.join(ROOT, "tools", "factory-validated")
+VALID_KEYS = ("chain", "states", "scenes", "bpm", "gen", "colors", "anims")
+
+
+def _validated(pid):
+    f = os.path.join(VALIDATED, pid + ".json")
+    return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else None
+
+
+def validate(ids):
+    """`--validate [id…]` : les patches d'usine retouchés sur ce rack (tous, ou ceux nommés) deviennent la source."""
+    from bridge import factory
+    mine = [e["id"] for e in factory.edited() if e["kind"] == "patches" and (not ids or e["id"] in ids)]
+    os.makedirs(VALIDATED, exist_ok=True)
+    for pid in mine:
+        d = json.load(open(os.path.join(ROOT, "library", "patches", pid + ".json"), encoding="utf-8"))
+        L = d["lanes"][0]
+        out = {"chain": L["chain"], "states": L.get("states") or [], "scenes": d["scenes"], "bpm": d.get("bpm"),
+               "gen": ((d.get("config") or {}).get("gen") or {}).get("blocks") or [],
+               "colors": d.get("colors") or {}, "anims": d.get("anims") or {}}
+        with open(os.path.join(VALIDATED, pid + ".json"), "w", encoding="utf-8") as f:
+            json.dump(out, f, indent=1, ensure_ascii=False, sort_keys=True)
+            f.write("\n")
+        print("validé :", pid)
+    return mine
+
+
+def patch(pid, name, role, tags, chain, states, *, color, groove, bpm=120, service="rec", midi=False, kit="drums-black-pearl", gen=None):
     """Un patch d'usine : UNE lane, ses états, une scène par état, de quoi jouer seul (la boîte à rythmes sur SW10, le REC
     ou le Riff sur SW9), le thème sur chaque case. `states` : (id, nom, blocs on/off, réglages, branches, niveau dB)."""
     lane_id = f"{role}-1"
+    val = _validated(pid)
+    if val:
+        return _emit_patch(pid, name, role, tags, val["chain"], val["states"], val["scenes"], color=color,
+                           bpm=val.get("bpm") or bpm, service=service, midi=midi,
+                           gen=val["gen"] if "gen" in val else _patch_gen(pid, role, groove, kit, gen), val=val)
+    # SANS SPLIT, TOUT EST DANS `pre` (2026-11-16) : le Designer ne dessine `post` que derrière un split — une chaîne
+    # écrite {pre, split: None, post} s'affichait coupée après `pre` (Jazz Box : Gate, Comp, et pas d'ampli à l'écran,
+    # alors que le moteur le jouait). Les fonctions g_*/b_*/… gardent leur écriture ; la forme livrée est celle-ci.
+    if "chain" not in chain and not chain.get("split"):
+        chain = {"pre": list(chain.get("pre") or []) + list(chain.get("post") or []), "split": None, "post": []}
     known_ids, _types, known_brs = _lane_sets({"chain": chain})
     for sid, nm, bl, pa, br, _lvl in states:                 # une faute de frappe ne passe pas en silence
         bad = (set(bl) | set(pa)) - known_ids
         assert not bad, f"{pid} état {nm} : blocs inconnus {sorted(bad)}"
         assert not (set(br) - known_brs), f"{pid} état {nm} : branches inconnues {sorted(set(br) - known_brs)}"
-    lane = {"id": lane_id, "role": role, "name": name, "midi": midi, "chain": chain,
-            "states": [{"id": f"st-{lane_id}-{sid}", "name": nm, "blocks": bl, "params": pa, "branches": br}
-                       for sid, nm, bl, pa, br, _lvl in states]}
+    states = _explicit(pid, chain, states)
+    lane_states = [{"id": f"st-{lane_id}-{sid}", "name": nm, "blocks": bl, "params": pa, "branches": br}
+                   for sid, nm, bl, pa, br, _lvl in states]
     scenes = []
     for sid, nm, bl, pa, br, lvl in states:
         sc = {"id": sid, "name": nm, "blocks": bl, "lanes": {lane_id: {"state": f"st-{lane_id}-{sid}", **({"level": lvl} if lvl else {})}}}
@@ -120,14 +219,28 @@ def patch(pid, name, role, tags, chain, states, *, color, groove, bpm=120, servi
         if lvl:
             sc["level"] = lvl
         scenes.append(sc)
-    gen = [] if role == "drums" or groove is None else [drums_service([groove], kit)]
-    feet = sorted({b["foot"] for b in lane_blocks(chain) if b.get("foot")} | {9} | ({10} if gen else set()))
-    cells = [s[0] for s in states] + [str(f) for f in feet]
+    return _emit_patch(pid, name, role, tags, chain, lane_states, scenes, color=color, bpm=bpm, service=service, midi=midi,
+                       gen=_patch_gen(pid, role, groove, kit, gen))
+
+
+def _emit_patch(pid, name, role, tags, chain, lane_states, scenes, *, color, bpm, service, midi, gen, val=None):
+    """Écrit le patch : la forme livrée, la copie locale, les dépendances. `val` : le son validé à l'oreille, s'il y en
+    a un — ses couleurs et animations de case sont gardées là où il en a choisi."""
+    lane_id = f"{role}-1"
+    # UN split, DEUX branches au plus (règle du mainteneur, 2026-11-16) : le Designer n'en dessine que deux — une troisième
+    # sonnait sans pouvoir se voir ni se régler (Bass Lab, Pop Chorus). Vaut aussi pour un son validé à l'oreille.
+    assert len((chain.get("split") or {}).get("branches") or []) <= 2, f"{pid} : un split a deux branches au plus"
+    lane = {"id": lane_id, "role": role, "name": name, "midi": midi, "chain": chain, "states": lane_states}
+    feet = sorted({b["foot"] for b in lane_blocks(chain) if b.get("foot")} | {9} | {b["foot"] for b in gen if b.get("foot")})
+    cells = [s["id"] for s in scenes] + [str(f) for f in feet]
     rec = {"id": "rec-global", "type": "rec", "foot": 9} if service == "rec" else {"id": "compo-global", "type": "compo", "foot": 9}
     doc = {"id": pid, "name": name, "role": role, "tags": tags, "kind": "patch", "patch_v": 2, "lanes_v": 2,
            "lanes": [lane], "scenes": scenes, "config": {"gen": {"out": "1-2", "blocks": gen}, "rec": {"blocks": [rec]}},
            "bpm": bpm, "chain": copy.deepcopy(chain), "needs": patches.needs_of(chain), "origin": "factory", "factory": True,
            "colors": {k: color for k in cells}, "anims": _anims(cells, pid)}
+    if val:
+        doc["colors"].update({k: v for k, v in (val.get("colors") or {}).items() if k in cells})
+        doc["anims"].update({k: v for k, v in (val.get("anims") or {}).items() if k in cells})
     local = os.path.join(ROOT, "library", "patches", pid + ".json")
     with open(local, "w", encoding="utf-8") as f:
         option_renames.apply(doc)
@@ -149,7 +262,7 @@ def S(sid, name, blocks=None, params=None, branches=None, level=0):
     return (sid, name, blocks or {}, params or {}, branches or {}, level)
 
 
-A_OFF, B_OFF, C_OFF = {"lane-a": {"mute": True}}, {"lane-b": {"mute": True}}, {"lane-c": {"mute": True}}
+A_OFF, B_OFF = {"lane-a": {"mute": True}}, {"lane-b": {"mute": True}}      # deux branches au plus : pas de C
 
 
 def two(a_blocks, b_blocks, gain=-3):
@@ -172,14 +285,18 @@ def pro_reverb():  return CAP("pro", "amp", 55360, 383837, "Fender Pro Reverb", 
 def p6505():       return CAP("p6505", "amp-nam", 29230, 418311, "Peavey 6505+", input=0, output=0)
 def bogner():      return CAP("bogner", "amp-nam", 6510, 398704, "Bogner Ecstasy 101B", input=0, output=0)
 def deluxe65():    return CAP("drri", "amp", 51649, 383455, "Fender Deluxe Reverb 65", input=-2, output=0)
-def randall():     return CAP("rg100", "amp-nam", 6779, 418633, "Randall RG-100", input=0, output=0)
 def warhead():     return CAP("x2", "amp", 31332, 382070, "Randall Warhead X2", input=0, output=0)
 def twin_rig():    return CAP("twin", "amp", 43620, 382265, "Fender Twin Reverb", input=-3, output=0)
 def ds1(foot=None, model=419260): return CAP("ds1", "pedal-nam", 2508, model, "Boss DS-1 Distortion", foot=foot, input=0, output=-3)
 def klon(foot=None):          return CAP("klon", "pedal-nam", 2599, 419209, "Klon Centaur", foot=foot, input=0, output=-2)
 def drii(bid="drii", model=418153): return CAP(bid, "amp", 6237, model, "Fender Deluxe Reverb II", input=-2, output=0)
 def bigmuff(foot=None):       return CAP("muff", "pedal-nam", 37818, 413514, "EHX Op-Amp Big Muff", foot=foot, input=0, output=-4)
-def jmp():         return CAP("jmp", "amp-nam", 70525, 577107, "Marshall JMP 2204", input=0, output=0)
+def muff_bright(foot=None):   return CAP("muff", "pedal-nam", 37818, 413521, "EHX Op-Amp Big Muff", foot=foot, input=0, output=-2)
+def jcm800_mod():  return CAP("jcm", "amp", 44209, 567082, "Marshall JCM800 2203 Modified", input=0, output=0)
+def twin_bright(): return CAP("twin", "amp-nam", 246, 418200, "Fender Twin Reverb", input=-2, output=0)
+def creamback():   return CAP("cab12", "cab", 5004, 67597, "Palmer 2x12 Creamback", level=0)
+def warhead_rhythm(): return CAP("x2", "amp", 31332, 380970, "Randall Warhead X2", input=0, output=0)
+def jc120b():      return CAP("jc", "amp", 10912, 379740, "Roland JC-120B", input=-2, output=0)
 def jubilee(model=106490, bid="jub"): return CAP(bid, "amp-nam", 27435, model, "Marshall Silver Jubilee", input=0, output=0)
 def dualrec():     return CAP("rect", "amp-nam", 70207, 576906, "Mesa Dual Rectifier", input=0, output=0)
 # basse
@@ -190,6 +307,7 @@ def gk_cab(model=72421, bid="gkcab"): return CAP(bid, "cab", 64815, model, "Gall
 def b7k():         return CAP("b7k", "amp", 27698, 413366, "Darkglass B7K Ultra", input=0, output=0)
 def alpha():       return CAP("alpha", "amp", 27697, 418278, "Darkglass Alpha Omega", input=0, output=0)
 def gk_head():     return CAP("rb800", "amp-nam", 2694, 419204, "Gallien-Krueger RB800", input=0, output=0)
+def aou():         return CAP("aou", "amp", 2420, 425030, "Darkglass Alpha Omega Ultra", input=0, output=0)
 def xultra():      return CAP("xultra", "amp-nam", 71220, 588114, "Darkglass X Ultra", input=0, output=0)
 
 
@@ -297,18 +415,20 @@ def g_hero_lead():
 
 
 def g_groove_metal():
-    # metal groove : un ampli à transistors, très sec, médiums creusés, un gate à clé ; un clair chorusé
+    # metal groove : un full rig à transistors pris au micro (2026-11-16, le mainteneur : le son d'avant manquait de patate — la tête
+    # RG-100 seule derrière une IR, et −6 dB à 800 Hz par-dessus), un creux de médiums plus léger, un gate à clé ; un
+    # clair chorusé sur un JC-120B micro SM57
     chain = {"pre": [met(-44, hold=10, release=60), B("boost", "shem", foot=6, grind=4, voice="Focused")],
-             "split": two([randall(), v30(model=239438)], [jc120()]),
-             "post": [B("geq", "eq-graphic", layout="Guitar 7", gt_100=2, gt_200=1, gt_400=-4, gt_800=-6, gt_1k6=-2, gt_3k2=3, gt_6k4=2),
+             "split": two([warhead_rhythm()], [jc120b()]),
+             "post": [B("geq", "eq-graphic", layout="Guitar 7", gt_100=2, gt_200=1, gt_400=-2, gt_800=-3, gt_1k6=0, gt_3k2=2, gt_6k4=1),
                       chorus(foot=8, mode="Classic", mix=0.4),
                       dly(foot=7, time="1/4", feedback=25, mix=12),
                       room(mix=10, decay=0.7)]}
     st = [S("A", "Southern Riff", {"boost": True, "chorus": False, "dly": False}, branches=B_OFF),
-          S("B", "Chug Breakdown", {"boost": True, "chorus": False, "dly": False}, {"met": {"thresh": -40}, "geq": {"gt_400": -6, "gt_800": -8}}, B_OFF),
+          S("B", "Chug Breakdown", {"boost": True, "chorus": False, "dly": False}, {"met": {"thresh": -40}, "geq": {"gt_400": -4, "gt_800": -5}}, B_OFF),
           S("C", "Scooped Wall", {"boost": False, "chorus": False, "dly": False}, branches=B_OFF),
           S("D", "Clean Chorus", {"boost": False, "chorus": True, "dly": True}, {"met": {"thresh": -70}}, A_OFF),
-          S("E", "Lead", {"boost": True, "chorus": False, "dly": True}, {"geq": {"gt_800": -2, "gt_1k6": 2}}, B_OFF, 3)]
+          S("E", "Lead", {"boost": True, "chorus": False, "dly": True}, {"geq": {"gt_800": 1, "gt_1k6": 3}}, B_OFF, 3)]
     return patch("factory-guitar-groove-metal", "Groove Metal", "guitar", ["metal", "groove"], chain, st,
                  color="#6a040f", groove="half-time", bpm=140, kit="drums-aasimonster")
 
@@ -366,17 +486,20 @@ def g_loop_indie():
 
 
 def g_fuzz_grunge():
-    # grunge épais : une Big Muff à op-amp devant une tête Marshall et un 4x12 Greenback, un phaser pour le pont
-    chain = {"pre": [gate(-52, release=90), bigmuff(foot=6)],
-             "split": None,
-             "post": [jmp(), greenback(), B("phase", "phaser-js", foot=7, model="Script 90", rate=0.4, feedback=-6, wet=-3),
+    # grunge épais, refait sur la guitare d'un preset du mainteneur qui sonne (2026-11-16) : DEUX amplis derrière un split —
+    # une Big Muff à op-amp (tonalité haute, peu de sustain) dans un JCM800 modifié pris au micro pour le mur, un Twin
+    # brillant et un 2x12 Creamback pour le clair. Par-dessus : un phaser pour le pont, un flanger sur le clair, un
+    # écho à bande pour le solo.
+    chain = {"pre": [gate(-52, release=90)],
+             "split": two([twin_bright(), creamback()], [muff_bright(foot=6), jcm800_mod()]),
+             "post": [B("phase", "phaser-js", foot=7, model="Script 90", rate=0.4, feedback=-6, wet=-3),
                       B("flange", "flanger-js", foot=8, mode="Mistress", rate=0.18, feedback=-14, depth=70),
-                      eq(lowcut=80, midgain=-1, midfreq=700, highs=0), dly(time="1/4", feedback=25, mix=10), room(mix=14)]}
-    st = [S("A", "Verse Crunch", {"muff": False, "phase": False, "flange": False}),
-          S("B", "Fuzz Wall", {"muff": True, "phase": False, "flange": False}),
-          S("C", "Fuzz Lead", {"muff": True, "phase": False, "flange": False}, {"eq": {"midgain": 3, "midfreq": 800}, "dly": {"mix": 18}}, level=3),
-          S("D", "Phased Bridge", {"muff": True, "phase": True, "flange": False}),
-          S("E", "Jet Clean", {"muff": False, "phase": False, "flange": True}, {"jmp": {"input": -10}})]
+                      eq(lowcut=80, midgain=0, midfreq=700, highs=0), dly(model="Tape", time="1/4", feedback=25, mix=10), room(mix=14)]}
+    st = [S("A", "Verse Crunch", {"muff": False, "phase": False, "flange": False}, branches=A_OFF),
+          S("B", "Fuzz Wall", {"muff": True, "phase": False, "flange": False}, branches=A_OFF),
+          S("C", "Fuzz Lead", {"muff": True, "phase": False, "flange": False}, {"eq": {"midgain": 3, "midfreq": 800}, "dly": {"mix": 18}}, A_OFF, 3),
+          S("D", "Phased Bridge", {"muff": True, "phase": True, "flange": False}, branches=A_OFF),
+          S("E", "Jet Clean", {"muff": False, "phase": False, "flange": True}, {"room": {"mix": 20}}, B_OFF)]
     return patch("factory-guitar-fuzz-grunge", "Fuzz Grunge", "guitar", ["grunge", "alternative", "fuzz"], chain, st,
                  color="#9c6644", groove="rock-8", bpm=128)
 
@@ -433,20 +556,37 @@ def g_eight_string_nu():
 
 def g_pop_chorus():
     # pop rock : un Deluxe clair et son canal crunch, une simulation de guitare classique pour un solo de nylon
-    chain = {"pre": [gate(-60), comp("Clean", thresh=-22, ratio=2.5)],
-             "split": {"mode": "merge", "gain": -3, "branches": [
-                 {"id": "lane-a", "blocks": [drii("clean", 418153)]},
-                 {"id": "lane-b", "blocks": [drii("crunch", 413045)]},
-                 {"id": "lane-c", "blocks": [B("nylon", "acoustic-sim", model="Classical", body=60, top=40, mic=70, mix=100)]}]},
+    # la nylon n'est PAS une troisième branche (deux au plus, règle du mainteneur) : un bloc avant le split, allumé dans sa scène
+    chain = {"pre": [gate(-60), comp("Clean", thresh=-22, ratio=2.5),
+                     B("nylon", "acoustic-sim", model="Classical", body=60, top=40, mic=70, mix=100)],
+             "split": two([drii("clean", 418153)], [drii("crunch", 413045)]),
              "post": [chorus(foot=6, mode="Classic", rate=0.5, mix=0.35), dly(foot=7, time="1/4", feedback=28, mix=14),
                       plate(mix=22, decay=1.8)]}
-    st = [S("A", "Verse Clean", {"chorus": True, "dly": False}, branches={**B_OFF, **C_OFF}),
-          S("B", "Chorus Crunch", {"chorus": False, "dly": False}, branches={**A_OFF, **C_OFF}),
-          S("C", "Nylon Solo", {"chorus": False, "dly": True}, {"plate": {"mix": 26}}, {**A_OFF, **B_OFF}, 2),
-          S("D", "Ballad Arp", {"chorus": True, "dly": True}, branches={**B_OFF, **C_OFF}),
-          S("E", "Bridge Drive", {"chorus": True, "dly": True}, branches={**A_OFF, **C_OFF}, level=1)]
+    st = [S("A", "Verse Clean", {"nylon": False, "chorus": True, "dly": False}, branches=B_OFF),
+          S("B", "Chorus Crunch", {"nylon": False, "chorus": False, "dly": False}, branches=A_OFF),
+          S("C", "Nylon Solo", {"nylon": True, "chorus": False, "dly": True}, {"plate": {"mix": 26}}, B_OFF, 2),
+          S("D", "Ballad Arp", {"nylon": False, "chorus": True, "dly": True}, branches=B_OFF),
+          S("E", "Bridge Drive", {"nylon": False, "chorus": True, "dly": True}, branches=A_OFF, level=1)]
     return patch("factory-guitar-pop-chorus", "Pop Chorus", "guitar", ["pop", "rock", "ballad"], chain, st,
                  color="#ffb703", groove="rock-8", bpm=76)
+
+
+def g_gypsy_acoustic():
+    # manouche : la DI devient une guitare acoustique au micro (pas d'ampli ni de baffle derrière), et le Standard de
+    # SW10 joue la POMPE et la contrebasse de « Crooked Lantern » — on prend le thème et les chorus. Dans aucun preset
+    # ni chanson : c'est un patch pour jouer seul (le mainteneur, 2026-11-16).
+    chain = {"pre": [gate(-62), B("acoustic", "acoustic-sim", model="Parlor", body=45, top=60, mic=75, mix=100, twelve=False),
+                     comp("Opto", thresh=-22, ratio=2.5, makeup=2, attack=20), eq(lowcut=90, midgain=1, midfreq=1800, highs=1),
+                     dly(foot=6, model="Tape", time="1/8", feedback=12, mix=10), room(mix=14, decay=0.9, size=14)],
+             "split": None, "post": []}
+    st = [S("A", "Theme", {"dly": False}),
+          S("B", "Chorus", {"dly": False}, {"acoustic": {"top": 70, "mic": 85}, "eq": {"midgain": 2.5, "midfreq": 2200, "highs": 2}}, level=2),
+          S("C", "Ballad", {"dly": True}, {"acoustic": {"model": "Concert", "body": 60, "top": 45}, "room": {"mix": 24, "decay": 1.5}}),
+          S("D", "Nylon", {"dly": False}, {"acoustic": {"model": "Classical", "body": 60, "top": 40, "mic": 70}}),
+          S("E", "Rhythm", {"dly": False}, {"acoustic": {"body": 55, "top": 50}, "eq": {"midgain": 0, "highs": 0}}, level=-2)]
+    return patch("factory-guitar-gypsy-acoustic", "Gypsy Acoustic", "guitar", ["jazz", "manouche", "acoustic"], chain, st,
+                 color="#b08968", groove=None, bpm=200,
+                 gen=[std("crooked-lantern", "blonde-bop", "swing", bass=True, guitar=True)])
 
 
 # ══ BASSE ════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -456,34 +596,48 @@ def bass_patch(pid, name, tags, pre, split, post, st, color, groove, bpm, servic
 
 
 def b_upright_jazz():
-    st = [S("A", "Walking"), S("B", "Ballad", params={"eq": {"highs": -4}, "room": {"mix": 18}}),
-          S("C", "Solo", params={"eq": {"midgain": 3, "midfreq": 700}}, level=3), S("D", "Bright Pluck", params={"eq": {"highs": 2}})]
+    # CHAQUE SCÈNE S'ENTEND (2026-11-16, comme les claviers) : plus de scène à 3 dB d'aigus près
+    st = [S("A", "Walking"),
+          S("B", "Ballad", params={"eq": {"highs": -7, "lows": 2}, "room": {"mix": 26, "decay": 1.6}, "comp": {"ratio": 2}}, level=-1),
+          S("C", "Solo", params={"eq": {"midgain": 5, "midfreq": 900, "highs": 1}, "comp": {"ratio": 5, "makeup": 4}, "room": {"mix": 18}}, level=3),
+          S("D", "Bright Pluck", params={"eq": {"highs": 6, "midgain": 2, "midfreq": 1800, "lowcut": 60}, "room": {"mix": 5}})]
     return bass_patch("factory-bass-upright-jazz", "Upright Jazz", ["jazz"], [gate(-62), comp("Opto", thresh=-24, ratio=3, attack=20)], None,
                       [b15(), eq(lowcut=35, midgain=0, midfreq=600, highs=-2), room(mix=12, decay=0.9)], st, "#c9a227", "swing", 160)
 
 
 def b_blues_round():
-    st = [S("A", "Round"), S("B", "Push", {"drive": True}), S("C", "Warm Ballad", {"drive": False}, {"eq": {"highs": -4}}),
-          S("D", "Growl Fill", {"drive": True}, {"drive": {"gain": 55}}, level=2)]
+    st = [S("A", "Round", {"drive": False}), S("B", "Push", {"drive": True}),
+          S("C", "Warm Ballad", {"drive": False}, {"eq": {"highs": -8, "lows": 2}, "comp": {"ratio": 2}}, level=-1),
+          S("D", "Growl Fill", {"drive": True}, {"drive": {"gain": 72, "tone_stack": 60}, "eq": {"midgain": 4, "midfreq": 900}}, level=2)]
     return bass_patch("factory-bass-blues-round", "Blues Round", ["blues", "rock"],
                       [gate(-60), comp("Opto", thresh=-22, ratio=3), B("drive", "emet", foot=6, gain=35, tone_stack=45, level=0)], None,
                       [svt_rig(379985), eq(lowcut=35, midgain=1, midfreq=700, highs=-1)], st, "#d4572a", "shuffle", 96)
 
 
 def b_prog_biamp():
-    st = [S("A", "Sub Clean", branches=B_OFF, level=-1), S("B", "Grit Blend"), S("C", "Tight Grit", params={"comp": {"ratio": 8, "attack": 5}}, level=1),
-          S("D", "Growl", params={"svt": {"output": -8}}, level=1)]
+    # deux voix en parallèle, et chaque scène change ce qu'on entend d'elles : le grave seul, le mélange, le grain seul
+    # serré, puis le mélange poussé par un boost
+    st = [S("A", "Sub Clean", {"boost": False}, branches=B_OFF, level=-1), S("B", "Grit Blend", {"boost": False}),
+          S("C", "Tight Grit", {"boost": False}, {"comp": {"ratio": 8, "attack": 5}, "met": {"thresh": -42}}, A_OFF, 1),
+          S("D", "Growl", {"boost": True}, {"eq": {"midgain": 4, "midfreq": 1000}}, level=1)]
     return bass_patch("factory-bass-prog-biamp", "Prog Bi-Amp", ["metal", "progressive"],
-                      [met(-50), comp("FET", thresh=-24, ratio=4, attack=10)], two([svt_rig(379989)], [b7k()]),
+                      [met(-50), comp("FET", thresh=-24, ratio=4, attack=10), B("boost", "shem", foot=6, grind=10, voice="Full")],
+                      two([svt_rig(379989)], [b7k()]),
                       [eq(lowcut=35, midgain=1, midfreq=800, highs=1)], st, "#3d348b", "metal-breakdown", 120)
 
 
 def b_metal_grind():
-    st = [S("A", "Grind"), S("B", "Tight", params={"met": {"thresh": -40}, "comp": {"ratio": 8}}), S("C", "Clean Low", {"drive": False}, level=-1),
-          S("D", "Solo Growl", {"drive": True}, {"drive": {"grind": 14}}, level=2)]
+    # refait le 2026-11-16 (le mainteneur) : un SPLIT — un SVT propre pour le grave, une Darkglass Alpha Omega Ultra dans un 4x10
+    # pour le grain. Grind = les deux ; Tight = le grain seul, gate serré ; Clean Low = le SVT seul ; Solo Growl = les
+    # deux, poussés par le boost, médiums en avant.
+    st = [S("A", "Grind", {"drive": False}),
+          S("B", "Tight", {"drive": False}, {"met": {"thresh": -40}, "comp": {"ratio": 8, "attack": 4}}, A_OFF),
+          S("C", "Clean Low", {"drive": False}, branches=B_OFF, level=-1),
+          S("D", "Solo Growl", {"drive": True}, {"eq": {"midgain": 3, "midfreq": 1000, "highs": 3}}, level=2)]
     return bass_patch("factory-bass-metal-grind", "Metal Grind", ["metal", "groove"],
-                      [met(-46), comp("FET", thresh=-24, ratio=5, attack=8), B("drive", "shem", foot=6, grind=8, voice="Full")], None,
-                      [svt_head(382799), gk_cab(72421), eq(lowcut=40, midgain=-2, midfreq=500, highs=2)], st, "#6a040f", "half-time", 140,
+                      [met(-46), comp("FET", thresh=-24, ratio=5, attack=8), B("drive", "shem", foot=6, grind=10, voice="Full")],
+                      two([svt_rig(379988)], [aou(), gk_cab(72421)]),
+                      [eq(lowcut=40, midgain=-2, midfreq=500, highs=2)], st, "#6a040f", "half-time", 140,
                       kit="drums-aasimonster")
 
 
@@ -501,17 +655,19 @@ def b_synth_ambient():
 
 
 def b_fuzz_bass():
-    st = [S("A", "Pick Drive", {"muff": False}), S("B", "Fuzz Bass", {"muff": True}), S("C", "Clean Verse", {"muff": False}, {"svt": {"output": -4}}, level=-1),
-          S("D", "Wall", {"muff": True}, {"eq": {"midgain": 2}}, level=1)]
+    st = [S("A", "Pick Drive", {"muff": False, "drive": True}), S("B", "Fuzz Bass", {"muff": True, "drive": False}),
+          S("C", "Clean Verse", {"muff": False, "drive": False}, {"eq": {"highs": -5, "midgain": -1}, "comp": {"ratio": 2}}, level=-2),
+          S("D", "Wall", {"muff": True, "drive": True}, {"eq": {"midgain": 4, "midfreq": 900, "lows": 2}}, level=1)]
     return bass_patch("factory-bass-fuzz", "Fuzz Bass", ["grunge", "rock", "fuzz"],
-                      [gate(-56), comp("FET", thresh=-22, ratio=4), bigmuff(foot=6)], None,
+                      [gate(-56), comp("FET", thresh=-22, ratio=4), B("drive", "emet", gain=40, tone_stack=55, level=0), bigmuff(foot=6)], None,
                       [svt_rig(379986), eq(lowcut=40, midgain=1, midfreq=700, highs=0)], st, "#9c6644", "rock-8", 128)
 
 
 def b_funk_slap():
-    st = [S("A", "Slap", {"env": False, "oct": False}), S("B", "Fingers Pocket", {"env": False, "oct": False}, {"eq": {"highs": -3}}),
+    st = [S("A", "Slap", {"env": False, "oct": False}),
+          S("B", "Fingers Pocket", {"env": False, "oct": False}, {"eq": {"highs": -6, "lows": 0, "midgain": 2, "midfreq": 800}, "comp": {"ratio": 3, "attack": 15}}),
           S("C", "Envelope", {"env": True, "oct": False}), S("D", "Octave Funk", {"env": False, "oct": True}, level=1),
-          S("E", "Solo Pop", {"env": True, "oct": False}, {"eq": {"highs": 4}}, level=3)]
+          S("E", "Solo Pop", {"env": True, "oct": False}, {"eq": {"highs": 6, "midgain": 1, "midfreq": 1500}}, level=3)]
     return bass_patch("factory-bass-funk-slap", "Funk Slap", ["funk"],
                       [gate(-60), comp("FET", thresh=-26, ratio=6, makeup=4, attack=3)], None,
                       [gk_head(), gk_cab(72415), B("env", "autowah", foot=6, type="Low-pass", peak=6, attack=3, release=100, low=200, high=1800),
@@ -529,8 +685,10 @@ def b_nu_low():
 
 
 def b_pop_pick():
-    st = [S("A", "Pick Verse"), S("B", "Chorus Drive", {"drive": True}), S("C", "Ballad", {"drive": False}, {"eq": {"highs": -3}}),
-          S("D", "Chorus Bass", {"chorus": True}), S("E", "Melodic", {"chorus": False}, {"eq": {"midgain": 2}}, level=2)]
+    st = [S("A", "Pick Verse", {"drive": False, "chorus": False}), S("B", "Chorus Drive", {"drive": True, "chorus": False}),
+          S("C", "Ballad", {"drive": False, "chorus": False}, {"eq": {"highs": -7, "lows": 2}, "comp": {"ratio": 2}}, level=-1),
+          S("D", "Chorus Bass", {"drive": False, "chorus": True}),
+          S("E", "Melodic", {"drive": False, "chorus": False}, {"eq": {"midgain": 5, "midfreq": 900, "highs": 2}}, level=2)]
     return bass_patch("factory-bass-pop-pick", "Pop Pick", ["pop", "rock"],
                       [gate(-60), comp("Clean", thresh=-22, ratio=4), B("drive", "emet", foot=6, gain=30, tone_stack=55, level=0)], None,
                       [svt_head(382790), gk_cab(72431), chorus(foot=7, profile="Bass", mix=0.3), eq(lowcut=35, midgain=0, highs=1)],
@@ -538,19 +696,19 @@ def b_pop_pick():
 
 
 def b_lab():
-    # la basse « instrument » : trois voix en parallèle — un grave propre, une Darkglass, un synthé — et leurs mélanges
-    split = {"mode": "merge", "gain": -4, "branches": [
-        {"id": "lane-a", "blocks": [svt_rig(379988)]},
-        {"id": "lane-b", "blocks": [xultra(), gk_cab(72421)]},
-        {"id": "lane-c", "blocks": [B("synth", "polysynth", engine="Mono", wave="Pulse", cutoff=1400, reso=35, filt_env=20, synth=-2, dry=-60)]}]}
-    st = [S("A", "Sub Only", branches={**B_OFF, **C_OFF}),
-          S("B", "Grit Blend", branches=C_OFF),
-          S("C", "Synth Layer", branches=B_OFF),
-          S("D", "Full Stack", level=1),
-          S("E", "Solo Chorus", {"chorus": True}, branches={**C_OFF}, level=3)]
+    # la basse « instrument » : deux voix en parallèle — un grave propre, une Darkglass — et un synthé qui se pose
+    # PAR-DESSUS, en série après la somme. Un split se fait en DEUX branches, pas plus (règle du mainteneur, 2026-11-16 :
+    # le Designer n'en dessine que deux, la troisième sonnait sans pouvoir se voir ni se régler).
+    st = [S("A", "Sub Only", {"synth": False}, branches=B_OFF),
+          S("B", "Grit Blend", {"synth": False}),
+          S("C", "Synth Layer", {"synth": True}, branches=B_OFF),
+          S("D", "Full Stack", {"synth": True}, level=1),
+          S("E", "Solo Chorus", {"synth": False, "chorus": True}, level=3)]
     return bass_patch("factory-bass-lab", "Bass Lab", ["bass", "progressive", "synth"],
-                      [gate(-58), comp("FET", thresh=-24, ratio=4, attack=8)], split,
-                      [chorus(foot=6, profile="Bass", mode="Dimension 2", mix=0.35), eq(lowcut=30, midgain=0, highs=1),
+                      [gate(-58), comp("FET", thresh=-24, ratio=4, attack=8)],
+                      two([svt_rig(379988)], [xultra(), gk_cab(72421)], gain=-4),
+                      [B("synth", "polysynth", foot=7, engine="Mono", wave="Pulse", cutoff=1400, reso=35, filt_env=20, synth=-4, dry=-3),
+                       chorus(foot=6, profile="Bass", mode="Dimension 2", mix=0.35), eq(lowcut=30, midgain=0, highs=1),
                        B("wide", "widener", mode="Double", amount=40)], st, "#00b4d8", "funk-16", 100, service="compo")
 
 
@@ -560,10 +718,16 @@ def keys_patch(pid, name, tags, chain, st, color, groove, bpm, role="keys", serv
 
 
 def k_jazz_piano():
-    st = [S("A", "Trio"), S("B", "Ballad", params={"room": {"mix": 26, "decay": 1.6}}), S("C", "Solo", level=2), S("D", "Soft", params={"eq": {"highs": -3}}, level=-2)]
+    # CHAQUE SCÈNE S'ENTEND (2026-11-16, le mainteneur : « des scènes identiques, aucun intérêt ») : plus de scène qui ne bouge
+    # qu'un demi-réglage d'EQ — une salle, un club sec, un piano de solo qui avance, un vieux piano sur bande.
+    st = [S("A", "Trio", {"hall": False, "tape": False}),
+          S("B", "Ballad", {"hall": True, "tape": False}, {"room": {"mix": 8}, "eq": {"highs": -4}}),
+          S("C", "Solo", {"hall": False, "tape": False}, {"eq": {"midgain": 4, "midfreq": 2500, "highs": 3}, "comp": {"ratio": 4, "makeup": 4}, "room": {"mix": 10}}, level=3),
+          S("D", "Soft", {"hall": False, "tape": True}, {"eq": {"highs": -9, "midgain": -2, "midfreq": 3000}, "room": {"mix": 24, "decay": 1.4}}, level=-2)]
     return keys_patch("factory-keys-jazz-piano", "Jazz Piano", ["jazz", "piano"],
                       [B("piano", "piano", sfz=SAL, volume=0), comp("Opto", thresh=-20, ratio=2, makeup=2, attack=20),
-                       eq(lowcut=40, midgain=0, highs=-2), room(mix=18, decay=1.1, size=16)], st, "#c9a227", "swing", 160)
+                       eq(lowcut=40, midgain=0, highs=-2), B("tape", "tape", model="Home Reel", wear=45, mix=100),
+                       room(mix=18, decay=1.1, size=16), verb("Hall", bid="hall", mix=34, decay=3.2, size=40)], st, "#c9a227", "swing", 160)
 
 
 def k_blues_organ():
@@ -576,9 +740,9 @@ def k_blues_organ():
 
 
 def k_cathedral_piano():
-    st = [S("A", "Hall Piano", {"dly": False, "shim": False}), S("B", "Halo", {"dly": True, "shim": True}, {"shim": {"mix": 34, "decay": 7}}),
-          S("C", "Under", {"dly": False, "shim": False}, {"eq": {"lowcut": 160, "midgain": -3, "midfreq": 350, "highs": 2}}),
-          S("D", "Bloom", {"dly": True, "shim": True}, {"eq": {"lowcut": 140}, "shim": {"mix": 26}})]
+    st = [S("A", "Hall Piano", {"dly": False, "shim": False}), S("B", "Halo", {"dly": True, "shim": True}, {"shim": {"mix": 40, "decay": 8}}),
+          S("C", "Under", {"dly": False, "shim": False}, {"eq": {"lowcut": 260, "midgain": -4, "midfreq": 400, "highs": -5}, "verb": {"mix": 10, "decay": 1.6}}, level=-3),
+          S("D", "Bloom", {"dly": True, "shim": False}, {"eq": {"lowcut": 140, "highs": 3}, "dly": {"mix": 26, "feedback": 45}, "verb": {"mix": 34, "decay": 5}})]
     return keys_patch("factory-keys-cathedral-piano", "Cathedral Piano", ["ambient", "piano", "metal"],
                       [B("piano", "piano", sfz=SAL, volume=0), comp("Clean", thresh=-22, ratio=2.5, makeup=2),
                        eq(lowcut=50, midgain=-1.5, midfreq=400, highs=0), dly(foot=7, time="1/4", feedback=30, mix=14),
@@ -586,19 +750,24 @@ def k_cathedral_piano():
 
 
 def k_hero_pad():
-    st = [S("A", "Sky Pad"), S("B", "Bright", params={"vital": {"fcut": 0.8}}), S("C", "Under", params={"vital": {"fcut": 0.4}}, level=-4),
-          S("D", "Shimmer Rise", {"shim": True}, level=1)]
+    st = [S("A", "Sky Pad", {"shim": False, "chorus": False}),
+          S("B", "Bright", {"shim": False, "chorus": True}, {"vital": {"fcut": 0.95}, "dly": {"mix": 24}}),
+          S("C", "Under", {"shim": False, "chorus": False}, {"vital": {"fcut": 0.2, "rmix": 0.1}, "dly": {"mix": 0}}, level=-4),
+          S("D", "Shimmer Rise", {"shim": True, "chorus": True}, {"vital": {"fcut": 0.75}, "shim": {"mix": 45, "decay": 8}}, level=1)]
     return keys_patch("factory-keys-hero-pad", "Hero Pad", ["rock", "pad", "instrumental"],
-                      [B("vital", "vital", preset="Sparkly_Dreamy_Pad", fcut=0.6, rmix=0.3, dmix=0.2, vol=0.6),
+                      [B("vital", "vital", preset="Sparkly_Dreamy_Pad", fcut=0.55, rmix=0.3, dmix=0.2, vol=0.6),
+                       chorus(profile="Keys", mode="Ensemble", mix=0.5),
                        shimmer(foot=6, mix=28, decay=5), dly(time="1/4•", feedback=30, mix=14)], st, "#0081a7", "rock-solo", 132)
 
 
 def k_dark_pad():
-    st = [S("A", "Dark Pad"), S("B", "Low Drone", params={"vital": {"fcut": 0.35}}), S("C", "Swell", params={"vital": {"fcut": 0.7}}, level=1),
+    st = [S("A", "Dark Pad", {"crush": False}),
+          S("B", "Low Drone", {"crush": False}, {"vital": {"fcut": 0.2, "transpose": -12, "rmix": 0.15}, "verb": {"mix": 14}}),
+          S("C", "Swell", {"crush": False}, {"vital": {"fcut": 0.9, "rmix": 0.5}, "verb": {"mix": 40, "decay": 6}}, level=1),
           S("D", "Crushed", {"crush": True})]
     return keys_patch("factory-keys-dark-pad", "Dark Pad", ["metal", "pad", "dark"],
                       [B("vital", "vital", preset="Dark_Ambient", fcut=0.5, rmix=0.3, dmix=0.15, vol=0.55),
-                       B("crush", "bitcrusher", foot=6, quant=0.6, rate=0.5, nonlin=0.1), verb("Hall", mix=24, decay=3)], st, "#6a040f", "half-time", 140,
+                       B("crush", "bitcrusher", foot=6, quant=0.75, rate=0.45, nonlin=0.1), verb("Hall", mix=24, decay=3)], st, "#6a040f", "half-time", 140,
                       service="compo")
 
 
@@ -621,24 +790,27 @@ def k_electro_pads():
 
 
 def k_loop_synth():
-    st = [S("A", "Bass & Beat"), S("B", "Bass Only", params={"pads": {}}), S("C", "Filtered", params={"vital": {"fcut": 0.35}}),
-          S("D", "Big Drop", params={"vital": {"fcut": 0.8}}, level=1)]
+    st = [S("A", "Bass & Beat", {"dly": False}), S("B", "Bass Only", {"pads": False, "dly": False}),
+          S("C", "Filtered", {"dly": True}, {"vital": {"fcut": 0.15}}, level=-2),
+          S("D", "Big Drop", {"dly": False}, {"vital": {"fcut": 1.0, "transpose": -12, "vol": 0.75}, "comp": {"ratio": 6, "makeup": 4}}, level=2)]
     return keys_patch("factory-keys-loop-synth", "Loop Synth & Beat", ["indie", "loop", "synth"],
                       [B("vital", "vital", preset="Kickbass", fcut=0.55, rmix=0.0, dmix=0.0, vol=0.65), B("pads", "pads", kit="pads-house"),
-                       comp("Bus", thresh=-20, ratio=3, makeup=2, attack=10)], st, "#06d6a0", None, 112, role="keys-pads")
+                       dly(time="1/8•", feedback=45, mix=24), comp("Bus", thresh=-20, ratio=3, makeup=2, attack=10)], st, "#06d6a0", None, 112, role="keys-pads")
 
 
 def k_strings_wash():
-    st = [S("A", "Strings Wash"), S("B", "Chorus Strings", {"chorus": True}), S("C", "Thin", params={"eq": {"lowcut": 200}}, level=-3),
-          S("D", "Big Swell", {"chorus": True}, {"verb": {"mix": 34}}, level=1)]
+    st = [S("A", "Strings Wash", {"chorus": False}), S("B", "Chorus Strings", {"chorus": True}),
+          S("C", "Thin", {"chorus": False}, {"eq": {"lowcut": 400, "highs": 3}, "verb": {"mix": 10, "decay": 1.4}}, level=-3),
+          S("D", "Big Swell", {"chorus": True}, {"verb": {"mix": 42, "decay": 5}, "eq": {"lowcut": 80, "highs": 1}}, level=2)]
     return keys_patch("factory-keys-strings-wash", "Strings Wash", ["grunge", "strings", "pad"],
                       [B("ep", "ep", bank=DX7, patch=20, fcut=1, res=0, out=0.8), chorus(foot=6, profile="Keys", mode="Ensemble", mix=0.5),
                        eq(lowcut=120, midgain=0, highs=-2), verb("Hall", mix=24, decay=2.6)], st, "#9c6644", "rock-8", 128)
 
 
 def k_funk_clav():
-    st = [S("A", "Clav", {"env": False, "phase": False}), S("B", "Envelope Clav", {"env": True}), S("C", "Phased", {"phase": True}),
-          S("D", "Stab", {"env": False}, {"comp": {"ratio": 6}}, level=1)]
+    st = [S("A", "Clav", {"env": False, "phase": False}), S("B", "Envelope Clav", {"env": True, "phase": False}),
+          S("C", "Phased", {"env": False, "phase": True}),
+          S("D", "Stab", {"env": False, "phase": False}, {"comp": {"ratio": 8, "thresh": -28, "makeup": 5}, "ep": {"fcut": 0.55}, "room": {"mix": 0}}, level=2)]
     return keys_patch("factory-keys-funk-clav", "Funk Clav", ["funk", "clavinet"],
                       [B("ep", "ep", bank=DX7, patch=28, fcut=1, res=0, out=0.8), B("env", "autowah", foot=6, type="Wah", peak=5, attack=3, release=100),
                        B("phase", "phaser-js", foot=7, model="Script 90", rate=0.5), comp("FET", thresh=-22, ratio=4, attack=3), room(mix=10)],
@@ -646,8 +818,9 @@ def k_funk_clav():
 
 
 def k_nu_pad():
-    st = [S("A", "Haze"), S("B", "Glitch Haze", {"glitch": True}), S("C", "Low Haze", params={"vital": {"fcut": 0.3}}, level=-3),
-          S("D", "Open Haze", params={"vital": {"fcut": 0.75}}, level=1)]
+    st = [S("A", "Haze", {"glitch": False}), S("B", "Glitch Haze", {"glitch": True}),
+          S("C", "Low Haze", {"glitch": False}, {"vital": {"fcut": 0.18, "transpose": -12}, "dly": {"mix": 6}}, level=-3),
+          S("D", "Open Haze", {"glitch": False}, {"vital": {"fcut": 0.95}, "dly": {"mix": 30, "feedback": 50}, "verb": {"mix": 38, "decay": 6}}, level=1)]
     return keys_patch("factory-keys-nu-pad", "Nu Haze", ["nu-metal", "pad", "electronic"],
                       [B("vital", "vital", preset="Retro_Ambient_Pluck", fcut=0.5, rmix=0.25, dmix=0.25, vol=0.55),
                        B("glitch", "glitch", foot=6, mix=40), dly(time="1/4", feedback=35, mix=16), verb("Cloud", mix=26, decay=3.5)],
@@ -655,11 +828,14 @@ def k_nu_pad():
 
 
 def k_pop_piano():
-    st = [S("A", "Ballad Piano"), S("B", "Bright Pop", params={"eq": {"highs": 3}}), S("C", "Echo Piano", {"dly": True}),
-          S("D", "Soft Bed", params={"eq": {"highs": -3}}, level=-3)]
+    st = [S("A", "Ballad Piano", {"dly": False, "chorus": False}),
+          S("B", "Bright Pop", {"dly": False, "chorus": True}, {"eq": {"highs": 5, "midgain": 2, "midfreq": 3000}, "comp": {"ratio": 5, "makeup": 4}, "plate": {"mix": 12}}, level=1),
+          S("C", "Echo Piano", {"dly": True, "chorus": False}, {"dly": {"mix": 26, "feedback": 40}}),
+          S("D", "Soft Bed", {"dly": False, "chorus": False}, {"eq": {"highs": -8, "lowcut": 120}, "plate": {"mix": 38, "decay": 3}}, level=-3)]
     return keys_patch("factory-keys-pop-piano", "Pop Piano", ["pop", "piano", "ballad"],
                       [B("piano", "piano", sfz=SAL, volume=0), comp("Clean", thresh=-20, ratio=3, makeup=2),
-                       eq(lowcut=60, midgain=0, highs=1), dly(foot=6, time="1/4", feedback=25, mix=12), plate(mix=22, decay=1.8)],
+                       eq(lowcut=60, midgain=0, highs=1), chorus(profile="Keys", mode="Classic", rate=0.5, mix=0.35),
+                       dly(foot=6, time="1/4", feedback=25, mix=12), plate(mix=22, decay=1.8)],
                       st, "#ffb703", "rock-8", 76)
 
 
@@ -708,8 +884,10 @@ def v_metal_scream():
 
 
 def v_ethereal():
-    st = [S("A", "Ethereal", {"dly": True}), S("B", "Close", {"dly": False}, {"verb": {"mix": 16}}),
-          S("C", "Robot Falsetto", {"tune": True}, {"tune": {"corr": 1.0, "filter": 0.02}}), S("D", "Cloud", {"dly": True, "formant": True}, {"verb": {"mix": 40}})]
+    # la justesse douce reste allumée partout ; « Robot Falsetto » la durcit
+    st = [S("A", "Ethereal", {"tune": True, "dly": True}), S("B", "Close", {"tune": True, "dly": False}, {"verb": {"mix": 16}}),
+          S("C", "Robot Falsetto", {"tune": True}, {"tune": {"corr": 1.0, "filter": 0.02}}),
+          S("D", "Cloud", {"tune": True, "dly": True, "formant": True}, {"verb": {"mix": 40}})]
     return voice_patch("factory-voice-ethereal", "Ethereal Falsetto", ["ambient", "alternative", "falsetto"],
                        [gate(-58, release=220), ess(), B("tune", "pitch-correct", foot=8, corr=0.4, filter=0.15, fastmode=True, key="A", scale="Minor", song_key=True),
                         comp("Opto", thresh=-22, ratio=3, makeup=3), B("formant", "formant", foot=6, formant=3, mix=50),
@@ -773,26 +951,37 @@ def drums_patch(pid, name, tags, kit, extra, st, color, bpm, service="rec"):
 
 def d_brushes():
     return drums_patch("factory-drums-jazz-brushes", "Jazz Brushes", ["jazz", "drums"], "drums-blonde-bop", [room(mix=16, decay=1)],
-                       [S("A", "Brushes"), S("B", "Ride Swing", params={"room": {"mix": 22}}), S("C", "Soft", level=-3), S("D", "Solo", level=2)], "#c9a227", 160)
+                       [S("A", "Brushes"), S("B", "Ride Swing", params={"room": {"mix": 22}, "eq": {"highs": 3}}),
+                        S("C", "Soft", params={"eq": {"highs": -3}, "comp": {"ratio": 2}}, level=-3),
+                        S("D", "Solo", params={"comp": {"ratio": 6, "thresh": -24}, "room": {"mix": 10, "decay": 0.7},
+                                               "eq": {"midgain": 2, "midfreq": 2500}}, level=2)], "#c9a227", 160)
 
 
 def d_vintage():
     return drums_patch("factory-drums-vintage-rock", "Vintage Rock", ["blues", "rock", "drums"], "drums-red-zeppelin", [room(foot=6, mix=20, decay=1.2, size=20)],
-                       [S("A", "Shuffle"), S("B", "Big Room", {"room": True}, {"room": {"mix": 28}}), S("C", "Tight", {"room": False}), S("D", "Ballad", level=-2)],
+                       [S("A", "Shuffle", {"room": True}), S("B", "Big Room", {"room": True}, {"room": {"mix": 32, "decay": 1.8, "size": 30}}),
+                        S("C", "Tight", {"room": False}, {"comp": {"ratio": 6}}),
+                        S("D", "Ballad", {"room": True}, {"room": {"mix": 26, "decay": 1.6}, "eq": {"highs": -2}}, level=-2)],
                        "#d4572a", 96)
 
 
 def d_studio():
     return drums_patch("factory-drums-studio-rock", "Studio Rock", ["rock", "pop", "drums"], "drums-black-pearl",
                        [B("punch", "transient", foot=6, attack=8, sustain=0), room(mix=14, decay=0.9)],
-                       [S("A", "Tight"), S("B", "Punch", {"punch": True}), S("C", "Roomy", {"punch": False}, {"room": {"mix": 26}}), S("D", "Soft", level=-3)],
+                       [S("A", "Tight", {"punch": False}), S("B", "Punch", {"punch": True}),
+                        S("C", "Roomy", {"punch": False}, {"room": {"mix": 26, "decay": 1.3}}),
+                        S("D", "Soft", {"punch": False}, {"eq": {"highs": -3}, "comp": {"ratio": 2}}, level=-3)],
                        "#ffb703", 120)
 
 
 def d_metal():
     return drums_patch("factory-drums-metal", "Metal Kit", ["metal", "drums"], "drums-aasimonster",
                        [B("punch", "transient", attack=10, sustain=-6), room(foot=6, mix=10, decay=0.8, size=14)],
-                       [S("A", "Blast"), S("B", "Breakdown", params={"comp": {"ratio": 6}}), S("C", "Tight", {"room": False}), S("D", "Clean Intro", level=-3)],
+                       [S("A", "Blast", {"room": True}),
+                        S("B", "Breakdown", {"room": True}, {"comp": {"ratio": 6}, "room": {"mix": 18, "decay": 1.2}, "punch": {"sustain": 0}}),
+                        S("C", "Tight", {"room": False}),
+                        S("D", "Clean Intro", {"room": True}, {"room": {"mix": 22, "decay": 1.5}, "punch": {"attack": 0, "sustain": 0},
+                                                              "eq": {"highs": -2}}, level=-3)],
                        "#6a040f", 140, service="compo")
 
 
@@ -871,11 +1060,12 @@ def preset(pid, name, style, bpm, lanes, scenes, feet, color, gen=None, arr_foot
     return p
 
 
+# la tonalité du Standard suit le morceau fictif du preset (Rail Yard Shuffle en mi, Harbour Rain en do)
 # le Standard d'un preset ACCOMPAGNE quand on joue seul (comme le Chill Jazz d'avant) : ses parties claviers, basse et
 # batterie sont ouvertes ; quand les musiciens sont là, on ne l'appuie pas
 def std(standard, kit, feel, **kw):
     return {"type": "standard", "id": "standard", "foot": 10, "params": {"standard": standard, "key": "Original", "feel": feel, "motion": "comp",
-            "voicing": "rootless", "arp": "Off", "keys": False, "bass": False, "drums": False, "groove": "auto", "kit": kit, "choruses": 4, **kw}}
+            "voicing": "rootless", "arp": "Off", "keys": False, "bass": False, "drums": False, "guitar": False, "pompe": "auto", "groove": "auto", "kit": kit, "choruses": 4, **kw}}
 
 
 PRESETS = []
@@ -906,7 +1096,7 @@ def presets():
         ("D", "Organ Solo", {"guitar-1": ("Clean Shuffle", -4), "bass-1": ("Round", 0), "keys-1": ("Screaming", 2), "voice-1": ("Shout", -10)}),
         ("E", "Vibe Out", {"guitar-1": ("Vibratone", 0), "bass-1": ("Warm Ballad", 0), "keys-1": ("Fast Leslie", -3), "voice-1": ("Slap Echo", 0)})],
         {6: [("guitar-1", "ts")], 7: [("guitar-1", "vibratone")], 8: [("voice-1", "grit")]}, "#d4572a",
-        gen=[drums_service(["shuffle"])]))
+        gen=[std("rented-room-blues", "black-pearl", "swing", key="E", voicing="full", keys=True, bass=True, drums=True)]))
     PRESETS.append(preset("factory-blues-ballad", "Harbour Rain", "blues", 68, [
         ("guitar-1", "Guitar", "guitar", "factory-guitar-wailing-blues", False, 1),
         ("bass-1", "Bass", "bass", "factory-bass-blues-round", False, 1),
@@ -918,7 +1108,7 @@ def presets():
         ("D", "Solo", {"guitar-1": ("Singing Lead", 3), "bass-1": ("Round", 0), "keys-1": ("Soft Pad", -5), "voice-1": ("Ballad", -10)}),
         ("E", "Last Bend", {"guitar-1": ("Endless Bend", 3), "bass-1": ("Round", 0), "keys-1": ("Gospel Bed", -4), "voice-1": ("Ballad", -10)})],
         {6: [("guitar-1", "sd1")], 7: [("guitar-1", "dly")], 8: [("guitar-1", "sustain")]}, "#8d0801",
-        gen=[drums_service(["six-eight"])]))
+        gen=[std("rented-room-blues", "black-pearl", "swing", key="C", voicing="full", keys=True, bass=True, drums=True)]))
     PRESETS.append(preset("factory-ambient-djent", "Velvet Ossuary", "metal", 94, [
         ("guitar-1", "Guitar", "guitar", "factory-guitar-ambient-djent", False, 1),
         ("bass-1", "Bass", "bass", "factory-bass-prog-biamp", False, 1),
@@ -969,7 +1159,7 @@ def presets():
         ("C", "Burst", {"guitar-1": ("Crunch Burst", 1), "bass-1": ("Tape Fuzz", 0), "keys-1": ("Tape Rhodes", -4), "keys-pads-1": ("Tape Beat", 0), "voice-1": ("Ethereal", 0), "drums-1": ("Dry", 0)}),
         ("D", "Frozen", {"guitar-1": ("Frozen Pad", 0), "bass-1": ("Sub Octave", 0), "keys-1": ("Underwater", 0), "keys-pads-1": ("Dub Beat", -2), "voice-1": ("Cloud", 0), "drums-1": ("Dusty", 0)}),
         ("E", "Glitch Out", {"guitar-1": ("Ring Glitch", 0), "bass-1": ("Synth Bass", 0), "keys-1": ("Glass Rhodes", -3), "keys-pads-1": ("Crushed Beat", 0), "voice-1": ("Robot Falsetto", 0), "drums-1": ("Crushed", 0)})],
-        {6: [("guitar-1", "ds1")], 7: [("guitar-1", "grain")], 8: [("voice-1", "tune")]}, "#118ab2",
+        {6: [("guitar-1", "ds1")], 7: [("guitar-1", "trem")], 8: [("voice-1", "tune")]}, "#118ab2",
         gen=[drums_service(["lofi", "boom-bap"])]))
     PRESETS.append(preset("factory-loop-indie", "Room With Echoes", "indie", 104, [
         ("keys-pads-1", "Synth & Beat", "keys-pads", "factory-keys-loop-synth", True, None),
@@ -1167,6 +1357,19 @@ CASTING = {
     "factory-guitar-funk-drive": {"A": "guitar/crunch", "B": "guitar/crunch", "C": "guitar/lead", "D": "guitar/lead", "E": "guitar/crunch"},
     "factory-guitar-eight-string-nu": {"A": "guitar/clean", "B": "guitar/clean", "C": "guitar/djent", "D": "guitar/djent", "E": "guitar/djent"},
     "factory-guitar-pop-chorus": {"A": "guitar/clean", "B": "guitar/crunch", "C": "guitar/lead-clean", "D": "guitar/clean", "E": "guitar/crunch"},
+    # LA BASSE (2026-11-16, décidé par le mainteneur) : `finger` sur les riffs jazz et metal aux doigts, `pick` sur le rock et
+    # le metal, `sustain` (notes longues) sur tout le reste. Une exception voulue : Funk Slap garde le riff aux doigts
+    # sur ses scènes à attaque (un filtre d'enveloppe ne s'ouvre pas sur une note tenue).
+    "factory-bass-upright-jazz": {"A": "bass/finger", "B": "bass/sustain", "C": "bass/finger", "D": "bass/finger"},
+    "factory-bass-blues-round": {"A": "bass/sustain", "B": "bass/pick", "C": "bass/sustain", "D": "bass/pick"},
+    "factory-bass-prog-biamp": {"A": "bass/sustain", "B": "bass/finger", "C": "bass/finger", "D": "bass/pick"},
+    "factory-bass-metal-grind": {"A": "bass/pick", "B": "bass/finger", "C": "bass/sustain", "D": "bass/pick"},
+    "factory-bass-synth-ambient": {"A": "bass/sustain", "B": "bass/sustain", "C": "bass/sustain", "D": "bass/finger"},
+    "factory-bass-fuzz": {"A": "bass/pick", "B": "bass/pick", "C": "bass/sustain", "D": "bass/pick"},
+    "factory-bass-funk-slap": {"A": "bass/finger", "B": "bass/finger", "C": "bass/finger", "D": "bass/finger", "E": "bass/sustain"},
+    "factory-bass-nu-low": {"A": "bass/sustain", "B": "bass/finger", "C": "bass/pick", "D": "bass/sustain"},
+    "factory-bass-pop-pick": {"A": "bass/pick", "B": "bass/pick", "C": "bass/sustain", "D": "bass/sustain", "E": "bass/sustain"},
+    "factory-bass-lab": {"A": "bass/sustain", "B": "bass/finger", "C": "bass/sustain", "D": "bass/pick", "E": "bass/sustain"},
 }
 
 
@@ -1186,14 +1389,35 @@ def wipe():
 
 
 GUITAR = [g_jazz_box, g_texas_shuffle, g_wailing_blues, g_ambient_djent, g_hero_lead, g_groove_metal, g_squeal_lead,
-          g_glass_ambient, g_loop_indie, g_fuzz_grunge, g_funk_clean, g_funk_drive, g_eight_string_nu, g_pop_chorus]
+          g_glass_ambient, g_loop_indie, g_fuzz_grunge, g_funk_clean, g_funk_drive, g_eight_string_nu, g_pop_chorus, g_gypsy_acoustic]
 BASS = [b_upright_jazz, b_blues_round, b_prog_biamp, b_metal_grind, b_synth_ambient, b_fuzz_bass, b_funk_slap, b_nu_low, b_pop_pick, b_lab]
 KEYS = [k_jazz_piano, k_blues_organ, k_cathedral_piano, k_hero_pad, k_dark_pad, k_glass_rhodes, k_electro_pads, k_loop_synth,
         k_strings_wash, k_funk_clav, k_nu_pad, k_pop_piano]
 VOICE = [v_crooner, v_blues_shout, v_halo, v_metal_scream, v_ethereal, v_indie_double, v_grunge_raw, v_funk_rap, v_whisper_scream, v_pop_tuned]
 DRUMS = [d_brushes, d_vintage, d_studio, d_metal, d_lofi]
 
+def guard_edits():
+    """Refuse de tourner quand un patch d'usine a été RETOUCHÉ sur ce rack (2026-11-16) : `patch()` réécrit la copie
+    locale library/patches/<id>.json, donc relancer le générateur effaçait un son réglé à l'oreille dans le Designer.
+    On reporte d'abord la retouche ici (ou on la sauve ailleurs), puis `--overwrite-edits`."""
+    import sys
+    from bridge import factory
+    def _same(pid):                                        # déjà validé tel quel : le régénérer ne perd rien
+        v = _validated(pid)
+        d = json.load(open(os.path.join(ROOT, "library", "patches", pid + ".json"), encoding="utf-8"))
+        return bool(v) and (v["chain"], v["states"], v["scenes"]) == (d["lanes"][0]["chain"], d["lanes"][0].get("states") or [], d["scenes"])
+    mine = [e for e in factory.edited() if e["kind"] == "patches" and not _same(e["id"])]
+    if mine and "--overwrite-edits" not in sys.argv:
+        names = ", ".join(e["name"] for e in mine)
+        sys.exit(f"make-factory : {len(mine)} patch(es) d'usine retouché(s) sur ce rack — {names}.\n"
+                 "Les régénérer les effacerait : les valider (--validate [id…]) ou les abandonner (--overwrite-edits).")
+
+
 if __name__ == "__main__":
+    import sys as _sys
+    if "--validate" in _sys.argv:
+        validate([a for a in _sys.argv[1:] if not a.startswith("--")])
+    guard_edits()
     wipe()
     for fn in GUITAR + BASS + KEYS + VOICE + DRUMS:
         fn()

@@ -3210,9 +3210,21 @@ ${ribs.join('')}${plate ? `<rect x="${f1(x + w * .26 - 1)}" y="${f1(y + h * .22 
     }
   }
 
+  // Real footprints. A drawing's native units are life-size for a compact stomp (112 units = 73 mm), but the
+  // large floor units are drawn smaller than life so they read alone in a gallery: on a board next to stomps
+  // they take this factor. footprint(svg) -> {w, h} in native units at life size, {mm} the real width;
+  // a scene draws every unit at the same px per unit: width = footprint.w × scale.
+  const FOOTPRINT = { 'gp-treadle': 1.26, 'gp-hw-pitch-treadle': 1.36, 'gp-hw-floor-multi': 2, 'gp-hw-loop-switcher': 1.9, 'gp-hw-foot-controller': 2.2 };
+  function footprint(svg) {
+    const vb = /viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"/.exec(svg) || [0, 124, 216];
+    const cls = (/class="([^"]*)"/.exec(svg) || [0, ''])[1].split(/\s+/);
+    const k = cls.reduce((m, c) => FOOTPRINT[c] || m, 1);
+    return { w: vb[1] * k, h: vb[2] * k, k, mm: Math.round((vb[1] - 12) * k * 73 / 112) };
+  }
+
   // the golem-fx finish: 'auto' (by family, default), 'anodized', 'thrash'; 'clay' is the first prototype's
   const api = {
-    defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, featureUnit, isFeature, FEATURE_TYPES, hardwareUnit, HARDWARE_KINDS, outboardSetting, blockTile, pedalFor,
+    footprint, FOOTPRINT, defs, glyph, glyphAt, gfxPedal, genericPedal, namPedal, namHead, namCab, namStack, namRack, namModule, keysUnit, keysFamily, drumKit, padKit, featureUnit, isFeature, FEATURE_TYPES, hardwareUnit, HARDWARE_KINDS, outboardSetting, blockTile, pedalFor,
     blockByType, archetypeFor, enamelTreadle, ampLook, cabLayout, hueOf, mix, luma, esc, FONT, AMP_LOOK, NAM_VOICE, RACK_LOOK, RACK_GENERIC, KEYS_STYLE_HUE, EP_FAMILIES, KIT_TYPES, KIT_PIECES, KIT_SPOTS, kitAssets: api_assets,
     _parts: { dinSocket, stompSwitch, knobAlu, headBody, cabBody, corners, rackKnob, rackControl },
     layout: 'fixed', rune: 'engraved',

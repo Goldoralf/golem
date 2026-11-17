@@ -16,337 +16,333 @@
    "name": "Groove Metal",
    "midi": false,
    "chain": {
+    "post": [
+     {
+      "id": "geq",
+      "params": {
+       "amount": 100,
+       "auto_gain": false,
+       "g1": 0,
+       "g10": 0,
+       "g11": 0,
+       "g2": 0,
+       "g3": 0,
+       "g4": 2,
+       "g5": -4,
+       "g6": -5,
+       "g7": -2,
+       "g8": 0,
+       "g9": 2,
+       "gb_10k": 0,
+       "gb_120": 0,
+       "gb_400": 0,
+       "gb_4k5": 0,
+       "gb_50": 0,
+       "gb_500": 0,
+       "gb_800": 0,
+       "gt_100": 0,
+       "gt_1k6": 0,
+       "gt_200": 0,
+       "gt_3k2": 0,
+       "gt_400": 0,
+       "gt_6k4": 0,
+       "gt_800": 0,
+       "highcut": 22000,
+       "highcut_slope": "12 dB/oct",
+       "layout": "Octave 11",
+       "level": 0,
+       "lowcut": 10,
+       "lowcut_slope": "12 dB/oct"
+      },
+      "type": "eq-graphic"
+     },
+     {
+      "foot": 8,
+      "id": "chorus",
+      "params": {
+       "depth": 4,
+       "mix": 0.4,
+       "mode": "Classic",
+       "profile": "Guitar Clean",
+       "rate": 0.6
+      },
+      "type": "chorus"
+     },
+     {
+      "foot": 7,
+      "id": "dly",
+      "params": {
+       "feedback": 25,
+       "mix": 12,
+       "model": "Digital",
+       "time": "1/4"
+      },
+      "type": "delay"
+     },
+     {
+      "id": "room",
+      "params": {
+       "decay": 0.7,
+       "hicut": 7000,
+       "mix": 10,
+       "size": 14
+      },
+      "type": "reverb-room"
+     }
+    ],
     "pre": [
      {
       "id": "met",
-      "type": "met",
       "params": {
-       "thresh": -44,
        "hold": 10,
-       "release": 60
-      }
+       "release": 60,
+       "thresh": -44
+      },
+      "type": "met"
      },
      {
+      "foot": 6,
       "id": "boost",
-      "type": "shem",
       "params": {
        "grind": 4,
        "voice": "Focused"
       },
-      "foot": 6
+      "type": "shem"
      }
     ],
     "split": {
-     "mode": "merge",
-     "gain": -3,
      "branches": [
       {
-       "id": "lane-a",
        "blocks": [
         {
-         "id": "rg100",
-         "type": "amp-nam",
-         "label": "Randall RG-100",
-         "ref": "6779",
-         "model": "418633",
+         "id": "x2",
+         "label": "Randall Warhead X2",
+         "model": "380970",
          "params": {
           "input": 0,
           "output": 0
-         }
-        },
-        {
-         "id": "v30",
-         "type": "cab",
-         "label": "Mesa 4x12 Vintage 30",
-         "ref": "45023",
-         "model": "239438",
-         "params": {
-          "level": 0
-         }
+         },
+         "ref": "31332",
+         "type": "amp"
         }
-       ]
+       ],
+       "id": "lane-a"
       },
       {
-       "id": "lane-b",
        "blocks": [
         {
          "id": "jc",
-         "type": "amp",
-         "label": "Roland JC-120",
-         "ref": "6530",
-         "model": "397610",
+         "label": "Roland JC-120B",
+         "model": "379740",
          "params": {
-          "input": -3,
+          "input": -2,
           "output": 0
-         }
+         },
+         "ref": "10912",
+         "type": "amp"
         }
-       ]
+       ],
+       "id": "lane-b"
       }
-     ]
-    },
-    "post": [
-     {
-      "id": "geq",
-      "type": "eq-graphic",
-      "params": {
-       "layout": "Guitar 7",
-       "gt_100": 2,
-       "gt_200": 1,
-       "gt_400": -4,
-       "gt_800": -6,
-       "gt_1k6": -2,
-       "gt_3k2": 3,
-       "gt_6k4": 2
-      }
-     },
-     {
-      "id": "chorus",
-      "type": "chorus",
-      "params": {
-       "profile": "Guitar Clean",
-       "mode": "Classic",
-       "rate": 0.6,
-       "depth": 4,
-       "mix": 0.4
-      },
-      "foot": 8
-     },
-     {
-      "id": "dly",
-      "type": "delay",
-      "params": {
-       "model": "Digital",
-       "time": "1/4",
-       "feedback": 25,
-       "mix": 12
-      },
-      "foot": 7
-     },
-     {
-      "id": "room",
-      "type": "reverb-room",
-      "params": {
-       "mix": 10,
-       "decay": 0.7,
-       "size": 14,
-       "hicut": 7000
-      }
-     }
-    ]
+     ],
+     "gain": -3,
+     "mode": "merge"
+    }
    },
    "states": [
     {
-     "id": "st-guitar-1-A",
-     "name": "Southern Riff",
      "blocks": {
       "boost": true,
-      "chorus": false,
+      "chorus": true,
       "dly": false
      },
-     "params": {},
      "branches": {
       "lane-b": {
        "mute": true
       }
-     }
+     },
+     "id": "st-guitar-1-A",
+     "name": "Southern Riff",
+     "params": {}
     },
     {
-     "id": "st-guitar-1-B",
-     "name": "Chug Breakdown",
      "blocks": {
       "boost": true,
       "chorus": false,
       "dly": false
      },
+     "branches": {
+      "lane-b": {
+       "mute": true
+      }
+     },
+     "id": "st-guitar-1-B",
+     "name": "Chug Breakdown",
      "params": {
       "met": {
        "thresh": -40
-      },
-      "geq": {
-       "gt_400": -6,
-       "gt_800": -8
-      }
-     },
-     "branches": {
-      "lane-b": {
-       "mute": true
       }
      }
     },
     {
-     "id": "st-guitar-1-C",
-     "name": "Scooped Wall",
      "blocks": {
       "boost": false,
       "chorus": false,
       "dly": false
      },
-     "params": {},
      "branches": {
       "lane-b": {
        "mute": true
       }
-     }
+     },
+     "id": "st-guitar-1-C",
+     "name": "Scooped Wall",
+     "params": {}
     },
     {
-     "id": "st-guitar-1-D",
-     "name": "Clean Chorus",
      "blocks": {
       "boost": false,
       "chorus": true,
       "dly": true
      },
-     "params": {
-      "met": {
-       "thresh": -70
-      }
-     },
      "branches": {
       "lane-a": {
        "mute": true
       }
+     },
+     "id": "st-guitar-1-D",
+     "name": "Clean Chorus",
+     "params": {
+      "met": {
+       "thresh": -70
+      }
      }
     },
     {
-     "id": "st-guitar-1-E",
-     "name": "Lead",
      "blocks": {
       "boost": true,
       "chorus": false,
       "dly": true
      },
-     "params": {
-      "geq": {
-       "gt_800": -2,
-       "gt_1k6": 2
-      }
-     },
      "branches": {
       "lane-b": {
        "mute": true
       }
-     }
+     },
+     "id": "st-guitar-1-E",
+     "name": "Lead",
+     "params": {}
     }
    ]
   }
  ],
  "scenes": [
   {
-   "id": "A",
-   "name": "Southern Riff",
    "blocks": {
     "boost": true,
-    "chorus": false,
+    "chorus": true,
     "dly": false
    },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "A",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-A"
     }
    },
-   "branches": {
-    "lane-b": {
-     "mute": true
-    }
-   }
+   "name": "Southern Riff"
   },
   {
-   "id": "B",
-   "name": "Chug Breakdown",
    "blocks": {
     "boost": true,
     "chorus": false,
     "dly": false
    },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "B",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-B"
     }
    },
+   "name": "Chug Breakdown",
    "params": {
     "met": {
      "thresh": -40
-    },
-    "geq": {
-     "gt_400": -6,
-     "gt_800": -8
-    }
-   },
-   "branches": {
-    "lane-b": {
-     "mute": true
     }
    }
   },
   {
-   "id": "C",
-   "name": "Scooped Wall",
    "blocks": {
     "boost": false,
     "chorus": false,
     "dly": false
    },
+   "branches": {
+    "lane-b": {
+     "mute": true
+    }
+   },
+   "id": "C",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-C"
     }
    },
-   "branches": {
-    "lane-b": {
-     "mute": true
-    }
-   }
+   "name": "Scooped Wall"
   },
   {
-   "id": "D",
-   "name": "Clean Chorus",
    "blocks": {
     "boost": false,
     "chorus": true,
     "dly": true
    },
+   "branches": {
+    "lane-a": {
+     "mute": true
+    }
+   },
+   "id": "D",
    "lanes": {
     "guitar-1": {
      "state": "st-guitar-1-D"
     }
    },
+   "name": "Clean Chorus",
    "params": {
     "met": {
      "thresh": -70
     }
-   },
-   "branches": {
-    "lane-a": {
-     "mute": true
-    }
    }
   },
   {
-   "id": "E",
-   "name": "Lead",
    "blocks": {
     "boost": true,
     "chorus": false,
     "dly": true
-   },
-   "lanes": {
-    "guitar-1": {
-     "state": "st-guitar-1-E",
-     "level": 3
-    }
-   },
-   "params": {
-    "geq": {
-     "gt_800": -2,
-     "gt_1k6": 2
-    }
    },
    "branches": {
     "lane-b": {
      "mute": true
     }
    },
-   "level": 3
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": 3,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 3,
+   "name": "Lead"
   }
  ],
  "config": {
@@ -354,16 +350,16 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
      "foot": 10,
+     "id": "drums",
      "params": {
+      "fills": [],
+      "kit": "drums-aasimonster",
       "patterns": [
        "library/grooves/golem-half-time.mid"
-      ],
-      "fills": [],
-      "kit": "drums-aasimonster"
-     }
+      ]
+     },
+     "type": "drums"
     }
    ]
   },
@@ -379,139 +375,149 @@
  },
  "bpm": 140,
  "chain": {
+  "post": [
+   {
+    "id": "geq",
+    "params": {
+     "amount": 100,
+     "auto_gain": false,
+     "g1": 0,
+     "g10": 0,
+     "g11": 0,
+     "g2": 0,
+     "g3": 0,
+     "g4": 2,
+     "g5": -4,
+     "g6": -5,
+     "g7": -2,
+     "g8": 0,
+     "g9": 2,
+     "gb_10k": 0,
+     "gb_120": 0,
+     "gb_400": 0,
+     "gb_4k5": 0,
+     "gb_50": 0,
+     "gb_500": 0,
+     "gb_800": 0,
+     "gt_100": 0,
+     "gt_1k6": 0,
+     "gt_200": 0,
+     "gt_3k2": 0,
+     "gt_400": 0,
+     "gt_6k4": 0,
+     "gt_800": 0,
+     "highcut": 22000,
+     "highcut_slope": "12 dB/oct",
+     "layout": "Octave 11",
+     "level": 0,
+     "lowcut": 10,
+     "lowcut_slope": "12 dB/oct"
+    },
+    "type": "eq-graphic"
+   },
+   {
+    "foot": 8,
+    "id": "chorus",
+    "params": {
+     "depth": 4,
+     "mix": 0.4,
+     "mode": "Classic",
+     "profile": "Guitar Clean",
+     "rate": 0.6
+    },
+    "type": "chorus"
+   },
+   {
+    "foot": 7,
+    "id": "dly",
+    "params": {
+     "feedback": 25,
+     "mix": 12,
+     "model": "Digital",
+     "time": "1/4"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "room",
+    "params": {
+     "decay": 0.7,
+     "hicut": 7000,
+     "mix": 10,
+     "size": 14
+    },
+    "type": "reverb-room"
+   }
+  ],
   "pre": [
    {
     "id": "met",
-    "type": "met",
     "params": {
-     "thresh": -44,
      "hold": 10,
-     "release": 60
-    }
+     "release": 60,
+     "thresh": -44
+    },
+    "type": "met"
    },
    {
+    "foot": 6,
     "id": "boost",
-    "type": "shem",
     "params": {
      "grind": 4,
      "voice": "Focused"
     },
-    "foot": 6
+    "type": "shem"
    }
   ],
   "split": {
-   "mode": "merge",
-   "gain": -3,
    "branches": [
     {
-     "id": "lane-a",
      "blocks": [
       {
-       "id": "rg100",
-       "type": "amp-nam",
-       "label": "Randall RG-100",
-       "ref": "6779",
-       "model": "418633",
+       "id": "x2",
+       "label": "Randall Warhead X2",
+       "model": "380970",
        "params": {
         "input": 0,
         "output": 0
-       }
-      },
-      {
-       "id": "v30",
-       "type": "cab",
-       "label": "Mesa 4x12 Vintage 30",
-       "ref": "45023",
-       "model": "239438",
-       "params": {
-        "level": 0
-       }
+       },
+       "ref": "31332",
+       "type": "amp"
       }
-     ]
+     ],
+     "id": "lane-a"
     },
     {
-     "id": "lane-b",
      "blocks": [
       {
        "id": "jc",
-       "type": "amp",
-       "label": "Roland JC-120",
-       "ref": "6530",
-       "model": "397610",
+       "label": "Roland JC-120B",
+       "model": "379740",
        "params": {
-        "input": -3,
+        "input": -2,
         "output": 0
-       }
+       },
+       "ref": "10912",
+       "type": "amp"
       }
-     ]
+     ],
+     "id": "lane-b"
     }
-   ]
-  },
-  "post": [
-   {
-    "id": "geq",
-    "type": "eq-graphic",
-    "params": {
-     "layout": "Guitar 7",
-     "gt_100": 2,
-     "gt_200": 1,
-     "gt_400": -4,
-     "gt_800": -6,
-     "gt_1k6": -2,
-     "gt_3k2": 3,
-     "gt_6k4": 2
-    }
-   },
-   {
-    "id": "chorus",
-    "type": "chorus",
-    "params": {
-     "profile": "Guitar Clean",
-     "mode": "Classic",
-     "rate": 0.6,
-     "depth": 4,
-     "mix": 0.4
-    },
-    "foot": 8
-   },
-   {
-    "id": "dly",
-    "type": "delay",
-    "params": {
-     "model": "Digital",
-     "time": "1/4",
-     "feedback": 25,
-     "mix": 12
-    },
-    "foot": 7
-   },
-   {
-    "id": "room",
-    "type": "reverb-room",
-    "params": {
-     "mix": 10,
-     "decay": 0.7,
-     "size": 14,
-     "hicut": 7000
-    }
-   }
-  ]
+   ],
+   "gain": -3,
+   "mode": "merge"
+  }
  },
  "needs": [
   {
-   "type": "amp-nam",
-   "ref": "6779",
-   "model": "418633"
-  },
-  {
-   "type": "cab",
-   "ref": "45023",
-   "model": "239438"
+   "type": "amp",
+   "ref": "31332",
+   "model": "380970"
   },
   {
    "type": "amp",
-   "ref": "6530",
-   "model": "397610"
+   "ref": "10912",
+   "model": "379740"
   }
  ],
  "origin": "factory",
@@ -542,41 +548,30 @@
  },
  "deps": [
   {
-   "sha256": "18b51531d384f63c6fe3b73865d66796fdddda70c538c5f6adcd7c3b5746458c",
-   "uid": "t3k:6779",
-   "kind": "amp",
-   "bytes": 295464,
-   "name": "RG100HT",
+   "sha256": "47b7d380dc87e44e05fb9313952a9b98d851e9cc008eb6e2a32c7d64d8dae54c",
+   "uid": "t3k:31332",
+   "kind": "amp-cab",
+   "bytes": 295814,
+   "name": "X2-DimeZone-v30-sm57",
    "source": "t3k",
-   "amp": "Randall RG-100HT",
+   "amp": "Randall Warhead X2",
    "arch": "2",
    "brand": "Randall",
-   "creator": "treblecrossstudios",
-   "url": "https://www.tone3000.com/tones/randall-rg-100ht-6779"
+   "creator": "frozenmammoth",
+   "url": "https://www.tone3000.com/tones/randall-x2-warhead-dimezone-full-rigs-preamp-31332"
   },
   {
-   "sha256": "577a59ea66f3d00bb75d191ce141b1a7e79b356c0e6f69b53d98265782cce686",
-   "uid": "t3k:45023",
-   "kind": "cab",
-   "bytes": 72080,
-   "name": "V30 UR 4FB 4x12 SM57 0.50in 0.0in SA73",
-   "source": "t3k",
-   "amp": "Celestion Vintage 30 - 2002 Mesa Boogie 4x12 - SM57",
-   "brand": "Celestion",
-   "creator": "outmodedelectronics",
-   "url": "https://www.tone3000.com/tones/45023"
-  },
-  {
-   "sha256": "436937c084316d1324158e9eca813334da43d3c08e4ce6b559840e3bf887a4f5",
-   "uid": "t3k:6530",
+   "sha256": "36a0552e6a86d4fce6b2c919095ea34ee35e933cff29c1581ff0cbdf57886aef",
+   "uid": "t3k:10912",
    "kind": "amp-cab",
-   "bytes": 296657,
-   "name": "Roland JC-120 Jazz Chorus",
+   "bytes": 296809,
+   "name": "Roland JC 120B Jazz Chorus: Bright On, SM57",
    "source": "t3k",
+   "amp": "Roland 120B Jazz Chorus",
    "arch": "2",
    "brand": "Roland",
    "creator": "tone3000",
-   "url": "https://www.tone3000.com/tones/roland-jc-120-jazz-chorus-6530"
+   "url": "https://www.tone3000.com/tones/roland-jc-120b-jazz-chorus-10912"
   },
   {
    "sha256": "acf87028281441ec96a30359ef38fc6d631bc3f3a504b0b52d2992bbf2cb9bdd",
@@ -602,5 +597,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"smoke\", \"7\": \"vortex\", \"8\": \"strobe\", \"9\": \"stars\", \"A\": \"rain\", \"B\": \"vu\", \"C\": \"wave\", \"D\": \"heartbeat\", \"E\": \"lightning\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"id\": \"geq\", \"params\": {\"gt_100\": 2, \"gt_1k6\": -2, \"gt_200\": 1, \"gt_3k2\": 3, \"gt_400\": -4, \"gt_6k4\": 2, \"gt_800\": -6, \"layout\": \"Guitar 7\"}, \"type\": \"eq-graphic\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 10, \"release\": 60, \"thresh\": -44}, \"type\": \"met\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 4, \"voice\": \"Focused\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"rg100\", \"label\": \"Randall RG-100\", \"model\": \"418633\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6779\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239438\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"7\": \"#6a040f\", \"8\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\", \"E\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-aasimonster\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"geq\", \"params\": {\"gt_100\": 2, \"gt_1k6\": -2, \"gt_200\": 1, \"gt_3k2\": 3, \"gt_400\": -4, \"gt_6k4\": 2, \"gt_800\": -6, \"layout\": \"Guitar 7\"}, \"type\": \"eq-graphic\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 10, \"release\": 60, \"thresh\": -44}, \"type\": \"met\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 4, \"voice\": \"Focused\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"rg100\", \"label\": \"Randall RG-100\", \"model\": \"418633\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"6779\", \"type\": \"amp-nam\"}, {\"id\": \"v30\", \"label\": \"Mesa 4x12 Vintage 30\", \"model\": \"239438\", \"params\": {\"level\": 0}, \"ref\": \"45023\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120\", \"model\": \"397610\", \"params\": {\"input\": -3, \"output\": 0}, \"ref\": \"6530\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Groove Metal\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Southern Riff\", \"params\": {}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Chug Breakdown\", \"params\": {\"geq\": {\"gt_400\": -6, \"gt_800\": -8}, \"met\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Scooped Wall\", \"params\": {}}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Clean Chorus\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead\", \"params\": {\"geq\": {\"gt_1k6\": 2, \"gt_800\": -2}}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Southern Riff\"}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Chug Breakdown\", \"params\": {\"geq\": {\"gt_400\": -6, \"gt_800\": -8}, \"met\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Scooped Wall\"}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Clean Chorus\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-E\"}}, \"level\": 3, \"name\": \"Lead\", \"params\": {\"geq\": {\"gt_1k6\": 2, \"gt_800\": -2}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"smoke\", \"7\": \"vortex\", \"8\": \"strobe\", \"9\": \"stars\", \"A\": \"rain\", \"B\": \"vu\", \"C\": \"wave\", \"D\": \"heartbeat\", \"E\": \"lightning\"}, \"backing\": null, \"bpm\": 140, \"chain\": {\"post\": [{\"id\": \"geq\", \"params\": {\"amount\": 100, \"auto_gain\": false, \"g1\": 0, \"g10\": 0, \"g11\": 0, \"g2\": 0, \"g3\": 0, \"g4\": 2, \"g5\": -4, \"g6\": -5, \"g7\": -2, \"g8\": 0, \"g9\": 2, \"gb_10k\": 0, \"gb_120\": 0, \"gb_400\": 0, \"gb_4k5\": 0, \"gb_50\": 0, \"gb_500\": 0, \"gb_800\": 0, \"gt_100\": 0, \"gt_1k6\": 0, \"gt_200\": 0, \"gt_3k2\": 0, \"gt_400\": 0, \"gt_6k4\": 0, \"gt_800\": 0, \"highcut\": 22000, \"highcut_slope\": \"12 dB/oct\", \"layout\": \"Octave 11\", \"level\": 0, \"lowcut\": 10, \"lowcut_slope\": \"12 dB/oct\"}, \"type\": \"eq-graphic\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 10, \"release\": 60, \"thresh\": -44}, \"type\": \"met\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 4, \"voice\": \"Focused\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"x2\", \"label\": \"Randall Warhead X2\", \"model\": \"380970\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"31332\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120B\", \"model\": \"379740\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"10912\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#6a040f\", \"6\": \"#6a040f\", \"7\": \"#6a040f\", \"8\": \"#6a040f\", \"9\": \"#6a040f\", \"A\": \"#6a040f\", \"B\": \"#6a040f\", \"C\": \"#6a040f\", \"D\": \"#6a040f\", \"E\": \"#6a040f\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-aasimonster\", \"patterns\": [\"library/grooves/golem-half-time.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"geq\", \"params\": {\"amount\": 100, \"auto_gain\": false, \"g1\": 0, \"g10\": 0, \"g11\": 0, \"g2\": 0, \"g3\": 0, \"g4\": 2, \"g5\": -4, \"g6\": -5, \"g7\": -2, \"g8\": 0, \"g9\": 2, \"gb_10k\": 0, \"gb_120\": 0, \"gb_400\": 0, \"gb_4k5\": 0, \"gb_50\": 0, \"gb_500\": 0, \"gb_800\": 0, \"gt_100\": 0, \"gt_1k6\": 0, \"gt_200\": 0, \"gt_3k2\": 0, \"gt_400\": 0, \"gt_6k4\": 0, \"gt_800\": 0, \"highcut\": 22000, \"highcut_slope\": \"12 dB/oct\", \"layout\": \"Octave 11\", \"level\": 0, \"lowcut\": 10, \"lowcut_slope\": \"12 dB/oct\"}, \"type\": \"eq-graphic\"}, {\"foot\": 8, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.4, \"mode\": \"Classic\", \"profile\": \"Guitar Clean\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 25, \"mix\": 12, \"model\": \"Digital\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.7, \"hicut\": 7000, \"mix\": 10, \"size\": 14}, \"type\": \"reverb-room\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"hold\": 10, \"release\": 60, \"thresh\": -44}, \"type\": \"met\"}, {\"foot\": 6, \"id\": \"boost\", \"params\": {\"grind\": 4, \"voice\": \"Focused\"}, \"type\": \"shem\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"x2\", \"label\": \"Randall Warhead X2\", \"model\": \"380970\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"31332\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"jc\", \"label\": \"Roland JC-120B\", \"model\": \"379740\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"10912\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Groove Metal\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"boost\": true, \"chorus\": true, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Southern Riff\", \"params\": {}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Chug Breakdown\", \"params\": {\"met\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Scooped Wall\", \"params\": {}}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Clean Chorus\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Lead\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"boost\": true, \"chorus\": true, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Southern Riff\"}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Chug Breakdown\", \"params\": {\"met\": {\"thresh\": -40}}}, {\"blocks\": {\"boost\": false, \"chorus\": false, \"dly\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-C\"}}, \"name\": \"Scooped Wall\"}, {\"blocks\": {\"boost\": false, \"chorus\": true, \"dly\": true}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-D\"}}, \"name\": \"Clean Chorus\", \"params\": {\"met\": {\"thresh\": -70}}}, {\"blocks\": {\"boost\": true, \"chorus\": false, \"dly\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-E\"}}, \"level\": 3, \"name\": \"Lead\"}]}"
 }

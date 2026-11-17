@@ -14,90 +14,103 @@
     "pre": [
      {
       "id": "gate",
-      "type": "gate",
       "params": {
-       "thresh": -60,
-       "release": 120
-      }
+       "release": 120,
+       "thresh": -60
+      },
+      "type": "gate"
+     },
+     {
+      "id": "fuzz-a9to",
+      "params": {
+       "bass_keep": 0,
+       "bias": 0,
+       "buffer": false,
+       "bypass": false,
+       "fuzz": 70,
+       "guitar_vol": 100,
+       "input": 0,
+       "leakage": 100,
+       "level": 0,
+       "mids": 0,
+       "mix": 100,
+       "model": "Si Four",
+       "pickup": "Single Coil",
+       "sag": 0,
+       "stack": "Classic",
+       "temp": 25,
+       "tone": 0,
+       "voltage": 18
+      },
+      "type": "fuzz"
      },
      {
       "id": "ds1",
-      "type": "pedal-nam",
       "label": "Boss DS-1 Distortion",
-      "ref": "2508",
       "model": "419260",
       "params": {
        "input": 0,
        "output": -3
       },
+      "ref": "2508",
+      "type": "pedal-nam",
       "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "twin",
-      "type": "amp",
       "label": "Fender Twin Reverb",
-      "ref": "43620",
       "model": "382265",
       "params": {
        "input": -3,
        "output": 0
-      }
+      },
+      "ref": "43620",
+      "type": "amp"
      },
      {
       "id": "trem",
-      "type": "tremolo",
       "params": {
-       "rate": 5.5,
        "depth": 0.6,
-       "wave": "Sine",
-       "model": "Optical"
-      }
-     },
-     {
-      "id": "grain",
-      "type": "granular",
-      "params": {
-       "grains": 16,
-       "size": 180,
-       "mix": 40,
-       "mode": "Cloud"
+       "model": "Optical",
+       "rate": 5.5,
+       "wave": "Sine"
       },
+      "type": "tremolo",
       "foot": 7
      },
      {
       "id": "ring",
-      "type": "ringmod",
       "params": {
        "carrier": "Free",
        "freq": 0.35,
        "mix": 0.5
-      }
+      },
+      "type": "ringmod"
      },
      {
       "id": "dly",
-      "type": "delay",
       "params": {
-       "model": "Tape",
-       "time": "1/8•",
        "feedback": 40,
-       "mix": 18
-      }
+       "mix": 18,
+       "model": "Tape",
+       "time": "1/8•"
+      },
+      "type": "delay"
      },
      {
       "id": "verb",
-      "type": "reverb",
       "params": {
        "algo": "Cloud",
-       "mix": 26,
        "decay": 3.5,
-       "size": 44,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 26,
+       "size": 44
+      },
+      "type": "reverb"
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "guitar",
@@ -108,9 +121,9 @@
      "name": "Glass Clean",
      "blocks": {
       "ds1": false,
-      "trem": true,
-      "grain": false,
-      "ring": false
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": true
      },
      "params": {},
      "branches": {}
@@ -120,9 +133,9 @@
      "name": "Crunch Burst",
      "blocks": {
       "ds1": true,
-      "trem": false,
-      "grain": false,
-      "ring": false
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": false
      },
      "params": {
       "verb": {
@@ -136,14 +149,10 @@
      "name": "Frozen Pad",
      "blocks": {
       "ds1": false,
-      "trem": false,
-      "grain": true,
-      "ring": false
+      "ring": false,
+      "trem": false
      },
      "params": {
-      "grain": {
-       "mix": 70
-      },
       "verb": {
        "mix": 34
       }
@@ -155,9 +164,8 @@
      "name": "Ring Glitch",
      "blocks": {
       "ds1": false,
-      "trem": false,
-      "grain": false,
-      "ring": true
+      "ring": true,
+      "trem": false
      },
      "params": {},
      "branches": {}
@@ -166,10 +174,9 @@
      "id": "st-guitar-1-E",
      "name": "Tape Echo",
      "blocks": {
-      "ds1": false,
-      "trem": false,
-      "grain": false,
-      "ring": false
+      "fuzz-a9to": false,
+      "ring": false,
+      "trem": false
      },
      "params": {
       "dly": {
@@ -212,10 +219,7 @@
        "makeup": 3,
        "attack": 15
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "b15",
       "type": "amp",
@@ -269,7 +273,9 @@
        "highs": -1
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "bass",
@@ -391,6 +397,7 @@
      "id": "st-keys-1-A",
      "name": "Glass Rhodes",
      "blocks": {
+      "tape-2": false,
       "trem-2": true
      },
      "params": {},
@@ -400,8 +407,8 @@
      "id": "st-keys-1-B",
      "name": "Tape Rhodes",
      "blocks": {
-      "trem-2": false,
-      "tape-2": true
+      "tape-2": true,
+      "trem-2": false
      },
      "params": {},
      "branches": {}
@@ -410,8 +417,8 @@
      "id": "st-keys-1-C",
      "name": "Dry Keys",
      "blocks": {
-      "trem-2": false,
-      "tape-2": false
+      "tape-2": false,
+      "trem-2": false
      },
      "params": {
       "verb-2": {
@@ -424,8 +431,8 @@
      "id": "st-keys-1-D",
      "name": "Underwater",
      "blocks": {
-      "trem-2": true,
-      "tape-2": true
+      "tape-2": true,
+      "trem-2": true
      },
      "params": {
       "verb-2": {
@@ -507,7 +514,9 @@
      "id": "st-keys-pads-1-A",
      "name": "Beat",
      "blocks": {
-      "crush": false
+      "crush": false,
+      "dly-2": false,
+      "tape-3": false
      },
      "params": {},
      "branches": {}
@@ -516,7 +525,9 @@
      "id": "st-keys-pads-1-B",
      "name": "Crushed Beat",
      "blocks": {
-      "crush": true
+      "crush": true,
+      "dly-2": false,
+      "tape-3": false
      },
      "params": {},
      "branches": {}
@@ -525,6 +536,8 @@
      "id": "st-keys-pads-1-C",
      "name": "Tape Beat",
      "blocks": {
+      "crush": false,
+      "dly-2": false,
       "tape-3": true
      },
      "params": {},
@@ -534,7 +547,9 @@
      "id": "st-keys-pads-1-D",
      "name": "Dub Beat",
      "blocks": {
-      "dly-2": true
+      "crush": false,
+      "dly-2": true,
+      "tape-3": false
      },
      "params": {},
      "branches": {}
@@ -646,7 +661,9 @@
      "id": "st-voice-1-A",
      "name": "Ethereal",
      "blocks": {
-      "dly-3": true
+      "dly-3": true,
+      "formant": false,
+      "tune": true
      },
      "params": {},
      "branches": {}
@@ -655,7 +672,9 @@
      "id": "st-voice-1-B",
      "name": "Close",
      "blocks": {
-      "dly-3": false
+      "dly-3": false,
+      "formant": false,
+      "tune": true
      },
      "params": {
       "verb-3": {
@@ -668,6 +687,8 @@
      "id": "st-voice-1-C",
      "name": "Robot Falsetto",
      "blocks": {
+      "dly-3": false,
+      "formant": false,
       "tune": true
      },
      "params": {
@@ -683,7 +704,8 @@
      "name": "Cloud",
      "blocks": {
       "dly-3": true,
-      "formant": true
+      "formant": true,
+      "tune": true
      },
      "params": {
       "verb-3": {
@@ -775,8 +797,8 @@
      "id": "st-drums-1-A",
      "name": "Tape Kit",
      "blocks": {
-      "tape-4": true,
-      "crush-2": false
+      "crush-2": false,
+      "tape-4": true
      },
      "params": {},
      "branches": {}
@@ -785,8 +807,8 @@
      "id": "st-drums-1-B",
      "name": "Crushed",
      "blocks": {
-      "tape-4": false,
-      "crush-2": true
+      "crush-2": true,
+      "tape-4": false
      },
      "params": {},
      "branches": {}
@@ -795,8 +817,8 @@
      "id": "st-drums-1-C",
      "name": "Dry",
      "blocks": {
-      "tape-4": false,
-      "crush-2": false
+      "crush-2": false,
+      "tape-4": false
      },
      "params": {},
      "branches": {}
@@ -805,8 +827,8 @@
      "id": "st-drums-1-D",
      "name": "Dusty",
      "blocks": {
-      "tape-4": true,
-      "crush-2": true
+      "crush-2": true,
+      "tape-4": true
      },
      "params": {},
      "branches": {}
@@ -824,17 +846,22 @@
    "name": "Glass Intro",
    "blocks": {
     "ds1": false,
-    "trem": true,
-    "grain": false,
+    "fuzz-a9to": false,
     "ring": false,
+    "trem": true,
     "oct": false,
     "synth": false,
     "tape": false,
+    "tape-2": false,
     "trem-2": true,
     "crush": false,
+    "dly-2": false,
+    "tape-3": false,
     "dly-3": true,
-    "tape-4": true,
-    "crush-2": false
+    "formant": false,
+    "tune": true,
+    "crush-2": false,
+    "tape-4": true
    },
    "params": {},
    "branches": {},
@@ -865,19 +892,22 @@
    "id": "B",
    "name": "Verse",
    "blocks": {
-    "ds1": false,
-    "trem": false,
-    "grain": false,
+    "fuzz-a9to": false,
     "ring": false,
+    "trem": false,
     "oct": false,
     "synth": true,
     "tape": false,
-    "trem-2": false,
     "tape-2": false,
+    "trem-2": false,
     "crush": true,
+    "dly-2": false,
+    "tape-3": false,
     "dly-3": false,
-    "tape-4": false,
-    "crush-2": true
+    "formant": false,
+    "tune": true,
+    "crush-2": true,
+    "tape-4": false
    },
    "params": {
     "dly": {
@@ -920,18 +950,22 @@
    "name": "Burst",
    "blocks": {
     "ds1": true,
-    "trem": false,
-    "grain": false,
+    "fuzz-a9to": false,
     "ring": false,
+    "trem": false,
     "oct": false,
     "synth": false,
     "tape": true,
-    "trem-2": false,
     "tape-2": true,
+    "trem-2": false,
+    "crush": false,
+    "dly-2": false,
     "tape-3": true,
     "dly-3": true,
-    "tape-4": false,
-    "crush-2": false
+    "formant": false,
+    "tune": true,
+    "crush-2": false,
+    "tape-4": false
    },
    "params": {
     "verb": {
@@ -971,24 +1005,23 @@
    "name": "Frozen",
    "blocks": {
     "ds1": false,
-    "trem": false,
-    "grain": true,
     "ring": false,
+    "trem": false,
     "oct": true,
     "synth": false,
     "tape": false,
-    "trem-2": true,
     "tape-2": true,
+    "trem-2": true,
+    "crush": false,
     "dly-2": true,
+    "tape-3": false,
     "dly-3": true,
     "formant": true,
-    "tape-4": true,
-    "crush-2": true
+    "tune": true,
+    "crush-2": true,
+    "tape-4": true
    },
    "params": {
-    "grain": {
-     "mix": 70
-    },
     "verb": {
      "mix": 34
     },
@@ -1027,17 +1060,21 @@
    "name": "Glitch Out",
    "blocks": {
     "ds1": false,
-    "trem": false,
-    "grain": false,
     "ring": true,
+    "trem": false,
     "oct": false,
     "synth": true,
     "tape": false,
+    "tape-2": false,
     "trem-2": true,
     "crush": true,
+    "dly-2": false,
+    "tape-3": false,
+    "dly-3": false,
+    "formant": false,
     "tune": true,
-    "tape-4": false,
-    "crush-2": true
+    "crush-2": true,
+    "tape-4": false
    },
    "params": {
     "tune": {
@@ -1163,7 +1200,7 @@
   "E": "scanner",
   "6": "sheen",
   "7": "glitch",
-  "8": "monster",
+  "8": "scanner",
   "9": "rain",
   "10": "vu"
  }

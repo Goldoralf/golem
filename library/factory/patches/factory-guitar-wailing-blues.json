@@ -139,9 +139,9 @@
      "id": "st-guitar-1-A",
      "name": "Clean Ballad",
      "blocks": {
+      "dly": true,
       "sd1": false,
-      "sustain": false,
-      "dly": true
+      "sustain": false
      },
      "params": {
       "verb": {
@@ -158,9 +158,9 @@
      "id": "st-guitar-1-B",
      "name": "Crunch",
      "blocks": {
+      "dly": false,
       "sd1": false,
-      "sustain": false,
-      "dly": false
+      "sustain": false
      },
      "params": {},
      "branches": {
@@ -173,9 +173,9 @@
      "id": "st-guitar-1-C",
      "name": "Singing Lead",
      "blocks": {
+      "dly": true,
       "sd1": true,
-      "sustain": false,
-      "dly": true
+      "sustain": false
      },
      "params": {
       "eq": {
@@ -192,9 +192,9 @@
      "id": "st-guitar-1-D",
      "name": "Endless Bend",
      "blocks": {
+      "dly": true,
       "sd1": true,
-      "sustain": true,
-      "dly": true
+      "sustain": true
      },
      "params": {
       "eq": {
@@ -211,9 +211,9 @@
      "id": "st-guitar-1-E",
      "name": "Rhythm",
      "blocks": {
+      "dly": false,
       "sd1": true,
-      "sustain": false,
-      "dly": false
+      "sustain": false
      },
      "params": {},
      "branches": {
@@ -230,9 +230,9 @@
    "id": "A",
    "name": "Clean Ballad",
    "blocks": {
+    "dly": true,
     "sd1": false,
-    "sustain": false,
-    "dly": true
+    "sustain": false
    },
    "lanes": {
     "guitar-1": {
@@ -254,9 +254,9 @@
    "id": "B",
    "name": "Crunch",
    "blocks": {
+    "dly": false,
     "sd1": false,
-    "sustain": false,
-    "dly": false
+    "sustain": false
    },
    "lanes": {
     "guitar-1": {
@@ -273,9 +273,9 @@
    "id": "C",
    "name": "Singing Lead",
    "blocks": {
+    "dly": true,
     "sd1": true,
-    "sustain": false,
-    "dly": true
+    "sustain": false
    },
    "lanes": {
     "guitar-1": {
@@ -299,9 +299,9 @@
    "id": "D",
    "name": "Endless Bend",
    "blocks": {
+    "dly": true,
     "sd1": true,
-    "sustain": true,
-    "dly": true
+    "sustain": true
    },
    "lanes": {
     "guitar-1": {
@@ -325,9 +325,9 @@
    "id": "E",
    "name": "Rhythm",
    "blocks": {
+    "dly": false,
     "sd1": true,
-    "sustain": false,
-    "dly": false
+    "sustain": false
    },
    "lanes": {
     "guitar-1": {
@@ -346,15 +346,24 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
+     "type": "standard",
+     "id": "standard",
      "foot": 10,
      "params": {
-      "patterns": [
-       "library/grooves/golem-six-eight.mid"
-      ],
-      "fills": [],
-      "kit": "drums-black-pearl"
+      "standard": "rented-room-blues",
+      "key": "Original",
+      "feel": "swing",
+      "motion": "comp",
+      "voicing": "full",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "guitar": false,
+      "pompe": "auto",
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
      }
     }
    ]
@@ -530,7 +539,7 @@
   "C": "scanner",
   "D": "sheen",
   "E": "glitch",
-  "6": "monster",
+  "6": "vu",
   "7": "rain",
   "8": "vu",
   "9": "wave",
@@ -587,30 +596,7 @@
    "brand": "Fender",
    "creator": "amalgamaudio",
    "url": "https://www.tone3000.com/tones/fender-pro-reverb-1967-55360"
-  },
-  {
-   "sha256": "98069f90fc30b4a18b963c76e5ae5f2c2bb1852a3c5a91046951aff88d84b9c3",
-   "uid": "local:groove-golem-six-eight",
-   "kind": "groove",
-   "bytes": 197,
-   "name": "6/8 ballad",
-   "source": "golemfm",
-   "factory": true,
-   "brand": "GoleM",
-   "creator": "factory"
-  },
-  {
-   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
-   "uid": "local:kit-drums-black-pearl",
-   "kind": "kit",
-   "bytes": 919,
-   "name": "drums-black-pearl",
-   "source": "golemfm",
-   "factory": true,
-   "amp": "Black Pearl",
-   "brand": "GoleM",
-   "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"monster\", \"7\": \"rain\", \"8\": \"vu\", \"9\": \"wave\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\", \"E\": \"glitch\"}, \"backing\": null, \"bpm\": 66, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 80, \"midfreq\": 750, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"sustain\", \"params\": {\"bloom\": -8, \"delay\": 500, \"harmonic\": \"Octave\", \"mode\": \"Feedback\", \"rise\": 1500}, \"type\": \"sustainer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 15, \"model\": \"BBD\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.4, \"hicut\": 7000, \"mix\": 22, \"size\": 36}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"sd1\", \"label\": \"Boss SD-1 Super Overdrive\", \"model\": \"381318\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"35426\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203\", \"model\": \"418179\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1071\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"pro\", \"label\": \"Fender Pro Reverb\", \"model\": \"383837\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"55360\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#8d0801\", \"6\": \"#8d0801\", \"7\": \"#8d0801\", \"8\": \"#8d0801\", \"9\": \"#8d0801\", \"A\": \"#8d0801\", \"B\": \"#8d0801\", \"C\": \"#8d0801\", \"D\": \"#8d0801\", \"E\": \"#8d0801\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-six-eight.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 80, \"midfreq\": 750, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"sustain\", \"params\": {\"bloom\": -8, \"delay\": 500, \"harmonic\": \"Octave\", \"mode\": \"Feedback\", \"rise\": 1500}, \"type\": \"sustainer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 15, \"model\": \"BBD\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.4, \"hicut\": 7000, \"mix\": 22, \"size\": 36}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"sd1\", \"label\": \"Boss SD-1 Super Overdrive\", \"model\": \"381318\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"35426\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203\", \"model\": \"418179\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1071\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"pro\", \"label\": \"Fender Pro Reverb\", \"model\": \"383837\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"55360\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Wailing Blues\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": true, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean Ballad\", \"params\": {\"verb\": {\"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Crunch\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Singing Lead\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Endless Bend\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": false, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Rhythm\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": true, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Clean Ballad\", \"params\": {\"verb\": {\"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Crunch\"}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Singing Lead\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Endless Bend\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": false, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Rhythm\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"vu\", \"7\": \"rain\", \"8\": \"vu\", \"9\": \"wave\", \"A\": \"pulse\", \"B\": \"fire\", \"C\": \"scanner\", \"D\": \"sheen\", \"E\": \"glitch\"}, \"backing\": null, \"bpm\": 66, \"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 80, \"midfreq\": 750, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"sustain\", \"params\": {\"bloom\": -8, \"delay\": 500, \"harmonic\": \"Octave\", \"mode\": \"Feedback\", \"rise\": 1500}, \"type\": \"sustainer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 15, \"model\": \"BBD\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.4, \"hicut\": 7000, \"mix\": 22, \"size\": 36}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"sd1\", \"label\": \"Boss SD-1 Super Overdrive\", \"model\": \"381318\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"35426\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203\", \"model\": \"418179\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1071\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"pro\", \"label\": \"Fender Pro Reverb\", \"model\": \"383837\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"55360\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#8d0801\", \"6\": \"#8d0801\", \"7\": \"#8d0801\", \"8\": \"#8d0801\", \"9\": \"#8d0801\", \"A\": \"#8d0801\", \"B\": \"#8d0801\", \"C\": \"#8d0801\", \"D\": \"#8d0801\", \"E\": \"#8d0801\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"standard\", \"params\": {\"arp\": \"Off\", \"bass\": true, \"choruses\": 4, \"drums\": true, \"feel\": \"swing\", \"groove\": \"auto\", \"guitar\": false, \"key\": \"Original\", \"keys\": true, \"kit\": \"black-pearl\", \"motion\": \"comp\", \"pompe\": \"auto\", \"standard\": \"rented-room-blues\", \"voicing\": \"full\"}, \"type\": \"standard\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"compo-global\", \"type\": \"compo\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"eq\", \"params\": {\"highs\": -2, \"lowcut\": 80, \"midfreq\": 750, \"midgain\": 1.5}, \"type\": \"eq\"}, {\"foot\": 8, \"id\": \"sustain\", \"params\": {\"bloom\": -8, \"delay\": 500, \"harmonic\": \"Octave\", \"mode\": \"Feedback\", \"rise\": 1500}, \"type\": \"sustainer\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 28, \"mix\": 15, \"model\": \"BBD\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"verb\", \"params\": {\"algo\": \"Hall\", \"decay\": 2.4, \"hicut\": 7000, \"mix\": 22, \"size\": 36}, \"type\": \"reverb\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -58}, \"type\": \"gate\"}, {\"foot\": 6, \"id\": \"sd1\", \"label\": \"Boss SD-1 Super Overdrive\", \"model\": \"381318\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"35426\", \"type\": \"pedal-nam\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"jcm\", \"label\": \"Marshall JCM800 2203\", \"model\": \"418179\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"1071\", \"type\": \"amp-nam\"}, {\"id\": \"gb\", \"label\": \"Marshall 4x12 Greenback\", \"model\": \"239238\", \"params\": {\"level\": 0}, \"ref\": \"45022\", \"type\": \"cab\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"pro\", \"label\": \"Fender Pro Reverb\", \"model\": \"383837\", \"params\": {\"input\": -2, \"output\": 0}, \"ref\": \"55360\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"guitar-1\", \"midi\": false, \"name\": \"Wailing Blues\", \"role\": \"guitar\", \"states\": [{\"blocks\": {\"dly\": true, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-guitar-1-A\", \"name\": \"Clean Ballad\", \"params\": {\"verb\": {\"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-B\", \"name\": \"Crunch\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-C\", \"name\": \"Singing Lead\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-D\", \"name\": \"Endless Bend\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": false, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-guitar-1-E\", \"name\": \"Rhythm\", \"params\": {}}]}], \"role\": \"guitar\", \"scenes\": [{\"blocks\": {\"dly\": true, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-A\"}}, \"name\": \"Clean Ballad\", \"params\": {\"verb\": {\"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"sd1\": false, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"B\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-B\"}}, \"name\": \"Crunch\"}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-C\"}}, \"level\": 3, \"name\": \"Singing Lead\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": true, \"sd1\": true, \"sustain\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"guitar-1\": {\"level\": 3, \"state\": \"st-guitar-1-D\"}}, \"level\": 3, \"name\": \"Endless Bend\", \"params\": {\"eq\": {\"midgain\": 3}}}, {\"blocks\": {\"dly\": false, \"sd1\": true, \"sustain\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"E\", \"lanes\": {\"guitar-1\": {\"state\": \"st-guitar-1-E\"}}, \"name\": \"Rhythm\"}]}"
 }

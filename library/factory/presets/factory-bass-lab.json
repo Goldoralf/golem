@@ -77,28 +77,23 @@
          }
         }
        ]
-      },
-      {
-       "id": "lane-c",
-       "blocks": [
-        {
-         "id": "synth",
-         "type": "polysynth",
-         "params": {
-          "engine": "Mono",
-          "wave": "Pulse",
-          "cutoff": 1400,
-          "reso": 35,
-          "filt_env": 20,
-          "synth": -2,
-          "dry": -60
-         }
-        }
-       ]
       }
      ]
     },
     "post": [
+     {
+      "id": "synth",
+      "type": "polysynth",
+      "params": {
+       "engine": "Mono",
+       "wave": "Pulse",
+       "cutoff": 1400,
+       "reso": 35,
+       "filt_env": 20,
+       "synth": -4,
+       "dry": -3
+      }
+     },
      {
       "id": "chorus",
       "type": "chorus",
@@ -138,13 +133,13 @@
     {
      "id": "st-bass-1-A",
      "name": "Sub Only",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "synth": false
+     },
      "params": {},
      "branches": {
       "lane-b": {
-       "mute": true
-      },
-      "lane-c": {
        "mute": true
       }
      }
@@ -152,18 +147,20 @@
     {
      "id": "st-bass-1-B",
      "name": "Grit Blend",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "synth": false
+     },
      "params": {},
-     "branches": {
-      "lane-c": {
-       "mute": true
-      }
-     }
+     "branches": {}
     },
     {
      "id": "st-bass-1-C",
      "name": "Synth Layer",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "synth": true
+     },
      "params": {},
      "branches": {
       "lane-b": {
@@ -174,7 +171,10 @@
     {
      "id": "st-bass-1-D",
      "name": "Full Stack",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "synth": true
+     },
      "params": {},
      "branches": {}
     },
@@ -182,14 +182,11 @@
      "id": "st-bass-1-E",
      "name": "Solo Chorus",
      "blocks": {
-      "chorus": true
+      "chorus": true,
+      "synth": false
      },
      "params": {},
-     "branches": {
-      "lane-c": {
-       "mute": true
-      }
-     }
+     "branches": {}
     }
    ],
    "patch_from": {
@@ -211,10 +208,21 @@
       "type": "vital",
       "params": {
        "preset": "Sparkly_Dreamy_Pad",
-       "fcut": 0.6,
+       "fcut": 0.55,
        "rmix": 0.3,
        "dmix": 0.2,
        "vol": 0.6
+      }
+     },
+     {
+      "id": "chorus-2",
+      "type": "chorus",
+      "params": {
+       "profile": "Keys",
+       "mode": "Ensemble",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.5
       }
      },
      {
@@ -248,17 +256,26 @@
     {
      "id": "st-keys-1-A",
      "name": "Sky Pad",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": false,
+      "shim": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-1-B",
      "name": "Bright",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": true,
+      "shim": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.8
+       "fcut": 0.95
+      },
+      "dly": {
+       "mix": 24
       }
      },
      "branches": {}
@@ -266,10 +283,17 @@
     {
      "id": "st-keys-1-C",
      "name": "Under",
-     "blocks": {},
+     "blocks": {
+      "chorus-2": false,
+      "shim": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.4
+       "fcut": 0.2,
+       "rmix": 0.1
+      },
+      "dly": {
+       "mix": 0
       }
      },
      "branches": {}
@@ -278,9 +302,18 @@
      "id": "st-keys-1-D",
      "name": "Shimmer Rise",
      "blocks": {
+      "chorus-2": true,
       "shim": true
      },
-     "params": {},
+     "params": {
+      "vital": {
+       "fcut": 0.75
+      },
+      "shim": {
+       "mix": 45,
+       "decay": 8
+      }
+     },
      "branches": {}
     }
    ],
@@ -294,17 +327,23 @@
   {
    "id": "A",
    "name": "Sub",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "synth": false,
+    "chorus-2": false,
+    "shim": false
+   },
    "params": {
     "vital": {
-     "fcut": 0.4
+     "fcut": 0.2,
+     "rmix": 0.1
+    },
+    "dly": {
+     "mix": 0
     }
    },
    "branches": {
     "lane-b": {
-     "mute": true
-    },
-    "lane-c": {
      "mute": true
     }
    },
@@ -321,17 +360,22 @@
   {
    "id": "B",
    "name": "Grit",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "synth": false,
+    "chorus-2": false,
+    "shim": false
+   },
    "params": {
     "vital": {
-     "fcut": 0.4
+     "fcut": 0.2,
+     "rmix": 0.1
+    },
+    "dly": {
+     "mix": 0
     }
    },
-   "branches": {
-    "lane-c": {
-     "mute": true
-    }
-   },
+   "branches": {},
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-B"
@@ -345,7 +389,12 @@
   {
    "id": "C",
    "name": "Synth",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "synth": true,
+    "chorus-2": false,
+    "shim": false
+   },
    "params": {},
    "branches": {
     "lane-b": {
@@ -365,10 +414,19 @@
   {
    "id": "D",
    "name": "Stack",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "synth": true,
+    "chorus-2": false,
+    "shim": false
+   },
    "params": {
     "vital": {
-     "fcut": 0.4
+     "fcut": 0.2,
+     "rmix": 0.1
+    },
+    "dly": {
+     "mix": 0
     }
    },
    "branches": {},
@@ -386,14 +444,13 @@
    "id": "E",
    "name": "Solo",
    "blocks": {
-    "chorus": true
+    "chorus": true,
+    "synth": false,
+    "chorus-2": false,
+    "shim": false
    },
    "params": {},
-   "branches": {
-    "lane-c": {
-     "mute": true
-    }
-   },
+   "branches": {},
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-E",

@@ -47,3 +47,19 @@ stop_golem_engine() {
   echo "⚠ le Golem Engine ne s'est pas arrêté en 10 s"
   return 1
 }
+
+# LE MODE PERFORMANCE RENDU À L'ARRÊT (bridge/routes_system.py, wants_boost — 2026-11-17) : golem passe le processeur en
+# performance tant qu'il tourne et note qu'il l'a fait (presets/.perf-prev = le gouverneur d'avant). À `golem stop`, le
+# mode d'avant revient : le PC redevient un PC. Sans la marque, golem n'a rien allumé : on ne touche à rien. Jamais
+# fatal (sans règle sudo, le mode reste — il était de toute façon posé à la main).
+golem_perf_restore() {
+  local here="${1:?racine golem}" mark prev script
+  mark="$here/presets/.perf-prev"
+  [ -f "$mark" ] || return 0
+  prev="$(cat "$mark" 2>/dev/null)"
+  rm -f "$mark"
+  [ "$prev" = performance ] && return 0
+  script=/usr/local/sbin/golem-perf-mode
+  [ -x "$script" ] || script="$here/provision/perf-mode.sh"
+  sudo -n "$script" off >/dev/null 2>&1 && echo "→ mode performance rendu (${prev:-powersave})" || true
+}

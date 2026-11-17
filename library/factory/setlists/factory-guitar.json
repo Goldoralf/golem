@@ -90,6 +90,12 @@
    "rev": 1,
    "title": "Pop Chorus",
    "patch": "factory-guitar-pop-chorus"
+  },
+  {
+   "id": "r:factory-guitar:gypsy-acoustic",
+   "rev": 1,
+   "title": "Gypsy Acoustic",
+   "patch": "factory-guitar-gypsy-acoustic"
   }
  ],
  "presets": [
@@ -106,6 +112,7 @@
   "patch:factory-guitar-funk-clean",
   "patch:factory-guitar-funk-drive",
   "patch:factory-guitar-eight-string-nu",
-  "patch:factory-guitar-pop-chorus"
+  "patch:factory-guitar-pop-chorus",
+  "patch:factory-guitar-gypsy-acoustic"
  ]
 }

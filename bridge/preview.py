@@ -32,7 +32,9 @@ from .commands import write_command
 # plus qu'à la main (paramètre `ref` du bloc d'aperçu). Les anciens noms restent lus.
 _GUITAR = {"djent": ["djent"], "high-gain": ["metal"],
            "crunch": ["punk", "math rock", "rock", "blues"]}
-_BASS = {"pick": ["djent", "metal", "punk", "rock", "math rock"]}
+# LA BASSE A TROIS PHRASES (2026-11-16, enregistrées au rack) : `finger` = un riff aux doigts (jazz, et les riffs
+# metal joués aux doigts), `pick` = une ligne au médiator (rock, metal), `sustain` = des notes longues — TOUT LE RESTE.
+_BASS = {"pick": ["djent", "metal", "punk", "rock", "math rock", "grunge"], "finger": ["jazz"]}
 
 
 # Les TAGS d'abord (2026-11-03) : un patch n'a pas de style, seulement des tags (« jazz », « clean »…), et
@@ -42,8 +44,8 @@ _GUITAR_TAGS = (("djent", ("djent",)),
                 ("high-gain", ("metal", "high-gain", "metalcore", "hardcore")),
                 ("clean", ("clean", "jazz", "funk")),
                 ("crunch", ("crunch", "rock", "blues", "punk", "fuzz", "math rock")))
-_BASS_TAGS = (("finger", ("finger", "funk", "jazz", "soul")),
-              ("pick", ("djent", "metal", "punk", "rock", "math rock", "pick")))
+_BASS_TAGS = (("finger", ("finger", "jazz")),
+              ("pick", ("djent", "metal", "punk", "rock", "math rock", "grunge", "pick")))
 
 # claviers et batterie (références MIDI, tools/make-midi-refs.py) : l'INSTRUMENT nommé d'abord, puis le genre
 _KEYS_TAGS = (("organ", ("organ", "hammond", "b3", "gospel")), ("pad", ("pad", "strings")),
@@ -72,7 +74,7 @@ def _bucket(role, style):
     for bucket, styles in table.items():
         if st in styles:
             return f"{r}/{bucket}"
-    return f"{r}/{'finger' if r == 'bass' else 'clean'}"   # défaut sensé par rôle
+    return f"{r}/{'sustain' if r == 'bass' else 'clean'}"   # défaut sensé par rôle (basse : les notes longues)
 
 
 def _di_index():
@@ -246,14 +248,19 @@ def _scenes_of(preset, block):
     return ids
 
 
-def _encode_opus(wav, opus, start=0.0):
+def _encode_opus(wav, opus, start=0.0, max_s=None):
     """WAV -> opus (STÉRÉO, ~96 kbps, loudnorm léger) via ffmpeg. True si OK. Stéréo depuis le 2026-11-03 : le
-    mono effaçait ce que la démo doit montrer (chorus, delays ping-pong, reverbs)."""
+    mono effaçait ce que la démo doit montrer (chorus, delays ping-pong, reverbs). `max_s` : un EXTRAIT — coupé à
+    cette durée, sur un fondu de 0,4 s (golem.fm, 2026-11-17 : la carte d'un patch joue 10-15 s, pas la phrase)."""
     os.makedirs(os.path.dirname(opus), exist_ok=True)
+    cut, fade = [], ""
+    if max_s:
+        cut = ["-t", f"{float(max_s):.3f}"]
+        fade = f",afade=t=out:st={max(0.0, float(max_s) - 0.4):.3f}:d=0.4"
     try:
         subprocess.run(
-            ["ffmpeg", "-y", *(["-ss", f"{start:.3f}"] if start > 0 else []), "-i", wav, "-ac", "2",
-             "-af", "loudnorm=I=-16:TP=-1.5",
+            ["ffmpeg", "-y", *(["-ss", f"{start:.3f}"] if start > 0 else []), "-i", wav, "-ac", "2", *cut,
+             "-af", "loudnorm=I=-16:TP=-1.5" + fade,
              "-c:a", "libopus", "-b:a", "96k", opus],
             check=True, capture_output=True, timeout=60)
         return os.path.isfile(opus)
@@ -358,7 +365,7 @@ def _peak_db(wav, start=None, dur=None):
         return None
 
 
-def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None):
+def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None):
     """Génère la démo du preset `pid` (thread). Pour CHAQUE scène : applique la scène sur le
     sandbox live (moteur testé) puis demande à golem_preview de cloner+rendre la scène courante,
     poll le WAV, encode en opus. Écrit preset['preview']. Ne lève jamais.
@@ -367,7 +374,7 @@ def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None):
     if not _gen_lock.acquire(blocking=False):
         _ST.update(phase="error", error="a generation is already running"); return
     try:
-        _generate_locked(pid, seq, on_scene, in_key=in_key, ref=ref, casting=casting)
+        _generate_locked(pid, seq, on_scene, in_key=in_key, ref=ref, casting=casting, only=only, max_s=max_s)
     finally:
         _gen_lock.release()
 
@@ -396,9 +403,17 @@ def _have_di(ref):
 
 def _scene_refs(preset, scenes, ref, role, explicit, patch_id=None, casting=None):
     refs = {sc: ref for sc in scenes}
-    if explicit or role != "guitar" or not str(ref).startswith("guitar/"):
+    if explicit or role not in ("guitar", "bass") or not str(ref).startswith(role + "/"):
         return refs
     cast = casting if casting is not None else _casting(patch_id)
+    if role == "bass":
+        # la basse n'a pas de règle sur le nom de la scène : seulement la distribution DÉCIDÉE (patchs d'usine),
+        # sinon la phrase du patch (ses tags) sur toutes les scènes
+        for sc in scenes:
+            want = cast.get(str(sc))
+            if want and str(want).startswith("bass/") and _have_di(want):
+                refs[sc] = want
+        return refs
     lead = "guitar/lead-clean" if ref == "guitar/clean" else "guitar/lead"
     names = {str(s.get("id")): str(s.get("name") or "").lower() for s in preset.get("scenes") or [] if isinstance(s, dict)}
     for sc in scenes:
@@ -454,7 +469,7 @@ def plan(pid, in_key="1", ref=None, casting=None):
             "fingerprint": preset_export.fingerprint(preset)}    # empreinte SON au moment de la génération
 
 
-def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None):
+def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None):
     try:
         pl = plan(pid, in_key=in_key, ref=ref, casting=casting)
         if isinstance(pl, str):
@@ -463,6 +478,10 @@ def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None
             _ST.update(phase="error", error="scene engine unavailable"); return
         preset, patch_id, ref, refs, midi = pl["preset"], pl["patch_id"], pl["ref"], pl["refs"], pl["midi"]
         scenes, role, chain, out_dir, fp = pl["scenes"], pl["role"], pl["chain"], pl["out_dir"], pl["fingerprint"]
+        if only is not None:                             # UNE scène (golem.fm « Hear it ») : les autres ne sont pas rendues
+            scenes = [s for s in scenes if str(s) == str(only)]
+            if not scenes:
+                _ST.update(phase="error", error=f"unknown scene: {only}"); return
         os.makedirs(out_dir, exist_ok=True)
         _ST.update(phase="render", preset=pid, done=0, total=len(scenes), msg="re-amp + capture…", error=None)
         ppath = os.path.join(C.PRESETS_DIR, f"{store._safe_id(pid)}.json")
@@ -514,7 +533,8 @@ def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None
                     if midi:
                         with __import__("contextlib").suppress(OSError):
                             os.remove(os.path.join(out_dir, f"{sc}.midi.txt"))
-                    if _encode_opus(got, opus, start=(MIDI_LEAD_IN - MIDI_KEEP_S) if midi else 0.0):
+                    if _encode_opus(got, opus, start=(MIDI_LEAD_IN - MIDI_KEEP_S) if midi else 0.0,
+                                    **({"max_s": max_s} if max_s else {})):
                         out_scenes[sc] = C.rel_posix(opus)
                         with __import__("contextlib").suppress(OSError):
                             os.remove(got)

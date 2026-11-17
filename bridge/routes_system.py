@@ -231,6 +231,7 @@ def system():
         "reaper_running": state.reaper_running,
         "bridge": "ok",
         "cpu_governor": _cpu_governor(),
+        "perf": perf_status(state.mode),                 # le mode performance : ce que golem veut, et pourquoi
         "git_branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
         "git_clean": not _code_changes(),
         "presets": len(load_presets()),
@@ -1802,21 +1803,65 @@ def apply_perf(on):
         return False, str(e)
 
 
-def wants_boost(mode):
-    """(boost voulu, raison). Le boost SUIT LE MODE (2026-09-08 : Gig et Show l'allument) — ET LE MOTEUR : tant que le
-    Golem Engine tourne, il est allumé quel que soit le mode (2026-11-13, le mainteneur). Mesuré : en économie
-    (powersave, 0,67 GHz) le Golem Engine montait à 80 % de charge DSP et décrochait ; en performance, 31 %
-    (docs/ardour-plan.md). Sous REAPER, la règle du mode seule."""
-    from . import modes as _modes
-    if _modes.perf_boost(mode):
-        return True, f"mode « {(mode or {}).get('name')} »"
+# ── LE MODE PERFORMANCE SUIT GOLEM (décision du mainteneur, 2026-11-17) ───────────────────────────────────────────────
+# Avant : le boost suivait le mode (Gig, Show) et, depuis le 2026-11-13, le Golem Engine. Mesuré au rack le 2026-11-17 :
+# en économie, un patch lourd tenait une scène à 83-99 % de charge avec des coupures audibles et une autre à 100 % (94
+# décrochages par minute) ; en performance, 37-70 % et aucune coupure. Demander l'autorisation à 90 % arriverait trop
+# tard, en plein morceau. Donc : golem passe en performance TANT QU'IL TOURNE, sous les deux moteurs, et rend le mode
+# d'avant quand on l'arrête (provision/stop.sh). Trois réserves :
+#   · sur BATTERIE, pas d'automatisme (l'autonomie est à la personne) — Health le dit, le bouton ⚡ reste ;
+#   · un INTERRUPTEUR coupe l'automatisme (config/perf.json, état local ; System ▸ Dashboard) ;
+#   · un mode qui le demande (Gig, Show) l'emporte sur les deux : sur scène on ne discute pas.
+PERF_CFG = os.path.join(C.CONFIG_DIR, "perf.json")
+PERF_PREV = os.path.join(C.PRESETS_DIR, ".perf-prev")     # « golem a allumé le boost » : stop.sh rend le mode d'avant
+
+
+def perf_auto():
+    """L'automatisme est-il voulu ? Oui par défaut ; `{"auto": false}` dans config/perf.json le coupe."""
     try:
-        from . import engine as _engine
-        if getattr(_engine.get(), "id", None) == "ardour":
-            return True, "Golem Engine"
-    except Exception:
-        pass
-    return False, f"mode « {(mode or {}).get('name')} »"
+        with open(PERF_CFG, encoding="utf-8") as f:
+            return json.load(f).get("auto") is not False
+    except (OSError, ValueError):
+        return True
+
+
+def set_perf_auto(on):
+    from .store import _write_json_atomic
+    _write_json_atomic(PERF_CFG, {"auto": bool(on)}, indent=1)
+
+
+def on_battery(root="/sys/class/power_supply"):
+    """Vrai si la machine a une alimentation secteur et qu'elle n'est PAS branchée (Linux). Une tour, un rack : False."""
+    try:
+        mains = []
+        for name in os.listdir(root):
+            if (_read_text(os.path.join(root, name, "type")) or "").lower() == "mains":
+                mains.append(_read_text(os.path.join(root, name, "online")))
+        return bool(mains) and all(v == "0" for v in mains)
+    except OSError:
+        return False
+
+
+def wants_boost(mode):
+    """(boost voulu, raison). Voir le bloc ci-dessus : un mode qui le demande, sinon l'automatisme (golem tourne), sauf
+    sur batterie ou interrupteur coupé."""
+    from . import modes as _modes
+    name = (mode or {}).get("name")
+    if _modes.perf_boost(mode):
+        return True, f"mode « {name} »"
+    if not perf_auto():
+        return False, "automatic performance mode is off"
+    if on_battery():
+        return False, "on battery"
+    return True, "golem is running"
+
+
+def perf_status(mode=None):
+    """Ce que l'écran et Health disent du mode performance : le gouverneur, ce que golem veut et pourquoi."""
+    want, reason = wants_boost(mode)
+    gov = _cpu_governor()
+    return {"governor": gov, "on": gov == "performance" if gov is not None else None, "wanted": want, "reason": reason,
+            "auto": perf_auto(), "on_battery": on_battery(), "available": gov is not None}
 
 
 def apply_perf_for_mode(mode, why=""):
@@ -1830,9 +1875,18 @@ def apply_perf_for_mode(mode, why=""):
         return None                                    # pas de cpufreq (VM) : rien à faire
     if (gov == "performance") == want:
         return True                                    # déjà dans l'état voulu : pas de sudo pour rien
+    if not want and not os.path.exists(PERF_PREV):
+        return True                                    # golem ne l'a pas allumé : il ne l'éteint pas (le choix de la personne)
     ok, out = apply_perf(want)
     if ok:
         log.info(f"boost CPU {'ON' if want else 'OFF'} — {reason}{why}")
+        # la marque « golem l'a allumé » : c'est elle que lit provision/stop.sh pour rendre le mode d'avant
+        with contextlib.suppress(OSError):
+            if want:
+                with open(PERF_PREV, "w", encoding="utf-8") as f:
+                    f.write(gov or "powersave")
+            else:
+                os.remove(PERF_PREV)
     else:
         log.warning(f"boost CPU {'ON' if want else 'OFF'} NON appliqué ({reason}) : {out or PERF_HINT}")
     return ok
@@ -1856,14 +1910,61 @@ def app_build():
     return {"build": newest}
 
 
+# LE GARDIEN : sur un portable, le système (power-profiles-daemon) remet le processeur en économie à sa guise — au
+# branchement du secteur, à un changement de profil —, et le boost posé au démarrage disparaissait sans un mot (rack,
+# 2026-11-17 : « boost CPU ON » au démarrage, « powersave » une heure plus tard, coupures). Toutes les 20 s, si golem
+# veut le boost et que le gouverneur a bougé, il est reposé ; chaque dérive est dite une fois.
+_PERF_GUARD = {"last": 0.0, "said": None}
+PERF_GUARD_S = 20.0
+
+
+def perf_guard_tick(mode, now=None):
+    """Un tour du gardien (appelé par monitors). Rend True s'il a reposé le boost."""
+    now = time.time() if now is None else now
+    if sys.platform not in ("linux", "win32") or now - _PERF_GUARD["last"] < PERF_GUARD_S:
+        return False
+    _PERF_GUARD["last"] = now
+    want, reason = wants_boost(mode)
+    gov = _cpu_governor()
+    if gov is None or not want or gov == "performance":
+        _PERF_GUARD["said"] = None
+        return False
+    ok = apply_perf_for_mode(mode, " (reposé : le système l'avait retiré)")
+    if not ok and _PERF_GUARD["said"] != gov:
+        _PERF_GUARD["said"] = gov                      # l'échec est dit UNE fois par dérive, pas toutes les 20 s
+    return bool(ok)
+
+
+@router.get("/api/perf-mode")
+def perf_mode_status():
+    from .state import state
+    return perf_status(state.mode)
+
+
+@router.post("/api/system/perf-auto")
+async def perf_auto_set(body: dict):
+    """L'interrupteur de l'automatisme (System ▸ Dashboard) : coupé, golem ne touche plus au processeur de lui-même."""
+    from .state import state
+    set_perf_auto(bool((body or {}).get("on")))
+    await asyncio.get_running_loop().run_in_executor(None, apply_perf_for_mode, state.mode, " (interrupteur)")
+    return {"ok": True, **perf_status(state.mode)}
+
+
 @router.post("/api/perf-mode")
 async def perf_mode(body: dict):
     """Bascule manuelle du gouverneur CPU (bouton ⚡ du dashboard) — sinon ok=False + hint."""
     if sys.platform not in ("linux", "win32"):
         return JSONResponse({"error": "CPU boost is not available on this computer yet"}, status_code=501)
     on = bool(body.get("on"))
+    # ÉTEINDRE À LA MAIN coupe aussi l'automatisme : sinon le gardien le rallumerait dans les 20 s, et le bouton
+    # mentirait. Le rallumer à la main ne le remet pas : c'est l'interrupteur « Automatic » qui le fait.
+    if not on and perf_auto():
+        set_perf_auto(False)
     ok, out = await asyncio.get_running_loop().run_in_executor(None, apply_perf, on)
-    return {"ok": ok, "governor": _cpu_governor(), "output": out,
+    if ok and not on:
+        with contextlib.suppress(OSError):
+            os.remove(PERF_PREV)
+    return {"ok": ok, "governor": _cpu_governor(), "output": out, "auto": perf_auto(),
             "hint": None if ok or sys.platform == "win32" else PERF_HINT}   # Windows : pas de sudo, le message dit tout
 
 

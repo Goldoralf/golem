@@ -37,14 +37,21 @@
    "showcases": "bend/vibrato/sustain through drive, tails delay+reverb"
   },
   "bass/finger": {
-   "file": "bass/finger.wav",
+   "file": "bass/finger.flac",
    "name": "Finger groove",
    "bass": "4/5-string",
    "key": "E",
    "showcases": "warmth, comp, low end"
   },
+  "bass/sustain": {
+   "file": "bass/sustain.flac",
+   "name": "Finger sustained",
+   "bass": "4/5-string",
+   "key": "Bm",
+   "showcases": "sustain, comp release, tails of reverb and delay — long notes, manual choice"
+  },
   "bass/pick": {
-   "file": "bass/pick.wav",
+   "file": "bass/pick.flac",
    "name": "Pick drive",
    "bass": "4/5-string",
    "key": "E",

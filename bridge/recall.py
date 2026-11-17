@@ -633,7 +633,13 @@ def do_recall(pid, scene, line=None):
             # GARDE le morceau. Un tap de scène envoyait {preset, scene} et ce rappel « sans ligne » effaçait
             # Paper Kite ; même panne que celle du pied le 2026-09-20 (app.py). Seul un AUTRE preset, ou une
             # vraie ligne, change le morceau.
-            if line is not None or _preset_changed or not state.song:
+            # ⚠ ▶ PLAY SUR UNE CHANSON DONT LE PRESET N'EST PAS CHARGÉ (2026-11-17) : la route pose le morceau AVANT ce
+            # rappel (app.arrangement_action, pour que son tempo parte avec lui) — et ce rappel, qui change de preset
+            # sans ligne, l'effaçait : « no arrangement in this preset », le morceau ne partait qu'au second ▶. Un
+            # morceau de la page Songs posé POUR CE PRESET reste.
+            _for_this = bool(line is None and state.song and state.song.get("line") is None
+                             and state.song.get("band_song") and state.song.get("preset") == p["id"])
+            if (line is not None or _preset_changed or not state.song) and not _for_this:
                 state.song = song_of_line(line, p["id"])
             scenes = p.get("scenes", [])
             if scene is None and scenes:
@@ -1077,7 +1083,22 @@ async def boot_recall():
         ok = await slot_async(first)                       # à froid : hors boucle, comme tout recall
         log_boot.info(f"bank {first:02d} rappelée (la première non vide) : {ok}")
     from . import setlists as _sl
-    _banks = (_sl.load(_sl.active_id()) or {}).get("presets") or []
-    boot_progress.preset_done(bool(ok) or not any(_banks))              # setlist vide : rien à charger, on joue
+    _asl = _sl.load(_sl.active_id()) or {}
+    _banks = _asl.get("presets") or []
+    if not ok:
+        # LA PREMIÈRE BANK QUI CHARGE VRAIMENT (2026-11-16) : une bank dont le preset n'existe plus (objet supprimé,
+        # usine refaite) laissait l'écran de chargement sur « the first preset could not be loaded » alors que la
+        # bank d'à côté jouait. On essaie les suivantes, dans l'ordre, celles dont le preset se lit.
+        for i, ln in enumerate(_asl.get("lines") or _banks):
+            pid = _sl.pid_of(ln)
+            if not pid or not load_preset(pid):
+                continue
+            ok = await slot_async(i)
+            log_boot.info(f"bank {i:02d} rappelée (la première qui charge) : {ok}")
+            if ok:
+                break
+    _loadable = any(_sl.pid_of(ln) and load_preset(_sl.pid_of(ln)) for ln in (_asl.get("lines") or _banks))
+    # setlist vide, ou plus une seule bank lisible : rien à charger, l'app s'ouvre (elle dit ce qui manque)
+    boot_progress.preset_done(bool(ok) or not _loadable)
     if _notify:
         _notify()

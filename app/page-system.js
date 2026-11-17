@@ -727,6 +727,14 @@ function DashboardPanel({ rig, admin, acts }) {
                  gov ? { label: gov === 'performance' ? '↓ turn off' : '⚡ boost',
                          onClick: () => setGov(gov !== 'performance'), busy: perf === '…' } : null) : ''}
         </div>
+        ${/* le mode performance SUIT golem (2026-11-17) : allumé tant qu'il tourne, sauf sur batterie ; l'interrupteur le coupe */''}
+        ${data && data.perf && data.perf.available ? html`<div class="dash-gov"><span class="muted">${
+            data.perf.auto ? (data.perf.on_battery ? 'CPU boost: automatic, but not on battery — it is yours to turn on'
+              : 'CPU boost: golem keeps it on while it runs, and gives it back when it stops')
+            : 'CPU boost: manual — golem does not turn it on by itself'}</span>
+          <button class="row-btn" title="while golem runs, keep the processor in performance mode (never on battery)"
+            onClick=${async () => { await post('/api/system/perf-auto', { on: !data.perf.auto }).catch(() => {}); reload(); }}>
+            Automatic: ${data.perf.auto ? 'on' : 'off'}</button></div>` : ''}
         ${perf && perf !== '…' ? html`<div class="dash-gov"><span class="perf-err" title=${perf}>✗ ${perf.includes('sudo') ? 'sudo not set up — run ./provision/setup-perf-sudo.sh once' : perf}</span></div>` : ''}
 
         <div class="dash-buf">

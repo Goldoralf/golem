@@ -136,9 +136,9 @@
      "id": "st-guitar-1-A",
      "name": "Clean Ballad",
      "blocks": {
+      "dly": true,
       "sd1": false,
-      "sustain": false,
-      "dly": true
+      "sustain": false
      },
      "params": {
       "verb": {
@@ -155,9 +155,9 @@
      "id": "st-guitar-1-B",
      "name": "Crunch",
      "blocks": {
+      "dly": false,
       "sd1": false,
-      "sustain": false,
-      "dly": false
+      "sustain": false
      },
      "params": {},
      "branches": {
@@ -170,9 +170,9 @@
      "id": "st-guitar-1-C",
      "name": "Singing Lead",
      "blocks": {
+      "dly": true,
       "sd1": true,
-      "sustain": false,
-      "dly": true
+      "sustain": false
      },
      "params": {
       "eq": {
@@ -189,9 +189,9 @@
      "id": "st-guitar-1-D",
      "name": "Endless Bend",
      "blocks": {
+      "dly": true,
       "sd1": true,
-      "sustain": true,
-      "dly": true
+      "sustain": true
      },
      "params": {
       "eq": {
@@ -208,9 +208,9 @@
      "id": "st-guitar-1-E",
      "name": "Rhythm",
      "blocks": {
+      "dly": false,
       "sd1": true,
-      "sustain": false,
-      "dly": false
+      "sustain": false
      },
      "params": {},
      "branches": {
@@ -261,10 +261,7 @@
        "tone_stack": 45,
        "level": 0
       }
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "svt",
       "type": "amp",
@@ -286,7 +283,9 @@
        "highs": -1
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "bass",
@@ -295,7 +294,9 @@
     {
      "id": "st-bass-1-A",
      "name": "Round",
-     "blocks": {},
+     "blocks": {
+      "drive": false
+     },
      "params": {},
      "branches": {}
     },
@@ -316,7 +317,11 @@
      },
      "params": {
       "eq-2": {
-       "highs": -4
+       "highs": -8,
+       "lows": 2
+      },
+      "comp": {
+       "ratio": 2
       }
      },
      "branches": {}
@@ -329,7 +334,12 @@
      },
      "params": {
       "drive": {
-       "gain": 55
+       "gain": 72,
+       "tone_stack": 60
+      },
+      "eq-2": {
+       "midgain": 4,
+       "midfreq": 900
       }
      },
      "branches": {}
@@ -541,6 +551,7 @@
      "id": "st-voice-1-A",
      "name": "Shout",
      "blocks": {
+      "dly-2": false,
       "grit": false
      },
      "params": {},
@@ -550,6 +561,7 @@
      "id": "st-voice-1-B",
      "name": "Grit",
      "blocks": {
+      "dly-2": false,
       "grit": true
      },
      "params": {},
@@ -559,7 +571,8 @@
      "id": "st-voice-1-C",
      "name": "Slap Echo",
      "blocks": {
-      "dly-2": true
+      "dly-2": true,
+      "grit": false
      },
      "params": {},
      "branches": {}
@@ -568,6 +581,7 @@
      "id": "st-voice-1-D",
      "name": "Ballad",
      "blocks": {
+      "dly-2": false,
       "grit": false
      },
      "params": {
@@ -589,11 +603,12 @@
    "id": "A",
    "name": "Intro",
    "blocks": {
+    "dly": true,
     "sd1": false,
     "sustain": false,
-    "dly": true,
     "drive": false,
     "drive-2": false,
+    "dly-2": false,
     "grit": false
    },
    "params": {
@@ -601,7 +616,11 @@
      "mix": 28
     },
     "eq-2": {
-     "highs": -4
+     "highs": -8,
+     "lows": 2
+    },
+    "comp": {
+     "ratio": 2
     },
     "organ": {
      "leslie": "slow",
@@ -638,16 +657,21 @@
    "id": "B",
    "name": "Verse",
    "blocks": {
+    "dly": false,
     "sd1": false,
     "sustain": false,
-    "dly": false,
     "drive": false,
     "drive-2": false,
+    "dly-2": false,
     "grit": false
    },
    "params": {
     "eq-2": {
-     "highs": -4
+     "highs": -8,
+     "lows": 2
+    },
+    "comp": {
+     "ratio": 2
     },
     "room-2": {
      "mix": 24
@@ -679,10 +703,12 @@
    "id": "C",
    "name": "Chorus",
    "blocks": {
+    "dly": false,
     "sd1": true,
     "sustain": false,
-    "dly": false,
+    "drive": false,
     "drive-2": false,
+    "dly-2": false,
     "grit": true
    },
    "params": {
@@ -717,10 +743,12 @@
    "id": "D",
    "name": "Solo",
    "blocks": {
+    "dly": true,
     "sd1": true,
     "sustain": false,
-    "dly": true,
+    "drive": false,
     "drive-2": false,
+    "dly-2": false,
     "grit": false
    },
    "params": {
@@ -763,10 +791,12 @@
    "id": "E",
    "name": "Last Bend",
    "blocks": {
+    "dly": true,
     "sd1": true,
     "sustain": true,
-    "dly": true,
+    "drive": false,
     "drive-2": false,
+    "dly-2": false,
     "grit": false
    },
    "params": {
@@ -812,15 +842,24 @@
    "out": "1-2",
    "blocks": [
     {
-     "type": "drums",
-     "id": "drums",
+     "type": "standard",
+     "id": "standard",
      "foot": 10,
      "params": {
-      "patterns": [
-       "library/grooves/golem-six-eight.mid"
-      ],
-      "fills": [],
-      "kit": "drums-black-pearl"
+      "standard": "rented-room-blues",
+      "key": "C",
+      "feel": "swing",
+      "motion": "comp",
+      "voicing": "full",
+      "arp": "Off",
+      "keys": true,
+      "bass": true,
+      "drums": true,
+      "guitar": false,
+      "pompe": "auto",
+      "groove": "auto",
+      "kit": "black-pearl",
+      "choruses": 4
      }
     }
    ]

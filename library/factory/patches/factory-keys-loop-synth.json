@@ -37,6 +37,16 @@
       }
      },
      {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 45,
+       "mix": 24
+      }
+     },
+     {
       "id": "comp",
       "type": "comp",
       "params": {
@@ -53,26 +63,33 @@
     {
      "id": "st-keys-pads-1-A",
      "name": "Bass & Beat",
-     "blocks": {},
+     "blocks": {
+      "dly": false,
+      "pads": true
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-pads-1-B",
      "name": "Bass Only",
-     "blocks": {},
-     "params": {
-      "pads": {}
+     "blocks": {
+      "dly": false,
+      "pads": false
      },
+     "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-pads-1-C",
      "name": "Filtered",
-     "blocks": {},
+     "blocks": {
+      "dly": true,
+      "pads": true
+     },
      "params": {
       "vital": {
-       "fcut": 0.35
+       "fcut": 0.15
       }
      },
      "branches": {}
@@ -80,10 +97,19 @@
     {
      "id": "st-keys-pads-1-D",
      "name": "Big Drop",
-     "blocks": {},
+     "blocks": {
+      "dly": false,
+      "pads": true
+     },
      "params": {
       "vital": {
-       "fcut": 0.8
+       "fcut": 1.0,
+       "transpose": -12,
+       "vol": 0.75
+      },
+      "comp": {
+       "ratio": 6,
+       "makeup": 4
       }
      },
      "branches": {}
@@ -95,7 +121,10 @@
   {
    "id": "A",
    "name": "Bass & Beat",
-   "blocks": {},
+   "blocks": {
+    "dly": false,
+    "pads": true
+   },
    "lanes": {
     "keys-pads-1": {
      "state": "st-keys-pads-1-A"
@@ -105,47 +134,61 @@
   {
    "id": "B",
    "name": "Bass Only",
-   "blocks": {},
+   "blocks": {
+    "dly": false,
+    "pads": false
+   },
    "lanes": {
     "keys-pads-1": {
      "state": "st-keys-pads-1-B"
     }
-   },
-   "params": {
-    "pads": {}
    }
   },
   {
    "id": "C",
    "name": "Filtered",
-   "blocks": {},
+   "blocks": {
+    "dly": true,
+    "pads": true
+   },
    "lanes": {
     "keys-pads-1": {
-     "state": "st-keys-pads-1-C"
+     "state": "st-keys-pads-1-C",
+     "level": -2
     }
    },
    "params": {
     "vital": {
-     "fcut": 0.35
+     "fcut": 0.15
     }
-   }
+   },
+   "level": -2
   },
   {
    "id": "D",
    "name": "Big Drop",
-   "blocks": {},
+   "blocks": {
+    "dly": false,
+    "pads": true
+   },
    "lanes": {
     "keys-pads-1": {
      "state": "st-keys-pads-1-D",
-     "level": 1
+     "level": 2
     }
    },
    "params": {
     "vital": {
-     "fcut": 0.8
+     "fcut": 1.0,
+     "transpose": -12,
+     "vol": 0.75
+    },
+    "comp": {
+     "ratio": 6,
+     "makeup": 4
     }
    },
-   "level": 1
+   "level": 2
   }
  ],
  "config": {
@@ -182,6 +225,16 @@
     "type": "pads",
     "params": {
      "kit": "pads-house"
+    }
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Digital",
+     "time": "1/8•",
+     "feedback": 45,
+     "mix": 24
     }
    },
    {
@@ -432,5 +485,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"9\": \"ember\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Loop Synth & Beat\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Bass & Beat\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Bass Only\", \"params\": {\"pads\": {}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Big Drop\", \"params\": {\"vital\": {\"fcut\": 0.8}}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Bass & Beat\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Bass Only\", \"params\": {\"pads\": {}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-C\"}}, \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.35}}}, {\"blocks\": {}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": 1, \"state\": \"st-keys-pads-1-D\"}}, \"level\": 1, \"name\": \"Big Drop\", \"params\": {\"vital\": {\"fcut\": 0.8}}}]}"
+ "deps_sig": "{\"anims\": {\"9\": \"ember\", \"A\": \"smoke\", \"B\": \"vortex\", \"C\": \"strobe\", \"D\": \"stars\"}, \"backing\": null, \"bpm\": 112, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 45, \"mix\": 24, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"colors\": {\"9\": \"#06d6a0\", \"A\": \"#06d6a0\", \"B\": \"#06d6a0\", \"C\": \"#06d6a0\", \"D\": \"#06d6a0\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.0, \"fcut\": 0.55, \"preset\": \"Kickbass\", \"rmix\": 0.0, \"vol\": 0.65}, \"type\": \"vital\"}, {\"id\": \"pads\", \"params\": {\"kit\": \"pads-house\"}, \"type\": \"pads\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 45, \"mix\": 24, \"model\": \"Digital\", \"time\": \"1/8•\"}, \"type\": \"delay\"}, {\"id\": \"comp\", \"params\": {\"attack\": 10, \"character\": \"Bus\", \"makeup\": 2, \"ratio\": 3, \"thresh\": -20}, \"type\": \"comp\"}]}, \"id\": \"keys-pads-1\", \"midi\": true, \"name\": \"Loop Synth & Beat\", \"role\": \"keys-pads\", \"states\": [{\"blocks\": {\"dly\": false, \"pads\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-A\", \"name\": \"Bass & Beat\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"pads\": false}, \"branches\": {}, \"id\": \"st-keys-pads-1-B\", \"name\": \"Bass Only\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"pads\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-C\", \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.15}}}, {\"blocks\": {\"dly\": false, \"pads\": true}, \"branches\": {}, \"id\": \"st-keys-pads-1-D\", \"name\": \"Big Drop\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 6}, \"vital\": {\"fcut\": 1.0, \"transpose\": -12, \"vol\": 0.75}}}]}], \"role\": \"keys-pads\", \"scenes\": [{\"blocks\": {\"dly\": false, \"pads\": true}, \"id\": \"A\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-A\"}}, \"name\": \"Bass & Beat\"}, {\"blocks\": {\"dly\": false, \"pads\": false}, \"id\": \"B\", \"lanes\": {\"keys-pads-1\": {\"state\": \"st-keys-pads-1-B\"}}, \"name\": \"Bass Only\"}, {\"blocks\": {\"dly\": true, \"pads\": true}, \"id\": \"C\", \"lanes\": {\"keys-pads-1\": {\"level\": -2, \"state\": \"st-keys-pads-1-C\"}}, \"level\": -2, \"name\": \"Filtered\", \"params\": {\"vital\": {\"fcut\": 0.15}}}, {\"blocks\": {\"dly\": false, \"pads\": true}, \"id\": \"D\", \"lanes\": {\"keys-pads-1\": {\"level\": 2, \"state\": \"st-keys-pads-1-D\"}}, \"level\": 2, \"name\": \"Big Drop\", \"params\": {\"comp\": {\"makeup\": 4, \"ratio\": 6}, \"vital\": {\"fcut\": 1.0, \"transpose\": -12, \"vol\": 0.75}}}]}"
 }

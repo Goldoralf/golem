@@ -84,8 +84,8 @@
      "id": "st-drums-1-A",
      "name": "Tape Kit",
      "blocks": {
-      "tape": true,
-      "crush": false
+      "crush": false,
+      "tape": true
      },
      "params": {},
      "branches": {}
@@ -94,8 +94,8 @@
      "id": "st-drums-1-B",
      "name": "Crushed",
      "blocks": {
-      "tape": false,
-      "crush": true
+      "crush": true,
+      "tape": false
      },
      "params": {},
      "branches": {}
@@ -104,8 +104,8 @@
      "id": "st-drums-1-C",
      "name": "Dry",
      "blocks": {
-      "tape": false,
-      "crush": false
+      "crush": false,
+      "tape": false
      },
      "params": {},
      "branches": {}
@@ -114,8 +114,8 @@
      "id": "st-drums-1-D",
      "name": "Dusty",
      "blocks": {
-      "tape": true,
-      "crush": true
+      "crush": true,
+      "tape": true
      },
      "params": {},
      "branches": {}
@@ -128,8 +128,8 @@
    "id": "A",
    "name": "Tape Kit",
    "blocks": {
-    "tape": true,
-    "crush": false
+    "crush": false,
+    "tape": true
    },
    "lanes": {
     "drums-1": {
@@ -141,8 +141,8 @@
    "id": "B",
    "name": "Crushed",
    "blocks": {
-    "tape": false,
-    "crush": true
+    "crush": true,
+    "tape": false
    },
    "lanes": {
     "drums-1": {
@@ -154,8 +154,8 @@
    "id": "C",
    "name": "Dry",
    "blocks": {
-    "tape": false,
-    "crush": false
+    "crush": false,
+    "tape": false
    },
    "lanes": {
     "drums-1": {
@@ -167,8 +167,8 @@
    "id": "D",
    "name": "Dusty",
    "blocks": {
-    "tape": true,
-    "crush": true
+    "crush": true,
+    "tape": true
    },
    "lanes": {
     "drums-1": {
@@ -271,7 +271,7 @@
  },
  "anims": {
   "A": "glitch",
-  "B": "monster",
+  "B": "smoke",
   "C": "rain",
   "D": "vu",
   "6": "wave",
@@ -279,5 +279,5 @@
   "9": "lightning"
  },
  "deps": [],
- "deps_sig": "{\"anims\": {\"6\": \"wave\", \"7\": \"heartbeat\", \"9\": \"lightning\", \"A\": \"glitch\", \"B\": \"monster\", \"C\": \"rain\", \"D\": \"vu\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 35}, \"type\": \"tape\"}, {\"foot\": 7, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#118ab2\", \"7\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 35}, \"type\": \"tape\"}, {\"foot\": 7, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Lo-Fi Kit\", \"role\": \"drums\", \"states\": [{\"blocks\": {\"crush\": false, \"tape\": true}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Tape Kit\", \"params\": {}}, {\"blocks\": {\"crush\": true, \"tape\": false}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Crushed\", \"params\": {}}, {\"blocks\": {\"crush\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Dry\", \"params\": {}}, {\"blocks\": {\"crush\": true, \"tape\": true}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Dusty\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {\"crush\": false, \"tape\": true}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Tape Kit\"}, {\"blocks\": {\"crush\": true, \"tape\": false}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Crushed\"}, {\"blocks\": {\"crush\": false, \"tape\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Dry\"}, {\"blocks\": {\"crush\": true, \"tape\": true}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -1, \"state\": \"st-drums-1-D\"}}, \"level\": -1, \"name\": \"Dusty\"}]}"
+ "deps_sig": "{\"anims\": {\"6\": \"wave\", \"7\": \"heartbeat\", \"9\": \"lightning\", \"A\": \"glitch\", \"B\": \"smoke\", \"C\": \"rain\", \"D\": \"vu\"}, \"backing\": null, \"bpm\": 84, \"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 35}, \"type\": \"tape\"}, {\"foot\": 7, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"colors\": {\"6\": \"#118ab2\", \"7\": \"#118ab2\", \"9\": \"#118ab2\", \"A\": \"#118ab2\", \"B\": \"#118ab2\", \"C\": \"#118ab2\", \"D\": \"#118ab2\"}, \"config\": {\"gen\": {\"blocks\": [], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"kit\", \"params\": {\"kit\": \"drums-black-pearl\"}, \"type\": \"drumkit\"}, {\"id\": \"comp\", \"params\": {\"attack\": 20, \"character\": \"Bus\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"tape\", \"params\": {\"mix\": 100, \"model\": \"Cassette\", \"wear\": 35}, \"type\": \"tape\"}, {\"foot\": 7, \"id\": \"crush\", \"params\": {\"nonlin\": 0.1, \"quant\": 0.55, \"rate\": 0.45}, \"type\": \"bitcrusher\"}, {\"id\": \"room\", \"params\": {\"decay\": 0.8, \"hicut\": 7000, \"mix\": 14, \"size\": 14}, \"type\": \"reverb-room\"}]}, \"id\": \"drums-1\", \"midi\": true, \"name\": \"Lo-Fi Kit\", \"role\": \"drums\", \"states\": [{\"blocks\": {\"crush\": false, \"tape\": true}, \"branches\": {}, \"id\": \"st-drums-1-A\", \"name\": \"Tape Kit\", \"params\": {}}, {\"blocks\": {\"crush\": true, \"tape\": false}, \"branches\": {}, \"id\": \"st-drums-1-B\", \"name\": \"Crushed\", \"params\": {}}, {\"blocks\": {\"crush\": false, \"tape\": false}, \"branches\": {}, \"id\": \"st-drums-1-C\", \"name\": \"Dry\", \"params\": {}}, {\"blocks\": {\"crush\": true, \"tape\": true}, \"branches\": {}, \"id\": \"st-drums-1-D\", \"name\": \"Dusty\", \"params\": {}}]}], \"role\": \"drums\", \"scenes\": [{\"blocks\": {\"crush\": false, \"tape\": true}, \"id\": \"A\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-A\"}}, \"name\": \"Tape Kit\"}, {\"blocks\": {\"crush\": true, \"tape\": false}, \"id\": \"B\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-B\"}}, \"name\": \"Crushed\"}, {\"blocks\": {\"crush\": false, \"tape\": false}, \"id\": \"C\", \"lanes\": {\"drums-1\": {\"state\": \"st-drums-1-C\"}}, \"name\": \"Dry\"}, {\"blocks\": {\"crush\": true, \"tape\": true}, \"id\": \"D\", \"lanes\": {\"drums-1\": {\"level\": -1, \"state\": \"st-drums-1-D\"}}, \"level\": -1, \"name\": \"Dusty\"}]}"
 }

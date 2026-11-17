@@ -118,7 +118,9 @@ and every deferred verification pass.
    preset, or `recall.slot_async(slot, "screen")` for a slot. Either way the work goes to `_EXEC`, a
    **single-worker** `ThreadPoolExecutor`, which keeps the asyncio loop free and gestures in FIFO
    order. `_RECALL_LOCK` (an `RLock`) also serializes the entry points that are not on the loop:
-   the foot, golem.fm jobs and preview.
+   the foot, golem.fm jobs and preview. A `{preset}`/`{scene}` recall that the engine refuses
+   (`do_recall` returns `False`: duplicate block ids, a lane that cannot be mounted) answers
+   **422** `{ok: false, error: state.rig_error, state}`, never `ok: true`.
 3. **`recall.do_recall(pid, scene, line)` updates the state.** It sets `state.preset_id`,
    `scene_id` and `song`, loads the arrangement, seeds `state.stomps` (`stomp_states()`), writes
    `.perfsrc.json`, arms backing and foot services, and calls `emit_sandbox()`. The click (when the

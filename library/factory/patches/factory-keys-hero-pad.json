@@ -23,10 +23,21 @@
       "type": "vital",
       "params": {
        "preset": "Sparkly_Dreamy_Pad",
-       "fcut": 0.6,
+       "fcut": 0.55,
        "rmix": 0.3,
        "dmix": 0.2,
        "vol": 0.6
+      }
+     },
+     {
+      "id": "chorus",
+      "type": "chorus",
+      "params": {
+       "profile": "Keys",
+       "mode": "Ensemble",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.5
       }
      },
      {
@@ -56,17 +67,26 @@
     {
      "id": "st-keys-1-A",
      "name": "Sky Pad",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "shim": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-1-B",
      "name": "Bright",
-     "blocks": {},
+     "blocks": {
+      "chorus": true,
+      "shim": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.8
+       "fcut": 0.95
+      },
+      "dly": {
+       "mix": 24
       }
      },
      "branches": {}
@@ -74,10 +94,17 @@
     {
      "id": "st-keys-1-C",
      "name": "Under",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "shim": false
+     },
      "params": {
       "vital": {
-       "fcut": 0.4
+       "fcut": 0.2,
+       "rmix": 0.1
+      },
+      "dly": {
+       "mix": 0
       }
      },
      "branches": {}
@@ -86,9 +113,18 @@
      "id": "st-keys-1-D",
      "name": "Shimmer Rise",
      "blocks": {
+      "chorus": true,
       "shim": true
      },
-     "params": {},
+     "params": {
+      "vital": {
+       "fcut": 0.75
+      },
+      "shim": {
+       "mix": 45,
+       "decay": 8
+      }
+     },
      "branches": {}
     }
    ]
@@ -98,7 +134,10 @@
   {
    "id": "A",
    "name": "Sky Pad",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "shim": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-A"
@@ -108,7 +147,10 @@
   {
    "id": "B",
    "name": "Bright",
-   "blocks": {},
+   "blocks": {
+    "chorus": true,
+    "shim": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-B"
@@ -116,14 +158,20 @@
    },
    "params": {
     "vital": {
-     "fcut": 0.8
+     "fcut": 0.95
+    },
+    "dly": {
+     "mix": 24
     }
    }
   },
   {
    "id": "C",
    "name": "Under",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "shim": false
+   },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-C",
@@ -132,7 +180,11 @@
    },
    "params": {
     "vital": {
-     "fcut": 0.4
+     "fcut": 0.2,
+     "rmix": 0.1
+    },
+    "dly": {
+     "mix": 0
     }
    },
    "level": -4
@@ -141,12 +193,22 @@
    "id": "D",
    "name": "Shimmer Rise",
    "blocks": {
+    "chorus": true,
     "shim": true
    },
    "lanes": {
     "keys-1": {
      "state": "st-keys-1-D",
      "level": 1
+    }
+   },
+   "params": {
+    "vital": {
+     "fcut": 0.75
+    },
+    "shim": {
+     "mix": 45,
+     "decay": 8
     }
    },
    "level": 1
@@ -188,10 +250,21 @@
     "type": "vital",
     "params": {
      "preset": "Sparkly_Dreamy_Pad",
-     "fcut": 0.6,
+     "fcut": 0.55,
      "rmix": 0.3,
      "dmix": 0.2,
      "vol": 0.6
+    }
+   },
+   {
+    "id": "chorus",
+    "type": "chorus",
+    "params": {
+     "profile": "Keys",
+     "mode": "Ensemble",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.5
     }
    },
    {
@@ -275,5 +348,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"glitch\", \"6\": \"scanner\", \"9\": \"sheen\", \"A\": \"ripple\", \"B\": \"snow\", \"C\": \"pulse\", \"D\": \"fire\"}, \"backing\": null, \"bpm\": 132, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.6, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 28, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"colors\": {\"10\": \"#0081a7\", \"6\": \"#0081a7\", \"9\": \"#0081a7\", \"A\": \"#0081a7\", \"B\": \"#0081a7\", \"C\": \"#0081a7\", \"D\": \"#0081a7\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-solo.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.6, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 28, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Hero Pad\", \"role\": \"keys\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Sky Pad\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Bright\", \"params\": {\"vital\": {\"fcut\": 0.8}}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Under\", \"params\": {\"vital\": {\"fcut\": 0.4}}}, {\"blocks\": {\"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Shimmer Rise\", \"params\": {}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Sky Pad\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Bright\", \"params\": {\"vital\": {\"fcut\": 0.8}}}, {\"blocks\": {}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -4, \"state\": \"st-keys-1-C\"}}, \"level\": -4, \"name\": \"Under\", \"params\": {\"vital\": {\"fcut\": 0.4}}}, {\"blocks\": {\"shim\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Shimmer Rise\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"glitch\", \"6\": \"scanner\", \"9\": \"sheen\", \"A\": \"ripple\", \"B\": \"snow\", \"C\": \"pulse\", \"D\": \"fire\"}, \"backing\": null, \"bpm\": 132, \"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.55, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 28, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"colors\": {\"10\": \"#0081a7\", \"6\": \"#0081a7\", \"9\": \"#0081a7\", \"A\": \"#0081a7\", \"B\": \"#0081a7\", \"C\": \"#0081a7\", \"D\": \"#0081a7\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-solo.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"vital\", \"params\": {\"dmix\": 0.2, \"fcut\": 0.55, \"preset\": \"Sparkly_Dreamy_Pad\", \"rmix\": 0.3, \"vol\": 0.6}, \"type\": \"vital\"}, {\"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.5, \"mode\": \"Ensemble\", \"profile\": \"Keys\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 6, \"id\": \"shim\", \"params\": {\"decay\": 5, \"hicut\": 6000, \"mix\": 28, \"shimmer\": 40}, \"type\": \"reverb-shimmer\"}, {\"id\": \"dly\", \"params\": {\"feedback\": 30, \"mix\": 14, \"model\": \"Digital\", \"time\": \"1/4•\"}, \"type\": \"delay\"}]}, \"id\": \"keys-1\", \"midi\": true, \"name\": \"Hero Pad\", \"role\": \"keys\", \"states\": [{\"blocks\": {\"chorus\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-A\", \"name\": \"Sky Pad\", \"params\": {}}, {\"blocks\": {\"chorus\": true, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-B\", \"name\": \"Bright\", \"params\": {\"dly\": {\"mix\": 24}, \"vital\": {\"fcut\": 0.95}}}, {\"blocks\": {\"chorus\": false, \"shim\": false}, \"branches\": {}, \"id\": \"st-keys-1-C\", \"name\": \"Under\", \"params\": {\"dly\": {\"mix\": 0}, \"vital\": {\"fcut\": 0.2, \"rmix\": 0.1}}}, {\"blocks\": {\"chorus\": true, \"shim\": true}, \"branches\": {}, \"id\": \"st-keys-1-D\", \"name\": \"Shimmer Rise\", \"params\": {\"shim\": {\"decay\": 8, \"mix\": 45}, \"vital\": {\"fcut\": 0.75}}}]}], \"role\": \"keys\", \"scenes\": [{\"blocks\": {\"chorus\": false, \"shim\": false}, \"id\": \"A\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-A\"}}, \"name\": \"Sky Pad\"}, {\"blocks\": {\"chorus\": true, \"shim\": false}, \"id\": \"B\", \"lanes\": {\"keys-1\": {\"state\": \"st-keys-1-B\"}}, \"name\": \"Bright\", \"params\": {\"dly\": {\"mix\": 24}, \"vital\": {\"fcut\": 0.95}}}, {\"blocks\": {\"chorus\": false, \"shim\": false}, \"id\": \"C\", \"lanes\": {\"keys-1\": {\"level\": -4, \"state\": \"st-keys-1-C\"}}, \"level\": -4, \"name\": \"Under\", \"params\": {\"dly\": {\"mix\": 0}, \"vital\": {\"fcut\": 0.2, \"rmix\": 0.1}}}, {\"blocks\": {\"chorus\": true, \"shim\": true}, \"id\": \"D\", \"lanes\": {\"keys-1\": {\"level\": 1, \"state\": \"st-keys-1-D\"}}, \"level\": 1, \"name\": \"Shimmer Rise\", \"params\": {\"shim\": {\"decay\": 8, \"mix\": 45}, \"vital\": {\"fcut\": 0.75}}}]}"
 }

@@ -1,0 +1,282 @@
+{
+ "anims": {
+  "10": "snow",
+  "6": "stars",
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "A": "heartbeat",
+  "B": "lightning",
+  "C": "smoke",
+  "D": "vortex",
+  "E": "strobe"
+ },
+ "bpm": 140,
+ "chain": {
+  "chain": [
+   {
+    "id": "met",
+    "params": {
+     "release": 80,
+     "thresh": -46
+    },
+    "type": "met"
+   },
+   {
+    "id": "x2",
+    "label": "Randall Warhead X2",
+    "model": "382070",
+    "params": {
+     "input": 0,
+     "output": 0
+    },
+    "ref": "31332",
+    "type": "amp"
+   },
+   {
+    "foot": 6,
+    "id": "wah",
+    "params": {
+     "mode": "manual",
+     "q": 120,
+     "wah": 0.6
+    },
+    "type": "wah"
+   },
+   {
+    "foot": 7,
+    "id": "whammy",
+    "params": {
+     "engine": "Whammy",
+     "mix": 50,
+     "shift": 12
+    },
+    "type": "pitch"
+   },
+   {
+    "foot": 8,
+    "id": "flange",
+    "params": {
+     "depth": 80,
+     "feedback": -12,
+     "mode": "Mistress",
+     "rate": 0.25
+    },
+    "type": "flanger-js"
+   },
+   {
+    "id": "eq",
+    "params": {
+     "highs": 0,
+     "lowcut": 90,
+     "midfreq": 1000,
+     "midgain": 2
+    },
+    "type": "eq"
+   },
+   {
+    "id": "dly",
+    "params": {
+     "feedback": 30,
+     "mix": 14,
+     "model": "Digital",
+     "time": "1/4"
+    },
+    "type": "delay"
+   },
+   {
+    "id": "room",
+    "params": {
+     "decay": 0.9,
+     "hicut": 7000,
+     "mix": 12,
+     "size": 14
+    },
+    "type": "reverb-room"
+   }
+  ]
+ },
+ "colors": {
+  "10": "#6a040f",
+  "6": "#6a040f",
+  "7": "#6a040f",
+  "8": "#6a040f",
+  "9": "#6a040f",
+  "A": "#6a040f",
+  "B": "#6a040f",
+  "C": "#6a040f",
+  "D": "#6a040f",
+  "E": "#6a040f"
+ },
+ "gen": [
+  {
+   "foot": 10,
+   "id": "drums",
+   "params": {
+    "fills": [],
+    "kit": "drums-aasimonster",
+    "patterns": [
+     "library/grooves/golem-metal-solo.mid"
+    ]
+   },
+   "type": "drums"
+  }
+ ],
+ "scenes": [
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": false
+   },
+   "id": "A",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-A"
+    }
+   },
+   "level": 2,
+   "name": "Lead"
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": true,
+    "whammy": false
+   },
+   "id": "B",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-B"
+    }
+   },
+   "level": 2,
+   "name": "Wah Lead"
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": true
+   },
+   "id": "C",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-C"
+    }
+   },
+   "level": 2,
+   "name": "Octave Squeal"
+  },
+  {
+   "blocks": {
+    "flange": true,
+    "wah": false,
+    "whammy": false
+   },
+   "id": "D",
+   "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D"
+    }
+   },
+   "name": "Flanged Riff",
+   "params": {
+    "dly": {
+     "mix": 6
+    }
+   }
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": true
+   },
+   "id": "E",
+   "lanes": {
+    "guitar-1": {
+     "level": 2,
+     "state": "st-guitar-1-E"
+    }
+   },
+   "level": 2,
+   "name": "Dive",
+   "params": {
+    "whammy": {
+     "mix": 100,
+     "shift": -12
+    }
+   }
+  }
+ ],
+ "states": [
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-A",
+   "name": "Lead",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": true,
+    "whammy": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-B",
+   "name": "Wah Lead",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": true
+   },
+   "branches": {},
+   "id": "st-guitar-1-C",
+   "name": "Octave Squeal",
+   "params": {}
+  },
+  {
+   "blocks": {
+    "flange": true,
+    "wah": false,
+    "whammy": false
+   },
+   "branches": {},
+   "id": "st-guitar-1-D",
+   "name": "Flanged Riff",
+   "params": {
+    "dly": {
+     "mix": 6
+    }
+   }
+  },
+  {
+   "blocks": {
+    "flange": false,
+    "wah": false,
+    "whammy": true
+   },
+   "branches": {},
+   "id": "st-guitar-1-E",
+   "name": "Dive",
+   "params": {
+    "whammy": {
+     "mix": 100,
+     "shift": -12
+    }
+   }
+  }
+ ]
+}

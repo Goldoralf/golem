@@ -189,12 +189,22 @@ def vst_host_open(body: dict):
 _WIN_BLOCK = re.compile(r"[A-Za-z0-9_-]{1,100}")
 
 
+def _headless_engine():
+    """Vrai si le moteur actif n'a pas d'interface (le Golem Engine) : un plugin n'y a pas de fenêtre."""
+    with contextlib.suppress(Exception):
+        from . import engine
+        return engine.get().id == "ardour"
+    return False
+
+
 def _plugin_window_mode(request: Request):
     """'native' : la vraie fenêtre, sur l'écran de la machine (Windows / macOS, client local).
     'view'   : Linux — la fenêtre vit sur l'écran virtuel de REAPER, golem la filme et y rejoue les gestes
                (bridge/plugin_view.py) : depuis l'écran de la machine COMME depuis une tablette.
     None     : impossible ici."""
     from .auth import _is_local
+    if _headless_engine():
+        return None                                    # le Golem Engine n'a pas d'écran : aucune fenêtre de plugin à montrer
     if sys.platform in ("win32", "darwin"):
         return "native" if _is_local(request.client.host if request.client else "") else None
     from . import plugin_view
@@ -208,6 +218,8 @@ def plugin_window_caps(request: Request):
     mode = _plugin_window_mode(request)
     if mode:
         return {"available": True, "mode": mode}
+    if _headless_engine():
+        return {"available": False, "why": "The Golem Engine has no plugin windows — set the plugin with its knobs, or open it under REAPER"}
     if sys.platform in ("win32", "darwin"):
         return {"available": False, "why": "Vital's window opens on the golem's own screen, not on a tablet"}
     return {"available": False, "why": "REAPER is not running"}
@@ -363,6 +375,14 @@ def vst_host_state(block: str):
                 return JSONResponse({"error": "Plugin instance not loaded in REAPER"}, status_code=404)
             if data.get("error"):
                 return JSONResponse({"error": data["error"]}, status_code=422)
+            if data.get("preset_label"):
+                # le Golem Engine rend l'état comme un preset VST3 qu'il vient d'écrire : le bridge le lit et le range
+                # au format du patch (celui de REAPER — un patch passe d'un moteur à l'autre)
+                from .engine import ardour as _ardour
+                try:
+                    data = dict(data, kind="vst_chunk", chunk=_ardour.host_state_chunk(data))
+                except ValueError as e:
+                    return JSONResponse({"error": str(e)}, status_code=422)
             kind, chunk = data.get("kind"), data.get("chunk")
             if kind not in ("vst_chunk", "clap_chunk") or not isinstance(chunk, str) or not chunk:
                 return JSONResponse({"error": "Plugin did not provide native state"}, status_code=422)

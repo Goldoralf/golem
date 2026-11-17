@@ -480,3 +480,39 @@ def test_reaper_muet_n_est_pas_un_echec(bench):
     st = B.run(measure=m, busy_fn=lambda: None, restore=lambda: None)
     assert st["state"] == "waiting" and not B.load_profile().get("failed")
     assert [t["key"] for t in B.pending(B.load_profile(), B.targets(), B.machine_now())] == ["gate|stereo", "nam:feather|stereo"]
+
+
+# ── 2026-11-17 : sous le Golem Engine, un bloc éteint peut coûter, et le moteur a une part fixe ──────────────
+def _profile_engine():
+    blk = lambda avg, off=None: dict({"avg_us": avg, "worst_us": avg, "bsize": 192, "srate": 48000},
+                                     **({"off_us": off} if off is not None else {}))
+    return {"machine": {"bsize": 192, "srate": 48000},
+            "blocks": {CB.profile_key("reverb"): blk(100.0, 120.0), CB.profile_key("chorus"): blk(80.0, 0.0),
+                       CB.profile_key("delay"): blk(40.0)},
+            "engine_idle": {"pct": 20.0, "us": 800.0}}
+
+
+def _plan_engine(mute_branch=False):
+    b = lambda t, off: {"id": t, "type": t, "bypass": off, "_cpu": [[t, None]]}
+    return {"paths": [{"id": "g", "name": "G", "tracks": [
+        {"role": "main", "blocks": [b("reverb", True), b("chorus", True), b("delay", False)]},
+        {"role": "branch", "mute": mute_branch, "blocks": [dict(b("reverb", True), id="r2")]}]}]}
+
+
+def test_un_bloc_eteint_qui_tourne_encore_compte_et_la_part_fixe_du_moteur_aussi():
+    prof = _profile_engine()
+    e = CB.estimate([("A", _plan_engine())], prof, {"bsize": 192, "srate": 48000})
+    # delay allumé 40 + reverb éteinte 120 (chorus éteint : 0) + la branche (reverb éteinte 120) + part fixe 800, sur 4000
+    assert e["lanes"][0]["by_scene"]["A"] == round((40 + 120 + 120 + 800) / 4000 * 100, 1) and e["engine_pct"] == 20.0
+    # une branche MUETTE est endormie par le moteur : ses blocs éteints ne coûtent rien
+    e = CB.estimate([("A", _plan_engine(mute_branch=True))], prof, {"bsize": 192, "srate": 48000})
+    assert e["lanes"][0]["by_scene"]["A"] == round((40 + 120 + 800) / 4000 * 100, 1)
+
+
+def test_sans_mesure_eteinte_ni_part_fixe_rien_ne_change():
+    prof = _profile_engine()
+    prof.pop("engine_idle")
+    for v in prof["blocks"].values():
+        v.pop("off_us", None)
+    e = CB.estimate([("A", _plan_engine())], prof, {"bsize": 192, "srate": 48000})
+    assert e["lanes"][0]["by_scene"]["A"] == 1.0 and e["engine_pct"] is None      # REAPER : le seul delay, 40/4000

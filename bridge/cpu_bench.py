@@ -60,7 +60,11 @@ _seq = itertools.count(70000)
 
 
 def profile_path():
-    return os.path.join(C.CONFIG_DIR, "cpu-profile.json")
+    """UN PROFIL PAR MOTEUR (2026-11-17) : un bloc ne coûte pas pareil sous REAPER et sous le Golem Engine (d'autres
+    plugins), et un seul fichier faisait tout remesurer à chaque bascule. REAPER garde config/cpu-profile.json ; un
+    autre moteur a le sien (config/cpu-profile-<moteur>.json)."""
+    eng = _other_engine()
+    return os.path.join(C.CONFIG_DIR, f"cpu-profile-{eng.id}.json" if eng is not None else "cpu-profile.json")
 
 
 def work_dir():
@@ -198,8 +202,23 @@ def golem_fx_hash(btype, tables=None):
 _INV = {"key": None, "rows": [], "reaper": None}
 
 
+def _other_engine():
+    """Le moteur actif s'il n'est PAS REAPER (le Golem Engine), sinon None."""
+    with contextlib.suppress(Exception):
+        from . import engine
+        e = engine.get()
+        return e if e.id not in ("reaper", "none", "fake") else None
+    return None
+
+
 def _inventory():
     from . import blockstatus as BS
+    eng = _other_engine()
+    if eng is not None:
+        # pas d'inventaire REAPER ici : l'empreinte d'une cible porte la VERSION du moteur (un moteur mis à jour remesure)
+        with contextlib.suppress(Exception):
+            return [], f"{eng.id} {eng.version() or ''}".strip()
+        return [], eng.id
     try:
         st = os.stat(BS.INVENTORY)
         key = (st.st_mtime_ns, st.st_size)
@@ -262,8 +281,12 @@ def _plugin_targets():
         if t == "capture-module":                       # joue un module .gcap : rien à mesurer sans lui
             continue
         gfx = golem_fx_hash(t, tables)
+        eng = _other_engine()
         try:
-            absent = bool(inv) and not gfx and not BS._in_inventory(plugin, inv)
+            if eng is not None:                          # ce moteur : le type est-il dans SA table, son plugin installé ?
+                absent = not eng.plays(t) or bool(eng.missing_plugin(t))
+            else:
+                absent = bool(inv) and not gfx and not BS._in_inventory(plugin, inv)
         except (KeyError, TypeError):
             absent = False                               # inventaire d'une autre forme : on tente, le banc le dira
         if absent:
@@ -411,11 +434,14 @@ class Interrupted(Exception):
     jetée SANS être notée comme un échec (elle sera refaite), le banc s'arrête."""
 
 
-def bench_doc(block):
+BENCH_ROLES = ("guitar", "bass", "voice")     # le rôle ne sert qu'à trouver une ENTRÉE de la carte : la première qui en a une
+
+
+def bench_doc(block, role="guitar"):
     """Le patch de banc : une lane audio, le bloc seul (ou rien : la lane vide), COUPÉE dans sa scène."""
-    return {"id": BENCH_DOC_ID, "name": "CPU bench", "role": "guitar", "kind": "patch", "patch_v": 2, "lanes_v": 2,
+    return {"id": BENCH_DOC_ID, "name": "CPU bench", "role": role, "kind": "patch", "patch_v": 2, "lanes_v": 2,
             "bpm": 120, "tags": [], "config": {}, "needs": [], "deps": [],
-            "lanes": [{"id": LANE_ID, "role": "guitar", "name": "CPU bench", "midi": False, "stereo": False,
+            "lanes": [{"id": LANE_ID, "role": role, "name": "CPU bench", "midi": False, "stereo": False,
                        "chain": {"chain": [dict(block)] if block else []},
                        "states": [{"id": f"st-{LANE_ID}-A", "name": "Bench", "blocks": {}, "params": {}, "branches": {}}]}],
             "scenes": [{"id": "A", "name": "Bench", "lanes": {LANE_ID: {"state": f"st-{LANE_ID}-A", "mute": True}}}]}
@@ -445,6 +471,24 @@ def _poll(scene, timeout):
     return None
 
 
+def _engine_idle_pct(samples=6, wait=1.1, settle=2.5):
+    """La charge que le moteur annonce au repos (lane de banc vide, rien ne joue), en % du cycle : la médiane de quelques
+    lectures. C'est sa PART FIXE — le graphe, ses pistes de service et de prise, ses fils — que la somme des plugins
+    d'une lane ne contient pas (rack, 2026-11-17 : 16 % de plugins, 40 % de charge). None si le moteur ne le dit pas."""
+    eng = _other_engine()
+    if eng is None:
+        return None
+    time.sleep(settle)
+    got = []
+    for _ in range(samples):
+        with contextlib.suppress(Exception):
+            v = (eng.audio() or {}).get("dsp_load")
+            if v is not None:
+                got.append(float(v))
+        time.sleep(wait)
+    return round(sorted(got)[len(got) // 2], 1) if got else None
+
+
 def _floats(s):
     return [float(x) for x in str(s or "").split(",") if x.strip()]
 
@@ -454,10 +498,16 @@ def measure_reaper(target, machine, seq):
     {avg_us, worst_us, nfx, srate, bsize} (la lane vide pas encore soustraite)."""
     from . import patches as P, preview as PV, recall
     from .commands import write_command
-    pre = P.as_preset(bench_doc(target.get("block")))
-    if not pre:
-        raise BenchError("the bench patch cannot be built")
-    in_key = PV.audition_input(pre, LANE_ID)
+    # la lane de banc prend l'entrée de l'instrument que la carte porte AUJOURD'HUI : une carte câblée voix + basse
+    # (sans guitare) ne mesurait plus rien — « no audio input on this card for the bench lane » (rack, 2026-11-17)
+    pre = in_key = None
+    for role in BENCH_ROLES:
+        pre = P.as_preset(bench_doc(target.get("block"), role))
+        if not pre:
+            raise BenchError("the bench patch cannot be built")
+        in_key = PV.audition_input(pre, LANE_ID)
+        if in_key:
+            break
     if not in_key:
         raise BenchError("no audio input on this card for the bench lane")
     di = _di()
@@ -491,6 +541,19 @@ def measure_reaper(target, machine, seq):
         raise BenchError(f"REAPER: {got['error']}")
     srate = int(got.get("srate") or machine.get("srate") or 0) or None
     bsize = int(got.get("bsize") or machine.get("bsize") or 0) or None
+    if got.get("avg_us") is not None:
+        # LE GOLEM ENGINE ne rend pas hors ligne : il joue la DI en temps réel et LIT ce que chaque plugin de la lane a
+        # coûté par buffer (les compteurs d'Ardour, µs) — la moyenne et le pire, sommés sur la lane
+        avg = max(0.0, float(got["avg_us"]))
+        m = {"avg_us": round(avg, 2), "worst_us": round(max(avg, float(got.get("worst_us") or 0)), 2),
+             "nfx": int(got.get("nfx") or 0), "srate": srate, "bsize": bsize}
+        if got.get("off_us") is not None:                # la passe éteinte : ce que le bloc coûte encore en bypass
+            m["off_us"] = round(max(0.0, float(got["off_us"])), 2)
+        if target.get("key") == SYSTEM_KEY:              # la lane vide est posée : ce que le moteur charge AU REPOS
+            idle = _engine_idle_pct()
+            if idle is not None:
+                m["idle_pct"] = idle
+        return m
     m = CB.per_buffer(_floats(got.get("times")), _floats(got.get("base")), float(got.get("len") or 0), srate, bsize)
     return dict(m, nfx=int(got.get("nfx") or 0), srate=srate, bsize=bsize)
 
@@ -512,8 +575,8 @@ def busy(manual=False):
     from .state import state
     try:
         from . import engine
-        if engine.get().id != "reaper":
-            return "the bench runs under REAPER only"
+        if engine.get().id not in ("reaper", "ardour"):
+            return "the bench needs an audio engine"
     except Exception:
         pass
     if not getattr(state, "reaper_running", True):
@@ -525,8 +588,15 @@ def busy(manual=False):
 def _record(prof, target, m, machine):
     sys_e = (prof.get("blocks") or {}).get(SYSTEM_KEY)
     avg, worst = m["avg_us"], m["worst_us"]
+    off = m.get("off_us")
+    if off is not None and target["key"] != SYSTEM_KEY and sys_e is not None:
+        off = max(0.0, off - float(sys_e.get("off_us") or 0))
     if target["key"] != SYSTEM_KEY and sys_e is not None:
-        if m.get("nfx", 0) <= int(sys_e.get("nfx") or 0):
+        same = m.get("nfx", 0) <= int(sys_e.get("nfx") or 0)
+        # LE VOLUME EST DÉJÀ DANS LA LANE VIDE : golem en pose un sur toute lane (volume-sys), et un bloc Volume prend sa
+        # place au lieu de s'ajouter — même nombre de plugins. Ce n'est pas « pas chargé » : son coût est celui de la
+        # lane vide, donc 0 de plus (sinon tout patch restait « not measured », rack 2026-11-17).
+        if same and target.get("kind") != "volume":
             raise BenchError("the plugin did not load in the bench lane")
         avg = max(0.0, avg - float(sys_e.get("avg_us") or 0))
         worst = max(avg, worst - float(sys_e.get("avg_us") or 0))
@@ -541,6 +611,12 @@ def _record(prof, target, m, machine):
         # fréquence que reaper.ini ne dit pas rendrait tout « à refaire » pour toujours
         "fp": remeasure_fp(machine), "bsize": mach.get("bsize"), "srate": mach.get("srate"), "nfx": m.get("nfx"),
         "label": target.get("label"), "runs": RUNS}
+    if off is not None:
+        prof["blocks"][target["key"]]["off_us"] = round(off, 2)
+    if m.get("idle_pct") is not None and mach.get("bsize") and mach.get("srate"):
+        cycle = float(mach["bsize"]) / float(mach["srate"]) * 1e6
+        prof["engine_idle"] = {"pct": m["idle_pct"], "us": round(m["idle_pct"] / 100.0 * cycle, 1), "at": now,
+                               "bsize": mach.get("bsize"), "srate": mach.get("srate")}
     (prof.get("failed") or {}).pop(target["key"], None)
 
 

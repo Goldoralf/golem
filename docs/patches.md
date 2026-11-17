@@ -268,6 +268,10 @@ Job contracts (payloads, acks) are in [golemfm-protocol.md](golemfm-protocol.md)
   the render and restored after; the Designer buffer is never written. Refused in a locked or gig mode,
   during a take, for a MIDI (keys) lane, or when no reference DI exists. See
   [preset-preview.md](preset-preview.md).
+  Since 2026-11-17 (asked by golem.fm for its pedalboard builder and patch cards, decided by the maintainer): `scene`
+  renders that scene only, `max_s` (3–30 s) cuts each clip to an excerpt, and a MIDI role (keys, drums) is rendered
+  through its MIDI reference phrase instead of being refused. **Tested off the rack only** — not yet rendered from a
+  real golem.fm job.
 - **Catalogue push** (`golemfm.push_patches`, debounced): `refresh_deps()` then every file as stored,
   with `complete: true` — the batch is the full catalogue.
 

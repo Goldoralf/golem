@@ -34,7 +34,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -641,11 +641,16 @@ def check_patch(base, presets, p, timeout, log, ctx=None):
         return {"id": p["id"], "name": p.get("name"), "verdict": "skipped", "needs": not_ready}
     t0 = time.time()
     prev_t = (read_json(presets / ".rig-check.json") or {}).get("t", -1)
+    refused = False
     try:
         http(base, "/api/recall", {"preset": pid}, timeout=120)
+    except HTTPError as e:
+        if e.code != 422:
+            return {"id": p["id"], "name": p.get("name"), "verdict": "fail", "issues": [f"recall: {e}"]}
+        refused = True                 # 422 = refusé par le moteur : rien ne sera monté, l'erreur est dans l'état
     except Exception as e:
         return {"id": p["id"], "name": p.get("name"), "verdict": "fail", "issues": [f"recall: {e}"]}
-    st, rc = wait_rig(base, presets, timeout, pid=pid, prev_t=prev_t)
+    st, rc = (http(base, "/api/state"), None) if refused else wait_rig(base, presets, timeout, pid=pid, prev_t=prev_t)
     # la carte factice n'a pas l'entrée du rôle (une voix, des claviers) : c'est l'inventaire, pas le moteur
     if "cannot be mounted:" in str(st.get("rig_error") or ""):
         return {"id": p["id"], "name": p.get("name"), "verdict": "skipped", "needs": [st["rig_error"]]}
@@ -775,7 +780,9 @@ def real_card_setup(root, log):
     card_id, card_name = RC.alsa_card(), card_device()
     if not card_id or not card_name:
         raise SystemExit("--real-card: no active card in this golem's config")
-    for rel in ("config/io.json", f"config/cards/{card_id}.json", f"config/inputmaps/hw-{card_id}.json"):
+    # + le registre des appareils MIDI connus (config/devices.json) : c'est lui qui dit quel clavier joue les lanes Keys
+    for rel in ("config/io.json", f"config/cards/{card_id}.json", f"config/inputmaps/hw-{card_id}.json", "config/devices.json",
+                "config/golem-engine.json"):                 # et le buffer que le rack a choisi pour ce moteur
         src, dst = ROOT / rel, root / rel
         if src.is_file():
             dst.parent.mkdir(parents=True, exist_ok=True)
@@ -798,12 +805,20 @@ def soundcard_round(base, presets, log, card_id):
     if s.get("latency_ms") is None:
         issues.append("no latency measured (ALSA hw_params closed: the engine does not hold the card)")
     imap = read_json(presets.parent / "config" / "inputmaps" / f"hw-{card_id}.json") or {}
-    want = next((int(i["ch"]) for i in imap.get("inputs") or [] if i.get("role") == "guitar" and str(i.get("ch", "")).isdigit()), None)
+    # l'instrument branché SUR CETTE CARTE aujourd'hui (la carte des entrées le dit) : une guitare, sinon une basse, sinon
+    # une voix — et un patch de ce rôle. Avant : la guitare seule, et un 422 quand la carte porte basse et voix.
+    ROLE_PATCH = {"guitar": "patch:" + ENGINE_FIXTURE_ID, "bass": "patch:factory-bass-pop-pick", "voice": "patch:factory-voice-crooner"}
+    role, want = next(((r, int(i["ch"])) for r in ROLE_PATCH for i in imap.get("inputs") or []
+                       if i.get("role") == r and str(i.get("ch", "")).isdigit()), (None, None))
+    target = ROLE_PATCH.get(role) or ROLE_PATCH["guitar"]
     p = os.path.join(presets, ".engine-dump.json")
     with contextlib.suppress(OSError):
         os.remove(p)
-    http(base, "/api/recall", {"preset": "patch:" + ENGINE_FIXTURE_ID}, timeout=60)
-    wait_rig(base, presets, 30, pid="patch:" + ENGINE_FIXTURE_ID)
+    try:
+        http(base, "/api/recall", {"preset": target}, timeout=60)
+    except HTTPError as e:
+        return issues + [f"recall of {target} refused: {e.code} {e.read()[:200]!r}"]
+    wait_rig(base, presets, 30, pid=target)
     # le dump n'est pas un geste du bridge : posé à la main dans le slot du worktree, après le rappel
     seq = int(time.time() * 1000)
     (presets / ".command.json").write_text(json.dumps({"action": "dump", "seq": seq}))
@@ -817,9 +832,9 @@ def soundcard_round(base, presets, log, card_id):
     lane = next((t for t in tracks if t.get("input")), {})
     got = [c for c in lane.get("input") or []]
     if not want:
-        issues.append(f"no guitar input in the card's input map (hw-{card_id}.json)")
+        issues.append(f"no guitar, bass or voice input in the card's input map (hw-{card_id}.json)")
     elif not any(c.endswith(f"capture_{want}") for c in got):
-        issues.append(f"the guitar lane listens to {got}, the card's input map puts guitar on input {want}")
+        issues.append(f"the {role} lane listens to {got}, the card's input map puts {role} on input {want}")
     outs = [c for t in tracks for c in t.get("output") or [] if "playback" in c]
     if outs:
         issues.append(f"engine outputs linked to the card although GOLEM_ENGINE_NO_OUTPUT: {outs}")
@@ -829,8 +844,365 @@ def soundcard_round(base, presets, log, card_id):
     log(f"  card: {st.get('device')} · {st.get('inputs')} in / {st.get('outputs')} out · {st.get('sample_rate')} Hz · "
         f"buffer {st.get('buffer')} · latency {s.get('latency_ms')} ms · DSP {round(st.get('dsp_load') or 0, 1)} % · "
         f"xruns {st.get('xruns')}")
-    log(f"  guitar lane on {got} (input map: {want}) · outputs linked: {outs or 'none'} · input levels {lv}")
+    log(f"  {role} lane ({target}) on {got} (input map: {want}) · outputs linked: {outs or 'none'} · input levels {lv}")
     log(f"  MIDI in: {st.get('midi_in')} · MIDI out: {st.get('midi_out')}")
+    return issues
+
+
+def real_hw_round(base, root, presets, log):
+    """CE QUE LA VRAIE CARTE ET LES VRAIS APPAREILS FONT (après soundcard_round, toujours sans sortie reliée) :
+      · un patch de CLAVIERS : le clavier branché est ouvert par le moteur et relié à la lane ;
+      · une PRISE de 4 s des vraies entrées : les fichiers arrivent, à la fréquence de la carte, et portent le bruit de
+        fond des préamplis (pas du zéro numérique : la carte est bien lue) ;
+      · une minute de jeu : les décrochages (xruns) comptés.
+    Rien n'est relié aux sorties : aucun son."""
+    import subprocess
+    issues = []
+    try:
+        http(base, "/api/recall", {"preset": "patch:factory-keys-blues-organ"}, timeout=60)
+    except HTTPError as e:
+        issues.append(f"recall of the keys patch refused: {e.code} {e.read()[:160]!r}")
+    wait_rig(base, presets, 30, pid="patch:factory-keys-blues-organ")
+    time.sleep(1.0)
+    wl = (presets / ".watch.log").read_text(encoding="utf-8", errors="replace") if (presets / ".watch.log").is_file() else ""
+    opened = re.findall(r"MIDI : (.+?) ouvert \((\d+) port", wl)
+    absent = re.findall(r"clavier « (.*?) » absent", wl)[-1:]
+    log(f"  keyboard: opened {opened or 'none'}" + (f" · absent: {absent}" if absent and not opened else ""))
+    if not opened:
+        issues.append(f"no keyboard was opened for the keys lane ({absent or 'no MIDI device named in the plan'})")
+    seq = int(time.time() * 1000)
+    with contextlib.suppress(OSError):
+        os.remove(presets / ".engine-dump.json")
+    (presets / ".command.json").write_text(json.dumps({"action": "dump", "seq": seq}))
+    dump = None
+    for _ in range(40):
+        dump = read_json(presets / ".engine-dump.json")
+        if dump:
+            break
+        time.sleep(0.25)
+    midi_in = [c for t in (dump or {}).get("tracks") or [] for c in (t.get("midi_input") or t.get("input") or []) if "midi" in str(c).lower()]
+    log(f"  keys lane MIDI input: {midi_in or 'not reported by the dump'}")
+    # la prise des vraies entrées
+    http(base, "/api/recall", {"preset": "patch:factory-bass-pop-pick"}, timeout=60)
+    wait_rig(base, presets, 30, pid="patch:factory-bass-pop-pick")
+    time.sleep(1.0)
+    def xruns():                                          # le compteur du moteur, relu par un `status` posé dans le slot
+        (presets / ".command.json").write_text(json.dumps({"action": "status", "seq": int(time.time() * 1000)}))
+        time.sleep(0.6)
+        return (read_json(presets / ".engine-status.json") or {}).get("xruns") or 0
+    time.sleep(2.0)                                       # le rappel est fini : ses décrochages ne sont pas ceux de la prise
+    x0 = xruns()
+    http(base, "/api/perf/start", {})
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 10 and not (read_json(presets / ".perf.json") or {}).get("recording"):
+        time.sleep(0.1)
+    time.sleep(4.0)
+    http(base, "/api/perf/stop", {})
+    done = None
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 30:
+        d = read_json(presets / ".perf.json") or {}
+        if d.get("recording") is False and d.get("file"):
+            done = d
+            break
+        time.sleep(0.3)
+    if not done:
+        issues.append(f"the take did not finish: {read_json(presets / '.perf.json')}")
+    else:
+        d = root / done["file"]
+        files = sorted(f.name for f in d.iterdir()) if d.is_dir() else [d.name]
+        lv = {}
+        for f in (sorted(d.glob("*.wav")) if d.is_dir() else [d]):
+            r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(f), "-af", "volumedetect", "-f", "null", "-"],
+                               capture_output=True, text=True)
+            m, sr = re.search(r"max_volume: (-?[\d.]+) dB", r.stderr), re.search(r"(\d+) Hz", r.stderr)
+            lv[f.name] = (float(m.group(1)) if m else -150.0, int(sr.group(1)) if sr else 0)
+        log(f"  take {d.name}: " + ", ".join(f"{k} {v[0]:.1f} dB @{v[1]}" for k, v in lv.items()))
+        di = [v for k, v in lv.items() if k.startswith("DI-")]
+        if not lv:
+            issues.append(f"the take holds no audio file: {files}")
+        if di and all(v[0] <= -120 for v in di):
+            issues.append("the DI files are digital silence: the card's inputs are not read")
+    # une minute de jeu — et la priorité des fils du moteur (un fil audio sans temps réel décroche)
+    rt = ""
+    with contextlib.suppress(Exception):
+        out = subprocess.run(["ps", "-L", "-o", "cls=,rtprio=,comm=", "-p", str(engine_pid(presets))], capture_output=True, text=True).stdout
+        rows = [ln.split(None, 2) for ln in out.splitlines() if ln.strip()]
+        fifo = sorted({f"{r[2].strip()} {r[0]}:{r[1]}" for r in rows if r[0] in ("FF", "RR")})
+        rt = f"{len(rows)} threads, real-time: {fifo or 'NONE'}"
+        if not fifo:
+            issues.append("no engine thread runs with real-time priority")
+    log(f"  engine threads: {rt}")
+    time.sleep(3.0)
+    x_take = xruns()                                      # ce que la prise a coûté : ses pistes créées puis retirées
+    time.sleep(60)
+    x1 = xruns()
+    st = read_json(presets / ".engine-status.json") or {}
+    log(f"  buffer {st.get('buffer')}: {x_take - x0} xrun(s) around the take (start + stop), {x1 - x_take} in one minute at rest"
+        f" · DSP {round(st.get('dsp_load') or 0, 1)} %")
+    if x1 - x_take > 0:
+        issues.append(f"{x1 - x_take} xruns in a minute at rest, buffer {st.get('buffer')}")
+    if x_take - x0 > 0:
+        issues.append(f"{x_take - x0} xruns when a take starts and stops (its tracks are created and removed while the rig plays)")
+    return issues
+
+
+DEMO_PATCHES = ("factory-guitar-funk-clean", "factory-keys-blues-organ", "factory-drums-studio-rock")
+
+
+def demo_round(base, root, log, ids=None):
+    """LES DÉMOS par le vrai chemin (docs/preset-preview.md §7) : POST /api/preview/batch sur un patch de guitare (une
+    DI de référence), un de claviers et un de batterie (une phrase MIDI) — le bridge pose chaque scène, le moteur la
+    rend, le fichier arrive. Jugé : le lot finit, chaque patch est « done », chaque démo existe et n'est pas du silence."""
+    import subprocess
+    known = {p["id"] for p in http(base, "/api/patches").get("patches") or []}
+    ids = [i for i in (ids or DEMO_PATCHES) if i in known]
+    if not ids:
+        return ["none of the demo patches is in the factory content"]
+    try:
+        http(base, "/api/preview/batch", {"ids": ids, "force": True})
+    except HTTPError as e:
+        return [f"batch refused: {e.code} {e.read()[:200]!r}"]
+    end = time.monotonic() + 240 * len(ids)                # le Golem Engine rend en TEMPS RÉEL : ~28 s par scène
+    st = {}
+    while time.monotonic() < end:
+        st = http(base, "/api/preview/batch")
+        if not st.get("running") and st.get("items"):
+            break
+        time.sleep(1.0)
+    else:
+        return [f"the batch did not finish: {json.dumps(st)[:300]}"]
+    issues = []
+    for it in st.get("items") or []:
+        if it.get("status") != "rendered":
+            issues.append(f"{it.get('id')}: {it.get('status')} — {it.get('reason') or it.get('error') or ''}")
+            continue
+        entry = None
+        for cand in sorted(root.glob(f"library/previews/patch-{it['id']}*/preview.json")):
+            entry = entry or read_json(cand)
+        clips = (entry or {}).get("scenes") or {}
+        if not clips:
+            issues.append(f"{it.get('id')}: done, but no demo listed")
+            continue
+        levels = {}
+        for scene, rel in clips.items():
+            f = root / rel
+            r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(f), "-af", "volumedetect", "-f", "null", "-"],
+                               capture_output=True, text=True)
+            m = re.search(r"max_volume: (-?[\d.]+) dB", r.stderr)
+            levels[scene] = float(m.group(1)) if m else -150.0
+        quiet = [f"{k} {v} dB" for k, v in levels.items() if v < -50]
+        if quiet:
+            issues.append(f"{it.get('id')}: silent demo(s) {quiet}")
+        log(f"         {it.get('id')}: {len(clips)} demo(s), peaks {min(levels.values()):.1f} to {max(levels.values()):.1f} dB")
+    return issues
+
+
+def forms_round(base, root, log, preset="factory-funk-rock", cpu_type="delay-tape"):
+    """LES AUTRES RENDUS, par leurs vraies routes : les BLOCS d'un preset d'usine (POST /api/preview/blocks : 8 mesures
+    de sa boîte à rythmes, de son standard) et le BANC CPU d'un type de bloc (POST /api/cpu/calibrate) — jugés sur ce
+    que le bridge en garde : un bloc rendu au moins et aucun en échec, un coût par buffer mesuré pour le type."""
+    issues = []
+    try:
+        http(base, "/api/preview/blocks", {"ids": [preset], "force": True})
+    except HTTPError as e:
+        return [f"block demos refused: {e.code} {e.read()[:200]!r}"]
+    end, st = time.monotonic() + 420, {}
+    while time.monotonic() < end:
+        st = http(base, "/api/preview/blocks")
+        if not st.get("running") and st.get("items"):
+            break
+        time.sleep(1.0)
+    items = st.get("items") or []
+    got = [i for i in items if i.get("status") == "rendered"]
+    bad = [i for i in items if i.get("status") not in ("rendered", "skipped")]
+    log(f"         block demos of {preset}: " + ", ".join(f"{i.get('id') or i.get('kind')} {i.get('status')}"
+                                                         + (f" ({i.get('reason')})" if i.get("reason") else "") for i in items))
+    if st.get("running") or not got or bad:
+        issues.append(f"block demos: {len(got)} rendered, {len(bad)} failed, running {st.get('running')} — {json.dumps(items)[:300]}")
+    try:
+        http(base, "/api/cpu/calibrate", {"types": [cpu_type], "force": True})
+    except HTTPError as e:
+        return issues + [f"CPU calibration refused: {e.code} {e.read()[:300]!r}"]
+    end, prof = time.monotonic() + 240, {}
+    while time.monotonic() < end:
+        prof = http(base, "/api/cpu/profile")
+        cal = prof.get("calibration") or {}
+        if (cal.get("done") or 0) >= 1 or cal.get("error"):
+            break
+        time.sleep(1.5)
+    # ce que le banc a écrit (config/cpu-profile.json du banc). La lane vide passe toujours d'abord ; le type demandé
+    # suit si le banc ne se met pas en attente (il laisse la main dès que quelqu'un touche l'écran — ici, nos requêtes)
+    blocks = (read_json(root / "config" / "cpu-profile.json", {}) or {}).get("blocks") or {}
+    row = next((v for k, v in blocks.items() if k.startswith(cpu_type)), None) or blocks.get("_system|stereo")
+    log(f"         CPU bench ({', '.join(blocks) or 'nothing'}): {json.dumps(row)[:200]} · machine {prof.get('machine')}")
+    if not row or not (row.get("avg_us") or 0) > 0:
+        issues.append(f"CPU bench: no cost measured — calibration {json.dumps(prof.get('calibration'))[:300]}")
+    if (prof.get("machine") or {}).get("engine") not in ("ardour", "reaper"):
+        issues.append(f"CPU profile names no engine: {prof.get('machine')}")
+    return issues
+
+
+ARR_SONG = "rs:f3f0252689f96910f01c81be0325855f"     # « Golem Rising », la chanson d'usine (library/factory/songs)
+
+
+def arrangement_round(base, presets, log):
+    """UN MORCEAU JOUÉ DE BOUT EN BOUT par le vrai chemin (docs/arrangement.md) : ▶ Play sur la chanson d'usine — le
+    bridge rappelle son preset, décompte une mesure, puis son chef d'orchestre (bridge/arrangement.py) pose la scène,
+    les blocs et le groove de chaque partie À SA FRONTIÈRE. On suit le décompte, l'intro et le premier couplet (120 BPM,
+    4 + 7 mesures), puis Stop. Ce qui est jugé : l'heure de la frontière, la scène que le moteur a reçue, le bloc que
+    la partie force, la boîte à rythmes qui joue le groove de la partie et se tait au Stop."""
+    issues = []
+
+    def st():
+        return http(base, "/api/state")
+
+    def wait(cond, timeout, step=0.05):
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            v = cond()
+            if v:
+                return v
+            time.sleep(step)
+        return None
+    try:
+        r = http(base, "/api/arrangement", {"op": "start", "song": ARR_SONG}, timeout=90)
+    except HTTPError as e:
+        return [f"start refused: {e.code} {e.read()[:200]!r}"]
+    if r.get("error"):
+        return [f"start refused: {r}"]
+    arr = wait(lambda: (st().get("arrangement") or {}).get("running") and st()["arrangement"], 20)
+    if not arr:
+        return [f"the arrangement did not start: {st().get('arrangement')}"]
+    first = wait(lambda: (lambda a: a.get("index") == 0 and not a.get("counting") and a)(st().get("arrangement") or {}), 15)
+    if not first:
+        return [f"the count-in did not hand over to the first part: {st().get('arrangement')}"]
+    parts = first.get("parts") or []
+    if len(parts) < 2 or parts[0].get("scene") != "A" or parts[1].get("scene") != "B":
+        return [f"unexpected song structure: {parts[:2]}"]
+    s0 = st()
+    if s0.get("scene_id") != "A":
+        issues.append(f"part 1 is scene A, the rig is on {s0.get('scene_id')}")
+    def drums():                                          # {playing, idx} du bloc boîte à rythmes (presets/.drums.json)
+        blocks = (read_json(presets / ".drums.json", {}) or {}).get("blocks") or {}
+        return next(iter(blocks.values()), {})
+    drums0 = wait(lambda: drums().get("playing") and drums(), 1.5) or drums()
+    if not drums0.get("playing") or drums0.get("idx") != 0:
+        issues.append(f"the drum machine is not playing groove 0 in part 1: {drums0}")
+    # la frontière : l'instant où l'index passe à 1, comparé à l'heure que le morceau annonce (horloge du bridge)
+    due = (first.get("song_t0") or 0) + parts[1]["at"]
+    seen = wait(lambda: (st().get("arrangement") or {}).get("index") == 1 and time.time(), parts[0]["dur"] + 5, step=0.01)
+    if not seen:
+        return issues + [f"part 2 never came: {st().get('arrangement')}"]
+    late = seen - due
+    if not -0.05 <= late <= 0.25:
+        issues.append(f"part 2 came {late * 1000:.0f} ms from its boundary")
+    time.sleep(0.6)
+    s1 = st()
+    if s1.get("scene_id") != "B":
+        issues.append(f"part 2 is scene B, the rig is on {s1.get('scene_id')}")
+    rc = read_json(presets / ".livemap.json", {}) or {}
+    if "chorus" in (rc.get("blocks") or {}) and (s1.get("lane_toggles") is not None):
+        on = [k for k, v in (s1.get("stomps") or {}).items() if v]
+        log(f"         part 2: scene {s1.get('scene_id')}, stomps on {on}, boundary {late * 1000:+.0f} ms")
+    drums1 = drums()
+    if not drums1.get("playing") or drums1.get("idx") != 1:
+        issues.append(f"the drum machine is not playing groove 1 in part 2: {drums1}")
+    err = s1.get("rig_error")
+    if err:
+        issues.append(f"rig_error during the song: {err}")
+    http(base, "/api/arrangement", {"op": "stop"})
+    stopped = wait(lambda: not (st().get("arrangement") or {}).get("running")
+                   and not drums().get("playing"), 6)
+    if not stopped:
+        issues.append(f"Stop did not stop everything: arrangement {st().get('arrangement', {}).get('running')}, "
+                      f"drums {drums()}")
+    return issues
+
+
+def song_full_round(base, root, presets, log):
+    """LE MORCEAU COMPLET : la même chanson, avec une BACKING (les stems d'une chanson de ce golem, copiés dans le
+    banc), une CUE DE SAMPLE à la mesure 2 et « Record with the song ». Un preset de banc lui donne le lecteur de
+    backing et un bloc sample ; la fiche de la chanson est écrite par sa vraie route. Jugé : la backing joue avec le
+    morceau, le sample part à sa mesure, la prise tourne, et après Stop la prise contient la backing et le sample."""
+    import subprocess
+    issues = []
+    src = next((d for d in sorted((ROOT / "assets" / "backing").glob("*"))
+                if (d / "drums.mp3").is_file() and (d / "meta.json").is_file()), None)
+    if not src:
+        return ["no cached backing song on this golem (assets/backing): nothing to play"]
+    slug = src.name
+    shutil.copytree(src, root / "assets" / "backing" / slug, dirs_exist_ok=True)
+    smp = root / "assets" / "samples" / "ci-hit.wav"
+    smp.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi", "-i",
+                    "sine=frequency=880:duration=1.5:sample_rate=48000", "-af", "volume=-6dB", "-ac", "2", str(smp)], check=True)
+    base_p = read_json(root / "presets" / "factory-nu-metal-eight.json") or read_json(ROOT / "library" / "factory" / "presets" / "factory-nu-metal-eight.json")
+    if not base_p:
+        return ["the factory preset of the song is missing"]
+    p = json.loads(json.dumps(base_p))
+    p["id"], p["name"] = "ci-song-full", "CI song with backing"
+    p.pop("factory", None)
+    gen = p.setdefault("config", {}).setdefault("gen", {"blocks": []})
+    gen["blocks"] = [b for b in gen.get("blocks") or [] if b.get("type") not in ("backing-track", "sample")] + [
+        {"type": "backing-track", "id": "bt"}, {"type": "sample", "id": "smp", "params": {"samples": ["assets/samples/ci-hit.wav"]}}]
+    (root / "presets" / "ci-song-full.json").write_text(json.dumps(p), encoding="utf-8")
+    arr = {"type": "arrangement", "id": "arr-song", "params": {
+        "advance": "bars", "sig": {"num": 4, "den": 4}, "count_in": 1,
+        "starts": {"drums": False, "click": False, "backing": True, "rec": True, "sample": True},
+        "sections": [{"name": "One", "bars": 2, "scene": "A"}, {"name": "Two", "bars": 4, "scene": "B"}],
+        "samples": [{"block": "smp", "idx": 0, "bar": 2, "beat": 1, "name": "hit"}]}}
+    try:
+        http(base, "/api/song/" + ARR_SONG, {"preset": "ci-song-full", "backing": slug, "bpm": 120, "arrangement": arr})
+        r = http(base, "/api/arrangement", {"op": "start", "song": ARR_SONG}, timeout=120)
+    except HTTPError as e:
+        return [f"refused: {e.code} {e.read()[:300]!r}"]
+    if r.get("error"):
+        return [f"start refused: {r}"]
+
+    def st():
+        return http(base, "/api/state")
+
+    def wait(cond, timeout, step=0.05):
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            v = cond()
+            if v:
+                return v
+            time.sleep(step)
+        return None
+    if not wait(lambda: (st().get("arrangement") or {}).get("running"), 20):
+        return [f"the song did not start: {st().get('arrangement')}"]
+    playing = wait(lambda: (read_json(presets / ".backing.json", {}) or {}).get("playing"), 12)
+    if not playing:
+        issues.append(f"the backing does not play with the song: {json.dumps(read_json(presets / '.backing.json', {}))[:200]}")
+    rec = wait(lambda: (read_json(presets / ".perf.json", {}) or {}).get("recording"), 8)
+    if not rec:
+        issues.append(f"“Record with the song” did not start a take: {read_json(presets / '.perf.json', {})}")
+    hit = wait(lambda: ((read_json(presets / ".sample.json", {}) or {}).get("blocks") or {}).get("smp", {}).get("playing"), 12)
+    if not hit:
+        issues.append(f"the sample cue did not fire: {read_json(presets / '.sample.json', {})}")
+    time.sleep(3.0)
+    http(base, "/api/arrangement", {"op": "stop"})
+    done = wait(lambda: (lambda d: d.get("recording") is False and d.get("file") and d)(read_json(presets / ".perf.json", {}) or {}), 30, step=0.3)
+    if rec and not done:
+        issues.append(f"the take did not end with the song: {read_json(presets / '.perf.json', {})}")
+    elif done:
+        d = root / done["file"]
+        files = sorted(f.name for f in d.iterdir()) if d.is_dir() else []
+        lv = {}
+        for name in ("Backing-Track.wav", "Sample.wav"):
+            if name in files:
+                r2 = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(d / name), "-af", "volumedetect", "-f", "null", "-"],
+                                    capture_output=True, text=True)
+                m = re.search(r"max_volume: (-?[\d.]+) dB", r2.stderr)
+                lv[name] = float(m.group(1)) if m else -150.0
+        log(f"         take {d.name}: {files} · levels {lv}")
+        for name in ("Backing-Track.wav", "Sample.wav"):
+            if lv.get(name, -150) < -50:
+                issues.append(f"{name} is missing or silent in the take ({lv.get(name)})")
+    if (read_json(presets / ".backing.json", {}) or {}).get("playing"):
+        issues.append("the backing still plays after Stop")
     return issues
 
 
@@ -1329,6 +1701,12 @@ def main():
     ap.add_argument("--dashboard", action="store_true",
                     help="--engine golem-engine : ce que lit le Dashboard (moteur, buffer, DSP, process, témoin audio) et un "
                          "changement de buffer à chaud")
+    ap.add_argument("--demos", action="store_true",
+                    help="après la passe : les démos de trois patches d'usine rendues par POST /api/preview/batch")
+    ap.add_argument("--listen-forms", action="store_true",
+                    help="après la passe : les démos de blocs d'un preset d'usine et le banc CPU d'un type, par leurs routes")
+    ap.add_argument("--arrangement", action="store_true",
+                    help="après la passe : la chanson d'usine jouée par l'arrangement (décompte, deux parties, stop)")
     ap.add_argument("--kill-restart", action="store_true",
                     help="--engine golem-engine : après la passe, tuer le moteur, le relancer par le Dashboard, et vérifier "
                          "que le bridge le voit, que Health le dit et que le dernier patch revient")
@@ -1359,8 +1737,6 @@ def main():
         reaper = (a.engine_dir / "golem" / "engine" / "run.sh").resolve()
         if not reaper.is_file():
             raise SystemExit(f"Golem Engine not found: {reaper} (set --engine-dir)")
-        if a.standard_take or a.compo_bed:
-            raise SystemExit("--standard-take and --compo-bed need REAPER for now")
     else:
         reaper = (a.reaper or reaper_binary()).resolve()
         if not reaper.is_file():
@@ -1392,7 +1768,10 @@ def main():
         if golem_engine:
             env.update({"GOLEM_ENGINE": "ardour", "GOLEM_ENGINE_DIR": str(a.engine_dir),
                         "GOLEM_ENGINE_SESSION": str(work / "engine-session"), "GOLEM_ENGINE_BACKEND": "None (Dummy)",
-                        "GOLEM_ENGINE_LOG": str(work / "engine.log")})
+                        "GOLEM_ENGINE_LOG": str(work / "engine.log"),
+                        # son port OSC à lui : sans ça, à côté d'un rack qui tourne sur le Golem Engine (3819 pris), le
+                        # moteur du banc prenait 3820 et le bridge du banc parlait au moteur du rack
+                        "GOLEM_ENGINE_OSC": str(free_port())})
             if a.real_card:
                 env.update({"GOLEM_ENGINE_BACKEND": "ALSA", "GOLEM_ENGINE_DEVICE": card_name,
                             "GOLEM_ENGINE_NO_OUTPUT": "1"})
@@ -1562,6 +1941,30 @@ def main():
             report["soundcard"] = sc
             log(("  ok     " if not sc else "  FAIL   ") + "the engine on the real card"
                 + "".join("\n           " + x for x in sc))
+        if a.demos:
+            de = demo_round(base, root, log)
+            report["demos"] = de
+            log(("  ok     " if not de else "  FAIL   ") + "demos rendered by the batch route (guitar DI, keys and drums phrases)"
+                + "".join("\n           " + x for x in de))
+        if a.listen_forms:
+            fo = forms_round(base, root, log)
+            report["listen_forms"] = fo
+            log(("  ok     " if not fo else "  FAIL   ") + "block demos and CPU bench by their routes"
+                + "".join("\n           " + x for x in fo))
+        if a.arrangement:
+            ar = arrangement_round(base, presets, log)
+            report["arrangement"] = ar
+            log(("  ok     " if not ar else "  FAIL   ") + "a factory song played by the arrangement (count-in, two parts, stop)"
+                + "".join("\n           " + x for x in ar))
+            fu = song_full_round(base, root, presets, log)
+            report["arrangement"] = ar + fu
+            log(("  ok     " if not fu else "  FAIL   ") + "the song with a backing, a sample cue and “Record with the song”"
+                + "".join("\n           " + x for x in fu))
+        if a.real_card and golem_engine:
+            rh = real_hw_round(base, root, presets, log)
+            report["soundcard"] = (report.get("soundcard") or []) + rh
+            log(("  ok     " if not rh else "  FAIL   ") + "real devices: keyboard opened, a take of the real inputs, a minute of xruns"
+                + "".join("\n           " + x for x in rh))
         if a.dashboard and golem_engine:
             di = dashboard_round(base, presets, log)
             report["dashboard"] = di
@@ -1587,6 +1990,9 @@ def main():
     bad = ([r for r in done if r["verdict"] == "fail"] + [c for c in report.get("chain") or [] if c["issues"]]
            + ([{"kill_restart": report["kill_restart"]}] if report.get("kill_restart") else [])
            + ([{"dashboard": report["dashboard"]}] if report.get("dashboard") else [])
+           + ([{"arrangement": report["arrangement"]}] if report.get("arrangement") else [])
+           + ([{"demos": report["demos"]}] if report.get("demos") else [])
+           + ([{"listen_forms": report["listen_forms"]}] if report.get("listen_forms") else [])
            + ([{"soundcard": report["soundcard"]}] if report.get("soundcard") else [])
            + [t for t in report.get("standard_take") or [] if t["issues"]]
            + [t for t in report.get("compo_bed") or [] if t["issues"]]

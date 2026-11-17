@@ -16,8 +16,7 @@ const LICENSE = { commercial: 'commercial', 'gpl-2.0-or-later': 'free · GPL' };
 function EngineCard({ e, features, current, running, busy, armed, onSelect }) {
   const on = e.id === current;
   const caps = e.capabilities || {};
-  const yes = features.filter(f => caps[f.id] === 'yes').length;
-  const planned = features.filter(f => caps[f.id] === 'planned').length;
+  const missing = features.filter(f => caps[f.id] !== 'yes').map(f => f.label);
   const state = on ? (running ? 'running' : 'stopped') : null;
   return html`<section class=${cls('eng-card', on && 'eng-on', !e.available && 'eng-off')}>
     <h3>
@@ -28,14 +27,8 @@ function EngineCard({ e, features, current, running, busy, armed, onSelect }) {
       <span class="eng-chip">${LICENSE[e.license] || e.license}${e.license === 'commercial' && e.by ? ' · ' + e.by : ''}</span>
     </h3>
     ${e.license !== 'commercial' && e.by ? html`<div class="eng-by">${e.by}</div>` : ''}
-    <p class="eng-sum">${e.summary || ''}</p>
-    <div class="eng-row"><span class="k">Features</span>
-      <span class="v">${yes === features.length ? 'All ' + features.length : yes + ' of ' + features.length}</span>
-      ${planned ? html`<span class="dim">· ${planned} planned</span>` : ''}</div>
-    <div class="eng-feat">
-      ${features.map(f => html`<span class=${cls('f', caps[f.id] === 'no' && 'no', caps[f.id] === 'planned' && 'plan')}
-        title=${caps[f.id] === 'no' ? 'not on this engine' : caps[f.id] === 'planned' ? 'planned' : ''}>${f.label}</span>`)}
-    </div>
+    ${/* ni résumé ni compte des fonctions (le mainteneur, 2026-11-17) : seule une fonction qui MANQUE est dite */''}
+    ${missing.length ? html`<div class="eng-row"><span class="dim">Not on this engine: ${missing.join(', ')}</span></div>` : ''}
     <div class="eng-foot">
       ${on ? html`<span class="muted">The engine golem drives on this machine.</span>`
         : html`<span class="muted">${e.available ? 'Switching rebuilds every preset on this engine.' : 'Not selectable yet.'}</span>`}
@@ -77,7 +70,8 @@ export function EnginePanel({ rig }) {
   if (!data) return html`<div class="eng-page"><p class="muted">reading engines…</p></div>`;
   return html`<div class="eng-page">
     <div class="eng-grid">
-      ${(data.engines || []).map(e => html`<${EngineCard} key=${e.id} e=${e} features=${data.features} current=${data.current}
+      ${/* le Golem Engine d'abord (le mainteneur, 2026-11-17), puis l'ordre du bridge */''}
+      ${[...(data.engines || [])].sort((a, b) => (b.id === 'ardour') - (a.id === 'ardour')).map(e => html`<${EngineCard} key=${e.id} e=${e} features=${data.features} current=${data.current}
         running=${running} busy=${busy} armed=${armed} onSelect=${select} />`)}
     </div>
     ${sw && PHASE[sw.phase] ? html`<div class="eng-strip">⟳ <b>Switching engine</b> — ${PHASE[sw.phase]}</div>` : ''}

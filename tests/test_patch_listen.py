@@ -75,13 +75,18 @@ def test_l_entree_du_patch_vient_de_sa_liaison(monkeypatch):
     assert PV.patch_input("x") == "k"
 
 
-def test_la_di_se_choisit_par_les_tags_avant_le_style():
+def test_la_di_se_choisit_par_les_tags_avant_le_style(monkeypatch):
     # Jazz Clean partait en high-gain sur un style « metal » resté dans un brouillon : les tags décident
+    # (le rôle est FIXÉ : il se lisait sur la carte réelle du rack, et le test tombait une basse branchée)
+    monkeypatch.setattr(PV, "_role_of", lambda preset, in_key="1": "guitar")
     assert PV.resolve_di({"tags": ["jazz", "clean"], "style": "metal"}, None)[0] == "guitar/clean"
     assert PV._bucket_from_tags("guitar", ["metal", "progressive", "ambient", "djent"]) == "guitar/djent"
     assert PV._bucket_from_tags("guitar", ["indie", "pop", "clean", "crunch"]) == "guitar/clean"
     assert PV._bucket_from_tags("guitar", ["blues", "crunch"]) == "guitar/crunch"
-    assert PV._bucket_from_tags("bass", ["pop", "soul", "rock"]) == "bass/finger"
+    # la basse (2026-11-16) : doigts = jazz, médiator = rock et metal, notes longues = tout le reste
+    assert PV._bucket_from_tags("bass", ["pop", "soul", "rock"]) == "bass/pick"
+    assert PV._bucket_from_tags("bass", ["jazz"]) == "bass/finger"
+    assert PV._bucket_from_tags("bass", ["funk", "soul"]) is None and PV._bucket("bass", "funk") == "bass/sustain"
     assert PV._bucket_from_tags("guitar", ["ambient"]) is None        # rien de parlant : le style décide
 
 
@@ -216,6 +221,7 @@ def test_la_distribution_d_usine_nomme_des_patchs_et_des_di_qui_existent():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     cast = json.load(open(os.path.join(root, "library", "factory", "demo-casting.json")))["patches"]
     known = {"guitar/" + b for b in ("clean", "crunch", "high-gain", "djent", "lead", "lead-clean", "funk")}
+    known |= {"bass/" + b for b in ("finger", "pick", "sustain")}
     for pid, scenes in cast.items():
         doc = json.load(open(os.path.join(root, "library", "factory", "patches", pid + ".json")))
         assert set(scenes) <= {s["id"] for s in doc["scenes"]}, pid

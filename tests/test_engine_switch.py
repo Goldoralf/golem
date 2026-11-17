@@ -196,19 +196,20 @@ def test_reaper_n_est_jamais_relance_par_ce_chemin(monkeypatch):
     assert called == []
 
 
-def test_le_golem_engine_allume_le_boost_cpu_quel_que_soit_le_mode(monkeypatch):
+def test_le_boost_cpu_suit_golem_sous_les_deux_moteurs(monkeypatch):
     # 2026-11-13 (le mainteneur) : en économie, le Golem Engine décrochait (80 % de DSP contre 31 %) — boosté tant
     # qu'il tourne ; sous REAPER, la règle du mode seule (Gig et Show)
-    from bridge import engine, routes_system
+    from bridge import routes_system as RS
     home, gig = {"name": "Home", "perf_boost": False}, {"name": "Gig", "perf_boost": True}
-
-    class E:
-        def __init__(self, i):
-            self.id = i
-    monkeypatch.setattr(engine, "get", lambda: E("ardour"))
-    assert routes_system.wants_boost(home) == (True, "Golem Engine")
-    monkeypatch.setattr(engine, "get", lambda: E("reaper"))
-    assert routes_system.wants_boost(home)[0] is False and routes_system.wants_boost(gig)[0] is True
+    # 2026-11-17 (le mainteneur) : le boost SUIT GOLEM, sous les deux moteurs — plus seulement le Golem Engine
+    monkeypatch.setattr(RS, "perf_auto", lambda: True)
+    monkeypatch.setattr(RS, "on_battery", lambda: False)
+    assert RS.wants_boost(home) == (True, "golem is running")
+    monkeypatch.setattr(RS, "on_battery", lambda: True)                  # sur batterie : pas d'automatisme…
+    assert RS.wants_boost(home) == (False, "on battery") and RS.wants_boost(gig)[0] is True   # …sauf un mode qui l'exige
+    monkeypatch.setattr(RS, "on_battery", lambda: False)
+    monkeypatch.setattr(RS, "perf_auto", lambda: False)                  # l'interrupteur coupé
+    assert RS.wants_boost(home) == (False, "automatic performance mode is off") and RS.wants_boost(gig)[0] is True
 
 
 def test_une_bascule_de_moteur_regle_le_boost_avant_de_demarrer(monkeypatch):

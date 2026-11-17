@@ -45,10 +45,7 @@
        "level": 0
       },
       "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "svtcl",
       "type": "amp-nam",
@@ -92,13 +89,18 @@
        "highs": 1
       }
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "states": [
     {
      "id": "st-bass-1-A",
      "name": "Pick Verse",
-     "blocks": {},
+     "blocks": {
+      "chorus": false,
+      "drive": false
+     },
      "params": {},
      "branches": {}
     },
@@ -106,6 +108,7 @@
      "id": "st-bass-1-B",
      "name": "Chorus Drive",
      "blocks": {
+      "chorus": false,
       "drive": true
      },
      "params": {},
@@ -115,11 +118,16 @@
      "id": "st-bass-1-C",
      "name": "Ballad",
      "blocks": {
+      "chorus": false,
       "drive": false
      },
      "params": {
       "eq": {
-       "highs": -3
+       "highs": -7,
+       "lows": 2
+      },
+      "comp": {
+       "ratio": 2
       }
      },
      "branches": {}
@@ -128,7 +136,8 @@
      "id": "st-bass-1-D",
      "name": "Chorus Bass",
      "blocks": {
-      "chorus": true
+      "chorus": true,
+      "drive": false
      },
      "params": {},
      "branches": {}
@@ -137,11 +146,14 @@
      "id": "st-bass-1-E",
      "name": "Melodic",
      "blocks": {
-      "chorus": false
+      "chorus": false,
+      "drive": false
      },
      "params": {
       "eq": {
-       "midgain": 2
+       "midgain": 5,
+       "midfreq": 900,
+       "highs": 2
       }
      },
      "branches": {}
@@ -153,7 +165,10 @@
   {
    "id": "A",
    "name": "Pick Verse",
-   "blocks": {},
+   "blocks": {
+    "chorus": false,
+    "drive": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-A"
@@ -164,6 +179,7 @@
    "id": "B",
    "name": "Chorus Drive",
    "blocks": {
+    "chorus": false,
     "drive": true
    },
    "lanes": {
@@ -176,24 +192,32 @@
    "id": "C",
    "name": "Ballad",
    "blocks": {
+    "chorus": false,
     "drive": false
    },
    "lanes": {
     "bass-1": {
-     "state": "st-bass-1-C"
+     "state": "st-bass-1-C",
+     "level": -1
     }
    },
    "params": {
     "eq": {
-     "highs": -3
+     "highs": -7,
+     "lows": 2
+    },
+    "comp": {
+     "ratio": 2
     }
-   }
+   },
+   "level": -1
   },
   {
    "id": "D",
    "name": "Chorus Bass",
    "blocks": {
-    "chorus": true
+    "chorus": true,
+    "drive": false
    },
    "lanes": {
     "bass-1": {
@@ -205,7 +229,8 @@
    "id": "E",
    "name": "Melodic",
    "blocks": {
-    "chorus": false
+    "chorus": false,
+    "drive": false
    },
    "lanes": {
     "bass-1": {
@@ -215,7 +240,9 @@
    },
    "params": {
     "eq": {
-     "midgain": 2
+     "midgain": 5,
+     "midfreq": 900,
+     "highs": 2
     }
    },
    "level": 2
@@ -280,10 +307,7 @@
      "level": 0
     },
     "foot": 6
-   }
-  ],
-  "split": null,
-  "post": [
+   },
    {
     "id": "svtcl",
     "type": "amp-nam",
@@ -327,7 +351,9 @@
      "highs": 1
     }
    }
-  ]
+  ],
+  "split": null,
+  "post": []
  },
  "needs": [
   {
@@ -359,7 +385,7 @@
   "B": "scanner",
   "C": "sheen",
   "D": "glitch",
-  "E": "monster",
+  "E": "strobe",
   "6": "rain",
   "7": "vu",
   "9": "wave",
@@ -415,5 +441,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"rain\", \"7\": \"vu\", \"9\": \"wave\", \"A\": \"fire\", \"B\": \"scanner\", \"C\": \"sheen\", \"D\": \"glitch\", \"E\": \"monster\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"post\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72431\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 30, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}], \"split\": null}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"7\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\", \"E\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72431\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 30, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Pop Pick\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Pick Verse\", \"params\": {}}, {\"blocks\": {\"drive\": true}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Chorus Drive\", \"params\": {}}, {\"blocks\": {\"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -3}}}, {\"blocks\": {\"chorus\": true}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Chorus Bass\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-bass-1-E\", \"name\": \"Melodic\", \"params\": {\"eq\": {\"midgain\": 2}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Pick Verse\"}, {\"blocks\": {\"drive\": true}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Chorus Drive\"}, {\"blocks\": {\"drive\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-C\"}}, \"name\": \"Ballad\", \"params\": {\"eq\": {\"highs\": -3}}}, {\"blocks\": {\"chorus\": true}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Chorus Bass\"}, {\"blocks\": {\"chorus\": false}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 2, \"state\": \"st-bass-1-E\"}}, \"level\": 2, \"name\": \"Melodic\", \"params\": {\"eq\": {\"midgain\": 2}}}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"heartbeat\", \"6\": \"rain\", \"7\": \"vu\", \"9\": \"wave\", \"A\": \"fire\", \"B\": \"scanner\", \"C\": \"sheen\", \"D\": \"glitch\", \"E\": \"strobe\"}, \"backing\": null, \"bpm\": 76, \"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 30, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}, {\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72431\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"split\": null}, \"colors\": {\"10\": \"#ffb703\", \"6\": \"#ffb703\", \"7\": \"#ffb703\", \"9\": \"#ffb703\", \"A\": \"#ffb703\", \"B\": \"#ffb703\", \"C\": \"#ffb703\", \"D\": \"#ffb703\", \"E\": \"#ffb703\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [], \"pre\": [{\"id\": \"gate\", \"params\": {\"release\": 120, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 15, \"character\": \"Clean\", \"makeup\": 3, \"ratio\": 4, \"thresh\": -22}, \"type\": \"comp\"}, {\"foot\": 6, \"id\": \"drive\", \"params\": {\"gain\": 30, \"level\": 0, \"tone_stack\": 55}, \"type\": \"emet\"}, {\"id\": \"svtcl\", \"label\": \"Ampeg SVT-CL\", \"model\": \"382790\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"45809\", \"type\": \"amp-nam\"}, {\"id\": \"gkcab\", \"label\": \"Gallien-Krueger 4x10\", \"model\": \"72431\", \"params\": {\"level\": 0}, \"ref\": \"64815\", \"type\": \"cab\"}, {\"foot\": 7, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 35, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}], \"split\": null}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Pop Pick\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"chorus\": false, \"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-A\", \"name\": \"Pick Verse\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"drive\": true}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Chorus Drive\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-C\", \"name\": \"Ballad\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -7, \"lows\": 2}}}, {\"blocks\": {\"chorus\": true, \"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-D\", \"name\": \"Chorus Bass\", \"params\": {}}, {\"blocks\": {\"chorus\": false, \"drive\": false}, \"branches\": {}, \"id\": \"st-bass-1-E\", \"name\": \"Melodic\", \"params\": {\"eq\": {\"highs\": 2, \"midfreq\": 900, \"midgain\": 5}}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"chorus\": false, \"drive\": false}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-A\"}}, \"name\": \"Pick Verse\"}, {\"blocks\": {\"chorus\": false, \"drive\": true}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Chorus Drive\"}, {\"blocks\": {\"chorus\": false, \"drive\": false}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-C\"}}, \"level\": -1, \"name\": \"Ballad\", \"params\": {\"comp\": {\"ratio\": 2}, \"eq\": {\"highs\": -7, \"lows\": 2}}}, {\"blocks\": {\"chorus\": true, \"drive\": false}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Chorus Bass\"}, {\"blocks\": {\"chorus\": false, \"drive\": false}, \"id\": \"E\", \"lanes\": {\"bass-1\": {\"level\": 2, \"state\": \"st-bass-1-E\"}}, \"level\": 2, \"name\": \"Melodic\", \"params\": {\"eq\": {\"highs\": 2, \"midfreq\": 900, \"midgain\": 5}}}]}"
 }

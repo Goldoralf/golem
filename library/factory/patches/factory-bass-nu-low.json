@@ -103,7 +103,9 @@
     {
      "id": "st-bass-1-A",
      "name": "Clean Low",
-     "blocks": {},
+     "blocks": {
+      "chorus": false
+     },
      "params": {},
      "branches": {
       "lane-b": {
@@ -114,14 +116,18 @@
     {
      "id": "st-bass-1-B",
      "name": "Heavy Blend",
-     "blocks": {},
+     "blocks": {
+      "chorus": false
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-bass-1-C",
      "name": "Grind Only",
-     "blocks": {},
+     "blocks": {
+      "chorus": false
+     },
      "params": {},
      "branches": {
       "lane-a": {
@@ -149,7 +155,9 @@
   {
    "id": "A",
    "name": "Clean Low",
-   "blocks": {},
+   "blocks": {
+    "chorus": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-A",
@@ -166,7 +174,9 @@
   {
    "id": "B",
    "name": "Heavy Blend",
-   "blocks": {},
+   "blocks": {
+    "chorus": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-B"
@@ -176,7 +186,9 @@
   {
    "id": "C",
    "name": "Grind Only",
-   "blocks": {},
+   "blocks": {
+    "chorus": false
+   },
    "lanes": {
     "bass-1": {
      "state": "st-bass-1-C",
@@ -404,5 +416,5 @@
    "creator": "user"
   }
  ],
- "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"strobe\", \"9\": \"stars\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.4}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 500, \"midgain\": -1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -48}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"alpha\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418278\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.4}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 500, \"midgain\": -1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -48}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"alpha\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418278\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Nu Low\", \"role\": \"bass\", \"states\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Clean Low\", \"params\": {}}, {\"blocks\": {}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Heavy Blend\", \"params\": {}}, {\"blocks\": {}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Grind Only\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-D\", \"name\": \"Chorus Low\", \"params\": {}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Clean Low\"}, {\"blocks\": {}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Heavy Blend\"}, {\"blocks\": {}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Grind Only\"}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Chorus Low\"}]}"
+ "deps_sig": "{\"anims\": {\"10\": \"ember\", \"6\": \"strobe\", \"9\": \"stars\", \"A\": \"heartbeat\", \"B\": \"lightning\", \"C\": \"smoke\", \"D\": \"vortex\"}, \"backing\": null, \"bpm\": 120, \"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.4}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 500, \"midgain\": -1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -48}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"alpha\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418278\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"colors\": {\"10\": \"#5a189a\", \"6\": \"#5a189a\", \"9\": \"#5a189a\", \"A\": \"#5a189a\", \"B\": \"#5a189a\", \"C\": \"#5a189a\", \"D\": \"#5a189a\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-metal-chorus.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"post\": [{\"foot\": 6, \"id\": \"chorus\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Classic\", \"profile\": \"Bass\", \"rate\": 0.4}, \"type\": \"chorus\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1, \"lowcut\": 30, \"midfreq\": 500, \"midgain\": -1}, \"type\": \"eq\"}], \"pre\": [{\"id\": \"met\", \"params\": {\"thresh\": -48}, \"type\": \"met\"}, {\"id\": \"comp\", \"params\": {\"attack\": 8, \"character\": \"FET\", \"makeup\": 3, \"ratio\": 5, \"thresh\": -24}, \"type\": \"comp\"}], \"split\": {\"branches\": [{\"blocks\": [{\"id\": \"svt\", \"label\": \"Ampeg SVT 6x10\", \"model\": \"379989\", \"params\": {\"input\": 0, \"output\": -2}, \"ref\": \"28202\", \"type\": \"amp\"}], \"id\": \"lane-a\"}, {\"blocks\": [{\"id\": \"alpha\", \"label\": \"Darkglass Alpha Omega\", \"model\": \"418278\", \"params\": {\"input\": 0, \"output\": 0}, \"ref\": \"27697\", \"type\": \"amp\"}], \"id\": \"lane-b\"}], \"gain\": -3, \"mode\": \"merge\"}}, \"id\": \"bass-1\", \"midi\": false, \"name\": \"Nu Low\", \"role\": \"bass\", \"states\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-A\", \"name\": \"Clean Low\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {}, \"id\": \"st-bass-1-B\", \"name\": \"Heavy Blend\", \"params\": {}}, {\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"st-bass-1-C\", \"name\": \"Grind Only\", \"params\": {}}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"st-bass-1-D\", \"name\": \"Chorus Low\", \"params\": {}}]}], \"role\": \"bass\", \"scenes\": [{\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"A\", \"lanes\": {\"bass-1\": {\"level\": -1, \"state\": \"st-bass-1-A\"}}, \"level\": -1, \"name\": \"Clean Low\"}, {\"blocks\": {\"chorus\": false}, \"id\": \"B\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-B\"}}, \"name\": \"Heavy Blend\"}, {\"blocks\": {\"chorus\": false}, \"branches\": {\"lane-a\": {\"mute\": true}}, \"id\": \"C\", \"lanes\": {\"bass-1\": {\"level\": 1, \"state\": \"st-bass-1-C\"}}, \"level\": 1, \"name\": \"Grind Only\"}, {\"blocks\": {\"chorus\": true}, \"branches\": {\"lane-b\": {\"mute\": true}}, \"id\": \"D\", \"lanes\": {\"bass-1\": {\"state\": \"st-bass-1-D\"}}, \"name\": \"Chorus Low\"}]}"
 }

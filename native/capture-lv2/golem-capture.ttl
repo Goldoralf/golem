@@ -1,0 +1,242 @@
+@prefix atom:  <http://lv2plug.in/ns/ext/atom#> .
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+@prefix patch: <http://lv2plug.in/ns/ext/patch#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix state: <http://lv2plug.in/ns/ext/state#> .
+@prefix urid:  <http://lv2plug.in/ns/ext/urid#> .
+@prefix work:  <http://lv2plug.in/ns/ext/worker#> .
+
+<https://golem.fm/lv2/capture#bundle>
+	a lv2:Parameter ;
+	rdfs:label "Capture" ;
+	rdfs:range atom:Path .
+
+<https://golem.fm/lv2/capture>
+	a lv2:Plugin , lv2:SimulatorPlugin ;
+	doap:name "golem Capture" ;
+	doap:license <https://www.gnu.org/licenses/gpl-3.0.html> ;
+	doap:maintainer [ doap:name "golem" ] ;
+	lv2:requiredFeature urid:map , work:schedule ;
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:extensionData work:interface , state:interface ;
+	patch:writable <https://golem.fm/lv2/capture#bundle> ;
+	lv2:port [
+		a lv2:InputPort , atom:AtomPort ;
+		atom:bufferType atom:Sequence ;
+		atom:supports patch:Message ;
+		lv2:designation lv2:control ;
+		lv2:index 0 ;
+		lv2:symbol "control" ;
+		lv2:name "Control"
+	] , [
+		a lv2:OutputPort , atom:AtomPort ;
+		atom:bufferType atom:Sequence ;
+		atom:supports patch:Message ;
+		lv2:designation lv2:control ;
+		lv2:index 1 ;
+		lv2:symbol "notify" ;
+		lv2:name "Notify"
+	] , [
+		a lv2:InputPort , lv2:AudioPort ;
+		lv2:index 2 ;
+		lv2:symbol "in" ;
+		lv2:name "Input"
+	] , [
+		a lv2:OutputPort , lv2:AudioPort ;
+		lv2:index 3 ;
+		lv2:symbol "out" ;
+		lv2:name "Output"
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 4 ;
+		lv2:symbol "control_01" ;
+		lv2:name "Control 01" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 5 ;
+		lv2:symbol "control_02" ;
+		lv2:name "Control 02" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 6 ;
+		lv2:symbol "control_03" ;
+		lv2:name "Control 03" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 7 ;
+		lv2:symbol "control_04" ;
+		lv2:name "Control 04" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 8 ;
+		lv2:symbol "control_05" ;
+		lv2:name "Control 05" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 9 ;
+		lv2:symbol "control_06" ;
+		lv2:name "Control 06" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 10 ;
+		lv2:symbol "control_07" ;
+		lv2:name "Control 07" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 11 ;
+		lv2:symbol "control_08" ;
+		lv2:name "Control 08" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 12 ;
+		lv2:symbol "control_09" ;
+		lv2:name "Control 09" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 13 ;
+		lv2:symbol "control_10" ;
+		lv2:name "Control 10" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 14 ;
+		lv2:symbol "control_11" ;
+		lv2:name "Control 11" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 15 ;
+		lv2:symbol "control_12" ;
+		lv2:name "Control 12" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 16 ;
+		lv2:symbol "control_13" ;
+		lv2:name "Control 13" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 17 ;
+		lv2:symbol "control_14" ;
+		lv2:name "Control 14" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 18 ;
+		lv2:symbol "control_15" ;
+		lv2:name "Control 15" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 19 ;
+		lv2:symbol "control_16" ;
+		lv2:name "Control 16" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 20 ;
+		lv2:symbol "control_17" ;
+		lv2:name "Control 17" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 21 ;
+		lv2:symbol "control_18" ;
+		lv2:name "Control 18" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 22 ;
+		lv2:symbol "control_19" ;
+		lv2:name "Control 19" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 23 ;
+		lv2:symbol "control_20" ;
+		lv2:name "Control 20" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 24 ;
+		lv2:symbol "control_21" ;
+		lv2:name "Control 21" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 25 ;
+		lv2:symbol "control_22" ;
+		lv2:name "Control 22" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 26 ;
+		lv2:symbol "control_23" ;
+		lv2:name "Control 23" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 27 ;
+		lv2:symbol "control_24" ;
+		lv2:name "Control 24" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 28 ;
+		lv2:symbol "control_25" ;
+		lv2:name "Control 25" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 29 ;
+		lv2:symbol "control_26" ;
+		lv2:name "Control 26" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 30 ;
+		lv2:symbol "control_27" ;
+		lv2:name "Control 27" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 31 ;
+		lv2:symbol "control_28" ;
+		lv2:name "Control 28" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 32 ;
+		lv2:symbol "control_29" ;
+		lv2:name "Control 29" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 33 ;
+		lv2:symbol "control_30" ;
+		lv2:name "Control 30" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 34 ;
+		lv2:symbol "control_31" ;
+		lv2:name "Control 31" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] , [
+		a lv2:InputPort , lv2:ControlPort ;
+		lv2:index 35 ;
+		lv2:symbol "control_32" ;
+		lv2:name "Control 32" ;
+		lv2:default 0.5 ; lv2:minimum 0.0 ; lv2:maximum 1.0
+	] .

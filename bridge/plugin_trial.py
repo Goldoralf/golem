@@ -13,6 +13,7 @@ s'affiche, le REAPER du rack n'est pas touché), l'allume et l'éteint plusieurs
 Le verdict est gardé par plugin dans config/vst-trials.json (état local du rack, CLAUDE.md règle 2) : un plugin n'est
 essayé qu'une fois. Tant qu'il n'a pas de verdict, rig._drop_quarantined le retire du rig EN LE DISANT, et blockstatus
 le montre « being tested ». Windows/macOS : inchangés (pas de banc) — le contrat est celui de Linux."""
+import contextlib
 import json
 import os
 from pathlib import Path
@@ -53,6 +54,20 @@ def applies():
     return sys.platform.startswith("linux") and os.environ.get("GOLEM_VST_TRIAL", "1") != "0"
 
 
+def _engine_id():
+    with contextlib.suppress(Exception):
+        from . import engine
+        return engine.get().id
+    return "reaper"
+
+
+def _key(plugin):
+    """La clé du verdict : UN VERDICT PAR MOTEUR. Un plugin sain dans REAPER peut figer Ardour, et l'inverse — le
+    verdict de REAPER garde sa clé d'origine (le nom du plugin), celui du Golem Engine la sienne."""
+    plugin = str(plugin or "")
+    return ("golem-engine|" + plugin) if plugin and _engine_id() == "ardour" else plugin
+
+
 def _read():
     try:
         with open(TRIALS, encoding="utf-8") as f:
@@ -64,7 +79,7 @@ def _read():
 
 def verdict(plugin):
     """{ok, at, why?, stall_ms?} si ce plugin a déjà été essayé ici, sinon None."""
-    v = _read().get(str(plugin or ""))
+    v = _read().get(_key(plugin))
     return v if isinstance(v, dict) and "ok" in v else None
 
 
@@ -89,7 +104,7 @@ def _record(plugin, ok, why=None, **extra):
     from .store import _write_json_atomic
     with _lock:
         d = _read()
-        d[plugin] = {"ok": bool(ok), "at": int(time.time()), **({"why": why} if why else {}), **extra}
+        d[_key(plugin)] = {"ok": bool(ok), "at": int(time.time()), **({"why": why} if why else {}), **extra}
         _write_json_atomic(TRIALS, d, indent=1)
 
 
@@ -215,6 +230,8 @@ def _display():
 
 def trial(plugin, timeout_s=None):
     """Rend (ok, why, extra). Lève une exception si le banc n'a pas pu mesurer (REAPER absent, pas d'écran)."""
+    if _engine_id() == "ardour":
+        return trial_engine(plugin, timeout_s)
     from .plugin_capture import _launch, _stop
     display = _display()
     if not display:
@@ -236,6 +253,78 @@ def trial(plugin, timeout_s=None):
             return _watch(proc, trace, timeout_s or LOAD_TIMEOUT_S)
         finally:
             _stop(proc)
+
+
+def trial_engine(plugin, timeout_s=None, cycles=CYCLES, lua=None, script=None):
+    """Le même banc sur le GOLEM ENGINE (docs/ardour-plan.md §7d) : un second moteur, dans un dossier jetable, sur la
+    carte factice, sans surface OSC ni sortie — celui du rack n'est pas touché. Son veilleur pose le plugin sur une
+    piste, l'éteint et le rallume, et mesure ce que l'horloge audio a perdu à chaque geste (action `plugin_trial`).
+    Rend (ok, why, extra) ; lève une exception si rien n'a pu être mesuré (moteur absent, plugin introuvable)."""
+    import signal
+    import subprocess
+    from .engine import ardour as A
+    script = script or os.path.join(A.ENGINE_DIR, "golem", "engine", "run.sh")
+    if not os.path.isfile(script):
+        raise RuntimeError("Golem Engine not found")
+    work = tempfile.mkdtemp(prefix="golem-vst-trial-")
+    presets = os.path.join(work, "presets")
+    os.makedirs(presets)
+    out, wlog = os.path.join(presets, ".trial.json"), os.path.join(presets, ".watch.log")
+    env = {**os.environ, "GOLEM_ENGINE_NO_OSC": "1", "GOLEM_ENGINE_NO_OUTPUT": "1"}
+    with open(os.path.join(work, "engine.log"), "w") as logf:
+        proc = subprocess.Popen(["bash", script, work, os.path.join(work, "session"), "None (Dummy)", ""],
+                                start_new_session=True, stdout=logf, stderr=subprocess.STDOUT, env=env)
+
+    def read(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                return f.read()
+        except OSError:
+            return ""
+    try:
+        t0 = time.monotonic()
+        while "démarré." not in read(wlog):               # le veilleur lit ses commandes
+            if proc.poll() is not None:
+                raise RuntimeError("the test engine did not start")
+            if time.monotonic() - t0 > (timeout_s or LOAD_TIMEOUT_S):
+                raise RuntimeError("the test engine did not start in time")
+            time.sleep(0.2)
+        tmp = os.path.join(presets, ".command.json.tmp")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({"action": "plugin_trial", "plugin": plugin, "out": out, "cycles": cycles, "seq": int(time.time() * 1000),
+                       **({"lua": lua} if lua else {})}, f)
+        os.replace(tmp, os.path.join(presets, ".command.json"))
+        last, moved, t1 = None, time.monotonic(), time.monotonic()
+        while True:
+            text = read(out)
+            try:
+                st = json.loads(text) if text else {}
+            except ValueError:
+                st = {}
+            if st.get("error"):
+                raise RuntimeError(st["error"])               # introuvable, moteur sans audio : rien n'est jugé
+            if st.get("done"):
+                stall = max(0, int(st.get("stall_ms") or 0) - int(st.get("noise_ms") or 0))
+                extra = {"stall_ms": stall, "engine": "golem-engine"}
+                if stall > STALL_MS:
+                    return False, f"stopped the audio engine for {stall} ms when switched on or off", extra
+                return True, None, extra
+            if proc.poll() is not None:
+                return False, "crashed the audio engine", {"at": st.get("step") or "start", "engine": "golem-engine"}
+            if text != last:
+                last, moved = text, time.monotonic()
+            now = time.monotonic()
+            # la trace n'avance plus : le veilleur est bloqué dans le geste en cours (le chargement a droit à son délai)
+            limit = (timeout_s or LOAD_TIMEOUT_S) if (st.get("step") in (None, "load")) else FROZEN_S
+            if now - moved > limit or now - t1 > (timeout_s or LOAD_TIMEOUT_S) + 120:
+                return False, "froze the audio engine", {"at": st.get("step") or "start", "engine": "golem-engine"}
+            time.sleep(0.1)
+    finally:
+        with contextlib.suppress(OSError):
+            os.killpg(proc.pid, signal.SIGKILL)
+        with contextlib.suppress(Exception):
+            proc.wait(timeout=5)
+        shutil.rmtree(work, ignore_errors=True)
 
 
 def _watch(proc, trace, load_timeout):

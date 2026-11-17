@@ -31,6 +31,16 @@
       }
      },
      {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8•",
+       "feedback": 45,
+       "mix": 24
+      }
+     },
+     {
       "id": "comp",
       "type": "comp",
       "params": {
@@ -52,26 +62,33 @@
     {
      "id": "st-keys-pads-1-A",
      "name": "Bass & Beat",
-     "blocks": {},
+     "blocks": {
+      "dly": false,
+      "pads": true
+     },
      "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-pads-1-B",
      "name": "Bass Only",
-     "blocks": {},
-     "params": {
-      "pads": {}
+     "blocks": {
+      "dly": false,
+      "pads": false
      },
+     "params": {},
      "branches": {}
     },
     {
      "id": "st-keys-pads-1-C",
      "name": "Filtered",
-     "blocks": {},
+     "blocks": {
+      "dly": true,
+      "pads": true
+     },
      "params": {
       "vital": {
-       "fcut": 0.35
+       "fcut": 0.15
       }
      },
      "branches": {}
@@ -79,10 +96,19 @@
     {
      "id": "st-keys-pads-1-D",
      "name": "Big Drop",
-     "blocks": {},
+     "blocks": {
+      "dly": false,
+      "pads": true
+     },
      "params": {
       "vital": {
-       "fcut": 0.8
+       "fcut": 1.0,
+       "transpose": -12,
+       "vol": 0.75
+      },
+      "comp": {
+       "ratio": 6,
+       "makeup": 4
       }
      },
      "branches": {}
@@ -104,80 +130,79 @@
     "pre": [
      {
       "id": "gate",
-      "type": "gate",
       "params": {
-       "thresh": -60,
-       "release": 120
-      }
+       "release": 120,
+       "thresh": -60
+      },
+      "type": "gate"
      },
      {
       "id": "klon",
-      "type": "pedal-nam",
       "label": "Klon Centaur",
-      "ref": "2599",
       "model": "419209",
       "params": {
        "input": 0,
        "output": -2
       },
+      "ref": "2599",
+      "type": "pedal-nam",
       "foot": 6
-     }
-    ],
-    "split": null,
-    "post": [
+     },
      {
       "id": "drii",
-      "type": "amp",
       "label": "Fender Deluxe Reverb II",
-      "ref": "6237",
       "model": "418153",
       "params": {
        "input": -2,
        "output": 0
-      }
+      },
+      "ref": "6237",
+      "type": "amp"
      },
      {
       "id": "swell",
-      "type": "swell",
       "params": {
        "rise": 600,
        "sens": 50
-      }
+      },
+      "type": "swell"
      },
      {
       "id": "chorus",
-      "type": "chorus",
       "params": {
-       "profile": "Guitar Clean",
-       "mode": "Classic",
-       "rate": 0.6,
        "depth": 4,
-       "mix": 0.35
-      }
+       "mix": 0.35,
+       "mode": "Classic",
+       "profile": "Guitar Clean",
+       "rate": 0.6
+      },
+      "type": "chorus"
      },
      {
-      "id": "dly",
-      "type": "delay",
+      "id": "dly-2",
       "params": {
-       "model": "Digital",
-       "time": "1/8•",
        "feedback": 38,
-       "mix": 20
+       "mix": 20,
+       "model": "Digital",
+       "time": "1/8•"
       },
+      "type": "delay",
       "foot": 7
      },
      {
       "id": "verb",
-      "type": "reverb",
       "params": {
        "algo": "Hall",
-       "mix": 22,
        "decay": 2.2,
-       "size": 32,
-       "hicut": 7000
-      }
+       "hicut": 7000,
+       "mix": 22,
+       "size": 32
+      },
+      "type": "reverb"
      }
-    ]
+    ],
+    "split": null,
+    "post": []
    },
    "midi": false,
    "in_role": "guitar",
@@ -187,9 +212,9 @@
      "id": "st-guitar-1-A",
      "name": "Jangle",
      "blocks": {
+      "chorus": true,
       "klon": false,
-      "swell": false,
-      "chorus": true
+      "swell": false
      },
      "params": {},
      "branches": {}
@@ -198,14 +223,14 @@
      "id": "st-guitar-1-B",
      "name": "Dotted Echo",
      "blocks": {
+      "chorus": false,
       "klon": false,
-      "swell": false,
-      "chorus": false
+      "swell": false
      },
      "params": {
-      "dly": {
-       "mix": 26,
-       "feedback": 45
+      "dly-2": {
+       "feedback": 45,
+       "mix": 26
       }
      },
      "branches": {}
@@ -214,12 +239,12 @@
      "id": "st-guitar-1-C",
      "name": "Klon Push",
      "blocks": {
+      "chorus": false,
       "klon": true,
-      "swell": false,
-      "chorus": false
+      "swell": false
      },
      "params": {
-      "dly": {
+      "dly-2": {
        "mix": 12
       }
      },
@@ -229,14 +254,14 @@
      "id": "st-guitar-1-D",
      "name": "Swell Pad",
      "blocks": {
+      "chorus": true,
       "klon": false,
-      "swell": true,
-      "chorus": true
+      "swell": true
      },
      "params": {
       "verb": {
-       "mix": 34,
-       "decay": 3.4
+       "decay": 3.4,
+       "mix": 34
       }
      },
      "branches": {}
@@ -245,9 +270,9 @@
      "id": "st-guitar-1-E",
      "name": "Lead Out",
      "blocks": {
+      "chorus": true,
       "klon": true,
-      "swell": false,
-      "chorus": true
+      "swell": false
      },
      "params": {},
      "branches": {}
@@ -318,7 +343,7 @@
       "foot": 8
      },
      {
-      "id": "dly-2",
+      "id": "dly-3",
       "type": "delay",
       "params": {
        "model": "Tape",
@@ -349,6 +374,7 @@
      "id": "st-voice-1-A",
      "name": "Double",
      "blocks": {
+      "dly-3": false,
       "double": true
      },
      "params": {},
@@ -358,6 +384,7 @@
      "id": "st-voice-1-B",
      "name": "Single",
      "blocks": {
+      "dly-3": false,
       "double": false
      },
      "params": {},
@@ -367,7 +394,8 @@
      "id": "st-voice-1-C",
      "name": "Slap",
      "blocks": {
-      "dly-2": true
+      "dly-3": true,
+      "double": false
      },
      "params": {},
      "branches": {}
@@ -376,6 +404,7 @@
      "id": "st-voice-1-D",
      "name": "Shout",
      "blocks": {
+      "dly-3": false,
       "double": true
      },
      "params": {
@@ -397,9 +426,12 @@
    "id": "A",
    "name": "Beat",
    "blocks": {
+    "dly": false,
+    "pads": true,
+    "chorus": true,
     "klon": false,
     "swell": false,
-    "chorus": true,
+    "dly-3": false,
     "double": false
    },
    "params": {},
@@ -420,15 +452,18 @@
    "id": "B",
    "name": "Layer",
    "blocks": {
+    "dly": false,
+    "pads": true,
+    "chorus": false,
     "klon": false,
     "swell": false,
-    "chorus": false,
+    "dly-3": false,
     "double": true
    },
    "params": {
-    "dly": {
-     "mix": 26,
-     "feedback": 45
+    "dly-2": {
+     "feedback": 45,
+     "mix": 26
     }
    },
    "branches": {},
@@ -448,16 +483,25 @@
    "id": "C",
    "name": "Push",
    "blocks": {
+    "dly": false,
+    "pads": true,
+    "chorus": false,
     "klon": true,
     "swell": false,
-    "chorus": false,
+    "dly-3": false,
     "double": true
    },
    "params": {
     "vital": {
-     "fcut": 0.8
+     "fcut": 1.0,
+     "transpose": -12,
+     "vol": 0.75
     },
-    "dly": {
+    "comp": {
+     "ratio": 6,
+     "makeup": 4
+    },
+    "dly-2": {
      "mix": 12
     },
     "comp-2": {
@@ -482,18 +526,21 @@
    "id": "D",
    "name": "Breathe",
    "blocks": {
+    "dly": true,
+    "pads": true,
+    "chorus": true,
     "klon": false,
     "swell": true,
-    "chorus": true,
-    "dly-2": true
+    "dly-3": true,
+    "double": false
    },
    "params": {
     "vital": {
-     "fcut": 0.35
+     "fcut": 0.15
     },
     "verb": {
-     "mix": 34,
-     "decay": 3.4
+     "decay": 3.4,
+     "mix": 34
     }
    },
    "branches": {},

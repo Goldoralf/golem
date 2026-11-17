@@ -109,7 +109,10 @@ def test_le_moteur_garde_le_morceau_sur_un_rappel_du_meme_preset_sans_ligne():
     """Lu dans la source : do_recall pilote Reaper. La règle : seul un AUTRE preset ou une vraie ligne change le morceau."""
     src = (ROOT / "bridge/recall.py").read_text(encoding="utf8")
     body = src[src.index("def do_recall(pid, scene, line=None)"):src.index("def do_recall_slot")]
-    assert "if line is not None or _preset_changed or not state.song:" in body
+    assert "if (line is not None or _preset_changed or not state.song) and not _for_this:" in body
+    # et le morceau posé par ▶ Play (page Songs) POUR le preset qu'on rappelle reste, même si le preset change
+    # (2026-11-17 : sans ça « no arrangement in this preset », trouvé par tools/check-rig-materialize.py --arrangement)
+    assert 'state.song.get("band_song") and state.song.get("preset") == p["id"]' in body
 
 
 # ── UN REDÉMARRAGE DU BRIDGE GARDE LE MORCEAU (2026-10-09) ──────────────────────────────────────

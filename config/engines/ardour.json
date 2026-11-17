@@ -10,7 +10,7 @@
   "selectable": true,
   "unavailable_reason": "Coming soon",
   "platforms": {
-    "linux": {"available": true, "requires": {"env": "GOLEM_ENGINE_DIR", "default": "~/golem-engine", "file": "golem/engine/run.sh", "reason": "Golem Engine is not built on this machine"}},
+    "linux": {"available": true, "requires": {"env": "GOLEM_ENGINE_DIR", "default": ["~/golem-engine", "~/opt/golem-engine"], "file": "golem/engine/run.sh", "reason": "Golem Engine is not built on this machine"}},
     "win32": {"available": false, "reason": "Linux only for now"},
     "darwin": {"available": false, "reason": "Linux only for now"}
   },

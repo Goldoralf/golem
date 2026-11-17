@@ -99,7 +99,10 @@ LV2_FILES = ("golem-capture.so", "manifest.ttl", "golem-capture.ttl")
 def engine_present():
     """Le Golem Engine est-il sur cette machine ? (son lanceur ; GOLEM_ENGINE_DIR comme bridge/engine/ardour.py)"""
     import os
-    return (Path(os.environ.get("GOLEM_ENGINE_DIR") or Path.home() / "golem-engine") / "golem" / "engine" / "run.sh").is_file()
+    if os.environ.get("GOLEM_ENGINE_DIR"):
+        return (Path(os.environ["GOLEM_ENGINE_DIR"]) / "golem" / "engine" / "run.sh").is_file()
+    # un arbre de dev ou le paquet installé (provision/golem_engine.py engine_dir)
+    return any((Path.home() / d / "golem" / "engine" / "run.sh").is_file() for d in ("golem-engine", "opt/golem-engine"))
 
 
 def install_lv2_bundled(destination=None, force=False):

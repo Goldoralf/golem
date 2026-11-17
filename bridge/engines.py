@@ -62,8 +62,13 @@ def _requires_ok(req):
     que là où il est construit."""
     if not req:
         return True
-    base = os.environ.get(req.get("env") or "") or os.path.expanduser(req.get("default") or "~")
-    return os.path.isfile(os.path.join(base, req.get("file") or ""))
+    # `default` : un dossier, ou plusieurs (un arbre de dev puis le paquet installé) — le premier qui porte le fichier
+    if os.environ.get(req.get("env") or ""):
+        bases = [os.environ[req["env"]]]
+    else:
+        d = req.get("default") or "~"
+        bases = [os.path.expanduser(x) for x in (d if isinstance(d, list) else [d])]
+    return any(os.path.isfile(os.path.join(b, req.get("file") or "")) for b in bases)
 
 
 def availability(desc, platform=None):

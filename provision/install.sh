@@ -172,6 +172,13 @@ log "golem-fx (les effets de golem — VST3 précompilés)"
 "$HERE/install-golem-fx.sh" || soft_fail golem-fx "golem-fx NON installé — les blocs gardent leurs plugins d'origine" \
   "golem's own effects (golem-fx) could not be installed — the blocks play their previous plugins. Tap Retry."
 
+# Le Golem Engine (2026-11-17, docs/install-v2.md §1) : le moteur audio de golem, TOUJOURS posé — que REAPER soit coché
+# ou non. Paquet autonome épinglé, dans ~/opt/golem-engine, sans sudo. Non fatal : sans lui golem tourne sur REAPER.
+log "Golem Engine (le moteur audio de golem — précompilé)"
+engine_rc=0; "$HERE/install-golem-engine.sh" || engine_rc=$?
+[ "$engine_rc" = 1 ] && soft_fail golem-engine "Golem Engine NON installé — golem tourne sur REAPER s'il est là" \
+  "golem's own audio engine could not be installed — golem runs on REAPER if it is installed. Tap Retry."
+
 # SWS : RETIRÉ de l'install (2026-09-22). Il était posé « requis par les scènes » — faux : le moteur
 # de scènes est golem_rig (union materialization), LiveConfigs n'a jamais servi (audit 2026-09-21), et
 # le dernier appel SWS du moteur (destination d'un send, rec-follow) passe désormais par l'API native

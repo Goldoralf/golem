@@ -101,6 +101,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 |---|---|---|
 | [platforms.md](platforms.md) | PARTLY CODED | Linux, Windows, macOS: what works where |
 | [installer.md](installer.md) | CODED | One-line bootstrap, graphical installer, `golem desktop` / `golem server` |
+| [install-v2.md](install-v2.md) | FIXED, lot 1 CODED | The next installer: Golem Engine always installed, REAPER as a checkbox, accounts on the first pages, the engine as a package |
 | [uninstall.md](uninstall.md) | FIXED, CODED on Linux (VM test pending) | Install receipt, uninstall engine with dry run, graphical uninstaller, full backup outside the install folder, VM test |
 | [audio-engine-choice.md](audio-engine-choice.md) | PARTLY CODED | Engine descriptors and the local engine choice |
 | [ardour-engine.md](ardour-engine.md) | PROPOSED | A free engine built from Ardour, next to REAPER |

@@ -79,7 +79,8 @@ def phases(S):
 # le ↻ Try again d'un manque non fatal (`soft_fail <id>` dans provision/install.sh) : le script qui l'installe, seul
 RETRY = {"zconvo": ("sudo", "install-zconvo.sh"), "nam": ("sudo", "install-nam.sh"), "sfizz": ("sudo", "install-sfizz.sh"),
          "prisma": ("sudo", "install-prisma.sh"), "spectral": ("sudo", "install-spectral.sh"),
-         "golem-fx": ("user", "install-golem-fx.sh")}          # golem-fx : dans ~/.vst3, sans sudo
+         "golem-fx": ("user", "install-golem-fx.sh"),          # golem-fx : dans ~/.vst3, sans sudo
+         "golem-engine": ("user", "install-golem-engine.sh")}  # le moteur : dans ~/opt/golem-engine, sans sudo
 
 
 def run_retry(rid, ctx):

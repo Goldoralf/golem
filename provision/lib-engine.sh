@@ -23,7 +23,12 @@ golem_engine_pid() {
 # lance le Golem Engine (session, backend, carte : GOLEM_ENGINE_SESSION / _BACKEND / _DEVICE), journal /tmp/golem-engine.log
 start_golem_engine() {
   local here="${1:?racine golem}"
-  local dir="${GOLEM_ENGINE_DIR:-$HOME/golem-engine}"
+  # GOLEM_ENGINE_DIR, sinon un arbre de dev, sinon le paquet installé (provision/golem_engine.py engine_dir)
+  local dir="${GOLEM_ENGINE_DIR:-}"
+  if [ -z "$dir" ]; then
+    dir="$HOME/golem-engine"
+    [ -f "$dir/golem/engine/run.sh" ] || { [ -f "$HOME/opt/golem-engine/golem/engine/run.sh" ] && dir="$HOME/opt/golem-engine"; }
+  fi
   # la session vit DANS golem (sets/, état local comme sets/golem-set.rpp) : rien hors de l'install, rien à noter au reçu
   local session="${GOLEM_ENGINE_SESSION:-$here/sets/golem-engine}"
   local log="${GOLEM_ENGINE_LOG:-/tmp/golem-engine.log}"

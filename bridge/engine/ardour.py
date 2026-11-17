@@ -26,7 +26,16 @@ from .base import EngineAdapter
 
 log = logging.getLogger("golem.engine")
 
-ENGINE_DIR = os.environ.get("GOLEM_ENGINE_DIR", os.path.expanduser("~/golem-engine"))
+def _engine_dir():
+    """GOLEM_ENGINE_DIR, sinon un arbre de dev (~/golem-engine), sinon le paquet installé (~/opt/golem-engine) — la
+    même règle que provision/golem_engine.py engine_dir et provision/lib-engine.sh (docs/install-v2.md §1)."""
+    if os.environ.get("GOLEM_ENGINE_DIR"):
+        return os.environ["GOLEM_ENGINE_DIR"]
+    cands = [os.path.expanduser("~/golem-engine"), os.path.expanduser("~/opt/golem-engine")]
+    return next((c for c in cands if os.path.isfile(os.path.join(c, "golem", "engine", "run.sh"))), cands[0])
+
+
+ENGINE_DIR = _engine_dir()
 OSC_PORT = int(os.environ.get("GOLEM_ENGINE_OSC", "3819"))
 def card_device():
     """Le nom de la carte ACTIVE de golem (config/cards/<carte>.json, la même que REAPER ouvre) — le veilleur la retrouve
@@ -803,6 +812,13 @@ class ArdourEngine(EngineAdapter):
 
     def version(self):
         if self._version is None:
+            # un moteur INSTALLÉ (le paquet de golem-engine/golem/tools/bundle.py) porte sa version dans un fichier ;
+            # un arbre de dev la dit par git
+            with contextlib.suppress(OSError):
+                with open(os.path.join(ENGINE_DIR, "VERSION"), encoding="utf-8") as f:
+                    self._version = f.read().strip() or None
+            if self._version:
+                return self._version
             try:
                 out = subprocess.run(["git", "-C", ENGINE_DIR, "describe", "--tags", "--always"],
                                      capture_output=True, text=True, timeout=3).stdout.strip()

@@ -341,6 +341,10 @@ def press_page(page, base, target, size, settle_ms, writes, keys, log, dialogs=N
     url = base + ("/app/" + target if target.startswith("#") else target)
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
+    # CHAQUE PAGE FRAÎCHE REPART SANS MÉMOIRE DU NAVIGATEUR : un filtre que l'app retient (« Factory / Mine », partagé
+    # par Presets, Patches et Setlists) posé par un appui sur une page cachait les lignes de la suivante — les patches de
+    # test disparaissaient après les appuis de la page Presets, « control not found » en CI (depuis le 2026-11-16).
+    page.add_init_script("try { localStorage.clear(); sessionStorage.clear(); } catch (e) {}")
 
     def fresh():
         # un goto vers la même page avec un autre hash ne RECHARGE pas le document (navigation dans le même document :
@@ -359,7 +363,10 @@ def press_page(page, base, target, size, settle_ms, writes, keys, log, dialogs=N
         del writes[:]; del errors[:]; del dialogs[:]
         hash0, open0 = page.evaluate("() => location.hash"), page.evaluate(_OPEN_JS)   # juste avant l'appui
         found = page.evaluate(_FIND_JS, [PRESSABLE, key])
-        for _ in range(3):                                   # une liste qui se remplit après le chargement : on lui laisse une seconde
+        # une liste qui se remplit après le chargement : on lui laisse le temps. 2 s ne suffisaient plus à la page
+        # Patches depuis l'usine à 52 patches (2026-11-16) : en CI ses deux premiers appuis étaient « control not
+        # found », le troisième passait — la liste venait d'arriver.
+        for _ in range(12):
             if found:
                 break
             page.wait_for_timeout(700)

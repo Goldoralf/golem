@@ -10,6 +10,12 @@ from bridge import config as C
 from bridge import sound_preview as S
 
 
+# Ces cinq-là lisent les PACKS (library/dx7, library/sfz) : téléchargés à l'installation, jamais dans le dépôt — la CI
+# ne les a pas, et ils y échouaient depuis leur écriture (2026-11-14). Sautés là où les packs manquent.
+_PACKS = os.path.isfile(os.path.join(S.DX7_DIR, "epiano1.syx")) and bool(S.piano_variants())
+needs_packs = pytest.mark.skipif(not _PACKS, reason="sound packs (library/dx7, library/sfz) are not installed here")
+
+
 @pytest.fixture(autouse=True)
 def _no_sync_state_write(monkeypatch):
     # garde : rien ici n'écrit l'état de la synchro des tones (les sha256 se mémoïsent en mémoire, 2026-11-14)
@@ -17,6 +23,7 @@ def _no_sync_state_write(monkeypatch):
     monkeypatch.setattr(tones_sync, "_save_state", lambda st: (_ for _ in ()).throw(AssertionError("sync state written")))
 
 
+@needs_packs
 def test_the_piano_is_its_variants_never_the_guitar_sfz():
     v = S.piano_variants()
     assert v and all("piano" in os.path.relpath(p, S.SFZ_DIR).lower() for p in v.values())
@@ -25,6 +32,7 @@ def test_the_piano_is_its_variants_never_the_guitar_sfz():
     assert rigstatus.keys_instruments()[0]["items"] == list(v)        # l'adresse piano:<item> chez golem.fm
 
 
+@needs_packs
 def test_factory_sounds_are_the_variants_a_curated_dozen_the_organ_and_every_factory_vital():
     from bridge import vital
     fs = S.factory_sounds()
@@ -35,6 +43,7 @@ def test_factory_sounds_are_the_variants_a_curated_dozen_the_organ_and_every_fac
     assert len([s for s in fs if s.startswith("vital:")]) == len([p for p in vital.list_presets() if p["pack"] == "factory"])
 
 
+@needs_packs
 def test_the_reference_follows_the_nature_of_the_sound(monkeypatch):
     assert S.describe("ep:piano1/10")["refs"] == ["keys/piano"]       # CP 70 B : un piano acoustique
     assert S.describe("ep:epiano2/22")["refs"] == ["keys/epiano"]     # N.Y.RHODES
@@ -72,6 +81,7 @@ def test_a_rendered_sound_is_up_to_date_and_reported_to_golem_fm(monkeypatch, tm
                              "clips": {"keys/organ": {"sha256": "f" * 64, "seconds": 9.5}}}]
 
 
+@needs_packs
 def test_the_sound_alone_patch_holds_only_the_instrument():
     doc = S._doc(S.describe("ep:rom1a/10"))
     lane = doc["lanes"][0]
@@ -89,6 +99,7 @@ def test_vital_assets_carry_what_the_preset_says(tmp_path):
                  "macros": ["Cutoff", "Macro 2", "Macro 3", "Macro 4"]}
 
 
+@needs_packs
 def test_the_keys_catalogue_lists_every_sound_with_its_demo_state(monkeypatch, tmp_path):
     monkeypatch.setattr(C, "PREVIEWS_DIR", str(tmp_path))                 # aucune démo rendue
     c = S.catalog()

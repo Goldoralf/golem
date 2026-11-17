@@ -119,12 +119,15 @@ def test_les_commandes_passent_par_le_slot_et_sont_accusees(slot):
 
 
 def test_le_pid_est_celui_du_process_moteur(slot, monkeypatch):
-    p = subprocess.Popen(["sleep", "30"])
+    # un process dont le nom est sûr : `sleep` peut être un binaire multi-appel (coreutils) dont /proc/…/cmdline ne
+    # commence pas par « sleep » — le test échouait en CI (2026-11-17)
+    import sys
+    p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
         (slot / ".engine.pid").write_text(str(p.pid))
         e = A.ArdourEngine(link=object())
         assert e.pid() is None                       # un process qui n'est pas luasession : pas le moteur
-        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", ("sleep",))
+        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", (os.path.basename(sys.executable),))
         assert e.pid() == p.pid and e.running()
         assert e.stop(timeout=3) and e.pid() is None
     finally:

@@ -43,10 +43,12 @@ proposed to Ardour (tracker / pull request) and dropped from our branch the day 
 - A **separate public repository** (name decided with D1), GPL, with upstream Ardour as a remote.
   `golem` never vendors Ardour's sources; it pins a **binary** of a tagged build, as it does with REAPER.
 - `upstream/*` mirrors upstream; we build **only from release tags** (`9.9`, `9.10`…), never from master.
-- Our work = `golem/9.9`: tag `9.9` + overlay commit + patch commits. A release of our engine is a tag
-  `golem-9.9-g1`, `-g2`… — the exact sources of each shipped binary (GPL obligation).
-- **Update** to an upstream release: `git rebase --onto 9.10 9.9 golem/9.9` → `golem/9.10`, review with
-  `git range-diff`, rebuild, run the full bench (§4). The previous branch stays: rollback = previous binary.
+- Our work = the branch **`main`** (decided by the maintainer on 2026-11-17; it was `golem/9.9` until then, kept
+  as it was that day): Ardour's tag `9.9` + overlay commit + patch commits. The repository is **not a GitHub fork**:
+  Ardour is only a remote we follow. A **release of our engine is a tag on `main`** (`golem-engine-<version>`) —
+  the exact sources of each shipped binary (GPL obligation), what `golem-binaries` builds and golem pins.
+- **Update** to an upstream release: **merge** Ardour's tag (`9.10`…) into `main` — never a rebase, `main` is never
+  rewritten — review, rebuild, run the full bench (§4). Rollback = the previous tag's binary.
 - **Early warning**: a weekly CI job rebases our branch on upstream master and builds. A red job tells us
   months before a release that a patch will conflict. It never ships anything.
 
@@ -306,7 +308,7 @@ outputs).
   every load, not trust the file.
 - Not measured yet: round-trip latency (needs a cable loop), card unplug, 24 h endurance.
 
-**2026-11-10 — fork published.** `github.com/Goldoralf/golem-engine` (public), default branch `golem/9.9`
+**2026-11-10 — fork published.** `github.com/Goldoralf/golem-engine` (public), default branch `golem/9.9` (`main` since 2026-11-17)
 = tag 9.9 + 3 commits: `[build]` overlay hook, `[brand] [upstreamable]` `PROGRAM_SLUG` (binaries
 `golem-engine9-*`, config `~/.config/golem-engine9`; renders bit-identical to before the patch), the overlay.
 Remotes: `origin` = our fork, `upstream` = Ardour.

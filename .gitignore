@@ -315,3 +315,6 @@ library/anim-packs/
 /.golem-release
 /.golem-files
 /.golem-pip-pending
+
+# les SFZ de pads que le moteur écrit au rappel d un preset (chemins absolus de la machine) : état local
+reaper/FXChains/*.pads.sfz

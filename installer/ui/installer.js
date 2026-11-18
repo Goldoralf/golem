@@ -15,7 +15,7 @@ const freeLicense = l => l ? 'free · ' + l.replace(/-or-later$/i, '').toUpperCa
 const mb = n => n >= 1024 ? (n / 1024).toFixed(1) + ' GB' : Math.round(n) + ' MB';
 
 const SCREENS = [
-  ['before', 'Before you start'], ['play', 'Instrument'], ['checks', 'Checks'], ['engine', 'Audio engine'], ['reaper', 'Reaper'], ['where', 'Folder'], ['size', 'Size'],
+  ['before', 'Before you start'], ['play', 'Instrument'], ['checks', 'Checks'], ['accounts', 'Accounts'], ['engine', 'Audio engine'], ['reaper', 'Reaper'], ['where', 'Folder'], ['size', 'Size'],
   ['install', 'Install'], ['connect', 'Connect'], ['done', 'Done'],
 ];
 // UNE installation, DEUX usages (docs/installer.md §4, FIXÉ 2026-10-16) : on ne choisit plus rien ici.
@@ -434,12 +434,38 @@ function App() {
   const uac = P.privilege === 'uac';
 
   const refresh = () => api('/api/state').then(setSt).catch(() => null);
+  // LES COMPTES D'ABORD (docs/install-v2.md, lots 4-5) : golem.fm par un aller-retour (la fenêtre part sur golem.fm et
+  // revient par /back), TONE3000 par le relais de golem.fm. Le serveur de l'installateur sonde ; l'écran lit des états.
+  const [early, setEarly] = useState(null);
+  const earlyRefresh = () => api('/api/early').then(setEarly).catch(() => null);
+  const pairGo = async () => {
+    const d = await api('/api/early/pair', {});
+    setEarly(d);
+    const url = d && d.pair && d.pair.phase === 'waiting' && d.pair.approve_url;
+    if (!url) return;
+    try { sessionStorage.setItem('golem-installer-token', TOKEN); } catch (e) { /* /back dira de revenir à cette fenêtre */ }
+    if (st && st.dry) return;                              // à blanc : rien ne quitte la page, l'appairage est simulé
+    location.href = url;
+  };
+  const t3kGo = async () => {
+    const d = await api('/api/early/t3k', {});
+    setEarly(d);
+    if (d && d.t3k && d.t3k.auth_url && !(st && st.dry)) open(d.t3k.auth_url);
+  };
+  useEffect(() => {
+    if (cur !== 'accounts') return;
+    earlyRefresh();
+    const t = setInterval(earlyRefresh, 2000);
+    return () => clearInterval(t);
+  }, [cur]);
   // une fenêtre ROUVERTE pendant ou après l'installation revient sur l'écran Install (VM 2026-10-23 : fermée par
   // erreur, elle repartait sur « Before you start » et il fallait recliquer tous les Next pour retrouver le décompte)
   useEffect(() => { api('/api/state').then(s => {
     setSt(s);
     if (s && s.mode !== 'uninstall' && (s.running || s.done || (s.steps || []).some(x => x.state !== 'pending')))
       setI(SCREENS.findIndex(([id]) => id === 'install'));
+    // le retour de golem.fm (/back) : sur l'écran des comptes
+    else if (new URLSearchParams(location.search).get('back')) setI(SCREENS.findIndex(([id]) => id === 'accounts'));
   }).catch(() => null); }, []);
   useEffect(() => {
     if (cur === 'checks') api('/api/checks').then(d => setChecks(d.checks));
@@ -479,8 +505,9 @@ function App() {
     before: true,
     play: !!st.instrument,
     checks: checks && !blocking,
+    accounts: true,                                        // aucun compte n'est obligatoire (décision 5)
     engine: !!st.engine,
-    reaper: reaper && (reaper.found || reaper.job === 'ok'),
+    reaper: st.engine !== 'reaper' || (reaper && (reaper.found || reaper.job === 'ok')),
     where: !!(dir ?? st.dir),
     size: size && size.free_mb != null && total(size, st.packs) <= size.free_mb,
     install: st.done,
@@ -495,6 +522,11 @@ function App() {
       // une clé tapée puis « Finish » sans « Save » : on l'enregistre, on ne la perd pas en silence
       if (cur === 'connect' && U.connect === 'form' && !(await saveKeys())) return;
     }
+    // l'écran REAPER n'existe que si REAPER est coché : sinon on le saute, dans les deux sens
+    // … et l'écran des comptes seulement là où l'installation sait garder ce qu'on y fait (U.early_accounts)
+    const skip = k => SCREENS[k] && ((SCREENS[k][0] === 'reaper' && st.engine !== 'reaper')
+      || (SCREENS[k][0] === 'accounts' && !U.early_accounts));
+    if (skip(n)) n += n > i ? 1 : -1;
     setI(Math.max(0, Math.min(SCREENS.length - 1, n)));
   };
   const togglePack = p => setSt({ ...st, packs: st.packs.includes(p) ? st.packs.filter(x => x !== p) : [...st.packs, p] });
@@ -608,21 +640,62 @@ function App() {
       <p class="muted">${U.checks_intro}</p>
       ${!checks ? html`<p class="muted">checking…</p>` : checks.map(c => html`<div class=${cls('chk', c.ok ? 'ok' : 'no', !c.ok && !c.blocking && 'soft')}>
         <i>${c.ok ? '✓' : c.blocking ? '⛔' : '⚠'}</i><b>${c.label}</b><span>${c.detail}</span></div>`)}`,
-    engine: () => html`
-      <h1>Audio engine <small>the engine golem drives — you can change it later in Settings ▸ System ▸ Audio Engine</small></h1>
-      ${!engines ? html`<p class="muted">reading engines…</p>` : engines.engines.map(e => {
-        const caps = e.capabilities || {};
-        const missing = engines.features.filter(f => caps[f.id] === 'no').map(f => f.label);
-        return html`<button class=${cls('pick', st.engine === e.id && 'on', !e.available && 'off')} disabled=${!e.available}
-            onClick=${() => setSt({ ...st, engine: e.id })}>
-          <div class="row"><span class="radio"></span><b>${e.name}</b>
-            ${e.license !== 'commercial' && e.by ? html`<span class="muted">${e.by}</span>` : ''}
-            ${!e.available ? html`<span class="chip">${e.reason}</span>` : ''}
-            <span class="grow"></span><span class="chip">${e.license === 'commercial' ? 'commercial' : freeLicense(e.license)}</span></div>
-          <span class="muted">${e.summary || ''}${missing.length ? ' Not available on it yet: ' + missing.join(', ') + '.' : ''}</span>
-        </button>`;
-      })}
-      <p class="muted">One engine is installed. More engines will be offered here as they become available.</p>`,
+    accounts: () => {
+      const pr = (early && early.pair) || {}, tk = (early && early.t3k) || {};
+      const paired = !!(early && early.paired), signed = !!(early && early.t3k_signed_in);
+      return html`
+      <h1>Your accounts <small>now, so your sounds download while golem installs — both are optional</small></h1>
+      <div class="card">
+        <div class="row"><b>golem.fm</b>${paired ? html`<span class="chip okchip">✓ paired${pr.name ? ' — ' + pr.name : ''}</span>` : ''}</div>
+        ${paired ? html`<p class="muted">This golem is linked to your golem.fm account: backups, sharing, the assistant, and a one-tap TONE3000 sign-in.</p>`
+        : html`<p class="muted">Backups, sharing and the assistant — and it signs this golem in to TONE3000 for you. No password: you sign in or create your account on golem.fm, and come back here.</p>
+          <div class="row"><button class="btn primary" disabled=${pr.phase === 'waiting' && !(st && st.dry)} onClick=${pairGo}>
+              ${pr.phase === 'waiting' ? '⏳ waiting for golem.fm…' : 'Continue with golem.fm →'}</button>
+            ${pr.phase === 'waiting' && pr.approve_url && !(st && st.dry) ? html`<button class="btn ghost" onClick=${() => { location.href = pr.approve_url; }}>Open golem.fm again</button>` : ''}
+            <span class="muted">${early ? early.server.replace(/^https?:\/\//, '') : ''}</span></div>
+          ${pr.error ? html`<p class="warn">${pr.error}</p>` : ''}`}
+      </div>
+      <div class="card">
+        <div class="row"><b>TONE3000</b>${signed ? html`<span class="chip okchip">✓ signed in</span>` : ''}</div>
+        ${signed ? html`<p class="muted">The amp captures of the factory sounds will download while golem installs.</p>`
+        : html`<p class="muted"><b>The amps of golem's factory sounds come from TONE3000</b> (free account). Without it they stay silent until you sign in later, in golem.</p>
+          <div class="row"><button class="btn primary" disabled=${!paired || tk.phase === 'waiting'} onClick=${t3kGo}>
+              ${tk.phase === 'waiting' ? '⏳ waiting for TONE3000…' : 'Sign in to TONE3000 ↗'}</button>
+            ${!paired ? html`<span class="muted">after golem.fm — it is what signs this golem in</span>`
+              : tk.phase === 'waiting' ? html`<span class="muted">finish in the tab that opened, then come back</span>` : ''}</div>
+          ${tk.error ? html`<p class="warn">${tk.error}</p>` : ''}`}
+      </div>
+      ${!signed ? html`<p class="muted">You can continue without: sign in later in golem, Settings ▸ Connect.</p>` : ''}`;
+    },
+    // docs/install-v2.md (2026-11-18) : le Golem Engine est TOUJOURS installé ; REAPER est une case à cocher — cochée,
+    // il est installé aussi et devient le moteur par défaut. Là où le Golem Engine n'est pas encore porté, la case est
+    // cochée d'office (golem ne s'installe jamais sans moteur) et la carte du Golem Engine dit pourquoi.
+    engine: () => {
+      if (!engines) return html`<h1>Audio engine</h1><p class="muted">reading engines…</p>`;
+      const ge = engines.engines.find(e => e.id === 'ardour'), rp = engines.engines.find(e => e.id === 'reaper');
+      const forced = !(ge && ge.available);
+      const withReaper = forced || st.engine === 'reaper';
+      const missing = e => engines.features.filter(f => (e.capabilities || {})[f.id] !== 'yes').map(f => f.label);
+      return html`
+      <h1>Audio engine <small>what plays your sound — you can change it later in Settings ▸ Engines ▸ Audio</small></h1>
+      ${ge ? html`<div class=${cls('pick', !forced && 'on', forced && 'off')} role="group" aria-label="Golem Engine">
+          <div class="row"><b>${ge.name}</b><span class="muted">${ge.by || ''}</span>
+            ${forced ? html`<span class="chip">${ge.reason || 'Not available on this system yet'}</span>`
+                     : html`<span class="chip okchip">✓ always installed</span>`}
+            <span class="grow"></span><span class="chip">${freeLicense(ge.license)}</span></div>
+          <span class="muted">${forced ? 'golem’s own engine is not ready for this system yet: REAPER is installed instead.'
+            : 'golem’s own engine: free, nothing to buy.' + (missing(ge).length ? ' Not on it yet: ' + missing(ge).join(', ') + '.' : '')
+              + (withReaper ? '' : ' It is the engine golem will use.')}</span>
+        </div>` : ''}
+      ${rp ? html`<button class=${cls('pick', withReaper && 'on')} role="checkbox" aria-checked=${withReaper} disabled=${forced || !rp.available}
+            aria-label="Also install REAPER" onClick=${() => setSt({ ...st, engine: withReaper ? 'ardour' : 'reaper' })}>
+          <div class="row"><span class=${cls('check', withReaper && 'on')}>${withReaper ? '✓' : ''}</span><b>Also install ${rp.name}</b>
+            <span class="grow"></span><span class="chip">commercial${rp.by ? ' · ' + rp.by : ''}</span></div>
+          <span class="muted">${forced ? 'REAPER is the engine golem uses on this system.'
+            : withReaper ? 'REAPER is installed too and becomes the engine golem uses. It runs fully in evaluation mode; a personal license is $60.'
+            : 'Optional. Tick it and REAPER is installed too, and becomes the engine golem uses.'}</span>
+        </button>` : ''}`;
+    },
     reaper: () => html`
       <h1>Reaper <small>the audio engine golem drives</small></h1>
       ${!reaper ? html`<p class="muted">looking for Reaper…</p>`

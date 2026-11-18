@@ -27,9 +27,12 @@ const BUF_HINT = {
 // tuile de statut : LED (ok/warn/bad, pulse si non-ok) + nom + détail + ACTION optionnelle
 // action = {label, onClick, busy, nav} — le bouton vit DANS la tuile (agir là où c'est rouge). `nav` = il ne fait
 // qu'emmener ailleurs : il reste en lecture seule ; une action (restart, boost) disparaît (edit-only, docs/shell.md §2).
-const Tile = (name, detail, state, action) => html`<div class=${cls('tile-st', state)}>
+// `extra` : une seconde commande, compacte, devant l'action (le « Auto » du boost CPU)
+const Tile = (name, detail, state, action, extra) => html`<div class=${cls('tile-st', state)}>
   <span class="tile-led"></span>
   <div class="tile-txt"><div class="tile-nm">${name}</div><div class="tile-dt">${detail}</div></div>
+  ${extra ? html`<button class=${cls('tile-act tile-act-sm edit-only', extra.on && 'on')} title=${extra.title || ''}
+    aria-label=${extra.aria || extra.label} onClick=${extra.onClick}>${extra.label}</button>` : ''}
   ${action ? html`<button class=${cls('tile-act', !action.nav && 'edit-only')} disabled=${!!action.busy}
     onClick=${action.onClick}>${action.busy ? '⏳' : action.label}</button>` : ''}
   ${!action && (state === 'bad' || state === 'warn') ? html`<span class="tile-flag">!</span>` : ''}
@@ -614,6 +617,7 @@ function DashboardPanel({ rig, admin, acts }) {
   const wsUp = !!(rig && rig.wsUp);                        // bridge = WebSocket vivant (temps réel)
   const running = !!s.reaper_running, osc = !!s.reaper_connected;
   const gov = data && data.cpu_governor;
+  const pf = data && data.perf;                          // le mode performance : {auto, on_battery, available…}
   const lat = s.latency_ms ?? (data && data.audio_latency_ms), xr = s.xruns_recent || 0;
   const desktopAudio = data && (data.platform === 'win32' || data.platform === 'darwin');
   const audioReady = !!data && (!desktopAudio || Object.prototype.hasOwnProperty.call(data, 'audio_latency_ms'));
@@ -723,18 +727,18 @@ function DashboardPanel({ rig, admin, acts }) {
           ${Tile('golem service', wsUp ? 'bridge · connected live to this screen' : 'bridge · offline', wsUp ? 'ok' : 'bad',
                  desktopAudio ? null : armed('bridge', '/api/system/bridge-restart', '↻ restart'))}
           ${/* Windows aussi (2026-10-03) : le boost y est le plan d'alimentation « Performance » (bridge/desktop_power.py) */''}
-          ${!desktopAudio || data.platform === 'win32' ? Tile('CPU boost', gov ? (gov === 'performance' ? (desktopAudio ? 'on · Performance power plan' : 'on · live ready') : 'off · turn on before playing') : '…', govState,
+          ${/* le mode performance SUIT golem (2026-11-17) : « Auto » dans la tuile — allumé tant que golem tourne, sauf sur
+               batterie ; coupé, le boost redevient manuel. Plus de ligne à part : elle faisait défiler la page (2026-11-18) */''}
+          ${!desktopAudio || data.platform === 'win32' ? Tile('CPU boost',
+                 gov ? (gov === 'performance' ? (desktopAudio ? 'on · Performance power plan' : (pf && pf.auto ? 'on · automatic' : 'on · live ready'))
+                       : (pf && pf.auto && pf.on_battery ? 'off · on battery' : 'off · turn on before playing')) : '…', govState,
                  gov ? { label: gov === 'performance' ? '↓ turn off' : '⚡ boost',
-                         onClick: () => setGov(gov !== 'performance'), busy: perf === '…' } : null) : ''}
+                         onClick: () => setGov(gov !== 'performance'), busy: perf === '…' } : null,
+                 pf && pf.available ? { label: 'Auto', on: pf.auto, aria: 'Automatic: ' + (pf.auto ? 'on' : 'off'),
+                         title: pf.auto ? 'golem keeps the boost on while it runs (never on battery) and gives it back when it stops — tap to make it manual'
+                                        : 'manual — tap to let golem keep the boost on while it runs',
+                         onClick: async () => { await post('/api/system/perf-auto', { on: !pf.auto }).catch(() => {}); reload(); } } : null) : ''}
         </div>
-        ${/* le mode performance SUIT golem (2026-11-17) : allumé tant qu'il tourne, sauf sur batterie ; l'interrupteur le coupe */''}
-        ${data && data.perf && data.perf.available ? html`<div class="dash-gov"><span class="muted">${
-            data.perf.auto ? (data.perf.on_battery ? 'CPU boost: automatic, but not on battery — it is yours to turn on'
-              : 'CPU boost: golem keeps it on while it runs, and gives it back when it stops')
-            : 'CPU boost: manual — golem does not turn it on by itself'}</span>
-          <button class="row-btn" title="while golem runs, keep the processor in performance mode (never on battery)"
-            onClick=${async () => { await post('/api/system/perf-auto', { on: !data.perf.auto }).catch(() => {}); reload(); }}>
-            Automatic: ${data.perf.auto ? 'on' : 'off'}</button></div>` : ''}
         ${perf && perf !== '…' ? html`<div class="dash-gov"><span class="perf-err" title=${perf}>✗ ${perf.includes('sudo') ? 'sudo not set up — run ./provision/setup-perf-sudo.sh once' : perf}</span></div>` : ''}
 
         <div class="dash-buf">

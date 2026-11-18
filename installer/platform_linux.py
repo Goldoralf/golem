@@ -34,7 +34,7 @@ DEFAULT_REPO = os.environ.get("GOLEM_REPO", "https://github.com/Goldoralf/golem.
 
 STEPS = [
     ("source", "Copy golem to its folder"),
-    ("system", "System packages, real-time, Reaper, plugins, bridge, sounds"),
+    ("system", "System packages, real-time, audio engine, plugins, bridge, sounds"),
     ("profile", "Launchers: golem and golem server"),
     ("start", "Start the rack"),
 ]
@@ -62,7 +62,9 @@ def phases(S):
         {"id": "source", "step": "source", "label": "Copy golem to its folder", "est": 5},
         {"id": "packages", "step": "system", "label": "System packages", "est": 150, "learn": False},   # 124 à 220 s : le miroir apt
         {"id": "realtime", "step": "system", "label": "Real-time audio and permissions", "est": 11},
-        {"id": "reaper", "step": "system", "label": "REAPER, the audio engine", "est": 10},
+        # le Golem Engine toujours ; REAPER seulement s'il est choisi (docs/install-v2.md)
+        {"id": "engine", "step": "system", "label": "Golem Engine, golem's audio engine", "est": 15},
+        *([{"id": "reaper", "step": "system", "label": "REAPER", "est": 10}] if S.get("engine") == "reaper" else []),
         {"id": "plugins", "step": "system", "label": "Ready-made plugins", "est": 85},
         # PRÉCOMPILÉS (Goldoralf/golem-binaries, 2026-10-23) : 18 Mo + leurs bibliothèques, ~30 s. Un plugin qu'il faut
         # compiler (binaire indisponible) ajoute sa durée mesurée par `@@est-add` (provision/lib-prebuilt.sh compiling) ;
@@ -71,6 +73,9 @@ def phases(S):
         {"id": "golem", "step": "system", "label": "golem itself", "est": 25},
         {"id": "sounds", "step": "system", "label": f"Sounds — {gb}" if mb else "Sounds", "est": round(mb / SOUNDS_MB_S),
          "learn": False},
+        # les captures des sons d'usine : seulement si TONE3000 a été connecté sur les premières pages — elles ont
+        # commencé pendant les sons, cette phase n'est que leur fin (sautée sinon)
+        {"id": "captures", "step": "system", "label": "Amp captures (TONE3000)", "est": 20, "learn": False},
         {"id": "profile", "step": "profile", "label": "Shortcuts: golem and golem Server", "est": 5},
         {"id": "start", "step": "start", "label": "First start", "est": 30},
     ]
@@ -80,7 +85,8 @@ def phases(S):
 RETRY = {"zconvo": ("sudo", "install-zconvo.sh"), "nam": ("sudo", "install-nam.sh"), "sfizz": ("sudo", "install-sfizz.sh"),
          "prisma": ("sudo", "install-prisma.sh"), "spectral": ("sudo", "install-spectral.sh"),
          "golem-fx": ("user", "install-golem-fx.sh"),          # golem-fx : dans ~/.vst3, sans sudo
-         "golem-engine": ("user", "install-golem-engine.sh")}  # le moteur : dans ~/opt/golem-engine, sans sudo
+         "golem-engine": ("user", "install-golem-engine.sh"),
+         "captures": ("user", "fetch-factory-captures.sh")}  # le moteur : dans ~/opt/golem-engine, sans sudo
 
 
 def run_retry(rid, ctx):
@@ -101,6 +107,7 @@ def ui():
     return {
         "os_label": "Linux",
         "checks_intro": "golem runs on Linux with a real-time audio setup (tested on " + TESTED_LABEL + "). Red lines with a ⛔ stop the install; orange ones only warn.",
+        "early_accounts": True,     # l'écran « Accounts » des premières pages : ses jetons sont gardés (install-v2.md)
         "reaper_platform": "Linux x86_64",
         "reaper_install_note": "official tarball from reaper.fm, checksum verified, unpacked in ~/opt/REAPER — no admin rights needed",
         "reaper_update_note": "Settings ▸ Licenses ▸ Reaper can move the engine to the tested version.",
@@ -432,6 +439,7 @@ def step_profile(ctx, target):
     S = ctx.S
     ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
     ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
+    ctx.early_token(target, os.path.join(target, ".venv", "bin", "python"))   # l'appairage golem.fm des premières pages
     if S["dry"]:
         return ctx.run(ctx.dry_cmd("profile"), "profile")
     return ctx.run([os.path.join(target, "provision", "install-desktop.sh")], "profile", cwd=target)
@@ -456,11 +464,14 @@ def run_step(sid, ctx):
         rc = step_source(ctx, src, target)
         if rc == 0:
             _receipt_root(ctx, os.path.abspath(target))
+            ctx.early_env(target)                   # le jeton TONE3000 des premières pages : les captures suivent
         return rc
     if sid == "system":
         if S["dry"]:
-            return ctx.run(ctx.dry_cmd("system"), sid)
+            return ctx.run(ctx.dry_cmd("system"), sid, extra_env={"GOLEM_ENGINE": S.get("engine") or ""})
         args = [os.path.join(target, "provision", "install.sh")]
+        if S.get("engine") in ("reaper", "ardour"):
+            args.append("--engine=" + S["engine"])   # REAPER n'est installé que s'il est choisi (install.sh)
         if not S["packs"]:
             args.append("--light")                  # rien à télécharger : dev
         rc = ctx.run(args, sid, cwd=target, extra_env={"GOLEM_PACKS": ",".join(S["packs"])})

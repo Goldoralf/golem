@@ -32,3 +32,8 @@ e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c  https://static
 # golem-fx (les effets de golem, GPL-3) — release golem-fx-0.6 de Goldoralf/golem-binaries (golem-fx e7e9ecc, empreinte
 # recalculée sur l'archive et comparée au SHA256SUMS de la release, 2026-11-17) ; provision/install-golem-fx.sh. Windows et macOS : leurs pins.json (clé golem_fx).
 397d8d101ef82698405bb984f16fec5b19b655f57ccd52f8adbf14dcf16d9fbf  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.6/golem-fx-linux-x86_64.tar.gz
+
+# Golem Engine (le moteur audio de golem, construit depuis Ardour, GPL-2.0-or-later) — release golem-engine-9.9-g1 de
+# Goldoralf/golem-binaries (golem-engine 1943129, conteneur ubuntu:22.04 ; empreinte recalculée sur l'archive téléchargée
+# et comparée au SHA256SUMS de la release, 2026-11-18) ; provision/install-golem-engine.sh, provision/golem_engine.py.
+f461fe232b0bdeb5488db25a04f0a03c2dccd30cbaaa69c4f65ce806d70d0562  https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g1/golem-engine-linux-x86_64.tar.gz

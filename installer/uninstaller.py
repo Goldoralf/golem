@@ -27,7 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TMP_PREFIX = "golem-uninstaller-"
 MARKER = ".golem-uninstaller"           # un dossier sans ce fichier n'est JAMAIS effacé par remove_tmp
 # ce que la copie emporte : de quoi servir les écrans et lancer le moteur, rien d'autre (motifs relatifs au dépôt)
-FILES = ("installer/server.py", "installer/platform_linux.py", "installer/dry_step.py", "installer/dry_bridge.py",
+FILES = ("installer/server.py", "installer/platform_linux.py", "installer/dry_step.py", "installer/dry_bridge.py", "installer/early.py",
          "installer/uninstaller.py", "installer/phases.py",       # server.py l'importe (l'écran Install en phases)
          "installer/report.py", "bridge/scrub.py",                # server.py l'importe (le rapport d'échec, §7.1)
          # Windows (§9.4) : son module de plateforme (et ce qu'il importe : desktop_steps, provision/desktop pour la

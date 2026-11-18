@@ -126,11 +126,14 @@ def test_la_fin_arrete_le_chrono():
 def test_les_phases_de_linux_couvrent_chaque_marqueur_d_install_sh():
     import re
     import platform_linux as L
-    ids = {p["id"] for p in L.phases({"src": ROOT, "dir": ROOT, "packs": ["di", "piano"]})}
+    ids = {p["id"] for p in L.phases({"src": ROOT, "dir": ROOT, "packs": ["di", "piano"], "engine": "reaper"})}
     txt = open(os.path.join(ROOT, "provision", "install.sh"), encoding="utf-8").read()
     marked = set(re.findall(r"^\s*mark phase (\S+)", txt, re.M))
     assert marked and marked <= ids
-    retry = set(re.findall(r"\|\| soft_fail (\S+) ", txt))
+    # docs/install-v2.md : le Golem Engine a toujours sa phase ; REAPER n'a la sienne que s'il est coché
+    plain = [p["id"] for p in L.phases({"src": ROOT, "dir": ROOT, "packs": [], "engine": "ardour"})]
+    assert "engine" in plain and "reaper" not in plain and "engine" in ids and "reaper" in ids
+    retry = set(re.findall(r"^[^#\n]*\bsoft_fail ([a-z][a-z0-9-]*) ", txt, re.M))   # tout appel, quelle que soit sa forme
     assert retry and retry <= set(L.RETRY)          # chaque ↻ proposé à l'écran a son script
 
 

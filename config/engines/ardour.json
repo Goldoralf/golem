@@ -5,8 +5,8 @@
   "by": "built by golem from Ardour 9.9",
   "license": "gpl-2.0-or-later",
   "sources_url": "https://github.com/Goldoralf/golem-engine",
-  "order": 2,
-  "default": false,
+  "order": 1,
+  "default": true,
   "selectable": true,
   "unavailable_reason": "Coming soon",
   "platforms": {

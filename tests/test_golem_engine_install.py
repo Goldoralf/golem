@@ -112,3 +112,42 @@ def test_le_descripteur_du_moteur_cherche_aux_deux_endroits():
     import json
     d = json.load(open(ROOT / "config" / "engines" / "ardour.json", encoding="utf-8"))
     assert d["platforms"]["linux"]["requires"]["default"] == ["~/golem-engine", "~/opt/golem-engine"]
+
+
+# ── lot 3 (docs/install-v2.md) : REAPER est une case à cocher, le Golem Engine le moteur par défaut ──────────
+def _installer_server():
+    import sys
+    sys.path.insert(0, str(ROOT / "installer"))
+    spec2 = importlib.util.spec_from_file_location("golem_installer_server", ROOT / "installer" / "server.py")
+    m = importlib.util.module_from_spec(spec2)
+    spec2.loader.exec_module(m)
+    return m
+
+
+def test_l_installateur_propose_le_golem_engine_la_ou_il_sait_le_poser(monkeypatch, tmp_path):
+    S = _installer_server()
+    monkeypatch.setenv("HOME", str(tmp_path))                 # aucun moteur sur cette « machine »
+    monkeypatch.delenv("GOLEM_ENGINE_DIR", raising=False)
+    by = {e["id"]: e for e in S.installer_engines(str(ROOT), "linux")}
+    pinned = True
+    try:
+        G.pin("linux")
+    except RuntimeError:
+        pinned = False
+    assert by["ardour"]["available"] is pinned and by["reaper"]["available"] is True
+    assert S.installer_default_engine(str(ROOT), "linux") == ("ardour" if pinned else "reaper")
+    # un système où le moteur n'est pas encore porté : grisé, avec la raison ; REAPER y est le moteur
+    win = {e["id"]: e for e in S.installer_engines(str(ROOT), "win32")}
+    assert win["ardour"]["available"] is False and win["ardour"]["reason"]
+    assert S.installer_default_engine(str(ROOT), "win32") == "reaper"
+
+
+def test_install_sh_pose_le_golem_engine_d_abord_et_reaper_seulement_s_il_est_choisi():
+    txt = (ROOT / "provision" / "install.sh").read_text(encoding="utf-8")
+    assert txt.index("install-golem-engine.sh") < txt.index('"$HERE/install-reaper.sh"')
+    block = txt[txt.index('if [ "$WITH_REAPER" = 1 ]; then\n  mark phase reaper'):]
+    assert '"$HERE/install-reaper.sh"' in block.split("\nfi\n")[0]                 # REAPER : sous la condition
+    assert 'if [ "$WITH_REAPER" = 1 ]; then\n  log "Config Reaper' in txt         # sa configuration aussi
+    assert txt.index("write_engine_choice \"$WANT_ENGINE\"") > txt.index("install-golem-engine.sh")   # le choix, après la pose
+    r = subprocess.run(["bash", str(ROOT / "provision" / "install.sh"), "--engine=nope"], capture_output=True, text=True, timeout=30)
+    assert r.returncode == 1 and "unknown engine" in r.stdout

@@ -5,8 +5,8 @@
 #
 #   ./provision/install.sh            tout : système, Reaper, plugins, bridge, sons (~1 Go)
 #   ./provision/install.sh --light    idem SANS les gros téléchargements (piano, NAM/IR)
-#   ./provision/install.sh --engine=reaper   moteur audio (défaut : celui des descripteurs, Reaper ;
-#                                            seul Reaper est sélectionnable aujourd'hui)
+#   ./provision/install.sh --engine=reaper   REAPER en plus du Golem Engine, et moteur par défaut
+#                                            (sans --engine : le Golem Engine seul — docs/install-v2.md)
 #
 # Le --light sert au poste de DÉV : le rack, lui, veut tout. Sans les sons, le rig démarre et
 # l'app tourne, mais les blocs piano/ampli chargeront dans le vide — c'est dit à la fin.
@@ -26,11 +26,19 @@ if [ -n "$PROFILE" ]; then
   echo "  Boîte dédiée (golem server au boot, sans session) : golem autostart on"
 fi
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# --engine : config/engine.json (docs/audio-engine-choice.md). COQUILLE : le moteur doit être DISPONIBLE
-# selon config/engines/<id>.json — aujourd'hui Reaper seul. Lu par bridge/engines.py, le même lecteur
-# que l'app et l'installateur graphique. Sans --engine, on n'écrase pas un choix déjà posé.
-if [ -n "$ENGINE" ] || [ ! -f "$HERE/../config/engine.json" ]; then
-  python3 - "$HERE/.." "$ENGINE" <<'PYENG' || exit 1
+# --engine (docs/install-v2.md, 2026-11-18) : le Golem Engine est TOUJOURS installé ; REAPER est une option.
+#   --engine=reaper  REAPER est installé aussi, et devient le moteur par défaut ;
+#   --engine=ardour  le Golem Engine seul (REAPER n'est pas installé) ;
+#   sans --engine    une installation neuve prend le Golem Engine s'il a pu être posé, sinon REAPER ; une machine qui
+#                    a déjà choisi (config/engine.json) garde son choix, et son REAPER.
+# Le choix n'est ÉCRIT qu'après la pose des moteurs (write_engine_choice, plus bas) : bridge/engines.py n'accepte
+# qu'un moteur disponible, et le Golem Engine ne l'est qu'une fois posé.
+case "$ENGINE" in ""|reaper|ardour) ;; *) echo "✗ --engine: unknown engine « $ENGINE » (reaper, ardour)"; exit 1 ;; esac
+PRIOR_ENGINE="$(python3 -c 'import json,sys
+try: print(json.load(open(sys.argv[1])).get("engine") or "")
+except Exception: print("")' "$HERE/../config/engine.json" 2>/dev/null || true)"
+write_engine_choice() {  # $1 = id voulu
+  python3 - "$HERE/.." "$1" <<'PYENG'
 import importlib.util, os, sys
 root, want = os.path.abspath(sys.argv[1]), sys.argv[2]
 spec = importlib.util.spec_from_file_location("golem_engines", os.path.join(root, "bridge", "engines.py"))
@@ -42,7 +50,7 @@ except ValueError as e:
     sys.exit(f"✗ --engine: {e} (available: {ok})")
 print(f"→ moteur audio « {eid} » (config/engine.json)")
 PYENG
-fi
+}
 log() { printf '\n\033[1;36m▶ %s\033[0m\n' "$*"; }
 # L'INSTALLATEUR GRAPHIQUE lit ces marqueurs (installer/phases.py) : la phase en cours, sa sous-ligne, un manque non
 # fatal dit en anglais sur l'écran (la trace brute — warnings de compilation — fait paniquer, 2026-10-23). Dans un
@@ -155,10 +163,33 @@ log "Autorisation gouverneur CPU (bouton performance du dashboard)"
 log "Autorisation réseau (net.sh : AP de secours, bascule WiFi)"
 "$HERE/setup-net-sudo.sh"
 
-# --- 3. Reaper ---------------------------------------------------------------
-mark phase reaper
-log "Reaper"
-"$HERE/install-reaper.sh"
+# --- 3. Les moteurs audio (docs/install-v2.md) ---------------------------------
+# Le Golem Engine d'abord, TOUJOURS : le moteur de golem (GPL), paquet autonome épinglé dans ~/opt/golem-engine, sans
+# sudo. REAPER ensuite, seulement s'il est choisi — ou si le Golem Engine n'a pas pu être posé : golem ne reste
+# jamais sans moteur.
+mark phase engine
+log "Golem Engine (le moteur audio de golem — précompilé)"
+engine_rc=0; "$HERE/install-golem-engine.sh" || engine_rc=$?
+HAVE_GOLEM_ENGINE=0; python3 "$HERE/golem_engine.py" --check >/dev/null 2>&1 && HAVE_GOLEM_ENGINE=1
+WITH_REAPER=0
+if [ "$ENGINE" = reaper ]; then WITH_REAPER=1
+elif [ -z "$ENGINE" ] && [ "$PRIOR_ENGINE" = reaper ]; then WITH_REAPER=1     # une machine déjà sur REAPER le garde
+elif [ "$HAVE_GOLEM_ENGINE" = 0 ]; then
+  WITH_REAPER=1
+  if [ "$engine_rc" = 1 ]; then
+    soft_fail golem-engine "Golem Engine NON installé — REAPER est installé à sa place" \
+      "golem's own audio engine could not be installed — REAPER is installed instead. Tap Retry."
+  else
+    echo "  → pas de Golem Engine pour cette machine pour l'instant : REAPER est installé"
+  fi
+fi
+if [ "$WITH_REAPER" = 1 ]; then
+  mark phase reaper
+  log "Reaper"
+  "$HERE/install-reaper.sh"
+else
+  log "REAPER — non installé (le Golem Engine est le moteur ; REAPER s'ajoute plus tard : ./provision/install.sh --engine=reaper)"
+fi
 
 # --- 4. Plugins (GitHub releases) -------------------------------------------
 mark phase plugins
@@ -171,13 +202,6 @@ log "Plugins (releases GitHub : NAM, Dexed)"
 log "golem-fx (les effets de golem — VST3 précompilés)"
 "$HERE/install-golem-fx.sh" || soft_fail golem-fx "golem-fx NON installé — les blocs gardent leurs plugins d'origine" \
   "golem's own effects (golem-fx) could not be installed — the blocks play their previous plugins. Tap Retry."
-
-# Le Golem Engine (2026-11-17, docs/install-v2.md §1) : le moteur audio de golem, TOUJOURS posé — que REAPER soit coché
-# ou non. Paquet autonome épinglé, dans ~/opt/golem-engine, sans sudo. Non fatal : sans lui golem tourne sur REAPER.
-log "Golem Engine (le moteur audio de golem — précompilé)"
-engine_rc=0; "$HERE/install-golem-engine.sh" || engine_rc=$?
-[ "$engine_rc" = 1 ] && soft_fail golem-engine "Golem Engine NON installé — golem tourne sur REAPER s'il est là" \
-  "golem's own audio engine could not be installed — golem runs on REAPER if it is installed. Tap Retry."
 
 # SWS : RETIRÉ de l'install (2026-09-22). Il était posé « requis par les scènes » — faux : le moteur
 # de scènes est golem_rig (union materialization), LiveConfigs n'a jamais servi (audit 2026-09-21), et
@@ -292,12 +316,32 @@ sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-spectral.sh" || s
 
 # --- 5. Config Reaper : symlinks + OSC + device audio -----------------------
 mark phase golem
-log "Config Reaper (symlinks portables + OSC + device audio dans reaper.ini)"
-"$HERE/setup-reaper.sh"
+if [ "$WITH_REAPER" = 1 ]; then
+  log "Config Reaper (symlinks portables + OSC + device audio dans reaper.ini)"
+  "$HERE/setup-reaper.sh"
+fi
+# le moteur par défaut : celui demandé ; sinon le choix déjà fait sur cette machine ; sinon le Golem Engine s'il est
+# là, REAPER autrement
+WANT_ENGINE="$ENGINE"
+[ -z "$WANT_ENGINE" ] && WANT_ENGINE="$PRIOR_ENGINE"
+if [ -z "$WANT_ENGINE" ]; then if [ "$HAVE_GOLEM_ENGINE" = 1 ]; then WANT_ENGINE=ardour; else WANT_ENGINE=reaper; fi; fi
+[ "$WANT_ENGINE" = ardour ] && [ "$HAVE_GOLEM_ENGINE" = 0 ] && WANT_ENGINE=reaper
+write_engine_choice "$WANT_ENGINE" || exit 1
 
 # --- 6. Bridge Python (venv + FastAPI/uvicorn/python-osc) -------------------
 log "Bridge Python (venv + dépendances)"
 "$HERE/bridge-setup.sh"
+
+# LES CAPTURES D'USINE EN ARRIÈRE-PLAN (docs/install-v2.md, lot 4) : si le compte TONE3000 a été connecté sur les
+# premières pages de l'installateur (ses jetons sont dans .env), les amplis des sons d'usine se téléchargent PENDANT
+# les sons qui suivent (~1 Go). Sans compte : rien, golem les proposera dans Settings ▸ Content ▸ Factory.
+CAPTURES_PID=""
+if grep -q '^T3K_ACCESS_TOKEN=.' "$HERE/../.env" 2>/dev/null; then
+  log "Captures d'usine (TONE3000) — en arrière-plan, pendant les sons"
+  rm -f "$HERE/../presets/.factory-fetch.json"
+  (cd "$HERE/.." && exec .venv/bin/python -m bridge.factory_fetch) >"$HERE/../presets/.factory-fetch.log" 2>&1 &
+  CAPTURES_PID=$!
+fi
 
 # --- 6 a. Démos d'usine (~70 Mo) : rendues UNE fois, posées à l'installation (2026-11-15, docs/preset-preview.md §10).
 # Jamais fatal : hors ligne, golem les rattrape à son prochain démarrage.
@@ -314,6 +358,28 @@ if [ "$LIGHT" = 1 ]; then
 else
   log "Sons : modèles NAM / IR + piano Salamander (~1 Go, patience)"
   "$HERE/fetch-assets.sh"
+fi
+
+# les captures lancées plus haut : on les attend ici, en disant où elles en sont (jamais fatal)
+if [ -n "$CAPTURES_PID" ]; then
+  mark phase captures
+  log "Captures d'usine (TONE3000) — fin du téléchargement"
+  while kill -0 "$CAPTURES_PID" 2>/dev/null; do
+    python3 - "$HERE/../presets/.factory-fetch.json" <<'PYCAP' || true
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+    if d.get("total"):
+        print(f"@@progress {d.get('done', 0)} {d['total']}" if __import__("os").environ.get("GOLEM_INSTALLER") == "1" else f"  … {d.get('done', 0)}/{d['total']}")
+except Exception:
+    pass
+PYCAP
+    sleep 3
+  done
+  cap_rc=0; wait "$CAPTURES_PID" || cap_rc=$?
+  if [ "$cap_rc" = 0 ]; then echo "  ✓ captures d'usine téléchargées"
+  else soft_fail captures "captures d'usine incomplètes — golem les reprend dans Settings ▸ Content ▸ Factory" \
+      "Some amp captures could not be downloaded — golem offers them again in Settings ▸ Content ▸ Factory."; fi
 fi
 
 # --- 7. Secrets locaux (.env) -----------------------------------------------

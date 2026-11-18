@@ -617,6 +617,10 @@ img.net-qr{background:#f3f4f6; border-radius:10px; padding:6px; box-sizing:borde
 .tile-flag{position:absolute; top:12px; right:15px; font-weight:800; color:var(--rock)} .tile-st.bad .tile-flag{color:var(--metal)}
 .tile-act{margin-left:auto; min-height:40px; padding:0 13px; border-radius:9px; background:var(--panel2);
   border:1px solid var(--line); color:var(--text); cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap; flex:none}
+/* la seconde commande d'une tuile (« Auto » du boost CPU) : compacte, verte quand elle est active */
+.tile-act.tile-act-sm{min-height:32px; padding:0 8px; font-size:11px; color:var(--muted)}
+.tile-act.tile-act-sm.on{color:var(--funk); border-color:color-mix(in srgb, var(--funk) 50%, transparent)}
+.tile-act.tile-act-sm + .tile-act{margin-left:6px}
 .tile-st.warn .tile-act, .tile-st.bad .tile-act{border-color:var(--accent); color:var(--accent)}
 .tile-act:disabled{opacity:.55; cursor:default}
 /* Content : cartes d'inventaire */

@@ -98,6 +98,11 @@ button{font:inherit; cursor:pointer} input{font:inherit}
 .pick b{font-size:15px} .pick .grow{flex:1}
 .pick .radio{width:16px; height:16px; border-radius:50%; border:2px solid var(--line); flex:none}
 .pick.on .radio{border-color:var(--accent); box-shadow:inset 0 0 0 3px var(--panel2); background:var(--accent)}
+/* une case à cocher dans une carte (REAPER en option, docs/install-v2.md) ; une carte qui n'est pas un bouton (le
+   Golem Engine, toujours installé) garde le curseur normal */
+.pick .check{width:18px; height:18px; border-radius:5px; border:2px solid var(--line); flex:none; display:grid; place-items:center; font-size:12px; font-weight:800; color:var(--bg)}
+.pick .check.on{border-color:var(--accent); background:var(--accent)}
+div.pick{cursor:default}
 .chip{font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); white-space:nowrap}
 
 /* écran 3 (2026-10-06) : les deux usages, et la case « boîte dédiée » */

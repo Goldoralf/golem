@@ -67,4 +67,6 @@ def test_le_golem_engine_construit_se_choisit_sous_linux(root, monkeypatch, tmp_
     assert {e["id"]: e["available"] for e in E.descriptors(root, "win32")}["ardour"] is False
     assert E.write_choice("ardour", root=root, platform="linux") == "ardour"
     assert E.current(root, "linux") == "ardour"
-    assert E.default_id(root, "linux") == "reaper"                       # le défaut reste REAPER
+    # 2026-11-18 (docs/install-v2.md) : le Golem Engine est le moteur par défaut LÀ OÙ IL EST INSTALLÉ ; ailleurs
+    # (pas encore porté) le défaut reste REAPER
+    assert E.default_id(root, "linux") == "ardour" and E.default_id(root, "win32") == "reaper"

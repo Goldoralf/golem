@@ -50,6 +50,7 @@ import importlib  # noqa: E402
 
 P = importlib.import_module({"win32": "platform_windows", "darwin": "platform_macos"}.get(sys.platform, "platform_linux"))
 import uninstaller as UN  # noqa: E402  — le mode --uninstall (docs/uninstall.md §4)
+import early as EA  # noqa: E402  — les comptes avant l'installation (docs/install-v2.md, lots 4-5)
 import dry_bridge as DB  # noqa: E402  — golem simulé pour l'écran Connect en --dry (jamais le vrai :8770)
 import phases as PH  # noqa: E402  — les phases de l'écran Install et l'estimateur de temps
 import report as RP  # noqa: E402  — le rapport d'échec envoyé sur un clic (docs/diagnostics.md §7.1)
@@ -644,6 +645,32 @@ class Ctx:
 
 
     @staticmethod
+    def early_env(target):
+        """Les jetons TONE3000 pris sur les premières pages -> <target>/.env, dès que golem y est copié : les captures
+        se téléchargent pendant le reste de l'installation (provision/install.sh). Jamais fatal."""
+        try:
+            if EA.apply_env(target):
+                log("→ TONE3000 sign-in kept for this golem — its captures download during the install", "source")
+        except Exception as e:
+            log(f"⚠ the TONE3000 sign-in could not be written ({e}) — sign in again in golem, Settings ▸ Connect", "source")
+
+    @staticmethod
+    def early_token(target, python):
+        """Le jeton d'appareil golem.fm pris sur les premières pages, rangé par la fonction même de Settings ▸ Connect
+        (`provision.desktop connect`, le secret sur l'entrée standard). Jamais fatal."""
+        tok = EA.golem_token()
+        if not tok or S["dry"]:
+            return
+        try:
+            r = subprocess.run([python, "-m", "provision.desktop", "connect"], cwd=target, input=json.dumps({"golem_token": tok}),
+                               capture_output=True, text=True, timeout=60)
+            ok = r.returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            ok = False
+        log("→ this golem is paired with golem.fm" if ok
+            else "⚠ the golem.fm pairing could not be written — pair again in golem, Settings ▸ Connect", "profile")
+
+    @staticmethod
     def write_engine(target):
         """config/engine.json du dossier installé (appelé par step_profile de chaque plateforme).
         Lit les descripteurs de la SOURCE : la cible n'a peut-être pas encore son config/engines."""
@@ -663,6 +690,45 @@ class Ctx:
         with open(os.path.join(target, "config", "first-run.json"), "w", encoding="utf-8") as f:
             json.dump({"instrument": S["instrument"], "at": time.strftime("%Y-%m-%d %H:%M")}, f, indent=1)
         log(f"→ instrument « {S['instrument']} » written to config/first-run.json", "profile")
+
+
+BACK_HTML = b"""<!doctype html><meta charset="utf-8"><title>golem installer</title>
+<style>body{font:16px system-ui;background:#0e0f13;color:#e8e8ea;display:grid;place-items:center;height:100vh;margin:0}</style>
+<p id="m">Back to the installer...</p>
+<script>
+  var t = null; try { t = sessionStorage.getItem('golem-installer-token'); } catch (e) {}
+  if (t) location.replace('/?t=' + encodeURIComponent(t) + '&back=1' + (location.search ? '&' + location.search.slice(1) : ''));
+  else document.getElementById('m').textContent = 'You can close this tab and go back to the golem installer window.';
+</script>"""
+
+
+def installer_engines(src, platform=None):
+    """Les moteurs vus PAR L'INSTALLATEUR (docs/install-v2.md) : comme bridge/engines.py, sauf le Golem Engine — il
+    n'est pas encore sur la machine, donc « disponible » veut dire ici « l'installation sait le poser » : une release
+    épinglée pour ce système (provision/golem_engine.py pin). Un système où il n'est pas encore porté le montre grisé,
+    avec la raison ; REAPER y reste le moteur."""
+    out = []
+    for e in E.descriptors(src, platform):
+        if e["id"] == "ardour" and not e["available"]:
+            try:
+                spec = importlib.util.spec_from_file_location("golem_engine_prov", os.path.join(src, "provision", "golem_engine.py"))
+                G = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(G)
+                G.pin(platform)
+                e = dict(e, available=True, reason=None)
+            except Exception as ex:                          # pas de release, pas d'épingle pour ce système
+                msg = str(ex).replace("Golem Engine: ", "")
+                e = dict(e, available=False, reason=msg[:1].upper() + msg[1:])
+        out.append(e)
+    return out
+
+
+def installer_default_engine(src, platform=None):
+    """REAPER n'est PAS coché par défaut : le Golem Engine quand l'installation sait le poser, sinon REAPER."""
+    engines = installer_engines(src, platform)
+    if any(e["id"] == "ardour" and e["available"] for e in engines):
+        return "ardour"
+    return next((e["id"] for e in engines if e["available"]), None)
 
 
 def _write_engine_raw(target, eid):
@@ -829,6 +895,10 @@ class H(BaseHTTPRequestHandler):
                 what = b"uninstaller" if uninstall else b"installer"
                 return self._send(403, b"<h1>golem " + what + b"</h1><p>Open the exact link printed in the terminal (it carries a one-time token).</p>", "text/html")
             return self._file(os.path.join(UI, "uninstall.html" if uninstall else "index.html"))
+        if u.path == "/back":
+            # le retour de golem.fm (docs/install-v2.md) : SANS jeton dans l'adresse — la page relit celui que
+            # l'installateur a gardé dans sessionStorage avant de partir, et rentre sur l'écran des comptes
+            return self._send(200, BACK_HTML, "text/html")
         if u.path.startswith("/ui/"):
             return self._file(os.path.join(UI, os.path.basename(u.path)))
         if u.path.startswith("/vendor/"):
@@ -871,6 +941,8 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/factory":
             return self._send(200, factory_state())
         # l'écran Connect (Linux) : ses lectures, relayées vers golem (BRIDGE_ALLOW)
+        if u.path == "/api/early":
+            return self._send(200, EA.state())
         if u.path == "/api/link":
             return self._send(200, link_state())
         if u.path == "/api/link/pair":
@@ -889,7 +961,7 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/engines":
             return self._send(200, {"current": S["engine"],
                                     "features": [{"id": i, "label": l} for i, l in E.features(S["src"])],
-                                    "engines": E.descriptors(S["src"])})
+                                    "engines": installer_engines(S["src"])})
         if u.path == "/api/reaper":
             d = P.reaper_detect(S["src"])
             d["job"] = S["reaper_job"]
@@ -929,7 +1001,7 @@ class H(BaseHTTPRequestHandler):
                 if b.get("dir"):
                     S["dir"] = os.path.expanduser(str(b["dir"]))
                 # seul un moteur DISPONIBLE ici se choisit (aujourd'hui : Reaper) — le reste est ignoré
-                if b.get("engine") in {e["id"] for e in E.descriptors(S["src"]) if e["available"]}:
+                if b.get("engine") in {e["id"] for e in installer_engines(S["src"]) if e["available"]}:
                     S["engine"] = b["engine"]
                 if b.get("instrument") in INSTRUMENTS:
                     S["instrument"] = b["instrument"]
@@ -968,6 +1040,10 @@ class H(BaseHTTPRequestHandler):
             return self._send(200, {"ok": True, "job": "running"})
         if u.path == "/api/reaper/license":
             return self._send(200, license_save(b))
+        if u.path == "/api/early/pair":
+            return self._send(200, EA.pair_start(S["src"], S["port"]))
+        if u.path == "/api/early/t3k":
+            return self._send(200, EA.t3k_start(S["src"]))
         if u.path == "/api/stop-step":
             return self._send(200, stop_step())
         if u.path == "/api/retry-item":
@@ -1141,7 +1217,7 @@ def main(argv=None):
             return
     else:
         S["src"] = os.path.abspath(a.src)
-        S["engine"] = E.default_id(S["src"])         # coché par défaut : le moteur `default` des descripteurs
+        S["engine"] = installer_default_engine(S["src"])   # le Golem Engine là où il s'installe, sinon REAPER
         if a.dir:
             S["dir"] = os.path.abspath(os.path.expanduser(a.dir))
         elif (os.path.isdir(os.path.join(S["src"], ".git")) and not _in_cache(S["src"])
@@ -1159,6 +1235,8 @@ def main(argv=None):
             except (ValueError, OSError):
                 pass
     httpd = ThreadingHTTPServer(("127.0.0.1", a.port), H)
+    S["port"] = httpd.server_address[1]
+    EA.DRY["on"] = bool(dry)
     url = f"http://127.0.0.1:{httpd.server_address[1]}/?t={S['token']}"
     what = "uninstaller" if S["mode"] == "uninstall" else "installer"
     # « open this link » laissait croire qu'il FALLAIT cliquer, alors que la fenêtre s'ouvre seule (2026-11-03) :

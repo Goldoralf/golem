@@ -5,8 +5,8 @@
   "by": "Cockos",
   "license": "commercial",
   "buy_url": "https://www.reaper.fm/purchase.php",
-  "order": 1,
-  "default": true,
+  "order": 2,
+  "default": false,
   "selectable": true,
   "platforms": {
     "linux": {"available": true},

@@ -1524,6 +1524,7 @@ _HANDLERS = {
     "take-upload": lambda j: _take_upload(j),
     "upload-di": lambda j: _upload_di(j),
     "take-di-clip": lambda j: _take_di_clip(j),
+    "di-record": lambda j: _di_record(j),
     "take-cut": lambda j: _take_cut(j),
     "take-recut": lambda j: _take_recut(j),
     "take-source-release": lambda j: _take_source_release(j),
@@ -1697,6 +1698,64 @@ def _upload_di(job):
     out = uploader.queue_di(uid, band if isinstance(band, str) and band else None)
     out["_log"] = f"DI of {uid} queued"
     return out
+
+
+def _di_record(job):
+    """`{action:"di-record", in_key | person, max_s (3–30), count_in?: 0}` — « Record your own DI » (golem.fm,
+    2026-11-18) : le rack enregistre `max_s` secondes du signal SEC d'une entrée (bridge/di_record.py : une vraie
+    prise courte, « Tracks + DI » forcé le temps de la prise, montrée à l'écran), envoie le WAV (mono 48 kHz 24 bits,
+    niveau intact) au coffre de golem.fm et ne garde rien. Ack {clip:{sha256, duration}, peak_db, input, person?}.
+    Refus dits : Gig / verrouillé, une prise en cours, un backing ou un arrangement qui joue, plus de place, entrée
+    inconnue, personne sans entrée dans ce preset, décompte demandé (pas dans cette version)."""
+    import subprocess
+    from . import di_record as DR, preview as preview_mod, store
+    from .state import state
+    from .store import load_preset
+    if job.get("count_in") not in (None, 0, "0"):
+        raise RuntimeError("di-record: a count-in is not available yet — send count_in 0")
+    n, person = job.get("in_key"), job.get("person")
+    if n in (None, "") and person:
+        from . import compo
+        pre = load_preset(state.preset_id) if state.preset_id else None
+        ins = [v for v in (compo._lane_inputs(pre, compo.lanes_of_person(pre, person), compo._imap()) or {}).values() if str(v).isdigit()]
+        if not ins:
+            raise RuntimeError(f"di-record: {person} has no audio input in the preset that plays")
+        n = ins[0]
+    if n in (None, ""):
+        raise RuntimeError("di-record: in_key or person required")
+    max_s = job.get("max_s") or 15
+
+    def restore():
+        store._write_json_atomic(os.path.join(C.PRESETS_DIR, ".perfsrc.json"),
+                                 store.rec_sources(load_preset(state.preset_id) if state.preset_id else None), indent=None)
+    r = DR.record(n, max_s, restore=restore)
+    if not r.get("ok"):
+        if r.get("folder"):
+            DR.discard(r["folder"])
+        raise RuntimeError("di-record: " + str(r.get("error")))
+    work = os.path.join(C.PRESETS_DIR, ".di-record")
+    os.makedirs(work, exist_ok=True)
+    out = os.path.join(work, f"di-in{int(n)}-{int(time.time())}.wav")
+    try:
+        try:
+            subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", r["file"], "-t", f"{float(max_s):.3f}", "-ac", "1", "-ar", "48000",
+                            "-c:a", "pcm_s24le", out], check=True, capture_output=True, timeout=60)
+        except (subprocess.SubprocessError, OSError):
+            raise RuntimeError("di-record: the recording could not be read") from None
+        pk = preview_mod._peak_db(out)
+        clip = preview_mod.push_file(out, os.path.basename(out))
+    finally:
+        time.sleep(2.0)                                   # le bridge finit d'écrire le manifeste de la prise avant qu'elle parte
+        DR.discard(r["folder"])
+        with __import__("contextlib").suppress(OSError):
+            os.remove(out)
+    if not clip:
+        raise RuntimeError("di-record: the DI could not be uploaded to golem.fm")
+    res = {"clip": clip, "peak_db": None if pk is None else round(pk, 1), "input": int(n),
+           "_log": f"DI recorded from input {n} ({clip.get('duration')} s)"}
+    if person:
+        res["person"] = person
+    return res
 
 
 def _take_di_clip(job):

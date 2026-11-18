@@ -1,0 +1,358 @@
+{
+ "id": "factory-voice-karaoke",
+ "name": "Karaoke",
+ "role": "voice",
+ "tags": [
+  "pop",
+  "vocal",
+  "karaoke"
+ ],
+ "kind": "patch",
+ "patch_v": 2,
+ "lanes_v": 2,
+ "lanes": [
+  {
+   "id": "voice-1",
+   "role": "voice",
+   "name": "Karaoke",
+   "midi": false,
+   "chain": {
+    "chain": [
+     {
+      "id": "gate",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 220
+      }
+     },
+     {
+      "id": "comp",
+      "type": "comp",
+      "params": {
+       "character": "Opto",
+       "thresh": -20,
+       "ratio": 2.5,
+       "makeup": 3,
+       "attack": 12
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 100,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1.5
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus",
+      "params": {
+       "profile": "Voice",
+       "mode": "Doubler",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.3
+      },
+      "foot": 6
+     },
+     {
+      "id": "dly",
+      "type": "delay",
+      "params": {
+       "model": "Tape",
+       "time": "1/4",
+       "feedback": 18,
+       "mix": 12
+      },
+      "foot": 7
+     },
+     {
+      "id": "plate",
+      "type": "reverb-plate",
+      "params": {
+       "mix": 20,
+       "decay": 1.4,
+       "size": 24,
+       "hicut": 8000
+      }
+     }
+    ]
+   },
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Karaoke",
+     "blocks": {
+      "dly": false,
+      "double": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Ballad",
+     "blocks": {
+      "dly": false,
+      "double": false
+     },
+     "params": {
+      "plate": {
+       "mix": 28,
+       "decay": 2.0
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Chorus Double",
+     "blocks": {
+      "dly": false,
+      "double": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Echo",
+     "blocks": {
+      "dly": true,
+      "double": false
+     },
+     "params": {},
+     "branches": {}
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "A",
+   "name": "Karaoke",
+   "blocks": {
+    "dly": false,
+    "double": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-A"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "name": "Ballad",
+   "blocks": {
+    "dly": false,
+    "double": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-B"
+    }
+   },
+   "params": {
+    "plate": {
+     "mix": 28,
+     "decay": 2.0
+    }
+   }
+  },
+  {
+   "id": "C",
+   "name": "Chorus Double",
+   "blocks": {
+    "dly": false,
+    "double": true
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-C"
+    }
+   }
+  },
+  {
+   "id": "D",
+   "name": "Echo",
+   "blocks": {
+    "dly": true,
+    "double": false
+   },
+   "lanes": {
+    "voice-1": {
+     "state": "st-voice-1-D",
+     "level": 1
+    }
+   },
+   "level": 1
+  }
+ ],
+ "config": {
+  "gen": {
+   "out": "1-2",
+   "blocks": [
+    {
+     "type": "drums",
+     "id": "drums",
+     "foot": 10,
+     "params": {
+      "patterns": [
+       "library/grooves/golem-rock-8.mid"
+      ],
+      "fills": [],
+      "kit": "drums-black-pearl"
+     }
+    }
+   ]
+  },
+  "rec": {
+   "blocks": [
+    {
+     "id": "rec-global",
+     "type": "rec",
+     "foot": 9
+    }
+   ]
+  }
+ },
+ "bpm": 100,
+ "chain": {
+  "chain": [
+   {
+    "id": "gate",
+    "type": "gate",
+    "params": {
+     "thresh": -60,
+     "release": 220
+    }
+   },
+   {
+    "id": "comp",
+    "type": "comp",
+    "params": {
+     "character": "Opto",
+     "thresh": -20,
+     "ratio": 2.5,
+     "makeup": 3,
+     "attack": 12
+    }
+   },
+   {
+    "id": "ess",
+    "type": "deesser",
+    "params": {
+     "thresh": -28,
+     "freq": 6500,
+     "range": 10
+    }
+   },
+   {
+    "id": "eq",
+    "type": "eq",
+    "params": {
+     "lowcut": 100,
+     "midgain": 0,
+     "midfreq": 800,
+     "highs": 1.5
+    }
+   },
+   {
+    "id": "double",
+    "type": "chorus",
+    "params": {
+     "profile": "Voice",
+     "mode": "Doubler",
+     "rate": 0.6,
+     "depth": 4,
+     "mix": 0.3
+    },
+    "foot": 6
+   },
+   {
+    "id": "dly",
+    "type": "delay",
+    "params": {
+     "model": "Tape",
+     "time": "1/4",
+     "feedback": 18,
+     "mix": 12
+    },
+    "foot": 7
+   },
+   {
+    "id": "plate",
+    "type": "reverb-plate",
+    "params": {
+     "mix": 20,
+     "decay": 1.4,
+     "size": 24,
+     "hicut": 8000
+    }
+   }
+  ]
+ },
+ "needs": [],
+ "origin": "factory",
+ "factory": true,
+ "colors": {
+  "A": "#ff6fb5",
+  "B": "#ff6fb5",
+  "C": "#ff6fb5",
+  "D": "#ff6fb5",
+  "6": "#ff6fb5",
+  "7": "#ff6fb5",
+  "9": "#ff6fb5",
+  "10": "#ff6fb5"
+ },
+ "anims": {
+  "A": "ember",
+  "B": "aurora",
+  "C": "ripple",
+  "D": "snow",
+  "6": "pulse",
+  "7": "fire",
+  "9": "scanner",
+  "10": "sheen"
+ },
+ "deps": [
+  {
+   "sha256": "6a46a87de9790d65cdf8cc07e0b4391369302d4a311a1ce0f5bd001fef7e1d97",
+   "uid": "local:groove-golem-rock-8",
+   "kind": "groove",
+   "bytes": 265,
+   "name": "Rock 8",
+   "source": "golemfm",
+   "factory": true,
+   "brand": "GoleM",
+   "creator": "factory"
+  },
+  {
+   "sha256": "d2113f9c10e1958eeb41769e1754865ca82db672c812d69de6514b01428800cd",
+   "uid": "local:kit-drums-black-pearl",
+   "kind": "kit",
+   "bytes": 919,
+   "name": "drums-black-pearl",
+   "source": "golemfm",
+   "factory": true,
+   "amp": "Black Pearl",
+   "brand": "GoleM",
+   "creator": "user"
+  }
+ ],
+ "deps_sig": "{\"anims\": {\"10\": \"sheen\", \"6\": \"pulse\", \"7\": \"fire\", \"9\": \"scanner\", \"A\": \"ember\", \"B\": \"aurora\", \"C\": \"ripple\", \"D\": \"snow\"}, \"backing\": null, \"bpm\": 100, \"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 12, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 2.5, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 18, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"colors\": {\"10\": \"#ff6fb5\", \"6\": \"#ff6fb5\", \"7\": \"#ff6fb5\", \"9\": \"#ff6fb5\", \"A\": \"#ff6fb5\", \"B\": \"#ff6fb5\", \"C\": \"#ff6fb5\", \"D\": \"#ff6fb5\"}, \"config\": {\"gen\": {\"blocks\": [{\"foot\": 10, \"id\": \"drums\", \"params\": {\"fills\": [], \"kit\": \"drums-black-pearl\", \"patterns\": [\"library/grooves/golem-rock-8.mid\"]}, \"type\": \"drums\"}], \"out\": \"1-2\"}, \"rec\": {\"blocks\": [{\"foot\": 9, \"id\": \"rec-global\", \"type\": \"rec\"}]}}, \"lanes\": [{\"chain\": {\"chain\": [{\"id\": \"gate\", \"params\": {\"release\": 220, \"thresh\": -60}, \"type\": \"gate\"}, {\"id\": \"comp\", \"params\": {\"attack\": 12, \"character\": \"Opto\", \"makeup\": 3, \"ratio\": 2.5, \"thresh\": -20}, \"type\": \"comp\"}, {\"id\": \"ess\", \"params\": {\"freq\": 6500, \"range\": 10, \"thresh\": -28}, \"type\": \"deesser\"}, {\"id\": \"eq\", \"params\": {\"highs\": 1.5, \"lowcut\": 100, \"midfreq\": 800, \"midgain\": 0}, \"type\": \"eq\"}, {\"foot\": 6, \"id\": \"double\", \"params\": {\"depth\": 4, \"mix\": 0.3, \"mode\": \"Doubler\", \"profile\": \"Voice\", \"rate\": 0.6}, \"type\": \"chorus\"}, {\"foot\": 7, \"id\": \"dly\", \"params\": {\"feedback\": 18, \"mix\": 12, \"model\": \"Tape\", \"time\": \"1/4\"}, \"type\": \"delay\"}, {\"id\": \"plate\", \"params\": {\"decay\": 1.4, \"hicut\": 8000, \"mix\": 20, \"size\": 24}, \"type\": \"reverb-plate\"}]}, \"id\": \"voice-1\", \"midi\": false, \"name\": \"Karaoke\", \"role\": \"voice\", \"states\": [{\"blocks\": {\"dly\": false, \"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-A\", \"name\": \"Karaoke\", \"params\": {}}, {\"blocks\": {\"dly\": false, \"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-B\", \"name\": \"Ballad\", \"params\": {\"plate\": {\"decay\": 2.0, \"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"double\": true}, \"branches\": {}, \"id\": \"st-voice-1-C\", \"name\": \"Chorus Double\", \"params\": {}}, {\"blocks\": {\"dly\": true, \"double\": false}, \"branches\": {}, \"id\": \"st-voice-1-D\", \"name\": \"Echo\", \"params\": {}}]}], \"role\": \"voice\", \"scenes\": [{\"blocks\": {\"dly\": false, \"double\": false}, \"id\": \"A\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-A\"}}, \"name\": \"Karaoke\"}, {\"blocks\": {\"dly\": false, \"double\": false}, \"id\": \"B\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-B\"}}, \"name\": \"Ballad\", \"params\": {\"plate\": {\"decay\": 2.0, \"mix\": 28}}}, {\"blocks\": {\"dly\": false, \"double\": true}, \"id\": \"C\", \"lanes\": {\"voice-1\": {\"state\": \"st-voice-1-C\"}}, \"name\": \"Chorus Double\"}, {\"blocks\": {\"dly\": true, \"double\": false}, \"id\": \"D\", \"lanes\": {\"voice-1\": {\"level\": 1, \"state\": \"st-voice-1-D\"}}, \"level\": 1, \"name\": \"Echo\"}]}"
+}

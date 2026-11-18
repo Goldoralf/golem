@@ -8,6 +8,12 @@
  "factory": true,
  "lines": [
   {
+   "id": "r:factory-voice:karaoke",
+   "rev": 1,
+   "title": "Karaoke",
+   "patch": "factory-voice-karaoke"
+  },
+  {
    "id": "r:factory-voice:crooner",
    "rev": 1,
    "title": "Crooner",
@@ -69,6 +75,7 @@
   }
  ],
  "presets": [
+  "patch:factory-voice-karaoke",
   "patch:factory-voice-crooner",
   "patch:factory-voice-blues-shout",
   "patch:factory-voice-halo",

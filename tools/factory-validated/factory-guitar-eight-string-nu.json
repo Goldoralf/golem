@@ -242,6 +242,7 @@
     "chorus": true,
     "dly": true,
     "emet-7ncs": false,
+    "jc": false,
     "killswitch-4gqg": false,
     "met": false,
     "oct": false
@@ -382,6 +383,7 @@
     "chorus": true,
     "dly": true,
     "emet-7ncs": false,
+    "jc": false,
     "killswitch-4gqg": false,
     "met": false,
     "oct": false

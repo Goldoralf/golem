@@ -943,6 +943,17 @@ def v_pop_tuned():
                        st, "#ffb703", "rock-8", 76)
 
 
+def v_karaoke():
+    # la voix PAR DÉFAUT de Vocals sur golem.fm (id attendu : factory-voice-karaoke, 2026-11-18) : un chanteur amateur qui
+    # sonne bien sans rien régler — coupe-bas, compression douce, de-esser, plaque courte, un doublage au pied ; rien d'extrême
+    st = [S("A", "Karaoke"), S("B", "Ballad", params={"plate": {"mix": 28, "decay": 2.0}}), S("C", "Chorus Double", {"double": True}),
+          S("D", "Echo", {"dly": True}, level=1)]
+    return voice_patch("factory-voice-karaoke", "Karaoke", ["pop", "vocal", "karaoke"],
+                       [gate(-60, release=220), comp("Opto", thresh=-20, ratio=2.5, makeup=3, attack=12), ess(), eq(lowcut=100, midgain=0, highs=1.5),
+                        chorus("double", foot=6, profile="Voice", mode="Doubler", mix=0.3), dly(foot=7, model="Tape", time="1/4", feedback=18, mix=12),
+                        plate(mix=20, decay=1.4)], st, "#ff6fb5", "rock-8", 100)
+
+
 # ══ BATTERIE (un kit électronique joué au pad, en MIDI) ═══════════════════════════════════════════════════════════
 def drums_patch(pid, name, tags, kit, extra, st, color, bpm, service="rec"):
     chain = [B("kit", "drumkit", kit=kit), comp("Bus", thresh=-20, ratio=4, makeup=3, attack=20), eq(lowcut=35, midgain=0, highs=1)] + extra
@@ -1393,7 +1404,7 @@ GUITAR = [g_jazz_box, g_texas_shuffle, g_wailing_blues, g_ambient_djent, g_hero_
 BASS = [b_upright_jazz, b_blues_round, b_prog_biamp, b_metal_grind, b_synth_ambient, b_fuzz_bass, b_funk_slap, b_nu_low, b_pop_pick, b_lab]
 KEYS = [k_jazz_piano, k_blues_organ, k_cathedral_piano, k_hero_pad, k_dark_pad, k_glass_rhodes, k_electro_pads, k_loop_synth,
         k_strings_wash, k_funk_clav, k_nu_pad, k_pop_piano]
-VOICE = [v_crooner, v_blues_shout, v_halo, v_metal_scream, v_ethereal, v_indie_double, v_grunge_raw, v_funk_rap, v_whisper_scream, v_pop_tuned]
+VOICE = [v_karaoke, v_crooner, v_blues_shout, v_halo, v_metal_scream, v_ethereal, v_indie_double, v_grunge_raw, v_funk_rap, v_whisper_scream, v_pop_tuned]
 DRUMS = [d_brushes, d_vintage, d_studio, d_metal, d_lofi]
 
 def guard_edits():

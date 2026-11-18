@@ -23,7 +23,7 @@ export function LoadingPage({ rig, linkLost, onSkip }) {
     } catch (e) { /* l'état WebSocket dira la suite */ }
     setTimeout(() => setBusy(''), 3000);
   };
-  const label = { restart: 'Restart REAPER', wait: 'Keep waiting', setup: 'Set up' };
+  const label = { restart: 'Restart ' + (r.engine || 'the engine'), wait: 'Keep waiting', setup: 'Set up' };
   return html`<div class="ld">
     ${linkLost ? html`<div class="link-lost">⚠ Bridge link lost — reconnecting…</div>` : ''}
     <div class="ld-body">

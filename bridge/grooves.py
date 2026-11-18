@@ -491,12 +491,13 @@ def _remap_bytes(b, mapping):
     return bytes(out)
 
 
-def install(name, data, use=None, pack=None, mapping=None):
+def install(name, data, use=None, pack=None, mapping=None, meta=None):
     """Un groove reçu de golem.fm AVEC ce qu'il en sait (job `groove-install`, 2026-11-18, décidé par le mainteneur) :
     son usage, son pack d'origine et sa correspondance de notes — golem.fm garde le fichier à l'octet près et envoie
     la table ; rien n'est deviné ici. Le fichier reçu est l'ORIGINAL : gardé dans .orig/ dès qu'une correspondance est
     donnée, et le .mid joué est sa version renumérotée (comme `remap`). Une réinstallation REPART DE ZÉRO : l'ancienne
-    fiche et l'ancien original ne survivent pas sous le nouveau fichier. Rend {ok, groove:{id, use, pack, remapped}}."""
+    fiche et l'ancien original ne survivent pas sous le nouveau fichier. `meta` : ce qu'un pack sait en plus (genre,
+    tempo, bars, kit). Rend {ok, groove:{id, name, file, notes, bars, use, pack, remapped}}."""
     if use is not None and use not in USES:
         return {"ok": False, "error": f"use: one of {', '.join(USES)}"}
     try:
@@ -512,7 +513,7 @@ def install(name, data, use=None, pack=None, mapping=None):
     with contextlib.suppress(OSError):
         os.remove(os.path.join(ORIG_DIR, gid + ".mid"))          # l'original d'AVANT n'est plus celui de ce fichier
     idx = _read_meta()
-    tags = {}
+    tags = {k: meta.get(k) for k in ("genre", "tempo", "bars", "kit") if meta.get(k) is not None} if isinstance(meta, dict) else {}
     if use:
         tags["use"] = use
     if pack:
@@ -525,7 +526,7 @@ def install(name, data, use=None, pack=None, mapping=None):
         rr = remap(gid, m)
         if not rr.get("ok"):
             return rr
-    return {"ok": True, "groove": {"id": gid, "use": use, "pack": tags.get("pack"), "remapped": bool(m)}}
+    return {"ok": True, "groove": {**r["groove"], "use": use, "pack": tags.get("pack"), "remapped": bool(m)}}
 
 
 def remap(gid, mapping):

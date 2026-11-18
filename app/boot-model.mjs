@@ -14,6 +14,9 @@ export const DEADLINES = (lastTook) => {
 const fmt = s => s == null ? '' : (s < 10 ? s.toFixed(1) : Math.round(s)) + ' s';
 const since = (boot, step) => boot.steps && boot.steps[step] != null ? boot.steps[step] - boot.t0 : null;
 
+export const engineId = st => ((st || {}).engine || {}).id || 'reaper';
+export const engineName = st => ((st || {}).engine || {}).name || 'REAPER';
+
 export const bootRows = (st, extra) => {
   st = st || {}; extra = extra || {};
   const boot = st.boot || { t0: 0, now: 0, steps: {} };
@@ -26,11 +29,14 @@ export const bootRows = (st, extra) => {
   // 1. le bridge : la page a sa réponse
   rows.push({ id: 'bridge', name: 'Bridge', state: 'ok', text: 'up' + (st.devices_online && st.devices_online.length ? ' · ' + st.devices_online.length + ' device' + (st.devices_online.length > 1 ? 's' : '') + ' connected' : ''), ms: fmt(0.3) });
   // 2. le moteur : process, puis lien OSC
+  // LE MOTEUR PAR SON NOM (st.engine, 2026-11-18) : l'écran disait « REAPER » sous le Golem Engine. Un bridge plus
+  // ancien que la page n'envoie pas st.engine : c'était REAPER.
+  const E = engineName(st);
   const rp = since(boot, 'reaper'), osc = since(boot, 'osc');
-  let s2 = 'on', t2 = 'starting REAPER…', ms2 = fmt(now);
-  if (osc != null) { s2 = 'ok'; t2 = 'REAPER started · talking (OSC)'; ms2 = fmt(osc); }
-  else if (rp != null) { t2 = 'REAPER started · waiting for it to answer…'; if (now - rp > dl.osc + (extra.osc || 0)) { s2 = 'late'; t2 = 'REAPER started but is not answering (OSC silent for ' + Math.round(now - rp) + ' s)'; } }
-  else if (now > dl.reaper + (extra.reaper || 0)) { s2 = 'late'; t2 = 'REAPER has not started after ' + Math.round(now) + ' s'; }
+  let s2 = 'on', t2 = 'starting ' + E + '…', ms2 = fmt(now);
+  if (osc != null) { s2 = 'ok'; t2 = E + ' started · talking (OSC)'; ms2 = fmt(osc); }
+  else if (rp != null) { t2 = E + ' started · waiting for it to answer…'; if (now - rp > dl.osc + (extra.osc || 0)) { s2 = 'late'; t2 = E + ' started but is not answering (OSC silent for ' + Math.round(now - rp) + ' s)'; } }
+  else if (now > dl.reaper + (extra.reaper || 0)) { s2 = 'late'; t2 = E + ' has not started after ' + Math.round(now) + ' s'; }
   if (boot.failed && s2 !== 'ok') { s2 = 'late'; t2 = boot.failed; }
   rows.push({ id: 'reaper', name: 'Audio engine', state: s2, text: t2, ms: ms2, actions: s2 === 'late' ? ['restart', 'wait'] : [] });
   // 3. la carte son
@@ -81,12 +87,13 @@ export const bootRows = (st, extra) => {
   // Dite en orange avec « Set up » (Settings ▸ About ▸ REAPER) ; `soft` : elle ne fait ni « traîner » le démarrage
   // (pas de « Open the app anyway ») ni rester l'écran (pas `err`). Licence là, ou pas encore lue : pas de ligne.
   const rl = (boot.services && boot.services.reaper) || {};
-  if (rl.ok === false) rows.push({ id: 'lic', name: 'REAPER', state: 'late', soft: true, ms: '', actions: ['setup'],
+  // … et seulement quand REAPER EST le moteur : sous le Golem Engine sa licence ne regarde pas ce démarrage
+  if (rl.ok === false && engineId(st) === 'reaper') rows.push({ id: 'lic', name: 'REAPER', state: 'late', soft: true, ms: '', actions: ['setup'],
     text: rl.present && rl.state === 'evaluation' ? 'evaluation — this REAPER does not accept the license on this computer'
       : 'evaluation — add your license to remove the reminder' });
   const late = rows.some(r => r.state === 'late' && !r.soft);
   const servicesError = rows.some(r => r.err);
-  return { rows, done: !!boot.done, late, servicesError, failed: boot.failed || null, os: osName, lastTook: boot.last_took || null, elapsed: now };
+  return { rows, done: !!boot.done, late, servicesError, failed: boot.failed || null, os: osName, engine: E, lastTook: boot.last_took || null, elapsed: now };
 };
 
 // l'écran s'affiche à la place de /live tant que le démarrage n'est pas fini — sauf si l'utilisateur est sorti

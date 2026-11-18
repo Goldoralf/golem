@@ -1072,6 +1072,38 @@ def _kit_install(job):
     return {"kit": {"id": (r.get("kit") or {}).get("id")}}
 
 
+def _groove_render(job):
+    """`{action:"groove-render", sha, name?, kit, tempo?, remap?}` (golem.fm « Render on my golem », 2026-11-18) : rend
+    UN groove sur UN kit et envoie le clip — le groove n'a pas à être installé ici, le blob est son .mid. `tempo` :
+    file (défaut) | half | patch | un nombre de BPM. Le clip (opus stéréo) part comme une démo de patch
+    (`POST /api/ext/tones/assets`) puis est retiré du rack. Ack {kit, bpm, clip:{sha256, duration}}. Refus dits : mode
+    verrouillé / Gig, prise en cours, kit absent ou qui ne joue pas ici, .mid illisible, un rendu déjà en cours."""
+    from . import drum_preview as DP, preview as preview_mod
+    from .state import state
+    mode = state.mode or {}
+    if mode.get("id") == "gig" or (mode.get("ui") or {}).get("locked"):
+        raise RuntimeError("rack is in a locked/gig mode — try later")
+    if (state.perf or {}).get("recording"):
+        raise RuntimeError("a take is recording — try after it")
+    kit = str(job.get("kit") or "")
+    if not kit:
+        raise RuntimeError("groove-render: kit required")
+    data = _blob_bytes(job, ".groove-render.tmp")
+    r = DP.render_blob(data, kit, tempo=job.get("tempo") or "file", mapping=job.get("remap"), seq=next(_pv_seq),
+                       patch_bpm=getattr(state, "bpm", None))
+    if not r.get("ok"):
+        raise RuntimeError("groove-render: " + str(r.get("error")))
+    try:
+        sha = str(job.get("sha") or (job.get("blob") or {}).get("sha256") or "groove")[:12]
+        clip = preview_mod.push_clip(f"groove-{sha}", kit, r["opus"])
+    finally:
+        with __import__("contextlib").suppress(OSError):
+            os.remove(os.path.join(C.ROOT, r["opus"]))
+    if not clip:
+        raise RuntimeError("groove-render: the clip could not be uploaded to golem.fm")
+    return {"kit": kit, "bpm": r["bpm"], "clip": clip, "_log": f"groove rendered on '{kit}' at {r['bpm']} BPM"}
+
+
 def _groove_install(job):
     """Installe un groove .mid GM poussé par golem.fm. job = {action:"groove-install", sha, name, use?, pack?, remap?}.
     2026-11-18 (bibliothèque de grooves de golem.fm, décidé par le mainteneur) : `use` (loop|oneshot|fill|intro|end),
@@ -1089,7 +1121,8 @@ def _groove_install(job):
 def _groove_pack(job):
     """Installe un LOT de grooves (.groovepack zip = pack.json + grooves/*.mid) — contrat Addendum 10
     + extensions Addendum 11/12 : `kit` (suggestion, propagée au sidecar de chaque groove) et `song`
-    (arrangement segments[{file,mode,times}] -> _songs du sidecar, times 0=∞ pour mode loop).
+    (arrangement segments[{file,mode,times}] -> _songs du sidecar, times 0=∞ pour mode loop) ; par groove, `use` et
+    `remap` (2026-11-18).
     job = {action:"groove-pack", sha, name?}. Tolère le partiel : un SMF invalide -> skipped, le pack
     ne casse pas. Ack {name, grooves:[{id,name,file}], skipped:[{file,reason}], song?}."""
     import io, json, zipfile
@@ -1109,10 +1142,11 @@ def _groove_pack(job):
                 mid = zf.read(rel)                                # chemin relatif au zip (grooves/x.mid)
             except Exception:
                 skipped.append({"file": rel, "reason": "absent du zip"}); continue
-            r = grooves.save_groove(g.get("name") or rel,
-                                    mid, {"genre": g.get("genre"), "tempo": g.get("tempo"),
-                                          "bars": g.get("bars"), "kit": kit_sug,
-                                          "pack": job.get("name") or manifest.get("name")})
+            # `use` et `remap` par groove (2026-11-18, comme groove-install) : l'usage et la correspondance de notes
+            # voyagent avec chaque fichier ; un usage ou une table invalides -> ce groove-là est sauté, avec sa raison
+            r = grooves.install(g.get("name") or rel, mid, use=g.get("use"), pack=job.get("name") or manifest.get("name"),
+                                mapping=g.get("remap"),
+                                meta={"genre": g.get("genre"), "tempo": g.get("tempo"), "bars": g.get("bars"), "kit": kit_sug})
             if r.get("ok"):
                 grooves_out.append(r["groove"]); relmap[rel] = r["groove"]["id"]
             else:
@@ -1449,6 +1483,7 @@ _HANDLERS = {
     "set-appearance": lambda j: _set_appearance(j),
     "kit-install": lambda j: _kit_install(j),
     "kit-pad-set": lambda j: _kit_pad_set(j),
+    "groove-render": lambda j: _groove_render(j),
     "groove-install": lambda j: _groove_install(j),
     "groove-pack": lambda j: _groove_pack(j),
     "sample-pack": lambda j: _sample_pack(j),

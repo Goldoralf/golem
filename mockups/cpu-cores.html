@@ -1,0 +1,102 @@
+<!doctype html>
+<!-- MAQUETTE (2026-11-18) : System ▸ System ▸ CPU cores — quels cœurs le son utilise, et à combien.
+     Statique, chiffres fabriqués mais plausibles (i9-13900H : 6 cœurs P en 12 fils + 8 cœurs E). 1024×600, sans défilement. -->
+<html lang="en"><head><meta charset="utf-8"><title>CPU cores — mockup</title>
+<style>
+:root{color-scheme:dark;--bg:#0d0f12;--panel:#15191f;--panel2:#1c2129;--line:#262d37;--text:#e7ecf2;--muted:#8a94a3;
+  --accent:#ff5a3c;--rock:#ff851b;--funk:#2ecc71;--blues:#3d9be9;--sect:#b06cf0}
+*{box-sizing:border-box} html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;width:1024px;height:600px}
+.top{height:56px;display:flex;align-items:center;gap:22px;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.brand{font:700 22px ui-monospace,monospace}.brand i{color:var(--accent);font-style:normal}
+.nav{display:flex;gap:20px;color:var(--muted);font-weight:600}.nav b{color:var(--text);border-bottom:2px solid var(--sect);padding-bottom:16px;margin-bottom:-18px}
+.sub{display:flex;gap:22px;padding:10px 22px 0;border-bottom:1px solid var(--line);margin:0 22px;font-weight:600;color:var(--muted)}
+.sub b{color:var(--text);border-bottom:2px solid var(--sect);padding-bottom:8px}.sub span{padding-bottom:8px}
+.page{display:grid;grid-template-columns:270px 1fr;gap:12px;padding:12px 22px;height:calc(600px - 56px - 41px)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+h3{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.src{display:flex;flex-direction:column;gap:6px}
+.pick{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);font-weight:600}
+.pick.on{border-color:var(--sect);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sect) 45%,transparent)}
+.pick small{color:var(--muted);font-weight:500;margin-left:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--funk)}
+.scenes{display:flex;gap:6px;margin-top:4px}.scenes span{flex:1;text-align:center;min-height:40px;line-height:40px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);font-weight:700}
+.scenes .on{background:var(--accent);border-color:var(--accent);color:#fff}
+.facts{margin-top:10px;display:grid;grid-template-columns:1fr auto;row-gap:5px;font-size:13px}.facts span{color:var(--muted)}.facts b{text-align:right}
+.ok{color:var(--funk)}.warn{color:var(--rock)}
+.right{display:flex;flex-direction:column;gap:10px;min-width:0}
+.hd{display:flex;align-items:baseline;gap:10px}.hd b{font-size:15px}.hd small{color:var(--muted)}
+.legend{margin-left:auto;display:flex;gap:12px;font-size:12px;color:var(--muted)}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.cores{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.core{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 6px 5px;text-align:center}
+.core.busy{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.core .n{font-size:11px;color:var(--muted);display:flex;justify-content:space-between}.core .n em{font-style:normal;font-weight:700;color:var(--blues)}.core .n em.e{color:var(--muted)}
+.bar{height:44px;border-radius:5px;background:#0f1216;margin:4px 0;position:relative;overflow:hidden}
+.bar .o,.bar .g{position:absolute;left:0;right:0;bottom:0}.bar .o{background:#3a4352}.bar .g{background:var(--accent)}
+.core b{font-size:13px}.core b small{font-size:10px;color:var(--muted);font-weight:500}
+.lanes{display:grid;grid-template-columns:1fr;gap:5px}
+.lane{display:grid;grid-template-columns:190px 1fr 64px 92px;align-items:center;gap:10px;min-height:26px;font-size:13px}
+.lane .nm{font-weight:700}.lane .nm small{color:var(--muted);font-weight:500;margin-left:6px}
+.track{height:10px;border-radius:5px;background:#0f1216;overflow:hidden}.track i{display:block;height:100%;background:var(--funk)}.track i.t{background:var(--rock)}
+.lane .pc{text-align:right;font-weight:700}.lane .on{color:var(--muted);font-size:12px;text-align:right}
+.note{font-size:12px;color:var(--muted);margin-top:2px}
+</style></head><body>
+<div class="top"><div class="brand"><i>/</i>golem</div>
+  <div class="nav"><span>Mode</span><b>System</b><span>Gear</span><span>Engines</span><span>Content</span><span>Connect</span><span>About</span></div></div>
+<div class="sub"><span>Dashboard</span><span>Health</span><b>CPU cores</b></div>
+<div class="page">
+  <div class="card src">
+    <h3>What to measure</h3>
+    <div class="pick on"><span class="dot"></span>What plays now<small>Live</small></div>
+    <div class="pick">Load a patch or preset…<small>▾</small></div>
+    <h3 style="margin-top:8px">Eight-String Nu · scene</h3>
+    <div class="scenes"><span>A</span><span>B</span><span>C</span><span class="on">D</span><span>E</span></div>
+    <div class="facts">
+      <span>Busiest core</span><b class="ok">core 3 · 44 %</b>
+      <span>Engine load (whole cycle)</span><b>47 %</b>
+      <span>Dropouts, last 10 min</span><b class="ok">0</b>
+      <span>Buffer</span><b>192 smp · 4.0 ms</b>
+      <span>CPU boost</span><b class="ok">on · automatic</b>
+    </div>
+    <p class="note">Measured over the last 5 seconds. Each lane runs on one core at a time: it is the busiest core, not their sum, that decides whether the sound drops out.</p>
+  </div>
+  <div class="right">
+    <div class="card">
+      <div class="hd"><b>20 cores</b><small>13th Gen Intel Core i9-13900H · P = performance, E = efficiency</small>
+        <div class="legend"><span><i style="background:var(--accent)"></i>golem's sound</span><span><i style="background:#3a4352"></i>everything else</span></div></div>
+      <div class="cores" style="margin-top:8px">
+        <div class="core"><div class="n"><span>0</span><em>P</em></div><div class="bar"><div class="o" style="height:14%"></div><div class="g" style="height:6%"></div></div><b>14<small> %</small></b></div>
+        <div class="core"><div class="n"><span>1</span><em>P</em></div><div class="bar"><div class="o" style="height:5%"></div></div><b>5<small> %</small></b></div>
+        <div class="core"><div class="n"><span>2</span><em>P</em></div><div class="bar"><div class="o" style="height:31%"></div><div class="g" style="height:27%"></div></div><b>31<small> %</small></b></div>
+        <div class="core busy"><div class="n"><span>3</span><em>P</em></div><div class="bar"><div class="o" style="height:44%"></div><div class="g" style="height:41%"></div></div><b>44<small> %</small></b></div>
+        <div class="core"><div class="n"><span>4</span><em>P</em></div><div class="bar"><div class="o" style="height:22%"></div><div class="g" style="height:18%"></div></div><b>22<small> %</small></b></div>
+        <div class="core"><div class="n"><span>5</span><em>P</em></div><div class="bar"><div class="o" style="height:3%"></div></div><b>3<small> %</small></b></div>
+        <div class="core"><div class="n"><span>6</span><em>P</em></div><div class="bar"><div class="o" style="height:12%"></div><div class="g" style="height:9%"></div></div><b>12<small> %</small></b></div>
+        <div class="core"><div class="n"><span>7</span><em>P</em></div><div class="bar"><div class="o" style="height:4%"></div></div><b>4<small> %</small></b></div>
+        <div class="core"><div class="n"><span>8</span><em>P</em></div><div class="bar"><div class="o" style="height:9%"></div><div class="g" style="height:4%"></div></div><b>9<small> %</small></b></div>
+        <div class="core"><div class="n"><span>9</span><em>P</em></div><div class="bar"><div class="o" style="height:2%"></div></div><b>2<small> %</small></b></div>
+        <div class="core"><div class="n"><span>10</span><em>P</em></div><div class="bar"><div class="o" style="height:7%"></div></div><b>7<small> %</small></b></div>
+        <div class="core"><div class="n"><span>11</span><em>P</em></div><div class="bar"><div class="o" style="height:3%"></div></div><b>3<small> %</small></b></div>
+        <div class="core"><div class="n"><span>12</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:11%"></div></div><b>11<small> %</small></b></div>
+        <div class="core"><div class="n"><span>13</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:6%"></div><div class="g" style="height:3%"></div></div><b>6<small> %</small></b></div>
+        <div class="core"><div class="n"><span>14</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:8%"></div></div><b>8<small> %</small></b></div>
+        <div class="core"><div class="n"><span>15</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:4%"></div></div><b>4<small> %</small></b></div>
+        <div class="core"><div class="n"><span>16</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:15%"></div></div><b>15<small> %</small></b></div>
+        <div class="core"><div class="n"><span>17</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:3%"></div></div><b>3<small> %</small></b></div>
+        <div class="core"><div class="n"><span>18</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:5%"></div></div><b>5<small> %</small></b></div>
+        <div class="core"><div class="n"><span>19</span><em class="e">E</em></div><div class="bar"><div class="o" style="height:2%"></div></div><b>2<small> %</small></b></div>
+      </div>
+    </div>
+    <div class="card" style="flex:1;min-height:0">
+      <h3>Where the sound runs</h3>
+      <div class="lanes">
+        <div class="lane"><span class="nm">Guitar 1<small>Eight-String Nu</small></span><div class="track"><i style="width:41%"></i></div><span class="pc">41 %</span><span class="on">core 3</span></div>
+        <div class="lane"><span class="nm">· branch B<small>second amp</small></span><div class="track"><i style="width:27%"></i></div><span class="pc">27 %</span><span class="on">core 2</span></div>
+        <div class="lane"><span class="nm">Voice<small>Crooner</small></span><div class="track"><i style="width:18%"></i></div><span class="pc">18 %</span><span class="on">core 4</span></div>
+        <div class="lane"><span class="nm">golem's services<small>click, looper, takes</small></span><div class="track"><i style="width:9%"></i></div><span class="pc">9 %</span><span class="on">cores 0, 6</span></div>
+      </div>
+      <p class="note">Estimated for this scene before you play: Guitar 1 <b style="color:var(--text)">35 %</b> — measured: 41 %.</p>
+    </div>
+  </div>
+</div>
+</body></html>

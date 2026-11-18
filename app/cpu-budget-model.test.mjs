@@ -58,8 +58,11 @@ test('formatting: whole percents, cores as information, bars clamped', () => {
 });
 
 test('the verdict chip names the busiest lane', () => {
-  assert.deepEqual(verdictChip(EST), { level: 'tight', text: 'Tight · lane Guitar 78 %' });
-  assert.deepEqual(verdictChip({ verdict: 'ok', worst: { lane: 'voice-1', pct: 34 }, lanes: EST.lanes }), { level: 'ok', text: 'Plays · lane Voice 34 %' });
+  assert.deepEqual(verdictChip(EST), { level: 'tight', text: 'Core CPU load: 78 % · lane Guitar' });
+  assert.deepEqual(verdictChip({ verdict: 'ok', worst: { lane: 'voice-1', pct: 34 }, lanes: EST.lanes }), { level: 'ok', text: 'Core CPU load: 34 % · lane Voice' });
+  // une seule lane (un patch) : son nom n'est pas répété — on est dessus
+  assert.deepEqual(verdictChip({ verdict: 'ok', worst: { lane: 'guitar-1', pct: 36 }, lanes: [{ id: 'guitar-1', name: 'Eight-String Nu' }] }),
+    { level: 'ok', text: 'Core CPU load: 36 %' });
   assert.deepEqual(verdictChip({ verdict: 'unknown', worst: {}, lanes: [] }), { level: 'unknown', text: 'CPU not measured' });
   assert.equal(verdictChip(null), null);
 });

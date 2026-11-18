@@ -100,3 +100,15 @@ test('un golem neuf (ni golem.fm ni TONE3000 réglés) : l’écran se retire d�
   assert.equal(r.servicesError, false); assert.equal(r.late, false);
   assert.equal(showBoot(s, null), false);
 });
+
+test('le moteur est dit par son nom : sous le Golem Engine l’écran ne parle plus de REAPER', () => {
+  const base = { boot: { t0: 100, now: 140, steps: { reaper: 102 }, services: { fm: { configured: false }, t3k: { ok: true }, reaper: { ok: false, present: false } } } };
+  const ge = bootRows({ ...base, engine: { id: 'ardour', name: 'Golem Engine' } }, {});
+  const row = ge.rows.find(x => x.id === 'reaper');
+  assert.match(row.text, /^Golem Engine started but is not answering/);
+  assert.equal(ge.engine, 'Golem Engine');
+  assert.ok(!ge.rows.some(x => /REAPER/.test(x.text) || x.name === 'REAPER'));       // ni son nom, ni sa licence
+  const rp = bootRows(base, {});                                                     // un bridge plus ancien : REAPER
+  assert.match(rp.rows.find(x => x.id === 'reaper').text, /^REAPER started but is not answering/);
+  assert.ok(rp.rows.some(x => x.id === 'lic'));
+});

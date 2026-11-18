@@ -308,6 +308,60 @@ def _hear(gen, path, kit, bpm, key, opus, seq):
         PV._gen_lock.release()
 
 
+def render_blob(data, kit_id, tempo="file", mapping=None, seq=0, patch_bpm=None):
+    """UN GROOVE NON INSTALLÉ rendu sur un kit (golem.fm « Render on my golem », job `groove-render`, décidé par le
+    mainteneur le 2026-11-18). `data` = les octets du .mid ; `mapping` = sa correspondance de notes, appliquée en
+    mémoire ; `tempo` = file | half | patch | un nombre de BPM. Le fichier n'entre PAS dans library/grooves : il vit
+    dans un fichier temporaire le temps du rendu. Synchrone ; un seul rendu à la fois (le verrou des démos).
+    Rend {ok, opus (chemin relatif au dépôt), bpm, kit} ou {ok: False, error}. L'appelant retire le clip."""
+    import tempfile
+    from . import grooves as G, kit_import as KI, preview as PV, tones_sync as TS
+    if not data or data[0:4] != b"MThd":
+        return {"ok": False, "error": "not a Standard MIDI File (.mid)"}
+    kit = _get_kit(kit_id)
+    if not kit:
+        return {"ok": False, "error": f"kit « {kit_id} » not found on this golem"}
+    ok, why = TS.kit_available(kit)
+    if ok is False:
+        return {"ok": False, "error": f"kit « {kit_id} » cannot play here: {why}"}
+    try:
+        m = {int(k): int(v) for k, v in (mapping or {}).items()}
+    except (TypeError, ValueError, AttributeError):
+        return {"ok": False, "error": "remap: {note: note}"}
+    if any(not (0 <= k < 128 and 0 <= v < 128) for k, v in m.items()):
+        return {"ok": False, "error": "notes are 0..127"}
+    if m:
+        data = G._remap_bytes(data, m)
+    fd, tmp = tempfile.mkstemp(prefix="golem-groove-", suffix=".mid")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
+        a = G.analyze(tmp) or {}
+        fb = float(a.get("bpm") or 120.0)
+        try:
+            bpm = {"file": fb, "half": round(fb / 2, 1), "patch": float(patch_bpm or 120.0)}.get(tempo) or float(tempo)
+        except (TypeError, ValueError):
+            return {"ok": False, "error": "tempo: file, half, patch or a number of BPM"}
+        if not 20 <= bpm <= 400:
+            return {"ok": False, "error": "tempo out of range (20–400 BPM)"}
+        key = hashlib.sha1(json.dumps([hashlib.sha256(data).hexdigest(), kit_id, _kit_fp(kit), round(bpm, 1)]).encode()).hexdigest()[:16]
+        opus = os.path.join(C.PREVIEWS_DIR, "groove-render", key + ".opus")
+        if not PV._gen_lock.acquire(blocking=False):
+            return {"ok": False, "error": "a demo is already rendering — try again in a moment"}
+        try:
+            dur, lines = groove_lines(tmp, bpm)
+            lines = KI.translate_lines(lines, gm_net(kit))
+            done, why = _render(kit, dur, lines, opus, seq, f"gr-{key}")
+        finally:
+            PV._gen_lock.release()
+        if not done:
+            return {"ok": False, "error": why or "the render failed"}
+        return {"ok": True, "opus": C.rel_posix(opus), "bpm": round(bpm, 1), "kit": kit_id}
+    finally:
+        with __import__("contextlib").suppress(OSError):
+            os.remove(tmp)
+
+
 # ── ce que la page montre ─────────────────────────────────────────────────────────────────────────────────────────
 def catalog():
     """Library ▸ Drums ▸ Kits : chaque kit (batteries et pads) avec son type de dessin, son origine et ses démos."""

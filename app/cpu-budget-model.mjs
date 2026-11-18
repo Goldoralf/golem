@@ -51,9 +51,13 @@ export function verdictChip(est) {
   const w = est.worst || {};
   const level = verdictOf(est.verdict, w.pct);
   if (level === 'unknown' && num(w.pct) == null) return { level, text: 'CPU not measured' };
-  const lane = laneLabel(est, w.lane);
-  const where = lane ? ' · lane ' + lane : '';
-  return { level, text: VERDICT_WORD[level] + where + (num(w.pct) != null ? ' ' + fmtPct(w.pct) : '') };
+  // « Core CPU load: 36 % » (le mainteneur, 2026-11-18 : « Plays · Eight-String Nu 36 % » ne disait pas de quoi était
+  // ce pourcentage, et nommait le patch sur lequel on est déjà). Le niveau reste dit par la couleur de la puce. La lane
+  // n'est nommée que s'il y en a PLUSIEURS : c'est alors elle qui dit où regarder.
+  const lanes = ((est.lanes) || []).length;
+  const lane = lanes > 1 ? laneLabel(est, w.lane) : '';
+  if (num(w.pct) == null) return { level, text: VERDICT_WORD[level] };
+  return { level, text: 'Core CPU load: ' + fmtPct(w.pct) + (lane ? ' · lane ' + lane : '') };
 }
 
 /** « A 78 · B 41 · C 74 » — les scènes dans l'ordre donné (celui du preset), sinon celui de by_scene */

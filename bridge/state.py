@@ -16,6 +16,18 @@ def _foot_heard():
         return None
 
 
+def _engine_brief():
+    """Le moteur audio en service, pour ce que l'écran affiche (l'écran de chargement disait « REAPER » sous le Golem
+    Engine, 2026-11-18). Jamais d'exception : au pire REAPER, le moteur historique."""
+    try:
+        from . import engine, engines
+        eid = engine.get().id
+        name = next((e.get("name") for e in engines.descriptors() if e.get("id") == eid), None)
+        return {"id": eid, "name": name or eid}
+    except Exception:
+        return {"id": "reaper", "name": "REAPER"}
+
+
 class RigState:
     def __init__(self):
         self.reaper_connected = False   # lien OSC actif (trafic reçu)
@@ -186,6 +198,7 @@ class RigState:
         from . import first_check                # la vérification de première installation : à faire ? (§2)
         return {
             "boot": boot_progress.doc(),
+            "engine": _engine_brief(),               # {id, name} : l'écran dit le moteur par son nom, jamais « REAPER » d'office
             "health": health.brief(),
             "first_check": first_check.brief(),
             "startup": startup_home.describe(),      # l'accueil (chip ⌂ de /live, menus ⋯)

@@ -19,6 +19,11 @@ BLOCK = {
     ("pedal", "ir"): "cab",
     ("amp", "ir"): "cab",
     ("amp-cab", "ir"): "cab",
+    # TONE3000 range certaines IR sous « experimental » (vu le 2026-11-18 : la tone 64815, le 4x10 Gallien-Krueger du
+    # patch d'usine Bass Funk Slap, cataloguée « cab » chez nous — une installation neuve refusait de la télécharger,
+    # et le patch restait sans baffle). Une IR se joue par convolution quelle que soit son étiquette : courte, le bloc
+    # Cab ; longue, sa mesure à l'installation (ir_kind) la donne à ir-fx.
+    ("experimental", "ir"): "cab",
     ("outboard", "ir"): "ir-fx",                # lot B (docs/library-tones.md §8) : l'IR d'un appareil, jouée ENTIÈRE
 }
 # tous les blocs qui savent la jouer (le sélecteur de capture du Designer filtre dessus)

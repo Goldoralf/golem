@@ -149,3 +149,22 @@ def test_les_captures_se_telechargent_hors_de_golem(tmp_path, monkeypatch):
     assert d["phase"] == "done" and d["done"] == 2 and d["total"] == 2 and d["failed"] == [{"tone": 2, "why": "x"}]
     monkeypatch.setattr(F, "captures", lambda: {"missing": []})
     assert FF.run(tick=0.01) == 0
+
+
+def test_le_jeton_golem_fm_se_range_par_la_fonction_de_settings_connect(tmp_path):
+    """La commande que l'installateur lance dans le Python de golem (server.EARLY_TOKEN_PY) : elle range le jeton —
+    `provision.desktop connect` refusait de tourner sous Linux, et rien n'était écrit (VM, 2026-11-18)."""
+    import json
+    import subprocess
+    src = (ROOT / "installer" / "server.py").read_text(encoding="utf-8")
+    snip = src[src.index('EARLY_TOKEN_PY = """') + len('EARLY_TOKEN_PY = """'):]
+    snip = snip[:snip.index('"""')]
+    assert "provision.desktop" not in snip
+    d = str(tmp_path)
+    code = (f"import bridge.config as C, os\nC.CONFIG_DIR={d!r}\nimport bridge.routes_content as R\n"
+            f"R._INTEGRATIONS_PATH=os.path.join({d!r},'integrations.json')\n" + snip)
+    r = subprocess.run([sys.executable, "-c", code], cwd=str(ROOT), input=json.dumps({"golem_token": "TEST-TOKEN-123"}),
+                       capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stderr[-300:]
+    g = json.load(open(tmp_path / "integrations.json"))["golemfm"]
+    assert g.get("token") == "TEST-TOKEN-123" or any(v.get("token") == "TEST-TOKEN-123" for v in (g.get("servers") or {}).values())

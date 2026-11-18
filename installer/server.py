@@ -662,7 +662,10 @@ class Ctx:
         if not tok or S["dry"]:
             return
         try:
-            r = subprocess.run([python, "-m", "provision.desktop", "connect"], cwd=target, input=json.dumps({"golem_token": tok}),
+            # la fonction de Settings ▸ Connect elle-même (bridge, save_integrations), dans le Python de golem.
+            # `provision.desktop connect` fait la même chose mais REFUSE de tourner sous Linux (« this launcher is for
+            # Windows and macOS ») : le jeton n'était pas écrit, vu à la première vraie installation en VM (2026-11-18).
+            r = subprocess.run([python, "-c", EARLY_TOKEN_PY], cwd=target, input=json.dumps({"golem_token": tok}),
                                capture_output=True, text=True, timeout=60)
             ok = r.returncode == 0
         except (OSError, subprocess.SubprocessError):
@@ -691,6 +694,14 @@ class Ctx:
             json.dump({"instrument": S["instrument"], "at": time.strftime("%Y-%m-%d %H:%M")}, f, indent=1)
         log(f"→ instrument « {S['instrument']} » written to config/first-run.json", "profile")
 
+
+EARLY_TOKEN_PY = """
+import asyncio, json, sys
+from bridge import routes_content as R
+body = json.loads(sys.stdin.read() or "{}")
+r = asyncio.run(R.save_integrations({"golemfm": {"token": str(body.get("golem_token") or "")}}))
+sys.exit(0 if isinstance(r, dict) else 1)
+"""
 
 BACK_HTML = b"""<!doctype html><meta charset="utf-8"><title>golem installer</title>
 <style>body{font:16px system-ui;background:#0e0f13;color:#e8e8ea;display:grid;place-items:center;height:100vh;margin:0}</style>

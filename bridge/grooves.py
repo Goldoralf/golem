@@ -7,6 +7,7 @@ Le bloc drums porte des CHEMINS relatifs de .mid ; ce module = la LIB browsable 
 de .mid GM standard (portable depuis n'importe quel pack de loops). Le parse (note-ons,
 mesures) est purement informatif pour l'UI — golem_drums.lua reparse le .mid au play.
 """
+import contextlib
 import os, re, struct
 
 from . import config as C
@@ -488,6 +489,43 @@ def _remap_bytes(b, mapping):
                     out[i] = mapping[b[i]]
                 i += 2
     return bytes(out)
+
+
+def install(name, data, use=None, pack=None, mapping=None):
+    """Un groove reçu de golem.fm AVEC ce qu'il en sait (job `groove-install`, 2026-11-18, décidé par le mainteneur) :
+    son usage, son pack d'origine et sa correspondance de notes — golem.fm garde le fichier à l'octet près et envoie
+    la table ; rien n'est deviné ici. Le fichier reçu est l'ORIGINAL : gardé dans .orig/ dès qu'une correspondance est
+    donnée, et le .mid joué est sa version renumérotée (comme `remap`). Une réinstallation REPART DE ZÉRO : l'ancienne
+    fiche et l'ancien original ne survivent pas sous le nouveau fichier. Rend {ok, groove:{id, use, pack, remapped}}."""
+    if use is not None and use not in USES:
+        return {"ok": False, "error": f"use: one of {', '.join(USES)}"}
+    try:
+        m = {int(k): int(v) for k, v in (mapping or {}).items()}
+    except (TypeError, ValueError, AttributeError):
+        return {"ok": False, "error": "remap: {note: note}"}
+    if any(not (0 <= k < 128 and 0 <= v < 128) for k, v in m.items()):
+        return {"ok": False, "error": "notes are 0..127"}
+    r = save_groove(name, data)
+    if not r.get("ok"):
+        return r
+    gid = r["groove"]["id"]
+    with contextlib.suppress(OSError):
+        os.remove(os.path.join(ORIG_DIR, gid + ".mid"))          # l'original d'AVANT n'est plus celui de ce fichier
+    idx = _read_meta()
+    tags = {}
+    if use:
+        tags["use"] = use
+    if pack:
+        tags["pack"] = str(pack)[:120]
+    idx[gid] = tags
+    if not tags:
+        idx.pop(gid, None)
+    _write_meta(idx)
+    if m:
+        rr = remap(gid, m)
+        if not rr.get("ok"):
+            return rr
+    return {"ok": True, "groove": {"id": gid, "use": use, "pack": tags.get("pack"), "remapped": bool(m)}}
 
 
 def remap(gid, mapping):

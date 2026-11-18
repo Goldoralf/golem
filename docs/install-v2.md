@@ -1,7 +1,7 @@
 # Installation v2 — the Golem Engine by default, accounts first
 
-> **Status: FIXED** (decisions of the maintainer, 2026-11-17) — **lots 1–2 DONE, lots 3–5 CODED on Linux** (see each
-> lot for what was and was not proved).
+> **Status: FIXED** (decisions of the maintainer, 2026-11-17) — **lots 1–5 DONE on Linux**, proved on a fresh VM on
+> 2026-11-18 (§ "The proof on a fresh machine"). Windows and macOS: the engine is not ported yet.
 > Descriptive reference of today's installer: [`installer.md`](installer.md). This page is the plan that replaces
 > parts of it; each lot moves its text there when it ships.
 
@@ -31,9 +31,39 @@
 |---|---|---|
 | 1 | **The engine as a package.** `golem-engine/golem/tools/bundle.py` builds a self-contained archive (the engine, its libraries, the watcher); `provision/golem_engine.py` + `install-golem-engine.sh` place it in `~/opt/golem-engine` (atomic, previous engine kept as `.prev`, receipt); golem finds the engine by one rule everywhere | **DONE** |
 | 2 | **Publishing.** `golem-binaries` workflow `golem-engine.yml` builds the engine from a tag in an `ubuntu:22.04` container, starts the package once, publishes `golem-engine-<version>`; pinned in `provision/downloads.sha256` | **DONE** — release `golem-engine-9.9-g1` (2026-11-18) |
-| 3 | **Installer: engine choice.** REAPER as a checkbox (decision 2), the engine step always and first, the default engine written after the engines are placed | **CODED on Linux** — the real script run in a bare `ubuntu:24.04` container (2026-11-18, `--light`, a stand-in for systemd): Golem Engine 9.9-g1 in `~/opt/golem-engine`, **no REAPER installed**, `config/engine.json` = the Golem Engine, exit 0. Not proved: the first start of golem after such an install, the graphical installer on a fresh machine. Windows and macOS keep REAPER until the engine is ported |
-| 4 | **Installer: accounts first.** An "Accounts" screen right after the checks; the TONE3000 sign-in is written to the installed folder as soon as golem is copied, and the factory captures download **in the background while the sounds download** (`bridge/factory_fetch.py`) | **CODED on Linux** — walked in dry mode and unit-tested; no real sign-in and no real capture download yet |
-| 5 | **Sign-in round trip** with golem.fm (§ below), then TONE3000 in one click through golem.fm's relay — `installer/early.py`, standard library only | **CODED** — never played against golem.fm (its side is not deployed) |
+| 3 | **Installer: engine choice.** REAPER as a checkbox (decision 2), the engine step always and first, the default engine written after the engines are placed | **DONE on Linux** (container run, then the VM of 2026-11-18). Windows and macOS keep REAPER until the engine is ported |
+| 4 | **Installer: accounts first.** An "Accounts" screen right after the checks; the TONE3000 sign-in is written to the installed folder as soon as golem is copied, and the factory captures download **in the background while the sounds download** (`bridge/factory_fetch.py`) | **DONE on Linux** (VM, 2026-11-18) |
+| 5 | **Sign-in round trip** with golem.fm (§ below), then TONE3000 in one click through golem.fm's relay — `installer/early.py`, standard library only | **DONE on Linux**, against the development golem.fm (VM, 2026-11-18); golem.fm's side is not deployed in production yet |
+
+## The proof on a fresh machine (2026-11-18)
+
+A new Ubuntu 24.04 VM (cloud image, 6 cores, 8 GB, no sound card), golem's `main` pushed into it, **the graphical
+installer driven through its real screens** from the host over an SSH tunnel.
+
+- **Without REAPER** (lot 3): 7 min 40. Golem Engine 9.9-g1 in `~/opt/golem-engine`, no `~/opt/REAPER`,
+  `config/engine.json` = the Golem Engine. golem **starts on it by itself** (dummy backend, the VM has no card), the
+  bridge talks to it, no watcher error; a factory patch recalled builds its rig; System ▸ Engines says "REAPER is
+  not installed on this machine".
+- **golem.fm round trip** (lot 5), against the maintainer's development golem.fm: "Continue with golem.fm" → the
+  golem.fm page → "Connect this rack" → back in the installer, "✓ paired — golem-vm". After the install the golem
+  itself answers `paired: true, authed: true`.
+- **TONE3000 through the relay** (lot 5): signed in by the maintainer in 42 s from the address the installer gave.
+- **Captures during the install** (lot 4): the TONE3000 tokens were in the installed folder's `.env` from the first
+  second; the background download started when the Python environment was ready (232 s) and ended with the install
+  (380 s): 34 of 35 captures, then 35 of 35 after the fix below. The patch that built with 11 blocks without
+  captures builds with its 14.
+
+Three defects this run found, fixed:
+- **The golem.fm pairing was not written** on Linux: the installer called `provision.desktop connect`, which refuses
+  to run there. It now calls the bridge's own function in golem's Python. (The screen said so honestly: "the pairing
+  could not be written — pair again in golem".)
+- **One factory capture could not be downloaded on a new machine**: TONE3000 now files the Gallien-Krueger 4x10
+  impulse response of *Bass Funk Slap* under "experimental", a label golem had no block for. An impulse response
+  labelled so is played by the Cab block (`bridge/playable.py`).
+- The installer's server stops by itself when no page talks to it for a while: a script must use it at once.
+
+Seen, not explained: after the install **no preset is loaded** at the first start ("nothing loaded yet") when no
+golem window is open. Not tried: a machine with a sound card, the REAPER checkbox ticked, Mint and Debian.
 
 ## Lot 1 — what exists
 

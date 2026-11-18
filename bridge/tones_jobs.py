@@ -1073,12 +1073,17 @@ def _kit_install(job):
 
 
 def _groove_install(job):
-    """Installe un groove .mid GM poussé par golem.fm. job = {action:"groove-install", sha, name}."""
+    """Installe un groove .mid GM poussé par golem.fm. job = {action:"groove-install", sha, name, use?, pack?, remap?}.
+    2026-11-18 (bibliothèque de grooves de golem.fm, décidé par le mainteneur) : `use` (loop|oneshot|fill|intro|end),
+    `pack` (le dossier d'origine, une étiquette) et `remap` {"22": 42…} voyagent avec le fichier — l'original est gardé
+    dans .orig/, le .mid joué est renuméroté. L'id vient de `name` (golem.fm l'envoie unique) ; le même id est remplacé,
+    fiche comprise. Ack {groove:{id, use, pack, remapped}}."""
     from . import grooves
-    r = grooves.save_groove(job.get("name") or "groove.mid", _blob_bytes(job, ".groove-install.tmp"))
+    r = grooves.install(job.get("name") or "groove.mid", _blob_bytes(job, ".groove-install.tmp"),
+                        use=job.get("use"), pack=job.get("pack"), mapping=job.get("remap"))
     if not r.get("ok"):
         raise RuntimeError("groove-install: " + str(r.get("error")))
-    return {"groove": {"id": (r.get("groove") or {}).get("id")}}
+    return {"groove": r["groove"]}
 
 
 def _groove_pack(job):

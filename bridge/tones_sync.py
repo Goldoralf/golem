@@ -26,6 +26,7 @@ chaque sync — + hashes des docs déjà poussés + résultat du dernier sync.
 Les photos d'amplis (images.json) sont des FICHIERS locaux, pas des URLs : pas
 de photo_url dans les packs v1 (le contrat le permet).
 """
+import contextlib
 import hashlib, json, os, re, socket, threading, time, urllib.error, urllib.parse, urllib.request
 
 from .rig import nam_architecture
@@ -45,6 +46,21 @@ _TIMEOUT = 15            # méta ; les blobs ont leur propre timeout long
 _ST = {"state": "idle", "msg": "", "error": None, "done": 0, "total": 0, "last": None}
 _lock = threading.Lock()
 _timer = None            # debounce de schedule()
+
+
+def kit_available(kit):
+    """(joue ici ?, pourquoi non) — kits.availability (échantillons, plugin installé), puis le MOTEUR en service : le
+    Golem Engine ne joue pas encore les kits DrumGizmo (bridge/engine/drum_bank.py)."""
+    from . import kits as _k
+    ok, why = _k.availability(kit)
+    if ok is False:
+        return ok, why
+    if (kit or {}).get("engine") == "drumgizmo":
+        with contextlib.suppress(Exception):
+            from . import engine
+            if engine.get().id not in ("reaper", "none", "fake"):
+                return False, "DrumGizmo kits do not play on the Golem Engine yet"
+    return ok, why
 
 
 def status():
@@ -263,6 +279,15 @@ def build_packs(cache):
             # = batteries (« Drums », lecture seule — jamais importées depuis le web)
             engine = k.get("engine") if k.get("engine") in _kits.ENGINES else "rs5k"
             extra = {"kit_id": k["id"], "engine": engine, "factory": bool(k.get("factory"))}
+            # CE KIT JOUE-T-IL ICI ? (2026-11-18, golem.fm « Render on my golem ») : le miroir listait aussi des
+            # batteries dont les échantillons ou le moteur manquent sur cette machine. `available` : true | false ;
+            # absent = on ne sait pas (pas d'inventaire). `why` quand c'est non.
+            with contextlib.suppress(Exception):
+                ok, why = kit_available(k)
+                if ok is not None:
+                    extra["available"] = bool(ok)
+                    if not ok and why:
+                        extra["why"] = why
             # ce que golem.fm LIT pour sa page Drums (2026-11-15) : type de photo, pièces, micros, pads, crédit
             try:
                 from . import drum_preview

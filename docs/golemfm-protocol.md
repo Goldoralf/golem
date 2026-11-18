@@ -92,6 +92,7 @@ Every field (any probe that fails is simply absent — the push still leaves):
 | `keys_instruments` | factory keys instruments `[{type, name, engine, factory, count, items[], sounds?}]`; piano `items` = the piano sfz variants only (since 2026-11-14) |
 | `keys_previews` | keys sounds rendered alone on this rack `[{sound, ref, fingerprint, clips: {ref: {sha256, seconds}}}]`, `sound` = `piano:<stem>` · `ep:<bank>/<program>` · `organ:b3` · `vital:<sha256>` ([`preset-preview.md`](preset-preview.md) §9) |
 | `kit_previews` | drum kit demos rendered on this rack `[{kit, factory, clips: {rock|funk|jazz|metal: {sha256, seconds}}}]`; the clips of **imported** kits are uploaded at idle (once, marked), factory ones come from the `factory-demos` release ([`drums-library.md`](drums-library.md)) |
+| `di_refs` | (2026-11-18) the reference phrases this golem can play for a demo, `[{id, role, name, kind: "audio"\|"midi", available}]` — what `ref` of `generate-preview` / `patch-preview` may be; `available: false` = not recorded yet (the voice phrases) |
 | `drum_kits` | `[{id, name, engine, playable}]`; `playable` = the kit's engine can be mounted on a lane (`avldrums`, `drumgizmo`) — only those are valid values of a `drumkit` block's `kit` (`rigstatus.drum_kits`) |
 | `engine` | what the audio engine really opened (`rigstatus.engine_doc`), or `null`. Linux: `{mode: "ALSA", device, samplerate: null, bsize, latency_ms, latency_source}`. Windows/macOS (from REAPER): `{mode, device, samplerate, bsize, inputs, outputs, input_names[], output_names[], latency_ms, latency_source}` |
 | `health` | `{cpu_pct, ram_used_pct, ram_total_mb, temp_c, xruns_total}` |
@@ -116,6 +117,11 @@ loops forever: not paired → sleep 30 s; answer with jobs, or an answer that re
 again at once; immediate empty answer (a server without `wait`) → back-off 3 s × 1.6 up to 300 s. A plain
 `GET /api/ext/tones/jobs` (no `wait`) is also issued at the start of every tones sync and by the local
 `POST /api/tones-jobs/run`. One pull at a time (`_lock`).
+
+**Trying a job without golem.fm** (2026-11-18): `POST /api/tones-jobs/try {job: {action, …}}` (admin; `tools/check-job.py`)
+runs the same handler on this rack and answers `{ok, ack | error, sent, seconds}`. The job runs for real (a render
+takes the engine, the refusals apply); only its uploads and progress posts are listed in `sent` instead of sent. A job
+that downloads a blob from golem.fm still needs a paired rack.
 
 **Envelope.** Answer `{"jobs": [...]}`. Each job is **flat**: `{id, device, action, created_at, …payload,
 _job?, space?}` — the payload keys sit beside the envelope keys (`JOB_ENVELOPE`). The job id used for

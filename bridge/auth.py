@@ -113,7 +113,7 @@ ADMIN_PATHS = ("/api/auth/qr",       # audit 2026-11-04 (L1) : le QR d'une invit
 # …et l'ÉCRITURE de la config du rack, qu'un téléphone de musicien n'a jamais à toucher (la lire reste permis) :
 # éditer un mode, le recorder, la carte d'entrées, les appareils connus, lancer la file de jobs golem.fm à la main
 ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/recorder",
-                "/api/inputmap", "/api/inputmap/pair", "/api/tones-jobs/run",
+                "/api/inputmap", "/api/inputmap/pair", "/api/tones-jobs/run", "/api/tones-jobs/try",
                 "/api/vst-host/capture/parametric/setup",
                 # Health ▸ Fix (docs/assistant.md §3) : redémarre REAPER, change le buffer — le geste d'un admin
                 "/api/health/fix",

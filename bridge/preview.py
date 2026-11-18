@@ -85,6 +85,20 @@ def _di_index():
         return {}
 
 
+def refs_list():
+    """Les références que ce golem peut jouer : [{id, role, name, kind: "audio"|"midi", available}] — le sélecteur de
+    « Listen » (page Patches) et le battement vers golem.fm (`di_refs`). `available` : le fichier est là (les deux
+    phrases de voix sont dans l'index avant d'être enregistrées)."""
+    out = []
+    for rid, e in sorted(_di_index().items()):
+        if not isinstance(e, dict) or "/" not in rid:
+            continue
+        out.append({"id": rid, "role": rid.split("/", 1)[0], "name": e.get("name") or rid.split("/", 1)[1],
+                    "kind": "midi" if e.get("kind") == "midi" else "audio",
+                    "available": os.path.isfile(os.path.join(C.DI_REFS_DIR, e.get("file") or "\0"))})
+    return out
+
+
 def _main_role(preset):
     """Rôle instrument principal du preset (guitar|bass) depuis l'input map de la carte active."""
     from . import inputmap as _imap
@@ -417,6 +431,7 @@ def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=N
     try:
         _generate_locked(pid, seq, on_scene, in_key=in_key, ref=ref, casting=casting, only=only, max_s=max_s,
                          **({"di_file": di_file} if di_file else {}))
+        _remember_choice(pid, in_key, ref if not di_file else None)
     finally:
         _gen_lock.release()
 
@@ -469,6 +484,73 @@ def _scene_refs(preset, scenes, ref, role, explicit, patch_id=None, casting=None
         elif "clean" in name and ref != "guitar/clean" and _have_di("guitar/clean"):
             refs[sc] = "guitar/clean"
     return refs
+
+
+def _remember_choice(pid, in_key, ref):
+    """La référence CHOISIE à la main pour un patch (« Listen » avec une DI nommée) est gardée dans sa démo (`chosen`) :
+    le rendu au repos et le bouton ↻ la reprennent au lieu de revenir au choix automatique. Un rendu en automatique
+    l'efface."""
+    patch_id = _patch_of(pid)
+    if not patch_id or _ST.get("phase") != "done":
+        return
+    f = os.path.join(C.PREVIEWS_DIR, "patch-" + store._safe_id(patch_id) + ("" if str(in_key) == "1" else "-in" + str(in_key)),
+                     "preview.json")
+    e = store._read_json(f, None)
+    if not isinstance(e, dict):
+        return
+    want = ref if ref and ref != "auto" else None
+    if e.get("chosen") != want:
+        e.pop("chosen", None)
+        if want:
+            e["chosen"] = want
+        store._write_json_atomic(f, e)
+
+
+# ── LES DÉMOS DES PATCHS DE L'UTILISATEUR, AU REPOS (docs/preset-preview.md §9.3, 2026-11-18) ─────────────────────
+_IDLE_PATCH = {"failed": {}, "done": 0, "current": None}
+
+
+def idle_patch_pending():
+    """Le prochain patch de l'UTILISATEUR dont la démo manque ou date d'avant une retouche : (patch_id, in_key, ref) |
+    None. Un patch d'usine a sa démo dans l'archive ; un patch sans entrée de son rôle sur cette carte, un rôle sans
+    phrase (pads), une référence absente (la voix tant qu'elle n'est pas enregistrée) attendent sans bruit."""
+    from . import patches as P, factory
+    for x in factory.mark("patches", P.list_patches()):
+        if not isinstance(x, dict) or x.get("factory") or x.get("role") in BATCH_ROLES_SKIPPED:
+            continue
+        pid_ = x.get("id")
+        if not pid_ or pid_ in _IDLE_PATCH["failed"]:
+            continue
+        in_key = patch_input(pid_)
+        if not in_key:
+            continue
+        chosen = (patch_preview(pid_) or {}).get("chosen")
+        pl = plan(PATCH_PREFIX + pid_, in_key=in_key, ref=chosen)
+        if isinstance(pl, str) or _up_to_date(pl):
+            continue
+        return pid_, in_key, chosen
+    return None
+
+
+def idle_patch_tick(seq):
+    """Rend UNE démo de patch en attente (appelé par le veilleur du repos, qui a déjà lu la règle « rack libre »).
+    Rend True s'il a pris le moteur."""
+    nxt = idle_patch_pending()
+    if not nxt:
+        return False
+    pid_, in_key, chosen = nxt
+    _IDLE_PATCH["current"] = pid_
+    try:
+        generate(PATCH_PREFIX + pid_, seq, in_key=in_key, ref=chosen)
+        st = status()
+        if st.get("phase") == "done":
+            _IDLE_PATCH["done"] += 1
+        else:
+            _IDLE_PATCH["failed"][pid_] = st.get("error") or "failed"     # pas réessayé avant le redémarrage du bridge
+        log.info(f"démo au repos : patch {pid_} → {st.get('phase')}" + (f" ({st.get('error')})" if st.get("error") else ""))
+    finally:
+        _IDLE_PATCH["current"] = None
+    return True
 
 
 def plan(pid, in_key="1", ref=None, casting=None, di_file=None):

@@ -626,6 +626,9 @@ def light(with_modes=False):
         # les démos de kits de batterie, même forme : un clip envoyé -> la fiche de son kit (docs/drums-library.md)
         from .drum_preview import rendered as _kit_previews
         st["kit_previews"] = _kit_previews()
+        # les références que ce golem peut jouer (docs/preset-preview.md §1) : le choix d'une DI sur golem.fm
+        from .preview import refs_list as _di_refs
+        st["di_refs"] = _di_refs()
         st["drum_kits"] = drum_kits()             # docs/drums-kit.md : ce que `params.kit` d'un drumkit peut valoir
     except Exception as e:
         log.warning(f"captures/catalogue absents du push : {e}")

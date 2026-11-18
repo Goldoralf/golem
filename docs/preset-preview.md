@@ -90,6 +90,7 @@ and `anims`).
 | Entry | What |
 |---|---|
 | `POST /api/preview/{pid}` `{input?: "1"\|"2"\|"k", ref?}` | starts `generate` in a thread; 409 if one is running or a take records, 404 if the preset does not exist. `pid` may be `patch:<id>`: the patch renders as it plays (the input it binds to on this card, `preview.patch_input`) |
+| `GET /api/preview/refs` (2026-11-18) | the references this golem can play, `[{id, role, name, kind: "audio"\|"midi", available}]` (`preview.refs_list`); `available: false` = in the index, file not recorded yet (the two voice phrases). The same list goes to golem.fm in the heartbeat (`di_refs`) |
 | Setlists page (`app/page-setlists.js` `genDemo`) | generate per input, voice reference Male/Female, plays clips per scene, shows the error |
 | Patches page (`app/page-patches.js` `genDemo`, 2026-11-03) | "🎧 Listen — Guitar/Bass/Voice" on each patch → `patch:<id>`; then 🎧 plays the selected scene, ↻ regenerates. Keys and drums patches show nothing until MIDI rendering exists. A patch's demo is stored **next to its clips**, `library/previews/patch-<id>[-in<k>]/preview.json` — never in the patch file (factory patches are reseeded, patches go to golem.fm) — and `GET /api/patches` returns it as `preview` |
 | job `generate-preview` `{preset, in_key?, ref?}` (`tones_jobs._generate_preview`) | refused in Gig/locked mode; each finished scene is uploaded (`preview.push_clip` → `POST /api/ext/tones/assets`) and reported (`POST …/jobs/{id}/progress {scene, clip}`); ack `{preset, preview: {ref, di_name, in_key, instrument, fingerprint, scenes: {scene: {sha256, duration}}}}` |
@@ -289,6 +290,22 @@ a load, or another render — the factory batch included). A watcher started wit
 every 60 s; `GOLEM_KEYS_IDLE_RENDER=0` turns it off, as the test suite does) renders **one** pending preset, gives the
 engine back, reads the rule again before the next. A failed render is not retried until the bridge restarts.
 `idle` in `/api/keys/sounds` says what it does: `{current, waiting_for, rendered, failed}`.
+
+### 9.3 Your patches' demos, when the rack is idle — and the DI you choose
+
+> **Status: CODED 2026-11-18** — decided by the maintainer the same day.
+
+- **Choosing the DI.** On the Patches page, next to "Listen" and ↻, a selector lists "Auto" and the available
+  references of the patch's role (shown only when the role has at least two). The choice is sent as `ref` and kept
+  with the demo (`chosen` in the patch's `preview.json`, `preview._remember_choice`); a render in "Auto" clears it.
+  The user's own DIs live on golem.fm, not on the rack: they are played through the `patch-preview` job (`di`), not
+  offered here.
+- **At idle.** The watcher of §9.2, after the keys sounds and the imported kits, renders **one** user patch whose
+  demo is missing or older than its sound (`preview.idle_patch_pending`: same fingerprint test as the factory batch),
+  with its chosen reference. Not rendered: factory patches (their demos come from the archive, §10), pads, a patch
+  whose role has no input on this card, a role whose reference is not recorded (voice today). A failed render is not
+  retried until the bridge restarts. Neither at launch (the musician wants to play) nor at shutdown (the engine is
+  stopping). The clips are **not** uploaded to golem.fm by this path — only a `generate-preview` job uploads.
 
 ## 10. Factory demos: rendered once, downloaded everywhere
 

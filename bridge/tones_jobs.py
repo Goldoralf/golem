@@ -977,6 +977,10 @@ def _generate_preview(job):
     pv = (load_preset(pid) or {}).get("preview") or {}
     if in_key != "1":
         pv = ((pv.get("alt") or {}).get(in_key)) or pv
+    if preview_mod._patch_of(pid):
+        # la démo d'un PATCH vit à côté de ses clips, pas dans le preset : l'accusé rendait ref, instrument et
+        # empreinte à null (vu à l'essai du 2026-11-18)
+        pv = preview_mod.patch_preview(preview_mod._patch_of(pid)) or {}
     di_name = ((preview_mod._di_index().get(pv.get("ref") or "") or {}).get("name")) or None
     return {"preset": pid,
             "preview": {"ref": pv.get("ref"), "di_name": di_name, "in_key": in_key, "instrument": pv.get("instrument"),
@@ -1778,6 +1782,32 @@ def _take_di_clip(job):
         raise RuntimeError("take-di-clip: the excerpt could not be uploaded to golem.fm")
     return {"clip": clip, "peak_db": r["peak_db"], "uid": job.get("uid"), "input": int(job.get("input", 1)),
             "_log": f"DI excerpt of {job.get('uid')} input {job.get('input', 1)} uploaded"}
+
+
+_try_lock = threading.Lock()
+
+
+def try_job(job):
+    """L'ESSAI d'un job SANS golem.fm (POST /api/tones-jobs/try, tools/check-job.py) : le même gestionnaire qu'un vrai
+    job, sur ce rack, mais ses envois (clips, avancement) sont NOTÉS au lieu de partir. Rend {ok, ack | error, sent,
+    seconds}. Ce n'est pas un simulacre : un job de rendu prend le moteur, `di-record` enregistre — les refus du vrai
+    job (Gig, prise en cours…) valent ici aussi. Un job qui télécharge un fichier de golem.fm (`di: {sha}`) le
+    télécharge vraiment."""
+    from . import tones_sync
+    if not isinstance(job, dict) or job.get("action") not in _HANDLERS:
+        return {"ok": False, "error": "unknown action — known: " + ", ".join(sorted(_HANDLERS))}
+    if not _try_lock.acquire(blocking=False):
+        return {"ok": False, "error": "another job is being tried"}
+    t0 = time.time()
+    tones_sync._DRY = sent = []
+    try:
+        ack = _HANDLERS[job["action"]](dict(job, id=job.get("id") or "try"))
+        return {"ok": True, "ack": ack, "sent": sent, "seconds": round(time.time() - t0, 1)}
+    except Exception as e:
+        return {"ok": False, "error": str(e), "sent": sent, "seconds": round(time.time() - t0, 1)}
+    finally:
+        tones_sync._DRY = None
+        _try_lock.release()
 
 
 def _take_cut(job):

@@ -198,6 +198,7 @@ when they exit normally.
 | `check-jitter.py` | bridge + REAPER | **yes — makes noise** on the monitors unless `--silent` |
 | `check-meter.py --rig` | bridge + REAPER | **yes — plays the click** |
 | `check-foot.py` | bridge + REAPER (`--live`: the real foot controller) | **yes — rebuilds the rig**: injects foot messages, changes preset/scene/stomps (three rebuilds in < 3 s); restores. Skips Rec/backing switches |
+| `check-job.py` | bridge + engine | **yes — runs a golem.fm job for real** (`POST /api/tones-jobs/try`): a demo job takes the engine for tens of seconds and gives it back, `di-record` records a short take. Only what the job would send to golem.fm is listed instead of sent. Never while someone plays |
 | `check-recall-stress.sh` | bridge + REAPER | **yes — designed to crash REAPER** (N × `check-foot.py`), then restarts it |
 | `check-block-stall.py` | bridge + REAPER | **yes — test tone, adds FX to a live track, can freeze the whole engine** (~0.5 s per stall); `--rig` toggles the loaded preset's blocks |
 | `check-scene-gap.py` | bridge + REAPER (`--listen`: you + the foot controller, passive) | **yes — continuous test tone**, adds probe FX (`--off` removes them after an interrupted run) |

@@ -89,3 +89,75 @@ def test_le_job_refuse_un_decompte_et_demande_une_entree():
     with pytest.raises(RuntimeError, match="in_key or person required"):
         J._di_record({"action": "di-record", "max_s": 5})
     assert "di-record" in J._HANDLERS
+
+
+# ── l'essai d'un job sans golem.fm, les références, la DI choisie, les démos au repos (2026-11-18) ─────────────
+def test_l_essai_d_un_job_note_ses_envois_au_lieu_de_les_faire(monkeypatch):
+    from bridge import tones_jobs as J, tones_sync as TS
+
+    def handler(job):
+        assert TS._req("POST", "/api/ext/tones/assets?sha256=x&filename=a.opus", raw_file=__file__) == (200, {})
+        assert TS._req("POST", f"/api/ext/tones/jobs/{job['id']}/progress", body={"scene": "A"}) == (200, {})
+        return {"done": True}
+    monkeypatch.setitem(J._HANDLERS, "fake-render", handler)
+    r = J.try_job({"action": "fake-render"})
+    assert r["ok"] and r["ack"] == {"done": True} and [s["path"] for s in r["sent"]] == \
+        ["/api/ext/tones/assets", "/api/ext/tones/jobs/try/progress"] and r["sent"][0]["bytes"] > 0
+    assert TS._DRY is None                                           # un vrai job, après, envoie pour de bon
+    monkeypatch.setitem(J._HANDLERS, "fake-refused", lambda job: (_ for _ in ()).throw(RuntimeError("rack is in gig mode")))
+    assert J.try_job({"action": "fake-refused"}) | {"seconds": 0} == {"ok": False, "error": "rack is in gig mode", "sent": [], "seconds": 0}
+    assert "unknown action" in J.try_job({"action": "nope"})["error"] and TS._DRY is None
+
+
+def test_les_references_disent_ce_qui_est_jouable(tmp_path, monkeypatch):
+    from bridge import preview as PV
+    monkeypatch.setattr(C, "DI_REFS_DIR", str(tmp_path))
+    (tmp_path / "guitar").mkdir()
+    (tmp_path / "guitar" / "clean.flac").write_bytes(b"x")
+    (tmp_path / "index.json").write_text(json.dumps({"refs": {
+        "guitar/clean": {"file": "guitar/clean.flac", "name": "Clean chords"},
+        "voice/male": {"file": "voice/male.wav", "name": "Male"},
+        "keys/piano": {"file": "keys/piano.mid", "kind": "midi"}}}))
+    by = {r["id"]: r for r in PV.refs_list()}
+    assert by["guitar/clean"] == {"id": "guitar/clean", "role": "guitar", "name": "Clean chords", "kind": "audio", "available": True}
+    assert by["voice/male"]["available"] is False and by["keys/piano"]["kind"] == "midi"
+
+
+def test_la_di_choisie_est_gardee_avec_la_demo_et_l_automatique_l_efface(tmp_path, monkeypatch):
+    from bridge import preview as PV
+    monkeypatch.setattr(C, "PREVIEWS_DIR", str(tmp_path))
+    d = tmp_path / "patch-mine-in2"
+    d.mkdir()
+    (d / "preview.json").write_text(json.dumps({"ref": "guitar/djent", "scenes": {"A": "x"}}))
+    monkeypatch.setitem(PV._ST, "phase", "done")
+    PV._remember_choice("patch:mine", "2", "guitar/djent")
+    assert json.load(open(d / "preview.json"))["chosen"] == "guitar/djent"
+    PV._remember_choice("patch:mine", "2", None)
+    assert "chosen" not in json.load(open(d / "preview.json"))
+    monkeypatch.setitem(PV._ST, "phase", "error")                    # un rendu raté ne change rien
+    PV._remember_choice("patch:mine", "2", "guitar/lead")
+    assert "chosen" not in json.load(open(d / "preview.json"))
+
+
+def test_au_repos_seuls_les_patchs_de_l_utilisateur_sans_demo_a_jour_sont_rendus(monkeypatch):
+    from bridge import factory, patches as P, preview as PV
+    monkeypatch.setattr(P, "list_patches", lambda: [{"id": "fac", "role": "guitar"}, {"id": "pads", "role": "pads"},
+                                                    {"id": "nocard", "role": "bass"}, {"id": "fresh", "role": "guitar"},
+                                                    {"id": "novoice", "role": "voice"}, {"id": "stale", "role": "guitar"}])
+    monkeypatch.setattr(factory, "mark", lambda kind, lst: [dict(x, factory=(x["id"] == "fac")) for x in lst])
+    monkeypatch.setattr(PV, "patch_input", lambda pid: None if pid == "nocard" else "2")
+    monkeypatch.setattr(PV, "patch_preview", lambda pid: {"chosen": "guitar/lead"} if pid == "stale" else None)
+    seen = []
+
+    def plan(pid, in_key="1", ref=None, **kw):
+        seen.append((pid, in_key, ref))
+        return "reference DI missing: voice/male (record it first)" if pid == "patch:novoice" else {"id": pid}
+    monkeypatch.setattr(PV, "plan", plan)
+    monkeypatch.setattr(PV, "_up_to_date", lambda pl: pl["id"] == "patch:fresh")
+    monkeypatch.setattr(PV, "_IDLE_PATCH", {"failed": {}, "done": 0, "current": None})
+    assert PV.idle_patch_pending() == ("stale", "2", "guitar/lead")          # avec SA référence choisie
+    assert [s[0] for s in seen] == ["patch:fresh", "patch:novoice", "patch:stale"]   # ni l'usine, ni les pads, ni sans entrée
+    # un rendu raté n'est pas réessayé avant le redémarrage
+    monkeypatch.setattr(PV, "generate", lambda *a, **k: PV._ST.update(phase="error", error="engine busy"))
+    assert PV.idle_patch_tick(1) is True and PV._IDLE_PATCH["failed"] == {"stale": "engine busy"}
+    assert PV.idle_patch_pending() is None and PV.idle_patch_tick(2) is False

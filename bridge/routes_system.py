@@ -1148,6 +1148,15 @@ async def tones_jobs_run():
     return r if r.get("ok") else JSONResponse(r, status_code=409)
 
 
+@router.post("/api/tones-jobs/try")
+async def tones_jobs_try(body: dict):
+    """Essaie UN job de golem.fm sur ce rack sans golem.fm (tools/check-job.py) : `{job: {action, …}}`. Le job tourne
+    vraiment (un rendu prend le moteur) ; ses envois vers golem.fm sont notés dans `sent` au lieu de partir."""
+    from . import tones_jobs
+    r = await asyncio.get_running_loop().run_in_executor(None, tones_jobs.try_job, (body or {}).get("job"))
+    return r if r.get("ok") else JSONResponse(r, status_code=409)
+
+
 # ── import d'un backup .zip : analyse (dry-run) puis application confirmée ────
 @router.post("/api/import/inspect-local")
 async def import_inspect_local(body: dict):

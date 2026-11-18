@@ -3318,6 +3318,8 @@ input.rig-lbl-in:focus{outline:none; border-bottom-color:var(--sect)}
 .ps-demo .demo-play:disabled{opacity:.4; cursor:default}
 .ps-demo .demo-regen{font-size:13px}
 .ps-demo-busy{font-size:12px; white-space:nowrap}
+.ps-demo .demo-ref{max-width:118px; min-height:32px; font-size:12px; background:var(--panel2); color:var(--text);
+  border:1px solid var(--line); border-radius:8px; padding:0 6px}
 /* fiche looper : mapping du transport (les 5 stomps) */
 /* magnétophone sur /live : bouton REC (rouge quand enregistre) — même gabarit que tuner/lock */
 .live2-tuner.rec.on{background:#e02020; border-color:#e02020; color:#fff}

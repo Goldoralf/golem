@@ -2267,6 +2267,13 @@ async def gen_preview(pid: str, request: Request):
     return {"ok": True}
 
 
+@router.get("/api/preview/refs")
+def preview_refs():
+    """Les références de démo de ce golem : [{id, role, name, kind, available}] (le sélecteur de « Listen »)."""
+    from . import preview as preview_mod
+    return {"refs": preview_mod.refs_list()}
+
+
 @router.get("/api/preview/status")
 def preview_status():
     from . import preview as preview_mod

@@ -216,10 +216,26 @@ export function PatchesPage({ rig } = {}) {
   const [genId, setGenId] = useState(null);
   const [genSt, setGenSt] = useState(null);
   const [genErr, setGenErr] = useState(null);     // {id, msg}
-  const genDemo = async pid => {
+  // LA DI DE L'ÉCOUTE (2026-11-18) : « Auto » (les tags du patch choisissent) ou une référence nommée de son rôle ;
+  // le choix est gardé avec la démo (`preview.chosen`) — ↻ et le rendu au repos le reprennent
+  const [demoRefs, setDemoRefs] = useState([]);
+  const [demoRef, setDemoRef] = useState({});     // patch id -> référence choisie ici ('' = Auto)
+  useEffect(() => { fetch('/api/preview/refs').then(r => r.json()).then(d => setDemoRefs((d && d.refs) || [])).catch(() => {}); }, []);
+  const refOf = x => (x.id in demoRef ? demoRef[x.id] : ((x.preview && x.preview.chosen) || ''));
+  const refPick = x => {
+    const role = { voice: 'voice', bass: 'bass', keys: 'keys', drums: 'drums' }[x.role] || 'guitar';
+    const list = demoRefs.filter(r => r.role === role && r.available);
+    if (list.length < 2) return '';
+    return html`<select class="demo-ref edit-only" disabled=${!!genId} title="the reference phrase this patch plays for its demo"
+      onChange=${e => setDemoRef(m => ({ ...m, [x.id]: e.target.value }))}>
+      <option value="" selected=${!refOf(x)}>Auto</option>
+      ${list.map(r => html`<option value=${r.id} selected=${refOf(x) === r.id}>${esc(r.name)}</option>`)}
+    </select>`;
+  };
+  const genDemo = async (pid, ref) => {
     if (genId) return;                             // une génération à la fois
     setGenErr(null); setGenId(pid); setGenSt(null);
-    const r = await post('/api/preview/' + encodeURIComponent('patch:' + pid), {})
+    const r = await post('/api/preview/' + encodeURIComponent('patch:' + pid), ref ? { ref } : {})
       .catch(e => ({ error: (e.body && e.body.error) || 'unreachable' }));
     const fail = msg => { setGenId(null); setGenErr({ id: pid, msg });
       setTimeout(() => setGenErr(e => (e && e.id === pid ? null : e)), 7000); };
@@ -389,16 +405,17 @@ export function PatchesPage({ rig } = {}) {
             if (genId === x.id) return html`<div class="ps-demo"><span class="ps-demo-busy muted"
               title="generating the sound guide…">🎧 ${genSt && genSt.total ? genSt.done + '/' + genSt.total : '⏳'}</span></div>`;
             if (err && !Object.keys(clips).length) return html`<div class="ps-demo"><button class="demo-listen err edit-only"
-              title=${err} onClick=${() => genDemo(x.id)}>✗ ${esc(err.length > 40 ? err.slice(0, 40) + '…' : err)}</button></div>`;
+              title=${err} onClick=${() => genDemo(x.id, refOf(x))}>✗ ${esc(err.length > 40 ? err.slice(0, 40) + '…' : err)}</button></div>`;
             if (Object.keys(clips).length) return html`<div class="ps-demo">
               <button class="mini demo-play" disabled=${!clip}
                 title=${clip ? 'listen to scene ' + (curSc.name || curSc.id) + ' — reference: ' + (x.preview.ref || '') : 'no clip for this scene yet'}
                 onClick=${() => clip && playDemo(clip)}>🎧</button>
+              ${refPick(x)}
               <button class="mini demo-regen edit-only" disabled=${!!genId} title="regenerate the sound guide"
-                onClick=${() => genDemo(x.id)}>↻</button></div>`;
+                onClick=${() => genDemo(x.id, refOf(x))}>↻</button></div>`;
             return html`<div class="ps-demo"><button class="demo-listen edit-only" disabled=${!!genId}
               title=${(isMidi ? 'plays a reference MIDI phrase on this ' : 're-amps a reference DI through this ') + roleLb.toLowerCase() + ' patch, scene by scene — takes the engine a few s, restores it after'}
-              onClick=${() => genDemo(x.id)}>🎧 Listen — ${roleLb}</button></div>`;
+              onClick=${() => genDemo(x.id, refOf(x))}>🎧 Listen — ${roleLb}</button>${refPick(x)}</div>`;
           })()}
           ${/* stomps : tap = APERÇU sur la lane (les blocs du switch s'allument/s'éteignent), jamais
                 persisté — même geste que sur la page Presets hors live */''}

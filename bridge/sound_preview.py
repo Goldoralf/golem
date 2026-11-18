@@ -457,6 +457,9 @@ def idle_tick(seq_of):
                     and DP.demo(k)["status"] == "pending"), None)
         if not kid:
             _IDLE["waiting_for"] = None
+            # puis les patchs de l'utilisateur dont la démo manque ou a vieilli (docs/preset-preview.md §9.3), un par pas
+            if PV.idle_patch_tick(seq_of()):
+                return None
             # rien à rendre : un clip qui n'a pas pu partir (golem.fm injoignable, pas encore appairé) repart, un par pas
             u = unpushed()
             if u and push_user(u):

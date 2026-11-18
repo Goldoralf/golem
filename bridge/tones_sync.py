@@ -499,9 +499,17 @@ def _cfg():
     return m_cfg()
 
 
+_DRY = None     # une liste pendant l'essai d'un job : les envois vers golem.fm y sont notés au lieu de partir
+
+
 def _req(method, path, body=None, raw_file=None, timeout=_TIMEOUT):
     """Renvoie (status, data). raw_file = chemin d'un fichier à streamer en corps
     brut (jamais en RAM). Ne lève jamais : (0, str(err)) si injoignable."""
+    if _DRY is not None and method == "POST" and ("/tones/assets" in path or "/progress" in path):
+        # l'ESSAI d'un job (tones_jobs.try_job) : ce qui partirait à golem.fm est noté, rien n'est envoyé
+        _DRY.append({"path": path.split("?")[0], "bytes": os.path.getsize(raw_file) if raw_file else None,
+                     **({"body": body} if body is not None else {})})
+        return 200, {}
     base, token = _cfg()
     if not base or not token:
         return 0, "not paired"

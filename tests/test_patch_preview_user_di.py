@@ -102,3 +102,32 @@ def test_le_job_rend_sur_la_di_envoyee_et_ne_la_garde_pas(tmp_path, monkeypatch)
 def test_le_rack_annonce_ce_qu_il_comprend():
     from bridge import blockstatus as BS
     assert {"patch-preview-di", "patch-preview-scene", "groove-render", "kit-pad-set", "kit-available"} <= set(BS.JOB_CAPS)
+
+
+# ── « Use as DI » : un extrait de la piste sèche d'une prise ─────────────────────────────────────────────────
+@ffmpeg
+def test_un_extrait_de_la_piste_seche_d_une_prise_devient_une_di(tmp_path, monkeypatch):
+    rec = tmp_path / "recordings"
+    (rec / "perf-1").mkdir(parents=True)
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "sine=frequency=110:duration=20:sample_rate=48000",
+                    "-af", "volume=-12dB", str(rec / "perf-1" / "DI-Sandbox-Input-2.wav")], check=True)
+    before = (rec / "perf-1" / "DI-Sandbox-Input-2.wav").read_bytes()
+    r = PV.take_di_clip("perf-1", 2, 4, 12, str(tmp_path / "w"), recordings=str(rec))
+    src_peak = PV._peak_db(str(rec / "perf-1" / "DI-Sandbox-Input-2.wav"))
+    assert r["ok"] and abs(r["duration"] - 8.0) < 0.1 and abs(r["peak_db"] - src_peak) < 0.5   # le niveau n'est pas retouché
+    assert (rec / "perf-1" / "DI-Sandbox-Input-2.wav").read_bytes() == before              # la prise n'est pas touchée
+    E = lambda *a: PV.take_di_clip(*a, str(tmp_path / "w"), recordings=str(rec))["error"]
+    assert "not recorded in" in E("perf-1", 1, 0, 10)                                       # pas de piste sèche pour l'entrée 1
+    assert "not on this golem" in E("perf-9", 2, 0, 10) and "unknown take" in E("../etc", 2, 0, 10)
+    assert "between 3 and 30 seconds" in E("perf-1", 2, 0, 2) and "inside the take" in E("perf-1", 2, 5, 40)
+    # le job : l'extrait part au coffre, puis il est retiré
+    monkeypatch.setattr(C, "PRESETS_DIR", str(tmp_path / "presets"))
+    from bridge import takes
+    monkeypatch.setattr(takes, "RECORDINGS", str(rec))
+    sent = {}
+    monkeypatch.setattr(PV, "push_file", lambda path, name: sent.update(name=name, there=os.path.isfile(path)) or {"sha256": "s", "duration": 8.0})
+    a = J._take_di_clip({"action": "take-di-clip", "uid": "perf-1", "input": 2, "from_s": 4, "to_s": 12})
+    assert a["clip"] == {"sha256": "s", "duration": 8.0} and a["input"] == 2 and a["uid"] == "perf-1" and a["peak_db"] is not None
+    assert sent == {"name": "di-perf-1-in2.wav", "there": True} and not os.listdir(tmp_path / "presets" / ".take-di-clip")
+    with pytest.raises(RuntimeError, match="not recorded in"):
+        J._take_di_clip({"action": "take-di-clip", "uid": "perf-1", "input": 1, "from_s": 0, "to_s": 10})

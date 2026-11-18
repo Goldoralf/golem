@@ -240,7 +240,7 @@ def unavailable_types():
 
 
 JOB_CAPS = ("patch-preview-scene", "patch-preview-max-s", "patch-preview-midi", "patch-preview-di", "kit-pad-set",
-            "groove-install-meta", "groove-pack-meta", "groove-render", "kit-available")
+            "groove-install-meta", "groove-pack-meta", "groove-render", "kit-available", "take-di-clip")
 
 
 def caps():

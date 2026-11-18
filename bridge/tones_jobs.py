@@ -1523,6 +1523,7 @@ _HANDLERS = {
     "take-tag": lambda j: _take_tag(j),
     "take-upload": lambda j: _take_upload(j),
     "upload-di": lambda j: _upload_di(j),
+    "take-di-clip": lambda j: _take_di_clip(j),
     "take-cut": lambda j: _take_cut(j),
     "take-recut": lambda j: _take_recut(j),
     "take-source-release": lambda j: _take_source_release(j),
@@ -1696,6 +1697,28 @@ def _upload_di(job):
     out = uploader.queue_di(uid, band if isinstance(band, str) and band else None)
     out["_log"] = f"DI of {uid} queued"
     return out
+
+
+def _take_di_clip(job):
+    """`{action:"take-di-clip", uid, input, from_s, to_s}` — « Use as DI » (golem.fm, 2026-11-18) : 3 à 30 s de la piste
+    sèche d'une prise deviennent une DI de l'utilisateur. Le fichier (WAV mono 48 kHz 24 bits, niveau intact) part au
+    coffre de golem.fm puis est retiré ; la prise n'est pas touchée. Ack {clip:{sha256, duration}, peak_db, uid, input}.
+    Refus dits : prise absente, pas de piste sèche pour cette entrée (prise hors « Tracks + DI »), extrait hors de la
+    prise ou hors de 3–30 s."""
+    from . import preview as preview_mod
+    r = preview_mod.take_di_clip(job.get("uid"), job.get("input", 1), job.get("from_s", 0), job.get("to_s"),
+                                 os.path.join(C.PRESETS_DIR, ".take-di-clip"))
+    if not r.get("ok"):
+        raise RuntimeError("take-di-clip: " + str(r.get("error")))
+    try:
+        clip = preview_mod.push_file(r["path"], os.path.basename(r["path"]))
+    finally:
+        with __import__("contextlib").suppress(OSError):
+            os.remove(r["path"])
+    if not clip:
+        raise RuntimeError("take-di-clip: the excerpt could not be uploaded to golem.fm")
+    return {"clip": clip, "peak_db": r["peak_db"], "uid": job.get("uid"), "input": int(job.get("input", 1)),
+            "_log": f"DI excerpt of {job.get('uid')} input {job.get('input', 1)} uploaded"}
 
 
 def _take_cut(job):

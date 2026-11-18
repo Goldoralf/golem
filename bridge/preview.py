@@ -667,6 +667,59 @@ def push_clip(pid, scene, rel):
     return {"sha256": sha, "duration": _clip_duration(path)}
 
 
+def push_file(path, filename):
+    """Un fichier audio QUELCONQUE vers le coffre de golem.fm (la même route que les clips : `/api/ext/tones/assets`),
+    sous le nom donné — une DI découpée dans une prise, une DI enregistrée à la demande. {sha256, duration} | None."""
+    from . import tones_sync
+    if not os.path.isfile(path):
+        return None
+    sha = hashlib.sha256(open(path, "rb").read()).hexdigest()
+    st, _ = tones_sync._req("POST", "/api/ext/tones/assets?sha256=%s&filename=%s" % (sha, urllib.parse.quote(filename)), raw_file=path)
+    if st != 200:
+        return None
+    return {"sha256": sha, "duration": _clip_duration(path)}
+
+
+def take_di_clip(uid, input_n, from_s, to_s, work_dir, recordings=None):
+    """« Use as DI » : un extrait de la piste SÈCHE d'une prise (golem.fm, validé par le mainteneur le 2026-11-18). Une
+    prise n'a de piste sèche par entrée que si elle a été enregistrée en « Tracks + DI »
+    (`recordings/<uid>/DI-Sandbox-Input-<n>.wav`). L'extrait fait 3 à 30 s, mono 48 kHz 24 bits, jamais retouché en
+    niveau. Rend {ok, path, duration, peak_db} ou {ok: False, error}. L'appelant retire `path`."""
+    import re
+    if recordings is None:
+        from . import takes
+        recordings = takes.RECORDINGS
+    if not isinstance(uid, str) or not re.fullmatch(r"[\w.-]{1,120}", uid) or uid in (".", ".."):
+        return {"ok": False, "error": "unknown take"}
+    folder = os.path.join(recordings, uid)
+    if not os.path.isdir(folder):
+        return {"ok": False, "error": f"take « {uid} » is not on this golem"}
+    try:
+        n = int(input_n)
+        a, b = float(from_s), float(to_s)
+    except (TypeError, ValueError):
+        return {"ok": False, "error": "input, from_s and to_s are numbers"}
+    src = os.path.join(folder, f"DI-Sandbox-Input-{n}.wav")
+    if n < 1 or not os.path.isfile(src):
+        return {"ok": False, "error": f"this take has no dry track for input {n} — it was not recorded in “Tracks + DI”"}
+    total = _clip_duration(src)
+    if total is None:
+        return {"ok": False, "error": "the dry track could not be read"}
+    if a < 0 or b <= a or b > total + 0.05:
+        return {"ok": False, "error": f"the excerpt must lie inside the take (0 to {total:g} s)"}
+    if b - a < DI_MIN_S or b - a > DI_MAX_S:
+        return {"ok": False, "error": f"a DI lasts between {DI_MIN_S:g} and {DI_MAX_S:g} seconds (this excerpt: {b - a:g} s)"}
+    os.makedirs(work_dir, exist_ok=True)
+    out = os.path.join(work_dir, f"di-{uid}-in{n}.wav")
+    try:
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", f"{a:.3f}", "-t", f"{b - a:.3f}", "-i", src, "-ac", "1", "-ar", "48000",
+                        "-c:a", "pcm_s24le", out], check=True, capture_output=True, timeout=60)
+    except (subprocess.SubprocessError, OSError):
+        return {"ok": False, "error": "the dry track could not be cut"}
+    pk = _peak_db(out)
+    return {"ok": True, "path": out, "duration": _clip_duration(out), "peak_db": None if pk is None else round(pk, 1)}
+
+
 def push_clips(pid):
     """Upload TOUS les clips du preset (fallback non-incrémental). {scene:{sha256,duration}} + ref."""
     preset = store.load_preset(pid) or {}

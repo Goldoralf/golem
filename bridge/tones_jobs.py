@@ -1034,6 +1034,23 @@ def _blob_bytes(job, tmp_name):
             pass
 
 
+def _kit_pad_set(job):
+    """`{action:"kit-pad-set", kit, note, sha, filename, label?, mode?, level?}` (golem.fm, 2026-11-18) : remplace le son
+    d'UN pad d'un kit de pads, en place — le blob est le fichier audio seul. Ack {kit:{id, pads}, pad}. Refus dits : kit
+    absent, kit d'usine (il se copie sur golem.fm, puis kit-install), kit qui n'est pas de pads, note hors 0-127."""
+    from . import kits
+    kid = str(job.get("kit") or "")
+    if not kid or job.get("note") is None:
+        raise RuntimeError("kit-pad-set: kit and note required")
+    data = _blob_bytes(job, ".kit-pad-set.tmp")
+    r = kits.set_pad(kid, job.get("note"), data, str(job.get("filename") or "pad.wav"), label=job.get("label"),
+                     mode=job.get("mode"), level=job.get("level"))
+    if not r.get("ok"):
+        raise RuntimeError("kit-pad-set: " + str(r.get("error")))
+    return {"kit": {"id": r["kit"]["id"], "pads": r["kit"]["pads"]}, "pad": r["pad"],
+            "_log": f"kit '{kid}': pad note {r['pad']['note']} <- {r['pad']['sample']}"}
+
+
 def _kit_install(job):
     """Installe un kit poussé par golem.fm (docs/drums-kit.md § réception). job = {action:"kit-install",
     sha, name?} : télécharge le blob .golemkit puis kits.import_kit. Ack {kit:{id}}."""
@@ -1426,6 +1443,7 @@ _HANDLERS = {
     "reamp": lambda j: _reamp(j),
     "set-appearance": lambda j: _set_appearance(j),
     "kit-install": lambda j: _kit_install(j),
+    "kit-pad-set": lambda j: _kit_pad_set(j),
     "groove-install": lambda j: _groove_install(j),
     "groove-pack": lambda j: _groove_pack(j),
     "sample-pack": lambda j: _sample_pack(j),

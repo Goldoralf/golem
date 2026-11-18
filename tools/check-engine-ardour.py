@@ -531,6 +531,20 @@ def clock_bench(eng, check, wait, acked):
     def st():
         return (eng._status() or {}).get("midi_clock") or {}
 
+    # LE TÉMOIN DU FIL AUDIO (presets/.clock.json, lu par monitors._audio_alive) : la table de l'horloge MIDI portait le
+    # nom de son chemin et l'écrasait — plus de témoin, plus de détection d'un son coupé (rack muet une nuit, 2026-11-18)
+    from bridge import config as C
+
+    def witness():
+        try:
+            return json.load(open(os.path.join(C.PRESETS_DIR, ".clock.json")))
+        except (OSError, ValueError):
+            return {}
+    w1 = wait(lambda: witness().get("ticks") and witness(), 6) or {}
+    time.sleep(1.6)
+    w2 = witness()
+    check("témoin du fil audio : écrit chaque seconde, ses tics avancent", bool(w1) and (w2.get("ticks") or 0) > (w1.get("ticks") or 0)
+          and w2.get("t") != w1.get("t"), f"{w1} -> {w2}")
     a = wait(lambda: st().get("ticks") and eng._status(), 8) or {}
     check("horloge MIDI : sa piste existe et elle tourne dès le démarrage", bool((a.get("midi_clock") or {}).get("ticks")),
           json.dumps(a.get("midi_clock")))

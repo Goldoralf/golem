@@ -62,6 +62,14 @@ def _requires_ok(req):
     que là où il est construit."""
     if not req:
         return True
+    # `env_file` : une variable qui désigne le FICHIER lui-même (REAPER_BIN) ; `which` : un programme du PATH —
+    # l'un ou l'autre suffit (un REAPER installé ailleurs que là où golem le pose reste « installé »)
+    if req.get("env_file") and os.path.isfile(os.environ.get(req["env_file"]) or ""):
+        return True
+    if req.get("which"):
+        import shutil
+        if shutil.which(req["which"]):
+            return True
     # `default` : un dossier, ou plusieurs (un arbre de dev puis le paquet installé) — le premier qui porte le fichier
     if os.environ.get(req.get("env") or ""):
         bases = [os.environ[req["env"]]]

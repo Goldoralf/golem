@@ -227,6 +227,10 @@ def save_kit(kit, allow_drums=False):
     engine = kit.get("engine") if kit.get("engine") in ENGINES else "rs5k"
     if engine in DRUM_ENGINES and not allow_drums:
         return {"ok": False, "error": f"a {engine} drum kit ships with the rack (library/kits-factory) — it is not created, imported or deleted from a screen"}
+    # UN KIT D'USINE NE SE RÉÉCRIT PAS depuis un écran (2026-11-18) : le document écrit ici n'a pas le drapeau
+    # `factory`, et la graine le remettait au démarrage suivant — une modification perdue sans un mot. On le copie.
+    if not allow_drums and (get_kit(kid) or {}).get("factory"):
+        return {"ok": False, "factory": True, "error": f"« {kid} » is a factory kit — save your version under another name"}
     doc = {"id": kid, "name": (kit.get("name") or kid)[:60], "role": role, "engine": engine}
 
     if engine == "avldrums":
@@ -298,7 +302,54 @@ def save_kit(kit, allow_drums=False):
                 doc[k] = kit[k]
     os.makedirs(KITS_DIR, exist_ok=True)
     _write_json_atomic(os.path.join(KITS_DIR, f"{kid}.json"), doc)
+    # le miroir de golem.fm suit (2026-11-18) : un kit de pads modifié n'y arrivait qu'au démarrage suivant du rack
+    _sync_soon()
     return {"ok": True, "kit": doc}
+
+
+def set_pad(kid, note, data, filename, label=None, mode=None, level=None):
+    """LE SON D'UN PAD, EN PLACE (golem.fm `kit-pad-set`, décision du mainteneur 2026-11-18 : pas de copie implicite, le
+    même id — les patches qui jouent le kit suivent d'eux-mêmes). `note` désigne le pad (l'identité d'un pad sur le
+    rack) ; absent d'un kit qui a moins de 16 pads, il est ajouté. `label` nomme le fichier déposé : c'est de lui que
+    vient le nom montré. Refusés, avec une phrase : kit absent, kit d'usine (il se copie), kit qui n'est pas de pads.
+    Rend {ok, kit, pad} ou {ok:False, error}. Le kit est relu au prochain rappel d'un patch qui le joue."""
+    kit = get_kit(kid)
+    if not kit:
+        return {"ok": False, "error": f"kit « {kid} » not found on this golem"}
+    if is_factory(kit):
+        return {"ok": False, "factory": True, "error": f"« {kid} » is a factory kit — make a copy to change its pads"}
+    if kit.get("engine") != "rs5k":
+        return {"ok": False, "error": f"« {kid} » is not a pad kit — its pieces are not single samples"}
+    try:
+        note = int(note)
+    except (TypeError, ValueError):
+        return {"ok": False, "error": f"bad note {note!r}"}
+    if not 0 <= note <= 127:
+        return {"ok": False, "error": f"bad note {note!r}"}
+    pads = [dict(p) for p in kit.get("pads") or []]
+    pad = next((p for p in pads if p.get("note") == note), None)
+    if pad is None:
+        if len(pads) >= 16:
+            return {"ok": False, "error": f"no pad plays note {note} in « {kid} », and the kit already has 16 pads"}
+        pad = {"note": note, "sample": "", "mode": "gate", "level": 0.0}
+        pads.append(pad)
+    ext = os.path.splitext(os.path.basename(filename or ""))[1].lower()
+    name = (str(label).strip() + ext) if label and str(label).strip() else (filename or "pad" + ext)
+    s = save_sample(name, data, kind="short")
+    if not s.get("ok"):
+        return {"ok": False, "error": s.get("error") or "the sample was refused"}
+    pad["sample"] = s["file"]
+    if mode in MODES:
+        pad["mode"] = mode
+    if level is not None:
+        try:
+            pad["level"] = float(level)
+        except (TypeError, ValueError):
+            return {"ok": False, "error": f"bad level {level!r}"}
+    r = save_kit(dict(kit, pads=pads))
+    if not r.get("ok"):
+        return r
+    return {"ok": True, "kit": r["kit"], "pad": next(p for p in r["kit"]["pads"] if p["note"] == note)}
 
 
 def delete_kit(kid):

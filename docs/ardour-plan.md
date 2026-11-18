@@ -1445,6 +1445,14 @@ The factory pass on the current tree: 51 patches materialized, 0 failed, 1 skipp
     6 s at 100 BPM, and the kernel counted 201 bytes sent to the keyboard in 5 s (`/proc/asound/card4/midi0`).
     **Not checked by ear**: nobody played an arpeggio against it. First version forgot that a recall removes every
     route it does not know — the track vanished at the first recall; it is now in the list `clear_routes` keeps.
+  - *The rack stayed silent a night and golem did not see it* (2026-11-18). The sound card re-enumerated at an
+    engine start: the engine opened it with no output, its audio process stopped after 1251 consecutive xruns, and
+    the engine process lived on, deaf and mute. golem has a detection and an automatic repair for exactly that (the
+    audio witness `presets/.clock.json`, `monitors._audio_alive`, `audio_reset`) — but the MIDI clock's table,
+    written the day before, was named `CLOCK`, the name of the local variable holding the witness's path, and
+    overwrote it: no witness was written any more, so nothing was detected. Renamed (`MIDICLOCK`); the bench now
+    checks that the witness is written and advances. **Not tested**: the repair itself on a real card loss under
+    this engine.
   - *The processor's power mode* decides whether a heavy patch drops out: see [`cpu-budget.md`](cpu-budget.md) §4 bis
     (performance mode now follows golem, under both engines).
   - *The estimate against the engine.* The bench first published a block's single worst cycle as its "worst" cost (a

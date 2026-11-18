@@ -70,7 +70,13 @@ echo "== 3. SWS (extension Reaper — sentinelle MIDI golem_midi : réparation �
 # avec lui, il la répare en ~5 s sans redémarrer Reaper. Install utilisateur (pas de root).
 SWS_VER="v2.14.0.7"
 SWS_SO="$USER_HOME/.config/REAPER/UserPlugins/reaper_sws-x86_64.so"   # pas $HOME : sous sudo, c'est celui de root
-if [ ! -f "$SWS_SO" ]; then
+# SEULEMENT SI REAPER EST LÀ (docs/install-v2.md : REAPER est une option) — sans lui, ni l'extension ni le dossier
+# ~/.config/REAPER n'ont lieu d'être (vus posés pour rien dans une installation sans REAPER, 2026-11-18)
+HAVE_REAPER=0
+if [ -x "$USER_HOME/opt/REAPER/reaper" ] || [ -x /opt/REAPER/reaper ] || command -v reaper >/dev/null 2>&1; then HAVE_REAPER=1; fi
+if [ "$HAVE_REAPER" = 0 ]; then
+  echo "→ SWS : REAPER n'est pas installé — sauté"
+elif [ ! -f "$SWS_SO" ]; then
   # ⚠ AU NOM DE L'UTILISATEUR, jamais en root (VM vierge, 2026-10-15) : sur une machine neuve ~/.config n'existe pas
   # encore, et un `mkdir -p` en root créait ~/.config, ~/.config/REAPER et UserPlugins À ROOT — setup-reaper.sh (en
   # utilisateur) ne pouvait plus rien y poser, l'install mourait là, et ~/.config à root casse aussi les autres logiciels.

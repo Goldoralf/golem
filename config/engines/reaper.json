@@ -9,7 +9,7 @@
   "default": false,
   "selectable": true,
   "platforms": {
-    "linux": {"available": true},
+    "linux": {"available": true, "requires": {"env_file": "REAPER_BIN", "which": "reaper", "default": ["~/opt/REAPER", "/opt/REAPER"], "file": "reaper", "reason": "REAPER is not installed on this machine"}},
     "win32": {"available": true},
     "darwin": {"available": true}
   },

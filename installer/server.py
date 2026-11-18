@@ -709,6 +709,8 @@ def installer_engines(src, platform=None):
     avec la raison ; REAPER y reste le moteur."""
     out = []
     for e in E.descriptors(src, platform):
+        if e["id"] == "reaper" and not e["available"] and e.get("reason") == "REAPER is not installed on this machine":
+            e = dict(e, available=True, reason=None)         # pas encore là : c'est l'installation qui le pose
         if e["id"] == "ardour" and not e["available"]:
             try:
                 spec = importlib.util.spec_from_file_location("golem_engine_prov", os.path.join(src, "provision", "golem_engine.py"))

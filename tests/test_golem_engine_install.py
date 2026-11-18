@@ -151,3 +151,23 @@ def test_install_sh_pose_le_golem_engine_d_abord_et_reaper_seulement_s_il_est_ch
     assert txt.index("write_engine_choice \"$WANT_ENGINE\"") > txt.index("install-golem-engine.sh")   # le choix, après la pose
     r = subprocess.run(["bash", str(ROOT / "provision" / "install.sh"), "--engine=nope"], capture_output=True, text=True, timeout=30)
     assert r.returncode == 1 and "unknown engine" in r.stdout
+
+
+def test_reaper_absent_se_dit_et_l_installateur_le_propose_quand_meme(monkeypatch, tmp_path):
+    from bridge import engines
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("REAPER_BIN", raising=False)
+    monkeypatch.setattr("shutil.which", lambda name: None)
+    by = {e["id"]: e for e in engines.descriptors(str(ROOT), "linux")}
+    assert by["reaper"]["available"] is False and by["reaper"]["reason"] == "REAPER is not installed on this machine"
+    S = _installer_server()
+    assert {e["id"]: e["available"] for e in S.installer_engines(str(ROOT), "linux")}["reaper"] is True   # l'installation le pose
+    exe = tmp_path / "somewhere" / "reaper"
+    exe.parent.mkdir()
+    exe.write_text("")
+    monkeypatch.setenv("REAPER_BIN", str(exe))                 # un REAPER ailleurs que là où golem le pose
+    assert {e["id"]: e["available"] for e in engines.descriptors(str(ROOT), "linux")}["reaper"] is True
+    monkeypatch.delenv("REAPER_BIN")
+    (tmp_path / "opt" / "REAPER").mkdir(parents=True)
+    (tmp_path / "opt" / "REAPER" / "reaper").write_text("")
+    assert {e["id"]: e["available"] for e in engines.descriptors(str(ROOT), "linux")}["reaper"] is True

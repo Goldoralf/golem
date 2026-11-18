@@ -74,11 +74,10 @@
   **"Also install REAPER"** as a checkbox; the REAPER screen is skipped when it is not ticked; the phases show
   "Golem Engine" always and "REAPER" only when ticked. Where the engine is not ported yet the checkbox is ticked and
   locked, with the reason on the Golem Engine's card.
-- **Leftover seen in that run**: the plugin step still installs REAPER-only pieces (the SWS extension, a
-  `~/.config/REAPER/UserPlugins` folder) when REAPER is not installed. Harmless, to remove.
-- **Known gap**: REAPER's descriptor says "available" on every system even when REAPER was not installed; choosing
-  it later in System ▸ Engines then fails and golem goes back to the previous engine. To fix with a "not installed"
-  reason.
+- The plugin step no longer installs the SWS extension (and its `~/.config/REAPER` folder) when REAPER is not there.
+- **REAPER not installed is said** (Linux): its descriptor asks for the binary (`REAPER_BIN`, `reaper` in the PATH,
+  `~/opt/REAPER`, `/opt/REAPER`); without it System ▸ Engines shows "REAPER is not installed on this machine" instead
+  of offering a switch that fails. Windows and macOS: not done (REAPER is always installed there today).
 
 ## Lots 4 and 5 — what exists
 

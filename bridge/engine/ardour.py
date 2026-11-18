@@ -19,12 +19,40 @@ import math
 import os
 import signal
 import subprocess
+import sys
 import time
 
 from .. import config as C
 from .base import EngineAdapter
 
 log = logging.getLogger("golem.engine")
+
+def _proc_names(pid):
+    """Les noms (argv[0], argv[1]) du process `pid`, [] s'il n'existe pas ou n'est plus qu'un zombie. Linux : /proc ;
+    macOS : `ps` ; Windows : `tasklist` (le nom de l'image seul)."""
+    if os.path.isdir("/proc"):
+        try:
+            with open(f"/proc/{pid}/cmdline", "rb") as f:
+                cmd = f.read().split(b"\0")
+            with open(f"/proc/{pid}/stat") as f:
+                if f.read().rsplit(")", 1)[-1].split()[0] == "Z":
+                    return []
+        except (OSError, ValueError, IndexError):
+            return []
+        return [os.path.basename(c.decode("utf-8", "replace")) for c in cmd if c]
+    try:
+        if sys.platform == "win32":
+            out = subprocess.run(["tasklist", "/FI", f"PID eq {int(pid)}", "/FO", "CSV", "/NH"], capture_output=True,
+                                 text=True, timeout=5).stdout.strip()
+            name = out.split(",")[0].strip('"') if out.startswith('"') else ""
+            return [os.path.splitext(name)[0]] if name else []
+        out = subprocess.run(["ps", "-p", str(int(pid)), "-o", "stat=,comm="], capture_output=True, text=True, timeout=5).stdout.strip()
+        if not out or out.split()[0].startswith("Z"):
+            return []
+        return [os.path.basename(out.split(None, 1)[1])] if len(out.split(None, 1)) > 1 else []
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return []
+
 
 def _engine_dir():
     """GOLEM_ENGINE_DIR, sinon un arbre de dev (~/golem-engine), sinon le paquet installé (~/opt/golem-engine) — la
@@ -52,7 +80,8 @@ DEVICE = os.environ.get("GOLEM_ENGINE_DEVICE", card_device() or "")
 BACKEND = os.environ.get("GOLEM_ENGINE_BACKEND", "ALSA" if DEVICE else "None (Dummy)")
 # la session vit DANS golem (sets/, état local comme sets/golem-set.rpp) : rien hors de l'install
 SESSION_DIR = os.environ.get("GOLEM_ENGINE_SESSION", os.path.join(C.ROOT, "sets", "golem-engine"))
-RUN_LOG = os.environ.get("GOLEM_ENGINE_LOG", "/tmp/golem-engine.log")
+RUN_LOG = os.environ.get("GOLEM_ENGINE_LOG") or os.path.join("/tmp" if os.path.isdir("/tmp") else __import__("tempfile").gettempdir(),
+                                                           "golem-engine.log")
 
 # retour demandé à la surface : boutons (mute) + niveaux + vumètre en dB (bits 0, 1, 7 de /set_surface/feedback)
 FEEDBACK = 1 | 2 | 128
@@ -666,15 +695,10 @@ class ArdourEngine(EngineAdapter):
     def pid(self):
         try:
             pid = int(open(pid_file()).read().strip())
-            with open(f"/proc/{pid}/cmdline", "rb") as f:
-                cmd = f.read().split(b"\0")
-            with open(f"/proc/{pid}/stat") as f:
-                if f.read().rsplit(")", 1)[-1].split()[0] == "Z":
-                    return None
         except (OSError, ValueError):
             return None
-        names = [os.path.basename(c.decode("utf-8", "replace")) for c in cmd if c]
-        return pid if any(n in self.PROC_NAMES for n in names[:2]) else None
+        names = _proc_names(pid)
+        return pid if names and any(n in self.PROC_NAMES for n in names[:2]) else None
 
     def ready_since(self, t0):
         from .. import monitors
@@ -706,8 +730,12 @@ class ArdourEngine(EngineAdapter):
         logf = open(RUN_LOG, "a")
         logf.write(time.strftime("\n── %Y-%m-%d %H:%M:%S ") + f"restart ({why}) — ancien arrêté : {dead}\n")
         logf.flush()
-        subprocess.Popen(["bash", script, C.ROOT, SESSION_DIR, BACKEND, DEVICE], start_new_session=True,
-                         stdout=logf, stderr=subprocess.STDOUT)
+        # le lanceur des trois systèmes (run.py, bibliothèque standard) quand le moteur l'a ; un paquet plus ancien
+        # n'a que run.sh
+        py = os.path.join(os.path.dirname(script), "run.py")
+        cmd = [sys.executable, py] if os.path.isfile(py) else ["bash", script]
+        detach = {"creationflags": 0x00000008 | 0x00000200} if sys.platform == "win32" else {"start_new_session": True}
+        subprocess.Popen([*cmd, C.ROOT, SESSION_DIR, BACKEND, DEVICE], stdout=logf, stderr=subprocess.STDOUT, **detach)
         return {"ok": True, "restarting": True}
 
     _table = {"mtime": None, "types": frozenset()}

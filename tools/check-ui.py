@@ -47,7 +47,7 @@ RACK_PAGES = [
     "#/library/samples/short", "#/library/samples/songs",
     "#/library/tracks/backing", "#/library/tracks/vocals", "#/library/tracks/standards", "#/library/tracks/recordings",
     # Settings, la barre de mockups/settings-nav.html (2026-10-20) : Mode · System · Gear · Engines · Content · Connect · About
-    "#/system/mode", "#/system/mode/compare", "#/system/sys", "#/system/sys/health",
+    "#/system/mode", "#/system/mode/compare", "#/system/sys", "#/system/sys/health", "#/system/sys/cores",
     "#/system/gear/sound", "#/system/gear/controllers", "#/system/gear/pedals", "#/system/gear/board", "#/system/gear/drums",
     "#/system/engines/audio", "#/system/engines/separation",
     "#/system/content/storage", "#/system/content/factory",

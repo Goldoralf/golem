@@ -179,3 +179,12 @@ def cpu_block(type: str = "", variant: str = "", stereo: str = "true"):
     if not type:
         return JSONResponse({"error": "type is required"}, 400)
     return block_cost(type, variant, str(stereo).lower() not in ("0", "false", "no", "mono"))
+
+
+@router.get("/api/cpu/cores")
+async def cpu_cores():
+    """System ▸ System ▸ CPU cores : la charge mesurée de chaque cœur, la part du moteur audio dedans et, sous le Golem
+    Engine, le coût de chaque lane (bridge/cpu_cores.py). Lecture seule — la remise à zéro des compteurs du moteur est
+    celle de sa sonde, sans effet sur le son."""
+    from . import cpu_cores as CC
+    return await asyncio.get_running_loop().run_in_executor(None, CC.snapshot)

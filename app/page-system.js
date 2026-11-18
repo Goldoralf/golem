@@ -5,6 +5,7 @@
 //   Content   : inventaire (presets/scènes, amps/cabs/pédales, blocs FX, templates, slots FCB).
 //   Update    : mise à jour git bornée aux RELEASES (tags) — check réseau + bascule + restart bridge.
 import { HealthPage } from './page-health.js';
+import { CpuCoresPanel } from './page-cpu-cores.js';
 import { healthDot } from './health-model.mjs';
 import { html, useAsync, useState, useEffect, useRef, post, del, cls, esc, go, shellTabletSheet, setTopAction } from './lib.js';
 import { Icon, ModeIcon } from './icons.js';
@@ -787,7 +788,7 @@ const fmtDate = t => { try { return new Date(t * 1000).toLocaleString(); } catch
 // commandes et ses mesures (Dashboard), son état et ses réparations (Health). Mode est un onglet de tête ; Audio
 // Engine et Separation Engine vivent dans Engines, Storage et Factory dans Content (app/page-systeme.js redirige
 // les anciennes adresses #/system/sys/…).
-const SUB_TABS = [['dash', 'Dashboard'], ['health', 'Health']];
+const SUB_TABS = [['dash', 'Dashboard'], ['health', 'Health'], ['cores', 'CPU cores']];
 
 export function SystemPage({ rig, sub }) {
   // #/system/sys/health/<fait> : la ligne de Health qu'une puce de /live désigne (docs/assistant.md §3)
@@ -847,6 +848,7 @@ export function SystemPage({ rig, sub }) {
       </div>
       ${showMsg && halt !== 2 ? html`<div class=${cls('sys-note', showMsg.startsWith('✗') && 'bad')}>${showMsg}</div>` : ''}
       ${halt === 2 ? html`<div class="sys-stopped">golem stopped — Reaper and the bridge are off. Start it again on the computer (the golem icon, or <code>golem server</code>).</div>` : ''}
+      ${tab === 'cores' ? html`<${CpuCoresPanel} rig=${rig} />` : ''}
       ${tab === 'dash' ? html`<${DashboardPanel} rig=${rig} admin=${canStop} acts=${canStop ? html`
           ${tabletSheet ? html`<button class="sys-pc-btn" onClick=${() => tabletSheet()}
               title="the address and its QR for a tablet, then this window closes — golem keeps running">Continue on a tablet</button>`
@@ -856,6 +858,6 @@ export function SystemPage({ rig, sub }) {
           <button class=${cls('sys-halt', halt === 1 && 'arm')} disabled=${halt === 2}
             title="stop golem: Reaper, the bridge and its windows — the sound stops" onClick=${stopGolem}>
             ${halt === 1 ? 'Stop golem — sure?' : halt === 2 ? 'stopping…' : '⏻ Stop golem'}</button>` : null} />`
-      : html`<${HealthPage} focus=${focus} />`}
+      : tab === 'health' ? html`<${HealthPage} focus=${focus} />` : ''}
     </div>`;
 }

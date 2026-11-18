@@ -269,3 +269,23 @@ All under `/api/cpu/`, read-only except `calibrate`. Percentages are of ONE core
   posed back at the end, only if the rig is still the bench patch. Under the Golem Engine the bench waits (§8).
 - **First calibration time, estimated:** about 75 targets × ~10 s (rebuild, 3 s settle, 2 s clone settle, six renders
   of an 11 s DI) ≈ **12–15 min**. To be confirmed by the first run.
+
+## 12. The CPU cores page (System ▸ System ▸ CPU cores)
+
+> **Status: CODED** (mockup `mockups/cpu-cores.html` approved by the maintainer on 2026-11-18).
+
+The estimate says what a preset *should* cost before you play; this page shows what the machine *does* while it
+plays (`bridge/cpu_cores.py`, `GET /api/cpu/cores`, read every 2.5 s, Linux):
+
+- **each core's load** (`/proc/stat`, difference between two readings), with performance and efficiency cores told
+  apart on a hybrid processor, and the busiest one outlined;
+- **the audio engine's share in each core**: the CPU time of each of its threads, filed under the core the thread
+  was on at the reading. The system moves threads between cores: a fair picture over a few seconds, not an
+  assignment;
+- **what each lane costs** under the Golem Engine: its plugins' own counters, as a share of one audio cycle (root and
+  merge in series, the heaviest branch), next to the estimate. REAPER does not expose them: the cores alone are
+  shown there.
+
+The page loads a patch or a preset and switches scenes (a real recall: the sound changes). It does **not** say which
+lane runs on which core — the engine hands its tracks to its threads at every cycle; the mockup had such a column,
+it was removed before coding.

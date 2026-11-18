@@ -8765,3 +8765,52 @@ button.mode-live{background:transparent; cursor:pointer}
 .dk-demo{flex:none; font-size:11px; font-weight:700; color:var(--muted)}
 .dk-demo.ok{color:var(--sect, #2ecc71)}
 .dk-eng{overflow:hidden; text-overflow:ellipsis}
+
+/* ── System ▸ System ▸ CPU cores (mockups/cpu-cores.html, 2026-11-18) — préfixe cc- ── */
+.cc-page{flex:1; min-height:0; display:grid; grid-template-columns:270px minmax(0,1fr); gap:12px; padding:10px 0 0}
+.cc-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; min-width:0}
+.cc-card h3{margin:0 0 8px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+.cc-card h3.cc-h2{margin-top:10px}
+.cc-src{display:flex; flex-direction:column; gap:6px}
+.cc-now{display:flex; align-items:center; gap:8px; min-height:44px; padding:0 10px; border:1px solid var(--sect); border-radius:9px; background:var(--panel2); font-weight:600; min-width:0}
+.cc-now b{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cc-now small{margin-left:auto; color:var(--muted); font-weight:500; flex:none}
+.cc-dot{width:8px; height:8px; border-radius:50%; background:var(--line); flex:none}
+.cc-dot.on{background:var(--funk)}
+.cc-load{min-height:44px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:var(--panel2); color:var(--text); font:inherit; font-weight:600}
+.cc-scenes{display:flex; gap:6px}
+.cc-sc{flex:1; min-height:40px; border-radius:8px; background:var(--panel2); border:1px solid var(--line); color:var(--text); font-weight:700; cursor:pointer}
+.cc-sc.on{background:var(--accent); border-color:var(--accent); color:#fff}
+.cc-facts{margin-top:8px; display:grid; grid-template-columns:1fr auto; row-gap:5px; font-size:13px}
+.cc-facts span{color:var(--muted)}
+.cc-facts b{text-align:right}
+.cc-ok{color:var(--funk)} .cc-warn{color:var(--rock)} .cc-bad{color:var(--accent)}
+.cc-note{font-size:12px; color:var(--muted); margin:4px 0 0}
+.cc-err{font-size:12px; color:var(--accent); margin:2px 0 0}
+.cc-right{display:flex; flex-direction:column; gap:10px; min-width:0; min-height:0}
+.cc-hd{display:flex; align-items:baseline; gap:10px; min-width:0}
+.cc-hd b{font-size:15px; flex:none}
+.cc-hd small{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cc-legend{margin-left:auto; font-size:12px; color:var(--muted); white-space:nowrap; flex:none}
+.cc-legend i{display:inline-block; width:10px; height:10px; border-radius:2px; margin:0 5px 0 12px; vertical-align:-1px}
+.cc-legend i.g{background:var(--accent)} .cc-legend i.o{background:#3a4352}
+.cc-cores{display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:6px; margin-top:8px}
+.cc-cores.dense{grid-template-columns:repeat(16,minmax(0,1fr))}
+.cc-core{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:5px 6px 4px; text-align:center; min-width:0}
+.cc-core.busy{border-color:color-mix(in srgb, var(--accent) 60%, var(--line))}
+.cc-core .n{font-size:11px; color:var(--muted); display:flex; justify-content:space-between}
+.cc-core .n em{font-style:normal; font-weight:700; color:var(--blues)}
+.cc-core .n em.e{color:var(--muted)}
+.cc-core .bar{height:40px; border-radius:5px; background:#0f1216; margin:3px 0; position:relative; overflow:hidden}
+.cc-core .bar .o, .cc-core .bar .g{position:absolute; left:0; right:0; bottom:0; transition:height .4s}
+.cc-core .bar .o{background:#3a4352} .cc-core .bar .g{background:var(--accent)}
+.cc-core b{font-size:13px} .cc-core b small{font-size:10px; color:var(--muted); font-weight:500}
+.cc-lanes{flex:1; min-height:0; overflow:hidden}
+.cc-lane{display:grid; grid-template-columns:190px minmax(0,1fr) 56px 110px; align-items:center; gap:10px; min-height:26px; font-size:13px}
+.cc-lane .nm{font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cc-lane .nm small{color:var(--muted); font-weight:500; margin-left:6px}
+.cc-lane .track{height:10px; border-radius:5px; background:#0f1216; overflow:hidden}
+.cc-lane .track i{display:block; height:100%; background:var(--funk); transition:width .4s}
+.cc-lane .track i.warn{background:var(--rock)} .cc-lane .track i.bad{background:var(--accent)}
+.cc-lane .pc{text-align:right; font-weight:700}
+.cc-lane .est{color:var(--muted); font-size:12px; text-align:right; white-space:nowrap}

@@ -29,7 +29,7 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VERSION = "9.9-g1"    # la release épinglée (vide = aucune : l'installation le dit, sans échouer)
+VERSION = "9.9-g2"    # la release épinglée (vide = aucune : l'installation le dit, sans échouer)
 BASE = "https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-{version}"
 ASSETS = {"linux": "golem-engine-linux-x86_64.tar.gz", "win32": "golem-engine-windows-x86_64.tar.gz",
           "darwin": "golem-engine-macos-universal.tar.gz"}

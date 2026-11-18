@@ -10,6 +10,7 @@ library/previews/<id>/<scene>.opus et écrit preset["preview"].
 Réf-DI UNIQUEMENT (jamais le jeu de l'user) : la composition est à GoleM, le son au
 preset -> propre à distribuer (store golem.fm). Cf. le contrat.
 """
+import contextlib
 import glob
 import hashlib
 import json
@@ -248,6 +249,46 @@ def _scenes_of(preset, block):
     return ids
 
 
+DI_MIN_S, DI_MAX_S = 3.0, 30.0
+
+
+def user_di(data, filename, work_dir):
+    """Une DI de l'utilisateur, prête à jouer : convertie en WAV mono 48 kHz 24 bits (une règle pour les deux moteurs —
+    REAPER et le Golem Engine ne lisent pas les mêmes formats), mesurée, jamais retouchée en niveau. Refusée, avec une
+    phrase, sous 3 s ou au-dessus de 30 s : on ne tronque pas en silence. Rend {ok, path, label, duration, peak_db}
+    ou {ok: False, error}. L'appelant retire `path`."""
+    import hashlib
+    ext = os.path.splitext(os.path.basename(str(filename or "")))[1].lower()
+    if ext not in (".wav", ".flac", ".mp3", ".ogg", ".aif", ".aiff"):
+        return {"ok": False, "error": "a DI is a wav, flac, mp3, ogg or aiff file"}
+    if not data:
+        return {"ok": False, "error": "the DI file is empty"}
+    sha = hashlib.sha256(data).hexdigest()
+    os.makedirs(work_dir, exist_ok=True)
+    src = os.path.join(work_dir, f"di-{sha[:16]}{ext}")
+    out = os.path.join(work_dir, f"di-{sha[:16]}.mono48.wav")
+    try:
+        with open(src, "wb") as f:
+            f.write(data)
+        try:
+            subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", src, "-ac", "1", "-ar", "48000", "-c:a", "pcm_s24le", out],
+                           check=True, capture_output=True, timeout=60)
+        except (subprocess.SubprocessError, OSError):
+            return {"ok": False, "error": "the DI file could not be read as audio"}
+        dur = _clip_duration(out)
+        if dur is None:
+            return {"ok": False, "error": "the DI file could not be read as audio"}
+        if dur < DI_MIN_S or dur > DI_MAX_S:
+            with contextlib.suppress(OSError):
+                os.remove(out)
+            return {"ok": False, "error": f"a DI lasts between {DI_MIN_S:g} and {DI_MAX_S:g} seconds (this one: {dur:g} s)"}
+        pk = _peak_db(out)
+        return {"ok": True, "path": out, "label": "user:" + sha, "duration": dur, "peak_db": None if pk is None else round(pk, 1)}
+    finally:
+        with contextlib.suppress(OSError):
+            os.remove(src)
+
+
 def _encode_opus(wav, opus, start=0.0, max_s=None):
     """WAV -> opus (STÉRÉO, ~96 kbps, loudnorm léger) via ffmpeg. True si OK. Stéréo depuis le 2026-11-03 : le
     mono effaçait ce que la démo doit montrer (chorus, delays ping-pong, reverbs). `max_s` : un EXTRAIT — coupé à
@@ -365,7 +406,7 @@ def _peak_db(wav, start=None, dur=None):
         return None
 
 
-def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None):
+def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None, di_file=None):
     """Génère la démo du preset `pid` (thread). Pour CHAQUE scène : applique la scène sur le
     sandbox live (moteur testé) puis demande à golem_preview de cloner+rendre la scène courante,
     poll le WAV, encode en opus. Écrit preset['preview']. Ne lève jamais.
@@ -374,7 +415,8 @@ def generate(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=N
     if not _gen_lock.acquire(blocking=False):
         _ST.update(phase="error", error="a generation is already running"); return
     try:
-        _generate_locked(pid, seq, on_scene, in_key=in_key, ref=ref, casting=casting, only=only, max_s=max_s)
+        _generate_locked(pid, seq, on_scene, in_key=in_key, ref=ref, casting=casting, only=only, max_s=max_s,
+                         **({"di_file": di_file} if di_file else {}))
     finally:
         _gen_lock.release()
 
@@ -429,7 +471,7 @@ def _scene_refs(preset, scenes, ref, role, explicit, patch_id=None, casting=None
     return refs
 
 
-def plan(pid, in_key="1", ref=None, casting=None):
+def plan(pid, in_key="1", ref=None, casting=None, di_file=None):
     """Ce qu'un rendu demande, calculé SANS rien rendre — partagé par la génération et le lot (qui saute une démo
     déjà à jour). Rend un dict, ou le texte du refus (anglais : l'écran le montre)."""
     preset = store.load_preset(pid)
@@ -445,7 +487,12 @@ def plan(pid, in_key="1", ref=None, casting=None):
         from . import patches as P
         preset = dict(preset, tags=(P.get_patch(patch_id) or {}).get("tags") or [])
     explicit = bool(ref) or (((block or {}).get("params") or {}).get("ref") or "auto") != "auto"
-    ref, di = resolve_di(preset, block, in_key=in_key, ref_override=ref)
+    if di_file:
+        # UNE DI À SOI (golem.fm « My DIs », 2026-11-18) : un FICHIER, pas un id de l'index — `ref` n'est alors que son
+        # étiquette (« user:<sha> »), la même pour toutes les scènes. Elle est jouée telle quelle, comme celles d'usine.
+        explicit, ref, di = True, str(ref or "user"), (di_file if os.path.isfile(di_file) else None)
+    else:
+        ref, di = resolve_di(preset, block, in_key=in_key, ref_override=ref)
     if not di:
         return f"reference DI missing: {ref} (record it first)"
     midi = (_di_index().get(ref) or {}).get("kind") == "midi"
@@ -453,7 +500,7 @@ def plan(pid, in_key="1", ref=None, casting=None):
         return f"no MIDI reference for this lane ({ref})"
     scenes = _scenes_of(preset, block)
     role = _role_of(preset, in_key)
-    refs = _scene_refs(preset, scenes, ref, role, explicit, patch_id, casting)
+    refs = {sc: ref for sc in scenes} if di_file else _scene_refs(preset, scenes, ref, role, explicit, patch_id, casting)
     dis = {sc: (di if r == ref else resolve_di(preset, block, in_key=in_key, ref_override=r)[1]) for sc, r in refs.items()}
     if str(in_key) == "k":
         # la racine d'une lane MIDI est « Sandbox #Input <input> » : 3 sur une carte à deux entrées, 101+ au-delà
@@ -469,9 +516,9 @@ def plan(pid, in_key="1", ref=None, casting=None):
             "fingerprint": preset_export.fingerprint(preset)}    # empreinte SON au moment de la génération
 
 
-def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None):
+def _generate_locked(pid, seq, on_scene=None, in_key="1", ref=None, casting=None, only=None, max_s=None, di_file=None):
     try:
-        pl = plan(pid, in_key=in_key, ref=ref, casting=casting)
+        pl = plan(pid, in_key=in_key, ref=ref, casting=casting, **({"di_file": di_file} if di_file else {}))
         if isinstance(pl, str):
             _ST.update(phase="error", error=pl); return
         if _apply_scene is None:

@@ -239,6 +239,10 @@ def unavailable_types():
     return sorted(t for t in effects() if plugin_state(t, inv, obs) is False)
 
 
+JOB_CAPS = ("patch-preview-scene", "patch-preview-max-s", "patch-preview-midi", "patch-preview-di", "kit-pad-set",
+            "groove-install-meta", "groove-pack-meta", "groove-render", "kit-available")
+
+
 def caps():
     """Ce que le rack publie de lui-même au battement (block-status.md §7)."""
     from . import rig
@@ -257,7 +261,11 @@ def caps():
            "unavailable": unavailable_types(), "quarantine": sorted(rig.quarantined_types()),
            "nam_unreadable": rig.nam_unreadable(),
            # docs/compo.md §12 : le rack joue le bed d'une prise armée — golem.fm n'en envoie qu'à un rack qui le dit
-           "compo_bed": True}
+           "compo_bed": True,
+           # CE QUE CE RACK COMPREND des jobs et de leurs champs récents (2026-11-18, demandé par golem.fm) : sans cette
+           # liste, golem.fm ne sait pas si un champ nouveau sera lu ou ignoré — un rack plus ancien n'en a pas, et
+           # golem.fm ne lui envoie alors que la forme d'avant. On y AJOUTE, on n'en retire jamais.
+           "jobs": list(JOB_CAPS)}
     # docs/separation.md §10 : {stems, rtf} du moteur actif testé — jamais son nom ; pas de moteur → pas de clé
     with contextlib.suppress(Exception):
         from . import separation

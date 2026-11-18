@@ -483,7 +483,7 @@ def _preset_delete(job):
 
 
 def _patch_preview(job):
-    """`{action:"patch-preview", sha, role, patch_id, ref?, scene?, max_s?}` (golem.fm, Store : pas de publication sans
+    """`{action:"patch-preview", sha, role, patch_id, ref? | di?, scene?, max_s?}` (golem.fm, Store : pas de publication sans
     écoute enregistrée par le rack de l'auteur — décision 2026-09-15). Le blob = le document du
     patch, comme patch-try. Le rack construit le preset d'essai (une lane du rôle), le pose SOUS UN ID
     TEMPORAIRE dans presets/ (le moteur de preview charge par id), re-ampe la DI de référence du rôle
@@ -494,7 +494,10 @@ def _patch_preview(job):
     mode verrouillé/gig, prise en cours, DI de référence absente, scène inconnue.
     2026-11-17 (golem.fm, écrans « Hear it » et cartes de patch — décidé par le mainteneur) : `scene` ne rend QUE cette
     scène ; `max_s` (3 à 30 s) coupe le clip en extrait ; un rôle MIDI (claviers, batterie) se rend par sa phrase MIDI
-    de référence (entrée « k »), comme « Listen » dans le Designer."""
+    de référence (entrée « k »), comme « Listen » dans le Designer.
+    `di: {sha, filename}` (golem.fm « My DIs », validé par le mainteneur le 2026-11-18) à la place de `ref` : une DI de
+    l'utilisateur, tirée comme un blob, convertie ici en mono 48 kHz, jouée TELLE QUELLE (jamais normalisée), refusée
+    sous 3 s ou au-dessus de 30 s, retirée après le rendu. L'ack dit `di: "user:<sha256>"` et `di_peak_db`."""
     from . import preview as preview_mod
     from .state import state
     from .store import _write_json_atomic, _safe_id
@@ -516,6 +519,14 @@ def _patch_preview(job):
         except (TypeError, ValueError):
             raise RuntimeError("max_s must be a number of seconds") from None
     ppath = os.path.join(C.PRESETS_DIR, f"{pid}.json")
+    udi = None
+    if isinstance(job.get("di"), dict) and (job["di"].get("sha") or job["di"].get("sha256")):
+        if lane.get("midi"):
+            raise RuntimeError("a DI is an audio phrase — this patch is played by a keyboard or pads")
+        udi = preview_mod.user_di(_blob_bytes({"sha": job["di"].get("sha") or job["di"].get("sha256")}, ".patch-preview-di.tmp"),
+                                  job["di"].get("filename"), os.path.join(C.PRESETS_DIR, ".patch-preview-di"))
+        if not udi.get("ok"):
+            raise RuntimeError("patch-preview: " + str(udi.get("error")))
     _write_json_atomic(ppath, preset)
     jid = job_id(job)
     clips = {}
@@ -529,8 +540,9 @@ def _patch_preview(job):
             with __import__("contextlib").suppress(Exception):
                 _req("POST", f"/api/ext/tones/jobs/{jid}/progress", body={"scene": sc, "clip": one})
     try:
-        preview_mod.generate(pid, next(_pv_seq), on_scene=on_scene, in_key=in_key, ref=job.get("ref"),
-                             only=only, max_s=max_s)
+        preview_mod.generate(pid, next(_pv_seq), on_scene=on_scene, in_key=in_key,
+                             ref=udi["label"] if udi else job.get("ref"), only=only, max_s=max_s,
+                             **({"di_file": udi["path"]} if udi else {}))
         st = preview_mod.status()
         if st.get("phase") != "done":
             raise RuntimeError(st.get("error") or "generation failed")
@@ -540,9 +552,12 @@ def _patch_preview(job):
         if in_key != "1":
             pv = ((pv.get("alt") or {}).get(in_key)) or pv
     finally:
-        # rien ne reste : ni le preset temporaire, ni ses clips locaux (ils vivent chez golem.fm)
+        # rien ne reste : ni le preset temporaire, ni ses clips locaux (ils vivent chez golem.fm), ni la DI de l'utilisateur
         with __import__("contextlib").suppress(OSError):
             os.remove(ppath)
+        if udi:
+            with __import__("contextlib").suppress(OSError):
+                os.remove(udi["path"])
         import shutil as _sh
         _sh.rmtree(os.path.join(C.PREVIEWS_DIR, pid + ("" if in_key == "1" else "-in" + in_key)), ignore_errors=True)
     # di_name (golem.fm, 2026-09-15) : « reference DI : Strat bridge » sur la fiche du Store — le nom de
@@ -551,6 +566,7 @@ def _patch_preview(job):
     return {"_log": f"patch '{patch_id}' previewed ({len(clips)} scene·s, DI {pv.get('ref')})",
             "patch_id": patch_id, "di": pv.get("ref"), "di_name": di_name, "instrument": pv.get("instrument") or role,
             "fingerprint": pv.get("fingerprint"), "scenes": clips, "max_s": max_s,
+            "di_peak_db": udi.get("peak_db") if udi else None, "di_duration": udi.get("duration") if udi else None,
             "missing": missing, "matched": settled["matched"], "installed": settled["installed"],
             "suggested": settled.get("suggested", [])}
 

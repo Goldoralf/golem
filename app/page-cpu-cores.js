@@ -23,8 +23,13 @@ export function CpuCoresPanel({ rig }) {
     return () => { alive.current = false; clearInterval(t); };
   }, []);
   // ce qu'on peut charger : les patches et les presets du golem ; l'estimation et les scènes de ce qui joue
-  const { data: patches } = useAsync(() => fetch('/api/patches').then(r => r.json()).catch(() => null), []);
-  const { data: presets } = useAsync(() => fetch('/api/presets').then(r => r.json()).catch(() => null), []);
+  // LE CHOIX EN TROIS TEMPS (le mainteneur, 2026-11-18 : une seule liste de tout n'était pas lisible) : patch ou preset,
+  // puis la banque (des patches) ou la setlist (des presets), puis ses lignes — celles que le musicien connaît.
+  const { data: lists } = useAsync(() => fetch('/api/setlists').then(r => r.json()).catch(() => null), []);
+  const playingPatch = String(st.preset_id || '').startsWith('patch:');
+  const [kind, setKind] = useState(null);                  // 'patch' | 'preset' ; null = celui de ce qui joue
+  const [listId, setListId] = useState(null);
+  const [page, setPage] = useState(0);
   const { data: cur } = useAsync(() => st.preset_id ? fetch('/api/preset/' + encodeURIComponent(st.preset_id)).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null), [st.preset_id]);
   const { data: est } = useAsync(() => st.preset_id ? fetch('/api/cpu/estimate?preset=' + encodeURIComponent(st.preset_id)).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null), [st.preset_id]);
   const recall = async body => {
@@ -42,31 +47,46 @@ export function CpuCoresPanel({ rig }) {
   const laneName = {};
   for (const L of (est && est.lanes) || []) { estBy[L.id] = (L.by_scene || {})[st.scene_id]; laneName[L.id] = L.name; }
   const name = String(st.preset_name || '').replace(/^⛓\s*/, '') || 'nothing loaded';
-  const pList = ((patches && patches.patches) || []).map(p => ['patch:' + p.id, p.name]);
-  const sList = (Array.isArray(presets) ? presets : (presets && presets.presets) || []).filter(p => !String(p.id).startsWith('patch:')).map(p => [p.id, p.name || p.id]);
+  const K = kind || (playingPatch ? 'patch' : 'preset');
+  const all = ((lists && lists.setlists) || []).filter(x => (x.kind === 'sounds') === (K === 'patch') && (x.lines || []).length);
+  const cur0 = all.find(x => x.id === listId) || all.find(x => (x.presets || []).includes(st.preset_id)) || all.find(x => x.active) || all[0];
+  const rows = cur0 ? (cur0.lines || []).map((ln, i) => ({ id: (cur0.presets || [])[i], title: ln.title || (cur0.presets || [])[i], n: i })).filter(r => r.id) : [];
+  const PER = 5, pages = Math.max(1, Math.ceil(rows.length / PER));
+  const here = rows.findIndex(r => r.id === st.preset_id);
+  const pg = Math.min(pages - 1, page < 0 ? 0 : page);
+  const shown = rows.slice(pg * PER, pg * PER + PER);
   return html`<div class="cc-page">
     <div class="cc-card cc-src">
       <h3>What to measure</h3>
-      <div class="cc-now"><i class=${cls('cc-dot', st.preset_id && 'on')}></i><b>${esc(name)}</b><small>plays now</small></div>
-      <select class="cc-load edit-only" aria-label="Load a patch or preset" disabled=${busy} value=""
-        onChange=${e => { const v = e.target.value; e.target.value = ''; if (v) recall({ preset: v }); }}>
-        <option value="">Load a patch or preset…</option>
-        ${pList.length ? html`<optgroup label="Patches">${pList.map(([id, n]) => html`<option value=${id}>${n}</option>`)}</optgroup>` : ''}
-        ${sList.length ? html`<optgroup label="Presets">${sList.map(([id, n]) => html`<option value=${id}>${n}</option>`)}</optgroup>` : ''}
-      </select>
-      ${scenes.length ? html`<h3 class="cc-h2">Scene</h3>
+      <div class="cc-seg" role="tablist">
+        ${[['patch', 'Patch'], ['preset', 'Preset']].map(([k, lb]) => html`<button role="tab" aria-selected=${K === k} class=${cls('cc-segb', K === k && 'on')}
+          onClick=${() => { setKind(k); setListId(null); setPage(0); }}>${lb}</button>`)}
+      </div>
+      ${all.length ? html`<select class="cc-load" aria-label=${K === 'patch' ? 'Bank' : 'Setlist'} value=${cur0 ? cur0.id : ''}
+          onChange=${e => { setListId(e.target.value); setPage(0); }}>
+          ${all.map(x => html`<option value=${x.id}>${(K === 'patch' ? 'Bank · ' : 'Setlist · ') + x.name}</option>`)}
+        </select>
+        <div class="cc-rows">
+          ${shown.map(r => html`<button class=${cls('cc-row edit-only', r.id === st.preset_id && 'on')} disabled=${busy} key=${r.id}
+            aria-label=${'Load « ' + r.title + ' »'} onClick=${() => recall({ preset: r.id })}>
+            <i>${String(r.n).padStart(2, '0')}</i><span>${esc(r.title)}</span>${r.id === st.preset_id ? html`<small>plays</small>` : ''}</button>`)}
+        </div>
+        ${pages > 1 ? html`<div class="cc-pager"><button aria-label="Previous page" disabled=${pg === 0} onClick=${() => setPage(pg - 1)}>‹</button>
+          <span>${pg + 1} / ${pages}${here >= 0 && Math.floor(here / PER) !== pg ? html` <button class="cc-goto" onClick=${() => setPage(Math.floor(here / PER))}>what plays ›</button>` : ''}</span>
+          <button aria-label="Next page" disabled=${pg >= pages - 1} onClick=${() => setPage(pg + 1)}>›</button></div>` : ''}`
+      : html`<p class="cc-note">${K === 'patch' ? 'No bank of patches on this golem yet.' : 'No setlist on this golem yet.'}</p>`}
+      ${scenes.length ? html`<h3 class="cc-h2">Scene · ${esc(name)}</h3>
         <div class="cc-scenes">${scenes.slice(0, 5).map(s => html`<button class=${cls('cc-sc edit-only', st.scene_id === s.id && 'on')}
           aria-label=${'Scene ' + s.id} disabled=${busy} onClick=${() => recall({ scene: s.id })}>${s.id}</button>`)}</div>` : ''}
       ${err ? html`<p class="cc-err">✗ ${err}</p>` : ''}
-      <div class="cc-facts">
-        <span>Busiest core</span><b class=${'cc-' + lvl(b && b.pct)}>${b ? 'core ' + b.n + ' · ' + fmt(b.pct) : '…'}</b>
-        <span>Engine load (whole cycle)</span><b class=${'cc-' + lvl(a.dsp_load)}>${a.dsp_load != null ? fmt(a.dsp_load) : '—'}</b>
-        <span>Dropouts since start</span><b class=${a.xruns ? 'cc-warn' : 'cc-ok'}>${a.xruns != null ? a.xruns : '—'}</b>
-        <span>Buffer</span><b>${a.buffer ? a.buffer + ' smp' + (a.cycle_ms ? ' · ' + a.cycle_ms + ' ms' : '') : '—'}</b>
-      </div>
-      <p class="cc-note">Measured over the last ${d.window_s || '…'} seconds. A lane runs on one core at a time: it is the busiest core, not their sum, that decides whether the sound drops out.</p>
     </div>
     <div class="cc-right">
+      <div class="cc-strip">
+        <div><span title="a lane runs on one core at a time: the busiest core, not their sum, decides whether the sound drops out">Busiest core</span><b class=${'cc-' + lvl(b && b.pct)}>${b ? 'core ' + b.n + ' · ' + fmt(b.pct) : '…'}</b>
+        </div><div><span>Engine load</span><b class=${'cc-' + lvl(a.dsp_load)}>${a.dsp_load != null ? fmt(a.dsp_load) : '—'}</b>
+        </div><div><span>Dropouts since start</span><b class=${a.xruns ? 'cc-warn' : 'cc-ok'}>${a.xruns != null ? a.xruns : '—'}</b>
+        </div><div><span>Buffer</span><b>${a.buffer ? a.buffer + ' smp' + (a.cycle_ms ? ' · ' + a.cycle_ms + ' ms' : '') : '—'}</b>
+      </div></div>
       <div class="cc-card">
         <div class="cc-hd"><b>${d.cores.length} cores</b><small>${esc(d.cpu || '')}${d.cores.some(c => c.kind) ? ' · P = performance, E = efficiency' : ''}</small>
           <span class="cc-legend"><i class="g"></i>golem's sound<i class="o"></i>everything else</span></div>

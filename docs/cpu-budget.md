@@ -286,6 +286,9 @@ plays (`bridge/cpu_cores.py`, `GET /api/cpu/cores`, read every 2.5 s, Linux):
   merge in series, the heaviest branch), next to the estimate. REAPER does not expose them: the cores alone are
   shown there.
 
-The page loads a patch or a preset and switches scenes (a real recall: the sound changes). It does **not** say which
+The left panel narrows the choice in three steps (the maintainer, 2026-11-18: one list of everything was not
+readable): **Patch or Preset**, then the **bank** (patches) or the **setlist** (presets), then its lines, five at a
+time. A tap loads the line, the scene buttons switch scenes (a real recall: the sound changes). The four facts
+(busiest core, engine load, dropouts, buffer) sit in a strip above the cores. It does **not** say which
 lane runs on which core — the engine hands its tracks to its threads at every cycle; the mockup had such a column,
 it was removed before coding.

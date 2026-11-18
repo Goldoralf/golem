@@ -129,6 +129,8 @@ local last_recv_sig = nil
 local last_seq    = nil
 local rec_sources = nil        -- {in1,in2,usb} du bloc Rec du preset actif (nil = tout)
 local rec_mode    = "mix"      -- mix | tracks | tracks_di (bloc Rec, figé à op_start)
+local rec_di_record = false    -- une DI à la demande : l'entrée cochée est prise BRUTE même sans lane (figé à op_start)
+local direct_di   = {}         -- noms des pistes « Recording:DI … » qui lisent l'entrée de la carte, sans receive
 local rec_keep_mix = true      -- coche « Song mix » : garder AUSSI le mix stéréo en multipiste
 local MPREFIX     = "Recording:"   -- pistes multi (une par source, + "Recording:DI …")
 local rec_t0      = nil        -- horodatage de l'engagement du record (fenêtre du chien de garde)
@@ -173,7 +175,10 @@ local function read_sources()
   -- (on ne perd jamais le mix par défaut). t["mix"] est déjà lu par le gmatch des booléens nus.
   local keep_mix = (t["mix"] ~= false)
   t["mix"] = nil                                   -- ce n'est PAS une source, ne pas polluer src_allowed
-  return (next(t) and t or nil), mode, keep_mix
+  -- UNE DI À LA DEMANDE (bridge/di_record.py, 2026-11-18) : `"di_record": true` — le motif des booléens ci-dessus
+  -- ne le voit pas (%w ne couvre pas « _ »), il est lu à part
+  local di_record = s:match('"di_record"%s*:%s*true') ~= nil
+  return (next(t) and t or nil), mode, keep_mix, di_record
 end
 
 -- Pistes de SERVICE jamais gravées : le métronome ne doit JAMAIS finir dans une prise.
@@ -466,9 +471,26 @@ local function build_multi(perfrec)
     n = n + 1
   end
   if rec_mode == "tracks_di" then
-    for _, s in ipairs(di_candidates()) do
+    for _, s in ipairs(rec_di_record and {} or di_candidates()) do
       add_receive(s.tr, make_rec_track(MPREFIX .. "DI " .. s.nm), true)
       n = n + 1
+    end
+    -- UNE DI À LA DEMANDE : la piste d'enregistrement lit l'entrée de la carte ELLE-MÊME (mono, mode « input »), pas
+    -- la piste « Sandbox #Input N ». Une entrée qu'aucune lane ne joue n'a pas cette piste — ou en garde une d'un
+    -- rig précédent, qui n'écoute plus rien : sa DI était un silence numérique (mesuré au rack le 2026-11-18)
+    if rec_di_record and rec_sources then
+      for k, v in pairs(rec_sources) do
+        local inp = tonumber(k:match("^in(%d+)$"))
+        if inp and v == true and inp <= reaper.GetNumAudioInputs() then
+          local nm = MPREFIX .. "DI Sandbox #Input " .. inp
+          local tr = make_rec_track(nm)
+          reaper.SetMediaTrackInfo_Value(tr, "I_RECINPUT", inp - 1)     -- entrée mono n° inp
+          reaper.SetMediaTrackInfo_Value(tr, "I_RECMODE", 0)            -- l'entrée, pas la sortie de la piste
+          direct_di[nm] = true
+          log("  DI à la demande <- entrée " .. inp .. " de la carte ")
+          n = n + 1
+        end
+      end
     end
   end
   -- ⚠ LA CAPTURE MIDI NE DÉPEND PLUS DU MODE (docs/drums-kit.md lot 3, 2026-09-18) : elle était
@@ -496,7 +518,7 @@ local function heal_multi()
     -- l'entrée matérielle du contrôleur (I_RECINPUT). Sans cette exclusion, l'auto-réparation
     -- cherchait une piste-source nommée « MIDI Sandbox #Input 3 » et criait « source disparue »
     -- à chaque prise clavier — fausse alerte constatée au rig le 2026-07-27.
-    if nm:sub(1, #MPREFIX_MIDI) == MPREFIX_MIDI then
+    if nm:sub(1, #MPREFIX_MIDI) == MPREFIX_MIDI or direct_di[nm] then
       -- rien à faire : capture directe, pas de receive
     elseif nm:sub(1, #MPREFIX) == MPREFIX and reaper.GetTrackNumSends(tr, -1) == 0 then
       local src_nm = nm:sub(#MPREFIX + 1)
@@ -530,7 +552,8 @@ local function op_start(want_backing)
   if recording then log("start ignoré (déjà en cours)"); return end
   local t_in = reaper.time_precise()                                      -- témoin : combien coûte la préparation
   reaper.RecursiveCreateDirectory(REC_DIR, 0)
-  rec_sources, rec_mode, rec_keep_mix = read_sources()                    -- coches + mode + « Song mix », figés pour la prise
+  rec_sources, rec_mode, rec_keep_mix, rec_di_record = read_sources()     -- coches + mode + « Song mix », figés pour la prise
+  direct_di = {}
   local ts = os.date("%Y%m%d-%H%M%S")
   cur_file    = (rec_mode == "mix") and ("recordings/perf-" .. ts .. ".wav")
                 or ("recordings/perf-" .. ts)                             -- multi : un DOSSIER par prise

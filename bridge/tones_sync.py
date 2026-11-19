@@ -89,6 +89,19 @@ def _norm_base(url):
     return (url or "").strip().rstrip("/")
 
 
+def _dest_key():
+    """LA DESTINATION d'un push : le serveur ET le compte (2026-11-19, demande golem.fm). Indexé par serveur seul,
+    un rack ré-appairé sur un AUTRE compte du même serveur croyait tout déjà poussé : le nouveau compte restait à
+    0 pack, 0 blob, 0 bank. Le rack ne connaît pas le compte — il connaît son JETON, neuf à chaque appairage : la clé
+    en porte l'empreinte (jamais le jeton). Un ré-appairage sur le même compte repousse tout une fois : idempotent
+    côté serveur, le sens d'erreur sûr. Sans jeton : l'adresse seule (rien ne part de toute façon)."""
+    base, token = _cfg()
+    key = _norm_base(base)
+    if token:
+        key += "#" + __import__("hashlib").sha256(token.encode()).hexdigest()[:12]
+    return key
+
+
 def _pushed_for(state):
     """Le sous-dict des docs poussés POUR LE SERVEUR COURANT.
 
@@ -103,8 +116,7 @@ def _pushed_for(state):
     une fois — le sens d'erreur sûr. `sha_cache` (dépend des FICHIERS, pas du
     serveur) n'est pas touché.
     """
-    base, _tok = _cfg()
-    key = _norm_base(base)
+    key = _dest_key()
     pushed = state.get("pushed")
     is_new_form = isinstance(pushed, dict) and all(isinstance(v, dict) for v in pushed.values())
     if not is_new_form:
@@ -652,6 +664,22 @@ def _worker():
         except Exception as e:
             log.warning(f"presets: {e}")
 
+        # LES BANKS ET SETLISTS, UNE FOIS PAR DESTINATION (2026-11-19) : elles ne partaient qu'AU GESTE (push_setlist
+        # à chaque écriture) — un compte neuf ne recevait donc jamais celles qu'on ne retouche pas. Le premier sync vers
+        # une destination (serveur + jeton) les envoie toutes ; ensuite, le geste suffit, comme avant.
+        try:
+            dest = _dest_key()
+            seeded = state.setdefault("setlists_seeded", [])
+            if dest not in seeded:
+                from . import golemfm as _maes, setlists as _sl
+                ids = [s["id"] for s in _sl.list_all()]
+                for i, sid in enumerate(ids):
+                    _maes.push_setlist(sid, delay=1.0 + 0.5 * i)   # espacées : chacune pousse aussi ses chansons
+                seeded.append(dest)
+                log.info(f"{len(ids)} bank(s) et setlist(s) envoyée(s) à cette destination (première synchro)")
+        except Exception as e:
+            log.warning(f"setlists: {e}")
+
         state["last"] = {"at": rig["at"], "packs": len(packs), "pushed": len(changed),
                          "uploaded": len(missing), "rev": manifest.get("rev"),
                          "remote_bytes": manifest.get("bytes")}
@@ -722,14 +750,14 @@ def _published_all():
 
 def _published_map():
     """Les presets publiés vers le SERVEUR COURANT : {pid: empreinte}."""
-    return _published_all().get(_norm_base(_cfg()[0]), {})
+    return _published_all().get(_dest_key(), {})
 
 
 def _mark_published(pid, fp):
     from . import store
     with _pub_lock:
         d = _published_all()
-        d.setdefault(_norm_base(_cfg()[0]), {})[pid] = fp
+        d.setdefault(_dest_key(), {})[pid] = fp
         store._write_json_atomic(_PUBLISHED, d)
 
 

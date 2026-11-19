@@ -229,6 +229,13 @@ def pair_status():
             log.warning(f"serial de l'appairage non gardé : {e}")
         with _pair_lock:
             _pair.update(active=False, code=None, poll_token=None, approve_url=None)
+        # APPAIRÉ = TOUT PART (2026-11-19) : le jeton est neuf, donc la destination aussi (tones_sync._dest_key) —
+        # packs, fichiers, presets, patches, banks et setlists, sans attendre un push-library ni un geste
+        try:
+            from . import tones_sync
+            tones_sync.start_sync()
+        except Exception as e:
+            log.warning(f"synchro après appairage non lancée : {e}")
         return {"active": False, "approved": True}
     # ⚠ TOUT 4xx clôt la demande, pas seulement 404 (demande golem.fm, 2026-09-09) : depuis que le
     # jeton naît AU POLL et non à l'approbation, deux polls simultanés peuvent se croiser — l'un

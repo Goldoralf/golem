@@ -277,7 +277,7 @@ All carry the Bearer token except the two pairing calls.
 | `/api/ext/tones/jobs/{job}/ack` | POST | tones_jobs:_run_one, separation:_ack, plugin_recipes:_start_verify | job ack (§3) |
 | `/api/ext/tones/jobs/{job}/progress` | POST | tones_jobs:_generate_preview, _patch_preview | per-scene progress |
 | `/api/ext/tones/manifest` | GET (`?trashed=1` for install) | tones_sync:_worker, publish_preset; tones_jobs:_install, _manifest_tones | packs golem.fm holds, `missing_blobs[]`, `lent[]`, `rev`, `bytes` |
-| `/api/ext/tones/packs/{uid}` | PUT | tones_sync:_worker | one pack document (only those whose hash changed) |
+| `/api/ext/tones/packs/{uid}` | PUT | tones_sync:_worker | one pack document (only those whose hash changed **for this destination**: the "already pushed" state — packs in `tones-state` `pushed`, presets in `library/catalog/.published.json` — is keyed by server **and** a 12-char sha256 of the pairing token, `tones_sync._dest_key`, FIXED 2026-11-19. A rack re-paired on another account of the same server believed everything sent; now any new pairing re-sends everything once. The first sync to a destination also pushes every bank and setlist (`setlists_seeded`), and an approved pairing starts that sync) |
 | `/api/ext/tones/assets` | POST `?sha256=&filename=` (raw body) | tones_sync:_worker, publish_preset; preview:push_clip | upload a blob (507 = skipped, retried at next sync) |
 | `/api/ext/tones/assets/{sha}` | GET | tones_jobs:_download_raw | download a blob by sha256 |
 | `/api/ext/tones/rig-manifest` | PUT | tones_sync:_worker | `{device, at, packs[], blobs_bytes}` — what is installed |

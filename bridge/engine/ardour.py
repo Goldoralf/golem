@@ -42,8 +42,11 @@ def _proc_names(pid):
         return [os.path.basename(c.decode("utf-8", "replace")) for c in cmd if c]
     try:
         if sys.platform == "win32":
-            out = subprocess.run(["tasklist", "/FI", f"PID eq {int(pid)}", "/FO", "CSV", "/NH"], capture_output=True,
-                                 text=True, timeout=5).stdout.strip()
+            # en OCTETS, décodés ici (2026-11-19) : la sortie de tasklist suit la page de code de la console (« 483 260 Ko »
+            # avec une espace insécable) ; en texte sous PYTHONUTF8=1 le décodage échouait et stdout valait None
+            raw = subprocess.run(["tasklist", "/FI", f"PID eq {int(pid)}", "/FO", "CSV", "/NH"], capture_output=True,
+                                 timeout=5).stdout or b""
+            out = raw.decode("utf-16" if raw.startswith((b"\xff\xfe", b"\xfe\xff")) else "mbcs", errors="replace").strip()
             name = out.split(",")[0].strip('"') if out.startswith('"') else ""
             return [os.path.splitext(name)[0]] if name else []
         out = subprocess.run(["ps", "-p", str(int(pid)), "-o", "stat=,comm="], capture_output=True, text=True, timeout=5).stdout.strip()

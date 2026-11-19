@@ -25,6 +25,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--engine-dir", default=os.path.expanduser("~/golem-engine"))
     ap.add_argument("--keep", action="store_true", help="garder la racine jetable")
+    ap.add_argument("--only", help="ne jouer que ces sections, séparées par des virgules (rig, rec, click, clock, drums, "
+                                   "standard, tuner, backing, preview, sample, looper, host, riff, trial, miditake, "
+                                   "capture, keys) — le démarrage (relance, ping, inventaire, transport) tourne toujours")
     a = ap.parse_args()
     os.environ["GOLEM_ENGINE_DIR"] = a.engine_dir
     # SON port OSC, jamais le 3819 : un rack qui tourne sur le Golem Engine l'occupe — le moteur du banc prenait 3820 en
@@ -131,23 +134,24 @@ def main():
         st = wait(lambda: acked(s) and status(), 3) or {}
         check("transport arrêté par OSC", st.get("rolling") is False)
         check("0 xrun en jouant", (st.get("xruns") or 0) == xr0, f"dsp {st.get('dsp_load', 0):.1f} %, {xr0} au montage")
-        rig_bench(eng, check, wait, acked)
-        rec_bench(eng, check, wait, acked)
-        click_bench(eng, check, wait, acked)
-        clock_bench(eng, check, wait, acked)
-        drums_bench(eng, check, wait, acked)
-        standard_bench(eng, check, wait, acked)
-        tuner_bench(eng, check, wait, acked)
-        backing_bench(eng, check, wait, acked)
-        preview_bench(eng, check, wait, acked)
-        sample_bench(eng, check, wait, acked)
-        looper_bench(eng, check, wait, acked)
-        host_bench(eng, check, wait, acked)
-        riff_bench(eng, check, wait, acked)
-        trial_bench(check)
-        miditake_bench(eng, check, wait, acked)
-        capture_bench(eng, check, wait, acked)
-        keys_bench(eng, check, wait, acked)
+        # --only : les sections nommées seulement (2026-11-19, portage Windows : rejouer celle qui plante en 2 min, pas 10)
+        sections = [("rig", rig_bench), ("rec", rec_bench), ("click", click_bench), ("clock", clock_bench),
+                    ("drums", drums_bench), ("standard", standard_bench), ("tuner", tuner_bench),
+                    ("backing", backing_bench), ("preview", preview_bench), ("sample", sample_bench),
+                    ("looper", looper_bench), ("host", host_bench), ("riff", riff_bench), ("trial", None),
+                    ("miditake", miditake_bench), ("capture", capture_bench), ("keys", keys_bench)]
+        only = {s.strip() for s in (a.only or "").split(",") if s.strip()}
+        unknown = only - {n for n, _ in sections}
+        if unknown:
+            raise SystemExit(f"--only: unknown section(s) {sorted(unknown)} — known: {[n for n, _ in sections]}")
+        for name, fn in sections:
+            if only and name not in only:
+                continue
+            print(f"── {name}", flush=True)
+            if fn is None:
+                trial_bench(check)
+            else:
+                fn(eng, check, wait, acked)
         commands.flush(2)
     finally:
         eng.stop_feedback()

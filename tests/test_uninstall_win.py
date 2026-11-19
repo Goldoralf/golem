@@ -72,8 +72,10 @@ def machine(base):
     w.file(os.path.join(w.root, "provision", "desktop.py"))
     w.file(os.path.join(w.root, "bridge", "app.py"))
     w.file(os.path.join(w.root, "config", ".power.json"), json.dumps({"before": GUID_BEFORE}))
-    obj = w.file(os.path.join(w.root, ".git", "objects", "ab", "cdef"))
-    os.chmod(obj, stat.S_IREAD)                          # les objets git sont en lecture seule sous Windows
+    # golem a CRÉÉ ce dossier (installer/desktop_steps.write_install_marker) : il peut partir entier (folder_policy)
+    w.file(os.path.join(w.root, ".golem-install.json"), json.dumps({"fresh": True, "entries": []}))
+    obj = w.file(os.path.join(w.root, ".venv", "Lib", "site-packages", "x.pyd"))
+    os.chmod(obj, stat.S_IREAD)                          # un fichier en lecture seule : l'effacement doit passer outre
     w.file(w.p("LOCALAPPDATA", "GoleM", "browser", "Default", "prefs"))
     w.file(w.p("LOCALAPPDATA", "GoleM", "captures", "my-amp-full-1", "train.json"))
     w.file(w.p("LOCALAPPDATA", "golem-installer", "python.exe"))

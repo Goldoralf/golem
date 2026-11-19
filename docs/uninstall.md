@@ -570,8 +570,19 @@ the startup link); vendor programs are listed as `unknown`, unchecked; nothing i
 - **pip's cache** (`toolchain:pip-cache`, receipt only): `%LOCALAPPDATA%\pip`, offered when `prior.pip_cache_existed`
   is `false` and the folder is there; unchecked (like Python), "pip's download cache, created by golem's install".
   Never offered without a receipt or when it existed before golem.
-- **Install folder.** Removed last; read-only files (`.git\objects`) are made writable first. A file still open is
+- **Install folder.** Removed last; read-only files are made writable first. A file still open is
   said ("close golem's windows and Retry"). Then `%LOCALAPPDATA%\Programs\Common\VST3` and `…\Common` if empty.
+- **Only what golem created (FIXED 2026-11-19, the maintainer's option a).** The installer's Folder screen accepts any
+  folder, and the folder used to be removed **whole**: golem installed into `D:\Audio` took the samples already there,
+  and a developer's "Uninstall golem" shortcut pointed at the git checkout. The installer now writes
+  `<root>/.golem-install.json` (`installer/desktop_steps.write_install_marker`): `fresh` (the folder was absent or
+  empty before the copy) and `entries` (the top-level names golem created; a reinstall keeps the first `fresh` and adds
+  its new entries). `uninstall_win.folder_policy`, read at plan time and again right before removing:
+  `fresh` → the whole folder; otherwise → only the recorded entries and the marker (each a top-level name, never a
+  path); **no marker** (an install from before 2026-11-19) or a `.git` inside (a clone) → nothing, the item is shown
+  unchecked with the reason ("left in place: …"). Tests: `tests/test_uninstall_folder_policy.py`. Linux
+  (`provision/uninstall.py`) still removes the whole folder: its installs are git clones in `~/golem`, a different case
+  to decide.
 
 ### 9.4 The graphical uninstaller on Windows
 

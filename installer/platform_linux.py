@@ -437,11 +437,13 @@ def step_profile(ctx, target):
     Plus de « boîte dédiée » ici : démarrer avec l'ordinateur et verrouiller la machine sont des gestes de l'app
     (System ▸ Dashboard), jamais un choix d'installation."""
     S = ctx.S
+    # --dry N'ÉCRIT RIEN dans la cible (2026-11-19) : lancé depuis un clone, la cible est le dépôt du rack en
+    # service — engine.json et first-run.json y étaient réécrits avant ce test
+    if S["dry"]:
+        return ctx.run(ctx.dry_cmd("profile"), "profile")
     ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
     ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
     ctx.early_token(target, os.path.join(target, ".venv", "bin", "python"))   # l'appairage golem.fm des premières pages
-    if S["dry"]:
-        return ctx.run(ctx.dry_cmd("profile"), "profile")
     return ctx.run([os.path.join(target, "provision", "install-desktop.sh")], "profile", cwd=target)
 
 

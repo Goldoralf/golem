@@ -4,10 +4,12 @@
 l'utilisateur, poser les DI de référence, sonder le disque et le réseau. Aucun appel propre à un OS ici.
 """
 import hashlib
+import json
 import os
 import shutil
 import socket
 import tarfile
+import time
 import urllib.request
 import zipfile
 
@@ -42,6 +44,36 @@ def has_internet(host="www.reaper.fm", port=443, timeout=3):
         return False
 
 
+# ── CE QUE GOLEM A POSÉ DANS LE DOSSIER CHOISI (2026-11-19, décision du mainteneur : option a) ─────────────────────
+# L'écran Folder accepte n'importe quel dossier, et la désinstallation supprimait le dossier ENTIER : installé dans
+# D:\Audio (ses samples dedans), golem emportait D:\Audio. Le marqueur dit si le dossier était NEUF (absent ou vide) et
+# quelles entrées golem y a créées ; la désinstallation (provision/uninstall_win.folder_policy) n'efface le dossier
+# entier que s'il était neuf, sinon seulement ces entrées — et sans marqueur, rien.
+INSTALL_MARKER = ".golem-install.json"
+
+
+def write_install_marker(target, before):
+    """`before` : les entrées du dossier AVANT la copie (None = le dossier n'existait pas). Une réinstallation par-dessus
+    garde le verdict de la première (`fresh`) et ajoute ce qu'elle a créé de plus."""
+    path = os.path.join(target, INSTALL_MARKER)
+    try:
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f) or {}
+    except (OSError, ValueError):
+        old = None
+    if old is not None:
+        fresh, entries = bool(old.get("fresh")), set(old.get("entries") or [])
+    elif before is not None and INSTALL_MARKER not in before and os.path.isdir(os.path.join(target, "provision")) \
+            and "provision" in before:
+        return                                           # un golem d'AVANT le marqueur : on ne sait pas ce qui était là
+    else:
+        fresh, entries = not before, set()
+    entries |= set(os.listdir(target)) - set(before or ()) - {INSTALL_MARKER}
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"fresh": fresh, "entries": sorted(entries),
+                   "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, f, indent=1)
+
+
 def step_source(ctx, src, target):
     src, target = os.path.abspath(src), os.path.abspath(target)
     if os.path.normcase(src) == os.path.normcase(target):
@@ -52,6 +84,7 @@ def step_source(ctx, src, target):
         return 0
     if ctx.S["dry"]:
         return ctx.run(ctx.dry_cmd("source"), "source")
+    before = set(os.listdir(target)) if os.path.isdir(target) else None
     fresh = not os.path.isdir(os.path.join(target, "provision"))
     ctx.log(f"→ copying golem to {target}" if fresh else
             f"→ {target} already holds golem — code updated, your presets, settings and takes kept", "source")
@@ -70,6 +103,7 @@ def step_source(ctx, src, target):
             shutil.copy2(os.path.join(root, fn), dst)
             n += 1
     ctx.log(f"✓ {n} files copied" + (f", {kept} of yours kept as they were" if kept else ""), "source")
+    write_install_marker(target, before)
     tag = release_of(src)
     if tag:                                              # la version, pour la mise à jour par archive (docs/update.md §3)
         write_release_marker(target, tag, code_files(src))

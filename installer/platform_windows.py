@@ -365,10 +365,12 @@ def launcher_script(target, python):
 def step_profile(ctx, target):
     S = ctx.S
     # plus de profil (docs/installer.md §4, 2026-10-06) : deux usages, GoleM et GoleM Server
-    ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
-    ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
+    # --dry N'ÉCRIT RIEN dans la cible (2026-11-19) : lancé depuis un clone, la cible est le dépôt du rack en
+    # service — engine.json et first-run.json y étaient réécrits avant ce test
     if S["dry"]:
         return ctx.run(ctx.dry_cmd("profile"), "profile")
+    ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
+    ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
     # golem.cmd : le lanceur EN CONSOLE, pour qui veut lire ce qui se passe (dépannage) — et `golem.cmd uninstall`
     with open(launcher_path(target), "w", encoding="utf-8") as f:
         f.write(launcher_script(target, sys.executable))

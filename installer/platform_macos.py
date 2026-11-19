@@ -322,10 +322,12 @@ def step_bridge(ctx, target):
 
 def step_profile(ctx, target):
     # plus de profil (docs/installer.md §4, 2026-10-06) : deux usages, GoleM et GoleM Server
-    ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
-    ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
+    # --dry N'ÉCRIT RIEN dans la cible (2026-11-19) : lancé depuis un clone, la cible est le dépôt du rack en
+    # service — engine.json et first-run.json y étaient réécrits avant ce test
     if ctx.S["dry"]:
         return ctx.run(ctx.dry_cmd("profile"), "profile")
+    ctx.write_engine(target)                     # écran Engine (coquille : Reaper seul sélectionnable)
+    ctx.write_first_run(target)                  # écran « What do you play? » (bridge/first_run.py)
     # les apps GoleM : la MÊME fonction que le setup (provision/desktop.py, mac_shortcuts)
     # plus de boîte dédiée ici (docs/installer.md §4, FIXÉ 2026-10-16) : un interrupteur de l'app (System ▸ Dashboard)
     return ctx.run([venv_python(target), "-m", "provision.desktop", "shortcuts"], "profile", cwd=target,

@@ -688,6 +688,34 @@ def _item(*a, **kw):
     return U._item(*a, **kw)
 
 
+# ── LE DOSSIER D'INSTALLATION : TOUT, SEULEMENT CE QUE GOLEM A CRÉÉ, OU RIEN (2026-11-19, option a du mainteneur) ──
+# Il était effacé ENTIER : l'écran Folder de l'installateur accepte n'importe quel dossier, et golem installé dans
+# D:\Audio emportait les samples qui s'y trouvaient ; le raccourci « Uninstall golem » d'un clone visait le dépôt git.
+INSTALL_MARKER = ".golem-install.json"                  # écrit par installer/desktop_steps.write_install_marker
+
+
+def folder_policy(root):
+    """("all", None) — golem a créé ce dossier (neuf ou vide) et ce n'est pas un dépôt git : il part entier ;
+    ("entries", [chemins]) — le dossier existait : seules les entrées que golem y a créées partent, et le marqueur ;
+    ("keep", raison) — pas de marqueur (une install d'avant, un clone de développement) ou un dépôt git : rien."""
+    if os.path.isdir(os.path.join(root, ".git")):
+        return "keep", "it is a git checkout (a developer's clone): delete it yourself if you mean to"
+    try:
+        with open(os.path.join(root, INSTALL_MARKER), encoding="utf-8") as f:
+            m = json.load(f) or {}
+    except (OSError, ValueError):
+        return "keep", ("golem cannot tell which files in it are its own (it was installed before golem noted it): "
+                        "delete it yourself once your presets and takes are backed up")
+    if m.get("fresh"):
+        return "all", None
+    paths = []
+    for e in m.get("entries") or []:
+        if not isinstance(e, str) or not e or e in (".", "..") or os.sep in e or "/" in e or "\\" in e:
+            continue                                     # une entrée de premier niveau, jamais un chemin
+        paths.append(os.path.join(root, e))
+    return "entries", paths + [os.path.join(root, INSTALL_MARKER)]
+
+
 def _inbox_item(ctx, root):
     path, custom = os.path.join(ctx.home, "golem-inbox"), False
     if root:
@@ -741,9 +769,18 @@ def build_plan(ctx):
     # ── golem ──
     if root:
         o, rid = origin_of([root])
-        add(_item("golem:install-folder", "golem", "golem install folder", [root], "user", o, True,
-                  "the application itself: code, settings, presets and local backups (back them up first)",
-                  "remove", _paths=[root], _rids=rid, _step="folder"))
+        how, what = folder_policy(root)
+        if how == "keep":
+            add(_item("golem:install-folder", "golem", "golem install folder", [root], "user", o, False,
+                      "left in place: " + what, "keep", _paths=[], _rids=rid, _step="folder", _policy=how))
+        else:
+            reason = ("the application itself: code, settings, presets and local backups (back them up first)"
+                      if how == "all" else
+                      "only what golem created in this folder (%d entries: code, settings, presets, takes — back them "
+                      "up first); the files that were there before golem stay" % (len(what) - 1))
+            add(_item("golem:install-folder", "golem", "golem install folder", [root], "user", o, True,
+                      reason, "remove", _paths=[root] if how == "all" else what, _rids=rid, _step="folder",
+                      _policy=how))
     else:
         warnings.append("no golem install folder found (looked at --root, the receipt, %s)"
                         % os.path.join(ctx.home, "golem"))
@@ -1526,8 +1563,17 @@ def run(ctx, ids, report):
             report("folder", it["id"], False, "refused: the uninstaller runs from inside the install folder (%s) — "
                    "copy it elsewhere first (the graphical uninstaller runs from %%TEMP%%)" % inside[0])
             continue
+        how, what = folder_policy(root)                  # relu AU MOMENT d'effacer, pas seulement au plan
+        if how == "keep":
+            report("folder", it["id"], True, "left in place: " + what)
+            continue
         try:
-            report("folder", it["id"], True, safe_remove(ctx, root, root, rpaths))
+            if how == "all":
+                report("folder", it["id"], True, safe_remove(ctx, root, root, rpaths))
+            else:
+                done = [safe_remove(ctx, p, root, rpaths) for p in what]
+                report("folder", it["id"], True, "%d entries golem created removed; the rest of %s stays"
+                       % (sum(d != "already absent" for d in done), root))
         except (UninstallError, OSError) as e:
             report("folder", it["id"], False, "%s (a file may still be open: close golem's windows and Retry)" % e)
     emptied = []

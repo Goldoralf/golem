@@ -52,6 +52,30 @@ def test_les_coeurs_p_et_e_se_lisent_la_ou_le_systeme_les_dit(tmp_path):
     assert CC.core_kinds(str(tmp_path / "absent")) == {}          # un processeur sans cœurs de deux sortes
 
 
+def _core_rec(eff, mask, group=0):
+    """Un enregistrement RelationProcessorCore de GetLogicalProcessorInformationEx (64 bits) : 8 + 24 + 16 octets."""
+    import struct
+    body = bytes([0, eff]) + bytes(20) + struct.pack("<H", 1) + struct.pack("<QH6x", mask, group)
+    return struct.pack("<II", 0, 8 + len(body)) + body
+
+
+def test_windows_les_coeurs_p_et_e_viennent_de_la_classe_d_efficacite():
+    # un i9-13900H : 6 cœurs P en hyperthreading (logiques 0-11, classe 1), 8 cœurs E (12-19, classe 0)
+    blob = b"".join(_core_rec(1, 0b11 << (2 * i)) for i in range(6)) + b"".join(_core_rec(0, 1 << (12 + i)) for i in range(8))
+    kinds = CC.parse_core_kinds_win(blob)
+    assert "".join(kinds[n] for n in range(20)) == "P" * 12 + "E" * 8
+    flat = b"".join(_core_rec(0, 1 << i) for i in range(4))         # pas hybride : rien à dire
+    assert CC.parse_core_kinds_win(flat) == {}
+
+
+def test_windows_la_part_du_moteur_sans_coeur_connu_est_un_total():
+    # Windows ne dit pas le cœur d'un fil : (temps, None) — aucune part rangée par cœur, le total en % d'un cœur
+    a = {1: (0, None), 2: (5_000_000, None)}
+    b = {1: (10_000_000, None), 2: (15_000_000, None), 3: (999, None)}   # 1 s + 1 s de CPU en 2 s ; fil neuf ignoré
+    assert CC.engine_share(a, b, dt=2.0, hz=CC.WIN_HZ) == {}
+    assert CC.engine_total(a, b, dt=2.0, hz=CC.WIN_HZ) == 100.0
+
+
 def test_la_route_est_derriere_le_prefixe_protege():
     from bridge import auth
     assert any("/api/cpu/cores".startswith(p) for p in getattr(auth, "ADMIN_PREFIXES", ()) or ()) \

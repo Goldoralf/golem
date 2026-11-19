@@ -77,9 +77,16 @@ def engine_share(a, b, dt, hz=HZ):
         return out
     for tid, (j, cpu) in b.items():
         d = j - (a.get(tid) or (j, cpu))[0]
-        if d > 0:
+        if d > 0 and cpu is not None:                         # cœur inconnu (Windows) : seulement dans engine_total
             out[cpu] = out.get(cpu, 0.0) + 100.0 * d / hz / dt
     return {k: min(100.0, v) for k, v in out.items()}
+
+
+def engine_total(a, b, dt, hz=HZ):
+    """Le temps CPU du moteur entre deux lectures, en % d'UN cœur (peut dépasser 100 : plusieurs fils à la fois)."""
+    if not dt or dt <= 0:
+        return 0.0
+    return sum(max(0, j - (a.get(tid) or (j, None))[0]) for tid, (j, _c) in b.items()) * 100.0 / hz / dt
 
 
 def core_kinds(root="/sys/devices"):
@@ -101,12 +108,124 @@ def core_kinds(root="/sys/devices"):
 
 
 def cpu_model():
+    if sys.platform == "win32":
+        with contextlib.suppress(Exception):
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"HARDWARE\DESCRIPTION\System\CentralProcessor\0") as k:
+                return str(winreg.QueryValueEx(k, "ProcessorNameString")[0]).strip()
+        return None
     with contextlib.suppress(OSError):
         with open("/proc/cpuinfo", encoding="utf-8", errors="replace") as f:
             for line in f:
                 if line.startswith("model name"):
                     return line.split(":", 1)[1].strip()
     return None
+
+
+# ── WINDOWS (2026-11-19 : la page ne mesurait que sous Linux) ─────────────────────────────────────────────────────────
+# Les mêmes trois lectures par les API du système, en ctypes (pas de psutil dans le bridge) :
+#   · la charge de chaque cœur : NtQuerySystemInformation(SystemProcessorPerformanceInformation), en 100 ns ;
+#   · le temps CPU de chaque fil du moteur : Toolhelp32 (les fils du process) + GetThreadTimes ;
+#   · cœurs P / E : GetLogicalProcessorInformationEx, la classe d'efficacité de chaque cœur physique.
+# CE QUE WINDOWS NE DIT PAS : le cœur où se trouve un fil à l'instant de la lecture (pas d'équivalent du champ
+# `processor` de /proc). La part du moteur n'est donc PAS rangée par cœur : on rend son total (en % d'un cœur), et
+# la page le dit, au lieu d'inventer une répartition.
+WIN_HZ = 10_000_000                                            # unités de 100 ns
+
+
+def win_read_stat():
+    """{n: (busy, total)} en 100 ns par cœur logique (groupe 0, jusqu'à 64 cœurs), comme read_stat."""
+    import ctypes
+
+    class SPPI(ctypes.Structure):
+        _fields_ = [("Idle", ctypes.c_longlong), ("Kernel", ctypes.c_longlong), ("User", ctypes.c_longlong),
+                    ("Dpc", ctypes.c_longlong), ("Interrupt", ctypes.c_longlong), ("Count", ctypes.c_ulong)]
+    n = os.cpu_count() or 1
+    buf = (SPPI * n)()
+    ret = ctypes.c_ulong()
+    st = ctypes.WinDLL("ntdll").NtQuerySystemInformation(8, ctypes.byref(buf), ctypes.sizeof(buf), ctypes.byref(ret))
+    if st != 0:
+        raise OSError(f"NtQuerySystemInformation: 0x{st & 0xffffffff:08x}")
+    out = {}
+    for i in range(ret.value // ctypes.sizeof(SPPI)):
+        total = buf[i].Kernel + buf[i].User                     # le temps noyau CONTIENT le temps d'inactivité
+        out[i] = (total - buf[i].Idle, total)
+    return out
+
+
+def win_read_threads(pid):
+    """{tid: (temps CPU en 100 ns, None)} des fils du process `pid` ; le cœur courant est inconnu sous Windows."""
+    import ctypes
+    from ctypes import wintypes
+
+    class TE32(ctypes.Structure):
+        _fields_ = [("dwSize", wintypes.DWORD), ("cntUsage", wintypes.DWORD), ("th32ThreadID", wintypes.DWORD),
+                    ("th32OwnerProcessID", wintypes.DWORD), ("tpBasePri", ctypes.c_long),
+                    ("tpDeltaPri", ctypes.c_long), ("dwFlags", wintypes.DWORD)]
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    k32.OpenThread.restype = wintypes.HANDLE
+    snap = k32.CreateToolhelp32Snapshot(0x4, 0)                 # TH32CS_SNAPTHREAD
+    if not snap or snap == wintypes.HANDLE(-1).value:
+        return {}
+    out = {}
+    try:
+        te = TE32()
+        te.dwSize = ctypes.sizeof(TE32)
+        ok = k32.Thread32First(snap, ctypes.byref(te))
+        while ok:
+            if te.th32OwnerProcessID == pid:
+                h = k32.OpenThread(0x0800, False, te.th32ThreadID)   # THREAD_QUERY_LIMITED_INFORMATION
+                if h:
+                    try:
+                        c, e, kt, ut = (wintypes.FILETIME() for _ in range(4))
+                        if k32.GetThreadTimes(h, ctypes.byref(c), ctypes.byref(e), ctypes.byref(kt), ctypes.byref(ut)):
+                            ft = lambda f: (f.dwHighDateTime << 32) | f.dwLowDateTime   # noqa: E731
+                            out[int(te.th32ThreadID)] = (ft(kt) + ft(ut), None)
+                    finally:
+                        k32.CloseHandle(h)
+            ok = k32.Thread32Next(snap, ctypes.byref(te))
+    finally:
+        k32.CloseHandle(snap)
+    return out
+
+
+def parse_core_kinds_win(blob):
+    """{n: "P" | "E"} depuis le tampon de GetLogicalProcessorInformationEx(RelationProcessorCore) ; {} si tous les cœurs
+    ont la même classe d'efficacité (un processeur non hybride). La classe la plus HAUTE = les cœurs de performance."""
+    import struct
+    cores, off = [], 0
+    while off + 8 <= len(blob):
+        rel, size = struct.unpack_from("<II", blob, off)
+        if size <= 0:
+            break
+        if rel == 0 and off + 32 <= len(blob):                  # RelationProcessorCore
+            eff = blob[off + 9]
+            count = struct.unpack_from("<H", blob, off + 30)[0]
+            ns = []
+            for g in range(count):
+                mask, group = struct.unpack_from("<QH", blob, off + 32 + 16 * g)
+                ns += [group * 64 + b for b in range(64) if mask >> b & 1]
+            cores.append((eff, ns))
+        off += size
+    classes = {eff for eff, _ in cores}
+    if len(classes) < 2:
+        return {}
+    top = max(classes)
+    return {n: ("P" if eff == top else "E") for eff, ns in cores for n in ns}
+
+
+def win_core_kinds():
+    import ctypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    need = ctypes.c_ulong(0)
+    k32.GetLogicalProcessorInformationEx(0, None, ctypes.byref(need))
+    if not need.value:
+        return {}
+    buf = ctypes.create_string_buffer(need.value)
+    if not k32.GetLogicalProcessorInformationEx(0, buf, ctypes.byref(need)):
+        return {}
+    return parse_core_kinds_win(buf.raw[:need.value])
 
 
 def lane_costs(stats, cycle_us):
@@ -153,7 +272,8 @@ def _engine_stats(timeout=2.5):
 
 def snapshot(now=None, with_lanes=True):
     """Ce que la page lit. La première lecture n'a pas de différence à faire : `warming: true`, la suivante mesure."""
-    if not os.path.isdir("/proc") or sys.platform != "linux":
+    win = sys.platform == "win32"
+    if not win and (not os.path.isdir("/proc") or sys.platform != "linux"):
         return {"available": False, "why": "golem cannot measure the cores on this system yet"}
     from . import engine
     from .state import state
@@ -162,28 +282,41 @@ def snapshot(now=None, with_lanes=True):
     pid = None
     with contextlib.suppress(Exception):
         pid = eng.pid() if hasattr(eng, "pid") else None
-    if pid is None and eng.id == "reaper":
+    if pid is None and eng.id == "reaper" and not win:
         with contextlib.suppress(Exception):
             from .routes_system import _reaper_proc
             pid = (_reaper_proc() or {}).get("pid")
-    stat = read_stat()
-    threads = read_threads(pid) if pid else {}
+    hz = WIN_HZ if win else HZ
+    try:
+        stat = win_read_stat() if win else read_stat()
+    except OSError as e:
+        return {"available": False, "why": f"golem could not read the cores: {e}"}
+    threads = {}
+    if pid:
+        with contextlib.suppress(Exception):
+            threads = win_read_threads(pid) if win else read_threads(pid)
     with _lock:
         prev = dict(_PREV)
         _PREV.update(t=now, stat=stat, threads=threads, pid=pid)
-    kinds = core_kinds()
+    kinds = {}
+    with contextlib.suppress(Exception):
+        kinds = win_core_kinds() if win else core_kinds()
+    # `engine_per_core` : la part du moteur est-elle rangée par cœur ? Non sous Windows (voir plus haut) : l'écran montre
+    # alors son total seul, et le dit
     doc = {"available": True, "cpu": cpu_model(), "engine": {"id": eng.id, "pid": pid},
-           "cores": [{"n": n, "kind": kinds.get(n)} for n in sorted(stat)], "warming": True}
+           "cores": [{"n": n, "kind": kinds.get(n)} for n in sorted(stat)], "warming": True,
+           "engine_per_core": not win}
     if prev["t"] and prev["stat"] and 0.3 < now - prev["t"] < 30:
         dt = now - prev["t"]
         use = diff_cores(prev["stat"], stat)
-        share = engine_share(prev["threads"] or {}, threads, dt) if prev["pid"] == pid else {}
+        same = prev["pid"] == pid
+        share = engine_share(prev["threads"] or {}, threads, dt, hz) if same else {}
         for c in doc["cores"]:
             c["pct"] = round(use.get(c["n"], 0.0), 1)
-            c["engine_pct"] = round(min(share.get(c["n"], 0.0), c["pct"]), 1)
+            c["engine_pct"] = round(min(share.get(c["n"], 0.0), c["pct"]), 1) if not win else None
         busiest = max(doc["cores"], key=lambda c: c["pct"])
         doc.update(warming=False, window_s=round(dt, 1), busiest={"n": busiest["n"], "pct": busiest["pct"]},
-                   engine_total=round(sum(share.values()), 1))
+                   engine_total=round(engine_total(prev["threads"] or {}, threads, dt, hz), 1) if same and pid else None)
     audio = {}
     with contextlib.suppress(Exception):
         audio = eng.audio() or {}

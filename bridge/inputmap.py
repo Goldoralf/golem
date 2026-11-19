@@ -83,6 +83,12 @@ _MOUT_BY_ID = {m["id"]: m for m in MIDI_OUT_ROLES}
 
 
 def _card_device():
+    # UN BANC A SA CARTE VIRTUELLE (cards.connected, 2026-10-27) — sous Windows et macOS aussi (2026-11-19) : la carte se
+    # déduisait du pilote ASIO / Core Audio, le banc de check-rig-materialize tombait sur `asio:unconfigured`, sans
+    # entrée basse ni voix, et sautait 21 patches d'usine sans rien en dire d'autre que « no bass input »
+    bench = os.environ.get("GOLEM_BENCH_CARD")
+    if bench:
+        return bench
     if sys.platform in ("win32", "darwin"):
         from . import desktop_audio
         if sys.platform == "darwin":

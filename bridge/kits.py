@@ -280,8 +280,10 @@ def save_kit(kit, allow_drums=False):
             if not isinstance(note, int) or not (0 <= note <= 127):
                 return {"ok": False, "error": f"bad note {note!r}"}
             if sample:
-                rel = os.path.normpath(sample)
-                if rel.startswith("..") or os.path.isabs(rel) or not rel.startswith("assets/samples"):
+                # comparé en `/` (2026-11-19) : sous Windows normpath rend assets\samples\… — tout kit de pads avec des
+                # samples était refusé (kit-install, kit-pad-set, l'enregistrement depuis l'écran)
+                rel = os.path.normpath(sample).replace("\\", "/")
+                if rel.startswith("..") or os.path.isabs(rel) or not rel.startswith("assets/samples/"):
                     return {"ok": False, "error": f"sample must live under assets/samples ({sample})"}
                 if not os.path.isfile(os.path.join(C.ROOT, rel)):
                     return {"ok": False, "error": f"sample not found: {rel}"}

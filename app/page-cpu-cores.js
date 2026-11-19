@@ -83,13 +83,18 @@ export function CpuCoresPanel({ rig }) {
     <div class="cc-right">
       <div class="cc-strip">
         <div><span title="a lane runs on one core at a time: the busiest core, not their sum, decides whether the sound drops out">Busiest core</span><b class=${'cc-' + lvl(b && b.pct)}>${b ? 'core ' + b.n + ' · ' + fmt(b.pct) : '…'}</b>
-        </div><div><span>Engine load</span><b class=${'cc-' + lvl(a.dsp_load)}>${a.dsp_load != null ? fmt(a.dsp_load) : '—'}</b>
-        </div><div><span>Dropouts since start</span><b class=${a.xruns ? 'cc-warn' : 'cc-ok'}>${a.xruns != null ? a.xruns : '—'}</b>
+        </div>${a.dsp_load == null && d.engine_total != null
+          // REAPER ne donne pas sa charge DSP : le temps CPU de ses fils, en cœurs (2026-11-19, la page sous Windows)
+          ? html`<div><span title="the CPU time of all the engine's threads, in cores: 1.0 = one core fully busy">golem's sound</span><b>${(d.engine_total / 100).toFixed(1)} cores</b></div>`
+          : html`<div><span>Engine load</span><b class=${'cc-' + lvl(a.dsp_load)}>${a.dsp_load != null ? fmt(a.dsp_load) : '—'}</b></div>`}
+        <div><span>Dropouts since start</span><b class=${a.xruns ? 'cc-warn' : 'cc-ok'}>${a.xruns != null ? a.xruns : '—'}</b>
         </div><div><span>Buffer</span><b>${a.buffer ? a.buffer + ' smp' + (a.cycle_ms ? ' · ' + a.cycle_ms + ' ms' : '') : '—'}</b>
       </div></div>
       <div class="cc-card">
         <div class="cc-hd"><b>${d.cores.length} cores</b><small>${esc(d.cpu || '')}${d.cores.some(c => c.kind) ? ' · P = performance, E = efficiency' : ''}</small>
-          <span class="cc-legend"><i class="g"></i>golem's sound<i class="o"></i>everything else</span></div>
+          ${d.engine_per_core === false
+            ? html`<span class="cc-legend" title="Windows does not say which core each of the engine's threads is on at a given moment"><i class="o"></i>load · golem's share is its total, above</span>`
+            : html`<span class="cc-legend"><i class="g"></i>golem's sound<i class="o"></i>everything else</span>`}</div>
         <div class=${cls('cc-cores', d.cores.length > 20 && 'dense')}>
           ${d.cores.map(c => html`<div class=${cls('cc-core', b && b.n === c.n && c.pct > 5 && 'busy')} key=${c.n}>
             <div class="n"><span>${c.n}</span>${c.kind ? html`<em class=${c.kind === 'E' ? 'e' : ''}>${c.kind}</em>` : ''}</div>

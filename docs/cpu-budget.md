@@ -275,7 +275,14 @@ All under `/api/cpu/`, read-only except `calibrate`. Percentages are of ONE core
 > **Status: CODED** (mockup `mockups/cpu-cores.html` approved by the maintainer on 2026-11-18).
 
 The estimate says what a preset *should* cost before you play; this page shows what the machine *does* while it
-plays (`bridge/cpu_cores.py`, `GET /api/cpu/cores`, read every 2.5 s, Linux):
+plays (`bridge/cpu_cores.py`, `GET /api/cpu/cores`, read every 2.5 s, Linux and — since 2026-11-19 — Windows):
+
+- **Windows** reads the same things through the system's APIs (ctypes, no psutil): each core's load from
+  `NtQuerySystemInformation`, the engine's threads from Toolhelp32 + `GetThreadTimes`, performance and efficiency cores
+  from `GetLogicalProcessorInformationEx` (the highest efficiency class is P), the CPU name from the registry. Windows
+  does **not** say which core a thread is on at a reading, so the engine's share is not filed per core there
+  (`engine_per_core: false`): the strip shows its total, "golem's sound · N cores", and the legend says why. Under
+  REAPER (no DSP load of its own) that total replaces "Engine load" on Linux too. macOS: still "cannot measure".
 
 - **each core's load** (`/proc/stat`, difference between two readings), with performance and efficiency cores told
   apart on a hybrid processor, and the busiest one outlined;

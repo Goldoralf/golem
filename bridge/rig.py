@@ -289,14 +289,33 @@ def golem_fx_dirs(platform=None):
 def _golem_fx_installed():
     """Les class ids (hex) des VST3 golem-fx présents sur cette machine — dans un des dossiers de golem_fx_dirs(),
     que REAPER scanne. Lu dans library/catalog/golem-fx-plugins.json (le nom de chaque bundle)."""
+    # EN CACHE (2026-11-19) : appelé ~2900 fois par calcul de /api/health/facts (blockstatus.effects() par bloc), chaque
+    # fois un JSON relu et ~60 isdir — 26 s sous Windows, les pages attendaient. La clé : le mtime du catalogue et celui
+    # de chaque dossier VST3 (poser ou ôter un bundle change le mtime de son dossier) — jamais un résultat périmé.
+    from . import config as C
+    path = os.path.join(C.ROOT, "library", "catalog", "golem-fx-plugins.json")
+    dirs = golem_fx_dirs()
+
+    def _mt(p):
+        try:
+            return os.stat(p).st_mtime_ns
+        except OSError:
+            return None
+    key = (path, _mt(path), tuple((d, _mt(d)) for d in dirs))
+    if _GFX_INSTALLED.get("key") == key:
+        return set(_GFX_INSTALLED["val"])
     try:
-        from . import config as C
-        plugins = json.load(open(os.path.join(C.ROOT, "library", "catalog", "golem-fx-plugins.json"))).get("plugins", {})
+        plugins = json.load(open(path)).get("plugins", {})
     except (OSError, ValueError):
         return set()
-    dirs = [d for d in golem_fx_dirs() if os.path.isdir(d)]
-    return {cid for cid, p in plugins.items()
-            if p.get("name") and any(os.path.isdir(os.path.join(d, p["name"] + ".vst3")) for d in dirs)}
+    present = [d for d in dirs if os.path.isdir(d)]
+    val = {cid for cid, p in plugins.items()
+           if p.get("name") and any(os.path.isdir(os.path.join(d, p["name"] + ".vst3")) for d in present)}
+    _GFX_INSTALLED.update(key=key, val=frozenset(val))
+    return val
+
+
+_GFX_INSTALLED = {}
 
 
 def _base_quarantine():

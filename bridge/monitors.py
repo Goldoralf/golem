@@ -999,6 +999,7 @@ async def _poll_cards():
         # erreur écrite par la garde de __startup.lua, si elle existe.
         fresh_seen = False
         quiet = unheard = 0
+        last_present = None
         errlog = os.path.join(C.PRESETS_DIR, ".lua-errors.log")
         while True:
             # une erreur ponctuelle (fichier tenu par REAPER…) ne doit pas TUER la boucle : sans elle,
@@ -1022,11 +1023,19 @@ async def _poll_cards():
                 present = bool(driver and actual.get("MODE", "").upper() == "ASIO" and
                                driver.casefold() in opened.casefold())
             stalled, lua_error, never = False, None, False
+            if not actual:
+                # PAS DE NOUVELLES N'EST PAS UNE CARTE ABSENTE (2026-11-19) : au démarrage, cette boucle tourne avant que
+                # golem_desktop_audio.lua ait écrit — l'écran de chargement s'effaçait sur « ⚠ No sound card ». Sans
+                # télémétrie, la présence est INCONNUE (None) ou la dernière MESURÉE ; une carte débranchée, REAPER le
+                # dit dans sa télémétrie (MODE/IDENT), et c'est ce qui la déclare absente.
+                present = last_present
             if actual:
                 fresh_seen, quiet, unheard = True, 0, 0
+                last_present = present
             elif state.reaper_connected and fresh_seen:
                 quiet += 1
                 stalled = quiet >= 3                       # ~9 s sans un mot d'une boucle qui parle toutes les 2 s
+                # (un trou court — un rendu bloque REAPER 3 à 6 s — garde la dernière présence mesurée : voir plus haut)
             elif state.reaper_connected:
                 # JAMAIS ENTENDUES (2026-11-04, premier Mac réel) : REAPER répondait par OSC mais une boîte modale
                 # (« REAPER Preferences » d'un profil neuf, cachée par open -j) empêchait __startup.lua de tourner —

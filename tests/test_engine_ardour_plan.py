@@ -720,3 +720,17 @@ def test_l_etat_natif_d_un_plugin_va_et_vient_au_format_du_patch(tmp_path, monke
     blk = {"id": "h2", "host_state": {"chunk": base64.b64encode(b"junk").decode(), "plugin": "VST3: Fancy Verb (Acme)"}}
     A.write_host_states({"tracks": [{"blocks": [blk]}]}, presets_dir=str(tmp_path / "p"))
     assert "preset" not in blk
+
+
+@pytest.mark.parametrize("platform, tail", [
+    ("linux", (".vst3", "presets", "Vendor", "Synth")),
+    ("darwin", ("Library", "Audio", "Presets", "Vendor", "Synth")),
+    ("win32", ("Docs", "VST3 Presets", "Vendor", "Synth")),
+])
+def test_le_dossier_des_presets_vst3_est_celui_qu_ardour_lit_sur_chaque_systeme(monkeypatch, platform, tail):
+    # VST3PluginInfo::preset_search_path : sous Windows, Documents\VST3 Presets (le dossier Documents que Windows dit)
+    import os
+    monkeypatch.setattr(A.sys, "platform", platform)
+    monkeypatch.setattr(A, "_win_documents", lambda: "Docs")
+    parts = os.path.normpath(A.preset_dir("Vendor", "Synth")).split(os.sep)
+    assert tuple(parts[-len(tail):]) == tail

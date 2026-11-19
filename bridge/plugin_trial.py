@@ -271,9 +271,14 @@ def trial_engine(plugin, timeout_s=None, cycles=CYCLES, lua=None, script=None):
     os.makedirs(presets)
     out, wlog = os.path.join(presets, ".trial.json"), os.path.join(presets, ".watch.log")
     env = {**os.environ, "GOLEM_ENGINE_NO_OSC": "1", "GOLEM_ENGINE_NO_OUTPUT": "1"}
+    # le lanceur des trois systèmes (run.py) quand le moteur l'a, comme ArdourEngine.restart : `bash run.sh` n'existe pas
+    # sous Windows, et le banc refusait tout plugin d'un « the test engine did not start » (2026-11-19, banc Windows)
+    py = os.path.join(os.path.dirname(script), "run.py")
+    cmd = [sys.executable, py] if os.path.isfile(py) else ["bash", script]
+    group = {"creationflags": 0x00000200} if os.name == "nt" else {"start_new_session": True}   # CREATE_NEW_PROCESS_GROUP
     with open(os.path.join(work, "engine.log"), "w") as logf:
-        proc = subprocess.Popen(["bash", script, work, os.path.join(work, "session"), "None (Dummy)", ""],
-                                start_new_session=True, stdout=logf, stderr=subprocess.STDOUT, env=env)
+        proc = subprocess.Popen([*cmd, work, os.path.join(work, "session"), "None (Dummy)", ""],
+                                stdout=logf, stderr=subprocess.STDOUT, env=env, **group)
 
     def read(path):
         try:

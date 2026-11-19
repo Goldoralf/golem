@@ -153,3 +153,26 @@ starts carries `GOLEM_NO_DIALOG=1`, so `_notify` prints instead of opening a mod
 
 **Code.** `installer/platform_windows.py` and `installer/platform_macos.py` `bridge_start` /
 `golem_answers`, `provision/desktop.py` `_notify`, `tests/test_installer_bridge_start.py`.
+
+---
+
+## A windowless engine is throttled, and its OSC surface falls behind
+
+FIXED 2026-11-19.
+
+**Symptom.** On the Golem Engine under Windows, OSC commands arrive seconds late or seem lost: the looper does
+not start or closes its loop late (silent playback in the bench), the transport does not roll, levels lag. File
+commands still work. It looks tied to a rig recall; it is not — it starts as soon as the bridge subscribes to
+feedback.
+
+**Cause.** Two things add up. Ardour's OSC surface calls `Glib::usleep (1)` after every message it sends; on Windows
+that is a `Sleep (1)`, a full timer tick. And Windows 11 throttles a process with no visible window ("power
+throttling"): it ignores the 1 ms timer resolution the backend asks for, so the tick is 15.6 ms — 64 messages/s.
+The first strip dump (~700 messages) held the surface 11 s; with meters on ~40 strips it never caught up.
+
+**Rule.** The engine is never throttled: `run.py` lifts power throttling (execution speed and timer resolution) on
+the process it starts. And the surface's per-message pause is a yield on Windows (fork patch in `osc.cc`).
+Measured: command round trip, max 752 ms → 4 ms with meters on.
+
+**Code.** golem-engine `golem/engine/run.py` `no_power_throttling`, `libs/surfaces/osc/osc.cc` `OSC_SEND_PAUSE`;
+`tools/check-engine-ardour.py --only looper`.

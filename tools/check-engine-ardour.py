@@ -497,6 +497,12 @@ def rec_bench(eng, check, wait, acked):
     v = ((dmp.get("blocks") or {}).get("amp-b", {}).get("params") or {}).get("Input Lvl")
     check("prise : après elle, les potards par OSC visent toujours le bon plugin (les strips sont renumérotés)",
           v is not None and abs(v) < 0.05, f"strip {b.get('track')} -> Input Lvl {v}")
+    # le potard REMIS à la valeur de la scène (+4 dB) : la prise suivante est comparée à celle d'avant, sur le même rig.
+    # (2026-11-19, Windows : ce n'était PAS la cause de l'écart d'environ 1 dB entre les deux prises — la seconde mesure
+    # -37,6 dBFS avec ou sans ce geste ; l'écart reste à expliquer, la tolérance de 1 dB le laisse passer de justesse)
+    lo, hi = float(pm.get("pmin", -20)), float(pm.get("pmax", 20))
+    eng.set_fx_param(b.get("track"), b.get("fx"), pm.get("p"), (4.0 - lo) / ((hi - lo) or 1.0))
+    time.sleep(0.4)
 
     ok, done, st = take({"in1": True, "mode": "mix", "mix": True}, 1.5)
     f = os.path.join(C.ROOT, st.get("file") or "missing")
@@ -791,8 +797,13 @@ def standard_bench(eng, check, wait, acked):
     parts = {k: lv.get("std:" + k, -150) for k in ("keys", "bass", "drums", "guitar")}
     check("standards : la grille joue, mesures comptées", st.get("playing") is True and st.get("standard") == "bench-chart"
           and st.get("bars") == 2 and st.get("events") == len(ev) and st.get("bar") in (0, 1), json.dumps(st))
+    # la pompe joue Shinyguitar, un téléchargement FACULTATIF de l'installateur (installer/desktop_steps.py) : absent, sa
+    # piste se tait sous REAPER comme ici — ce n'est pas le moteur qu'on juge, le détail le dit (2026-11-19, poste Windows)
+    shiny = os.path.isdir(os.path.join(ROOT, "library", "sfz", "Shinyguitar"))
+    judged = {k: v for k, v in parts.items() if shiny or k != "guitar"}
     check("standards : les QUATRE parties sonnent, chacune sur sa piste (piano, basse, batterie, pompe)",
-          all(v > -60 for v in parts.values()), str(parts))
+          all(v > -60 for v in judged.values()),
+          str(parts) + ("" if shiny else " — pompe non jugée : Shinyguitar n'est pas installé (téléchargement de l'installateur)"))
     check("standards : le click est JOUÉ par la grille (ses temps arrivent en MIDI)", lv.get("click", -150) > -30, str(lv.get("click")))
     st = send(op="play", standard="bench-chart", file=seq, loop=True, keys=False, bass=True, drums=False, guitar=False)
     time.sleep(1.5)
@@ -1696,22 +1707,31 @@ def keys_bench(eng, check, wait, acked):
 
         # PIANO ÉLECTRIQUE : Dexed reçoit la voix choisie de la cartouche, en SysEx « une voix »
         # une cartouche de banc : celle d'usine, dont la voix 2 a tous ses opérateurs à niveau 0 — elle doit se TAIRE
-        raw = bytearray(open(os.path.join(ROOT, "library", "dx7", "accpiano.syx"), "rb").read())
-        for op in range(6):
-            raw[6 + 128 + op * 17 + 14] = 0
-        bank = os.path.join(out_dir, "bench-cart.syx")
-        with open(bank, "wb") as f:
-            f.write(bytes(raw))
-        blk = mount({"id": "bench-ep", "type": "ep", "dx7_bank": bank, "dx7_patch": 0, "params": {"bank": "x", "patch": 0}})
-        check("piano électrique : posé, voix envoyée (1 SysEx)", (blk.get("bench-ep") or {}).get("midi") == 1,
-              str((blk.get("bench-ep") or {}).get("midi")))
-        v = play(60)
-        check("piano électrique SONNE", v > -60, f"{v:.1f} dBFS")
-        mount({"id": "bench-ep", "type": "ep", "dx7_bank": bank, "dx7_patch": 1, "params": {"bank": "x", "patch": 1}},
-              scene="B", recall=False)
-        v2 = play(60)
-        check("piano électrique : la voix de la scène est LUE par Dexed (une voix aux opérateurs à 0 se tait)", v2 < -60,
-              f"{v2:.1f} dBFS contre {v:.1f}")
+        # n'importe quelle cartouche de 32 voix fait l'affaire (accpiano.syx n'existe que sur le poste Linux ; absente, le
+        # banc entier mourait ici sur un FileNotFoundError — 2026-11-19, poste Windows) : la première de library/dx7
+        dx7 = os.path.join(ROOT, "library", "dx7")
+        carts = sorted(f for f in os.listdir(dx7) if f.lower().endswith(".syx")) if os.path.isdir(dx7) else []
+        cart = "accpiano.syx" if "accpiano.syx" in carts else (carts[0] if carts else None)
+        raw = bytearray(open(os.path.join(dx7, cart), "rb").read()) if cart else b""
+        if len(raw) < 6 + 32 * 128:
+            check("piano électrique : une cartouche DX7 de 32 voix dans library/dx7", False, cart or "aucune")
+        else:
+            for op in range(6):
+                raw[6 + 128 + op * 17 + 14] = 0
+            bank = os.path.join(out_dir, "bench-cart.syx")
+            with open(bank, "wb") as f:
+                f.write(bytes(raw))
+            blk = mount({"id": "bench-ep", "type": "ep", "dx7_bank": bank, "dx7_patch": 0, "params": {"bank": "x", "patch": 0}})
+            check("piano électrique : posé, voix envoyée (1 SysEx)", (blk.get("bench-ep") or {}).get("midi") == 1,
+                  str((blk.get("bench-ep") or {}).get("midi")))
+            v = play(60)
+            check("piano électrique SONNE", v > -60, f"{v:.1f} dBFS ({cart})")
+            mount({"id": "bench-ep", "type": "ep", "dx7_bank": bank, "dx7_patch": 1, "params": {"bank": "x", "patch": 1}},
+                  scene="B", recall=False)
+            v2 = play(60)
+            # le silence ne prouve rien si la première voix n'a pas sonné non plus (Dexed absent : -150 contre -150)
+            check("piano électrique : la voix de la scène est LUE par Dexed (une voix aux opérateurs à 0 se tait)",
+                  v > -60 and v2 < -60, f"{v2:.1f} dBFS contre {v:.1f}")
         # ARPÉGIATEUR : toujours posé entre la zone et l'instrument ; « Off » transparent, une scène l'allume
         blk = mount({"id": "bench-organ", "type": "organ", "params": {"db16": 8, "db8": 8, "arp": "Off"}})
         arp = (blk.get("bench-organ~arp") or {}).get("params") or {}

@@ -58,6 +58,32 @@ def test_une_di_mono_d_un_seul_tenant_est_simplement_deplacee(tmp_path):
     assert perf(tmp_path) == {"recording": False, "file": "recordings/perf-x", "started_at": "2026-11-16T23:00:00", "error": ""}
 
 
+def test_un_fichier_que_le_moteur_tient_ouvert_est_copie_et_la_prise_continue(tmp_path, monkeypatch):
+    # Windows : le moteur garde ses fichiers de prise ouverts — ni renommage ni suppression (WinError 32). La prise doit
+    # quand même avoir TOUS ses fichiers ; shutil.move levait sur la suppression et perdait le reste de la prise.
+    di = wav(tmp_path / "golem-rec-DI-1.wav", 1000)
+    drums = wav(tmp_path / "golem-rec-Drums-1.wav", 2000)
+    held = {di, drums}
+    import os
+
+    def held_guard(real):
+        def f(p, *a, **k):
+            if str(p) in held:
+                raise PermissionError(32, "The process cannot access the file because it is being used by another process")
+            return real(p, *a, **k)
+        return f
+    for name in ("replace", "rename", "remove", "unlink"):         # tous les chemins : shutil.move passe par rename/unlink
+        monkeypatch.setattr(os, name, held_guard(getattr(os, name)))
+    done, err = T.finalize(manifest(tmp_path, [{"name": "DI-Sandbox-Input-1", "segments": [{"pos": 0, "len": 4800, "files": [di]}]},
+                                               {"name": "Drums", "segments": [{"pos": 0, "len": 4800, "files": [drums]}]}]),
+                           ffmpeg="/nonexistent/ffmpeg")
+    take = tmp_path / "recordings" / "perf-x"
+    assert err == "" and done == ["DI-Sandbox-Input-1", "Drums"]
+    assert sorted(p.name for p in take.iterdir()) == ["DI-Sandbox-Input-1.wav", "Drums.wav"]   # pas de .part.wav laissé
+    with wave.open(str(take / "Drums.wav")) as w:
+        assert w.getnframes() == 4800
+
+
 def test_une_erreur_est_dite_jamais_tue(tmp_path):
     a, b = wav(tmp_path / "m%L.wav", 100), wav(tmp_path / "m%R.wav", 100)
     done, err = T.finalize(manifest(tmp_path, [{"name": "Mix", "segments": [{"pos": 0, "len": 4800, "files": [a, b]}]}]),

@@ -80,6 +80,7 @@ of a subsystem before changing it.
 - Bridge alive at 100 % CPU, `/api/health` times out, installer says "did not start" → a snapshot does no I/O; one queued broadcast, none without a screen; `py-spy dump` first → [windows.md](windows.md#a-snapshot-that-does-work-starves-the-event-loop)
 - TONE3000 downloads fail `err403` after minutes → honest golem User-Agent; Cloudflare 1010 fails at once → [windows.md](windows.md#tone3000-downloads-refused-with-403-error-code-1010)
 - One golem per installer click, hidden "golem server" boxes → `bridge_start` asks `/api/health`; `GOLEM_NO_DIALOG` → [windows.md](windows.md#the-installer-started-golem-once-per-click)
+- Golem Engine OSC late by seconds (looper, transport, levels) → Windows throttles a windowless process: lift it at launch, and the surface's per-message `usleep (1)` is a full tick → [windows.md](windows.md#a-windowless-engine-is-throttled-and-its-osc-surface-falls-behind)
 
 ## Data
 

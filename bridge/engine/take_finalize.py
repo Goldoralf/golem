@@ -72,7 +72,17 @@ def assemble(segments, origin, target, ffmpeg="ffmpeg", codec=None):
     os.makedirs(os.path.dirname(target), exist_ok=True)
     files = [f for seg in segments for f in seg["files"]]
     if not codec and len(segments) == 1 and len(files) == 1 and int(segments[0].get("pos") or 0) <= origin:
-        shutil.move(files[0], target)
+        try:
+            os.replace(files[0], target)
+        except OSError:
+            # Windows : le moteur garde ses fichiers de prise OUVERTS — ni renommage ni suppression (WinError 32). On
+            # copie, et la source reste au moteur ; shutil.move copiait puis LEVAIT sur la suppression, et la prise
+            # entière était perdue à mi-chemin (2026-11-19, banc Windows : 3 fichiers sur 6, « could not be assembled »)
+            tmp = target + ".part.wav"
+            shutil.copyfile(files[0], tmp)
+            os.replace(tmp, target)
+            with contextlib.suppress(OSError):
+                os.remove(files[0])
         return
     tmp = target + ".part.wav"
     r = subprocess.run(command(segments, origin, tmp, ffmpeg, codec), capture_output=True, text=True)

@@ -122,9 +122,25 @@ def _bpm(cmd):
         return None
 
 
+def _win_documents():
+    """Le dossier Documents tel que Windows le dit (CSIDL_PERSONAL, comme Ardour) : il peut être déplacé (OneDrive,
+    autre disque) — ~/Documents n'est qu'un repli."""
+    import ctypes
+    buf = ctypes.create_unicode_buffer(260)
+    with contextlib.suppress(Exception):
+        if ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, buf) == 0 and buf.value:   # CSIDL_PERSONAL
+            return buf.value
+    return os.path.join(os.path.expanduser("~"), "Documents")
+
+
 def preset_dir(vendor, name):
     """Le dossier où Ardour cherche les presets VST3 d'un plugin (VST3PluginInfo::preset_search_path, le premier : celui
-    de l'utilisateur)."""
+    de l'utilisateur, où il écrit). Il dépend du système : sous Windows le bridge cherchait le chemin Linux, ne trouvait
+    jamais l'état qu'un plugin hébergé venait de rendre, et le son de Vital n'arrivait pas au moteur (2026-11-19)."""
+    if sys.platform == "win32":
+        return os.path.join(_win_documents(), "VST3 Presets", vendor, name)
+    if sys.platform == "darwin":
+        return os.path.join(os.path.expanduser("~"), "Library", "Audio", "Presets", vendor, name)
     return os.path.join(os.path.expanduser("~"), ".vst3", "presets", vendor, name)
 
 
@@ -246,8 +262,10 @@ def host_state_chunk(data):
     except OSError as e:
         raise ValueError(f"the engine's state file is missing ({e})") from e
     finally:
-        with contextlib.suppress(OSError):
+        try:
             os.remove(path)
+        except OSError as e:
+            log.warning(f"ardour : état VST3 lu mais non retiré ({e})")
     _uid, comp, ctrl = read_vstpreset(raw)
     if not comp:
         raise ValueError("the plugin gave an empty state")

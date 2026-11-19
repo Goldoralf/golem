@@ -54,7 +54,13 @@ def main():
     os.makedirs(os.path.join(work, "config"))
     with open(os.path.join(work, "config", "golem-engine.json"), "w", encoding="utf-8") as f:
         json.dump({"sleep_muted_branches": True}, f)
-    os.symlink(os.path.join(ROOT, "library", "catalog"), os.path.join(work, "library", "catalog"))   # lu, jamais écrit
+    src, dst = os.path.join(ROOT, "library", "catalog"), os.path.join(work, "library", "catalog")   # lu, jamais écrit
+    if sys.platform == "win32":
+        # un lien symbolique demande un privilège sous Windows (WinError 1314) : une JONCTION de dossier, non
+        import _winapi
+        _winapi.CreateJunction(src, dst)
+    else:
+        os.symlink(src, dst)
     from bridge import monitors
     monitors._WATCH_LOG = os.path.join(C.PRESETS_DIR, ".watch.log")
     from bridge.engine import ardour as A
@@ -147,6 +153,9 @@ def main():
         eng.stop_feedback()
         check("arrêt", eng.stop(timeout=10))
         if not a.keep:
+            catalog = os.path.join(work, "library", "catalog")
+            if sys.platform == "win32" and os.path.isdir(catalog):
+                os.rmdir(catalog)                        # la JONCTION seule, jamais le catalogue qu'elle désigne
             shutil.rmtree(work, ignore_errors=True)
     print("OK" if not fails else f"{len(fails)} échec(s) : {', '.join(fails)}")
     return 0 if not fails else 1

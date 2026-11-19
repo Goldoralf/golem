@@ -77,7 +77,8 @@ def card_device():
 
 # la carte de golem en ALSA par défaut ; sans carte connue (un banc, une machine neuve) : le pilote factice, sans son
 DEVICE = os.environ.get("GOLEM_ENGINE_DEVICE", card_device() or "")
-BACKEND = os.environ.get("GOLEM_ENGINE_BACKEND", "ALSA" if DEVICE else "None (Dummy)")
+BACKEND = os.environ.get("GOLEM_ENGINE_BACKEND", ("PortAudio (default)" if sys.platform == "win32" else "ALSA")
+                         if DEVICE else "None (Dummy)")
 # la session vit DANS golem (sets/, état local comme sets/golem-set.rpp) : rien hors de l'install
 SESSION_DIR = os.environ.get("GOLEM_ENGINE_SESSION", os.path.join(C.ROOT, "sets", "golem-engine"))
 RUN_LOG = os.environ.get("GOLEM_ENGINE_LOG") or os.path.join("/tmp" if os.path.isdir("/tmp") else __import__("tempfile").gettempdir(),
@@ -471,7 +472,9 @@ class ArdourEngine(EngineAdapter):
                          "standard", "tuner", "extstate", "backing",
                          "preview", "sample", "sample_preview",
                          "vst_list", "vst_params", "vst_state", "capture_params"})
-    PROC_NAMES = ("luasession",)
+    # le moteur, tel que le système nomme son process : `luasession` (Linux), `ardour9-lua` (le build Windows de
+    # golem/tools/win-build.sh, 2026-11-19 — tasklist rend le nom de l'image sans .exe)
+    PROC_NAMES = ("luasession", "ardour9-lua")
 
     def __init__(self, link=None):
         self._link = link

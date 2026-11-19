@@ -26,8 +26,9 @@ export const del = (path) => api(path, { method: 'DELETE' });
 // (bridge en cours de reload, WiFi du téléphone endormi…) est RE-TENTÉ toutes les 4 s tant
 // que le composant vit — les ~18 pages qui restaient muettes se réparent toutes seules,
 // le bandeau global du shell explique pourquoi pendant ce temps. —
-export function useAsync(fn, deps = []) {
-  const [data, setData] = useState(null);
+// `initial` : une valeur (ou une fonction appelée UNE fois) pour le premier rendu — des données déjà là (live-preload.js)
+export function useAsync(fn, deps = [], initial = null) {
+  const [data, setData] = useState(initial);
   const [err, setErr] = useState(null);
   const reload = () => { setErr(null); return Promise.resolve().then(fn).then(setData).catch(e => setErr(e)); };
   useEffect(() => {

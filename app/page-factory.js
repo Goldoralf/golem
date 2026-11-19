@@ -44,7 +44,7 @@ function FactoryDemos() {
       <span class=${cls('muted', have === pt.length && 'ok')}>${have} of ${pt.length} factory patches can be heard ${have === pt.length ? '✓' : ''}</span></div>
     <div class="row">
       ${running
-        ? html`<button class="edit-only" onClick=${stop} title="stops after the patch being rendered">■ Stop</button>
+        ? html`<button class="primary edit-only" onClick=${stop} title="stops after the patch being rendered">■ Stop</button>
             <span class="muted">${b.done} of ${b.total}${b.current ? ' — ' + esc(b.current.replace(/^factory-/, '')) : ''}</span>`
         : html`<button class="primary edit-only" onClick=${go}
             title="renders a reference phrase through every factory patch, scene by scene — takes the engine, nobody should play; demos already up to date are skipped">

@@ -8,6 +8,7 @@ import { LoadingPage } from './page-loading.js';
 import { FirstCheckPage } from './page-first-check.js';         // la vérification de première installation (docs/health.md §2)
 import { demoStatus as firstCheckDemo } from './first-check-model.mjs';
 import { showBoot, demoState } from './boot-model.mjs';
+import { preloadLive, PRELOAD_MAX_MS } from './live-preload.js';   // ce que /live affiche, chargé pendant le chargement
 import { serviceBadges, withDemo } from './services-model.mjs';   // la pastille des services (⚙ → API → golem.fm / Tone3000)
 import { healthDot } from './health-model.mjs';                  // le point de santé (docs/health.md §3) → Settings ▸ Health
 import { LibraryPage } from './page-library.js';
@@ -211,6 +212,32 @@ function ArrivalNotice({ notice, locked }) {
   </div>`;
 }
 
+// L'ÉCRAN DE CHARGEMENT TIENT SA PROMESSE (2026-11-19) : « boot.done » dit que le golem JOUE, pas que /live a ses
+// tuiles. Pendant le chargement, ce que /live affiche est préchargé (live-preload.js) ; l'écran reste jusqu'à ce que
+// ce soit là — seulement s'il était affiché POUR CE démarrage (un simple rechargement de page ne le fait pas
+// réapparaître), et jamais plus de PRELOAD_MAX_MS après « done ». Rend vrai quand l'écran peut s'effacer.
+function useLivePreload(st, bootSkip) {
+  const boot = (st && st.boot) || {};
+  const t0 = boot.t0 || null, done = !!boot.done, pid = (st && st.preset_id) || null;
+  // la clé : CE démarrage et CE preset — la bank 00 est rappelée en fin de chargement, le preset peut changer
+  const key = t0 + ':' + pid;
+  const [ready, setReady] = useState({});            // {clé: true}
+  const saw = useRef(null);
+  if (st && showBoot(st, bootSkip)) saw.current = t0;
+  useEffect(() => {
+    if (!t0 || !pid || saw.current !== t0) return;
+    let alive = true;
+    preloadLive(pid).then(() => { if (alive) setReady(r => ({ ...r, [key]: true })); });
+    return () => { alive = false; };
+  }, [key, saw.current]);
+  useEffect(() => {
+    if (!t0 || !done || ready[key]) return;
+    const t = setTimeout(() => setReady(r => ({ ...r, [key]: true })), PRELOAD_MAX_MS);
+    return () => clearTimeout(t);
+  }, [key, done]);
+  return !t0 || saw.current !== t0 || bootSkip === t0 || !!ready[key];
+}
+
 function App() {
   const route = useRoute();
   const rig = useRigState();
@@ -219,6 +246,7 @@ function App() {
   const [bootSkip, setBootSkip] = useState(() => { try { return Number(sessionStorage.getItem('golemBootSkip')) || null; } catch (e) { return null; } });
   const [fcHide, setFcHide] = useState(false);      // la vérification de première installation, fermée pour cet écran
   const linkLost = useLinkLost(rig.wsUp);
+  const livePreloaded = useLivePreload(rig.state, bootSkip);
   const appStale = useAppBuild(rig.wsUp);
   const slot = useTopSlot();                       // contrôles contextuels publiés par la page (ex. Designer)
   const action = useTopAction();                   // action contextuelle (+ Add, 💾 Save…)
@@ -311,7 +339,7 @@ function App() {
       && !showBoot(rig.state, bootSkip)) {
     return html`<${FirstCheckPage} rig=${rig} onDone=${() => setFcHide(true)} />`;
   }
-  if (base === 'live' && rig.state && showBoot(rig.state, bootSkip)) {
+  if (base === 'live' && rig.state && (showBoot(rig.state, bootSkip) || !livePreloaded)) {
     return html`<${LoadingPage} rig=${rig} linkLost=${linkLost}
       onSkip=${() => { const t0 = rig.state.boot.t0; try { sessionStorage.setItem('golemBootSkip', String(t0)); } catch (e) { /* privé */ } setBootSkip(t0); }} />`;
   }

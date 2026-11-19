@@ -14,6 +14,7 @@ import { Icon } from './icons.js';
 // blancs dont on avait dit qu'on les enlevait ». La légende en phrases reste dans le Designer ▸ MIDI assign.)
 import { ICON, NAME, SHORT, ARCH_NAME, hydrateBlockMeta, animClass, animPackOf, ensurePackCss, blockContent, SPECIAL_CAT } from './designer-model.js';
 import { ChartLive } from './live-chart.js';
+import { takePresets } from './live-preload.js';
 import { BankBar } from './live-bankbar.js';
 import { StagePage } from './live-pages.js';   // les pages Répète et Concert (docs/live-pages.md)
 import { useLiveTools, useViewOverride, modeViewKey, useLivePedals } from './live-tools.js';
@@ -390,7 +391,8 @@ export function LivePage({ rig }) {
   // Le mode garde le dernier mot quand AUCUN bloc ne revendique (Show -> pupitre).
   const st = rig.state;
   // A preset may be installed outside this page; switching presets refreshes its scenes and blocks.
-  const { data: presets } = useAsync(() => fetch('/api/presets').then(r => r.json()), [st.preset_id]);
+  // la liste préchargée pendant l'écran de chargement (live-preload.js) sert au PREMIER rendu : pas de tuiles nues
+  const { data: presets } = useAsync(() => fetch('/api/presets').then(r => r.json()), [st.preset_id], takePresets);
   // ⚠ CORRIGÉ le 2026-08-04, le jour même : « bloc arrangement -> timeline » était FAUX, et le
   // commentaire du chef d'orchestre 40 lignes plus bas le disait déjà — « une pastille suffit
   // ici, ce qu'on veut au pied c'est où je suis / ce qui vient, PAS une timeline ». Un

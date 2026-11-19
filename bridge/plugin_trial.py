@@ -320,8 +320,11 @@ def trial_engine(plugin, timeout_s=None, cycles=CYCLES, lua=None, script=None):
                 return False, "froze the audio engine", {"at": st.get("step") or "start", "engine": "golem-engine"}
             time.sleep(0.1)
     finally:
-        with contextlib.suppress(OSError):
-            os.killpg(proc.pid, signal.SIGKILL)
+        with contextlib.suppress(OSError, subprocess.SubprocessError):
+            if os.name == "nt":                          # pas de groupe de process sous Windows : l'arbre, par taskkill
+                subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True, timeout=15)
+            else:
+                os.killpg(proc.pid, signal.SIGKILL)
         with contextlib.suppress(Exception):
             proc.wait(timeout=5)
         shutil.rmtree(work, ignore_errors=True)

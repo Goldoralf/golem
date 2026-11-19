@@ -124,7 +124,9 @@ def main():
         eng.transport("play")
         time.sleep(0.5)
         s = eng.send({"action": "status"})
-        st = wait(lambda: acked(s) and (status() or {}).get("rolling") is not None and status(), 3) or {}
+        # attendre qu'il ROULE, pas le premier état lu (2026-11-19, Windows) : avec les 35 pistes du banc le transport met
+        # plus de 0,5 s à partir, et l'état « arrêté » d'avant le départ suffisait à juger — l'état est republié toutes les 2 s
+        st = wait(lambda: acked(s) and (status() or {}).get("rolling") is True and status(), 3) or status() or {}
         check("transport lancé par OSC", st.get("rolling") is True, json.dumps(st))
         xr0 = st.get("xruns") or 0          # le montage en compte (A0 : xruns au montage seulement) ; on juge le JEU
         eng.transport("stop")
@@ -168,9 +170,23 @@ def main():
 # ── A2.0 : le patch de banc (une entrée, deux branches, un merge), rappel -> scène -> stomp -> potard OSC ────────────
 # des fichiers du cache local de golem (assets/.cache, rempli par le contenu d'usine) : absents, le banc le dit (échec)
 CACHE = os.path.join(ROOT, "assets", ".cache")
-NAM = os.path.join(CACHE, "2cea181b_tim-r-fender-twinverb-vibrato-bright-a2.nam")
-NAM2 = os.path.join(CACHE, "c4efbab1_amp-jcm800-2203-modified-hi-bad-boys-2---blend-1-a2.nam")
-IR = os.path.join(CACHE, "93a0207e_16---palmer-g12m65-sm57-mid-15cm-45.wav")
+
+
+def _cached(name, prefix):
+    """Le fichier du cache PAR SON NOM (2026-11-19) : le préfixe est une empreinte du fichier, qui change quand la capture
+    est republiée — figé, il faisait échouer le banc sur une machine qui a la même capture sous un autre préfixe. Le
+    préfixe connu d'abord, sinon le premier `<préfixe>_<nom>` du cache."""
+    exact = os.path.join(CACHE, f"{prefix}_{name}")
+    if os.path.isfile(exact):
+        return exact
+    import glob
+    found = sorted(glob.glob(os.path.join(glob.escape(CACHE), "*_" + glob.escape(name))))
+    return found[0] if found else exact
+
+
+NAM = _cached("tim-r-fender-twinverb-vibrato-bright-a2.nam", "2cea181b")
+NAM2 = _cached("amp-jcm800-2203-modified-hi-bad-boys-2---blend-1-a2.nam", "c4efbab1")
+IR = _cached("16---palmer-g12m65-sm57-mid-15cm-45.wav", "93a0207e")
 BENCH_ID = "patch:engine-bench"
 
 

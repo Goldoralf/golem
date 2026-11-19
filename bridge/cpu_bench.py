@@ -573,6 +573,8 @@ def busy(manual=False):
     Manuel : sans les 10 min — la personne qui appuie est devant l'écran."""
     from . import preview as PV, reamp
     from .state import state
+    if reamp._CLOSING["at"]:                             # golem s'arrête : la raison qui prime sur toutes les autres
+        return "golem is stopping"
     try:
         from . import engine
         if engine.get().id not in ("reaper", "ardour"):
@@ -679,6 +681,16 @@ def run(manual=False, force=False, types=None, measure=None, busy_fn=None, seq_o
         _ST["running"] = False
         if took:
             restore()
+
+
+def stop(timeout=30.0):
+    """Arrête le banc au bloc en cours et attend qu'il ait RENDU le moteur (sa sandbox reposée) — avant l'enregistrement
+    du set à l'arrêt de golem. Rend vrai s'il est arrêté. Ne relance rien : reamp.set_closing() bloque les suivants."""
+    _stop.set()
+    t0 = time.time()
+    while _ST["running"] and time.time() - t0 < timeout:
+        time.sleep(0.2)
+    return not _ST["running"]
 
 
 def status():

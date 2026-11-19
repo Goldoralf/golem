@@ -40,10 +40,23 @@ class Deferred(Exception):
 
 
 # ── §2 la règle « libre » ────────────────────────────────────────────────────────────────────
+_CLOSING = {"at": None}
+
+
+def set_closing():
+    """golem s'arrête (⏻, croix de la fenêtre) : plus rien ne prend le moteur. 2026-11-19 : le banc CPU au repos rendait
+    encore des blocs APRÈS l'enregistrement du set — le projet repassait « modifié » et REAPER ouvrait « Save project
+    golem-set.rpp before closing? » derrière la fenêtre fermée."""
+    import time
+    _CLOSING["at"] = time.time()
+
+
 def busy_reason(idle=True):
     """Pourquoi on ne peut PAS prendre le moteur maintenant — ou None si le rack est libre. `idle=False` : sans la
     règle des 10 min sans geste — pour ce qui ne prend PAS le moteur (la mesure d'une recette de capture tourne
     dans un REAPER séparé, sans carte son : docs/plugin-recipes.md §6)."""
+    if _CLOSING["at"]:
+        return "golem is stopping"
     from .state import state
     mode = state.mode or {}
     if mode.get("id") == "gig":

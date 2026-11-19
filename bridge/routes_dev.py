@@ -394,6 +394,21 @@ def _ui_quit_desktop(full):
         # UN REAPER FIGÉ NE SE FERME PAS POLIMENT (2026-10-05) : son thread principal ne lit plus rien,
         # ni la sauvegarde OSC ni WM_CLOSE — le ⏻ attendait 20 s pour rien et le laissait ouvert. Figé
         # (aucun message traité pendant 15 s) = on le termine ; vivant = le chemin poli, inchangé.
+        # PLUS RIEN NE PREND LE MOTEUR (2026-11-19) : le banc CPU au repos rendait encore un bloc après l'enregistrement
+        # du set — projet « modifié », boîte « Save project? » à la fermeture, golem relancé sur un REAPER encore ouvert.
+        # Les veilleurs s'arrêtent (reamp.set_closing), le banc et le lot de démos finissent leur pas et rendent le moteur.
+        try:
+            from . import reamp, cpu_bench, preview as _pv
+            reamp.set_closing()
+            _pv.stop_batch()
+            if not cpu_bench.stop(timeout=30.0):
+                log.warning("banc CPU encore en cours au moment de l'arrêt")
+            if _pv._gen_lock.acquire(timeout=30.0):         # un rendu en cours finit ; gardé : aucun autre ne part
+                log.info("aucun rendu en cours : le set peut s'enregistrer")
+            else:
+                log.warning("un rendu tournait encore au moment de l'arrêt")
+        except Exception as e:
+            log.warning(f"rendus non arrêtés avant l'arrêt : {e}")
         # les REAPER de banc d'abord (capture, recette) : il n'en reste qu'un, celui qu'on ferme
         try:
             from . import plugin_capture

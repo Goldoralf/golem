@@ -416,6 +416,27 @@ MIDI and audio devices plugged after REAPER started are not opened. See
 
 ---
 
+## A render dialog freezes the whole engine
+
+`Main_OnCommand(42230)` renders on REAPER's main thread. When the target cannot be written — the file exists, a
+**folder** has the file's name, the folder is gone — REAPER opens a **modal** dialog ("Render Warning — File already
+exists", "Rendering to file… Can't create file"). Every golem `defer` loop stops until someone clicks; on a rack nobody
+sees REAPER. The bridge then says "REAPER stopped listening", and `_reaper_hung` saw the dialog's message loop as alive.
+
+Three traps found on Windows on 2026-11-19, all fixed:
+- `golem_preview.lua` split the output path on `/` only: `D:\…\A.wav` became the render **folder** `A.wav\preview.wav`,
+  the bridge waited for `A.wav` (150 s per scene), and the next render hit "File already exists". Split on `[/\\]`, and
+  decode JSON escapes in the command (`jget`: Windows paths arrived as `D:\\code\\…`).
+- The command lives in `ProjExtState`, which **is saved in the `.rpp`**: after a restart the new loop replayed the last
+  render of a stopped batch. The loop clears `preview_cmd` when it takes a command, and at start.
+- A folder left where a `.wav` must be written: Lua `os.remove` deletes only files, so the bridge removes it before
+  sending a render (`commands._clear_render_target`).
+
+"Restart REAPER" now treats stalled scripts as a hung REAPER (`desktop_audio.start_apply`): it no longer asks a frozen
+engine for a project snapshot. Tests: `tests/test_cpu_bench_lua.py`, `tests/test_render_target_dir.py`.
+
+---
+
 ## Probing parameters
 
 The track chunk shows a line of numbers without names. When a parameter write does not seem to land,

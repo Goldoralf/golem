@@ -194,7 +194,20 @@ def write_command(cmd: dict):
     REAPER (le seul aujourd'hui) -> `enqueue` ci-dessous. Rend le `seq` posé, ou None si le moteur ne connaît pas
     l'action. Les ~80 sites d'appel ne changent pas : le dict `{"action": …}` est le contrat."""
     from . import engine
+    _clear_render_target(cmd)
     return engine.get().send(cmd)
+
+
+def _clear_render_target(cmd):
+    """UN DOSSIER À LA PLACE DU FICHIER À RENDRE GÈLE REAPER (2026-11-19). Un ancien golem_preview.lua rendait sous
+    Windows dans un dossier `<scène>.wav\\` ; REAPER ne peut pas créer A.wav là où existe un dossier A.wav, et sa boîte
+    « Can't create file » est MODALE : tout le moteur s'arrête. Le script ne sait pas effacer un dossier (os.remove
+    n'efface que des fichiers) : le bridge le fait avant d'envoyer le rendu."""
+    out = cmd.get("out") if isinstance(cmd, dict) and cmd.get("action") == "preview" else None
+    if isinstance(out, str) and out.lower().endswith(".wav") and os.path.isdir(out):
+        import shutil
+        shutil.rmtree(out, ignore_errors=True)
+        log.warning(f"rendu : un dossier occupait la place de {out} — effacé avant le rendu")
 
 
 def enqueue(cmd: dict):

@@ -370,8 +370,12 @@ local function render_once(cmd, prep)
   reaper.GetSet_LoopTimeRange(true, false, 0, prep.len + tail, false)
   -- Reaper traite RENDER_FILE comme un DOSSIER et RENDER_PATTERN comme le nom -> on découpe `out`
   -- (.../<scene>.wav) en dir + nom-sans-extension, sinon il crée un dossier <scene>.wav/ (corrigé).
-  local out_dir  = out:match("^(.*)/[^/]*$") or out
-  local out_name = out:match("/([^/]*)%.[%w]+$") or out:match("/([^/]*)$") or "preview"
+  -- LES DEUX SÉPARATEURS (2026-11-19) : sous Windows le bridge envoie D:\...\A.wav — découpé sur « / » seul, rien
+  -- ne correspondait : RENDER_FILE recevait le chemin entier, REAPER rendait A.wav\preview.wav, le bridge
+  -- n'attendait que A.wav (150 s perdues par scène), et le rendu suivant ouvrait la boîte « File already exists »
+  -- qui gèle tout REAPER (os.remove ne supprime pas un dossier).
+  local out_dir  = out:match("^(.*)[/\\][^/\\]*$") or out
+  local out_name = out:match("[/\\]([^/\\]*)%.[%w]+$") or out:match("[/\\]([^/\\]*)$") or "preview"
   local old_sr = reaper.GetSetProjectInfo(0, "RENDER_SRATE", 0, false)
   reaper.GetSetProjectInfo(0, "RENDER_SETTINGS", 0, true)      -- 0 = master mix
   reaper.GetSetProjectInfo(0, "RENDER_BOUNDSFLAG", 2, true)    -- 2 = time selection
@@ -449,25 +453,54 @@ local pending = nil          -- { cmd, prep, at } : un clone qui laisse charger 
 local GEN = tostring(reaper.time_precise())
 reaper.SetExtState("golem", "preview_gen", GEN, false)
 
+-- UNE CHAÎNE JSON DÉCODÉE (2026-11-19) : le motif "([^"]+)" gardait les échappements — sous Windows chaque chemin
+-- arrivait en D:\\code\\..., renvoyé tel quel au bridge et découpé de travers. On lit jusqu'au guillemet NON échappé
+-- et on décode \\ \" \/ \n \t \uXXXX (ASCII ; au-delà, l'octet UTF-8 que json.dumps n'échappe pas si ensure_ascii=False).
+local ESC = { ['"'] = '"', ["\\"] = "\\", ["/"] = "/", n = "\n", t = "\t", r = "\r", b = "\b", f = "\f" }
+local function jget(cur, key)
+  local _, e = cur:find('"' .. key .. '"%s*:%s*"')
+  if not e then return nil end
+  local out, i = {}, e + 1
+  while i <= #cur do
+    local c = cur:sub(i, i)
+    if c == '"' then return #out > 0 and table.concat(out) or nil end
+    if c == "\\" then
+      local n = cur:sub(i + 1, i + 1)
+      if n == "u" then
+        local cp = tonumber(cur:sub(i + 2, i + 5), 16) or 63
+        out[#out + 1] = utf8 and utf8.char(cp) or string.char(cp < 128 and cp or 63)
+        i = i + 6
+      else
+        out[#out + 1] = ESC[n] or n
+        i = i + 2
+      end
+    else
+      out[#out + 1] = c
+      i = i + 1
+    end
+  end
+  return nil
+end
+
 local function parse(cur)
   local seq = tonumber(cur:match('"seq"%s*:%s*(%d+)')) or 0
   return {
     seq = seq,
-    op = cur:match('"op"%s*:%s*"([^"]+)"'),
-    scene = cur:match('"scene"%s*:%s*"([^"]+)"'),
-    di = cur:match('"di"%s*:%s*"([^"]+)"'),
-    out = cur:match('"out"%s*:%s*"([^"]+)"'),
+    op = jget(cur, "op"),
+    scene = jget(cur, "scene"),
+    di = jget(cur, "di"),
+    out = jget(cur, "out"),
     tail = cur:match('"tail"%s*:%s*([%d%.]+)'),
     -- ⚠ `chain` N'ÉTAIT PAS LU avant le 2026-09-28 : toute preview clonait « Sandbox #Input 1 »,
     -- même quand le bridge demandait l'entrée 2 (voix). Trouvé en préparant le reamp.
-    chain = cur:match('"chain"%s*:%s*"([^"]+)"'),
+    chain = jget(cur, "chain"),
     tree = cur:match('"tree"%s*:%s*true') ~= nil,
     sr = cur:match('"sr"%s*:%s*(%d+)'),
     settle = tonumber(cur:match('"settle"%s*:%s*([%d%.]+)')) or 0,
-    midi = cur:match('"midi"%s*:%s*"([^"]+)"'),
-    chains = cur:match('"chains"%s*:%s*"([^"]+)"'),
-    midis = cur:match('"midis"%s*:%s*"([^"]+)"'),
-    strip = cur:match('"strip"%s*:%s*"([^"]+)"'),
+    midi = jget(cur, "midi"),
+    chains = jget(cur, "chains"),
+    midis = jget(cur, "midis"),
+    strip = jget(cur, "strip"),
     bench = tonumber(cur:match('"bench"%s*:%s*(%d+)')),
   }
 end
@@ -496,6 +529,10 @@ local function poll()
     local key = tostring(cmd.seq) .. ":" .. tostring(cmd.scene)
     if key ~= last_key and cmd.op == "render" and (cmd.di or cmd.chains) and cmd.out then
       last_key = key
+      -- PRISE, LA COMMANDE S'EFFACE (2026-11-19) : la ProjExtState est ENREGISTRÉE dans le .rpp. Au démarrage suivant,
+      -- la boucle neuve (last_key vide) relisait le dernier rendu du lot arrêté et le relançait vers un dossier
+      -- disparu — boîte modale « Can't create file », tout REAPER gelé dès l'ouverture.
+      reaper.SetProjExtState(0, "golem", "preview_cmd", "")
       local okp, prep, perr = pcall(prepare, cmd)
       if not okp then delete_clone(); done(cmd, prep); return end
       if not prep then done(cmd, perr); return end
@@ -520,4 +557,6 @@ local function tick()
 end
 
 log("preview loop armée")
+-- une commande restée dans le projet ouvert (enregistré avant ce correctif) n'est pas une demande du bridge
+reaper.SetProjExtState(0, "golem", "preview_cmd", "")
 tick()

@@ -684,7 +684,13 @@ def start_apply(body, *, ensure_running=False):
         # alors de le relancer (« Could not read the active project ») — exactement le cas où on en a
         # besoin (2026-10-05). Figé : on ne lui demande rien, il sera terminé puis rouvert sur le
         # dernier projet de GoleM (desktop_project).
-        hung = running and _reaper_hung()
+        # UNE BOÎTE MODALE N'EST PAS UN THREAD FIGÉ (2026-11-19, « Render Warning — File already exists » ouverte par un
+        # rendu de démo) : la boucle de messages de la boîte répond à WM_NULL, `_reaper_hung` disait « vivant », et
+        # l'instantané Lua attendait des scripts arrêtés — le bouton du bandeau « REAPER stopped listening » échouait
+        # sur « Could not read the active project ». Les scripts déclarés muets par le bridge suffisent.
+        from .state import state
+        stalled = bool((getattr(state, "cards", None) or {}).get("scripts_stalled"))
+        hung = running and (stalled or _reaper_hung())
         project_state = _snapshot_reaper() if running and not hung else None
         if running and not hung and not (project_state.get("PROJECT") and Path(project_state["PROJECT"]).is_file()):
             target = _auto_save_target()

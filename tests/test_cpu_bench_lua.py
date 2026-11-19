@@ -146,3 +146,19 @@ def test_un_rendu_ordinaire_ne_publie_pas_de_temps(tmp_path):
                    "tail": 1.0, "chain": "Sandbox #Input 1", "tree": True, "settle": 0.5})
     assert got and got["wav"] == str(out) and "times" not in got
     assert list(lab.F.renders.values()) == [2] and out.exists()
+
+
+@pytest.mark.parametrize("out, folder", [(r"D:\golem\library\previews\patch-x-ink\A.wav", r"D:\golem\library\previews\patch-x-ink"),
+                                         ("/home/g/library/previews/patch-x/A.wav", "/home/g/library/previews/patch-x")])
+def test_la_sortie_windows_est_un_fichier_pas_un_dossier(tmp_path, out, folder):
+    """2026-11-19, rendu des démos sous Windows : `out` en D:\\...\\A.wav, découpé sur « / » seul, devenait le DOSSIER
+    de rendu — REAPER écrivait A.wav\\preview.wav, le bridge attendait A.wav en vain, et le rendu suivant ouvrait la
+    boîte modale « File already exists » qui gelait tout REAPER."""
+    lab = Lab(tmp_path)
+    lab.live_lane()
+    lab.L.execute("function reaper.Main_OnCommand(cmd, x) end")   # le rendu n'écrit rien : on lit les réglages
+    di = tmp_path / "di.wav"
+    di.write_bytes(b"RIFF")
+    lab.run({"action": "preview", "seq": 10, "op": "render", "scene": "A", "di": str(di), "out": out,
+             "tail": 1.0, "chain": "Sandbox #Input 1", "tree": True, "settle": 0.5})
+    assert (lab.F.proj_str.RENDER_FILE, lab.F.proj_str.RENDER_PATTERN) == (folder, "A")

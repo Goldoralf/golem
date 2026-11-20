@@ -1649,7 +1649,10 @@ def capture_bench(eng, check, wait, acked):
         f = os.path.join(C.ROOT, read(".perf.json").get("file") or "missing", "Input-1.wav")
         return wav_info(f) if os.path.isfile(f) else (0, 0, -150)
     lv = take()
-    check("capture pilotable : le modèle est chargé et SONNE (sans capture, le lecteur rend du silence)", lv[2] > -60, f"{lv}")
+    # le lecteur POSÉ d'abord : absent, la piste laissait passer le signal du rig et le niveau seul passait (2026-11-20,
+    # Windows sans lecteur LV2 : -37,6 dBFS jugé « sonne »)
+    check("capture pilotable : le modèle est chargé et SONNE (sans capture, le lecteur rend du silence)",
+          pr.get("found") is True and len(vals) == 32 and lv[2] > -60, f"{lv}, lecteur {'posé' if vals else 'ABSENT'}")
     s = eng.send({"action": "capture_params", "block": "cap", "values": {"0": 0.9}})
     wait(lambda: acked(s), 5)
     time.sleep(0.3)

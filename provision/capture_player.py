@@ -96,6 +96,20 @@ LV2_SOURCE = ROOT / "native" / "capture-lv2"
 LV2_FILES = ("golem-capture.so", "manifest.ttl", "golem-capture.ttl")
 
 
+def lv2_files():
+    """Les fichiers du bundle LV2 de CETTE plateforme : le binaire est une .dll sous Windows (2026-11-20)."""
+    return ("golem-capture.dll",) + LV2_FILES[1:] if sys.platform == "win32" else LV2_FILES
+
+
+def lv2_dir():
+    """Où le lecteur LV2 est posé, sans droits d'admin : ~/.lv2 (Linux), %APPDATA%\\LV2 sous Windows — un dossier du
+    chemin LV2 par défaut de lilv, que le Golem Engine lit (run.py ne fixe pas LV2_PATH)."""
+    import os
+    if sys.platform == "win32":
+        return Path(os.environ.get("APPDATA", Path.home() / "AppData/Roaming")) / "LV2" / "golem-capture.lv2"
+    return Path.home() / ".lv2" / "golem-capture.lv2"
+
+
 def engine_present():
     """Le Golem Engine est-il sur cette machine ? (son lanceur ; GOLEM_ENGINE_DIR comme bridge/engine/ardour.py)"""
     import os
@@ -106,11 +120,11 @@ def engine_present():
 
 
 def install_lv2_bundled(destination=None, force=False):
-    """Le lecteur LV2 livré (Linux), copié vérifié dans ~/.lv2/golem-capture.lv2 — seulement là où le Golem Engine est
+    """Le lecteur LV2 livré (Linux, Windows), copié vérifié dans lv2_dir() — seulement là où le Golem Engine est
     installé (`force` pour l'imposer) : REAPER joue le CLAP, il n'a que faire d'un second lecteur dans sa liste LV2.
     Rend le dossier posé, ou None (pas Linux, pas de moteur, plateforme non livrée : jamais de build réseau ici —
     tools/build-capture-lv2.sh le fait à la main)."""
-    if sys.platform != "linux" or not (force or engine_present()):
+    if sys.platform not in ("linux", "win32") or not (force or engine_present()):
         return None
     manifest_file = LV2_SOURCE / "bin" / "manifest.json"
     manifest = json.loads(manifest_file.read_text(encoding="utf-8")) if manifest_file.is_file() else {}
@@ -120,17 +134,18 @@ def install_lv2_bundled(destination=None, force=False):
     archive = LV2_SOURCE / "bin" / entry["file"]
     if hashlib.sha256(archive.read_bytes()).hexdigest() != entry["sha256"]:
         raise RuntimeError("Bundled LV2 capture player checksum mismatch")
-    target = Path(destination) if destination else Path.home() / ".lv2" / "golem-capture.lv2"
+    target = Path(destination) if destination else lv2_dir()
     existed = target.exists()
     target.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive) as z:
-        for name in LV2_FILES:                             # une liste exacte : rien d'autre n'est extrait
+        files = lv2_files()
+        for name in files:                                 # une liste exacte : rien d'autre n'est extrait
             data = z.read("golem-capture.lv2/" + name)
             path = target / name
             if not path.is_file() or path.read_bytes() != data:
                 tmp = path.with_name(path.name + ".tmp")
                 tmp.write_bytes(data)
-                tmp.chmod(0o755 if name.endswith(".so") else 0o644)
+                tmp.chmod(0o755 if name == files[0] else 0o644)
                 tmp.replace(path)
     if destination is None:
         try:                                               # le reçu d'installation : désinstallable comme le reste

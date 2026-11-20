@@ -11,5 +11,19 @@
       "engine.cpp": "ba62517484b98dc58b0877ee2ebb475812daa7772e977e7e64493b02504cbbfe",
       "engine.h": "8e6dadb0495dea3a03035a8828b53faf438c9e08338f39babc22f6ebd02b6f9b"
     }
+  },
+  "windows-x86_64": {
+    "file": "windows-x86_64.zip",
+    "sha256": "a7dad13476742f11a4eec4583008e5ed750a18953143dc4dce709372ef771354",
+    "binary_sha256": "2c09e24f3af014bd847f76d50196c19483959e0ac2da8a47acd5426040c8f2af",
+    "sources": {
+      "lv2.cpp": "efea63c4a182e8886836d7954e42ca8197c2e8cd2047356491ee828b0ae5d84d",
+      "golem-capture.ttl": "50a247fa7e29021a45712159f209a8b073d37f06230e8b82a1bfa2bf84e11edc",
+      "manifest.ttl": "4797b5fb077ddbfc5f20c731e11b6a34e3066e190f3899298eed22ff12da16dd",
+      "CMakeLists.txt": "9d13e3d20119aabc9179bef5fca7cd4c1883a9e3b173767db51704efb16f188b",
+      "engine.cpp": "ba62517484b98dc58b0877ee2ebb475812daa7772e977e7e64493b02504cbbfe",
+      "engine.h": "8e6dadb0495dea3a03035a8828b53faf438c9e08338f39babc22f6ebd02b6f9b",
+      "windows/CMakeLists.txt": "b66d2e15477d5e2933832ed82887f6c9f915b73660a8ff345e854f444f5838e0"
+    }
   }
 }

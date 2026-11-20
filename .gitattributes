@@ -4,3 +4,7 @@ provision/golem text eol=lf
 .githooks/* text eol=lf
 native/capture/** text eol=lf
 native/capture/**/*.zip binary
+# le lecteur LV2 aussi : son manifeste épingle les empreintes de ses sources, prises en LF (2026-11-20 : sous Windows
+# la copie en CRLF ne correspondait plus, tests/test_capture_player.py échouait)
+native/capture-lv2/** text eol=lf
+native/capture-lv2/**/*.zip binary

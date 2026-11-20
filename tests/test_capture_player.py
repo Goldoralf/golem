@@ -54,7 +54,10 @@ def test_the_lv2_reader_is_pinned_like_the_clap_one():
         archive = P.LV2_SOURCE / "bin" / entry["file"]
         assert hashlib.sha256(archive.read_bytes()).hexdigest() == entry["sha256"], key
         with zipfile.ZipFile(archive) as z:
-            assert hashlib.sha256(z.read("golem-capture.lv2/golem-capture.so")).hexdigest() == entry["binary_sha256"]
+            binary = "golem-capture.dll" if key.startswith("windows") else "golem-capture.so"
+            assert hashlib.sha256(z.read("golem-capture.lv2/" + binary)).hexdigest() == entry["binary_sha256"]
+            manifest_ttl = z.read("golem-capture.lv2/manifest.ttl").decode()
+            assert f"<{binary}>" in manifest_ttl, key                      # le manifeste nomme le binaire livré
             assert {"golem-capture.lv2/manifest.ttl", "golem-capture.lv2/golem-capture.ttl", "licenses/NAMCore.txt",
                     "licenses/Eigen-MPL2.txt", "LICENSE-golem.txt"} <= set(z.namelist())
         for file, sha in entry["sources"].items():                       # ses sources ET le cœur partagé avec le CLAP
@@ -76,6 +79,19 @@ def test_the_lv2_reader_installs_only_where_the_golem_engine_is(tmp_path, monkey
     assert out == tmp_path / "out" and sorted(f.name for f in out.iterdir()) == ["golem-capture.so", "golem-capture.ttl", "manifest.ttl"]
     monkeypatch.setattr(P, "platform_key", lambda: "linux-aarch64")
     assert P.install_lv2_bundled(tmp_path / "arm") is None               # plateforme non livrée : pas de build au démarrage
+
+
+def test_the_lv2_reader_installs_on_windows_in_the_lilv_default_path(tmp_path, monkeypatch):
+    """Windows (2026-11-20) : le Golem Engine y joue les captures pilotables avec le MÊME lecteur, une .dll posée sans
+    droits d'admin dans %APPDATA%\\LV2 (le chemin LV2 par défaut de lilv)."""
+    manifest = json.loads((P.LV2_SOURCE / "bin/manifest.json").read_text(encoding="utf-8"))
+    assert "windows-x86_64" in manifest
+    monkeypatch.setattr(P.sys, "platform", "win32")
+    monkeypatch.setattr(P, "platform_key", lambda: "windows-x86_64")
+    monkeypatch.setenv("APPDATA", str(tmp_path / "Roaming"))
+    assert P.lv2_dir() == tmp_path / "Roaming" / "LV2" / "golem-capture.lv2"
+    out = P.install_lv2_bundled(tmp_path / "out", force=True)
+    assert sorted(f.name for f in out.iterdir()) == ["golem-capture.dll", "golem-capture.ttl", "manifest.ttl"]
 
 
 def test_the_lv2_reader_exports_only_its_descriptor(tmp_path):

@@ -191,10 +191,32 @@ def write_atomic(path, obj):
     os.replace(tmp, path)
 
 
+RELEASED = ".engine-take-released.json"
+
+
+def files_of(track):
+    return [f for seg in track["segments"] for f in seg["files"]]
+
+
+def write_released(root, files):
+    """Les fichiers de capture dont golem n'a PLUS besoin (copiés, déplacés, assemblés, ou écartés exprès) : le veilleur
+    les retire de la session d'Ardour, qui les ferme — sous Windows un fichier ouvert ne s'efface pas, et ailleurs un
+    fichier déplacé garde sa place sur le disque tant qu'il est ouvert. Ajoutés à une liste que le veilleur n'a pas
+    encore lue (deux prises rapprochées). Une piste en ERREUR n'y est jamais : ses fichiers bruts restent la seule copie."""
+    if not files:
+        return
+    path = os.path.join(root, "presets", RELEASED)
+    old = []
+    with contextlib.suppress(OSError, ValueError, AttributeError):
+        with open(path, encoding="utf-8") as f:
+            old = list(json.load(f).get("files") or [])
+    write_atomic(path, {"files": old + [f for f in files if f not in old]})
+
+
 def finalize(manifest_path, ffmpeg="ffmpeg"):
     with open(manifest_path, encoding="utf-8") as f:
         man = json.load(f)
-    root, rel, error, done = man["root"], man["file"], "", []
+    root, rel, error, done, released = man["root"], man["file"], "", [], []
     # LE RENDU D'UNE DÉMO (l'écoute sans jouer) : un seul fichier, là où le bridge l'attend, dit dans .preview.json
     preview = man.get("preview") if isinstance(man.get("preview"), dict) else None
     flat = man.get("mode") == "mix" or bool(preview)   # un fichier à plat, pas un dossier
@@ -208,22 +230,27 @@ def finalize(manifest_path, ffmpeg="ffmpeg"):
             if preview:
                 target = preview["out"]
             if (flat and not preview and t["name"] != "Mix") or not t["segments"]:
+                released += files_of(t)                  # une prise « mix » ne garde que le Mix : le reste est écarté exprès
                 continue
             if t.get("midi"):                            # le clavier d'une lane : un fichier MIDI, s'il a joué une note
                 with contextlib.suppress(OSError, ValueError, IndexError):
                     if not flat and write_midi(t["segments"], origin, man.get("sample_rate") or 48000, t.get("bpm"),
                                                os.path.join(root, rel, t["name"] + ".mid")):
                         done.append(t["name"])
+                    released += files_of(t)              # écrit, ou sans note : la source du moteur ne sert plus
                 continue
             # UN RENDU est relu par le bridge avec le module `wave` de Python (reamp, banc CPU, démos) : il lit le PCM, pas
             # le flottant qu'écrit le moteur (« unknown extended format », trouvé au rack le 2026-11-17 sur un reamp) —
             # un rendu sort donc en PCM 24 bits ; une prise garde le format du moteur
             assemble(t["segments"], origin, target, ffmpeg, codec="pcm_s24le" if preview else None)
             done.append(t["name"])
+            released += files_of(t)
         if not done:
             error = "nothing was recorded"
     except Exception as e:                       # jamais muet : l'écran le dira
         error = f"the take could not be assembled: {e}"[:300]
+    with contextlib.suppress(OSError):
+        write_released(root, released)
     if preview:
         st = {"seq": preview.get("seq") or 0, "scene": preview.get("scene") or "", "done": True, "wav": preview["out"] if done else ""}
         if error:

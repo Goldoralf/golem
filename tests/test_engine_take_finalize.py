@@ -186,3 +186,34 @@ def test_un_clavier_qui_n_a_rien_joue_ne_laisse_pas_de_fichier(tmp_path):
                             {"name": "MIDI-Input-3", "midi": True, "bpm": 100, "segments": [{"pos": 0, "len": 4800, "files": [str(a)]}]}])
     done, err = T.finalize(m, ffmpeg="/nonexistent/ffmpeg")
     assert done == ["Input-3"] and err == "" and not (tmp_path / "recordings" / "perf-x" / "MIDI-Input-3.mid").exists()
+
+
+def released(tmp_path):
+    p = tmp_path / "presets" / T.RELEASED
+    return json.loads(p.read_text())["files"] if p.exists() else None
+
+
+def test_les_fichiers_traites_sont_rendus_au_moteur_jamais_ceux_d_une_piste_en_erreur(tmp_path):
+    # le veilleur retire de la session ce que l'assembleur a fini de traiter (le fichier se ferme) ; une piste qui n'a
+    # pas pu être assemblée garde ses fichiers bruts : ils sont alors la seule copie
+    di = wav(tmp_path / "di.wav", 1000)
+    l, r = wav(tmp_path / "mix-L.wav", 1000), wav(tmp_path / "mix-R.wav", 1000)
+    T.finalize(manifest(tmp_path, [{"name": "DI-Sandbox-Input-1", "segments": [{"pos": 0, "len": 4800, "files": [di]}]},
+                                   {"name": "Mix", "segments": [{"pos": 0, "len": 4800, "files": [l, r]}]}]),
+               ffmpeg="/nonexistent/ffmpeg")                       # le Mix stéréo échoue (pas de ffmpeg)
+    assert released(tmp_path) == [di]
+    # une seconde prise avant que le veilleur ait lu la liste : ajoutée, rien de perdu
+    d2 = wav(tmp_path / "di2.wav", 1000)
+    T.finalize(manifest(tmp_path, [{"name": "DI-Sandbox-Input-1", "segments": [{"pos": 0, "len": 4800, "files": [d2]}]}],
+                        file="recordings/perf-y"), ffmpeg="/nonexistent/ffmpeg")
+    assert released(tmp_path) == [di, d2]
+
+
+def test_une_prise_mix_rend_aussi_les_pistes_qu_elle_ecarte(tmp_path):
+    l, r = wav(tmp_path / "mix-L.wav", 1000), wav(tmp_path / "mix-R.wav", 1000)
+    drums = wav(tmp_path / "drums.wav", 1000)
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg absent")
+    T.finalize(manifest(tmp_path, [{"name": "Mix", "segments": [{"pos": 0, "len": 4800, "files": [l, r]}]},
+                                   {"name": "Drums", "segments": [{"pos": 0, "len": 4800, "files": [drums]}]}], mode="mix"))
+    assert sorted(released(tmp_path)) == sorted([l, r, drums])

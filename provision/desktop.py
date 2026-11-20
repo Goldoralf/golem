@@ -487,6 +487,14 @@ def setup():
             dexed.install()
         except Exception as exc:
             print(f"⚠ Dexed not installed ({exc}) — the Electric piano block stays unavailable.")
+        # le GOLEM ENGINE (2026-11-20, docs/ardour-plan.md §7e) : le paquet Windows, épinglé (pins.json `golem_engine`),
+        # dans ~/opt/golem-engine — sans épingle, install() le dit et ne pose rien ; golem joue alors sur REAPER
+        step("Golem Engine")
+        try:
+            from provision import golem_engine
+            golem_engine.install()
+        except Exception as exc:
+            print(f"⚠ Golem Engine not installed ({exc}) — golem plays on REAPER.")
     # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release 0.4 épinglée (pins.json `golem_fx`),
     # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Dragonfly ; macOS :
     # ~/Library/Audio/Plug-Ins/VST3). Non fatal : sans eux, les blocs gardent leurs plugins d'origine.

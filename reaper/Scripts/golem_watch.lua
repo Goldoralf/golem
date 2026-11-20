@@ -108,12 +108,51 @@ local verify_at, verify_retry = -1, 0
 -- SIGNALE seulement — réparer, c'était un trou (et le gel ~540 ms du x42) en plein morceau (audit 2026-10-15, R1).
 local verify_heal = false
 
+-- ── LE FONDU DE CHANGEMENT DE PRESET (2026-11-20) ─────────────────────────────────────────────────────────────────
+-- « Quand on change de preset, on entend des craquements le temps que la lane se charge ; après, le son est nickel »
+-- (Raph). Le limiteur de sécurité (golem_safety.jsfx, dernier FX de chaque lane qui sort vers la carte) lit un drapeau
+-- partagé, gmem[0] de l'espace golem_out : 1 = sortie coupée (fondu 20 ms), 0 = ouverte (fondu 120 ms). Ici :
+--   · un rig_recall coupe AVANT la chirurgie et attend OUT_PRE que le fondu de sortie soit fini (la commande n'est
+--     pas consommée entre-temps : la boucle la relit au tick suivant) ;
+--   · une scène qui retombe en rebuild coupe aussitôt après (la chirurgie a eu lieu, le chargement non) ;
+--   · la sortie rouvre OUT_HOLD après la fin du rebuild, jamais avant la fin du gel (SETTLE) ;
+--   · garde-fou : jamais coupée plus de OUT_CAP, quoi qu'il arrive (une commande remplacée, une erreur).
+-- Les scènes ordinaires, les stomps et les services (batterie, click, backing) ne passent jamais par là.
+local OUT_NS, OUT_PRE, OUT_HOLD, OUT_CAP = "golem_out", 0.03, 0.8, 4.0
+local out_muted, out_muted_at, out_unmute_at, out_pre_until = false, -1, -1, -1
+local function out_set(on)
+  -- contexte Lua PARTAGÉ par toutes les boucles (__startup) : on rend l'espace gmem d'avant après écriture
+  local prev = reaper.gmem_attach(OUT_NS)
+  reaper.gmem_write(0, on and 1 or 0)
+  if type(prev) == "string" then reaper.gmem_attach(prev) end
+end
+local function out_mute(why)
+  local now = reaper.time_precise()
+  if not out_muted then
+    out_set(true)
+    out_muted, out_muted_at = true, now
+    log("sortie coupée (" .. why .. ")")
+  end
+  out_unmute_at = now + 1.0                                -- provisoire : repoussé à la fin du rebuild
+end
+local function out_open(why)
+  if not out_muted then return end
+  out_set(false)
+  out_muted = false
+  log(string.format("sortie rouverte après %.2f s (%s)", reaper.time_precise() - out_muted_at, why))
+end
+out_set(false)                                             -- au lancement : jamais coupée par un REAPER d'avant
+
 local function tick()
   if reaper.GetExtState("golem", "watch_gen") ~= GEN then
     log("veilleur remplacé par une instance plus récente — arrêt de celle-ci")
     return "stop"                                        -- pas de defer : la boucle meurt
   end
   local now0 = reaper.time_precise()
+  if out_muted then
+    if now0 - out_muted_at >= OUT_CAP then out_open("garde-fou " .. OUT_CAP .. " s")
+    elseif now0 >= out_unmute_at and now0 >= settle_until then out_open("lane chargée") end
+  end
   if verify_at >= 0 and now0 >= verify_at and now0 >= settle_until then
     verify_at = -1
     -- "1" = première passe, "2" = la seconde : seule la seconde peut conclure qu'un modèle ne charge pas
@@ -126,6 +165,9 @@ local function tick()
     if reaper.GetExtState("golem", "rig_verify_retry") == "1" then
       reaper.DeleteExtState("golem", "rig_verify_retry", false)
       settle_until = reaper.time_precise() + SETTLE        -- une réparation ré-instancie des FX : même gel qu'un rebuild
+      out_mute("réparation")                               -- …et la lane ré-instanciée recharge : même fondu
+      out_muted_at = reaper.time_precise()
+      out_unmute_at = reaper.time_precise() + OUT_HOLD
       if verify_retry < 1 then verify_retry = verify_retry + 1; verify_at = reaper.time_precise() + VERIFY_DELAY end
     end
   end
@@ -179,6 +221,11 @@ local function tick()
     -- gèle toute op RIG (rebuild/scène/stomp) tant que le dernier rebuild n'a pas « settlé »
     if not (is_tuner or is_backing or is_perf or is_sample or is_drums or is_standard or is_preview or is_click or is_drumlearn or is_midi_reinit or is_diag) and settle_until >= 0 and reaper.time_precise() < settle_until then
       return                                             -- pas encore stable : réessai au tick suivant (commande fraîche)
+    end
+    -- un rappel coupe la sortie et laisse le fondu finir AVANT la chirurgie (commande relue au tick suivant)
+    if action == "rig_recall" then
+      if not out_muted then out_mute("changement de preset"); out_pre_until = reaper.time_precise() + OUT_PRE; return end
+      if reaper.time_precise() < out_pre_until then return end
     end
     last = cur
     ack(cur)                                             -- consommée : le bridge peut réécrire le slot
@@ -235,6 +282,11 @@ local function tick()
         reaper.DeleteExtState("golem", "rig_rebuilt", false)
         settle_until = reaper.time_precise() + SETTLE
         verify_heal = true
+        out_mute("rebuild")                              -- déjà coupée pour un rappel ; une scène retombée l'est ici
+        out_muted_at = reaper.time_precise()             -- le garde-fou compte depuis CE rebuild (presets enchaînés)
+        out_unmute_at = reaper.time_precise() + OUT_HOLD   -- les plugins chargent : on rouvre après
+      elseif out_muted and action == "rig_recall" then
+        out_unmute_at = reaper.time_precise()            -- rappel sans rebuild : rien ne charge, on rouvre
       end
     end
   end

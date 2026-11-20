@@ -40,7 +40,8 @@ class Watch:
             self.cmd_file.write_text(json.dumps(residual), encoding="utf-8")
         self.L = lupa.LuaRuntime(unpack_returned_tuples=True)
         g = self.L.globals()
-        g.FAKE_OS, g.FAKE_RESOURCE = "Other", str(self.res).replace("\\", "/")
+        # sous Windows, le veilleur publie un accusé PAR séquence (os.rename n'y remplace pas un fichier existant)
+        g.FAKE_OS, g.FAKE_RESOURCE = ("Win64" if os.name == "nt" else "Other"), str(self.res).replace("\\", "/")
         g.FAKE_INSTALLED = self.L.table_from([])
         g.py_mkdir = lambda p: os.makedirs(p, exist_ok=True)
         self.L.execute(FAKE)
@@ -67,11 +68,20 @@ class Watch:
         return [ln.split(" ", 1) for ln in p.read_text(encoding="utf-8").splitlines()] if p.exists() else []
 
     def acked(self):
-        p = self.root / "presets" / ".command-ack.json"
-        return json.loads(p.read_text(encoding="utf-8"))["seq"] if p.exists() else None
+        acks = [json.loads(p.read_text(encoding="utf-8"))["seq"]
+                for p in (self.root / "presets").glob(".command-ack.json*") if not p.name.endswith(".tmp")]
+        return max(acks) if acks else None
 
     def proj(self, key):
         return self.L.eval(f'select(2, reaper.GetProjExtState(0, "golem", "{key}"))')
+
+    def out(self):
+        """le drapeau de sortie lu par golem_safety.jsfx : 1 = coupée, 0 = ouverte"""
+        return self.L.eval('(FAKE.gmem["golem_out"] or {})[0] or 0')
+
+    def recall(self, seq, **kw):
+        """un rappel : le premier tour coupe la sortie, il est joué une fois le fondu fini (30 ms)"""
+        return self.send(action="rig_recall", preset="p", seq=seq, **kw).tick().wait(0.05).tick()
 
     def log(self):
         p = self.root / "presets" / ".watch.log"
@@ -86,13 +96,13 @@ def test_la_commande_residuelle_est_consommee_sans_etre_jouee(tmp_path):
 
 
 def test_une_commande_est_jouee_une_fois_et_accusee(tmp_path):
-    w = Watch(tmp_path).send(action="rig_recall", preset="p", seq=1).tick(3)
+    w = Watch(tmp_path).recall(1).tick(3)
     assert w.acked() == 1
     assert [c[0] for c in w.calls()] == ["rig"]                     # une seule fois, malgré trois tours
 
 
 def test_apres_un_rebuild_une_scene_attend_la_fin_du_gel(tmp_path):
-    w = Watch(tmp_path).send(action="rig_recall", preset="p", seq=1).tick()
+    w = Watch(tmp_path).recall(1)
     w.send(action="scene_apply", preset="p", scene="B", seq=2).tick()
     assert w.acked() == 1 and len(w.calls()) == 1                   # gelée : ni jouée, ni accusée (le slot reste plein)
     w.wait(0.6).tick()
@@ -100,7 +110,7 @@ def test_apres_un_rebuild_une_scene_attend_la_fin_du_gel(tmp_path):
 
 
 def test_les_commandes_legeres_passent_pendant_le_gel(tmp_path):
-    w = Watch(tmp_path).send(action="rig_recall", preset="p", seq=1).tick()
+    w = Watch(tmp_path).recall(1)
     w.send(action="tuner", on=True, seq=2).tick()
     assert w.acked() == 2 and w.proj("tuner_on") == "1"
     w.send(action="backing", op="play", seq=3).tick()
@@ -139,3 +149,42 @@ def test_une_instance_plus_recente_remplace_la_premiere(tmp_path):
     w.tick()
     assert "remplacé par une instance plus récente" in w.log()
     assert len(w.F.defers) == 0                                     # plus de defer : la boucle est morte
+
+
+def test_un_rappel_coupe_la_sortie_avant_la_chirurgie_et_la_rouvre_apres_le_chargement(tmp_path):
+    """Les craquements du changement de preset (2026-11-20) : la lane craque le temps que ses plugins chargent. La
+    sortie est coupée (fondu de golem_safety) AVANT le rebuild, et rouverte OUT_HOLD après sa fin."""
+    w = Watch(tmp_path).send(action="rig_recall", preset="p", note="rebuild", seq=1).tick()
+    assert w.out() == 1 and w.calls() == []                         # coupée, et le rebuild attend la fin du fondu
+    w.tick()
+    assert w.calls() == []                                          # même tour d'horloge : toujours pas
+    w.wait(0.05).tick()
+    assert [c[0] for c in w.calls()] == ["rig"] and w.out() == 1    # joué, la sortie reste coupée pendant le chargement
+    w.wait(0.6).tick()
+    assert w.out() == 1                                             # gel fini, mais les plugins chargent encore
+    w.wait(0.3).tick()
+    assert w.out() == 0 and "sortie rouverte" in w.log()
+
+
+def test_une_scene_ne_coupe_jamais_la_sortie_sauf_si_elle_retombe_en_rebuild(tmp_path):
+    w = Watch(tmp_path).send(action="scene_apply", preset="p", scene="B", seq=1).tick()
+    assert w.out() == 0 and len(w.calls()) == 1                     # jouée tout de suite, sans fondu
+    w.send(action="scene_apply", preset="p", scene="C", note="rebuild", seq=2).tick()
+    assert w.out() == 1                                             # retombée en rebuild : coupée pendant le chargement
+    w.wait(0.9).tick()
+    assert w.out() == 0
+
+
+def test_un_rappel_sans_rebuild_rouvre_aussitot(tmp_path):
+    w = Watch(tmp_path).recall(1)
+    w.wait(0.5).tick()
+    assert w.out() == 0                                             # rien n'a chargé : rouverte dès la fin du gel
+
+
+def test_la_sortie_n_est_jamais_coupee_plus_de_quatre_secondes(tmp_path):
+    """Un rappel remplacé par une autre commande avant d'être joué : la coupure ne doit pas rester."""
+    w = Watch(tmp_path).send(action="rig_recall", preset="p", seq=1).tick()
+    assert w.out() == 1
+    w.send(action="tuner", on=True, seq=2).tick()                   # le rappel n'est jamais joué
+    w.wait(4.1).tick()
+    assert w.out() == 0

@@ -16,8 +16,20 @@ desc:GoleM Safety limiter (safety) -- zero latency, ceiling -1 dBFS
 // un limiteur qui voit venir l'aurait arrondie. Il ne touche QUE ce qui depasse -1 dBFS — avec
 // des niveaux bien etages (bug volume 2026-07-23), c'est rare.
 
+//
+// ── LE FONDU DE CHANGEMENT DE PRESET (2026-11-20) ──
+// Pendant qu'un rebuild charge ses plugins (NAM, IR...), la lane craque. Toutes les instances lisent UN drapeau
+// partage, gmem[0] de l'espace golem_out, pose par golem_watch : 1 = sortie coupee, 0 = sortie ouverte. Le gain
+// y va lineairement, 20 ms pour couper, 120 ms pour rouvrir : jamais de marche (un saut de gain claque lui-meme).
+// Une instance NEE pendant la coupure (la lane qu'on vient de batir) demarre a 0 : elle ne craque pas en arrivant.
+// Drapeau a 0 par defaut (REAPER neuf, golem_watch absent) = la sortie joue : la coupure ne peut pas rester par
+// oubli au demarrage, et golem_watch la rouvre de toute facon au plus tard 4 s apres l'avoir posee.
+// Aucun slider ajoute : les index des potards Ceiling/Release ne bougent pas.
+
 slider1:ceil_db=-1<-12,0,0.1>Ceiling (dB)
 slider2:rel_ms=15<1,500,1>Release (ms)
+
+options:gmem=golem_out
 
 @init
 // tout ici : le code avant la premiere section @ n'est JAMAIS execute (CLAUDE.md)
@@ -25,6 +37,18 @@ pdc_delay = 0;
 pdc_bot_ch = 0;
 pdc_top_ch = 0;
 sf_g = 1;
+// le fondu part de l'etat du drapeau : une instance nee pendant la coupure reste muette
+fo_t = gmem[0] >= 0.5 ? 0 : 1;
+fo_g = fo_t;
+fo_dn = 1 / (0.020 * srate);
+fo_up = 1 / (0.120 * srate);
+fo_n = 0;
+
+@block
+fo_t = gmem[0] >= 0.5 ? 0 : 1;
+// garde-fou propre au JSFX : si golem_watch meurt pendant la coupure, la lane rouvre seule apres 5 s
+fo_t == 0 ? fo_n += samplesblock : fo_n = 0;
+fo_n > 5 * srate ? fo_t = 1;
 
 @slider
 sf_ceil = 10 ^ (ceil_db / 20);
@@ -45,9 +69,11 @@ loop(num_ch,
 sf_t = sf_pk > sf_ceil ? sf_ceil / sf_pk : 1;
 // attaque instantanee, relachement exponentiel
 sf_g = sf_t < sf_g ? sf_t : sf_t + (sf_g - sf_t) * sf_rel;
+// le fondu : une rampe lineaire vers la cible du drapeau, un pas par echantillon
+fo_g < fo_t ? fo_g = min(fo_t, fo_g + fo_up) : fo_g > fo_t ? fo_g = max(fo_t, fo_g - fo_dn);
 sf_i = 0;
 loop(num_ch,
   sf_v = spl(sf_i) * sf_g;
-  spl(sf_i) = max(-sf_ceil, min(sf_ceil, sf_v));
+  spl(sf_i) = max(-sf_ceil, min(sf_ceil, sf_v)) * fo_g;
   sf_i += 1;
 );

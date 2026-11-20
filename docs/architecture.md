@@ -338,6 +338,20 @@ coalesces it. Relayed services and read-only diagnostics (`dumpfx`, `peaks`, `me
 `recdiag`, `chunkdump`) always pass. The bridge's slot timeout (`_SLOT_TIMEOUT = 0.9` s) is
 deliberately longer than SETTLE.
 
+**Output fade on a rebuild** (CODED 2026-11-20, REAPER engine). While a rebuild loads its plugins the lane
+crackles; once loaded it is clean. Every `golem_safety.jsfx` (the last FX of each lane routed to the card) reads one
+shared flag, `gmem[0]` in namespace `golem_out`: 1 = output cut (linear fade, 20 ms), 0 = open (120 ms). A safety
+instance created while the flag is 1 starts silent. golem_watch sets it:
+
+- a `rig_recall` cuts the output, then waits `OUT_PRE` (30 ms) for the fade **before** consuming the command;
+- a `scene_apply` that falls back to a rebuild cuts right after (the surgery is done, the loading is not);
+- the output reopens `OUT_HOLD` (0.8 s) after the rebuild returns, never before SETTLE ends; a recall that did not
+  rebuild reopens at the end of SETTLE;
+- it is never cut for more than `OUT_CAP` (4 s), whatever happens; golem_watch clears the flag when it starts.
+
+Plain scenes, stomps and service tracks (drum machine, click, backing, looper) never fade. The Golem Engine has its own
+limiter (`gfx-limiter`) and no fade yet.
+
 **`rig_verify`.** About 2 s (`VERIFY_DELAY`) after a `rig_recall` or `scene_apply`, golem_watch
 sets ExtState `rig_verify`, then `dofile`s golem_rig. golem_rig reads back, in plain text, the model
 or IR that each plugin actually loaded (`verify_files`), writes `.rig-check.json`, and may request

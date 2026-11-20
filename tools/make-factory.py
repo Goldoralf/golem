@@ -1175,11 +1175,13 @@ def presets():
     PRESETS.append(preset("factory-loop-indie", "Room With Echoes", "indie", 104, [
         ("keys-pads-1", "Synth & Beat", "keys-pads", "factory-keys-loop-synth", True, None),
         ("guitar-1", "Guitar", "guitar", "factory-guitar-loop-indie", False, 1),
+        # une basse (2026-11-20) : chaque preset de la setlist d'usine a sa lane basse (docs/factory.md §5.2)
+        ("bass-1", "Bass", "bass", "factory-bass-pop-pick", False, 1),
         ("voice-1", "Voice", "voice", "factory-voice-indie-double", False, 1)], [
-        ("A", "Beat", {"keys-pads-1": ("Bass & Beat", 0), "guitar-1": ("Jangle", 0), "voice-1": ("Single", 0)}),
-        ("B", "Layer", {"keys-pads-1": ("Bass & Beat", 0), "guitar-1": ("Dotted Echo", 0), "voice-1": ("Double", 0)}),
-        ("C", "Push", {"keys-pads-1": ("Big Drop", 0), "guitar-1": ("Klon Push", 0), "voice-1": ("Shout", 1)}),
-        ("D", "Breathe", {"keys-pads-1": ("Filtered", 0), "guitar-1": ("Swell Pad", 0), "voice-1": ("Slap", 0)})],
+        ("A", "Beat", {"keys-pads-1": ("Bass & Beat", 0), "guitar-1": ("Jangle", 0), "bass-1": ("Pick Verse", -2), "voice-1": ("Single", 0)}),
+        ("B", "Layer", {"keys-pads-1": ("Bass & Beat", 0), "guitar-1": ("Dotted Echo", 0), "bass-1": ("Pick Verse", -2), "voice-1": ("Double", 0)}),
+        ("C", "Push", {"keys-pads-1": ("Big Drop", 0), "guitar-1": ("Klon Push", 0), "bass-1": ("Chorus Drive", -1), "voice-1": ("Shout", 1)}),
+        ("D", "Breathe", {"keys-pads-1": ("Filtered", 0), "guitar-1": ("Swell Pad", 0), "bass-1": ("Ballad", -2), "voice-1": ("Slap", 0)})],
         {6: [("guitar-1", "klon")], 7: [("guitar-1", "dly")], 8: [("voice-1", "double")]}, "#06d6a0",
         gen=[{"type": "looper", "id": "looper", "foot": 10, "params": {"loops": [
             {"sw": 1, "src": "keys-pads-1", "label": "Beat"}, {"sw": 2, "src": "guitar-1", "label": "Guitar"},
@@ -1236,15 +1238,20 @@ def presets():
         ("E", "Outro", {"guitar-1": ("Ballad Arp", 0), "bass-1": ("Ballad", 0), "keys-1": ("Ballad Piano", 0), "voice-1": ("Ballad", 0), "drums-1": ("Soft", 0)})],
         {6: [("guitar-1", "chorus")], 7: [("guitar-1", "dly")], 8: [("voice-1", "double")]}, "#ffb703",
         gen=[drums_service(["rock-8", "rock-chorus", "six-eight"])]))
+    # UN GROUPE ENTIER COMME LES AUTRES (2026-11-20) : la basse reste la vedette, mais un guitariste ou un chanteur
+    # branché sur ce preset doit jouer — sans guitare ni voix, la Volt (pas d'entrée basse) n'y faisait sonner que le pad
     PRESETS.append(preset("factory-bass-lab", "Bass Workshop", "funk", 100, [
+        ("guitar-1", "Guitar", "guitar", "factory-guitar-funk-clean", False, 1),
         ("bass-1", "Bass", "bass", "factory-bass-lab", False, 1),
-        ("keys-1", "Pad", "keys", "factory-keys-hero-pad", True, None)], [
-        ("A", "Sub", {"bass-1": ("Sub Only", 0), "keys-1": ("Under", -8)}),
-        ("B", "Grit", {"bass-1": ("Grit Blend", 0), "keys-1": ("Under", -10)}),
-        ("C", "Synth", {"bass-1": ("Synth Layer", 0), "keys-1": ("Sky Pad", -6)}),
-        ("D", "Stack", {"bass-1": ("Full Stack", 0), "keys-1": ("Under", -8)}),
-        ("E", "Solo", {"bass-1": ("Solo Chorus", 3), "keys-1": ("Sky Pad", -6)})],
-        {6: [("bass-1", "chorus")]}, "#00b4d8", gen=[drums_service(["funk-16", "boom-bap"])]))
+        ("keys-1", "Pad", "keys", "factory-keys-hero-pad", True, None),
+        ("voice-1", "Voice", "voice", "factory-voice-funk-rap", False, 1)], [
+        ("A", "Sub", {"guitar-1": ("Chop", -4), "bass-1": ("Sub Only", 0), "keys-1": ("Under", -8), "voice-1": ("Rap", 0)}),
+        ("B", "Grit", {"guitar-1": ("Neck Chords", -3), "bass-1": ("Grit Blend", 0), "keys-1": ("Under", -10), "voice-1": ("Phone Verse", 0)}),
+        ("C", "Synth", {"guitar-1": ("Envelope", -3), "bass-1": ("Synth Layer", 0), "keys-1": ("Sky Pad", -6), "voice-1": ("Chorus Double", 0)}),
+        ("D", "Stack", {"guitar-1": ("Bright Slap", -2), "bass-1": ("Full Stack", 0), "keys-1": ("Under", -8), "voice-1": ("Slap Hook", 0)}),
+        ("E", "Solo", {"guitar-1": ("Chop", -6), "bass-1": ("Solo Chorus", 3), "keys-1": ("Sky Pad", -6), "voice-1": ("Rap", -10)})],
+        {6: [("bass-1", "chorus")], 7: [("guitar-1", "env")], 8: [("voice-1", "double")]}, "#00b4d8",
+        gen=[drums_service(["funk-16", "boom-bap"])]))
     return nu
 
 

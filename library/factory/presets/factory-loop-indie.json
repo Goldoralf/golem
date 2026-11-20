@@ -284,6 +284,163 @@
    }
   },
   {
+   "id": "bass-1",
+   "key": "bass-1",
+   "role": "bass",
+   "name": "Bass",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-2",
+      "type": "gate",
+      "params": {
+       "thresh": -60,
+       "release": 120
+      }
+     },
+     {
+      "id": "comp-2",
+      "type": "comp",
+      "params": {
+       "character": "Clean",
+       "thresh": -22,
+       "ratio": 4,
+       "makeup": 3,
+       "attack": 15
+      }
+     },
+     {
+      "id": "drive",
+      "type": "emet",
+      "params": {
+       "gain": 30,
+       "tone_stack": 55,
+       "level": 0
+      }
+     },
+     {
+      "id": "svtcl",
+      "type": "amp-nam",
+      "label": "Ampeg SVT-CL",
+      "ref": "45809",
+      "model": "382790",
+      "params": {
+       "input": 0,
+       "output": 0
+      }
+     },
+     {
+      "id": "gkcab",
+      "type": "cab",
+      "label": "Gallien-Krueger 4x10",
+      "ref": "64815",
+      "model": "72431",
+      "params": {
+       "level": 0
+      }
+     },
+     {
+      "id": "chorus-2",
+      "type": "chorus",
+      "params": {
+       "profile": "Bass",
+       "mode": "Classic",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.3
+      }
+     },
+     {
+      "id": "eq",
+      "type": "eq",
+      "params": {
+       "lowcut": 35,
+       "midgain": 0,
+       "midfreq": 800,
+       "highs": 1
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "bass",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-bass-1-A",
+     "name": "Pick Verse",
+     "blocks": {
+      "chorus-2": false,
+      "drive": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-B",
+     "name": "Chorus Drive",
+     "blocks": {
+      "chorus-2": false,
+      "drive": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-C",
+     "name": "Ballad",
+     "blocks": {
+      "chorus-2": false,
+      "drive": false
+     },
+     "params": {
+      "eq": {
+       "highs": -7,
+       "lows": 2
+      },
+      "comp-2": {
+       "ratio": 2
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-D",
+     "name": "Chorus Bass",
+     "blocks": {
+      "chorus-2": true,
+      "drive": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-bass-1-E",
+     "name": "Melodic",
+     "blocks": {
+      "chorus-2": false,
+      "drive": false
+     },
+     "params": {
+      "eq": {
+       "midgain": 5,
+       "midfreq": 900,
+       "highs": 2
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-bass-pop-pick",
+    "name": "Pop Pick"
+   }
+  },
+  {
    "id": "voice-1",
    "key": "voice-1",
    "role": "voice",
@@ -293,7 +450,7 @@
    "chain": {
     "pre": [
      {
-      "id": "gate-2",
+      "id": "gate-3",
       "type": "gate",
       "params": {
        "thresh": -58,
@@ -310,7 +467,7 @@
       }
      },
      {
-      "id": "comp-2",
+      "id": "comp-3",
       "type": "comp",
       "params": {
        "character": "Clean",
@@ -321,7 +478,7 @@
       }
      },
      {
-      "id": "eq",
+      "id": "eq-2",
       "type": "eq",
       "params": {
        "lowcut": 100,
@@ -408,7 +565,7 @@
       "double": true
      },
      "params": {
-      "comp-2": {
+      "comp-3": {
        "ratio": 5
       }
      },
@@ -431,6 +588,8 @@
     "chorus": true,
     "klon": false,
     "swell": false,
+    "chorus-2": false,
+    "drive": false,
     "dly-3": false,
     "double": false
    },
@@ -442,6 +601,10 @@
     },
     "guitar-1": {
      "state": "st-guitar-1-A"
+    },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -2
     },
     "voice-1": {
      "state": "st-voice-1-B"
@@ -457,6 +620,8 @@
     "chorus": false,
     "klon": false,
     "swell": false,
+    "chorus-2": false,
+    "drive": false,
     "dly-3": false,
     "double": true
    },
@@ -474,6 +639,10 @@
     "guitar-1": {
      "state": "st-guitar-1-B"
     },
+    "bass-1": {
+     "state": "st-bass-1-A",
+     "level": -2
+    },
     "voice-1": {
      "state": "st-voice-1-A"
     }
@@ -488,6 +657,8 @@
     "chorus": false,
     "klon": true,
     "swell": false,
+    "chorus-2": false,
+    "drive": true,
     "dly-3": false,
     "double": true
    },
@@ -504,7 +675,7 @@
     "dly-2": {
      "mix": 12
     },
-    "comp-2": {
+    "comp-3": {
      "ratio": 5
     }
    },
@@ -515,6 +686,10 @@
     },
     "guitar-1": {
      "state": "st-guitar-1-C"
+    },
+    "bass-1": {
+     "state": "st-bass-1-B",
+     "level": -1
     },
     "voice-1": {
      "state": "st-voice-1-D",
@@ -531,6 +706,8 @@
     "chorus": true,
     "klon": false,
     "swell": true,
+    "chorus-2": false,
+    "drive": false,
     "dly-3": true,
     "double": false
    },
@@ -541,6 +718,13 @@
     "verb": {
      "decay": 3.4,
      "mix": 34
+    },
+    "eq": {
+     "highs": -7,
+     "lows": 2
+    },
+    "comp-2": {
+     "ratio": 2
     }
    },
    "branches": {},
@@ -550,6 +734,10 @@
     },
     "guitar-1": {
      "state": "st-guitar-1-D"
+    },
+    "bass-1": {
+     "state": "st-bass-1-C",
+     "level": -2
     },
     "voice-1": {
      "state": "st-voice-1-C"

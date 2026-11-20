@@ -4,6 +4,201 @@
  "lanes_v": 2,
  "lanes": [
   {
+   "id": "guitar-1",
+   "key": "guitar-1",
+   "role": "guitar",
+   "name": "Guitar",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate",
+      "params": {
+       "release": 120,
+       "thresh": -62
+      },
+      "type": "gate"
+     },
+     {
+      "id": "comp",
+      "params": {
+       "attack": 5,
+       "character": "Pedal",
+       "makeup": 4,
+       "ratio": 4,
+       "thresh": -24
+      },
+      "type": "comp"
+     },
+     {
+      "id": "jub",
+      "label": "Marshall Silver Jubilee",
+      "model": "106490",
+      "params": {
+       "input": 0,
+       "output": 0
+      },
+      "ref": "27435",
+      "type": "amp-nam"
+     },
+     {
+      "id": "gb",
+      "label": "Marshall 4x12 Greenback",
+      "model": "239238",
+      "params": {
+       "level": 0
+      },
+      "ref": "45022",
+      "type": "cab"
+     },
+     {
+      "id": "env",
+      "params": {
+       "attack": 3,
+       "bass_keep": 0,
+       "direction": "Down",
+       "drive": 0,
+       "high": 2200,
+       "level": 3,
+       "low": 300,
+       "mix": 100,
+       "peak": 5,
+       "poles": "2",
+       "rate": 1,
+       "release": 200,
+       "response": "Smooth",
+       "source": "Envelope",
+       "sync": "Off",
+       "type": "Band-pass",
+       "wah": 0.5
+      },
+      "type": "autowah",
+      "foot": 7
+     },
+     {
+      "id": "chorus",
+      "params": {
+       "depth": 4,
+       "mix": 0.4,
+       "mode": "Classic",
+       "profile": "Guitar Clean",
+       "rate": 0.8
+      },
+      "type": "chorus"
+     },
+     {
+      "id": "eq",
+      "params": {
+       "highs": 1,
+       "lowcut": 100,
+       "midfreq": 1200,
+       "midgain": 1
+      },
+      "type": "eq"
+     },
+     {
+      "id": "dly",
+      "params": {
+       "feedback": 18,
+       "mix": 10,
+       "model": "Digital",
+       "time": "1/8"
+      },
+      "type": "delay"
+     },
+     {
+      "id": "room",
+      "params": {
+       "decay": 0.8,
+       "hicut": 7000,
+       "mix": 12,
+       "size": 14
+      },
+      "type": "reverb-room"
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "guitar",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-guitar-1-A",
+     "name": "Chop",
+     "blocks": {
+      "chorus": false,
+      "dly": false,
+      "env": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-B",
+     "name": "Neck Chords",
+     "blocks": {
+      "chorus": true,
+      "dly": false,
+      "env": false
+     },
+     "params": {
+      "eq": {
+       "highs": -1
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-C",
+     "name": "Envelope",
+     "blocks": {
+      "chorus": false,
+      "dly": false,
+      "env": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-D",
+     "name": "Bright Slap",
+     "blocks": {
+      "chorus": false,
+      "dly": true,
+      "env": false
+     },
+     "params": {
+      "eq": {
+       "highs": 3
+      }
+     },
+     "branches": {}
+    },
+    {
+     "id": "st-guitar-1-E",
+     "name": "Swirl",
+     "blocks": {
+      "chorus": true,
+      "dly": true,
+      "env": false
+     },
+     "params": {
+      "room": {
+       "mix": 20
+      }
+     },
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-guitar-funk-clean",
+    "name": "Funk Clean"
+   }
+  },
+  {
    "id": "bass-1",
    "key": "bass-1",
    "role": "bass",
@@ -13,7 +208,7 @@
    "chain": {
     "pre": [
      {
-      "id": "gate",
+      "id": "gate-2",
       "type": "gate",
       "params": {
        "thresh": -58,
@@ -21,7 +216,7 @@
       }
      },
      {
-      "id": "comp",
+      "id": "comp-2",
       "type": "comp",
       "params": {
        "character": "FET",
@@ -95,7 +290,7 @@
       }
      },
      {
-      "id": "chorus",
+      "id": "chorus-2",
       "type": "chorus",
       "params": {
        "profile": "Bass",
@@ -107,7 +302,7 @@
       "foot": 6
      },
      {
-      "id": "eq",
+      "id": "eq-2",
       "type": "eq",
       "params": {
        "lowcut": 30,
@@ -134,7 +329,7 @@
      "id": "st-bass-1-A",
      "name": "Sub Only",
      "blocks": {
-      "chorus": false,
+      "chorus-2": false,
       "synth": false
      },
      "params": {},
@@ -148,7 +343,7 @@
      "id": "st-bass-1-B",
      "name": "Grit Blend",
      "blocks": {
-      "chorus": false,
+      "chorus-2": false,
       "synth": false
      },
      "params": {},
@@ -158,7 +353,7 @@
      "id": "st-bass-1-C",
      "name": "Synth Layer",
      "blocks": {
-      "chorus": false,
+      "chorus-2": false,
       "synth": true
      },
      "params": {},
@@ -172,7 +367,7 @@
      "id": "st-bass-1-D",
      "name": "Full Stack",
      "blocks": {
-      "chorus": false,
+      "chorus-2": false,
       "synth": true
      },
      "params": {},
@@ -182,7 +377,7 @@
      "id": "st-bass-1-E",
      "name": "Solo Chorus",
      "blocks": {
-      "chorus": true,
+      "chorus-2": true,
       "synth": false
      },
      "params": {},
@@ -215,7 +410,7 @@
       }
      },
      {
-      "id": "chorus-2",
+      "id": "chorus-3",
       "type": "chorus",
       "params": {
        "profile": "Keys",
@@ -236,7 +431,7 @@
       }
      },
      {
-      "id": "dly",
+      "id": "dly-2",
       "type": "delay",
       "params": {
        "model": "Digital",
@@ -257,7 +452,7 @@
      "id": "st-keys-1-A",
      "name": "Sky Pad",
      "blocks": {
-      "chorus-2": false,
+      "chorus-3": false,
       "shim": false
      },
      "params": {},
@@ -267,14 +462,14 @@
      "id": "st-keys-1-B",
      "name": "Bright",
      "blocks": {
-      "chorus-2": true,
+      "chorus-3": true,
       "shim": false
      },
      "params": {
       "vital": {
        "fcut": 0.95
       },
-      "dly": {
+      "dly-2": {
        "mix": 24
       }
      },
@@ -284,7 +479,7 @@
      "id": "st-keys-1-C",
      "name": "Under",
      "blocks": {
-      "chorus-2": false,
+      "chorus-3": false,
       "shim": false
      },
      "params": {
@@ -292,7 +487,7 @@
        "fcut": 0.2,
        "rmix": 0.1
       },
-      "dly": {
+      "dly-2": {
        "mix": 0
       }
      },
@@ -302,7 +497,7 @@
      "id": "st-keys-1-D",
      "name": "Shimmer Rise",
      "blocks": {
-      "chorus-2": true,
+      "chorus-3": true,
       "shim": true
      },
      "params": {
@@ -321,6 +516,150 @@
     "id": "factory-keys-hero-pad",
     "name": "Hero Pad"
    }
+  },
+  {
+   "id": "voice-1",
+   "key": "voice-1",
+   "role": "voice",
+   "name": "Voice",
+   "in_sel": "",
+   "out_sel": "1-2",
+   "chain": {
+    "pre": [
+     {
+      "id": "gate-3",
+      "type": "gate",
+      "params": {
+       "thresh": -55,
+       "release": 120
+      }
+     },
+     {
+      "id": "ess",
+      "type": "deesser",
+      "params": {
+       "thresh": -28,
+       "freq": 6500,
+       "range": 10
+      }
+     },
+     {
+      "id": "comp-3",
+      "type": "comp",
+      "params": {
+       "character": "FET",
+       "thresh": -22,
+       "ratio": 5,
+       "makeup": 4,
+       "attack": 5
+      }
+     },
+     {
+      "id": "radio",
+      "type": "radio",
+      "params": {
+       "model": "Telephone"
+      }
+     },
+     {
+      "id": "double",
+      "type": "chorus",
+      "params": {
+       "profile": "Voice",
+       "mode": "Doubler",
+       "rate": 0.6,
+       "depth": 4,
+       "mix": 0.35
+      },
+      "foot": 8
+     },
+     {
+      "id": "eq-3",
+      "type": "eq",
+      "params": {
+       "lowcut": 110,
+       "midgain": 1,
+       "midfreq": 800,
+       "highs": 2
+      }
+     },
+     {
+      "id": "dly-3",
+      "type": "delay",
+      "params": {
+       "model": "Digital",
+       "time": "1/8",
+       "feedback": 12,
+       "mix": 12
+      }
+     },
+     {
+      "id": "room-2",
+      "type": "reverb-room",
+      "params": {
+       "mix": 10,
+       "decay": 0.8,
+       "size": 14,
+       "hicut": 7000
+      }
+     }
+    ],
+    "split": null,
+    "post": []
+   },
+   "midi": false,
+   "in_role": "voice",
+   "in_nth": 1,
+   "states": [
+    {
+     "id": "st-voice-1-A",
+     "name": "Rap",
+     "blocks": {
+      "dly-3": false,
+      "double": false,
+      "radio": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-B",
+     "name": "Phone Verse",
+     "blocks": {
+      "dly-3": false,
+      "double": false,
+      "radio": true
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-C",
+     "name": "Chorus Double",
+     "blocks": {
+      "dly-3": false,
+      "double": true,
+      "radio": false
+     },
+     "params": {},
+     "branches": {}
+    },
+    {
+     "id": "st-voice-1-D",
+     "name": "Slap Hook",
+     "blocks": {
+      "dly-3": true,
+      "double": false,
+      "radio": false
+     },
+     "params": {},
+     "branches": {}
+    }
+   ],
+   "patch_from": {
+    "id": "factory-voice-funk-rap",
+    "name": "Funk Rap"
+   }
   }
  ],
  "scenes": [
@@ -329,16 +668,22 @@
    "name": "Sub",
    "blocks": {
     "chorus": false,
-    "synth": false,
+    "dly": false,
+    "env": false,
     "chorus-2": false,
-    "shim": false
+    "synth": false,
+    "chorus-3": false,
+    "shim": false,
+    "dly-3": false,
+    "double": false,
+    "radio": false
    },
    "params": {
     "vital": {
      "fcut": 0.2,
      "rmix": 0.1
     },
-    "dly": {
+    "dly-2": {
      "mix": 0
     }
    },
@@ -348,12 +693,19 @@
     }
    },
    "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A",
+     "level": -4
+    },
     "bass-1": {
      "state": "st-bass-1-A"
     },
     "keys-1": {
      "state": "st-keys-1-C",
      "level": -8
+    },
+    "voice-1": {
+     "state": "st-voice-1-A"
     }
    }
   },
@@ -361,28 +713,44 @@
    "id": "B",
    "name": "Grit",
    "blocks": {
-    "chorus": false,
-    "synth": false,
+    "chorus": true,
+    "dly": false,
+    "env": false,
     "chorus-2": false,
-    "shim": false
+    "synth": false,
+    "chorus-3": false,
+    "shim": false,
+    "dly-3": false,
+    "double": false,
+    "radio": true
    },
    "params": {
+    "eq": {
+     "highs": -1
+    },
     "vital": {
      "fcut": 0.2,
      "rmix": 0.1
     },
-    "dly": {
+    "dly-2": {
      "mix": 0
     }
    },
    "branches": {},
    "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-B",
+     "level": -3
+    },
     "bass-1": {
      "state": "st-bass-1-B"
     },
     "keys-1": {
      "state": "st-keys-1-C",
      "level": -10
+    },
+    "voice-1": {
+     "state": "st-voice-1-B"
     }
    }
   },
@@ -391,9 +759,15 @@
    "name": "Synth",
    "blocks": {
     "chorus": false,
-    "synth": true,
+    "dly": false,
+    "env": true,
     "chorus-2": false,
-    "shim": false
+    "synth": true,
+    "chorus-3": false,
+    "shim": false,
+    "dly-3": false,
+    "double": true,
+    "radio": false
    },
    "params": {},
    "branches": {
@@ -402,12 +776,19 @@
     }
    },
    "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-C",
+     "level": -3
+    },
     "bass-1": {
      "state": "st-bass-1-C"
     },
     "keys-1": {
      "state": "st-keys-1-A",
      "level": -6
+    },
+    "voice-1": {
+     "state": "st-voice-1-C"
     }
    }
   },
@@ -416,27 +797,43 @@
    "name": "Stack",
    "blocks": {
     "chorus": false,
-    "synth": true,
+    "dly": true,
+    "env": false,
     "chorus-2": false,
-    "shim": false
+    "synth": true,
+    "chorus-3": false,
+    "shim": false,
+    "dly-3": true,
+    "double": false,
+    "radio": false
    },
    "params": {
+    "eq": {
+     "highs": 3
+    },
     "vital": {
      "fcut": 0.2,
      "rmix": 0.1
     },
-    "dly": {
+    "dly-2": {
      "mix": 0
     }
    },
    "branches": {},
    "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-D",
+     "level": -2
+    },
     "bass-1": {
      "state": "st-bass-1-D"
     },
     "keys-1": {
      "state": "st-keys-1-C",
      "level": -8
+    },
+    "voice-1": {
+     "state": "st-voice-1-D"
     }
    }
   },
@@ -444,14 +841,24 @@
    "id": "E",
    "name": "Solo",
    "blocks": {
-    "chorus": true,
+    "chorus": false,
+    "dly": false,
+    "env": false,
+    "chorus-2": true,
     "synth": false,
-    "chorus-2": false,
-    "shim": false
+    "chorus-3": false,
+    "shim": false,
+    "dly-3": false,
+    "double": false,
+    "radio": false
    },
    "params": {},
    "branches": {},
    "lanes": {
+    "guitar-1": {
+     "state": "st-guitar-1-A",
+     "level": -6
+    },
     "bass-1": {
      "state": "st-bass-1-E",
      "level": 3
@@ -459,6 +866,10 @@
     "keys-1": {
      "state": "st-keys-1-A",
      "level": -6
+    },
+    "voice-1": {
+     "state": "st-voice-1-A",
+     "level": -10
     }
    }
   }
@@ -544,6 +955,8 @@
   "D": "#00b4d8",
   "E": "#00b4d8",
   "6": "#00b4d8",
+  "7": "#00b4d8",
+  "8": "#00b4d8",
   "9": "#00b4d8",
   "10": "#00b4d8"
  },
@@ -554,7 +967,9 @@
   "D": "vortex",
   "E": "strobe",
   "6": "stars",
-  "9": "ember",
-  "10": "aurora"
+  "7": "ember",
+  "8": "aurora",
+  "9": "ripple",
+  "10": "snow"
  }
 }

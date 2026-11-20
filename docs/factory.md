@@ -220,6 +220,12 @@ electronic styles, with the Electro Pads lane); the drum machine is never a patc
 Every preset is a full band built from bank patches (each lane deposited by `patches.apply_to`), at least one keys
 lane, with its special blocks. Songs are fictitious.
 
+**Every preset has a guitar lane and a bass lane, and a voice lane except where the song is instrumental** (FIXED
+2026-11-20). Whoever is plugged into the rack must be able to play on any song of the setlist: the engine never moves an
+instrument onto another instrument's lane ([input-map.md](input-map.md) §3), so a missing lane is silence. Low End
+Workshop was Bass + Pad only — with a guitar on a card without a bass input, only the pad played, and it looked like a
+freeze. It now has a guitar (Funk Clean, under the bass) and a voice (Funk Rap); Room With Echoes got a bass (Pop Pick).
+
 | # | Song (fictitious) | Key · BPM | Preset (lanes) | Special blocks |
 |---|---|---|---|---|
 | 1 | Rooftop Prowl | F · 160 | Blue Lantern Trio (Guitar, Bass, Piano, Drums, Voice) | Standard |
@@ -229,11 +235,11 @@ lane, with its special blocks. Songs are fictitious.
 | 5 | Glass Summit | E · 120 | Glass Summit (Lead Guitar, Bass, Pad, Drums) | drum machine |
 | 6 | Iron Thicket | Eb · 132 | Iron Thicket (Guitar 1, Guitar 2, Bass, Pad, Voice, Drums) | drum machine |
 | 7 | Paper Satellites | D · 86 | Paper Satellites (Guitar, Bass, Rhodes, Pads, Voice, Drums) | drum machine |
-| 8 | Room With Echoes | A · 104 | Room With Echoes (Synth & Beat, Guitar, Voice) | looper |
+| 8 | Room With Echoes | A · 104 | Room With Echoes (Synth & Beat, Guitar, Bass, Voice) | looper |
 | 9 | Velvet Wasp | Eb · 118 | Velvet Wasp (Guitar, Bass, Strings, Voice, Drums) | drum machine |
 | 10 | Sunset Ladder | Em · 98 | Sunset Ladder (Clean Guitar, Drive Guitar, Bass, Clav, Voice) | drum machine |
 | 11 | Paper Promises | Cm · 76 | Paper Promises (Guitar, Bass, Piano, Voice, Drums) | drum machine |
-| 12 | Low End Workshop | D · 100 | Bass Workshop (Bass, Pad) | drum machine |
+| 12 | Low End Workshop | D · 100 | Bass Workshop (Guitar, Bass, Pad, Voice) | drum machine |
 | 13 | Golem Rising | F#m · 120 | Low Tide (Guitar, Bass, Synth, Voice) | drum machine + arrangement on SW9 |
 
 **Golem Rising** keeps its form (13 parts, 57 bars, 120 BPM, a one-bar count-in) and is redone on **Low Tide**, the

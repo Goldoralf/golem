@@ -65,6 +65,17 @@ def test_chaque_preset_d_usine_ne_reprend_que_des_patches_d_usine():
             assert src in have, f"{os.path.basename(f)} : la lane {L['id']} vient de « {src} », absent de l'usine"
 
 
+def test_chaque_preset_de_la_setlist_d_usine_fait_jouer_guitare_et_basse():
+    """Low End Workshop n'avait que Basse + Pad (2026-11-20) : une guitare branchée sur une carte sans entrée basse
+    n'y entendait que le pad — pris pour un freeze. Le moteur ne déplace jamais un instrument sur la lane d'un autre :
+    chaque morceau de la setlist d'usine a sa lane guitare ET sa lane basse (docs/factory.md §5.2)."""
+    sl = json.load(open(os.path.join(ROOT, "library", "factory", "setlists", "factory.json"), encoding="utf-8"))
+    for pid in sl["presets"]:
+        d = json.load(open(os.path.join(ROOT, "library", "factory", "presets", pid + ".json"), encoding="utf-8"))
+        roles = {L.get("in_role") for L in d.get("lanes") or []}
+        assert {"guitar", "bass"} <= roles, f"{pid} : pas de lane {sorted({'guitar', 'bass'} - roles)}"
+
+
 def test_les_captures_d_usine_sont_lues_dans_les_patches_livres():
     refs = F._factory_refs()
     assert len(refs) >= 30, "les patches d'usine nomment leurs captures TONE3000"

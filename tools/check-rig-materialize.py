@@ -154,15 +154,16 @@ FIXTURE_ID = "ci-engine"
 
 def write_fixture(root):
     """Un patch de banc qui ne demande AUCUN téléchargement ni plugin tiers : effets intégrés à REAPER (ReaGate,
-    ReaComp, ReaEQ, ReaDelay), JSFX du stock (phaser, chorus) et de golem (killswitch), deux branches, trois
-    scènes. Il exerce le moteur — pistes, split/merge, armement, scènes, stomps — là où les patches d'usine
+    ReaComp, ReaEQ, ReaDelay), JSFX du stock (phaser) et de golem (chorus, killswitch), deux branches, trois
+    scènes — là où golem-fx est installé, ses pédales jouent ces blocs (références « @golem-fx »). Le chorus est le
+    type `chorus` depuis 2026-11-20 : `chorus-js` est retiré (catalogue v48). Il exerce le moteur — pistes, split/merge, armement, scènes, stomps — là où les patches d'usine
     sautent faute de modèles (un runner vierge)."""
     lane = "guitar-ci"
     chain = {"pre": [{"id": "gate", "type": "gate"}],
              "split": {"mode": "merge", "gain": -3, "branches": [
                  {"id": "lane-a", "blocks": [{"id": "boost", "type": "clean-boost"}, {"id": "eq", "type": "eq"}]},
                  {"id": "lane-b", "blocks": [{"id": "phaser", "type": "phaser-js", "foot": 6}, {"id": "comp", "type": "comp"}]}]},
-             "post": [{"id": "chorus", "type": "chorus-js", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8},
+             "post": [{"id": "chorus", "type": "chorus", "foot": 7}, {"id": "dly", "type": "delay", "foot": 8},
                       {"id": "kill", "type": "killswitch", "foot": 9}]}
     states = [("A", "Both", {"chorus": False}, {}),
               ("B", "Branch A only", {"chorus": True, "dly": True}, {"lane-b": {"mute": True}}),
@@ -1634,7 +1635,10 @@ def render_patch(ctx, p, pid, scenes, log):
             fp = fingerprint(x, sr)
         except Exception as e:
             results.append({"scene": scene, "status": "error", "why": f"unreadable render: {e}"}); issues.append(f"render {scene}: {e}"); continue
-        ref = (ctx["golden"].get(pid) or {}).get(scene)
+        # LA RÉFÉRENCE DE CETTE CONDITION (2026-11-20) : golem-fx installé, un bloc joue un autre plugin qu'au runner de
+        # la CI de bureau (qui ne l'installe pas) — une seule référence par patch ne valait que pour l'un des deux
+        gkey = pid + ctx.get("golden_variant", "")
+        ref = (ctx["golden"].get(gkey) or {}).get(scene)
         entry = {"scene": scene, "fp": fp, "wav": wav.name, "chain": chain}
         vs = vs_reaper(ctx, wav)
         if vs:
@@ -1643,7 +1647,7 @@ def render_patch(ctx, p, pid, scenes, log):
                 f"worst audible third-octave {vs.get('band_audible_db'):+.1f} dB @ {vs.get('band_audible_hz'):.0f} Hz (null from the start "
                 f"{vs.get('null_full_db'):.1f} dB)")
         if ctx["update_golden"]:
-            ctx["golden"].setdefault(pid, {})[scene] = {"sig": sig, "fp": fp, "os": sys.platform, "at": time.strftime("%Y-%m-%d")}
+            ctx["golden"].setdefault(gkey, {})[scene] = {"sig": sig, "fp": fp, "os": sys.platform, "at": time.strftime("%Y-%m-%d")}
             entry["status"] = "updated"
         elif ctx.get("real_di"):
             entry["status"] = "rendered (real DI: no golden)"     # les références sont faites avec la phrase synthétique
@@ -1896,6 +1900,12 @@ def main():
                    "against": a.against.resolve() if a.against else None,
                    "render_scenes": a.render_scenes, "golden": golden, "update_golden": a.update_golden,
                    "tol_env": a.tol_env, "tol_band": a.tol_band, "render_timeout": a.render_timeout}
+            try:                                           # golem-fx installé : les références « @golem-fx »
+                from bridge import rig as _rig
+                ctx["golden_variant"] = "@golem-fx" if _rig._golem_fx_installed() else ""
+            except Exception:
+                ctx["golden_variant"] = ""
+            log(f"renders: golden variant '{ctx['golden_variant'] or 'plain (no golem-fx)'}'")
             log(f"renders: DI {ctx['di'].name if ctx['di'] else 'per patch (genre tags)'}, references {a.golden} ({sum(len(v) for v in golden.values())} scenes known)"
                 + (" — UPDATING" if a.update_golden else ""))
         if a.fetch:

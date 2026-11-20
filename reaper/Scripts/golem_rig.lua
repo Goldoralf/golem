@@ -171,7 +171,7 @@ local DESKTOP_TABLE = MAC_FX and "effects-macos.json" or "effects-windows.json"
 -- plugin change — et les autres blocs gardent leur plugin d'origine. Ce que REAPER ajoute : un VST3 s'écrit
 -- NORMALISÉ, donc chaque potard prend les bornes réelles du plugin (library/catalog/golem-fx-plugins.json, tiré de
 -- golem-fx : plages linéaires, nombre de choix d'une liste). Un plugin golem-fx absent de CE REAPER : le bloc garde
--- son plugin d'origine. Les TROIS systèmes depuis le 2026-11-15 (les installateurs posent golem-fx 0.4) : REAPER nomme
+-- son plugin d'origine. Les TROIS systèmes depuis le 2026-11-15 (les installateurs posent golem-fx, 0.6 depuis le 2026-11-17) : REAPER nomme
 -- un VST3 de la même façon sous Linux, Windows et macOS (« VST3: GoleM FX Gate (GoleM) »), et un type joué par
 -- golem-fx échappe à la table de l'OS (effects-windows/macos.json) — appliqué AVANT elle, il n'en reçoit rien.
 local _GFX_INSTALLED = nil
@@ -192,11 +192,14 @@ local function gfx_installed_name(base)
   return nil
 end
 
+-- le paramètre golem-fx de ce NOM EXACT (2026-11-20). Le repli « contient ce nom, sans casse » parcourait pairs(),
+-- dont l'ordre n'est pas défini : un nom ambigu pouvait viser un autre potard. Mesuré : les 266 paramètres du
+-- catalogue, les 17 init et les 1151 du descripteur se résolvent tous exactement (tests/test_golem_fx_manifest_names.py
+-- le garde) ; un nom qui manque se DIT au journal au lieu de tomber sur un voisin.
 local function gfx_range(ranges, label)
   if not label then return nil, nil end
   if ranges[label] then return ranges[label], label end
-  local l = label:lower()
-  for k, r in pairs(ranges) do if k:lower():find(l, 1, true) then return r, k end end
+  log("⚠ golem-fx : paramètre « " .. tostring(label) .. " » absent du manifeste (library/catalog/golem-fx-plugins.json)")
   return nil, nil
 end
 
@@ -1879,74 +1882,10 @@ local function chunk_set_lv2_file(track, fx, slot, file)
   return false
 end
 
--- bloc FX Ratatouille prouvé (extrait de bridge/templates/core.RfxChain), NAM+IR bakés.
-local function rata_block(nam, ir)
-  local nline = nam and ('"' .. nam .. '"') or "None"
-  local iline = ir and ('"' .. ir .. '"') or "None"
-  return {
-    '<LV2 "LV2: Ratatouille (brummer) (Mono)" urn:brummer:ratatouille ""',
-    '  CFG 0 610 419 ""',
-    '  <IN_PINS', '  >', '  <OUT_PINS', '    PIN 0 0 1', '  >',
-    '  P Knob0 0 Knob1 0 Knob2 0.5 Knob3 0.5 Knob4 0 NormalizeA 0 NormalizeB 0 Knob5 0 NormalizeSlotA 0 NormalizeSlotB 0',
-    '  P ENABLE 1 eraseSlotA 0 eraseSlotB 0 eraseIr 0 eraseIr1 0 buffered 0 phase 0',
-    '  <STATE',
-    '    S urn:brummer:ratatouille#Neural_Model ' .. nline .. ' 3',
-    '    S urn:brummer:ratatouille#Neural_Model1 None 3',
-    '    S urn:brummer:ratatouille#irfile ' .. iline .. ' 3',
-    '    S urn:brummer:ratatouille#irfile1 None 3',
-    '  >', '>',
-  }
-end
-
--- Remplace TOUT le bloc <LV2…> du FX numéro `fx` par le bloc template (le chunk d'un Ratatouille
--- fraîchement ajouté N'A PAS les lignes S à éditer -> on injecte le bloc prouvé, chemins bakés).
-local function chunk_replace_ratatouille(track, fx, nam, ir)
-  local ok, chunk = reaper.GetTrackStateChunk(track, "", false)
-  if not ok then return false end
-  local lines = {}
-  for l in (chunk .. "\n"):gmatch("(.-)\n") do lines[#lines + 1] = l end
-  heal_files(track, lines)                       -- une ligne fichier perdue par un chargement async est remise AVANT la réécriture
-  local idx, start_i, end_i, i = -1, nil, nil, 1
-  while i <= #lines do
-    local t = lines[i]:gsub("\r", ""):match("^%s*(.-)%s*$")
-    local tag = t:match("^<(%w+)")
-    if tag and FX_OPEN[tag] then
-      idx = idx + 1
-      if idx == fx then
-        start_i = i
-        local depth, j = 1, i + 1
-        while j <= #lines do
-          local tt = lines[j]:gsub("\r", ""):match("^%s*(.-)%s*$")
-          if tt:sub(1, 1) == "<" then depth = depth + 1
-          elseif tt == ">" then depth = depth - 1; if depth == 0 then end_i = j; break end end
-          j = j + 1
-        end
-        break
-      end
-    end
-    i = i + 1
-  end
-  if not (start_i and end_i) then return false end
-  -- saute la ligne FXID qui suit le bloc -> Reaper génère un nouveau GUID et RÉ-INSTANCIE le FX
-  -- (sinon il garde l'instance vivante et ne recharge pas les fichiers du chunk).
-  local drop_to = end_i
-  if lines[end_i + 1] and lines[end_i + 1]:match("FXID") then drop_to = end_i + 1 end
-  local out = {}
-  for k = 1, start_i - 1 do out[#out + 1] = lines[k] end
-  for _, tl in ipairs(rata_block(nam, ir)) do out[#out + 1] = tl end
-  for k = drop_to + 1, #lines do out[#out + 1] = lines[k] end
-  return write_chunk(track, out)
-end
-
 -- étage 1 : tentatives SetNamedConfigParm (clés plausibles), loguées.
 local function try_named_file(track, fx, plugin, slot, file)
-  local pl = (plugin or ""):lower()
   local keys = {}
   local function push(k) if k then keys[#keys + 1] = k end end
-  if pl:find("ratatouille") then
-    if slot == "ir" then push("urn:brummer:ratatouille#irfile"); push("param.21.file")
-    else push("urn:brummer:ratatouille#Neural_Model"); push("param.19.file") end
-  end
   -- génériques (index de repli approximatif + clés « file »)
   push(slot == "ir" and "param.21.file" or "param.19.file")
   push("file"); push("FILE"); push("path")
@@ -1969,15 +1908,6 @@ end
 -- orchestre le chargement des fichiers d'un bloc sur son FX. Jamais fatal.
 local function load_block_file(track, fx, block, plugin)
   if not fx or fx < 0 then return end
-  local pl = (plugin or ""):lower()
-  -- AMPLI BUNDLE Ratatouille : NAM (model) ET IR (cab) via le chunk PROUVÉ (#Neural_Model / #irfile).
-  if block.type == "amp" and pl:find("ratatouille") then
-    local okr = chunk_replace_ratatouille(track, fx, block.file, block.cab_file)
-    if okr then log("    Ratatouille : NAM+IR bakés (" .. tostring(block.file and block.file:match("[^/]+$")) ..
-        " / " .. tostring(block.cab_file and block.cab_file:match("[^/]+$")) .. ")")
-    else log("    ⚠ Ratatouille : remplacement de bloc échoué") end
-    return
-  end
   -- amp-nam / cab (plugins SÉPARÉS) : chargement non résolu (à débloquer en étape B via templates).
   if not block.file then return end
   local slot = (block.type == "cab" or block.type == "ir-fx") and "ir" or "model"

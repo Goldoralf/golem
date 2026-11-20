@@ -96,6 +96,14 @@ def _cpu_model():
 
 
 def _srate():
+    # LE MOTEUR ACTIF D'ABORD (2026-11-20) : sous Windows avec le Golem Engine, rigstatus.engine_doc() lit la télémétrie
+    # de REAPER, absente ou périmée — l'empreinte du profil disait « None » puis pouvait basculer, et toute la calibration
+    # se refaisait (10 min). Le moteur dit sa fréquence lui-même (.engine-status.json).
+    with contextlib.suppress(Exception):
+        from . import engine
+        sr = (engine.get().audio() or {}).get("rate")
+        if sr:
+            return int(sr)
     with contextlib.suppress(Exception):
         from . import rigstatus
         sr = (rigstatus.engine_doc() or {}).get("samplerate")

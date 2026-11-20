@@ -135,13 +135,22 @@ def main():
             except (OSError, ValueError):
                 prev = None
             seq = "%s-%d" % (plug, time.time() * 1000)
+            applylog = os.path.join(C.PRESETS_DIR, ".apply.log")
+            try:
+                log_at = os.path.getsize(applylog)            # le journal d'APRÈS cette commande seulement
+            except OSError:
+                log_at = 0
             write_command({"action": "fxadd", "track": a.track, "plugin": plug, "alts": alts, "tag": "zz-stall", "seq": seq})
             r = added(prev)
             if not r.get("ok"):
                 # le même échec dit « piste absente » : le journal de golem_apply le distingue (2026-10-22 : quatre
                 # JSFX déclarés « ne se charge pas » alors que le preset chargé n'avait pas de piste #merge)
+                # (2026-11-20 : les 600 derniers caractères du journal gardaient le « piste introuvable » d'un essai
+                # précédent — le banc s'arrêtait sur une piste qui existait)
                 try:
-                    tail = open(os.path.join(C.PRESETS_DIR, ".apply.log"), encoding="utf-8", errors="replace").read()[-600:]
+                    with open(applylog, "rb") as f:
+                        f.seek(log_at)
+                        tail = f.read().decode("utf-8", "replace")
                 except OSError:
                     tail = ""
                 if "piste introuvable" in tail:
@@ -167,6 +176,13 @@ def main():
             worst = max(h for _, hs in row for h in hs)
             bad = sum(1 for _, hs in row for h in hs if h > 20)
             tot = sum(len(hs) for _, hs in row)
+            # UNE MESURE FIGÉE n'est pas un plugin parfait (2026-11-20, Windows : après ~22 plugins, chaque allumage
+            # rendait exactement 0 ms — les horloges ne bougeaient plus, le banc disait « aucun gel » sans rien mesurer).
+            # La mesure vivante a toujours son bruit (±1 à 3 ms) : huit zéros exacts = non mesuré, à relancer.
+            if all(abs(h) < 0.05 for _, hs in row for h in hs):
+                verdicts.append((plug, None, 0, tot))
+                print("%-22s ✗ MESURE FIGÉE (tous les allumages à 0 ms exactement) — non mesuré, relancer" % plug, flush=True)
+                continue
             verdicts.append((plug, worst, bad, tot))
             print("%-22s %s   %s" % (plug, "⚠ FIGE LE MOTEUR" if worst > 20 else "ok              ",
                                      " · ".join("éteint %gs : %s" % (w, " ".join("%3.0f" % h for h in hs)) for w, hs in row)), flush=True)
@@ -181,7 +197,7 @@ def report(verdicts):
     print("\n── bilan ──")
     for plug, worst, bad, tot in verdicts:
         if worst is None:
-            print("  %-26s NON MESURÉ (ne se charge pas)" % plug)
+            print("  %-26s NON MESURÉ (ne se charge pas, ou mesure figée)" % plug)
             continue
         print("  %-26s %s" % (plug, ("⚠ FIGE le moteur %d fois sur %d, jusqu'à %.0f ms" % (bad, tot, worst)) if bad else "aucun gel (max %.0f ms)" % worst))
     import tempfile                                    # /tmp n'existe pas sous Windows

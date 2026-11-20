@@ -1540,3 +1540,6 @@ setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). L
   (4th fork patch, `[headless] [upstreamable]`, `ARDOUR_OSC_NO_ZEROCONF` set by `run.sh`); the port itself is closed
   by golem's firewall on a rack (`provision/harden.sh`: deny incoming, only SSH / 8770 / 80 / mDNS open). A desktop
   install without `harden.sh` stays exposed on the LAN, as with REAPER. Revisit if a newer liblo can bind a single unicast address.
+  **2026-11-20: closed differently** — the port still opens on 0.0.0.0 (liblo 0.34 still cannot bind unicast to the
+  loopback), but with `ARDOUR_OSC_LOCAL` (set by `golem/engine/run.py`) a first handler drops every message from another
+  machine (fork patch on `osc.cc`, measured: `/transport_play` from the LAN address ignored, from 127.0.0.1 obeyed).

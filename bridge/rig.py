@@ -254,7 +254,7 @@ def _engine_safe_types():
     """Les types que le moteur ACTIF joue par un effet golem-fx. Golem Engine : sa table. REAPER
     (docs/golem-fx-reaper.md) : la MÊME table, pour les plugins golem-fx installés ici (golem_rig.lua ne bascule un
     bloc vers golem-fx que si REAPER connaît le plugin ; sinon il garde son plugin d'origine). Linux, Windows et macOS
-    depuis le 2026-11-15 : les installateurs des trois systèmes posent golem-fx 0.4."""
+    depuis le 2026-11-15 : les installateurs des trois systèmes posent golem-fx (0.6 depuis le 2026-11-17)."""
     try:
         from . import engine
         from .engine import ardour_plan

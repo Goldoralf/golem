@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Moteurs audio (docs/audio-engine-choice.md) : descripteurs, choix, refus. Le Golem Engine n'est choisissable que
-sous Linux ET là où il est construit (platforms.linux.requires) : sans lui, REAPER reste le seul choix, partout."""
+"""Moteurs audio (docs/audio-engine-choice.md) : descripteurs, choix, refus. Le Golem Engine est choisissable
+sous Linux et Windows là où il est construit ou installé (platforms.<os>.requires) : sans lui, REAPER reste le seul
+choix."""
 import json
 import os
 import shutil

@@ -156,7 +156,7 @@ saying where its code comes from — `core` (NAM/IR core), `reaper-jsfx`, `golem
 documentation that the code does not read. For an `unsupported` block, `blockstatus.candidates()` returns
 no plugin name, so the block reports itself unavailable on this OS instead of loading the wrong DSP.
 
-**golem-fx comes first (CODED 2026-11-15).** The installers place golem-fx 0.4 on all three OS
+**golem-fx comes first (CODED 2026-11-15).** The installers place golem-fx (0.6 since 2026-11-17) on all three OS
 ([installer.md](installer.md) §2, Pins). A type that golem-fx plays (`golem_fx` in
 `library/catalog/effects-golem-engine.json`) and whose VST3 REAPER has scanned skips this table entirely:
 `golem_rig.lua` `apply_golem_fx` runs **before** the OS table and the table leaves those types alone (plugin, knob

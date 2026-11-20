@@ -516,3 +516,15 @@ def test_sans_mesure_eteinte_ni_part_fixe_rien_ne_change():
         v.pop("off_us", None)
     e = CB.estimate([("A", _plan_engine())], prof, {"bsize": 192, "srate": 48000})
     assert e["lanes"][0]["by_scene"]["A"] == 1.0 and e["engine_pct"] is None      # REAPER : le seul delay, 40/4000
+
+
+def test_la_frequence_vient_du_moteur_actif_d_abord(monkeypatch):
+    """Sous Windows avec le Golem Engine, la télémétrie de REAPER manque : la fréquence de l'empreinte venait à None
+    (puis pouvait basculer et refaire toute la calibration). Le moteur actif la dit lui-même."""
+    from bridge import engine
+
+    class _Eng:
+        def audio(self):
+            return {"rate": 44100, "buffer": 256}
+    monkeypatch.setattr(engine, "get", lambda: _Eng())
+    assert B._srate() == 44100

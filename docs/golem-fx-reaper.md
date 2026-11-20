@@ -3,7 +3,7 @@
 > **Status: CODED** (2026-11-13; all three OS 2026-11-15). Asked by the maintainer: "play the golem-fx under REAPER, and
 > keep the other blocks as under the Golem Engine".
 >
-> **2026-11-15:** the installers ship golem-fx 0.4 (prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
+> **2026-11-15:** the installers ship golem-fx 0.6 since 2026-11-17 (0.4 on 2026-11-15; prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
 > §2, Pins), and REAPER on Windows and macOS now plays golem-fx blocks when the plugin is installed, exactly as on
 > Linux. The third-party fallbacks (guitarix, Calf, Dragonfly, Zam…) stay installed until a later step.
 
@@ -43,8 +43,20 @@ The test suite never sees the machine's own golem-fx (`conftest.py`).
   exactly 0 ms, three others ~517 ms), and the rerun stopped when the rack left the patch.
 - `fxparams` (golem_apply) now reports the pins REAPER gives a plugin: the golem-fx VST3s listed "(mono)" get 2 in /
   2 out on a stereo track.
-- Windows and macOS: coded and tested under the fake REAPER only (2026-11-15). To check on a real machine: that
-  REAPER scans `%LOCALAPPDATA%\Programs\Common\VST3\GoleM` (it does for Dragonfly) and lists the plugins as
-  `VST3: GoleM FX <Name> (GoleM)`, and the engine-stall bench there.
+- **Windows, checked on a real machine 2026-11-20** (REAPER 7, golem-fx 0.6, i9-13900H): REAPER scans
+  `%LOCALAPPDATA%\Programs\Common\VST3\GoleM` and lists the plugins as `VST3: GoleM FX <Name> (GoleM)`, with
+  ` (mono)` appended for the mono ones (`golem_rig.lua` takes the installed name that starts with the manifest's). The
+  engine-stall bench ran on **all 49 golem-fx plugins the catalogue uses** (8 switch-ons each, on the merge track of a
+  live patch): **no freeze**, worst 6 ms (Tremolo) — the measurement's own noise; Pitch Correct, suspected of a 519 ms
+  freeze, did not freeze. The twelve left from 2026-11-13 are covered for Windows; Linux still has to rerun them.
+  Two bench bugs found on the way, fixed in `tools/check-block-stall.py`: after ~22 plugins the measurement froze and
+  every switch-on read exactly 0 ms, reported as "no freeze" (eight exact zeros are now "measurement frozen — not
+  measured", rerun in batches); and "track not found" was read from the last 600 characters of `.apply.log`, which still
+  held a previous run's message (now only the log written after the command).
+- The parameter manifest (`library/catalog/golem-fx-plugins.json`) regenerated from golem-fx 0.6 (e7e9ecc) on
+  2026-11-20 is identical to the one from 048142e; `golem_rig.lua` `gfx_range` now matches parameter names EXACTLY
+  (the case-insensitive substring fallback iterated `pairs()`, whose order is undefined) and logs a missing name;
+  `tests/test_golem_fx_manifest_names.py` checks every name golem looks up (1,434) against the manifest.
+- macOS: coded and tested under the fake REAPER only (2026-11-15); the same checks are still to run there.
 - Linux: the release `.so` need glibc ≥ 2.34; on an older system REAPER does not load them and the blocks keep their
   original plugins (the bridge still sees the bundles in `~/.vst3`: the quarantine is lifted for pitch / detune there).

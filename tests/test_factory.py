@@ -132,6 +132,7 @@ def test_masquer_l_usine_ne_supprime_rien_et_restaurer_remet_ce_qui_manque(tmp_p
     remet ce que l'utilisateur a supprimé — et seulement ça."""
     live = _setup(tmp_path, monkeypatch)
     monkeypatch.setattr(F, "VIS_FILE", str(tmp_path / ".factory-show.json"))
+    monkeypatch.setattr(F, "fm_hidden", lambda: None)   # le roster golem.fm de la machine ne décide pas pour le test
     assert all(F.visibility().values())                                              # par défaut : tout se voit
     assert F.set_visibility({"grooves": False, "inconnu": False})["grooves"] is False
     assert "inconnu" not in F.visibility()

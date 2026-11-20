@@ -1508,6 +1508,17 @@ setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). L
 - **Package**: `golem/tools/bundle.py` (Windows branch: the MSYS2 DLLs through the PE imports, never Windows' own) and
   `golem/tools/win-lv2-deps.sh` (NAM, zeroconvolv, sfizz with its `controllers.ttl`, setBfree rebuilt) — 86 MB; the
   extracted package passes the adapter bench with no dev folder and no `LV2_PATH`.
+- **DSP load (measured 2026-11-20, i9-13900H, 20 logical CPUs, "Performance" power plan)**: at buffer 128 one dual-amp
+  patch (two NAMs) reached 60–98 % and crackled; 256 does not (55–70 %, then 31–40 % on a single-amp patch). The number
+  of DSP threads is not the lever (factory "Groove Metal" at 128: 19 threads — Ardour's default — 46 % average, 4
+  threads 43 %, 2 threads 58 % with peaks at 84 %). The likely difference with REAPER at 128: REAPER's anticipative FX
+  processing renders ahead on worker threads and absorbs a cycle's peak; Ardour computes everything inside the cycle.
+  Decision for now: **256 on Windows** (the engine's own setting, `config/golem-engine.json`, 10.7 ms round trip).
+  Options left: create the 17 permanent take tracks only while recording (moderate gain, slower take start);
+  anticipative processing in the fork (large, not recommended now).
+- **REAPER for Windows, checked 2026-11-20** (golem switched to REAPER): the drum machine's fill leads to the next
+  variation (fill at the next bar, in full, then the variation — `.drums.json`), and the Electric piano block mounts Dexed
+  with the scene's voice (`fxdump`: the zone filter, `dx7-ctl` on patch 15, Dexed with algorithm 2, not its init voice).
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

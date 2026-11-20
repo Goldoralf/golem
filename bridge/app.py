@@ -3047,5 +3047,6 @@ recall_mod.init(
     set_exp_blk=_set_exp_blk_from, set_exp_vol=_set_exp_vol_from, exp_bake=_exp_bake,
     click_follow=_click_follow_preset,
     notify=broadcast_threadsafe,
+    looper_ctl=_looper_ctl,
 )
 app.mount("/app", StaticFiles(directory=C.APP_DIR, html=True), name="app")

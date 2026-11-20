@@ -58,6 +58,7 @@ log_recall = get("recall")
 _arr_ctl = None            # contrôleur d'arrangement (stop/load au changement de preset)
 _backing_ctl = None        # contrôleur backing (on_recall)
 _drums_ctl = None          # contrôleur drums (stop_orphans)
+_looper_ctl = None         # contrôleur looper (vide les boucles au changement de preset)
 _bind_foot_services = None # enregistre les blocs pilotés par les fronts (app.py)
 _whammy_dt_glue = None     # bloc whammy-dt -> MIDI matériel (app.py, autorité sur la pédale)
 _set_exp_blk_from = None   # cible du rôle bloc des pédales EXP (app.py)
@@ -81,12 +82,13 @@ _LIVEMAP_STATE_PATH = os.path.join(C.PRESETS_DIR, ".livemap.json")
 
 
 def init(arr_ctl, backing_ctl, drums_ctl, bind_foot_services, whammy_glue,
-         set_exp_blk, set_exp_vol, click_follow, notify, exp_bake=None):
+         set_exp_blk, set_exp_vol, click_follow, notify, exp_bake=None, looper_ctl=None):
     """Branche la glue d'app.py. Appelé UNE fois, en fin de module app (les fonctions doivent
     exister). Le moteur ne démarre rien ici — attach_loop() vient au startup uvicorn."""
     global _arr_ctl, _backing_ctl, _drums_ctl, _bind_foot_services, _whammy_dt_glue
-    global _set_exp_blk_from, _set_exp_vol_from, _click_follow_preset, _notify, _exp_bake
+    global _set_exp_blk_from, _set_exp_vol_from, _click_follow_preset, _notify, _exp_bake, _looper_ctl
     _arr_ctl, _backing_ctl, _drums_ctl = arr_ctl, backing_ctl, drums_ctl
+    _looper_ctl = looper_ctl
     _bind_foot_services = bind_foot_services
     _whammy_dt_glue = whammy_glue
     _set_exp_blk_from, _set_exp_vol_from = set_exp_blk, set_exp_vol
@@ -618,6 +620,13 @@ def do_recall(pid, scene, line=None):
             _preset_changed = p["id"] != state.preset_id
             if _preset_changed:
                 _arr_ctl.stop(silent=True)
+                # LE LOOPER ARRIVE VIDE (2026-11-20) : son JSFX est permanent (les boucles survivent aux rebuilds), et
+                # rien ne les vidait au changement de preset — le mainteneur arrive sur « Room With Echoes » (usine) et
+                # SW1 porte déjà une boucle de 87 s d'ailleurs. Un AUTRE preset vide les boucles ; une scène, ou un
+                # rebuild du même preset, les garde. Envoyé AVANT le rebuild : l'adresse OSC du Looper vaut encore.
+                if _looper_ctl is not None:
+                    with contextlib.suppress(Exception):
+                        _looper_ctl.clear_all()
                 # Le morceau change par un autre chemin que le pied (écran, setlist, cue) : le
                 # pédalier doit suivre, sinon son prochain appui de scène renverra l'ancien PC et
                 # ramènera le rack en arrière. No-op s'il y est déjà, ou s'il ne sait pas recevoir.

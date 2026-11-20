@@ -56,3 +56,29 @@ def test_apres_un_rappel_l_adresse_perimee_est_ignoree_et_le_fichier_porte_le_ca
     assert doc["notes"] == [36] and doc["cfg"] == {"tempo": 100.0, "mode": 42}
     c.set_addr({"track": 20, "fx": 0, "cmd_param": 2}, published_at=time.time() + 1)   # publiée APRÈS
     assert c._addr["track"] == 20
+
+
+def test_un_autre_preset_arrive_avec_un_looper_vide():
+    """2026-11-20 : le mainteneur arrive sur « Room With Echoes » (usine), SW1 porte déjà une boucle de 87 s. Le JSFX du
+    looper est permanent (les boucles survivent aux rebuilds) : c'est le RAPPEL D'UN AUTRE PRESET qui les vide, avant le
+    rebuild ; une scène ou un rebuild du même preset les garde. do_recall pilote REAPER : la règle se lit dans la source."""
+    from pathlib import Path
+    from bridge import looper as L
+    calls = []
+
+    class Osc:
+        def set_fx_param(self, track, fx, param, v):
+            calls.append((param, v))
+            return True
+    c = L.LooperControl(Osc())
+    c.set_addr({"track": 19, "fx": 0, "cmd_param": 2})
+    calls.clear()
+    c.clear_all()
+    assert len(calls) == 1 and calls[0][0] == 2 and round(calls[0][1] * 16383) % 128 == L.KILL_NOTE
+    root = Path(__file__).resolve().parents[1]
+    src = (root / "bridge/recall.py").read_text(encoding="utf8")
+    body = src[src.index("def do_recall(pid, scene, line=None)"):src.index("def do_recall_slot")]
+    block = body[body.index("if _preset_changed:"):body.index("state.preset_id = p[\"id\"]")]
+    assert "_looper_ctl.clear_all()" in block, "les boucles doivent tomber au changement de PRESET, pas de scène"
+    assert body.count("_looper_ctl.clear_all()") == 1
+    assert "looper_ctl=_looper_ctl" in (root / "bridge/app.py").read_text(encoding="utf8")

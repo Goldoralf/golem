@@ -100,6 +100,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | Document | Status | Scope |
 |---|---|---|
 | [platforms.md](platforms.md) | PARTLY CODED | Linux, Windows, macOS: what works where |
+| [linux-pass-2026-11.md](linux-pass-2026-11.md) | PROPOSED | The Linux pass after the Golem Engine's Windows port: rebuild, benches, Linux package with the same fixes |
 | [installer.md](installer.md) | CODED | One-line bootstrap, graphical installer, `golem desktop` / `golem server` |
 | [install-v2.md](install-v2.md) | FIXED, lot 1 CODED | The next installer: Golem Engine always installed, REAPER as a checkbox, accounts on the first pages, the engine as a package |
 | [uninstall.md](uninstall.md) | FIXED, CODED on Linux (VM test pending) | Install receipt, uninstall engine with dry run, graphical uninstaller, full backup outside the install folder, VM test |

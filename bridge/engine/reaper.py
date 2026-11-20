@@ -94,6 +94,9 @@ class ReaperEngine(EngineAdapter):
         """Arrête le REAPER de CE rack (jamais celui d'un banc) et attend sa mort réelle (il sauve sa config d'abord)."""
         import os
         import signal
+        import sys
+        if sys.platform in ("win32", "darwin"):
+            return self._stop_desktop(max(timeout, 30.0))
         from .. import routes_system
         for pid in routes_system._rack_reaper_pids():
             try:
@@ -101,6 +104,34 @@ class ReaperEngine(EngineAdapter):
             except OSError:
                 pass
         return routes_system._wait_reaper_dead(timeout)
+
+    # ── BASCULE VERS LE GOLEM ENGINE : REAPER RESTAIT OUVERT (Windows, 2026-11-20) ──
+    # La voie Linux cherche REAPER par pgrep et /proc : sous Windows elle ne trouvait rien, n'arrêtait rien et
+    # concluait « mort ». Le Golem Engine démarrait alors à côté d'un REAPER vivant, les deux sur la Volt (pilote
+    # multi-client) : craquements sur chaque preset, aucun xrun d'un côté comme de l'autre. Ici, la voie du bureau :
+    # fermeture POLIE (projet enregistré, WM_CLOSE / Apple Event), forcée seulement si REAPER est figé.
+    def _stop_desktop(self, timeout):
+        import time
+        from provision import desktop
+        from provision.desktop_window import force_close_reaper, reaper_hung, request_reaper_close
+        pids = desktop.reaper_pids() - desktop.bench_reaper_pids()     # jamais le REAPER d'un banc
+        if not pids:
+            return True
+        if reaper_hung(pids, seconds=5.0):
+            force_close_reaper(pids)
+        else:
+            from .. import desktop_audio
+            try:
+                desktop_audio.save_project_in_place()   # sinon « Save project? » bloque la fermeture
+            except Exception:
+                pass
+            request_reaper_close(pids)
+        end = time.time() + timeout
+        while time.time() < end:
+            if not desktop.reaper_running():
+                return True
+            time.sleep(0.3)
+        return False
 
     def restart(self, why="requested"):
         """Linux : SIGTERM au REAPER du rack, attente de sa mort, provision/start.sh (routes_system). Windows/macOS :

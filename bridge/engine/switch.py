@@ -60,7 +60,7 @@ def start(target_id, on_osc=None, registry=None):
 
 
 def _run(target_id, on_osc, registry):
-    from .. import recall
+    from .. import engines, recall
     from ..state import state
     from . import _registry, get, use
     old = get()
@@ -71,9 +71,19 @@ def _run(target_id, on_osc, registry):
     reg = registry or _registry()
     _diag_intent("switch")
     try:
-        old.stop()
+        dead = old.stop()
     except Exception as e:
         log.warning(f"arrêt de {old.id} : {e}")
+        dead = old.pid() is None
+    # JAMAIS DEUX MOTEURS SUR LA CARTE : un ancien qui survit (boîte « Save project? », REAPER figé) partagerait la
+    # carte avec le nouveau — craquements sans un seul xrun (2026-11-20). On annule : l'ancien reste le moteur.
+    if not dead:
+        try:
+            engines.write_choice(old.id, set_by="switch-revert")
+        except ValueError as e:
+            log.warning(f"choix {old.id} non réécrit : {e}")
+        _set(phase="failed", error=f"{old.id} did not stop — switch cancelled (check for a dialog in {old.id})")
+        return
     old.stop_feedback()
     # les TÉMOINS de l'ancien moteur partent avec lui : son .clock.json encore frais faisait passer le nouveau pour vivant
     # avant même son démarrage (mesuré 2026-11-10, Golem Engine -> REAPER : « starting » conclu en 0,6 s)

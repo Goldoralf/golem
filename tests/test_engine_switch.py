@@ -98,6 +98,59 @@ def test_un_nouveau_qui_ne_repond_pas_ramene_l_ancien(bench):
     assert old.events == ["stop", "feedback-off", "feedback-on", "restart:switch back"]
 
 
+def test_un_ancien_qui_ne_meurt_pas_annule_la_bascule(bench):
+    # 2026-11-20 : le REAPER que la bascule n'arrêtait pas restait sur la carte à côté du Golem Engine — craquements.
+    # Jamais deux moteurs sur la carte : le nouveau ne démarre pas, l'ancien reste le moteur, son choix aussi.
+    old, written = bench
+    old.stop = lambda timeout=10.0: old.events.append("stop") or False
+    made = []
+    switch.start("new", on_osc=lambda a, b: None, registry={"new": lambda: made.append(New()) or made[-1]})
+    st = _until_done()
+    assert st["phase"] == "failed" and "did not stop" in st["error"]
+    assert made == [] and engine.get() is old and written == ["old"]
+    assert old.events == ["stop"]                                        # son retour OSC reste ouvert
+
+
+def test_reaper_est_ferme_poliment_sous_windows(monkeypatch):
+    # la voie Linux (pgrep, /proc) ne voyait aucun REAPER sous Windows et le disait mort sans l'avoir arrêté
+    import sys
+    from bridge import desktop_audio
+    from bridge.engine.reaper import ReaperEngine
+    from provision import desktop, desktop_window
+    alive = {"up": True}
+    calls = []
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(desktop, "reaper_pids", lambda: {11, 22})
+    monkeypatch.setattr(desktop, "bench_reaper_pids", lambda: {22})
+    monkeypatch.setattr(desktop, "reaper_running", lambda: alive["up"])
+    monkeypatch.setattr(desktop_window, "reaper_hung", lambda pids, seconds=15.0: False)
+    monkeypatch.setattr(desktop_window, "force_close_reaper", lambda pids: calls.append(("kill", pids)))
+    monkeypatch.setattr(desktop_audio, "save_project_in_place", lambda *a, **k: calls.append(("save",)))
+
+    def close(pids):
+        calls.append(("close", pids))
+        alive["up"] = False
+        return 1
+    monkeypatch.setattr(desktop_window, "request_reaper_close", close)
+    assert ReaperEngine(link=object()).stop() is True
+    assert calls == [("save",), ("close", {11})]                         # jamais le REAPER d'un banc, jamais tué
+
+
+def test_un_reaper_qui_reste_ouvert_n_est_pas_dit_mort(monkeypatch):
+    import sys
+    from bridge import desktop_audio
+    from bridge.engine.reaper import ReaperEngine
+    from provision import desktop, desktop_window
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(desktop, "reaper_pids", lambda: {11})
+    monkeypatch.setattr(desktop, "bench_reaper_pids", lambda: set())
+    monkeypatch.setattr(desktop, "reaper_running", lambda: True)    # « Save project? » à l'écran
+    monkeypatch.setattr(desktop_window, "reaper_hung", lambda pids, seconds=15.0: False)
+    monkeypatch.setattr(desktop_window, "request_reaper_close", lambda pids: 1)
+    monkeypatch.setattr(desktop_audio, "save_project_in_place", lambda *a, **k: None)
+    assert ReaperEngine(link=object())._stop_desktop(0.5) is False
+
+
 def test_une_bascule_a_la_fois(bench, monkeypatch):
     monkeypatch.setattr(switch, "_job", {"phase": "starting"})
     with pytest.raises(ValueError):
@@ -220,3 +273,16 @@ def test_une_bascule_de_moteur_regle_le_boost_avant_de_demarrer(monkeypatch):
     run = src[src.index("def _run("):src.index("def _boost(")]
     assert run.index("_boost(") < run.index("new.restart(")          # boosté AVANT le démarrage du moteur
     assert "_boost(" in src[src.index("def _revert("):]                # et rendu au retour sur l'ancien
+
+
+def test_fermer_golem_annonce_l_arret_du_golem_engine_avant_de_l_arreter(monkeypatch):
+    # 2026-11-21 : la croix arrêtait le Golem Engine sans intention ; le moniteur y voyait un plantage et le relançait
+    # avant la mort du bridge — un moteur orphelin gardait la carte, golem fermé
+    from bridge import diag, engines, routes_dev
+    from bridge.engine import ardour
+    seen = []
+    monkeypatch.setattr(engines, "current", lambda *a, **k: "ardour")
+    monkeypatch.setattr(diag, "_intents", {})
+    monkeypatch.setattr(ardour.ArdourEngine, "stop", lambda self, timeout=10.0: seen.append(diag.peek_intent("reaper")) or True)
+    assert routes_dev._stop_golem_engine_for_shutdown() is True
+    assert seen == ["shutdown"]

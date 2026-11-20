@@ -176,3 +176,26 @@ Measured: command round trip, max 752 ms → 4 ms with meters on.
 
 **Code.** golem-engine `golem/engine/run.py` `no_power_throttling`, `libs/surfaces/osc/osc.cc` `OSC_SEND_PAUSE`;
 `tools/check-engine-ardour.py --only looper`.
+
+## Switching to the Golem Engine left REAPER running
+
+FIXED 2026-11-21.
+
+**Symptom.** After Settings ▸ Engines switched from REAPER to the Golem Engine, every preset crackled, a lot. Both
+engines counted zero xruns. REAPER was still in the task list, using about one CPU core.
+
+**Cause.** `ReaperEngine.stop()` used the Linux path: it found the rack's REAPER with `pgrep` and `/proc`. On Windows
+that found nothing, so nothing was stopped and the wait for REAPER's death returned at once. The Golem Engine then
+opened the card beside a live REAPER: the UA Volt's ASIO driver accepts two clients, and the two streams met in the
+driver. The switch also ignored the result of `stop()`.
+
+**Rule.** On Windows and macOS REAPER is closed the desktop way: save the project in place, `WM_CLOSE` (Apple Event on
+macOS), force only a REAPER that no longer answers; never a bench's REAPER. An old engine that does not die cancels
+the switch: never two engines on the card.
+
+**Same night, the window's close button.** Closing golem stopped the Golem Engine without posting an intent: the
+monitor took the stop for a crash and relaunched the engine a second later, just before the bridge died. An orphan
+Golem Engine kept the card with golem closed. Every deliberate stop posts `diag.intent` first.
+
+**Code.** `bridge/engine/reaper.py` `_stop_desktop`, `bridge/engine/switch.py` `_run`,
+`bridge/routes_dev.py` `_stop_golem_engine_for_shutdown`; `tests/test_engine_switch.py`.

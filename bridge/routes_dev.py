@@ -419,10 +419,7 @@ def _ui_quit_desktop(full):
         # LE GOLEM ENGINE (Windows, 2026-11-20) : moteur choisi, il s'arrête avec golem — sinon il gardait la carte
         # (ASIO, un seul client) et le golem relancé ne pouvait plus l'ouvrir
         try:
-            from . import engines
-            if engines.current() == "ardour":
-                from .engine.ardour import ArdourEngine
-                log.info("Golem Engine arrêté" if ArdourEngine().stop() else "Golem Engine pas arrêté en 10 s")
+            _stop_golem_engine_for_shutdown()
         except Exception as e:
             log.warning(f"Golem Engine non arrêté : {e}")
         pids = desktop._backend_pids()
@@ -679,3 +676,18 @@ async def drumkits_measure(body: dict):
     except ValueError as e:
         return JSONResponse({"error": str(e), "report": rep, "compare": cmp_}, status_code=409)
     return {"ok": True, "report": rep, "compare": cmp_, "descriptor": desc, "path": C.rel(path)}
+
+
+def _stop_golem_engine_for_shutdown():
+    """Arrête le Golem Engine à la fermeture de golem. L'INTENTION D'ABORD (2026-11-21) : sans elle, le moniteur prenait
+    cet arrêt pour un plantage et RELANÇAIT le moteur une seconde plus tard (_engine_crash_restart), juste avant la
+    mort du bridge — un Golem Engine orphelin gardait la carte, golem fermé."""
+    from . import diag, engines
+    if engines.current() != "ardour":
+        return None
+    diag.intent("reaper", "shutdown")
+    from .engine.ardour import ArdourEngine
+    dead = ArdourEngine().stop()
+    log.info("Golem Engine arrêté" if dead else "Golem Engine pas arrêté en 10 s")
+    return dead
+

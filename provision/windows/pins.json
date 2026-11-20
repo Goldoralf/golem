@@ -51,5 +51,11 @@
   "version": "0.6",
   "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.6/golem-fx-windows-x86_64.zip",
   "sha256": "4f5537a63fb191192999c797d64e32ca5e7c3dd01dee8fa71b6d9fb241c51cee"
+ },
+ "golem_engine": {
+  "_comment": "Le Golem Engine pour Windows (golem docs/ardour-plan.md §7e) : release golem-engine-9.9-g4 de Goldoralf/golem-binaries, construite par MSYS2 UCRT64 depuis le tag golem-engine-9.9-g4 du fork (676a094a9) et golem/tools/bundle.py ; empreinte recalculée sur l'archive publiée (2026-11-20). Posé par provision/golem_engine.py (provision/desktop.py setup) dans ~/opt/golem-engine, sans droits d'administrateur. Linux garde sa propre release (VERSION de golem_engine.py, provision/downloads.sha256).",
+  "version": "9.9-g4",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g4/golem-engine-windows-x86_64.tar.gz",
+  "sha256": "dee20c5d9bd551dfab6c4c8077471e6fdec94f15989a914d53c85521d3526688"
  }
 }

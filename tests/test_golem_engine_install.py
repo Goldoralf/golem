@@ -73,7 +73,7 @@ def test_l_empreinte_fausse_est_refusee_et_sans_release_rien_n_est_pose(tmp_path
     # un système où le moteur n'est pas encore porté : pas d'épingle dans son pins.json
     monkeypatch.setattr(G, "VERSION", "9.9-g1")
     with pytest.raises(RuntimeError, match="not available on this system yet"):
-        G.pin("win32")
+        G.pin("darwin")                                                 # Windows est épinglé depuis 9.9-g4
 
 
 def _mk(d):
@@ -136,10 +136,18 @@ def test_l_installateur_propose_le_golem_engine_la_ou_il_sait_le_poser(monkeypat
         pinned = False
     assert by["ardour"]["available"] is pinned and by["reaper"]["available"] is True
     assert S.installer_default_engine(str(ROOT), "linux") == ("ardour" if pinned else "reaper")
-    # un système où le moteur n'est pas encore porté : grisé, avec la raison ; REAPER y est le moteur
+    # Windows (2026-11-20) : le moteur s'y installe dès qu'une release est épinglée (pins.json `golem_engine`)
     win = {e["id"]: e for e in S.installer_engines(str(ROOT), "win32")}
-    assert win["ardour"]["available"] is False and win["ardour"]["reason"]
-    assert S.installer_default_engine(str(ROOT), "win32") == "reaper"
+    try:
+        G.pin("win32")
+        win_pinned = True
+    except RuntimeError:
+        win_pinned = False
+    assert win["ardour"]["available"] is win_pinned and (win_pinned or win["ardour"]["reason"])
+    # un système où le moteur n'est pas encore porté : grisé, avec la raison ; REAPER y est le moteur
+    mac = {e["id"]: e for e in S.installer_engines(str(ROOT), "darwin")}
+    assert mac["ardour"]["available"] is False and mac["ardour"]["reason"]
+    assert S.installer_default_engine(str(ROOT), "darwin") == "reaper"
 
 
 def test_install_sh_pose_le_golem_engine_d_abord_et_reaper_seulement_s_il_est_choisi():

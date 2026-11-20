@@ -1484,7 +1484,9 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 ## 7e. Windows port log (2026-11-19 → 2026-11-20)
 
 **Status: CODED, played by hand on the dev box** (Universal Audio Volt over ASIO, 48 kHz, buffer 256, the factory
-"Jazz Box" patch; no crackle at 256, crackles at 128). Not packaged yet.
+"Jazz Box" patch; no crackle at 256, crackles at 128). **Packaged and published**: release `golem-engine-9.9-g4` of
+Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), pinned in `provision/windows/pins.json`; the Windows
+setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). Linux stays on 9.9-g3 until rebuilt.
 
 - **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
   `golem/tools/win-portaudio-asio.sh` builds PortAudio 19.7.0 statically with Steinberg's ASIO SDK 2.3.4 (dual-licensed
@@ -1503,8 +1505,10 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
   observers with calls still queued (two teardown crashes); glibmm's regex throwing in the VST3 parameter scan (golem-fx's
   chorus never loaded); status files replaced atomically (`LuaAPI.replace_file`); sfizz never given a .sfz whose files
   are missing (heap corruption).
-- **Open**: packaging (`bundle.py` is Linux-only; the engine's LV2 plugins NAM, ZeroConvo and setBfree must ship with
-  it — they come from a dev folder today), the golem-binaries release and `provision/windows/pins.json`; DSP load at 128
+- **Package**: `golem/tools/bundle.py` (Windows branch: the MSYS2 DLLs through the PE imports, never Windows' own) and
+  `golem/tools/win-lv2-deps.sh` (NAM, zeroconvolv, sfizz with its `controllers.ttl`, setBfree rebuilt) — 86 MB; the
+  extracted package passes the adapter bench with no dev folder and no `LV2_PATH`.
+- **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.
 

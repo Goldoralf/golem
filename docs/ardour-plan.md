@@ -256,7 +256,7 @@ verified engine switch with rollback (`audio-engine-choice.md` E2–E4); Ardour 
 | D4 | Control channel | **OSC + Lua if that is enough** (spike A0.2 decides); the C++ surface only for what they cannot do |
 | D5 | Headless: `hardour` vs. GUI on Xvfb | Whatever spike A0.1 measures as more reliable |
 | D6 | T3 features required in the free edition | Looper and click first; drum machine, samples, standards later or REAPER-only |
-| D7 | Scope | Linux only; Windows/macOS later |
+| D7 | Scope | Linux only; Windows/macOS later — **Windows reached 2026-11-20** (§7e: PortAudio/ASIO, played on the dev box); macOS later |
 | D8 | Upstream pin | 9.9, then each release after the bench |
 | D9 | Bass and voice DI | The bench uses a **guitar DI** for bass and voice lanes: it proves the audio path and the blocks are correct, not the instrument's tone. Real bass and voice are checked later on the rig |
 
@@ -1480,6 +1480,33 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 | The LV2 reader for another architecture | Bundled for Linux x64 only. |
 | DrumGizmo kits, the song click (beat map), `drumlearn` | Unchanged since their lots. |
 | One full bench run in four failed from a keys recall on | Cause not captured; not reproduced since. |
+
+## 7e. Windows port log (2026-11-19 → 2026-11-20)
+
+**Status: CODED, played by hand on the dev box** (Universal Audio Volt over ASIO, 48 kHz, buffer 256, the factory
+"Jazz Box" patch; no crackle at 256, crackles at 128). Not packaged yet.
+
+- **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
+  `golem/tools/win-portaudio-asio.sh` builds PortAudio 19.7.0 statically with Steinberg's ASIO SDK 2.3.4 (dual-licensed
+  "Steinberg ASIO License or GPL v3" since 2025-10-15 — compatible with Ardour's GPL v2+ as GPL v3), both downloads
+  pinned, the SDK never committed.
+- **Audio**: the watcher picks PortAudio's *driver* (host API: `GOLEM_ENGINE_DRIVER`, else ASIO), then the card in the
+  backend's separate input and output lists. On Windows the card is golem's ASIO driver from Settings ▸ Audio (REAPER's
+  `asio_driver_name`), its buffer the one golem requests there, unless the engine has its own (`config/golem-engine.json`,
+  the Dashboard — hot, no restart).
+- **golem**: `config/engines/ardour.json` makes the engine choosable on Windows where `golem/engine/run.py` is found;
+  `provision/desktop.py start` launches the chosen engine instead of REAPER, ⏻ stops it; the card banner reads the
+  engine's status, not REAPER's telemetry.
+- **Bench**: 162 checks; all pass on the dummy card on Windows except two plugins without a Windows build here
+  (bitcrusher, grit). `check-engine-ardour.py --device NAME --only start` runs against a real card.
+- **Fixed on the way** (fork patches, `golem/README.md`): an `IO` destroyed during a port-connection callback, OSC
+  observers with calls still queued (two teardown crashes); glibmm's regex throwing in the VST3 parameter scan (golem-fx's
+  chorus never loaded); status files replaced atomically (`LuaAPI.replace_file`); sfizz never given a .sfz whose files
+  are missing (heap corruption).
+- **Open**: packaging (`bundle.py` is Linux-only; the engine's LV2 plugins NAM, ZeroConvo and setBfree must ship with
+  it — they come from a dev folder today), the golem-binaries release and `provision/windows/pins.json`; DSP load at 128
+  (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
+  these changes.
 
 ## 8. Risks
 

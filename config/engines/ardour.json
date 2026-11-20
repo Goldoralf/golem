@@ -1,5 +1,5 @@
 {
-  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5 ; plan : docs/ardour-plan.md). Le Golem Engine est construit depuis Ardour 9.9 (dépôt Goldoralf/golem-engine). Choisissable sous Linux là où il est CONSTRUIT (platforms.linux.requires) ; la bascule est bridge/engine/switch.py (lot E3). Capacités = la cible, pas une mesure.",
+  "_doc": "Descripteur de moteur audio (docs/audio-engine-choice.md §5 ; plan : docs/ardour-plan.md). Le Golem Engine est construit depuis Ardour 9.9 (dépôt Goldoralf/golem-engine). Choisissable sous Linux et Windows (2026-11-20 : PortAudio/ASIO) là où il est CONSTRUIT ou installé (platforms.<os>.requires ; Windows : son lanceur run.py) ; la bascule est bridge/engine/switch.py (lot E3). Capacités = la cible, pas une mesure.",
   "id": "ardour",
   "name": "Golem Engine",
   "by": "built by golem from Ardour 9.9",
@@ -11,7 +11,7 @@
   "unavailable_reason": "Coming soon",
   "platforms": {
     "linux": {"available": true, "requires": {"env": "GOLEM_ENGINE_DIR", "default": ["~/golem-engine", "~/opt/golem-engine"], "file": "golem/engine/run.sh", "reason": "Golem Engine is not built on this machine"}},
-    "win32": {"available": false, "reason": "Linux only for now"},
+    "win32": {"available": true, "requires": {"env": "GOLEM_ENGINE_DIR", "default": ["~/golem-engine", "~/opt/golem-engine"], "file": "golem/engine/run.py", "reason": "Golem Engine is not installed on this machine"}},
     "darwin": {"available": false, "reason": "Linux only for now"}
   },
   "summary": "Free, nothing to buy. Plays golem's presets, scenes, takes, backing, looper and drums. Younger than REAPER: no plugin windows yet.",

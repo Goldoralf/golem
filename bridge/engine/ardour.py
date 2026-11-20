@@ -17,6 +17,7 @@ import json
 import logging
 import math
 import os
+from pathlib import Path
 import signal
 import subprocess
 import sys
@@ -70,12 +71,39 @@ ENGINE_DIR = _engine_dir()
 OSC_PORT = int(os.environ.get("GOLEM_ENGINE_OSC", "3819"))
 def card_device():
     """Le nom de la carte ACTIVE de golem (config/cards/<carte>.json, la même que REAPER ouvre) — le veilleur la retrouve
-    parmi les périphériques ALSA d'Ardour par un nom contenu dans l'autre. None si aucune carte n'est connue."""
+    parmi les périphériques ALSA d'Ardour par un nom contenu dans l'autre. None si aucune carte n'est connue.
+    WINDOWS (2026-11-20) : pas de config/cards — la carte est le PILOTE ASIO réglé dans Settings ▸ Audio (le reaper.ini
+    de golem, `asio_driver_name` en mode ASIO) ; le veilleur choisit le pilote « ASIO » de PortAudio et y retrouve ce
+    nom. Un autre mode audio (WASAPI…) : None, le moteur reste sur le pilote factice plutôt que de deviner."""
+    if sys.platform == "win32":
+        try:
+            from .. import desktop_audio as DA
+            audio = DA._values(DA._read_ini(Path(C.reaper_resource_dir()) / "reaper.ini"), "audioconfig")
+            return (audio.get("asio_driver_name") or "").strip('"') or None if audio.get("mode") == "3" else None
+        except Exception:
+            return None
     try:
         with open(os.path.join(C.ROOT, "config", "cards", f"{C.alsa_card()}.json"), encoding="utf-8") as f:
             return (json.load(f) or {}).get("name") or None
     except (OSError, ValueError, AttributeError):
         return None
+
+
+def card_buffer():
+    """Le buffer que golem demande à la carte, quand il en demande un : Windows (2026-11-20), celui de Settings ▸ Audio
+    (`asio_bsize` du reaper.ini de golem, s'il est demandé : `asio_bsize_use`). Le veilleur le prend si le moteur n'a
+    pas son propre réglage (config/golem-engine.json, le Dashboard) — sans lui, PortAudio ouvrait l'ASIO à 1024
+    échantillons, plus de 20 ms par sens. None ailleurs (ALSA : le réglage du moteur)."""
+    if sys.platform != "win32":
+        return None
+    try:
+        from .. import desktop_audio as DA
+        audio = DA._values(DA._read_ini(Path(C.reaper_resource_dir()) / "reaper.ini"), "audioconfig")
+        if audio.get("mode") == "3" and audio.get("asio_bsize_use") == "1":
+            return int(audio.get("asio_bsize") or 0) or None
+    except Exception:
+        pass
+    return None
 
 
 # la carte de golem en ALSA par défaut ; sans carte connue (un banc, une machine neuve) : le pilote factice, sans son
@@ -759,7 +787,12 @@ class ArdourEngine(EngineAdapter):
         py = os.path.join(os.path.dirname(script), "run.py")
         cmd = [sys.executable, py] if os.path.isfile(py) else ["bash", script]
         detach = {"creationflags": 0x00000008 | 0x00000200} if sys.platform == "win32" else {"start_new_session": True}
-        subprocess.Popen([*cmd, C.ROOT, SESSION_DIR, BACKEND, DEVICE], stdout=logf, stderr=subprocess.STDOUT, **detach)
+        env = dict(os.environ)
+        buf = card_buffer() if DEVICE else None
+        if buf:
+            env["GOLEM_ENGINE_BUFFER"] = str(buf)              # le buffer de la carte (Windows : Settings ▸ Audio)
+        subprocess.Popen([*cmd, C.ROOT, SESSION_DIR, BACKEND, DEVICE], stdout=logf, stderr=subprocess.STDOUT, env=env,
+                         **detach)
         return {"ok": True, "restarting": True}
 
     _table = {"mtime": None, "types": frozenset()}

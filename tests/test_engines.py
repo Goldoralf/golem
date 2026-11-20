@@ -50,7 +50,7 @@ def test_choix_absent_ou_indisponible_retombe_sur_le_defaut(root):
 def test_write_choice_refuse_ce_qui_n_est_pas_disponible(root):
     with pytest.raises(ValueError, match="not built"):
         E.write_choice("ardour", root=root, platform="linux")
-    with pytest.raises(ValueError, match="Linux only"):
+    with pytest.raises(ValueError, match="not installed"):                # Windows (2026-11-20) : là où run.py est
         E.write_choice("ardour", root=root, platform="win32")
     with pytest.raises(ValueError, match="unknown"):
         E.write_choice("bogus", root=root)
@@ -64,9 +64,12 @@ def test_le_golem_engine_construit_se_choisit_sous_linux(root, monkeypatch, tmp_
     (built / "golem" / "engine" / "run.sh").write_text("#!/bin/sh\n")
     monkeypatch.setenv("GOLEM_ENGINE_DIR", str(built))
     assert {e["id"]: e["available"] for e in E.descriptors(root, "linux")}["ardour"] is True
-    assert {e["id"]: e["available"] for e in E.descriptors(root, "win32")}["ardour"] is False
+    assert {e["id"]: e["available"] for e in E.descriptors(root, "win32")}["ardour"] is False   # pas de run.py
     assert E.write_choice("ardour", root=root, platform="linux") == "ardour"
     assert E.current(root, "linux") == "ardour"
     # 2026-11-18 (docs/install-v2.md) : le Golem Engine est le moteur par défaut LÀ OÙ IL EST INSTALLÉ ; ailleurs
     # (pas encore porté) le défaut reste REAPER
     assert E.default_id(root, "linux") == "ardour" and E.default_id(root, "win32") == "reaper"
+    # Windows (2026-11-20) : le même moteur, son lanceur run.py (PortAudio/ASIO)
+    (built / "golem" / "engine" / "run.py").write_text("")
+    assert {e["id"]: e["available"] for e in E.descriptors(root, "win32")}["ardour"] is True

@@ -293,12 +293,26 @@ def test_le_buffer_lu_partout_est_celui_du_moteur_actif(monkeypatch, tmp_path):
 
 
 def test_la_carte_par_defaut_est_celle_de_golem(monkeypatch, tmp_path):
+    monkeypatch.setattr(A.sys, "platform", "linux")
     monkeypatch.setattr(C, "ROOT", str(tmp_path))
     monkeypatch.setattr(C, "alsa_card", lambda: "V276")
     assert A.card_device() is None                                       # pas de registre : pas de carte
     (tmp_path / "config" / "cards").mkdir(parents=True)
     (tmp_path / "config" / "cards" / "V276.json").write_text(json.dumps({"id": "V276", "name": "Universal Audio Volt 276"}))
     assert A.card_device() == "Universal Audio Volt 276"
+
+
+def test_sous_windows_la_carte_est_le_pilote_asio_de_settings_audio(monkeypatch, tmp_path):
+    """Windows (2026-11-20) : pas de config/cards — la carte est le pilote ASIO réglé dans Settings ▸ Audio (le
+    reaper.ini de golem) ; un autre mode audio ne devine rien : le moteur reste sur le pilote factice."""
+    monkeypatch.setattr(A.sys, "platform", "win32")
+    monkeypatch.setattr(C, "reaper_resource_dir", lambda: str(tmp_path))
+    ini = tmp_path / "reaper.ini"
+    assert A.card_device() is None                                       # pas de reaper.ini
+    ini.write_text('[audioconfig]\nmode=3\nasio_driver_name="Universal Audio Volt"\n', encoding="utf-8")
+    assert A.card_device() == "Universal Audio Volt"
+    ini.write_text('[audioconfig]\nmode=5\nasio_driver_name="Universal Audio Volt"\n', encoding="utf-8")
+    assert A.card_device() is None                                       # WASAPI : rien n'est deviné
 
 
 # ── A2.4 : Health et l'inventaire du moteur ─────────────────────────────────────────────────────────────────

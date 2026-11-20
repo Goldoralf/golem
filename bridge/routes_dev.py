@@ -416,6 +416,15 @@ def _ui_quit_desktop(full):
                 log.info("REAPER de banc arrêtés avant l'arrêt complet")
         except Exception as e:
             log.warning(f"REAPER de banc non arrêtés : {e}")
+        # LE GOLEM ENGINE (Windows, 2026-11-20) : moteur choisi, il s'arrête avec golem — sinon il gardait la carte
+        # (ASIO, un seul client) et le golem relancé ne pouvait plus l'ouvrir
+        try:
+            from . import engines
+            if engines.current() == "ardour":
+                from .engine.ardour import ArdourEngine
+                log.info("Golem Engine arrêté" if ArdourEngine().stop() else "Golem Engine pas arrêté en 10 s")
+        except Exception as e:
+            log.warning(f"Golem Engine non arrêté : {e}")
         pids = desktop._backend_pids()
         hung = False
         if sys.platform == "win32" and desktop.reaper_running():

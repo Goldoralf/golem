@@ -798,19 +798,42 @@ def _bring_up(port, reaper_args, window, shell="device", reset=False, fullscreen
         open_window(port, shell, reset, fullscreen)
         if not wait_for_screen(port):
             print("golem window is slow to show — starting REAPER anyway")
-    # REAPER ne tient pas encore le pilote ASIO : il dit ses tailles de buffer (une fois par pilote, bridge/asio_probe.py)
-    try:
-        from bridge import desktop_audio
-        desktop_audio.probe_asio_if_missing()
-    except Exception:
-        pass
-    launch_reaper(reaper_args, cwd=ROOT)
+    if reaper_args is None:
+        start_golem_engine()
+    else:
+        # REAPER ne tient pas encore le pilote ASIO : il dit ses tailles de buffer (une fois par pilote, bridge/asio_probe.py)
+        try:
+            from bridge import desktop_audio
+            desktop_audio.probe_asio_if_missing()
+        except Exception:
+            pass
+        launch_reaper(reaper_args, cwd=ROOT)
     if window:
         print(f"golem is running: {url} — Ctrl+C here, or ⏻ in the golem window, stops it.")
     else:
         # le message ne bloque pas : sous pythonw une boîte Windows est MODALE, et ce processus doit
         # rester sur bridge.wait() (c'est lui qui rend REAPER visible quand GoleM s'arrête)
         threading.Thread(target=_notify, args=(server_message(port),), daemon=True).start()
+
+
+def chosen_engine():
+    """Le moteur choisi (config/engine.json, bridge/engines.py — le seul lecteur) ; REAPER si rien ne se lit."""
+    try:
+        from bridge import engines
+        return engines.current(root=str(ROOT)) or "reaper"
+    except Exception:
+        return "reaper"
+
+
+def start_golem_engine():
+    """Le Golem Engine par son adaptateur (bridge/engine/ardour.py) : sa carte (le pilote ASIO de Settings ▸ Audio),
+    sa session dans sets/, son journal. Le bridge, déjà debout, le verra démarrer."""
+    try:
+        from bridge.engine.ardour import ArdourEngine
+        ArdourEngine().restart("desktop start")
+        print("Golem Engine starting")
+    except Exception as exc:
+        print(f"Golem Engine not started: {exc}")
 
 
 def open_window(port, shell="device", reset=False, fullscreen=False):
@@ -1216,12 +1239,16 @@ def start(shell="device", reset=False, fullscreen=False, window=True):
         open_window(port, shell, reset, fullscreen)
         print(f"golem is already running: window opened on http://127.0.0.1:{port}/app/")
         return
-    if not reaper.is_file():
+    # LE MOTEUR CHOISI (Windows/macOS, 2026-11-20 — comme provision/start.sh sous Linux) : le Golem Engine démarre à
+    # la place de REAPER ; REAPER fermé quand même (il tiendrait la carte, un pilote ASIO n'a souvent qu'un client)
+    golem_engine = chosen_engine() == "ardour"
+    if not golem_engine and not reaper.is_file():
         hint = (f"install it from {json.loads((ROOT / 'provision' / 'macos' / 'pins.json').read_text(encoding='utf-8'))['reaper']['url']} "
                 "or set REAPER_BIN" if sys.platform == "darwin" else "set REAPER_BIN to its reaper.exe")
         raise RuntimeError(f"REAPER not found: {reaper} ({hint})")
     if reaper_running():
-        raise RuntimeError("Close REAPER first: golem loads its scripts when REAPER starts.")
+        raise RuntimeError("Close REAPER first: " + ("it holds the audio card the Golem Engine needs." if golem_engine
+                                                     else "golem loads its scripts when REAPER starts."))
     with socket.socket() as probe:
         if probe.connect_ex(("127.0.0.1", port)) == 0:
             raise RuntimeError(f"Port {port} is already in use by another program.")
@@ -1233,8 +1260,9 @@ def start(shell="device", reset=False, fullscreen=False, window=True):
     # REAPER est fermé (vérifié plus haut) : ses masques MIDI se posent maintenant — la prise du
     # pédalier rendue au bridge, les claviers liés ouverts (bridge/desktop_midi.py)
     try:
-        from bridge import desktop_midi
-        desktop_midi.apply_reaper_masks(str(resource_dir()))
+        if not golem_engine:
+            from bridge import desktop_midi
+            desktop_midi.apply_reaper_masks(str(resource_dir()))
     except Exception as exc:
         print(f"REAPER MIDI settings not updated: {exc}")
     log_dir = resource_dir() / "GoleM" / "logs"
@@ -1280,7 +1308,7 @@ def start(shell="device", reset=False, fullscreen=False, window=True):
         else:
             args.append("-new")
             print("No sets/golem-set.rpp yet: REAPER starts with a new empty project.")
-        _bring_up(port, args, window, shell, reset, fullscreen)
+        _bring_up(port, None if golem_engine else args, window, shell, reset, fullscreen)
         bridge.wait()
     except KeyboardInterrupt:
         pass

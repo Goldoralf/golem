@@ -32,7 +32,12 @@ def main():
     ap.add_argument("--keep", action="store_true", help="garder la racine jetable")
     ap.add_argument("--only", help="ne jouer que ces sections, séparées par des virgules (rig, rec, click, clock, drums, "
                                    "standard, tuner, backing, preview, sample, looper, host, riff, trial, miditake, "
-                                   "capture, keys) — le démarrage (relance, ping, inventaire, transport) tourne toujours")
+                                   "capture, keys) — le démarrage (relance, ping, inventaire, transport) tourne toujours ; "
+                                   "« start » : le démarrage seul")
+    ap.add_argument("--device", help="une VRAIE carte (2026-11-20) : son nom, tel que golem la règle (Windows : le pilote "
+                                     "ASIO de Settings ▸ Audio, joué par PortAudio/ASIO ; Linux : ALSA). Sans elle : la "
+                                     "carte factice. Les niveaux du banc supposent le sinus factice : avec une vraie carte, "
+                                     "commencer par --only start")
     a = ap.parse_args()
     os.environ["GOLEM_ENGINE_DIR"] = a.engine_dir
     # SON port OSC, jamais le 3819 : un rack qui tourne sur le Golem Engine l'occupe — le moteur du banc prenait 3820 en
@@ -43,7 +48,8 @@ def main():
         os.environ["GOLEM_ENGINE_OSC"] = str(_s.getsockname()[1])
     # la carte factice JOUE du MIDI sur ses entrées (des phrases fixes) : la prise d'une lane clavier a quelque chose à
     # capter. Aucune autre lane du banc n'ouvre ces ports.
-    os.environ["GOLEM_ENGINE_MIDI"] = "Midi Event Generators"
+    if not a.device:
+        os.environ["GOLEM_ENGINE_MIDI"] = "Midi Event Generators"
 
     work = tempfile.mkdtemp(prefix="golem-engine-check-")
     from bridge import commands
@@ -76,6 +82,9 @@ def main():
         "None (Dummy)", "Sine Wave 1K, 1/3 Oct"   # la carte factice qui JOUE un sinus FIXE sur ses entrées (1 kHz et ses
     # tiers d'octave, un par canal). Le nom EXACT : « Sine Wave 1K » ouvrait « Sine Wave », dont la fréquence est tirée
     # au hasard à chaque démarrage du backend — les niveaux du banc changeaient d'un lancement à l'autre (2026-11-17)
+    if a.device:                                         # une vraie carte : le backend de la plateforme
+        A.BACKEND, A.DEVICE = ("PortAudio (default)" if sys.platform == "win32" else "ALSA"), a.device
+        print(f"carte RÉELLE : {A.DEVICE} ({A.BACKEND})")
     eng = A.ArdourEngine()
     from bridge import engine
     engine.use(eng)
@@ -170,7 +179,7 @@ def main():
                     ("looper", looper_bench), ("host", host_bench), ("riff", riff_bench), ("trial", None),
                     ("miditake", miditake_bench), ("capture", capture_bench), ("keys", keys_bench)]
         only = {s.strip() for s in (a.only or "").split(",") if s.strip()}
-        unknown = only - {n for n, _ in sections}
+        unknown = only - {n for n, _ in sections} - {"start"}
         if unknown:
             raise SystemExit(f"--only: unknown section(s) {sorted(unknown)} — known: {[n for n, _ in sections]}")
         for name, fn in sections:

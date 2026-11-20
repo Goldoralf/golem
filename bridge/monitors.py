@@ -1011,6 +1011,30 @@ async def _poll_cards():
                 await asyncio.sleep(3)
                 continue
             driver = settings.get("driver") if sys.platform == "win32" else settings.get("input_device")
+            # LE GOLEM ENGINE (Windows, 2026-11-20) : pas de golem_desktop_audio.lua, donc pas de télémétrie REAPER — et le
+            # lien OSC (celui du moteur) répond : l'écran disait « REAPER's golem scripts never started » au bout de 60 s.
+            # La carte est alors celle que le moteur a ouverte (presets/.engine-status.json : `running`).
+            try:
+                from . import engines as _engines
+                on_engine = _engines.current() == "ardour"
+            except Exception:
+                on_engine = False
+            if on_engine:
+                try:
+                    with open(os.path.join(C.PRESETS_DIR, ".engine-status.json"), encoding="utf-8") as f:
+                        est = json.load(f) or {}
+                    eng_present = bool(est.get("running")) and "Dummy" not in str(est.get("backend") or "")
+                except (OSError, ValueError):
+                    eng_present = None
+                cur = {"active": driver or "", "active_present": eng_present, "active_name": driver or "",
+                       "candidates": [], "known": [], "scripts_stalled": False, "scripts_never_started": False,
+                       "lua_error": None}
+                if cur != last:
+                    last = cur
+                    state.cards = cur
+                    state.touch(); await _broadcast()
+                await asyncio.sleep(3)
+                continue
             actual = settings.get("actual") or {}
             present = bool(actual.get("MODE") and driver)
             if sys.platform == "darwin" and actual:

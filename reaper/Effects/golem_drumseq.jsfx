@@ -27,7 +27,9 @@ desc:GoleM drum sequencer (drumseq) -- free-running tempo-synced MIDI drum patte
 //! ── QUANTIFICATION A LA MESURE ──
 //! play  : demarre immediatement (rien ne joue) au tick 0 du pattern.
 //! variation : latch, applique a la PROCHAINE barre (pending_op=2).
-//! fill  : latch, applique a la prochaine barre (pending_op=3) ; joue UNE fois puis revient au groove.
+//! fill  : latch, applique a la prochaine barre (pending_op=3) ; joue UNE fois (en entier) puis revient au groove.
+//!         CTL_RET (2026-11-20) : 0 = revient au groove courant ; n+1 = repart sur le slot n (la variation
+//!         precedee de son fill) et sort du mode sequence, comme une variation.
 //! stop  : immediat (on cesse d'emettre ; les samples one-shot RS5k finissent de sonner naturellement).
 //! song  : mode SEQUENCE (op=4) — joue la playlist gmem [slot,times]xN, avance AUTO a la fin de
 //!         chaque pattern (times=0 -> boucle infinie sur l'etape). Fin de liste : seq_mode 0 (loop)
@@ -36,6 +38,7 @@ desc:GoleM drum sequencer (drumseq) -- free-running tempo-synced MIDI drum patte
 //!
 //! ── gmem "golem_drums" (miroir golem_drums.lua) ──
 //!  CTL (Lua -> JSFX) : [0]nonce [1]op(0 stop/1 play/2 var/3 fill/4 song) [2]slot [3]ppqres [4]chan [5]bankgen
+//!                      [6]ret (retour d'un fill : slot+1, 0 = groove courant)
 //!  ST  (JSFX -> Lua) : [8]playing [9]cur_slot [10]mode(0 groove/1 fill) [11]heartbeat [12]tempo
 //!                      [13]seq_idx (etape courante, -1 hors sequence) [14]seq_on
 //!  SEQ (Lua -> JSFX) : [16]len [17]mode(0 loop/1 once) ; etapes des [18] par pas de 2 :
@@ -59,7 +62,7 @@ out_pin:left output
 out_pin:right output
 
 @init
-CTL_NONCE=0; CTL_OP=1; CTL_SLOT=2; CTL_PPQRES=3; CTL_CHAN=4; CTL_BANKGEN=5;
+CTL_NONCE=0; CTL_OP=1; CTL_SLOT=2; CTL_PPQRES=3; CTL_CHAN=4; CTL_BANKGEN=5; CTL_RET=6;
 ST_PLAYING=8; ST_SLOT=9; ST_MODE=10; ST_HB=11; ST_TEMPO=12; ST_SEQIDX=13; ST_SEQON=14;
 SEQ_LEN=16; SEQ_MODE=17; SEQ_STEPS=18; SEQ_MAX=64;
 SLOT_BASE=256; SLOT_STRIDE=8192; EV_OFF=8; EV_STRIDE=4;
@@ -67,7 +70,7 @@ EPS=0.0000001;
 
 playing=0; cur_slot=-1; cur_len=0; cur_barppq=1; cur_nev=0;
 ppq=0; ev_cur=0; mode_fill=0; return_slot=-1;
-pending_op=0; pending_slot=-1;
+pending_op=0; pending_slot=-1; pending_ret=0;
 seq_on=0; seq_idx=0; seq_rep=0;   // seq_rep = passages restants de l'etape (-1 = infini)
 last_nonce=-1; hb=0;
 
@@ -117,7 +120,10 @@ gmem[CTL_NONCE] != last_nonce ? (
     playing ? ( pending_op = 2; pending_slot = slot; )
             : ( playing = 1; mode_fill = 0; return_slot = -1; load_slot(slot); );
   ) : op == 3 ? (
-    playing ? ( pending_op = 3; pending_slot = slot; );
+    playing ? (
+      pending_op = 3; pending_slot = slot; pending_ret = gmem[CTL_RET]|0;
+      pending_ret > 0 ? seq_on = 0;              // un fill qui mene a une variation sort du mode sequence
+    );
   ) : op == 4 ? (
     // song : joue la playlist depuis l'etape 0
     (gmem[SEQ_LEN]|0) > 0 ? (
@@ -167,7 +173,7 @@ playing ? (
         ) : pending_op == 2 ? (
           load_slot(pending_slot); pending_op = 0;                    // variation prend a la barre
         ) : pending_op == 3 ? (
-          return_slot = cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
+          return_slot = pending_ret > 0 ? pending_ret - 1 : cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
         ) : seq_on ? (
           // mode sequence : passage consomme -> reboucle l'etape ou avance
           seq_rep > 0 ? seq_rep -= 1;
@@ -191,7 +197,7 @@ playing ? (
         pending_op == 2 ? (
           load_slot(pending_slot); pending_op = 0;
         ) : pending_op == 3 ? (
-          return_slot = cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
+          return_slot = pending_ret > 0 ? pending_ret - 1 : cur_slot; load_slot(pending_slot); mode_fill = 1; pending_op = 0;
         );
       );
     );

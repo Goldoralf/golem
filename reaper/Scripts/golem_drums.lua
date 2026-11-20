@@ -49,7 +49,9 @@
                non vide -> mode SONG (playlist d'étapes {i=index pattern, times, 0=∞}, avance
                auto à la fin de chaque groove, loop|once=silence net) ; sinon démarre idx en boucle
     variation {seq, block, idx}      — bascule patterns[idx] à la prochaine mesure
-    fill      {seq, block, fill_idx} — insère fills[fill_idx] une fois puis revient au groove
+    fill      {seq, block, fill_idx, then_idx?} — insère fills[fill_idx] une fois (à la prochaine mesure, en
+               entier) puis revient au groove ; avec then_idx (2026-11-20) : repart sur patterns[then_idx] — la
+               variation précédée de son fill — et sort du mode SONG comme une variation
     stop      {seq, block}           — silence
 
   MOTEUR SINGULIER : une seule piste Drums, un seul séquenceur -> UN bloc drums joue à la fois.
@@ -197,7 +199,9 @@ local DRUMMIX_NAMES = { "JS:golem/golem_drummix", "JS: golem/golem_drummix",
 local FX_OPEN = { VST = true, AU = true, JS = true, LV2 = true, DX = true, CLAP = true }
 
 -- ── carte gmem "golem_drums" (miroir golem_drumseq.jsfx) ──
-local G = { NONCE = 0, OP = 1, SLOT = 2, PPQRES = 3, CHAN = 4, BANKGEN = 5,
+-- RET (2026-11-20) : le groove où revient un FILL, en slot + 1 ; 0 = le groove courant (l'ancien comportement : un
+-- script qui ne l'écrit pas laisse 0)
+local G = { NONCE = 0, OP = 1, SLOT = 2, PPQRES = 3, CHAN = 4, BANKGEN = 5, RET = 6,
            PLAYING = 8, ST_SLOT = 9, MODE = 10, HB = 11, TEMPO = 12, SEQIDX = 13, SEQON = 14,
            SEQLEN = 16, SEQMODE = 17, SEQSTEPS = 18 }
 local PPQ_RES     = 960
@@ -896,9 +900,10 @@ end
 -- le canal 10 -> émettre sur canal 1 (chan=0) restait muet (aucun pad ne bougeait). Les RS5k filtrent
 -- par NOTE (canal ignoré) -> canal 10 marche pour les deux moteurs.
 local DRUM_MIDI_CHAN = 9
-local function seq_cmd(op, slot)
+local function seq_cmd(op, slot, ret)
   reaper.gmem_write(G.OP, op)
   reaper.gmem_write(G.SLOT, slot or 0)
+  reaper.gmem_write(G.RET, ret or 0)
   reaper.gmem_write(G.CHAN, DRUM_MIDI_CHAN)
   reaper.gmem_write(G.NONCE, (reaper.gmem_read(G.NONCE) or 0) + 1)
 end
@@ -960,14 +965,17 @@ local function op_variation(bid, idx)
   log(string.format("variation bloc %s -> idx %d", bid, idx))
 end
 
-local function op_fill(bid, fill_idx)
+local function op_fill(bid, fill_idx, then_idx)
   local st = blocks[bid]
   if not st then log("fill : bloc " .. tostring(bid) .. " sans banque (play d'abord)"); return end
   fill_idx = fill_idx or 0
   if fill_idx < 0 or fill_idx >= st.F then log("fill : fill_idx " .. fill_idx .. " hors plage"); return end
+  if then_idx and (then_idx < 0 or then_idx >= st.P) then log("fill : then_idx " .. then_idx .. " hors plage"); then_idx = nil end
   cur_block = bid
-  seq_cmd(3, st.P + fill_idx)                                -- fills logés après les patterns
-  log(string.format("fill bloc %s -> fills[%d] (slot %d)", bid, fill_idx, st.P + fill_idx))
+  if then_idx then st.idx = then_idx; st.seq = false end    -- la variation qui suit le fill (sort du mode SONG)
+  seq_cmd(3, st.P + fill_idx, then_idx and then_idx + 1 or 0)   -- fills logés après les patterns
+  log(string.format("fill bloc %s -> fills[%d] (slot %d)%s", bid, fill_idx, st.P + fill_idx,
+                    then_idx and (", puis idx " .. then_idx) or ""))
 end
 
 local function op_stop(bid)
@@ -1066,7 +1074,7 @@ local function poll_cmd()
   elseif op == "variation" then
     op_variation(bid, tonumber(body:match('"idx"%s*:%s*(%-?%d+)')) or 0)
   elseif op == "fill" then
-    op_fill(bid, tonumber(body:match('"fill_idx"%s*:%s*(%-?%d+)')) or 0)
+    op_fill(bid, tonumber(body:match('"fill_idx"%s*:%s*(%-?%d+)')) or 0, tonumber(body:match('"then_idx"%s*:%s*(%-?%d+)')))
   elseif op == "mix" then
     local tr = find_track(TRACK)
     local mix = parse_mix(body)

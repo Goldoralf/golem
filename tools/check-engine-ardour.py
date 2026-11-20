@@ -749,6 +749,13 @@ def drums_bench(eng, check, wait, acked):
     seen = wait(lambda: state().get("mode") == "fill", 8)
     back = wait(lambda: state().get("mode") == "groove" and state().get("idx") == 1, 12)
     check("boîte à rythmes : le fill joue une fois puis rend la main au groove", bool(seen) and bool(back), json.dumps(state()))
+    # le fill qui MÈNE à une variation (2026-11-20, `then_idx`) : depuis le groove 1, le séquenceur repart sur le 0 —
+    # l'idx publié est le slot que le séquenceur JOUE (golem_watch drums_publish), pas celui que le veilleur retient
+    send(op="fill", fill_idx=0, then_idx=0)
+    seen = wait(lambda: state().get("mode") == "fill", 8)
+    back = wait(lambda: state().get("mode") == "groove" and state().get("idx") == 0, 12)
+    check("boîte à rythmes : le fill d'une variation joue, puis la variation suivante (pas le groove d'avant)",
+          bool(seen) and bool(back), json.dumps(state()))
     st = send(op="stop")
     time.sleep(2.5)
     off = loud(1.0)

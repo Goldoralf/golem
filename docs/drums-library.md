@@ -79,6 +79,12 @@ document is there, `applyDrumsAction` touches its **Drum Machine** block (the `g
 is none: the groove is added to *Grooves* (a fill to *Fills*), never twice; the kit becomes its *Kit*. The block's
 sheet opens on the ⚙ tab. The edit auditions like any other; nothing plays until the foot starts the drum machine.
 
+A groove in *Fills* is played by the foot (2026-11-20): holding the drum machine's switch 0.6–1.5 s, which moves to
+the next variation, first plays the fill of the groove being left — the i-th fill goes with the i-th groove, a single
+fill serves them all — at the next bar and in full, then the next variation starts. Without fills nothing changes; the
+screen's *Variation* does the same (`bridge/drums.py` `_variation`, one `fill` command with `then_idx`, read by both
+sequencers: `golem_drumseq.jsfx` and the Golem Engine's `golem_drumseq.lua`).
+
 ## 6. To golem.fm
 
 - Each kit's pack (`local:kit-<id>`) carries `drum_preview.kit_card`: `type` (the photo — golem.fm reads it, never

@@ -31,7 +31,7 @@
     "stopped": {"label": "Stopped", "gestures": [{"g": "tap", "icon": "▶", "text": "Play the groove"}]},
     "playing": {"label": "Playing", "gestures": [
       {"g": "tap", "icon": "■", "text": "Stop"},
-      {"g": "hold", "icon": "↻", "text": "Next variation, on the bar", "s": 0.6},
+      {"g": "hold", "icon": "↻", "text": "Fill (if any), then next variation", "s": 0.6},
       {"g": "longhold", "icon": "■", "text": "Stop", "s": 1.5}]}
    }
   },

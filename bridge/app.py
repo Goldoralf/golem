@@ -2616,7 +2616,7 @@ async def drums_action(body: dict):
     if op == "stop":
         _drums_ctl.stop(drm.get("block"))
     elif op == "variation":
-        _drums_ctl.variation(drm.get("block"), drm.get("patterns"))
+        _drums_ctl.variation(drm.get("block"), drm.get("patterns"), drm.get("fills"))   # un fill d'abord, s'il y en a
     else:
         _drums_ctl.tap(drm.get("block"), drm.get("patterns"), drm.get("fills"), drm.get("kit"),
                        sequence=drm.get("sequence"), seq_mode=drm.get("seq_mode"))

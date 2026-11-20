@@ -4199,7 +4199,7 @@
      "default": null
     }
    ],
-   "note": "Boite a rythmes au pied (bloc-marqueur, doctrine 2026-07-21, approche B). Joue des patterns MIDI de batterie en BOUCLE synchro-tempo a travers un kit RS5k. foot_scene_claim ; NON-unique ; scene-invariant. Geste : ARRETE+tap = play ; EN COURS+tap = FILL (instantane, revient au groove) ; EN COURS+appui 0,6-1,5 s = VARIATION (partie suivante, a la mesure) ; EN COURS+appui >=1,5 s = STOP. Synchro sur le BPM du preset. Audio via golem_drums.lua.",
+   "note": "Boite a rythmes au pied (bloc-marqueur, doctrine 2026-07-21, approche B). Joue des patterns MIDI de batterie en BOUCLE synchro-tempo a travers un kit RS5k. foot_scene_claim ; NON-unique ; scene-invariant. Geste : ARRETE+tap = play ; EN COURS+tap = STOP (2026-10-13) ; EN COURS+appui 0,6-1,5 s = VARIATION (partie suivante, a la mesure) — si le bloc a des fills, son fill joue d'abord, a la prochaine mesure et en entier, puis la variation (2026-11-20) ; EN COURS+appui >=1,5 s = STOP. Synchro sur le BPM du preset. Audio via golem_drums.lua.",
    "color": "#7fd4a8",
    "glyph": "⊞",
    "content_param": "kit"

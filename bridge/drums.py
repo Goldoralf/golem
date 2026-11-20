@@ -8,11 +8,14 @@ Moteur de GESTES sur une seule pédale (fronts press/release), trois seuils :
   - EN COURS + tap (< VAR_S)        -> STOP (2026-10-13 : « si je rappuie dessus ça doit couper » — un switch
                                        qui lance arrête ; le FILL au tap ne faisait RIEN sur un bloc sans fills, et
                                        les grooves d'usine n'en ont pas. Le fill n'a plus de geste au pied).
-  - EN COURS + release VAR_S..STOP_S -> VARIATION (partie suivante, à la mesure).
+  - EN COURS + release VAR_S..STOP_S -> VARIATION (partie suivante, à la mesure). Le bloc a des FILLS (2026-11-20,
+                                       demande golem-fm validée par Raph) : le fill joue d'abord, à la prochaine barre
+                                       et EN ENTIER, puis la variation part — pas de geste ni de switch en plus.
   - EN COURS + maintenu >= STOP_S   -> STOP.
 
 Émet {action:"drums", op:"play"|"variation"|"fill"|"stop", block, ...} vers
-golem_drums.lua. État optimiste par bloc ; le retour .drums.json (poll) réconcilie.
+golem_drums.lua. Un fill qui MÈNE à une variation porte `then_idx` : le séquenceur revient sur ce groove-là, pas sur
+le courant. État optimiste par bloc ; le retour .drums.json (poll) réconcilie.
 """
 import threading
 import time as _time
@@ -110,17 +113,20 @@ class DrumControl:
         st["playing"], st["idx"], st["t"] = True, idx, _time.monotonic()
         self._on_change()
 
-    def _fill(self, p):
-        if not p.get("fills"):
-            return
-        self._emit({"action": "drums", "op": "fill", "block": p["block"], "fill_idx": 0})
-        self._on_change()
-
     def _variation(self, p):
         st = self._state.setdefault(p["block"], {"playing": False, "idx": 0})
         n = len(p.get("patterns") or []) or 1
-        idx = (st.get("idx", 0) + 1) % n
-        self._emit({"action": "drums", "op": "variation", "block": p["block"], "idx": idx})
+        cur = st.get("idx", 0)
+        idx = (cur + 1) % n
+        fills = p.get("fills") or []
+        if fills and st.get("playing"):
+            # le FILL d'abord, puis la variation : le fill qui va avec le groove qu'on quitte (le i-ème fill suit le
+            # i-ème groove ; un seul fill sert à tous). Le séquenceur le prend à la prochaine barre, le joue en entier
+            # et repart sur `then_idx`. À l'arrêt, rien ne joue : une variation simple (elle lance le groove).
+            self._emit({"action": "drums", "op": "fill", "block": p["block"], "fill_idx": cur % len(fills),
+                        "then_idx": idx})
+        else:
+            self._emit({"action": "drums", "op": "variation", "block": p["block"], "idx": idx})
         st["idx"] = idx
         self._on_change()
 
@@ -149,9 +155,9 @@ class DrumControl:
             st = self._state.setdefault(block, {"playing": False, "idx": 0})
             self._stop_now(block) if st["playing"] else self._play(p)    # même geste qu'au pied : lance / arrête
 
-    def variation(self, block, patterns):
+    def variation(self, block, patterns, fills=None):
         with self._lock:
-            self._variation({"block": block, "patterns": list(patterns or [])})
+            self._variation({"block": block, "patterns": list(patterns or []), "fills": list(fills or [])})
 
     def stop(self, block):
         self._emit({"action": "drums", "op": "stop", "block": block})

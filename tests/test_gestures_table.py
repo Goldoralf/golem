@@ -52,8 +52,9 @@ def test_les_libelles_de_la_batterie_disent_ce_que_fait_drums():
     sent = []
     dc = drums.DrumControl(sent.append)
     t = [100.0]
+    # 2026-11-20 : le maintien joue le FILL du bloc puis la variation (un seul message : op fill + then_idx)
     expected = {"Play the groove": "play", "Stop": "stop", "Fill": "fill",
-                "Next variation, on the bar": "variation"}
+                "Next variation, on the bar": "variation", "Fill (if any), then next variation": "fill"}
     with mock.patch.object(drums._time, "monotonic", lambda: t[0]), \
             mock.patch.object(drums.threading, "Timer", mock.MagicMock()):
         def gesture(dur):

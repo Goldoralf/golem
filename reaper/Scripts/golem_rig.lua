@@ -222,11 +222,15 @@ local function apply_golem_fx(root, map)
       e.fx_init = {}                                     -- l'init du plugin d'origine (Calf…) ne vaut pas ici
       for _, d in ipairs(e.params or {}) do
         local label = labels[d.id] or d.name
-        local r, real = gfx_range(p.params, label)
+        local absent = (spec.absent or {})[d.id]
+        -- un potard `absent` n'a pas de nom golem-fx : ne pas le chercher (sinon faux « absent du manifeste » au
+        -- journal, ex. le « Channel Mode » de guitar-drive — mesuré 2026-11-20)
+        local r, real = nil, nil
+        if not absent then r, real = gfx_range(p.params, label) end
         d.num_index = nil                                -- un nom golem-fx se trouve toujours : pas de repli au rang
         d.values = nil                                   -- une liste part par son RANG (comme sous le Golem Engine)
-        if (spec.absent or {})[d.id] then
-          d.gfx_absent = spec.absent[d.id]
+        if absent then
+          d.gfx_absent = absent
         elseif r then
           d.name = real
           -- une liste du catalogue est le DÉBUT de celle du plugin : les choix en plus du plugin (le Free du Delay)

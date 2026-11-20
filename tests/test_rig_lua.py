@@ -396,6 +396,23 @@ def test_golem_fx_sous_reaper_installe_ou_non(tmp_path, os_name):
     assert "golem-fx sous REAPER : 2 type(s)" in lab.log()
 
 
+def test_un_potard_absent_de_golem_fx_ne_salit_pas_le_journal(tmp_path):
+    # 2026-11-20 : le `channel` de guitar-drive est `absent` (table du moteur) — gfx_range le cherchait quand même et
+    # écrivait « absent du manifeste » à chaque lecture du catalogue. Tous les golem-fx installés : aucun faux avertissement.
+    lab = Lab(tmp_path)
+    for f in ("effects-golem-engine.json", "golem-fx-plugins.json"):
+        shutil.copy2(ROOT / "library/catalog" / f, lab.root / "library/catalog" / f)
+    plugins = json.loads((ROOT / "library/catalog/golem-fx-plugins.json").read_text(encoding="utf-8"))["plugins"]
+    for p in plugins.values():
+        lab.F.installed[p["reaper"]] = True
+        lab.F.specs[p["reaper"]] = lab.L.table_from([lab.L.table_from({"name": k, "min": 0, "max": 1, "def": 0})
+                                                     for k in p["params"]])
+    lab.compile(PATCH)
+    lab.run(action="rig_recall", preset="ci-engine", scene="A")
+    assert "golem-fx sous REAPER" in lab.log()
+    assert "absent du manifeste" not in lab.log(), lab.log()
+
+
 def test_un_reglage_de_la_pedale_golem_fx_s_ecrit_sous_reaper(tmp_path, monkeypatch):
     # la feuille golem FX (docs/golem-fx-sheet.md) : Warmth n'existe que sur gfx-chorus — sous REAPER avec le plugin, il
     # s'écrit NORMALISÉ sur ses bornes (0–100 %) comme les potards du catalogue

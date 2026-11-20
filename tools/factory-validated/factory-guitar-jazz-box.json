@@ -264,6 +264,7 @@
     "chorus": true,
     "dly": false,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false
    },
    "id": "B",
@@ -284,6 +285,7 @@
    "blocks": {
     "chorus": false,
     "dly": true,
+    "phaser-js-37nf": false,
     "radio-b58p": false,
     "sustainer-faku": false
    },
@@ -302,6 +304,7 @@
     "chorus": true,
     "dly": true,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false
    },
    "id": "D",
@@ -326,7 +329,8 @@
     "chorus": true,
     "dly": false,
     "phaser-js-37nf": false,
-    "radio-b58p": false
+    "radio-b58p": false,
+    "sustainer-faku": false
    },
    "id": "E",
    "lanes": {
@@ -356,6 +360,7 @@
     "chorus": true,
     "dly": false,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false
    },
    "branches": {},
@@ -372,6 +377,7 @@
    "blocks": {
     "chorus": false,
     "dly": true,
+    "phaser-js-37nf": false,
     "radio-b58p": false,
     "sustainer-faku": false
    },
@@ -385,6 +391,7 @@
     "chorus": true,
     "dly": true,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false
    },
    "branches": {},
@@ -405,7 +412,8 @@
     "chorus": true,
     "dly": false,
     "phaser-js-37nf": false,
-    "radio-b58p": false
+    "radio-b58p": false,
+    "sustainer-faku": false
    },
    "branches": {},
    "id": "st-guitar-1-E",

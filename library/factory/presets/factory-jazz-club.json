@@ -233,6 +233,7 @@
       "chorus": true,
       "dly": false,
       "phaser-js-37nf": false,
+      "radio-b58p": false,
       "sustainer-faku": false
      },
      "params": {
@@ -249,6 +250,7 @@
      "blocks": {
       "chorus": false,
       "dly": true,
+      "phaser-js-37nf": false,
       "radio-b58p": false,
       "sustainer-faku": false
      },
@@ -262,6 +264,7 @@
       "chorus": true,
       "dly": true,
       "phaser-js-37nf": false,
+      "radio-b58p": false,
       "sustainer-faku": false
      },
      "params": {
@@ -282,7 +285,8 @@
       "chorus": true,
       "dly": false,
       "phaser-js-37nf": false,
-      "radio-b58p": false
+      "radio-b58p": false,
+      "sustainer-faku": false
      },
      "params": {},
      "branches": {}
@@ -833,6 +837,7 @@
     "chorus": true,
     "dly": false,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false,
     "hall": false,
     "tape": false,
@@ -870,6 +875,7 @@
    "blocks": {
     "chorus": false,
     "dly": true,
+    "phaser-js-37nf": false,
     "radio-b58p": false,
     "sustainer-faku": false,
     "hall": false,
@@ -977,6 +983,7 @@
     "chorus": true,
     "dly": true,
     "phaser-js-37nf": false,
+    "radio-b58p": false,
     "sustainer-faku": false,
     "hall": true,
     "tape": false,

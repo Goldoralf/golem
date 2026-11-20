@@ -194,6 +194,7 @@
       },
       "check_win": {
         "glob": [
+          "%LOCALAPPDATA%/Programs/Common/VST3/GoleM/Dexed.vst3",
           "%CommonProgramFiles%/VST3/Dexed.vst3"
         ]
       },

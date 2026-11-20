@@ -989,7 +989,7 @@ def build_plan(ctx):
     td = os.path.join(ctx.localappdata, "Programs", "Common", "VST3", "GoleM")
     if os.path.isdir(td):
         o, rid = origin_of([td] + [os.path.join(td, n) for n in os.listdir(td)])
-        add(_item("plugins:golem-folder", "plugins", "golem's plugins (golem-fx, Dragonfly Reverb, Surge XT Effects)",
+        add(_item("plugins:golem-folder", "plugins", "golem's plugins (golem-fx, Dragonfly Reverb, Surge XT Effects, Dexed)",
                   [td], "user", o, True, "golem placed them in its own folder", "remove", _paths=[td], _rids=rid))
 
     # ── reaper : le dossier de réglages (REAPER lui-même est un programme) ──

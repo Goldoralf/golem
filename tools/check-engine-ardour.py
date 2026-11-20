@@ -1680,6 +1680,7 @@ def keys_bench(eng, check, wait, acked):
     from bridge.engine import ardour_plan
     rig_file = ardour_plan.rig_path(KEYS_ID)
     out_dir = os.path.dirname(rig_file)
+    os.makedirs(out_dir, exist_ok=True)                  # `--only keys` : aucune section d'avant ne l'a créé
 
     def read(name):
         try:

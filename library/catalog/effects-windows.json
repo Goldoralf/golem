@@ -1,7 +1,7 @@
 {
  "_comment": "REAPER Windows x64: exact scanned plugin names. Only loaded by golem_rig.lua on Windows. Unsupported entries prevent a Linux alias or numeric parameter fallback from selecting the wrong DSP.",
  "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on Windows (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on Windows (`note` says which, and what is still missing); untested = never tried on Windows (`why`).",
- "revision": 8,
+ "revision": 9,
  "effects": {
   "piano": {
    "plugin": "VST3i: sfizz (SFZTools)",
@@ -279,8 +279,8 @@
    "family": "no-plugin"
   },
   "ep": {
-   "family": "untested",
-   "why": "its engine (Dexed) exists for Windows but GoleM neither installs nor maps it yet"
+   "family": "installed-plugin",
+   "note": "Dexed (VST3, GPL-3) is installed by provision/dexed.py (setup, no admin rights) in the per-user VST3 folder %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM. Measured 2026-11-20 on the Golem Engine (check-engine-ardour keys): the scene voice goes as SysEx, Dexed reads it and sounds. Not yet tried on REAPER for Windows (the dx7-ctl JSFX and the VST3 state)."
   },
   "eq": {
    "family": "reaper-plugin"

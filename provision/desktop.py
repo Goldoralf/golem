@@ -467,7 +467,7 @@ def setup():
     # le bloc reste barré et l'onglet Libraries le dit. Airwindows TapeDelay2 n'en est plus (2026-11-15) : le bloc
     # Tape Delay (Airwindows) est retiré (catalogue v48).
     if sys.platform == "win32":
-        step("desktop plugins: Dragonfly Reverb, Surge XT Effects")
+        step("desktop plugins: Dragonfly Reverb, Surge XT Effects, Dexed")
         # les réverbes Dragonfly (2026-10-22) : la table Windows les nommait, rien ne les posait — sans elles
         # presque toute l'usine jouait sans réverbe.
         try:
@@ -481,6 +481,12 @@ def setup():
             surge.install()
         except Exception as exc:
             print(f"⚠ Surge XT Effects not installed ({exc}) — the Spring, Freq Shifter and Treemonster blocks stay unavailable.")
+        # Dexed (2026-11-20) : le synthé du bloc ep (piano électrique) — il existait pour Windows, rien ne le posait
+        try:
+            from provision import dexed
+            dexed.install()
+        except Exception as exc:
+            print(f"⚠ Dexed not installed ({exc}) — the Electric piano block stays unavailable.")
     # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release 0.4 épinglée (pins.json `golem_fx`),
     # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Dragonfly ; macOS :
     # ~/Library/Audio/Plug-Ins/VST3). Non fatal : sans eux, les blocs gardent leurs plugins d'origine.

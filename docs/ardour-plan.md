@@ -37,6 +37,9 @@
 **Patch budget: ≤ 10 commits, each small.** Every patch carries a tag in its subject:
 `[build]`, `[brand]`, `[headless]`, `[fix]`, `[upstreamable]`. An `[upstreamable]` patch is
 proposed to Ardour (tracker / pull request) and dropped from our branch the day it lands upstream.
+The budget was raised to 12 on 2026-11-19 (two Windows build fixes) and to 14 on 2026-11-20 (two crash fixes at
+teardown: an `IO` destroyed during a port-connection callback, an OSC observer destroyed with calls still queued). All
+four are upstreamable; the live list is the fork's `golem/README.md`.
 
 ### 1.2 Repository and branches
 

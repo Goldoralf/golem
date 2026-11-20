@@ -12,6 +12,7 @@ lecture du transport par OSC, arrêt. Rend 0 si tout passe.
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -19,6 +20,10 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
+
+
+class EngineDied(Exception):
+    """Le moteur est sorti sur un plantage pendant le banc (la ligne de run.py)."""
 
 
 def main():
@@ -83,12 +88,34 @@ def main():
             fails.append(label)
         return ok
 
+    # un moteur MORT (plantage) arrête le banc : sans ça chaque attente allait à son plafond et chaque section échouait
+    # à son tour — 5 min de faux échecs après une violation d'accès (2026-11-20). La ligne vient de run.py ; un arrêt
+    # demandé sort en 0 ou 15, un plantage en négatif (signal, Linux) ou en 0xC…… (exception, Windows)
+    log_seen = {"pos": 0}
+
+    def engine_crash():
+        try:
+            with open(A.RUN_LOG, "rb") as f:
+                f.seek(log_seen["pos"])
+                new = f.read()
+        except OSError:
+            return None
+        log_seen["pos"] += len(new)
+        for m in re.finditer(rb"luasession exited with code (-?\d+)[^\r\n]*", new):
+            code = int(m.group(1))
+            if code < 0 or code >= 0xC0000000:
+                return m.group(0).decode("utf-8", "replace")
+        return None
+
     def wait(cond, timeout):
         end = time.time() + timeout
         while time.time() < end:
             v = cond()
             if v:
                 return v
+            dead = engine_crash()
+            if dead:
+                raise EngineDied(dead)
             time.sleep(0.1)
         return None
 
@@ -155,6 +182,8 @@ def main():
             else:
                 fn(eng, check, wait, acked)
         commands.flush(2)
+    except EngineDied as e:
+        check("le moteur est resté vivant", False, f"{e} — banc arrêté, journal {A.RUN_LOG}")
     finally:
         eng.stop_feedback()
         check("arrêt", eng.stop(timeout=10))
@@ -424,6 +453,21 @@ def wav_info(path):
     d = re.search(r"Duration: (\d+):(\d+):([\d.]+)", r)
     pk = re.search(r"max_volume: ([-\d.]+) dB", r)
     return ch, (int(d.group(1)) * 3600 + int(d.group(2)) * 60 + float(d.group(3))) if d else 0.0, float(pk.group(1)) if pk else -150.0
+
+
+def wav_typical_peak(path, win=2400):
+    """Crête TYPIQUE en dBFS : la médiane des crêtes par tranche de `win` échantillons (50 ms à 48 kHz), tranches muettes
+    exclues. Un recouvrement bref (un son relancé sur lui-même) ne touche qu'une ou deux tranches : la médiane l'ignore."""
+    import re
+    import statistics
+    import subprocess
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", path, "-af",
+                        f"asetnsamples=n={win}:p=0,astats=metadata=1:reset=1,"
+                        "ametadata=print:key=lavfi.astats.Overall.Peak_level:file=-", "-f", "null", "-"],
+                       capture_output=True, text=True).stdout
+    pk = [float(v) for v in re.findall(r"Peak_level=([-\d.]+)", r)]
+    pk = [v for v in pk if v > -60]
+    return statistics.median(pk) if pk else -150.0
 
 
 def rec_bench(eng, check, wait, acked):
@@ -1158,11 +1202,13 @@ def sample_bench(eng, check, wait, acked):
     wait(lambda: acked(s1) and perf().get("recording") is False, 20)
     tk = os.path.join(C.ROOT, perf().get("file") or "missing", "Sample.wav")
     got = wav_info(tk) if os.path.isfile(tk) else (0, 0, -150)
+    typ = wav_typical_peak(tk) if os.path.isfile(tk) else -150.0
     ref = wav_info(files[0])[2]
-    # 1 dB : le son est RELANCÉ pendant la prise — l'ancien retombe en 30 ms sous le nouveau, la crête de ce recouvrement
-    # dépend de leur phase (mesuré : de 0,0 à +0,9 dB d'un passage à l'autre)
+    # crête TYPIQUE, pas la crête globale : le son est RELANCÉ pendant la prise, l'ancien retombe en 30 ms sous le nouveau
+    # et la crête de ce recouvrement dépend de leur phase (mesuré : de 0,0 à +2,7 dB) — ce n'est pas le niveau du son
     check("samples : le son sort au niveau de SON fichier (à 1 dB près), a sa piste dans une prise, et le départ de la prise ne coupe "
-          "pas un son qui sonnait", got[0] == 2 and abs(got[2] - ref) < 1.0 and held > -60, f"{got} fichier {ref} dBFS, tenu {held:.1f}")
+          "pas un son qui sonnait", got[0] == 2 and abs(typ - ref) < 1.0 and held > -60,
+          f"{got} typique {typ:.1f}, fichier {ref} dBFS, tenu {held:.1f}")
     send({"action": "sample", "op": "stop", "block": "bench"})
     time.sleep(0.6)
     off = level(0.6)

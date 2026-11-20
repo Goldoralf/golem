@@ -465,7 +465,12 @@ def wav_typical_peak(path, win=2400):
                         f"asetnsamples=n={win}:p=0,astats=metadata=1:reset=1,"
                         "ametadata=print:key=lavfi.astats.Overall.Peak_level:file=-", "-f", "null", "-"],
                        capture_output=True, text=True).stdout
-    pk = [float(v) for v in re.findall(r"Peak_level=([-\d.]+)", r)]
+    pk = []
+    for v in re.findall(r"Peak_level=(\S+)", r):          # « -inf » pour une tranche muette
+        try:
+            pk.append(float(v))
+        except ValueError:
+            pass
     pk = [v for v in pk if v > -60]
     return statistics.median(pk) if pk else -150.0
 
@@ -522,9 +527,9 @@ def rec_bench(eng, check, wait, acked):
               abs(di[2] + 18) < 0.5, f"DI {di[2]:.1f} dBFS")
     # le mix se juge contre un autre FICHIER de la même prise, pas contre le vumètre du moteur (sa crête garde un
     # transitoire d'avant la remise à zéro)
-    first_mix = None
+    first_mix = first_typ = None
     if files == ["DI-Sandbox-Input-1.wav", "Drums.wav", "Input-1.wav", "Mix.wav"]:
-        first_mix = mix[2]
+        first_mix, first_typ = mix[2], wav_typical_peak(os.path.join(d, "Mix.wav"))
         check("prise : avec une seule lane, le mix et la piste de la lane sont le même son (à 0,5 dB près)",
               abs(mix[2] - lane[2]) < 0.5 and mix[2] > -100, f"mix {mix[2]:.1f} dBFS, lane {lane[2]:.1f} dBFS")
     lm = read(".livemap.json") or {}
@@ -543,7 +548,8 @@ def rec_bench(eng, check, wait, acked):
           v is not None and abs(v) < 0.05, f"strip {b.get('track')} -> Input Lvl {v}")
     # le potard REMIS à la valeur de la scène (+4 dB) : la prise suivante est comparée à celle d'avant, sur le même rig.
     # (2026-11-19, Windows : ce n'était PAS la cause de l'écart d'environ 1 dB entre les deux prises — la seconde mesure
-    # -37,6 dBFS avec ou sans ce geste ; l'écart reste à expliquer, la tolérance de 1 dB le laisse passer de justesse)
+    # -37,6 dBFS avec ou sans ce geste ; l'écart était une pointe passagère dans la prise qui couvre le rappel, voir
+    # plus bas : le niveau se juge maintenant en crête typique)
     lo, hi = float(pm.get("pmin", -20)), float(pm.get("pmax", 20))
     eng.set_fx_param(b.get("track"), b.get("fx"), pm.get("p"), (4.0 - lo) / ((hi - lo) or 1.0))
     time.sleep(0.4)
@@ -556,8 +562,14 @@ def rec_bench(eng, check, wait, acked):
     # LE MÊME RIG SORT AU MÊME NIVEAU D'UN RAPPEL À L'AUTRE : la prise d'avant couvre un rappel, celle-ci le suit. Deux
     # causes d'écart trouvées le 2026-11-17 et retirées : la carte factice ouverte par un nom ambigu (fréquence tirée au
     # hasard à chaque démarrage), et l'entrée reliée avant que la scène soit posée (un écho fantôme dans le delay).
+    # Le niveau STABLE (crête typique) : la prise d'avant porte parfois une pointe passagère au moment du rappel (2026-11-20 :
+    # -36,3 au lieu de -37,6 dBFS en crête globale, la piste de la lane aussi — c'est le son du rig pendant sa
+    # reconstruction, pas un autre niveau). Elle est affichée (« pointe ») sans juger : ce n'est pas la question posée ici.
+    typ = wav_typical_peak(f) if os.path.isfile(f) else -150.0
     check("le rig sort au même niveau d'un rappel à l'autre (deux prises de suite, à 1 dB près)",
-          first_mix is not None and abs(info[2] - first_mix) < 1.0, f"prise d'avant {first_mix} dBFS, celle-ci {info[2]} dBFS")
+          first_typ is not None and abs(typ - first_typ) < 1.0,
+          f"prise d'avant {first_typ if first_typ is None else round(first_typ, 1)} dBFS typique "
+          f"(pointe au rappel +{(first_mix or 0) - (first_typ or 0):.1f} dB), celle-ci {typ:.1f} dBFS")
     ok, done, st = take({"in1": False, "in2": True, "mode": "tracks_di", "mix": True}, 1.2)
     d = os.path.join(C.ROOT, st.get("file") or "missing")
     files = sorted(os.listdir(d)) if os.path.isdir(d) else []

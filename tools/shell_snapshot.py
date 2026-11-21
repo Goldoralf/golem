@@ -1022,7 +1022,9 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
 # (`media`) dit, pour chacun, l'adresse que l'app demande, le fichier et son type.
 # + les rendus des blocs drums / standard au pied (docs/preset-preview.md §8) : block-<preset>/<switch>/<type>.opus
 DEMO_PREFIXES = ("patch-factory-", "preset-factory-", "block-factory-", "block-patch-factory-")
-RE_DEMO_CLIP = re.compile(r"^library/previews/[^\s\"]+\.opus$")
+# les démos des patchs sont citées sans « / » de tête, celles des sons et des kits avec (« /library/previews/… ») :
+# les deux formes, sinon Library ▸ Keys et les kits restaient muets sur la démo (2026-11-22)
+RE_DEMO_CLIP = re.compile(r"^/?library/previews/[^\s\"]+\.opus$")
 # les sons des kits de PADS d'usine (48 one-shots synthétisés par golem, CC0 — docs/licence.md) : Library ▸ Drums ▸ Kits
 # les joue par /api/sample?file=… et dessine leur forme par /api/peaks?file=… ; aucun autre échantillon ne part
 RE_KIT_SAMPLE = re.compile(r"^assets/samples/kits/[^\s\"]+\.wav$")
@@ -1124,7 +1126,7 @@ def collect_media(base, out_dir, written, log=print):
 
     def walk(x):
         if isinstance(x, str) and RE_DEMO_CLIP.match(x):
-            clips.add(x)
+            clips.add(x.lstrip("/"))
         elif isinstance(x, dict):
             for v in x.values():
                 walk(v)

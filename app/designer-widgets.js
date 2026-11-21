@@ -50,7 +50,7 @@ export function PCell({ label, value, unit, sub, wide, off, ovr, base, extra, ch
     <div class="pcell-top"><span class="pcell-lb">${label}</span>${extra || ''}</div>
     <div class="pcell-body">
       <div class="pcell-vw">
-        <div class="pcell-val">${value}${unit ? html`<i>${esc(unit)}</i>` : ''}</div>
+        <div class=${cls('pcell-val', !wide && (typeof value === 'string' || typeof value === 'number') && String(value).length >= 5 && 'long')}>${value}${unit ? html`<i>${esc(unit)}</i>` : ''}</div>
         ${sub ? html`<div class="pcell-sub" title=${typeof sub === 'string' ? sub : ''}>${sub}</div>` : ''}
         ${ovr && base != null ? html`<div class="pcell-base" title="base value (inherited by other scenes)">base ${base}</div>` : ''}
       </div>

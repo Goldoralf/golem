@@ -3007,6 +3007,13 @@ input.rig-lbl-in:focus{outline:none; border-bottom-color:var(--sect)}
 .pcell-sub{font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
 .pcell-ctl{display:flex; align-items:flex-end; gap:8px}
 .pcell-sel{max-width:100%; min-height:34px; padding:4px 8px; font-size:12px}
+/* CELLULE ÉTROITE (2026-11-22, la fiche de bloc a ses presets à côté : cinq cellules de ~118 px). Un choix y montrait
+   sa valeur DEUX fois, le texte coupé par le select (« Ta|Tape ») : le select porte seul la valeur. Et une valeur de
+   cinq chiffres (20000 Hz) passait sous l'anneau du potard : elle se resserre. */
+.pcell:not(.x2) .pcell-vw:has(.pcell-opt){display:none}
+.pcell:not(.x2) .pcell-ctl:has(> .pcell-sel){flex:1; min-width:0}
+.pcell:not(.x2) .pcell-ctl > .pcell-sel{width:100%}
+.pcell-val.long{font-size:15px; letter-spacing:-.02em}
 /* potard SVG (PDial) : arc de fond + arc de valeur couleur catégorie + aiguille */
 .pdial{cursor:ns-resize; touch-action:none; flex:none}
 .pdial.act{filter:brightness(1.2)}

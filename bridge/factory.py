@@ -277,6 +277,34 @@ def edited():
     return out
 
 
+_EDITED = {"at": 0.0, "ids": []}
+EDITED_TTL = 60.0
+
+
+def edited_ids(now=None):
+    """Les objets d'usine RETOUCHÉS ici, pour le battement vers golem.fm (2026-11-21) : [{kind, id}]. golem.fm garde
+    l'ORIGINAL de chaque objet d'usine (aucun golem ne l'écrase) et montre « modified on your golem » ; il propose de
+    repousser l'original (job `factory-reset`). Ce que la machine écrit seule (deps de sa bibliothèque, liaisons de sa
+    carte) n'y est pas : `_status` compare l'empreinte canonique. `edited()` relit chaque fichier : gardé EDITED_TTL s."""
+    import time
+    now = time.time() if now is None else now
+    if now - _EDITED["at"] > EDITED_TTL:
+        _EDITED.update(at=now, ids=[{"kind": r["kind"], "id": r["id"]} for r in edited()])
+    return [dict(x) for x in _EDITED["ids"]]
+
+
+def files_of(ids):
+    """[{kind, id}] -> les noms de fichiers que `reset` attend ; une sorte ou un id inconnu est ignoré."""
+    out = []
+    for x in ids or []:
+        kind = (x or {}).get("kind") if isinstance(x, dict) else None
+        if kind in KINDS and str(x.get("id") or "").strip():
+            fn = str(x["id"]) + KINDS[kind][2]
+            if "/" not in fn and "\\" not in fn and ".." not in fn:
+                out.append(fn)
+    return out
+
+
 def _display_name(path):
     """Le nom que l'écran montre (« Chill Jazz », « Golem Rising »), pas l'id de fichier."""
     try:
@@ -305,6 +333,7 @@ def reset(files=None):
                 shutil.copyfile(os.path.join(SRC, sub, fn), os.path.join(dst, fn))
                 done.append(f"{kind}/{fn}")
     if done:
+        _EDITED["at"] = 0.0
         log.info(f"usine : {len(done)} objet(s) remis à l'usine — " + ", ".join(done))
         try:
             from . import standards

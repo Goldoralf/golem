@@ -336,5 +336,8 @@ half an hour of engine time for ~67 MB. Now they are rendered **once**, on the m
   before. No network, or nothing published yet: nothing happens. `GOLEM_FACTORY_DEMOS=0` turns it off (the test
   suite does); `GOLEM_FACTORY_DEMOS_BASE` points it elsewhere.
 - **golem.fm** reads the same archive: one source, served to everyone.
+- **The index also describes the whole factory set for golem.fm** (CODED 2026-11-21, not published yet): the shipped
+  documents, the reference DIs, every render with its patch, scene, DI and duration, and every factory patch with its
+  renders or the reason it has none — [factory.md](factory.md) §3 bis. A golem still places only `items`.
 - To publish a new version after factory demos change: run the batch on the maintainer's rack, then
   `./tools/pack-factory-demos.py --publish factory-demos-vN` and bump `factory_demos.TAG`.

@@ -482,6 +482,29 @@ def _preset_delete(job):
             "preset_id": pid, **r}
 
 
+def _factory_reset(job):
+    """`{action:"factory-reset", ids:[{kind, id}] | files:[...]}` (golem.fm, « push the original again », décision du
+    mainteneur 2026-11-21, docs/factory.md §3 bis) : remet des objets d'usine RETOUCHÉS ici à la version livrée — le
+    même corps que `POST /api/factory/reset`. La retouche est perdue : golem.fm le dit avant d'envoyer le job. Un objet
+    qui n'est pas retouché (ou plus) n'est pas touché : il est rendu dans `unchanged`. Refusé sans cible (tout
+    remettre d'un coup ne se demande pas à distance), en mode verrouillé, pendant une prise, ou si le preset visé joue."""
+    from . import factory, rigstatus
+    from .state import state
+    _guard_quiet("factory reset")
+    files = [str(f) for f in (job.get("files") or []) if isinstance(f, str)] + factory.files_of(job.get("ids"))
+    if not files:
+        raise RuntimeError("factory-reset without ids or files")
+    playing = (state.preset_id or "") + ".json"
+    if playing in files and factory.protected("presets", state.preset_id):
+        raise RuntimeError(f"preset '{state.preset_id}' is playing right now — recall another one first")
+    done = factory.reset(files).get("reset") or []
+    got = {d.split("/", 1)[1] for d in done}
+    if done:
+        rigstatus.push_soon()
+    return {"_log": f"factory reset: {len(done)} object(s)" + (f" — {', '.join(done)}" if done else ""),
+            "reset": done, "unchanged": sorted(set(files) - got)}
+
+
 def _patch_preview(job):
     """`{action:"patch-preview", sha, role, patch_id, ref? | di?, scene?, max_s?}` (golem.fm, Store : pas de publication sans
     écoute enregistrée par le rack de l'auteur — décision 2026-09-15). Le blob = le document du
@@ -1493,6 +1516,7 @@ _HANDLERS = {
     "patch-install": lambda j: _patch_install(j),
     "patch-push": lambda j: _patch_install(j),          # alias : le job de PUBLICATION de l'assistant
     "patch-try": lambda j: _patch_try(j),
+    "factory-reset": lambda j: _factory_reset(j),       # l'original d'un objet d'usine retouché (factory.md §3 bis)
     "patch-preview": lambda j: _patch_preview(j),       # Store : l'écoute enregistrée d'un patch (patches.md §22)
     # suppression depuis golem.fm (patches.md §21) : un id absent n'est pas une erreur
     "patch-delete": lambda j: _patch_delete(j),

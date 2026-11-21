@@ -29,6 +29,7 @@ _KINDS = {
     "sample-pack": ("library", "sample pack", "sample packs", "installed"),
     "preset-install": ("content", "preset", "presets", "installed"),
     "preset-delete": ("content", "preset", "presets", "removed"),
+    "factory-reset": ("content", "factory object", "factory objects", "reset"),
     "patch-install": ("content", "patch", "patches", "installed"),
     "patch-push": ("content", "patch", "patches", "installed"),
     "patch-delete": ("content", "patch", "patches", "removed"),

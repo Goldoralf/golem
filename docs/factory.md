@@ -138,6 +138,67 @@ Hidden objects are **filtered out before rendering** in browsing pages (`app/fac
 resolves an object by id (the preset playing, a kit used by a visible preset, a mode's `foot_list`) keeps
 working. Hiding the factory setlist does not remove it from a mode that names it ([patches.md](patches.md) §6).
 
+## 3 bis. One factory set for the rack and golem.fm
+
+> **Status: PARTLY CODED 2026-11-21** — the maintainer's decision the same day: factory content is **one** set,
+> shipped with golem and held by golem.fm, the same for every account, with nothing to render or upload again.
+> CODED on the rack: the extended bundle index (below), `factory_edited` in the heartbeat, the `factory-reset` job.
+> **Not built**: the rack still pushes its `factory-*` patch and preset documents and still accepts a preview job
+> for one (see "Still to do"); the extended bundle is **not published** (current release: `factory-demos-v3`).
+
+**The rule for a factory object changed on a golem** (maintainer, 2026-11-21, relayed by the golem.fm session and
+confirmed by him there):
+
+- It **stays changed and keeps its name** — and so its `factory-*` id. No automatic copy, no rename.
+- To really rename it, the musician **copies** it; the copy is theirs.
+- golem.fm holds the **untouched original** of every factory object and nothing factory can be changed on the site;
+  no golem's sync overwrites that original. From the site the musician can **push the original again**.
+
+What the rack does for it:
+
+- **It says which factory objects are changed here**: the heartbeat carries `factory_edited: [{kind, id}]`
+  (`factory.edited_ids`, the list of `factory.edited()` kept 60 s). An object counts when it is neither the current
+  nor an older shipped version **after** removing what the machine writes alone (`deps` of its library, the input
+  bindings of its card: the canonical fingerprint of §2) — so the list means a person's edit. golem.fm shows
+  "modified on your golem", and says that the shared listen is no longer what this golem plays.
+- **`factory-reset`** (job, [golemfm-protocol.md](golemfm-protocol.md) §3): `{ids: [{kind, id}]}` or `{files: [...]}`
+  puts the shipped version back, as "Reset to factory" does on the screen (`factory.reset`). The edit is lost: the
+  site says so before sending. An object that is not edited is left alone and returned in `unchanged`. Refused
+  without a target, in a locked mode, during a take, or when the preset named is the one playing. A rack that
+  understands it lists `factory-reset` in `caps.jobs`.
+
+**The bundle** — the existing factory demos release ([preset-preview.md](preset-preview.md) §10), extended rather
+than doubled by a second archive. `tools/pack-factory-demos.py` now also packs, and its index describes:
+
+| Index key | What |
+|---|---|
+| `tag`, `rack_commit`, `rack_dirty`, `catalog_version`, `golem_fx_version` | what the pack was rendered with. A listen's `fingerprint` follows the **document**, not the engine: a golem-fx or catalogue change alters the sound and leaves it unchanged, so staleness is judged on (document sha, tag), not on the fingerprint alone |
+| `items` | unchanged: what a golem places in `library/previews/` (`bridge/factory_demos.py` reads only this) |
+| `documents[]` | every shipped factory document `{kind, id, file, sha256, fingerprint}` (`factory/<kind>/…` in the archive; `fingerprint` for JSON documents only), and `history` |
+| `di` | the reference DIs and MIDI phrases `{refs: {ref: {file, sha256, kind}}, missing: [...]}` (`di-refs/…` in the archive) |
+| `renders[]` | every render of a factory patch or preset lane `{kind, id, input \| lane, scene, file, sha256, duration, di_ref, di_sha256, fingerprint, generated}` |
+| `patches[]` | **every** factory patch `{id, renders, reason?, stale?}`: a patch without a render says why (`reference DI missing: voice/male (record it first)`), so the site says "coming" instead of showing a hole; `stale` = the document changed since the render |
+
+A render's `fingerprint` is the one of the patch **bound to the rendering rack's card** (`preview.plan`), not the
+one of the shipped file in `documents[]`: the two are not expected to be equal.
+
+Dry run on the maintainer's rack, 2026-11-21 (nothing published; golem was stopped): 103 documents, 20 reference DIs (3 named by the index have no file:
+`voice/male`, `voice/female`, `keys/arp`), 337 renders, 100.7 MB. Of 53 factory patches: 8 up to date, **31 stale**
+(the patch as this rack loads it no longer has the fingerprint of its render of 2026-11-16; the cause is not
+established — the factory was rebuilt since, and golem had not started, so not re-seeded, after that day's update), 11 voice patches without a reference DI, 2 pad
+patches that are never rendered (triggered samples), 1 not rendered yet. **A new bundle is therefore not worth
+publishing before the batch has run again on the maintainer's rack.**
+
+**Still to do**, in this order:
+
+1. Run the factory batch on the maintainer's rack (engine taken for about half an hour), then
+   `./tools/pack-factory-demos.py --publish factory-demos-v4` and bump `factory_demos.TAG`.
+2. golem.fm imports the bundle into its user-less factory store and serves it to every account.
+3. **Only then** the rack stops pushing `factory-*` documents and refuses a preview job for one. Not before:
+   `push_patches` sends the whole catalogue with `complete: true` — what is absent is **deleted** on the site — so
+   dropping the factory patches from the push while golem.fm still shows per-account copies would empty them. The
+   switch needs a signal from golem.fm that its store is live (to be agreed).
+
 ## 4. Factory captures download
 
 | Endpoint | Function |

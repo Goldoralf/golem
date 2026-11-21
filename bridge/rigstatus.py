@@ -646,6 +646,12 @@ def light(with_modes=False):
         st["caps"] = blockstatus.caps()
     except Exception as e:
         log.warning(f"caps absentes du push : {e}")
+    # les objets d'usine RETOUCHÉS ici (2026-11-21, docs/factory.md §3 bis) : golem.fm garde l'original et le dit
+    try:
+        from . import factory
+        st["factory_edited"] = factory.edited_ids()
+    except Exception as e:
+        log.warning(f"factory_edited absent du push : {e}")
     # le job song-separate tenu, et pourquoi il attend (docs/separation.md §10, demande golem.fm 2026-10-24) —
     # absent quand aucun job n'est tenu
     try:

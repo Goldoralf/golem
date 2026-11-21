@@ -284,9 +284,13 @@ def _names_inside(s):
 def _public_hint(key, parent):
     """`hint` est l'indice d'une clé de service (secret)… sauf sur un KIT de batterie (/api/drums/kits), où c'est sa
     description (« rock · ambient ») : la page l'affichait « <redacted> » (2026-11-21). Un kit se reconnaît à son
-    `engine` et à son `role` de batterie ; partout ailleurs `hint` reste expurgé."""
-    return (_norm_key(key) == "hint" and isinstance(parent, dict)
-            and parent.get("role") in ("drum", "drums", "pads") and "engine" in parent)
+    `engine` et à son `role` de batterie, le démarrage automatique à sa forme ; partout ailleurs `hint` reste expurgé."""
+    if _norm_key(key) != "hint" or not isinstance(parent, dict):
+        return False
+    # /api/system/autostart : la phrase fixe de bridge/machine.py sous « Start golem with this computer » (2026-11-22)
+    if "linger" in parent and "platform" in parent and "on" in parent:
+        return True
+    return parent.get("role") in ("drum", "drums", "pads") and "engine" in parent
 
 
 def redact(x, key=None, parent=None):

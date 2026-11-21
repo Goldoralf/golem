@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 50,
+ "catalog_version": 51,
  "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
  "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
@@ -8,6 +8,7 @@
  "_tunings_comment": "v28 — the Tuner block carries `params.tuning` = an id of library/catalog/tunings.json (a COPY of golem.fm's TUNING_PRESETS: same ids). The list offered follows the lane role (guitar = 6/7/8-string, bass = 4/5-string); empty = the role default (6-std / bass-4-std). The /live tuner shows one chip per string of that tuning.",
  "_bench_comment": "Per-block `bench` (v26) = the block has NOT yet passed the engine-stall bench (tools/check-block-stall.py: does switching it on/off freeze Reaper?). Only value: \"pending\". The rack Designer still offers the block (a person can try it); golem.fm's AI must NOT propose it. The key is REMOVED once the bench concludes clean; a block that fails goes to `quarantine` instead. Never infer it from the plugin family: it is measured, block by block.",
  "_exp_comment": "Per-param `exp: true` (v21) = a knob worth putting on the EXP pedal. The rack Designer shows the EXP chip ONLY on those knobs for a block that declares any (a block without the flag keeps the chip on every knob), and the Assign modal targets the first one. golem.fm's AI reads the same flag. `depends: {param: value}` = the knob only acts when that other param has that value (shown greyed otherwise).",
+ "_units_comment": "v51 (2026-11-21) — per-param `was: <old id>`: the setting changed its UNIT when golem-fx took the block, so it changed its id too (grit: `lo_v1` in Prisma's law became `lo_amt1` in gfx-grit's, `lo_gain` in % became `lo_lvl` in dB). bridge/option_renames.py converts a document that still carries the old id when it is loaded (the module amounts by the type of their slot) and removes the old id: an old id is never a new one, so the rewrite is pure and idempotent, as for `renamed`. docs/golem-fx-migration.md section 4.",
  "_retired_comment": "v48 (2026-11-15, maintainer: \"the golem will run only with our blocks\") — retired block types: chorus-js, phaser, delay-tape, delay-tape-aw, delay-echo, eq-para, surge-spring, boost (Proteus), pitch-spectral, rezfilter, freeze. A document that still carries one is rewritten on load to its golem-fx pedal (bridge/option_renames.py RETIRED; docs/golem-fx-migration.md section 1 bis).",
  "quarantined_plugins": {
   "_comment": "A PLUGIN that freezes the engine, kept after its block type left the catalogue: the VST Host block lets a person pick a plugin by name, and bridge/rig.quarantined_plugin refuses these too (matched on the plugin name, any format prefix).",
@@ -1292,565 +1293,194 @@
    "name": "Grit (multiband distortion)",
    "category": "lofi",
    "engine": "plugin",
-   "plugin": "Prisma",
+   "plugin": "VST3: GoleM FX Grit (GoleM)",
    "icon": "◩",
-   "note": "Prisma (UnplugRed, AGPL, built from source by provision/install-prisma.sh): 4 bands, 2 exposed modules per band (Soft/Hard clip, Heavy, Fold, Bit crush, Sample divide, Lowpass, Ring mod, Cabinet…), crossovers, per-band gain, wet. The Trash-style tool: dirty the mids, keep lows clean, no fizz on top. VOICE: after the de-esser (saturation multiplies sibilance), before the compressor; a preset (Grit / Megaphone / Telephone / Broken) on a footswitch. Keep Quality OFF live: zero latency.",
+   "short": "Grit",
+   "color": "#e07a3a",
+   "glyph": "◩",
    "params": [
-    {
-     "id": "lo_m1",
-     "name": "Low Module 1 Type",
-     "label": "Mod 1",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "Low",
-     "size": 2
-    },
-    {
-     "id": "lo_v1",
-     "name": "Low Module 1 Value",
-     "label": "Amt 1",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low"
-    },
-    {
-     "id": "lo_m2",
-     "name": "Low Module 2 Type",
-     "label": "Mod 2",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "Low",
-     "size": 2
-    },
-    {
-     "id": "lo_v2",
-     "name": "Low Module 2 Value",
-     "label": "Amt 2",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low"
-    },
-    {
-     "id": "lo_gain",
-     "name": "Low Gain",
-     "label": "Gain",
-     "min": 0,
-     "max": 100,
-     "default": 50,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low"
-    },
-    {
-     "id": "lm_m1",
-     "name": "Low Mid Module 1 Type",
-     "label": "Mod 1",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "Low Mid",
-     "size": 2
-    },
-    {
-     "id": "lm_v1",
-     "name": "Low Mid Module 1 Value",
-     "label": "Amt 1",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low Mid"
-    },
-    {
-     "id": "lm_m2",
-     "name": "Low Mid Module 2 Type",
-     "label": "Mod 2",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "Low Mid",
-     "size": 2
-    },
-    {
-     "id": "lm_v2",
-     "name": "Low Mid Module 2 Value",
-     "label": "Amt 2",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low Mid"
-    },
-    {
-     "id": "lm_gain",
-     "name": "Low Mid Gain",
-     "label": "Gain",
-     "min": 0,
-     "max": 100,
-     "default": 50,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Low Mid"
-    },
-    {
-     "id": "hm_m1",
-     "name": "High Mid Module 1 Type",
-     "label": "Mod 1",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "High Mid",
-     "size": 2
-    },
-    {
-     "id": "hm_v1",
-     "name": "High Mid Module 1 Value",
-     "label": "Amt 1",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High Mid"
-    },
-    {
-     "id": "hm_m2",
-     "name": "High Mid Module 2 Type",
-     "label": "Mod 2",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "High Mid",
-     "size": 2
-    },
-    {
-     "id": "hm_v2",
-     "name": "High Mid Module 2 Value",
-     "label": "Amt 2",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High Mid"
-    },
-    {
-     "id": "hm_gain",
-     "name": "High Mid Gain",
-     "label": "Gain",
-     "min": 0,
-     "max": 100,
-     "default": 50,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High Mid"
-    },
-    {
-     "id": "hi_m1",
-     "name": "High Module 1 Type",
-     "label": "Mod 1",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "High",
-     "size": 2
-    },
-    {
-     "id": "hi_v1",
-     "name": "High Module 1 Value",
-     "label": "Amt 1",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High"
-    },
-    {
-     "id": "hi_m2",
-     "name": "High Module 2 Type",
-     "label": "Mod 2",
-     "type": "enum",
-     "options": [
-      "Off",
-      "Soft clip",
-      "Hard clip",
-      "Heavy",
-      "Asym",
-      "Rectify",
-      "Fold",
-      "Sine fold",
-      "Zero cross",
-      "Bit crush",
-      "Sample divide",
-      "DC",
-      "Width",
-      "Gain",
-      "Pan",
-      "Lowpass",
-      "Highpass",
-      "Peak",
-      "Dry/wet",
-      "Stereo rectify",
-      "Stereo DC",
-      "Ring mod",
-      "Cabinet"
-     ],
-     "default": "Off",
-     "map": {
-      "mode": "norm"
-     },
-     "group": "High",
-     "size": 2
-    },
-    {
-     "id": "hi_v2",
-     "name": "High Module 2 Value",
-     "label": "Amt 2",
-     "min": 0,
-     "max": 100,
-     "default": 0,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High"
-    },
-    {
-     "id": "hi_gain",
-     "name": "High Gain",
-     "label": "Gain",
-     "min": 0,
-     "max": 100,
-     "default": 50,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "High"
-    },
-    {
-     "id": "x1",
-     "name": "Low Mid Crossover",
-     "label": "X1",
-     "min": 0,
-     "max": 100,
-     "default": 25,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Crossovers",
-     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
-    },
-    {
-     "id": "x2",
-     "name": "High Mid Crossover",
-     "label": "X2",
-     "min": 0,
-     "max": 100,
-     "default": 50,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Crossovers",
-     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
-    },
-    {
-     "id": "x3",
-     "name": "High Crossover",
-     "label": "X3",
-     "min": 0,
-     "max": 100,
-     "default": 75,
-     "unit": "%",
-     "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
-     "group": "Crossovers",
-     "note": "position on a 20 Hz - 20 kHz log scale (25 % ~ 112 Hz, 50 % ~ 632 Hz, 75 % ~ 3.6 kHz)"
-    },
     {
      "id": "wet",
      "name": "Wet",
-     "label": "Mix",
      "min": 0,
      "max": 100,
      "default": 100,
      "unit": "%",
      "fmt": 0,
-     "map": {
-      "mode": "raw",
-      "scale": 0.01
-     },
+     "exp": true,
      "size": 2
     },
     {
      "id": "quality",
      "name": "Quality",
-     "label": "Oversampling",
      "type": "bool",
-     "default": false,
-     "map": {
-      "mode": "raw"
-     },
-     "note": "OFF = zero latency (live). ON = oversampled, adds latency."
+     "default": false
+    },
+    {
+     "id": "drive",
+     "name": "Drive",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "focus",
+     "name": "Focus",
+     "min": -100,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1
+    },
+    {
+     "id": "lo_amt1",
+     "name": "Low Module 1 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "lo_v1"
+    },
+    {
+     "id": "lo_amt2",
+     "name": "Low Module 2 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "lo_v2"
+    },
+    {
+     "id": "lo_lvl",
+     "name": "Low Gain",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true,
+     "was": "lo_gain"
+    },
+    {
+     "id": "lm_amt1",
+     "name": "Low Mid Module 1 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "lm_v1"
+    },
+    {
+     "id": "lm_amt2",
+     "name": "Low Mid Module 2 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "lm_v2"
+    },
+    {
+     "id": "lm_lvl",
+     "name": "Low Mid Gain",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true,
+     "was": "lm_gain"
+    },
+    {
+     "id": "hm_amt1",
+     "name": "High Mid Module 1 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "hm_v1"
+    },
+    {
+     "id": "hm_amt2",
+     "name": "High Mid Module 2 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "hm_v2"
+    },
+    {
+     "id": "hm_lvl",
+     "name": "High Mid Gain",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true,
+     "was": "hm_gain"
+    },
+    {
+     "id": "hi_amt1",
+     "name": "High Module 1 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "hi_v1"
+    },
+    {
+     "id": "hi_amt2",
+     "name": "High Module 2 Value",
+     "min": 0,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true,
+     "was": "hi_v2"
+    },
+    {
+     "id": "hi_lvl",
+     "name": "High Gain",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true,
+     "was": "hi_gain"
     }
    ],
-   "short": "Grit",
-   "color": "#e07a3a",
-   "glyph": "◩",
-   "_validation": "2026-09-14 : VALIDÉ sur le rig — lane vide, deux reconstructions (REBUILD puis REBUILD avec gate), fxparams : 86 params, noms conformes, pdc=0 samples Quality OFF et ON, Reaper indemne (pid inchangé, apport muet). Correctif lu : Type = normalisé 0..1, pas raw 0..22."
+   "note": "golem-fx multiband distortion (gfx-grit, catalogue v51): four bands split by phase-coherent crossovers, two dirt modules per band (Soft / Hard clip, Heavy, Fold, Bit crush, Sample divide, Lowpass, Ring mod, Cabinet, Tube, Fuzz…), a level and a mix per band, and four knobs to play it from: Drive pushes every module, Focus leans it to the lows or the highs, Level, Mix. The Trash-style tool: dirty the mids, keep the lows clean, no fizz on top. VOICE: after the de-esser (saturation multiplies sibilance), before the compressor; a preset on a footswitch. No latency, Quality on or off (on = 4x oversampling, more CPU).",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile.",
+   "bench": "pending"
   },
   {
    "type": "amp",

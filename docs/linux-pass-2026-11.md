@@ -72,6 +72,7 @@ Windows is on `golem-engine-9.9-g4` (release of Goldoralf/golem-binaries, Window
 ## 5. Not for this pass
 
 - `grit` (Prisma) has no Windows build: Raph asks golem-fx for a VST3; nothing to do in golem or the fork.
+  Done on 2026-11-21: gfx-grit plays `grit` on every system (catalogue v51, [golem-fx-migration.md](golem-fx-migration.md) §4).
 - The DSP load at buffer 128 on Windows (crackles; 256 is fine): a Windows question, measured with the engine's
   `dspstats`.
 - macOS.

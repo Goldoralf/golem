@@ -40,7 +40,7 @@ Related: [blocks-doctrine.md](blocks-doctrine.md) (catalogue, quarantine) ·
 | `install-zconvo.sh` | **patched** IR convolver (§3) | `~/.lv2/zeroconvo.lv2` |
 | `install-nam.sh` | **patched** NAM LV2 (§3) | `~/.lv2/neural_amp_modeler.lv2` |
 | `install-sfizz.sh` | sfizz (piano block, SFZ kits) from the sfztools OBS repository, falling back to the repository's `.deb` files if its key expired; never leaves a broken `sources.list.d` behind | system |
-| `install-prisma.sh` | Prisma (Grit block), compiled from source at a pinned commit, free variant | `~/.vst3/Prisma.vst3` |
+| `install-prisma.sh` | Prisma, compiled from source at a pinned commit, free variant. No block plays it since catalogue v51 (golem-fx plays `grit`); still installed until the installers drop it | `~/.vst3/Prisma.vst3` |
 | `install-spectral.sh` | Spectral Compressor (nih-plug) and PaulXStretch, compiled from pinned sources, no JACK | `~/.clap`, `~/.vst3` |
 
 Every optional step is non-fatal: on failure `install.sh` prints which block will stay struck and where
@@ -98,7 +98,7 @@ and installs over it since 2026-10-22 ([platforms.md](platforms.md) §5.2).
 | Dynamics / EQ | Calf, ZamPlugins, x42 (dpl limiter, fil4 EQ), ReaGate/ReaEQ/ReaComp/ReaXcomp | dynamics, eq, voice chain |
 | Drive / amp sims | Guitarix + GxPlugins | drives, wah, octave… |
 | Pitch | x42 fat1 (pitch correction), REAPER JSFX | `pitch-correct`, pitch blocks |
-| Spectral / lofi | Spectral Compressor, PaulXStretch, Prisma | `spectral-comp`, `stretch`, `grit` |
+| Spectral / lofi | Spectral Compressor, PaulXStretch | `spectral-comp`, `stretch` (`grit`: golem-fx only since catalogue v51) |
 | Instruments | Vital / Vitalium, Dexed, setBfree, sfizz, RS5k, avldrums, DrumGizmo | keys and drum blocks |
 | GoleM JSFX | `reaper/Effects/` (`golem_killswitch`, `golem_deesser`, `golem_click`, `golem_drumseq`, `golem_sample_trig`, `golem_super8` looper, `golem_tuner`…) | service and utility blocks |
 

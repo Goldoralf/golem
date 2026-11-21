@@ -16,7 +16,8 @@ import pytest
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 SLIDER = re.compile(r"^slider(\d+):(?:(\w+)=)?([-\d.]+)<([-\d.]+),([-\d.]+),([-\d.]+)(?:\{([^}]*)\})?>(.*)$")
 # catalogue v48 : delay-tape, eq-para, phaser et delay-echo sont retirés (golem-fx), leurs JSFX avec eux
-BLOCKS = {"reverb-shimmer": ("golem_shimmer", "sh_"), "grit": ("golem_grit", "gr_"),
+# catalogue v51 : grit est joué par gfx-grit seul, golem_grit.jsfx est retiré
+BLOCKS = {"reverb-shimmer": ("golem_shimmer", "sh_"),
           "wah": ("golem_wah", "wh_"), "wah-color": ("golem_colwah", "cw_"), "autowah": ("golem_autowah", "aw_"),
           "chorus": ("golem_chorus", "ch_"), "tremolo": ("golem_tremolo", "tr_"),
           "octaver": ("golem_octaver", "oc_"), "rotary": ("golem_rotary", "ro_"),
@@ -122,8 +123,6 @@ def _patch():
     p = copy.deepcopy(PATCH)
     p["lanes"][0]["chain"]["post"] += [
         {"id": "shim", "type": "reverb-shimmer", "params": {"mix": 30, "decay": 6, "shimmer": 40, "pitch": 5, "hicut": 6000}},
-        {"id": "grit", "type": "grit", "params": {"hm_m1": "Sample divide", "hm_v1": 24, "hm_m2": "Gain", "hm_v2": 53,
-                                                 "x2": 50, "wet": 100}},
         {"id": "cry", "type": "wah", "params": {"wah": 0.7, "volume": -3}},
         {"id": "mwah", "type": "wah-color", "params": {"model": "Vox V847", "wah": 0.4, "freq": 120, "mix": 80, "mode": "auto"}},
         {"id": "awah", "type": "autowah", "params": {"wah": 0.6}},
@@ -154,7 +153,7 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
     lab.run(action="rig_recall", preset="ci-engine", scene="A")
     # les FX vivants du REAPER factice (le snapshot ne garde pas les paramètres)
     fx = {f.cfg.renamed_name: f for t in lab.F.tracks.values() for f in t.fx.values() if f.cfg.renamed_name}
-    assert {"golem:shim", "golem:grit", "golem:cry", "golem:mwah", "golem:awah",
+    assert {"golem:shim", "golem:cry", "golem:mwah", "golem:awah",
             "golem:cho", "golem:trem", "golem:oct", "golem:rot",
             "golem:lim", "golem:vib", "golem:geq"} <= set(fx), lab.log()
 
@@ -162,11 +161,6 @@ def test_un_rappel_windows_pose_les_deux_jsfx_et_ecrit_les_valeurs_brutes(tmp_pa
         return next(p.val for p in fx[fid].params.values() if p.name == name)
     assert (val("golem:shim", "DRYWET"), val("golem:shim", "T60M"), val("golem:shim", "SHIFT")) ==         (pytest.approx(0.30), 6, 5)
     assert val("golem:shim", "PSDRYWET") == pytest.approx(0.40) and val("golem:shim", "F2") == 6000
-    # types de Prisma : choix écrits en NORMALISÉ (index / 22) sur un slider à liste 0..22 -> index brut
-    assert val("golem:grit", "High Mid Module 1 Type") == pytest.approx(10)          # Sample divide
-    assert val("golem:grit", "High Mid Module 2 Type") == pytest.approx(13)          # Gain
-    assert val("golem:grit", "High Mid Module 1 Value") == pytest.approx(0.24)
-    assert val("golem:grit", "High Mid Crossover") == pytest.approx(0.5) and val("golem:grit", "Wet") == pytest.approx(1)
     # la famille wah (2026-10-22) : valeurs brutes, un choix par son index dans la liste du slider
     assert (val("golem:cry", "Wah"), val("golem:cry", "Volume")) == (pytest.approx(0.7), -3)
     assert (val("golem:mwah", "MODEL"), val("golem:mwah", "MODE")) == (6, 1)                  # Vox V847, auto

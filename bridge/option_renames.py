@@ -15,6 +15,7 @@ Règles, pour qu'une réécriture ne puisse jamais se tromper de sens :
 
 Rend le nombre de valeurs réécrites (0 : rien n'a changé)."""
 import json
+import math
 import os
 
 from . import config as C
@@ -372,12 +373,138 @@ def _retire(doc):
     return n
 
 
+# ── UN RÉGLAGE QUI CHANGE D'UNITÉ (catalogue v51, 2026-11-21 : grit joué par gfx-grit). Les quantités des modules et les
+# gains de bande suivaient les lois de Prisma ; gfx-grit en a de nouvelles, linéaires dans une vraie unité (dB, bits).
+# Le catalogue déclare `was` sur chaque réglage concerné : il a changé d'id en changeant d'unité (`lo_v1` -> `lo_amt1`,
+# `lo_gain` en % -> `lo_lvl` en dB). Un document qui porte encore l'ancien id est converti au chargement, l'ancien id
+# retiré : pur et idempotent comme `renamed`, un ancien id n'étant jamais un nouveau. Les formules sont celles de
+# golem-fx (gfx-grit/README « converting golem's grit values », gfx-grit/src/convert.rs) ; la quantité d'un module se
+# convertit selon le TYPE de son emplacement (`lo_m1` pour `lo_v1`).
+_GRIT_BANDS = ("lo", "lm", "hm", "hi")
+_GRIT_ZC = ((0.05, -67.0), (0.10, -46.0), (0.20, -34.0), (0.30, -30.0), (0.40, -27.0), (0.50, -25.0), (0.60, -22.5),
+            (0.70, -20.0), (0.80, -16.0), (0.90, -11.0), (0.95, -8.5), (1.00, -6.0))
+
+
+def _grit_zc(v):
+    if v <= _GRIT_ZC[0][0]:
+        return _GRIT_ZC[0][1]
+    for (v0, t0), (v1, t1) in zip(_GRIT_ZC, _GRIT_ZC[1:]):
+        if v <= v1:
+            return t0 + (t1 - t0) * (v - v0) / (v1 - v0)
+    return _GRIT_ZC[-1][1]
+
+
+def grit_amount(kind, old_pct):
+    """La quantité d'un module : l'ancien % (loi de Prisma) -> le % de gfx-grit, pour un emplacement de type `kind`."""
+    v = min(1.0, max(0.0, float(old_pct) / 100.0))
+    if kind in ("Soft clip", "Hard clip"):
+        val = 1.0 - (1.0 - ((1.0 - v) ** 10 + 1.0 - v ** 0.2) / 2.0) * 0.99
+        new = -20.0 * math.log10(val) / 48.0
+    elif kind == "Fold":
+        new = 20.0 * math.log10(70.0 * v * v + 1.0) / 48.0
+    elif kind == "Sine fold":
+        new = min(5.0 * v * v, 1.0) * 20.0 * math.log10(70.0 * v * v + 2.0) / 48.0
+    elif kind == "Zero cross":
+        new = (_grit_zc(v) + 66.0) / 60.0
+    elif kind == "Bit crush":
+        new = (16.0 - math.log2(2.0 / (0.99 * v ** 5 + 0.01))) / 15.0
+    elif kind == "Gain":
+        new = (40.0 * math.log10(v / 0.35) + 24.0) / 48.0 if v > 0 else 0.0
+    elif kind == "DC":
+        new = 0.5 + 0.5 * (2.0 * v - 1.0) ** 5
+    elif kind == "Stereo DC":
+        new = v ** 5
+    else:                                        # Off, Heavy, Asym, Rectify, Sample divide, les filtres… : même loi
+        new = v
+    return round(100.0 * min(1.0, max(0.0, new)), 2)
+
+
+def grit_level(old_pct):
+    """Le gain d'une bande : l'ancien % ((2 g)², 50 % = 0 dB) -> des dB, −60 = muet."""
+    g = float(old_pct) / 100.0
+    return -60.0 if g <= 0 else round(min(12.0, max(-60.0, 40.0 * math.log10(2.0 * g))), 2)
+
+
+def _num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _grit_units(pm, base=None):
+    """Convertit EN PLACE les anciens ids de `pm` (les params d'un bloc grit, ou une surcharge de scène / d'état rangée
+    sous son id). `base` = les params du bloc AVANT conversion, pour une surcharge : elle ne dit que ce qu'elle change,
+    le type de l'emplacement vient alors du bloc. Une surcharge qui change le TYPE sans redire la quantité jouait la
+    quantité du bloc dans la loi du nouveau type : on l'écrit, convertie pour ce type. Rend le nombre de valeurs."""
+    if not isinstance(pm, dict):
+        return 0
+    base = base if isinstance(base, dict) else {}
+    n = 0
+    for b in _GRIT_BANDS:
+        for i in (1, 2):
+            old, new, mod = f"{b}_v{i}", f"{b}_amt{i}", f"{b}_m{i}"
+            kind = pm.get(mod, base.get(mod, "Off"))
+            if old in pm:
+                v = pm.pop(old)
+                if new not in pm and _num(v):
+                    pm[new] = grit_amount(kind, v)
+                n += 1
+            elif mod in pm and new not in pm and _num(base.get(old)):
+                pm[new] = grit_amount(kind, base[old])
+                n += 1
+        old, new = f"{b}_gain", f"{b}_lvl"
+        if old in pm:
+            v = pm.pop(old)
+            if new not in pm and _num(v):
+                pm[new] = grit_level(v)
+            n += 1
+    return n
+
+
+def _units(doc):
+    """Convertit les blocs grit d'un document (et leurs réglages rangés sous leur id : scènes, états de lane)."""
+    n = 0
+    ids = {}
+
+    def blocks(o):
+        nonlocal n
+        if isinstance(o, dict):
+            if o.get("type") == "grit":
+                before = dict(o["params"]) if isinstance(o.get("params"), dict) else {}
+                n += _grit_units(o.get("params"))
+                if o.get("id") is not None:
+                    ids[str(o["id"])] = before
+            for v in o.values():
+                blocks(v)
+        elif isinstance(o, list):
+            for v in o:
+                blocks(v)
+
+    def keyed(o):
+        nonlocal n
+        if isinstance(o, dict):
+            ps = o.get("params")
+            if isinstance(ps, dict):
+                for bid, before in ids.items():
+                    n += _grit_units(ps.get(bid), before)
+            for v in o.values():
+                keyed(v)
+        elif isinstance(o, list):
+            for v in o:
+                keyed(v)
+
+    blocks(doc)
+    if ids:
+        keyed(doc)
+    return n
+
+
 def apply(doc, tbl=None):
     """Réécrit EN PLACE les anciennes étiquettes de `doc` (n'importe quel document : preset, patch, preset de bloc).
     Rend le nombre de valeurs réécrites."""
     if not isinstance(doc, (dict, list)):
         return 0
     retired = _retire(doc) if tbl is None else 0           # un type retiré d'abord : ses renommages sont ceux du type qui reste
+    if tbl is None:
+        retired += _units(doc)                    # un réglage qui a changé d'unité (grit, catalogue v51)
     tbl = table() if tbl is None else tbl
     if not tbl:
         return retired

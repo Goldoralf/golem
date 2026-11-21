@@ -218,9 +218,9 @@ from the rig and shown `empty`.
 - `whammy-dt` is always first in the pre-chain (a physical pedal before the interface):
   `designer-model.js` `pinWhammyFirst` puts it back at index 0 on every edit and load, and drag-and-drop
   refuses to move it.
-- `grit` (Prisma, category `lofi`) is the only saturation offered to a voice. Its JUCE VST3 enums are
-  normalised (`map: norm`). Factory block presets in `library/block-presets/grit/`. Installed by
-  `provision/install-prisma.sh` ([plugins.md](plugins.md)).
+- `grit` (category `lofi`) is played by golem-fx's Grit (gfx-grit) since catalogue v51; Prisma no longer plays it.
+  Factory block presets in `library/block-presets/grit/` (golem-fx's). Old documents are converted on load
+  ([golem-fx-migration.md](golem-fx-migration.md) §4).
 - `killswitch` (JSFX `reaper/Effects/golem_killswitch.jsfx`, roles guitar/bass/voice): Depth, Length,
   Rate are EXP-marked; Trigger Engage/Pick/Beat. Its stomp is a toggle (the chip's `effect` switches send
   no release, so a momentary kill is not possible).

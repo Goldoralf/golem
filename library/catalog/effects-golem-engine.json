@@ -222,7 +222,9 @@
    "lv2": "http://drobilla.net/plugins/mda/Degrade"
   },
   "grit": {
-   "vst3": "ABCDEF019182FAEB557265645072736D"
+   "vst3": "476F6C654D4678477269743030303031",
+   "golem_fx": true,
+   "status": "testing"
   },
   "clean-boost": {
    "vst3": "476F6C654D4678426F6F737430303031",

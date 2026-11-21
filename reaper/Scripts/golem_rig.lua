@@ -711,7 +711,6 @@ local ADD_ALIAS = {
   ["pedal-nam"] = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },
   ["preamp-nam"] = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },   -- outboard capturé (2026-09-14)
   ["comp-nam"]   = { "Neural Amp Modeler", "neural_amp_modeler", "NAM" },
-  grit    = { "VST3: Prisma (unplugred)", "Prisma", "VST3: Prisma" },   -- distorsion multibande (bloc Grit, 2026-09-14)
   ["guitar-drive"] = { "JS: guitar/distortion", "JS: Distortion" },
   -- blocs spectraux (docs/spectral.md, 2026-09-25) : CLAP d'abord (le VST3 de PaulXStretch annonce 18 canaux)
   ["spectral-comp"] = { "CLAP: Spectral Compressor (Robbert van der Helm)", "VST3: Spectral Compressor (Robbert van der Helm)", "Spectral Compressor" },

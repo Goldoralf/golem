@@ -110,7 +110,7 @@ the buffer (Volt at 128: 194 / 198 samples): converters and the driver's USB saf
 | MIDI foot controller and keyboards | ✅ | ✅ (hot-plug → `midi_reinit`) | ⚠ no real device seen |
 | NAM / IR core | ✅ (plugins compiled by the rack) | ✅ parity measured | ⚠ CI render only |
 | sfizz · Vital · AVL Drumkits | ✅ | ✅ installed (sfizz, AVL, Vitalium); see §5 for the catalog | ⚠ installer untested; Vitalium needs Rosetta |
-| guitarix / Calf blocks, Freeze, Prisma (Grit) | ✅ | ❌ (§5) | ❌ (§5) |
+| guitarix / Calf blocks, Freeze | ✅ | ❌ (§5) | ❌ (§5) |
 | Looper, backing, stem separation | ✅ | ⚠ not in a full test pass | ⚠ never run |
 | NAM capture of a plugin ([`plugin-capture.md`](plugin-capture.md)) | ❌ by design (captures are made on members' computers) | ✅ | ⚠ |
 | Network: station / access point | ✅ | ✅ (mobile hotspot) | ⚠ addresses only; changes refused (501) |
@@ -245,7 +245,7 @@ with them.
 | Block | Linux plugin | Desktop JSFX | Where |
 |---|---|---|---|
 | `reverb-shimmer` | GxShimmizita (guitarix) | `golem_shimmer.jsfx` — its parameter names, ranges and native defaults; the same public idea (8-line FDN reverb, a pitch shifter in every feedback line), our own code: close, not identical — check levels by ear | Windows, macOS |
-| `grit` | Prisma (UnplugRed, AGPL) | `golem_grit.jsfx` — Prisma's parameter interface (names, the 23 modules, 4 bands × 2, log crossovers, band and Gain-module level laws); every module's DSP is ours, written from its name (no AGPL code): same family of sound, not identical | Windows, macOS |
+| `grit` | — | none since catalogue v51 (2026-11-21): golem-fx's Grit (gfx-grit) plays the block on every system and engine; `golem_grit.jsfx` and Prisma no longer play it ([golem-fx-migration.md](golem-fx-migration.md) §4) | — |
 | `wah` | Gxgcb_95 (guitarix, Cry Baby GCB-95) | `golem_wah.jsfx` — `Wah` and `Volume` (the slider spans −20..+20 dB to stay symmetric, the catalog writes −20..+4); the GCB-95's 4th-order filter was **evaluated at 48 kHz for seven pedal positions** (peak frequency 408 → 1736 Hz, Q 3–8.5, peak +19 dB, −3 dB below the peak, dc-blocker 228 Hz) and those facts drive a TPT state-variable filter (resonant lowpass + bandpass); same log, inverted pot law. Bench 2026-10-22: noise through the JSFX peaks at 401 / 1198 / 1796 Hz for Wah = 0 / 0.5 / 1 against 408 / 1222 / 1736 expected (±3 %) | Windows, macOS |
 | `wah-color` | GxWahwah (guitarix colwah: Colorsound, Dallas, Foxx, Jen, Maestro, Selmer, Vox V847) | `golem_colwah.jsfx` — `MODEL`, `WAH`, `FREQ` (alien LFO in BPM), `WET_DRY` (native default 50), `MODE` (manual / auto / alien); each model's filter evaluated the same way (its own dc-blocker, pot law, auto-mode bounds and inversion read in the Faust sources). Bench: Vox manual WAH 0.5 → 932 Hz (947 expected), Foxx WAH 0.9 → 444 Hz (450). Maestro keeps guitarix's +43 dB resonance | Windows, macOS |
 | `autowah` | GxAutoWah (guitarix dunwahauto) | `golem_autowah.jsfx` — the envelope follower of dunwahauto (instant attack, `exp(-10/fs)` release) pushes the GCB-95 filter; `Wah` = sensitivity (position = level × 20 × Wah, bounded), as the catalog promises — **the Linux plugin has no parameter at all** (its `Wah` port belongs to the manual GxWah of the same bundle), so on Linux this knob was a silent no-op | Windows, macOS |

@@ -110,7 +110,7 @@ one to the other without stopping the sound ([`docs/installer.md`](docs/installe
 ## Platforms
 
 Linux is the reference platform. Windows is coded and tested on virtual machines and real hardware;
-a few blocks have no plugin there (guitarix, Calf, Freeze, Grit). macOS is coded, covered by
+a few blocks have no plugin there (guitarix, Calf, Freeze). macOS is coded, covered by
 tests and has had one first real test on a Mac without an audio interface. The feature-by-feature table is in
 [`docs/platforms.md`](docs/platforms.md) §3.
 

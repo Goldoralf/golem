@@ -124,14 +124,14 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**54 of 60 effect blocks** are played by golem-fx; 6 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
+**55 of 60 effect blocks** are played by golem-fx; 5 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
 | Played by golem-fx, replacing an open-source plugin (33) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `spectral-comp`, `guitar-drive` |
-| Played by golem-fx, new blocks with no open-source original (21) | `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `formant`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
-| … of which the engine-stall bench is still pending (0) | — |
-| Ready in golem-fx, not wired yet (6) | `grit` (gfx-grit, today Prisma), `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
+| Played by golem-fx, new blocks with no open-source original (22) | `grit`, `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `formant`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
+| … of which the engine-stall bench is still pending (1) | `grit` |
+| Ready in golem-fx, not wired yet (5) | `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
 | No golem-fx counterpart yet (0) |  |
 | Out of scope — Captures (the sound is the file) (5) | `pedal-nam`, `preamp-nam`, `comp-nam`, `amp`, `amp-nam` |
 | Out of scope — Instruments (6) | `vital`, `pads`, `drumkit`, `organ`, `piano`, `ep` |
@@ -154,10 +154,34 @@ catalogue change).
 - `eq-graphic` → gfx-geq: one block (the maintainer did not ask for three), ±15 dB; Layout (expert) gives the guitar
   or bass seven-band set. Bench clean.
 
+**`grit` is wired (catalogue v51, 2026-11-21):**
+
+- `grit` → **gfx-grit** (golem-fx 688d9e8, class id `GoleMFxGrit00001`), asked by the maintainer because the block had
+  no plugin on the Golem Engine outside Linux (Prisma has no Windows build, and a JSFX does not run in Ardour). The
+  block keeps its type, its place in the drawer and its 4 presets, and gains golem-fx's 11 others, Tube and Fuzz,
+  Drive, Focus, Level, a mix, a Peak gain, solo and bypass per band, and the 48 dB/oct slope.
+- **It is a golem-fx-only block now**, like Tape or Morph: its catalogue entry is the pedal's front panel plus the
+  settings below, the rest comes from golem-fx's descriptor. Prisma (Linux) and `golem_grit.jsfx` (Windows, macOS) no
+  longer play it: where golem-fx is not installed the block is out of the drawer and of the compile. The JSFX is
+  deleted; Prisma stays installed until the installers drop it (no block names it).
+- **A setting that changes its unit changes its id** (new rule, catalogue key `was`). gfx-grit's module amounts follow
+  laws linear in a real unit (dB, bits) instead of Prisma's, and its band gains are in dB instead of %. So
+  `<band>_v1` / `_v2` became `<band>_amt1` / `_amt2` and `<band>_gain` became `<band>_lvl` (bands `lo`, `lm`, `hm`,
+  `hi`); every other id is unchanged. `bridge/option_renames.py` converts a document that still carries an old id
+  when it is loaded (preset, patch, block preset, scene and lane-state overrides, the Designer sandbox) and removes
+  the old id: an old id is never a new one, so the rewrite is pure and idempotent, with no version stamp to trust. The
+  formulas are golem-fx's (gfx-grit README, "converting golem's grit values"): a module amount is converted by the
+  type of its slot, a scene that changes a slot's type without restating its amount gets the block's amount converted
+  for the new type. Tested against golem-fx's converted presets (`tests/test_grit_block.py`).
+- One case is not converted: an old document that names a module type and no amount for it played Prisma's amount 0,
+  which for Bit crush was already 7.6 bits; it now plays gfx-grit's 0 (16 bits, clean). No factory content does this.
+- **Not done yet**: the stall bench (`bench: pending`, so golem.fm's AI does not propose the block until
+  `tools/check-block-stall.py` has run on the rack), a listening pass of the converted presets on the rack, and
+  the same rule for `bitcrusher`, `surge-freqshift` and `stretch`.
 
 1. `pitch-correct` (catalogue fixes: Live by default, Hard tune's filter, key and scale as real settings), `ringmod` and
    `surge-treemonster`, `granular`, `eq-graphic`.
-2. The unit conversions, with saved patches and presets converted once: `bitcrusher`, `surge-freqshift`, `grit`,
-   `stretch`.
+2. The unit conversions, with saved patches and presets converted once: `bitcrusher`, `surge-freqshift`, `grit`
+   (**wired**, catalogue v51, below), `stretch`.
 3. `tuner` (a new runtime: one gfx-tuner per lane), then `cab` and `ir-fx` (the IR slot registry; the level of
    converted cabs, +14 dB or 0 dB, is the maintainer's call).

@@ -50,7 +50,6 @@ Every file below carries `// SPDX-License-Identifier: MIT`:
 | `golem_drumseq.jsfx` | Tempo-synced MIDI drum pattern player |
 | `golem_drumtrans.jsfx` | E-drum module notes to rack kit notes |
 | `golem_gapmeter.jsfx` | Sample-accurate gap detector (`tools/check-scene-gap.py`) |
-| `golem_grit.jsfx` | Multiband grit, the `grit` block on Windows and macOS (Prisma's parameter interface; own DSP) |
 | `golem_killswitch.jsfx` | Tempo-synced stutter (Kill Switch block) |
 | `golem_safety.jsfx` | Zero-latency safety limiter, ceiling −1 dBFS |
 | `golem_shimmer.jsfx` | Shimmer reverb, the `reverb-shimmer` block on Windows and macOS (GxShimmizita parameter names; own DSP) |

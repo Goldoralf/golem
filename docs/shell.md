@@ -113,6 +113,16 @@ crawled in headless Chrome with the reads it **actually** makes, the same redact
 `machine` reads). Only in this mode, `/api/separation` and `/api/separation/batch` are
 read. Details, the examples and the doc plan: [`user-docs.md`](user-docs.md).
 
+**The bench's engine (2026-11-21).** The disposable bridge runs its own **Golem Engine** (dummy backend, its own OSC
+port and session), a golem's default engine; `--bench-engine reaper` keeps the former REAPER on ALSA's `null` device.
+The engine is chosen before the bridge starts (`GOLEM_ENGINE`), so the machine reads name the engine that really runs.
+
+**Long reads, absent reads.** A read whose file name would exceed 200 bytes (`/api/cpu/estimate-many?ids=…`) is
+written as `<last segment>__~<sha256 of the query, 40 hex>.json`; golem.fm's `sync_golem_app.snapshot_file` applies the
+same rule, and the read keeps its whole address in `SNAPSHOT.json`. A read the app makes and a new golem answers with
+404 (`/api/cpu/estimate?preset=sandbox`: nothing in the sandbox yet) is listed in `SNAPSHOT.json` → `absent`, not in
+`failed`; only the reads of `MAY_BE_ABSENT` may be.
+
 **The audio of the demo (2026-11-04).** A visitor **hears** the factory sounds. The app loads audio with
 `<audio src>`, outside `fetch`, so `shell.js` cannot answer it: golem.fm serves each file on a **real route**, at the
 exact address the app asks for. The snapshot puts them in `media/` and lists them in `SNAPSHOT.json` →

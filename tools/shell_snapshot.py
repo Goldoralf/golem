@@ -24,6 +24,7 @@ import os
 import re
 import socket
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -338,17 +339,27 @@ def leaks(obj):
     return out
 
 
+MAY_BE_ABSENT = re.compile(r"^/api/cpu/estimate\?preset=sandbox$")   # la sandbox d'un golem neuf est vide
+LONG_NAME = 200          # octets ; au-delà, le nom du fichier d'une lecture porte l'empreinte de sa requête
+
+
 def out_path(out_dir, read):
     """`/api/song/rs:abc?x=1` -> `<out>/api/song/rs%3Aabc__x%3D1.json` : chaque segment encodé (pas de « : » sous Windows)."""
     u = urllib.parse.urlsplit(read)
     segs = [urllib.parse.quote(urllib.parse.unquote(s), safe="") for s in u.path.strip("/").split("/")]
     name = segs[-1] + ("__" + urllib.parse.quote(u.query, safe="") if u.query else "")
+    if len(name.encode()) > LONG_NAME:
+        # une requête longue (/api/cpu/estimate-many?ids=<treize presets>) dépasse les 255 octets d'un nom de fichier :
+        # son empreinte la remplace. golem.fm applique la même règle (sync_golem_app.snapshot_file) ; la lecture, elle,
+        # garde son adresse entière dans SNAPSHOT.json et reads.json.
+        import hashlib
+        name = segs[-1] + "__~" + hashlib.sha256(u.query.encode()).hexdigest()[:40]
     return os.path.join(out_dir, *segs[:-1], name + ".json")
 
 
 def snapshot(base, out_dir, listed=None, log=print, private=(), factory=False):
     """Parcourt, expurge, VÉRIFIE, écrit. Rend {written, skipped, refused, failed}."""
-    res = {"written": [], "skipped": [], "refused": [], "failed": []}
+    res = {"written": [], "skipped": [], "refused": [], "failed": [], "absent": []}
     got = {}
     collect_private(private)
     for read in COLLECT_ONLY:                                 # le roster : relevé, jamais écrit
@@ -383,6 +394,13 @@ def snapshot(base, out_dir, listed=None, log=print, private=(), factory=False):
             with open(p, "wb") as f:
                 f.write(body)
             res.setdefault("assets", {})[read] = {"file": os.path.relpath(p, out_dir), "type": ctype}
+            continue
+        except urllib.error.HTTPError as e:
+            # 404 : le golem répond « rien ici » (pas de preset dans la sandbox d'un golem neuf : /api/cpu/estimate
+            # ?preset=sandbox) et l'app s'en accommode. Ce n'est pas un échec du relevé : la lecture est DÉCLARÉE absente.
+            # Seulement les lectures de MAY_BE_ABSENT : ailleurs, un 404 est une route disparue, donc un échec.
+            ok = e.code == 404 and MAY_BE_ABSENT.match(read)
+            (res["absent"] if ok else res["failed"]).append(read if ok else (read, str(e)[:80]))
             continue
         except Exception as e:
             res["failed"].append((read, str(e)[:80]))
@@ -425,6 +443,71 @@ def _materialize():
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     return m
+
+
+def golem_engine_env(tmp, engine_dir=None):
+    """Ce que le bridge jetable doit savoir AVANT de démarrer pour tourner sur le Golem Engine (le moteur par défaut d'un
+    golem, 2026-11-21) : le moteur forcé, sa session et son journal à lui, le backend factice, et SON port OSC — sans
+    lui, à côté d'un rack qui tourne sur le Golem Engine, le bridge du banc parlerait au moteur du rack
+    (tools/check-rig-materialize.py, même recette)."""
+    from pathlib import Path
+    d = Path(engine_dir or os.environ.get("GOLEM_ENGINE_DIR") or Path.home() / "golem-engine")
+    if not (d / "golem" / "engine" / "run.sh").is_file():
+        d = Path.home() / "opt" / "golem-engine"
+    if not (d / "golem" / "engine" / "run.sh").is_file():
+        raise SystemExit("Golem Engine not found (set GOLEM_ENGINE_DIR, or use --bench-engine reaper)")
+    return {"GOLEM_ENGINE": "ardour", "GOLEM_ENGINE_DIR": str(d), "GOLEM_ENGINE_SESSION": os.path.join(tmp, "engine-session"),
+            "GOLEM_ENGINE_BACKEND": "None (Dummy)", "GOLEM_ENGINE_LOG": os.path.join(tmp, "engine.log"),
+            "GOLEM_ENGINE_OSC": str(_materialize().free_port())}
+
+
+class GolemEngine:
+    """Le Golem Engine du bridge jetable : lancé par son run.sh comme le fait start.sh, backend factice, arrêté par SON
+    PID. Le bridge a reçu `golem_engine_env` avant de démarrer."""
+
+    def __init__(self, br, log, boot=300):
+        self.br, self.log, self.boot, self.proc, self._logf = br, log, boot, None, None
+
+    def __enter__(self):
+        import subprocess
+        import time
+        from pathlib import Path
+        rm = self.rm = _materialize()
+        env, root = self.br.env, Path(self.br.root)
+        run = Path(env["GOLEM_ENGINE_DIR"]) / "golem" / "engine" / "run.sh"
+        self._logf = open(env["GOLEM_ENGINE_LOG"], "a", encoding="utf-8")
+        self.proc = subprocess.Popen(["bash", str(run), str(root), env["GOLEM_ENGINE_SESSION"], env["GOLEM_ENGINE_BACKEND"], ""],
+                                     env=env, stdout=self._logf, stderr=subprocess.STDOUT)
+        base = "http://127.0.0.1:%s" % env["GOLEM_PORT"]
+        watch = root / "presets" / ".watch.log"
+        deadline = time.monotonic() + self.boot
+        while True:
+            st = _get(base, "/api/state")
+            if st.get("reaper_connected"):
+                break
+            # le Golem Engine ne parle en OSC qu'à un changement : son veilleur prêt + le bridge qui le voit suffisent
+            if st.get("reaper_running") and watch.exists() and "démarré. surveille" in watch.read_text(errors="replace"):
+                break
+            if self.proc.poll() is not None:
+                raise RuntimeError("Golem Engine exited with %s (%s)" % (self.proc.returncode, env["GOLEM_ENGINE_LOG"]))
+            if time.monotonic() > deadline:
+                raise RuntimeError("Golem Engine never spoke to the disposable bridge in %d s" % self.boot)
+            time.sleep(0.5)
+        rm.wait_rig(base, root / "presets", 60)
+        _post(base, "/api/health/first-check", {"action": "skip"})   # comme Engine : le musicien a passé la première vérification
+        self.log("engine: Golem Engine %d connected to the disposable bridge (dummy backend)" % self.proc.pid)
+        return self
+
+    def __exit__(self, *exc):
+        self.rm.kill(self.proc)
+        pid = os.path.join(str(self.br.root), "presets", ".engine.pid")
+        try:                                             # run.sh lance le moteur en enfant : son PID est dans ce fichier
+            with open(pid) as f:
+                os.kill(int(f.read().strip()), 15)
+        except (OSError, ValueError):
+            pass
+        if self._logf:
+            self._logf.close()
 
 
 class Engine:
@@ -1091,16 +1174,21 @@ def separation_from(url, out_dir, log=print):
 
 
 def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True, demos=True, take=None,
-                     take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None):
+                     take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None,
+                     bench_engine="golem-engine"):
     """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `MANIFEST.json`."""
     import subprocess
     import time
     cu = _check_ui()
     commit = subprocess.run(["git", "-C", ROOT, "rev-parse", rev], capture_output=True, text=True, check=True).stdout.strip()
     br = cu.Bridge(test_content=False, rev=commit)
-    with br as base, (Engine(br, log) if engine else contextlib.nullcontext()):
+    ge = engine and bench_engine == "golem-engine"
+    # le bridge jetable hérite de l'environnement : le moteur se choisit AVANT son démarrage. Sans moteur ou sous REAPER,
+    # on le force à REAPER — sinon il se croirait sur le Golem Engine (le défaut) en face d'un REAPER.
+    os.environ.update(golem_engine_env(br.tmp.name) if ge else {"GOLEM_ENGINE": "reaper"})
+    with br as base, ((GolemEngine if ge else Engine)(br, log) if engine else contextlib.nullcontext()):
         log("factory snapshot: disposable bridge on %s (worktree of %s, factory content only%s)"
-            % (base, commit[:8], ", its own REAPER" if engine else ", no engine"))
+            % (base, commit[:8], (", its own Golem Engine" if ge else ", its own REAPER") if engine else ", no engine"))
         if demos:
             seed_demos(br.root, log)
         if take:
@@ -1152,6 +1240,8 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
                     "examples": {e["name"]: e["anchors"] for e in examples}},
         "written": sorted(res["written"]), "skipped": sorted(res["skipped"]),
         "failed": [r for r, _ in res["failed"]], "refused": [r for r, _ in res["refused"]],
+        # ce que le golem d'usine n'a pas (HTTP 404) et que l'app demande quand même : la coquille répond 404 elle aussi
+        "absent": sorted(res.get("absent") or []),
     }
     with open(os.path.join(out_dir, "SNAPSHOT.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
@@ -1167,6 +1257,8 @@ def main(argv=None):
     ap.add_argument("--rev", default="HEAD", help="with --factory: the commit the disposable bridge runs")
     ap.add_argument("--no-engine", action="store_true",
                     help="with --factory: no REAPER for the disposable bridge (faster; Health, looper and arrangement then show a rack that does not play)")
+    ap.add_argument("--bench-engine", choices=("golem-engine", "reaper"), default="golem-engine",
+                    help="with --factory: the engine of the disposable bridge (default: Golem Engine, a golem's default)")
     ap.add_argument("--no-demos", action="store_true",
                     help="with --factory: without the factory demos of this rack (library/previews/patch-factory-*, preset-factory-*)")
     ap.add_argument("--take", help="with --factory: a take folder (recordings/perf-…) shown in Recordings, cleaned by tools/demo_take.py")
@@ -1189,7 +1281,7 @@ def main(argv=None):
     if a.factory:
         os.makedirs(a.out, exist_ok=True)
         collect_private(a.private_name)
-        r = factory_snapshot(a.out, a.rev, engine=not a.no_engine, demos=not a.no_demos, take=a.take,
+        r = factory_snapshot(a.out, a.rev, engine=not a.no_engine, demos=not a.no_demos, take=a.take, bench_engine=a.bench_engine,
                              take_title=a.take_title, separation=a.separation_from,
                              reference=a.reference, take_drop=a.take_drop_role)
     else:

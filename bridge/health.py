@@ -519,7 +519,11 @@ def _f_environment():
     if r["first"]:
         return _fact("environment", "Since last boot", "wait", "first measurement — nothing to compare yet", src)
     if not recent:
-        return _fact("environment", "Since last boot", "ok", "nothing changed: same REAPER, plugins, card, rate, buffer", src)
+        name = "engine"                                   # le moteur ACTIF : « same REAPER » était faux sous le Golem Engine
+        with contextlib.suppress(Exception):
+            from . import engine
+            name = engine.get().descriptor().get("name") or name
+        return _fact("environment", "Since last boot", "ok", f"nothing changed: same {name}, plugins, card, rate, buffer", src)
     # LA VERSION DE GOLEM EST UNE INFORMATION (2026-10-20) : elle change à chaque mise à jour voulue — et sur un poste
     # de dev à chaque commit. Dite en vert ; l'orange reste pour ce qui bouge tout seul (REAPER, carte, fréquence, buffer…)
     hard = [c for c in recent if c.get("key") not in ENV_SOFT]

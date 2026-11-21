@@ -160,7 +160,6 @@ The list lives in `EXAMPLES` (`tools/shell_snapshot.py`). Coded:
 | `golem-rising-songs-picker` | Live: the songs of the setlist on the foot (`click: live.song`) | `#/live` |
 | `golem-rising-part-sheet` | the Golem Rising song page, its first Chorus opened (`click: arr.part.4`) | `#/songs/songs/rs:…` |
 | `golem-rising-rehearsal-chorus` | the Rehearsal page, ready to start from the Chorus (`click: live.section.4`) | `#/live` (Rehearsal mode) |
-| `library-amp-detail` | Library ▸ Tones ▸ Amps, the Peavey 6505 opened (`click: tones.amp:peavey-6505`) | `#/library/tones/amps` |
 | `factory-health` | Settings ▸ System ▸ Health on a new golem that plays | `#/system/sys/health` |
 | `factory-storage`, `factory-backups` | Settings ▸ Content ▸ Storage; the Backups modal (`click: storage.backup`) | `#/system/content/storage` |
 | `factory-standards`, `standard-rooftop-prowl` | Library ▸ Tracks ▸ Standards; Rooftop Prowl's chart (`click: standards.card:rooftop-prowl`) | `#/library/tracks/standards` |
@@ -230,7 +229,7 @@ Anchors carried today:
 | `song.head`, `song.kind`, `song.setlists`, `song.sheet`, `song.file`, `song.arrangement`, `song.footer` | the song page: header, Cover/Original, "in N setlists", the sheet row, File, the arrangement, the setlists at the bottom | `page-repertoire.js` |
 | `arr.power`, `arr.total`, `arr.play`, `arr.start`, `arr.count-in`, `arr.switch`, `arr.advance`, `arr.live-view` | the arrangement editor: Automation on, the length, ▶ Play (hidden in `?shell=ro`), "When the song starts", count-in, the switch, next part, on /live | `designer-arrangement.js` |
 | `arr.track`, `arr.part.<n>`, `arr.part-sheet`, `arr.library`, `arr.read` | the track, one part (1-based), the open part's sheet, the part palette, the read-only arrangement of a setlist line | `designer-arrangement.js`, `arr-read.js` |
-| `tones.amps`, `tones.amp:<model id>`, `tones.type`, `tones.amp-detail` | Library ▸ Tones ▸ Amps: the brands, one amp model, Heads/+Cab, the open model | `page-amps.js` |
+| `tones.brands`, `tones.gain`, `tones.amp:<tone id>`, `tones.amp-detail`, `tones.amp-cpu` | Library ▸ Tones ▸ Amps (redrawn 2026-11): the brands rail, the gain families, one installed capture, the open capture and its CPU cost. A new golem has no capture, so only `tones.brands` and `tones.gain` are measured in the factory snapshot (`tones.amps` and `tones.type` are gone) | `page-amps.js` |
 | `factory.show`, `factory.kind:<kind>`, `factory.restore`, `factory.edited`, `factory.sounds` | Settings ▸ Content ▸ Factory: Show factory content, one kind, Restore, Changed on this golem, Factory sounds | `page-factory.js` |
 | `health.verdict`, `health.ask`, `health.now`, `health.fact:<id>`, `health.guard`, `health.checks`, `health.incidents` | Settings ▸ System ▸ Health: the banner, ✦ Ask golem, Now, one fact, "Rack free for a check", Check now, Incidents | `page-health.js` |
 | `storage.disk`, `storage.music`, `storage.backup`, `storage.folders` | Settings ▸ Content ▸ Storage: the disk, your music, ⇅ Back up… (hidden in `?shell=ro`), song folders and caches | `page-storage.js` |
@@ -281,7 +280,7 @@ separate sections. Each page names its panels: an example of §3, or one to make
 | `presets` | both | A preset is your rig · Scenes (Ambient Metal's five) · Scenes & sounds · Saving | `golem-rising-designer`; scene C (*to make*) |
 | `patches` | both | A patch is one chain · Dropping a patch into a lane · "edited": when a lane is no longer its patch · Trying a patch on the rack | `golem-rising-designer` (patch chip), Songs ▸ Patches |
 | `blocks` **new** | golem | The block catalogue · A block's drawer: knobs, assign, presets · Split, merge, A/B branches | `golem-rising-designer` with a block drawer open (*to make*) |
-| `captures` | both | Amps, pedals, cabinets · Your Tones library · Missing captures | `golem-rising-amp-sheet`, `library-amps`, `library-amp-detail`, `golem-rising-designer` — **written** (rack half) |
+| `captures` | both | Amps, pedals, cabinets · Your Tones library · Missing captures | `golem-rising-amp-sheet`, `library-amps`, `golem-rising-designer` — **written** (rack half); `library-amp-detail` retired 2026-11-21 (no amp to open on a new golem), page to rewrite |
 | `tone3000` | both | Why each account connects its own · On golem.fm · On the golem | Settings ▸ Connect ▸ TONE3000 |
 | `keys-drums` | both | Instruments of the rack (DX7 bank, Vital, pianos) · Drum kits and grooves (26 factory grooves) · Samples | Library ▸ Keys, Library ▸ Drums ▸ Grooves |
 | `drums-lane` **new** | golem | A drum lane: an electronic kit or the Drum Machine · Kits by song section · Calibrating a kit | `metal-for-all-designer`, Drums tab (*to make*) |

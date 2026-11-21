@@ -608,7 +608,9 @@ def factory_pages(base, cu):
 # dans le code (2026-10-21). La coquille de golem.fm jette toute écriture et répond {ok: true} : sans leur réponse, le
 # Designer perdait EN SILENCE l'état des blocs (captures à télécharger) et le tiroir Backing. Le relevé les laisse passer
 # sur le bridge jetable et garde leur réponse, servie sous la clé « POST /api/… » (shell.js la connaît).
-POST_READS = ("/api/blocks/status", "/api/backing/drawer")
+# `/api/library/try/check` (2026-11-21) : « ce son, avec quel instrument ? » — Library ▸ Keys le demande au chargement
+# pour allumer son bouton, sans rien jouer.
+POST_READS = ("/api/blocks/status", "/api/backing/drawer", "/api/library/try/check")
 
 _ANCHORS_JS = "() => [...new Set([...document.querySelectorAll('[data-doc]')].map(e => e.getAttribute('data-doc')))].sort()"
 # les ancres présentes mais SANS TAILLE (cachées par ?shell=ro, comme la barre d'outils de /live) : on peut les cliquer,
@@ -868,8 +870,9 @@ EXAMPLES = [
      "line": "Golem Rising", "scene": "A", "route": "#/live", "click": "live.section.4",
      "gestures": [["/api/mode/update", {"id": "rehearsal", "live_view": "rehearsal"}], ["/api/mode", {"id": "rehearsal"}]],
      "undo": [["/api/mode", {"id": "studio"}]]},
-    {"name": "library-amp-detail", "title": "Library ▸ Tones ▸ Amps: the Peavey 6505 — no capture on this rack yet",
-     "line": "Golem Rising", "scene": "B", "route": "#/library/tones/amps", "click": "tones.amp:peavey-6505"},
+    # `library-amp-detail` (le Peavey 6505 ouvert, sans capture) est RETIRÉ (2026-11-21) : Library ▸ Tones ▸ Amps liste
+    # les captures installées (adc4d5a2, « golem offers only what it can play ») — sur un golem neuf il n'y a aucun
+    # ampli à ouvrir, et l'exemple sortait sans écran ni ancre.
     # les pages golem restantes (2026-10-22) : Settings, Library, Connect — l'écran d'un golem neuf qui joue
     {"name": "factory-health", "title": "Settings ▸ System ▸ Health on a new golem",
      "line": "Golem Rising", "scene": "B", "route": "#/system/sys/health"},

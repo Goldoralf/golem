@@ -1636,6 +1636,12 @@ def _setlist_push(job):
     doc = job.get("setlist")
     if not isinstance(doc, dict) or not doc.get("id"):
         raise RuntimeError("setlist-push: need setlist:{id, lines}")
+    # UNE LISTE D'USINE NE SE FUSIONNE JAMAIS AVEC LE WEB (2026-11-21, docs/factory.md §3 bis) : golem.fm garde l'original
+    # et n'y change rien ; ce qui se retouche ici reste ici, et se remet par `factory-reset`. Refusé TOUJOURS, pas
+    # seulement quand son magasin sert les setlists.
+    from . import factory
+    if factory.protected("setlists", _sl._safe_id(str(doc["id"]))):
+        raise RuntimeError(f"setlist '{doc['id']}' is factory content: it is not merged from golem.fm")
     out = _sl.receive_push(doc)
     if not out.get("deferred") and out.get("resend"):
         golemfm.push_setlist(_sl._safe_id(doc["id"]), delay=2.0)

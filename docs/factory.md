@@ -168,6 +168,11 @@ What the rack does for it:
   without a target, in a locked mode, during a take, or when the preset named is the one playing. A rack that
   understands it lists `factory-reset` in `caps.jobs`.
 
+- **Nothing from golem.fm merges into a factory object.** The job `setlist-push` is refused for a factory setlist,
+  always (not only once golem.fm serves setlists); a factory patch or preset is never installed from the site either
+  (`preset-install` would create `<id>-2` next to the edited one): restoring is `factory-reset` only, from the rack's
+  own shipped file — a golem on an older version gets its version's original.
+
 **The bundle** — the existing factory demos release ([preset-preview.md](preset-preview.md) §10), extended rather
 than doubled by a second archive. `tools/pack-factory-demos.py` now also packs, and its index describes:
 

@@ -183,3 +183,59 @@ def test_le_battement_dit_les_ids_d_usine_poses_ici(monkeypatch, tmp_path):
     monkeypatch.setattr(factory, "catalog", lambda: {"patches": ["factory-x.json", "factory-new.json"], "presets": [], "setlists": []})
     monkeypatch.setitem(factory.KINDS, "patches", ("patches", str(live), ".json"))
     assert factory.held()["patches"] == ["factory-x"]             # le patch d'usine plus récent n'est pas (encore) posé
+
+
+def test_le_lot_n_emporte_que_le_rendu_le_plus_recent_d_un_patch(tmp_path):
+    # un patch rendu sur une autre entrée qu'avant garde son ancien dossier : périmé, il ne part pas à côté du bon
+    root = str(tmp_path)
+    for d, gen in (("patch-factory-a", "2026-11-21T12:00:00Z"), ("patch-factory-a-in2", "2026-11-16T20:00:00Z"),
+                   ("patch-factory-a-plus-in2", "2026-11-16T20:00:00Z"), ("patch-factory-b-in2", "2026-11-16T20:00:00Z")):
+        _write(os.path.join(root, d, "preview.json"), {"generated": gen})
+    dirs = sorted(os.listdir(root)) + ["block-factory-x"]
+    assert PK.newest_per_patch(root, dirs, ["factory-a", "factory-a-plus", "factory-b"]) == [
+        "patch-factory-a", "patch-factory-a-plus-in2", "patch-factory-b-in2", "block-factory-x"]
+
+
+def test_un_patch_rendu_sur_une_entree_empruntee_y_est_lie_par_son_numero(monkeypatch, tmp_path):
+    # 2026-11-21, carte voix + guitare : le preset temporaire d'un patch de basse restait lié à « Bass 1 », que la carte
+    # n'a pas — la lane attendait sa carte et les 6 premiers patches de basse du lot sortaient « no clip rendered »
+    from bridge import patches, preview, store
+    written = {}
+    monkeypatch.setattr(patches, "get_patch", lambda pid: {"id": pid, "role": "bass", "tags": ["rock"]})
+    monkeypatch.setattr(preview, "_borrowed_imap", lambda role: ({"inputs": [{"ch": "1", "role": role, "nth": 1}]}, "1"))
+    monkeypatch.setattr(patches, "as_preset", lambda doc, imap=None: {"lanes": [
+        {"id": "bass-1", "role": "bass", "in_sel": "1", "in_role": "bass", "in_nth": 1, "in_name": "Voice 1"},
+        {"id": "keys-1", "role": "keys", "midi": True, "in_role": "keys", "in_nth": 1}]})
+    monkeypatch.setattr(preview.C, "PRESETS_DIR", str(tmp_path))
+    monkeypatch.setattr(store, "_write_json_atomic", lambda path, doc: written.update(doc=doc))
+    monkeypatch.setattr(preview, "plan", lambda *a, **k: "stop here")
+    assert preview.render_patch_borrowed("factory-bass-x", 1) == {"status": "skipped", "reason": "stop here"}
+    bass, keys = written["doc"]["lanes"]
+    assert bass == {"id": "bass-1", "role": "bass", "in_sel": "1"}                 # le rôle reste : il choisit la DI
+    assert keys["in_role"] == "keys"                                               # une lane MIDI n'emprunte rien
+
+
+def test_l_enveloppe_d_un_preset_d_usine_garde_les_deps_et_rien_du_rack_de_reference():
+    from bridge import preset_export
+    shipped = {"id": "factory-p", "name": "P", "lanes": [{"id": "guitar-1", "in_role": "guitar", "in_nth": 1}]}
+    out = {"schema_version": 3, "catalog_version": 51, "preset": dict(shipped, lanes=[{"id": "guitar-1", "in_sel": "2"}]),
+           "inputs": [{"lane": "guitar-1", "port": "2"}], "foot_context": {"bank": "factory", "slots": [1]},
+           "deps": [{"sha256": "a", "kind": "amp", "source": "t3k", "uid": "t3k:1"}, {"sha256": "b", "kind": "kit", "factory": True},
+                    {"sha256": "c", "kind": "preview"}], "preview_fingerprint": "bound-to-the-card"}
+    env = PK.export_envelope(shipped, out)
+    assert env["preset"] == shipped and set(env) == {"schema_version", "catalog_version", "preset", "deps", "preview_fingerprint"}
+    assert [d["sha256"] for d in env["deps"]] == ["a", "b"] and env["preview_fingerprint"] == preset_export.fingerprint(shipped)
+    assert PK.export_envelope(shipped, dict(out, unresolved=[{"what": "asset"}]))["unresolved"] == [{"what": "asset"}]
+
+
+def test_une_setlist_d_usine_ne_se_fusionne_jamais_depuis_golem_fm(monkeypatch):
+    from bridge import golemfm, setlists
+    got = []
+    monkeypatch.setattr(factory, "catalog", lambda: {"setlists": ["factory-guitar.json"]})
+    monkeypatch.setattr(setlists, "receive_push", lambda doc: got.append(doc["id"]) or {"added": [], "updated": [], "removed": []})
+    monkeypatch.setattr(golemfm, "push_setlist", lambda *a, **k: None)
+    monkeypatch.setitem(factory._FM_STORE, "kinds", frozenset())           # même sans magasin annoncé
+    with pytest.raises(RuntimeError, match="factory content"):
+        tones_jobs._setlist_push({"setlist": {"id": "factory-guitar", "lines": []}})
+    tones_jobs._setlist_push({"setlist": {"id": "mine", "lines": []}})
+    assert got == ["mine"]

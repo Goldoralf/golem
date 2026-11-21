@@ -41,7 +41,26 @@ def factory_dirs():
     for d in sorted(os.listdir(root)) if os.path.isdir(root) else []:
         if os.path.isdir(os.path.join(root, d)) and (d.startswith(prefixes) or d in keep):
             out.append(d)
-    return root, out
+    from bridge import factory
+    return root, newest_per_patch(root, out, [f[:-5] for f in factory.catalog().get("patches") or []])
+
+
+def newest_per_patch(root, dirs, patch_ids):
+    """Un patch rendu sur une AUTRE entrée qu'avant (une carte changée, une entrée empruntée) garde son ancien dossier
+    (`patch-<id>-in2` à côté de `patch-<id>`) : le lot n'emporte que le plus RÉCENT de chaque patch d'usine
+    (2026-11-21), sinon il livrerait un rendu périmé à côté du bon."""
+    def generated(d):
+        try:
+            return json.load(open(os.path.join(root, d, "preview.json"), encoding="utf-8")).get("generated") or ""
+        except (OSError, ValueError):
+            return ""
+    out = list(dirs)
+    for pid in patch_ids:
+        mine = [d for d in dirs if re.fullmatch("patch-" + re.escape(pid) + r"(-in[0-9k]+)?", d)]
+        if len(mine) > 1:
+            newest = max(mine, key=generated)
+            out = [d for d in out if d not in mine or d == newest]
+    return out
 
 
 _IN = re.compile(r"(-in[0-9k]+)?$")
@@ -129,6 +148,50 @@ def documents():
     return docs, hist, files
 
 
+def export_envelope(shipped, out):
+    """L'ENVELOPPE D'EXPORT d'un preset d'usine pour le magasin de golem.fm (2026-11-21) : golem.fm range un preset
+    sous la forme que le rack publie (`preset_export.build_export`) et y lit `deps[]` ; le fichier livré est le preset
+    nu. On garde de l'export fait sur le rack de référence ce qui vaut pour TOUS : les deps (captures = liens
+    TONE3000, fichiers d'usine marqués `factory`), la version du catalogue, `unresolved` s'il y en a. On en retire ce
+    qui est de CE rack : `preset` (remplacé par le fichier LIVRÉ, sans liaison à une carte), `inputs`,
+    `foot_context`, et les deps `preview` (les écoutes sont dans `renders[]`)."""
+    from bridge import preset_export
+    env = {"schema_version": out.get("schema_version"), "catalog_version": out.get("catalog_version"),
+           "preset": shipped, "deps": [d for d in out.get("deps") or [] if d.get("kind") != "preview"],
+           "preview_fingerprint": preset_export.fingerprint(shipped)}
+    if out.get("unresolved"):
+        env["unresolved"] = out["unresolved"]
+    return env
+
+
+def preset_exports(out_dir):
+    """Écrit l'enveloppe de chaque preset d'usine dans `out_dir`/preset-exports ; rend ([{kind, id, file, sha256,
+    fingerprint, deps, unresolved}], fichiers). L'export lit le preset POSÉ ici : retouché, ses deps ne seraient plus
+    celles de l'original — `edited` le dit, et le lot ne se publie pas ainsi."""
+    from bridge import factory, preset_export
+    edited = {r["id"] for r in factory.edited() if r["kind"] == "presets"}
+    docs, files = [], []
+    os.makedirs(os.path.join(out_dir, "preset-exports"), exist_ok=True)
+    for fn in sorted(factory.catalog().get("presets") or []):
+        pid = fn[:-5]
+        try:
+            shipped = json.load(open(os.path.join(factory.SRC, "presets", fn), encoding="utf-8"))
+            out, _blobs = preset_export.build_export(pid)
+        except (OSError, ValueError):
+            out = None
+        if not out:
+            continue
+        env = export_envelope(shipped, out)
+        p = os.path.join(out_dir, "preset-exports", fn)
+        json.dump(env, open(p, "w", encoding="utf-8"), ensure_ascii=False, sort_keys=True)
+        arc = f"factory/preset-exports/{fn}"
+        docs.append({"kind": "preset-exports", "id": pid, "file": arc, "sha256": _sha_file(p),
+                     "fingerprint": env["preview_fingerprint"], "deps": len(env["deps"]),
+                     "unresolved": len(env.get("unresolved") or []), **({"edited": True} if pid in edited else {})})
+        files.append((p, arc))
+    return docs, files
+
+
 def _clips(root, rel, owner, di, duration):
     """Les rendus d'un dossier de démo (son preview.json) : une ligne par scène."""
     try:
@@ -185,7 +248,17 @@ def _why(pid, n):
     if doc.get("role") in preview.BATCH_ROLES_SKIPPED:
         return (None if n else "triggered samples: no phrase to play"), False
     try:
-        pl = preview.plan(preview.PATCH_PREFIX + pid, in_key=preview.patch_input(pid) or "1")
+        in_key = preview.patch_input(pid)
+        if not in_key:
+            # pas d'entrée de son rôle sur la carte du rack qui rend : la démo est faite sur une entrée EMPRUNTÉE, par un
+            # preset temporaire — on demande au même chemin si elle est à jour, sans rien rendre
+            r = preview.render_patch_borrowed(pid, 0, dry=True)
+            if r.get("status") == "stale":
+                return None, bool(n)
+            if r.get("reason") == "up to date":
+                return None, False
+            return (None if n else r.get("reason") or "not rendered"), False
+        pl = preview.plan(preview.PATCH_PREFIX + pid, in_key=in_key)
     except Exception as e:                               # un patch qui ne se lie pas ici : dit, pas deviné
         return (None if n else f"not rendered ({type(e).__name__})"), False
     if isinstance(pl, str):
@@ -193,6 +266,15 @@ def _why(pid, n):
     if not n:
         return "not rendered yet", False
     return None, not preview._up_to_date(pl)
+
+
+def block_keep(root):
+    """Les démos de bloc qui correspondent à un bloc d'AUJOURD'HUI : {« block-x/10/standard »}. Un bloc d'usine qui a
+    changé de nature (une boîte à rythmes devenue un Standard, 2026-11-21) laisse sa vieille démo dans le dossier :
+    elle ne part pas."""
+    from bridge import preview
+    return {os.path.relpath(preview.block_dir(pid, sw), root).replace(os.sep, "/") + "/" + kind
+            for pid, sw, kind, _b in preview.block_targets()}
 
 
 def build(root, dirs, tag, out_dir):
@@ -204,6 +286,9 @@ def build(root, dirs, tag, out_dir):
     index = {"name": NAME, "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **header(tag), "items": {}}
     di, di_files = di_refs()
     docs, hist, doc_files = documents()
+    exp_docs, exp_files = preset_exports(out_dir)
+    docs, doc_files = docs + exp_docs, doc_files + exp_files
+    blocks, dropped = block_keep(root), []
     with tarfile.open(tar_path, "w") as tf:                 # .opus déjà compressé : un tar simple
         for d in dirs:
             # les lanes d'un preset (preset-x/<lane>/) et les blocs (block-x/<switch>/) sont un niveau plus bas
@@ -212,6 +297,9 @@ def build(root, dirs, tag, out_dir):
                 files = {}
                 for f in sorted(fs):
                     p = os.path.join(sub, f)
+                    if rel.startswith("block-") and f"{rel}/{f.rsplit('.', 1)[0]}" not in blocks:
+                        dropped.append(f"{rel}/{f}")
+                        continue
                     if not f.endswith((".wav", ".tmp", ".midi.txt")):
                         files[f] = _sha_file(p)
                         tf.add(p, arcname=f"{rel}/{f}")
@@ -224,6 +312,7 @@ def build(root, dirs, tag, out_dir):
     index["renders"] = renders(root, dirs, patch_ids, preview.factory_preset_ids(), di["refs"],
                                lambda f: preview._clip_duration(f))
     index["patches"] = coverage(patch_ids, index["renders"], _why)
+    index["dropped_block_demos"] = dropped                # dites, pas tues : la démo d'un bloc qui n'existe plus
     index["sha256"] = _sha_file(tar_path)
     index["bytes"] = os.path.getsize(tar_path)
     idx_path = os.path.join(out_dir, NAME + ".json")
@@ -245,6 +334,10 @@ def main():
           f"reference DIs, {len(index['renders'])} renders, {index['bytes'] / 1e6:.1f} MB -> {tar_path}")
     for p in todo:
         print(f"  {p['id']}: " + (p.get("reason") or "render older than the document (stale)"))
+    for d in index["documents"]:
+        if d["kind"] == "preset-exports" and (d.get("unresolved") or d.get("edited")):
+            print(f"  ! preset {d['id']}: " + ("edited on this rack" if d.get("edited") else f"{d['unresolved']} unresolved asset(s)")
+                  + " — its export is not the original's")
     if index["rack_dirty"]:
         print("  ! tracked files are modified: rack_commit does not describe this pack exactly")
     if a.publish:

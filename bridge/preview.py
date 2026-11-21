@@ -1236,8 +1236,10 @@ def _borrowed_imap(role):
     return imap, str(ins[0]["ch"])
 
 
-def render_patch_borrowed(patch_id, seq, force=False):
-    """La démo d'un patch dont le rôle n'a pas d'entrée sur cette carte. Rend {"status", "reason"} comme le lot."""
+def render_patch_borrowed(patch_id, seq, force=False, dry=False):
+    """La démo d'un patch dont le rôle n'a pas d'entrée sur cette carte. Rend {"status", "reason"} comme le lot.
+    `dry` : ne rend rien, dit seulement si la démo est à jour (« up to date ») ou à refaire (status « stale ») — pour
+    l'index du lot d'usine (tools/pack-factory-demos.py)."""
     from . import patches as P
     doc = P.get_patch(patch_id)
     if not doc or doc.get("role") not in BORROW_ROLES:
@@ -1248,6 +1250,14 @@ def render_patch_borrowed(patch_id, seq, force=False):
     pre = P.as_preset(doc, imap=imap)
     if not pre:
         return {"status": "skipped", "reason": "this patch cannot be played"}
+    # LIÉ PAR NUMÉRO, plus par nom (2026-11-21) : `as_preset` grave (rôle, rang) = « Bass 1 », que la VRAIE carte n'a
+    # pas — au rappel la lane attendait sa carte (« needs Bass 1, this card has 2 inputs ») et rien n'était rendu. Le
+    # preset temporaire joue sur l'entrée empruntée, par son numéro ; `role` reste celui du patch (il choisit la DI).
+    for L in pre.get("lanes") or []:
+        if isinstance(L, dict) and not L.get("midi"):
+            for k in ("in_role", "in_nth", "in_name"):
+                L.pop(k, None)
+            L["in_sel"] = ch
     tmp_id = "preview-borrow-" + store._safe_id(patch_id)
     ppath = os.path.join(C.PRESETS_DIR, tmp_id + ".json")
     out_tmp = os.path.join(C.PREVIEWS_DIR, tmp_id + ("" if ch == "1" else "-in" + ch))
@@ -1260,6 +1270,8 @@ def render_patch_borrowed(patch_id, seq, force=False):
             return {"status": "skipped", "reason": pl}
         if not force and _up_to_date(dict(pl, out_dir=d)):
             return {"status": "skipped", "reason": "up to date"}
+        if dry:
+            return {"status": "stale", "reason": "render older than the document"}
         generate(tmp_id, seq, in_key=ch, casting=_casting(patch_id))
         st = status()
         if st.get("phase") != "done":

@@ -650,6 +650,7 @@ def light(with_modes=False):
     try:
         from . import factory
         st["factory_edited"] = factory.edited_ids()
+        st["factory_held"] = factory.held()
     except Exception as e:
         log.warning(f"factory_edited absent du push : {e}")
     # le job song-separate tenu, et pourquoi il attend (docs/separation.md §10, demande golem.fm 2026-10-24) —
@@ -793,6 +794,10 @@ def push(payload=None, with_modes=False):
         if isinstance(ans, dict) and "serial" in ans:
             from . import serial
             serial.record(ans.get("serial"))
+        # le MAGASIN D'USINE de golem.fm (docs/factory.md §3 bis) : les sortes qu'il sert ; absent = rien, comme avant
+        if isinstance(ans, dict):
+            from . import factory
+            factory.set_fm_store(ans.get("factory_store"))
         # la TAXONOMIE DES GENRES (docs/genres.md) : golem.fm en annonce la version, on la relit quand elle change
         if isinstance(ans, dict) and ans.get("genres_version"):
             from . import genres

@@ -1520,6 +1520,9 @@ def push_setlist(sid, delay=5.0):
         sl = _sl.load(sid)
         if not sl:
             return
+        from . import factory
+        if factory.fm_serves("setlists", sid):         # golem.fm sert l'original (docs/factory.md §3 bis)
+            return
         doc = {k: v for k, v in sl.items() if k != "presets"}      # `presets` est dérivé, pas du contrat
         doc["complete"] = True
         # Une ligne ajoutée depuis le répertoire ne porte que `band_song` (docs/songs.md §9.6) : on lui
@@ -1597,6 +1600,11 @@ def push_patches(delay=5.0):
         with contextlib.suppress(Exception):
             refresh_deps()
         docs = list_patches()
+        # les patches d'usine que golem.fm sert depuis SON magasin ne partent plus (docs/factory.md §3 bis) : il garde
+        # l'original, et la retouche faite ici ne le remplace pour personne. Sans annonce de sa part : tout part.
+        from . import factory
+        if factory.fm_serves("patches"):
+            docs = [d for d in docs if not (isinstance(d, dict) and factory.protected("patches", d.get("id")))]
         # `complete: true` : le lot EST le catalogue — ce qui n'y est plus est supprimé côté
         # web (leur réponse du 2026-09-02, question 1). On l'ANNONCE au lieu de le laisser
         # déduire : le jour où une régression pousse une liste vide, « absent = supprimé »

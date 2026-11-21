@@ -143,8 +143,9 @@ working. Hiding the factory setlist does not remove it from a mode that names it
 > **Status: PARTLY CODED 2026-11-21** — the maintainer's decision the same day: factory content is **one** set,
 > shipped with golem and held by golem.fm, the same for every account, with nothing to render or upload again.
 > CODED on the rack: the extended bundle index (below), `factory_edited` in the heartbeat, the `factory-reset` job.
-> **Not built**: the rack still pushes its `factory-*` patch and preset documents and still accepts a preview job
-> for one (see "Still to do"); the extended bundle is **not published** (current release: `factory-demos-v3`).
+> Also CODED, and inert until golem.fm announces its store: the rack stops pushing `factory-*` documents and refuses
+> a preview job for one ("The switch", below). The extended bundle is **not published** (current release:
+> `factory-demos-v3`).
 
 **The rule for a factory object changed on a golem** (maintainer, 2026-11-21, relayed by the golem.fm session and
 confirmed by him there):
@@ -194,10 +195,25 @@ publishing before the batch has run again on the maintainer's rack.**
 1. Run the factory batch on the maintainer's rack (engine taken for about half an hour), then
    `./tools/pack-factory-demos.py --publish factory-demos-v4` and bump `factory_demos.TAG`.
 2. golem.fm imports the bundle into its user-less factory store and serves it to every account.
-3. **Only then** the rack stops pushing `factory-*` documents and refuses a preview job for one. Not before:
-   `push_patches` sends the whole catalogue with `complete: true` — what is absent is **deleted** on the site — so
-   dropping the factory patches from the push while golem.fm still shows per-account copies would empty them. The
-   switch needs a signal from golem.fm that its store is live (to be agreed).
+3. golem.fm announces its store in the answer to the heartbeat; the rack then follows by itself (below).
+
+**The switch, per kind** (CODED 2026-11-21, waiting for golem.fm to send the field): the answer to
+`PUT /api/ext/rig/status` may carry `factory_store: {kinds: ["patches", …], rack_commit}` — the kinds golem.fm serves
+from its own store (`factory.set_fm_store`, kept in memory; kinds known here: `patches`, `presets`, `setlists`). For
+a kind it names, and for factory objects only (`factory.fm_serves`):
+
+- `push_patches` leaves the factory patches out of the catalogue it sends; `publish_preset` / `needs_publish` skip a
+  factory preset; `push_setlist` skips a factory setlist. An edit made here is never sent in the original's place.
+- the jobs `patch-preview` and `generate-preview` are refused for one ("… is factory content: its listen ships with
+  golem, it is not rendered again").
+
+**Absent field = everything is pushed, as before.** It has to be so: `push_patches` sends the whole catalogue with
+`complete: true` — what is absent is deleted on the site — so the rack must not drop the factory patches before
+golem.fm serves them. At start, before the first answer, everything is pushed too.
+
+The heartbeat also carries `factory_held: {patches: [ids], presets: [ids], setlists: [ids]}` — the factory ids
+**placed on this rack** (ids only). "On rack" stays a measurement on golem.fm's side: a golem left on an older
+version says by itself that it lacks a newer factory patch.
 
 ## 4. Factory captures download
 

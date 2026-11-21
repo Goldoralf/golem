@@ -769,6 +769,9 @@ def needs_publish(pid, preset=None):
     p = preset if preset is not None else store.load_preset(pid)
     if not p:
         return False
+    from . import factory
+    if factory.fm_serves("presets", pid):           # golem.fm sert l'original (docs/factory.md §3 bis) : rien à publier
+        return False
     return _published_map().get(pid) != preset_export.fingerprint(p)
 
 
@@ -841,6 +844,9 @@ def publish_preset(pid):
     # 2026-09-12). Un id réservé d'un côté n'est réservé de l'autre que si quelqu'un l'écrit.
     if pid == store.SANDBOX_TRY_ID or str(pid).startswith("patch:"):     # un patch se publie comme PATCH
         return {"ok": False, "error": "the trial is not a preset — save it first"}
+    from . import factory
+    if factory.fm_serves("presets", pid):           # golem.fm sert l'original d'un preset d'usine (docs/factory.md §3 bis)
+        return {"ok": False, "error": "factory preset: golem.fm holds the original — copy it to publish yours"}
     if pid == store.KARAOKE_ID:                     # le preset volatil du karaoké (docs/karaoke.md) : jamais publié
         return {"ok": False, "error": "the karaoke is not a preset"}
     out, dep_blobs = preset_export.build_export(pid)

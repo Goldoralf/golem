@@ -126,3 +126,60 @@ def test_factory_reset_repousse_l_original_des_objets_nommes(monkeypatch):
     monkeypatch.setattr(state, "preset_id", "factory-p", raising=False)
     with pytest.raises(RuntimeError, match="playing right now"):
         tones_jobs._factory_reset({"files": ["factory-p.json"]})
+
+
+def test_le_rack_pousse_tout_tant_que_golem_fm_ne_dit_pas_ce_qu_il_sert(monkeypatch):
+    # `complete: true` : ce qui manque au lot est SUPPRIMÉ sur le site — on ne retire les patches d'usine du lot que
+    # lorsque la réponse du battement dit que le magasin de golem.fm les sert, sorte par sorte
+    monkeypatch.setattr(factory, "catalog", lambda: {"patches": ["factory-x.json"], "presets": ["factory-p.json"], "setlists": []})
+    monkeypatch.setitem(factory._FM_STORE, "kinds", frozenset())
+    assert not factory.fm_serves("patches") and not factory.fm_serves("patches", "factory-x")
+    factory.set_fm_store({"kinds": ["patches", "bogus"], "rack_commit": "abc"})
+    assert factory.fm_serves("patches", "factory-x") and not factory.fm_serves("patches", "mine")
+    assert not factory.fm_serves("presets", "factory-p")                        # pas annoncé : poussé comme avant
+    for gone in (None, {}, {"kinds": "patches"}, True):                         # absent ou illisible = comme avant
+        factory.set_fm_store(gone)
+        assert not factory.fm_serves("patches")
+
+
+def test_un_patch_d_usine_servi_par_golem_fm_ne_part_plus_et_ne_se_rend_plus(monkeypatch):
+    from bridge import golemfm, patches, tones_sync
+    monkeypatch.setattr(factory, "catalog", lambda: {"patches": ["factory-x.json"], "presets": ["factory-p.json"], "setlists": []})
+    monkeypatch.setattr(patches, "list_patches", lambda: [{"id": "factory-x"}, {"id": "mine"}])
+    monkeypatch.setattr(patches, "refresh_deps", lambda: None)
+    monkeypatch.setattr(golemfm, "_cfg", lambda: ("http://x", "tok"))
+    sent = []
+    monkeypatch.setattr(golemfm, "_req", lambda path, body=None, token=None, **k: sent.append((path, body)) or (200, {}))
+
+    class Now:                                                  # le minuteur de l'anti-rebond, tiré tout de suite
+        def __init__(self, _delay, fn):
+            self.fn = fn
+
+        def start(self):
+            self.fn()
+
+        def cancel(self):
+            pass
+        daemon = True
+    monkeypatch.setattr(golemfm.threading, "Timer", Now)
+    monkeypatch.setitem(factory._FM_STORE, "kinds", frozenset())
+    golemfm.push_patches()
+    assert [d["id"] for d in sent[-1][1]["patches"]] == ["factory-x", "mine"] and sent[-1][1]["complete"] is True
+    monkeypatch.setitem(factory._FM_STORE, "kinds", frozenset({"patches", "presets"}))
+    golemfm.push_patches()
+    assert [d["id"] for d in sent[-1][1]["patches"]] == ["mine"]
+    with pytest.raises(RuntimeError, match="factory content"):
+        tones_jobs._patch_preview({"patch_id": "factory-x"})
+    with pytest.raises(RuntimeError, match="factory content"):
+        tones_jobs._generate_preview({"preset": "factory-p"})
+    assert tones_sync.needs_publish("factory-p", {"id": "factory-p"}) is False
+    assert tones_sync.publish_preset("factory-p")["ok"] is False
+
+
+def test_le_battement_dit_les_ids_d_usine_poses_ici(monkeypatch, tmp_path):
+    live = tmp_path / "patches"
+    live.mkdir()
+    (live / "factory-x.json").write_text("{}")
+    monkeypatch.setattr(factory, "catalog", lambda: {"patches": ["factory-x.json", "factory-new.json"], "presets": [], "setlists": []})
+    monkeypatch.setitem(factory.KINDS, "patches", ("patches", str(live), ".json"))
+    assert factory.held()["patches"] == ["factory-x"]             # le patch d'usine plus récent n'est pas (encore) posé

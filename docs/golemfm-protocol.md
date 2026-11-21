@@ -98,12 +98,15 @@ Every field (any probe that fails is simply absent — the push still leaves):
 | `health` | `{cpu_pct, ram_used_pct, ram_total_mb, temp_c, xruns_total}` |
 | `controllers` | MIDI controllers, pedalboard, MIDI pedals `[{id, name, kind, usb, calibrated, connected, active, where, role}]` (max 24) |
 | `factory_edited` | (2026-11-21) the factory objects changed on this rack `[{kind, id}]` — a person's edit, not what the machine writes alone ([factory.md](factory.md) §3 bis); golem.fm keeps the original and offers `factory-reset` |
+| `factory_held` | (2026-11-21) the factory ids placed on this rack `{patches: [ids], presets: [ids], setlists: [ids]}` — ids only; what golem.fm reads "on rack" from once factory documents are no longer pushed ([factory.md](factory.md) §3 bis) |
 | `caps` | `{os, engine, engine_version, inventory, inventory_at, unavailable[], quarantine[], nam_unreadable, compo_bed, jobs[], separation?}` (`blockstatus.caps`) `jobs` (2026-11-18): the jobs and recent job fields this rack understands (`patch-preview-scene`, `patch-preview-max-s`, `patch-preview-midi`, `patch-preview-di`, `kit-pad-set`, `groove-install-meta`, `groove-pack-meta`, `groove-render`, `kit-available`); a rack without the list is an older one — send it the earlier form. Entries are added, never removed |
 
 **Response fields the rack reads** (`rigstatus.push`): `serial` → `serial.record` (written once to
 `config/serial.json`, read-only; a different number is kept aside as a conflict; a non-production server
 only gives a *provisional* number, `serial.is_prod`), and `genres_version` → if newer than the local
-taxonomy, `GET /api/ext/genres` (§5). Nothing else in the answer is read. **`catalog_version` does not
+taxonomy, `GET /api/ext/genres` (§5), and `factory_store: {kinds: [...], rack_commit}` (2026-11-21) → the kinds
+golem.fm serves from its own factory store; for those the rack no longer pushes `factory-*` documents nor renders a
+listen for one; absent = everything is pushed, as before ([factory.md](factory.md) §3 bis). Nothing else in the answer is read. **`catalog_version` does not
 trigger anything on the rack**: the full catalogue only leaves when golem.fm queues a `push-catalog` job (§3);
 the rack never decides to send it.
 The same goes for `modes_version` / `patch_version`: they let golem.fm skip unchanged data.

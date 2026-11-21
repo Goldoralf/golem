@@ -531,6 +531,9 @@ def _patch_preview(job):
     if (state.perf or {}).get("recording"):
         raise RuntimeError("a take is recording — try after it")
     patch_id = P._safe_id(str(job.get("patch_id") or job.get("name") or "patch"))
+    from . import factory
+    if factory.fm_serves("patches", patch_id):         # une écoute d'usine est rendue UNE fois (docs/factory.md §3 bis)
+        raise RuntimeError(f"patch '{patch_id}' is factory content: its listen ships with golem, it is not rendered again")
     pid = _safe_id(f"preview-{patch_id}")
     preset, role, lane, scenes, settled, missing = _trial_preset(job, ".patch-preview.tmp", pid=pid)
     in_key = "k" if lane.get("midi") else str(lane.get("in_sel") or "1")
@@ -972,6 +975,9 @@ def _generate_preview(job):
     jid = job_id(job)
     if not pid:
         raise RuntimeError("preset required")
+    from . import factory
+    if factory.fm_serves("presets", pid):               # une écoute d'usine est rendue UNE fois (docs/factory.md §3 bis)
+        raise RuntimeError(f"preset '{pid}' is factory content: its listen ships with golem, it is not rendered again")
     mode = state.mode or {}
     if mode.get("id") == "gig" or (mode.get("ui") or {}).get("locked"):
         raise RuntimeError("rack is in a locked/gig mode — try later")

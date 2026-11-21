@@ -293,6 +293,42 @@ def edited_ids(now=None):
     return [dict(x) for x in _EDITED["ids"]]
 
 
+# ── CE QUE LE MAGASIN D'USINE DE golem.fm SERT (2026-11-21, docs/factory.md §3 bis) ─────────────────────────────────────
+# golem.fm garde UN original de chaque objet d'usine, le même pour tous les comptes. Tant qu'il ne le dit pas, le rack
+# pousse tout comme avant : `push_patches` envoie le catalogue avec `complete: true` (absent = supprimé là-bas), et
+# retirer les patches d'usine du lot avant que le magasin les serve les effacerait du site. La réponse du battement
+# porte `factory_store: {kinds: [...], rack_commit}` ; par SORTE (le premier lot ne sert que les patches). En mémoire :
+# au démarrage, avant la première réponse, on pousse tout — golem.fm ignore alors les documents `factory-*`.
+STORE_KINDS = ("patches", "presets", "setlists")
+_FM_STORE = {"kinds": frozenset(), "rack_commit": None}
+
+
+def set_fm_store(obj):
+    """Ce que la réponse du battement dit du magasin d'usine ; absent ou illisible = rien n'est servi (comme avant)."""
+    kinds = (obj or {}).get("kinds") if isinstance(obj, dict) else None
+    new = frozenset(k for k in kinds if k in STORE_KINDS) if isinstance(kinds, list) else frozenset()
+    if new != _FM_STORE["kinds"]:
+        log.info("usine : golem.fm sert " + (", ".join(sorted(new)) or "rien") + " depuis son magasin")
+    _FM_STORE.update(kinds=new, rack_commit=(obj or {}).get("rack_commit") if isinstance(obj, dict) else None)
+
+
+def fm_serves(kind, item_id=None):
+    """Vrai si golem.fm sert cette sorte depuis son magasin — et, avec `item_id`, si cet objet est d'usine : le rack ne
+    le pousse alors plus et ne rend plus d'écoute pour lui."""
+    return kind in _FM_STORE["kinds"] and (item_id is None or protected(kind, item_id))
+
+
+def held():
+    """Les ids d'usine POSÉS ici, par sorte que le magasin de golem.fm peut servir : {sorte: [ids]}. Le battement le
+    dit (ids seuls, jamais les documents) : « on rack » reste une mesure, et un golem resté sur une ancienne version
+    dit lui-même qu'il lui manque un patch d'usine plus récent."""
+    out = {}
+    for kind in STORE_KINDS:
+        _sub, dst, ext = KINDS[kind]
+        out[kind] = sorted(fn[: -len(ext)] for fn in catalog().get(kind) or [] if os.path.exists(os.path.join(dst, fn)))
+    return out
+
+
 def files_of(ids):
     """[{kind, id}] -> les noms de fichiers que `reset` attend ; une sorte ou un id inconnu est ignoré."""
     out = []

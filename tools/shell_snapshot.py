@@ -461,6 +461,9 @@ def golem_engine_env(tmp, engine_dir=None):
             "GOLEM_ENGINE_OSC": str(_materialize().free_port())}
 
 
+BENCH_BUFFER = 192
+
+
 class GolemEngine:
     """Le Golem Engine du bridge jetable : lancé par son run.sh comme le fait start.sh, backend factice, arrêté par SON
     PID. Le bridge a reçu `golem_engine_env` avant de démarrer."""
@@ -475,6 +478,12 @@ class GolemEngine:
         rm = self.rm = _materialize()
         env, root = self.br.env, Path(self.br.root)
         run = Path(env["GOLEM_ENGINE_DIR"]) / "golem" / "engine" / "run.sh"
+        # LE BUFFER : sans réglage, le backend factice ouvre à 1024 échantillons et Gear ▸ Sound l'affichait (« 1024 smp »)
+        # à côté d'une latence de 8 ms. Le banc prend le buffer du rack de référence, 192 (config/golem-engine.json, état
+        # local que le Dashboard écrit) — ce n'est pas une mesure du défaut d'un golem neuf.
+        cfg = root / "config" / "golem-engine.json"
+        if not cfg.exists():
+            cfg.write_text(json.dumps({"buffer": BENCH_BUFFER}), encoding="utf-8")
         self._logf = open(env["GOLEM_ENGINE_LOG"], "a", encoding="utf-8")
         self.proc = subprocess.Popen(["bash", str(run), str(root), env["GOLEM_ENGINE_SESSION"], env["GOLEM_ENGINE_BACKEND"], ""],
                                      env=env, stdout=self._logf, stderr=subprocess.STDOUT)
@@ -610,7 +619,10 @@ def factory_pages(base, cu):
 # sur le bridge jetable et garde leur réponse, servie sous la clé « POST /api/… » (shell.js la connaît).
 # `/api/library/try/check` (2026-11-21) : « ce son, avec quel instrument ? » — Library ▸ Keys le demande au chargement
 # pour allumer son bouton, sans rien jouer.
-POST_READS = ("/api/blocks/status", "/api/backing/drawer", "/api/library/try/check")
+# `/api/standards/rooftop-prowl/preview` : la grille d'un standard OUVERT se demande en POST (« rend sans jouer ») — sans
+# elle l'exemple standard-rooftop-prowl montrait une grille vide (« — »).
+POST_READS = ("/api/blocks/status", "/api/backing/drawer", "/api/library/try/check",
+              "/api/standards/rooftop-prowl/preview")
 
 _ANCHORS_JS = "() => [...new Set([...document.querySelectorAll('[data-doc]')].map(e => e.getAttribute('data-doc')))].sort()"
 # les ancres présentes mais SANS TAILLE (cachées par ?shell=ro, comme la barre d'outils de /live) : on peut les cliquer,

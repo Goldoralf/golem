@@ -281,9 +281,17 @@ def _names_inside(s):
     return s
 
 
-def redact(x, key=None):
+def _public_hint(key, parent):
+    """`hint` est l'indice d'une clé de service (secret)… sauf sur un KIT de batterie (/api/drums/kits), où c'est sa
+    description (« rock · ambient ») : la page l'affichait « <redacted> » (2026-11-21). Un kit se reconnaît à son
+    `engine` et à son `role` de batterie ; partout ailleurs `hint` reste expurgé."""
+    return (_norm_key(key) == "hint" and isinstance(parent, dict)
+            and parent.get("role") in ("drum", "drums", "pads") and "engine" in parent)
+
+
+def redact(x, key=None, parent=None):
     """L'objet expurgé (une copie)."""
-    if key is not None and _norm_key(key) in SECRET_KEYS and x not in (None, "", [], {}):
+    if key is not None and _norm_key(key) in SECRET_KEYS and x not in (None, "", [], {}) and not _public_hint(key, parent):
         return REDACTED
     if _known(x):                                     # une personne connue, où qu'elle soit
         return pseudo(x, KNOWN[_fold(x)])
@@ -294,7 +302,7 @@ def redact(x, key=None):
         if isinstance(x, list):
             return [pseudo(v, kind) if isinstance(v, str) else redact(v) for v in x]
     if isinstance(x, dict):
-        return {(pseudo(k, KNOWN[_fold(k)]) if _known(k) else redact_str(k)) if isinstance(k, str) else k: redact(v, k)
+        return {(pseudo(k, KNOWN[_fold(k)]) if _known(k) else redact_str(k)) if isinstance(k, str) else k: redact(v, k, x)
                 for k, v in x.items()}
     if isinstance(x, list):
         return [redact(v) for v in x]
@@ -318,8 +326,9 @@ def leaks(obj):
         if re.search(r"\b%s\b" % re.escape(h), text, flags=re.I):
             out.append(("hostname", h))
 
-    def walk(x, key=None):
-        if key is not None and _norm_key(key) in SECRET_KEYS and x not in (None, "", [], {}, REDACTED):
+    def walk(x, key=None, parent=None):
+        if (key is not None and _norm_key(key) in SECRET_KEYS and x not in (None, "", [], {}, REDACTED)
+                and not _public_hint(key, parent)):
             out.append(("secret field", str(key)))
         if key is not None and _norm_key(key) in PERSON_KEYS | DEVICE_KEYS and isinstance(x, str) and x and not is_pseudo(x):
             out.append(("person or device name", str(key)))
@@ -331,7 +340,7 @@ def leaks(obj):
             out.extend(("known person (key)", k) for k in x if _known(k))
         if isinstance(x, dict):
             for k, v in x.items():
-                walk(v, k)
+                walk(v, k, x)
         elif isinstance(x, list):
             for v in x:
                 walk(v)
@@ -1027,8 +1036,20 @@ def seed_demos(bench_root, log=print, src_root=ROOT):
     src = os.path.join(src_root, "library", "previews")
     dst = os.path.join(str(bench_root), "library", "previews")
     n = 0
+    # + les démos des SONS d'usine (Library ▸ Keys : sound-<moteur>-<id>) et des KITS d'usine (kit-<id>) — sans elles
+    # « Listen » et « ▶ Demo » restaient muets sur la démo (2026-11-21). La même sélection que le lot publié
+    # (tools/pack-factory-demos.factory_dirs) : jamais le son ni le kit d'un utilisateur.
+    keep = set()
+    try:
+        if ROOT not in sys.path:
+            sys.path.insert(0, ROOT)
+        from bridge import drum_preview as DP, sound_preview as SP
+        keep = ({os.path.basename(SP.sound_dir(s)) for s in SP.factory_sounds()}
+                | {os.path.basename(DP.kit_dir(k)) for k in DP.factory_kits()})
+    except Exception as e:
+        log("demos: factory sounds and kits not listed (%s) — their demos are left out" % e)
     for d in sorted(os.listdir(src)) if os.path.isdir(src) else []:
-        if d.startswith(DEMO_PREFIXES) and os.path.isdir(os.path.join(src, d)):
+        if (d.startswith(DEMO_PREFIXES) or d in keep) and os.path.isdir(os.path.join(src, d)):
             shutil.copytree(os.path.join(src, d), os.path.join(dst, d), dirs_exist_ok=True)
             n += 1
     log("demos: %d factory demo folder(s) copied into the bench" % n)

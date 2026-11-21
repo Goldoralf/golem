@@ -102,10 +102,10 @@ export const fmtTook = s => (s == null ? '' : s < 60 ? Math.round(s) + ' s' : Ma
 // le geste 2, l'écran 2 au bilan de la maquette
 export const demoStatus = at => {
   const auto = [
-    { id: 'engine', name: 'Engine', level: 'ok', text: 'REAPER 7.79 · started and answers the bridge' },
+    { id: 'engine', name: 'Engine', level: 'ok', text: 'Golem Engine 9.9 · started and answers the bridge' },
     { id: 'audio', name: 'Sound card', level: 'ok', text: 'Volt 276 · 48 kHz · 128 samples · 2.7 ms' },
-    // les chiffres de l'USINE (la doc des musiciens montre cette démo) : 9 presets, 38 patches, 1 chanson — pas un rack de dev
-    { id: 'content', name: 'Factory content', level: 'ok', text: '9 presets · 38 patches · 1 song · 7 kits' },
+    // les chiffres de l'USINE (la doc des musiciens montre cette démo) : 13 presets, 53 patches, 1 chanson — pas un rack de dev
+    { id: 'content', name: 'Factory content', level: 'ok', text: '13 presets · 53 patches · 1 song · 7 kits' },
     { id: 'preset', name: 'First preset', level: 'ok', text: '“Rooftop Prowl” posed: 12 blocks, every file loaded (3 checked)' }];
   const input = { ok: true, input: 2, role: 'guitar', peak_db: -11, gain: 'good', took_s: 12 };
   if (at === 'input') return { pending: true, auto, steps: {}, current: { step: 'input', at: 990 }, now: 1000, foot_wait_s: 30,

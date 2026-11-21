@@ -188,17 +188,26 @@ than doubled by a second archive. `tools/pack-factory-demos.py` now also packs, 
 A render's `fingerprint` is the one of the patch **bound to the rendering rack's card** (`preview.plan`), not the
 one of the shipped file in `documents[]`: the two are not expected to be equal.
 
-Dry run on the maintainer's rack, 2026-11-21 (nothing published; golem was stopped): 103 documents, 20 reference DIs (3 named by the index have no file:
-`voice/male`, `voice/female`, `keys/arp`), 337 renders, 100.7 MB. Of 53 factory patches: 8 up to date, **31 stale**
-(the patch as this rack loads it no longer has the fingerprint of its render of 2026-11-16; the cause is not
-established — the factory was rebuilt since, and golem had not started, so not re-seeded, after that day's update), 11 voice patches without a reference DI, 2 pad
-patches that are never rendered (triggered samples), 1 not rendered yet. **A new bundle is therefore not worth
-publishing before the batch has run again on the maintainer's rack.**
+Packed on the maintainer's rack, 2026-11-21, after the batch ran again (Golem Engine, 57 minutes: 31 patches
+rendered, 39 preset lanes copied, no failure) — **`factory-demos-v4` is packed, not published**: 116 documents (13 of
+them preset export envelopes, none with an unresolved asset), 20 reference DIs (3 named by the index have no file:
+`voice/male`, `voice/female`, `keys/arp`), 406 renders (178 patch scenes, 228 preset lane scenes), 101.3 MB. Of 53
+factory patches: **40 rendered and up to date**, 11 voice patches without a reference DI (the maintainer's decision
+that day: no voice DI for now), 2 pad patches that are never rendered (triggered samples). A first dry run before
+the batch had shown 31 of the renders of 2026-11-16 stale.
+
+Known holes of this pack:
+
+- **No fresh Standard block demo.** On the Golem Engine the 15 Standard block demos render silent (−240 dBFS) and
+  are refused, as a silent first bar must be. The five that exist date from 2026-11-06. The drum machine block
+  demos are up to date. 24 demo files of blocks that changed their nature are left out (`dropped_block_demos`).
+- Bass patches are rendered on a **borrowed input** (the rack's card is voice + guitar): their folder is
+  `patch-<id>`, `input: "1"`, `borrowed: true`.
 
 **Still to do**, in this order:
 
-1. Run the factory batch on the maintainer's rack (engine taken for about half an hour), then
-   `./tools/pack-factory-demos.py --publish factory-demos-v4` and bump `factory_demos.TAG`.
+1. Publish: `./tools/pack-factory-demos.py --publish factory-demos-v4`, then bump `factory_demos.TAG` (a golem
+   fetches by that tag).
 2. golem.fm imports the bundle into its user-less factory store and serves it to every account.
 3. golem.fm announces its store in the answer to the heartbeat; the rack then follows by itself (below).
 

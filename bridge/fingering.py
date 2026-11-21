@@ -79,6 +79,14 @@ ANCHOR_W = 1.0
 #: case 7 ; plafonné à 2, il en gagne 6 et ne perd aucune ronde.
 W_NECK = 0.5
 NECK_CAP = 2.0
+#: LA CORDE CANDIDATE (2026-11-21, `inharm.string_costs`) : pour une note que `heard` n'a PAS lue (trop brève pour son
+#: B), le retard de chaque position sur celle dont les partiels prévus tombent le mieux sur le spectre, en dB par
+#: partiel, pèse W_CAND, plafonné à CAND_CAP_DB. Sur les librairies étiquetées (fenêtre de 60 ms) une bonne décision a
+#: 1,3 à 2,5 dB d'avance en médiane, une mauvaise moins de 1 : proportionnel, donc — une avance mince pèse moins qu'un
+#: déplacement de la main, et le plafond vaut celui de la carte du manche (2). Ces deux nombres ne sont réglés sur
+#: AUCUN riff : les prises du banc du 2026-11-01 n'existent plus.
+W_CAND = 0.5
+CAND_CAP_DB = 4.0
 
 
 def _strings(tuning):
@@ -196,13 +204,16 @@ def move_cost(a, b, w):
     return cost
 
 
-def fingering(groups, tuning=None, weights=None, instrument="guitar", heard=None, b_open=None, neck=None):
+def fingering(groups, tuning=None, weights=None, instrument="guitar", heard=None, b_open=None, neck=None,
+              strings=None):
     """Groupes de hauteurs (une liste par attaque) -> pour chacun [(pitch, corde, case)] de l'aigu au grave.
     Une note qu'aucune forme ne peut jouer sort avec (pitch, None, None) — dite, pas inventée.
     `heard[i]` = le B mesuré du groupe i (ou None), `b_open` = {corde: B à vide} de la guitare (§4). Une note n'est
     jugée que si TOUTES les cordes qui peuvent la jouer sont étalonnées : comparer une corde connue à une corde
     inconnue, c'est déclarer, pas lire. `neck[i]` = ce que la carte du manche dit du groupe i ({(corde, case): écart},
-    `neckmap.costs`) ou None : une preuve de plus, même pour une note trop brève pour son B."""
+    `neckmap.costs`) ou None : une preuve de plus, même pour une note trop brève pour son B. `strings[i]` = ce que
+    la corde candidate en dit ({(corde, case): retard en dB par partiel}, `inharm.string_costs`) ou None : elle ne
+    parle que pour une note que `heard` n'a pas lue."""
     tuning = tuple(tuning or STANDARD[instrument])
     w = dict(WEIGHTS[instrument], **(weights or {}))
     b_open = b_open or {}
@@ -228,6 +239,11 @@ def fingering(groups, tuning=None, weights=None, instrument="guitar", heard=None
         else:
             deaf = deaf_bonus(cs, b_open) if judge else {}
         ev = {c: evidence_cost(c, bm, b_open) for c in cs} if judge else {}
+        sc = strings[i] if strings and i < len(strings) else None
+        if sc and bm is None:
+            for c in cs:
+                if len(c) == 1 and (c[0][1], c[0][2]) in sc:
+                    ev[c] = ev.get(c, 0.0) + W_CAND * min(sc[(c[0][1], c[0][2])], CAND_CAP_DB)
         nk = neck[i] if neck and i < len(neck) else None
         if nk:
             for c in cs:

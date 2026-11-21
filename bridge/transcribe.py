@@ -444,7 +444,7 @@ def tuning_of(midis):
 
 def to_musicxml(figures, bpm=120, beats=4, beat_type=4, title="GoleM transcription",
                 part_name="Guitar", divisions=4, fingering=None, instrument="guitar", heard=None, b_open=None,
-                tuning=None, frets=None, hand=None, neck=None):
+                tuning=None, frets=None, hand=None, neck=None, strings=None):
     """Figures -> MusicXML. Le format est celui PROUVÉ le 2026-08-09 (§10) : pour un instrument à
     cordes, portée TAB (6 lignes guitare, 4 basse), accordage déclaré, et `<technical><string>/<fret>`
     sur chaque note — sans quoi alphaTab rend une portée standard et la tablature n'existe pas.
@@ -452,7 +452,7 @@ def to_musicxml(figures, bpm=120, beats=4, beat_type=4, title="GoleM transcripti
     vit sous le do central. Le clavier a sa partition à deux portées (`to_musicxml_piano`), la
     batterie sa portée de percussion (`to_musicxml_drums`). `heard`/`b_open` : le B mesuré de chaque figure et
     l'étalonnage de la guitare, la preuve du doigté (`fingering.py` §4) ; `neck` : ce que la carte du manche dit de
-    chaque figure (`neckmap.costs`). `tuning` (notes MIDI) et `frets` : la
+    chaque figure (`neckmap.costs`) ; `strings` : la corde candidate des notes brèves (`inharm.string_costs`). `tuning` (notes MIDI) et `frets` : la
     guitare de la prise (`inharm.guitar`) — une 8 cordes a sa tab à 8 lignes."""
     bar_ql = beats * (4.0 / beat_type)
     tuning = tuning_of(tuning) if tuning else TUNINGS.get(instrument)
@@ -462,7 +462,7 @@ def to_musicxml(figures, bpm=120, beats=4, beat_type=4, title="GoleM transcripti
         # suite de positions — avant d'écrire la moindre mesure ; une figure coupée à la barre garde son doigté
         from .fingering import fingering as _shapes
         placed_all = _shapes([f.pitches for f in figures], tuning=[t[2] for t in reversed(tuning)],
-                             instrument=instrument, heard=heard, b_open=b_open, neck=neck,
+                             instrument=instrument, heard=heard, b_open=b_open, neck=neck, strings=strings,
                              weights=dict(hand or {}, **({"max_fret": float(frets)} if frets else {})) or None)
         by_fig = {id(f): pl for f, pl in zip(figures, placed_all)}
 

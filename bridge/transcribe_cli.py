@@ -164,6 +164,14 @@ def _neck(path, events, g):
     return neckmap.costs(y[:, 0], sr, events, nmap, g["tuning"])
 
 
+def _strings(path, events, g):
+    """La corde candidate de chaque note seule (`inharm.string_costs`), lue sur le DI à sa fréquence d'origine."""
+    import soundfile as sf
+    from bridge import inharm
+    y, sr = sf.read(path, always_2d=True)
+    return inharm.string_costs(y[:, 0], sr, events, g["b_open"], g["tuning"], g["frets"])
+
+
 def _guitar_of(man, inst):
     """La guitare de la prise (take.json `guitar`, gravée au REC) : son profil et sa tessiture — de la corde la plus
     grave à vide jusqu'à la dernière case de la plus aiguë. None hors guitare. Une prise SANS le champ date d'avant les
@@ -195,6 +203,7 @@ def _tx(path, man, inst, label, title, out_dir, done):
     b_open = g["b_open"] if g else {}
     heard = _heard_b(path, events) if b_open else None
     neck = _neck(path, events, g) if g else None
+    strings = _strings(path, events, g) if b_open else None
     if g:
         rep["guitare"] = g["id"]
     if neck is not None:
@@ -202,8 +211,9 @@ def _tx(path, man, inst, label, title, out_dir, done):
     if heard is not None:
         rep["cordes_etalonnees"] = sorted(b_open)
         rep["b_mesures"] = sum(1 for b in heard if b)
+        rep["cordes_candidates"] = sum(1 for b, c in zip(heard, strings) if b is None and c)
     xml = to_musicxml(figs, bpm=grid["bpm"], beats=grid["beats"], beat_type=grid["beat_type"], part_name=label,
-                      instrument=inst, title=title, heard=heard, b_open=b_open, neck=neck,
+                      instrument=inst, title=title, heard=heard, b_open=b_open, neck=neck, strings=strings,
                       tuning=g["tuning"] if g else None, frets=g["frets"] if g else None,
                       hand=g["hand"] if g else None)
     name = _score_name(label)

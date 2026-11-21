@@ -329,3 +329,49 @@ def test_deux_doigts_qui_tapent_sont_deux_notes():
     # pics, on entend l'ANCIENNE note — ce n'est pas une note nouvelle au premier pic, c'est une seule attaque
     ringing = lambda t0, t1: 52.0 if t1 <= 1.10 else 53.0
     assert D.merge_onsets([1.00, 1.10], {1.00: 1.0, 1.10: 6.0}.get, ringing) == [1.10]
+
+
+def _corde(sr, midi, b, dur=0.3, partials=30, decay=0.0):
+    """Une note de synthèse dont les partiels suivent k·f0·√(1 + B·k²), d'amplitude 1/k (étouffée : e^(-decay·k))."""
+    np = __import__("pytest").importorskip("numpy")
+    t = np.arange(int(dur * sr)) / sr
+    f0 = 440.0 * 2 ** ((midi - 69) / 12)
+    return sum(math.exp(-decay * k) / k * np.sin(2 * np.pi * k * f0 * math.sqrt(1 + b * k * k) * t)
+               for k in range(1, partials + 1) if k * f0 * math.sqrt(1 + b * k * k) < sr / 2)
+
+
+def test_la_corde_candidate_lit_une_note_breve():
+    # librairies étiquetées, 2026-11-21 : sur 60 ms, la position dont les partiels PRÉVUS tombent sur le spectre
+    from bridge import inharm
+    sr, six = 48000, [40, 45, 50, 55, 59, 64]
+    b_open = {6: 2.0e-4, 5: 1.2e-4, 4: 0.8e-4, 3: 1.25e-4, 2: 0.5e-4, 1: 0.25e-4}
+    ev = [(0.0, 0.08, (57,))]                                  # un la : corde 6 case 17, 5 case 12, 4 case 7, 3 case 2
+    for s, f in ((5, 12), (4, 7), (3, 2)):
+        got = inharm.string_costs(_corde(sr, 57, b_open[s] * 2 ** (f / 6)), sr, ev, b_open, six)[0]
+        assert min(got, key=got.get) == (s, f) and got[(s, f)] == 0.0 and set(got) == {(6, 17), (5, 12), (4, 7), (3, 2)}
+    note = _corde(sr, 57, b_open[4] * 2 ** (7 / 6))
+    # trop brève, un accord, une corde non étalonnée, une seule position : rien n'est dit
+    assert inharm.string_costs(note, sr, [(0.0, 0.04, (57,))], b_open, six) == [None]
+    assert inharm.string_costs(note, sr, [(0.0, 0.08, (57, 64))], b_open, six) == [None]
+    assert inharm.string_costs(note, sr, ev, {k: v for k, v in b_open.items() if k != 6}, six) == [None]
+    assert inharm.string_costs(_corde(sr, 41, 2.3e-4), sr, [(0.0, 0.08, (41,))], b_open, six) == [None]
+    # une note ÉTOUFFÉE n'a plus les partiels aigus qui portent B : la preuve se tait (palm mute : 16 à 48 % de bonnes
+    # cordes sur les librairies, sous le hasard par endroits)
+    assert inharm.string_costs(_corde(sr, 57, b_open[4] * 2 ** (7 / 6), decay=1.5), sr, ev, b_open, six) == [None]
+
+
+def test_la_corde_candidate_ne_parle_que_pour_une_note_que_l_oreille_n_a_pas_lue():
+    eight = (28, 33, 40, 45, 50, 55, 59, 64)
+    b8 = {s: 1e-4 for s in range(1, 9)}
+    line = [(45,), (47,), (48,)]
+    blind = FG.fingering(line, eight)
+    sc = [None, {(6, 7): 0.0, (5, 2): 6.0, (7, 14): 6.0, (8, 19): 9.0}, {(6, 8): 0.0, (5, 3): 6.0, (7, 15): 6.0, (8, 20): 9.0}]
+    seen = FG.fingering(line, eight, strings=sc)
+    assert blind[1] != [(47, 6, 7)] and seen[1:] == [[(47, 6, 7)], [(48, 6, 8)]]
+    assert FG.fingering(line, eight, strings=[None] * 3) == blind
+    # un retard énorme pèse comme le plafond
+    huge = [None] + [{k: (0.0 if v == 0 else 99.0) for k, v in d.items()} for d in sc[1:]]
+    assert FG.fingering(line, eight, strings=huge) == seen
+    # une note que `heard` a lue garde SA lecture : la corde candidate ne s'y ajoute pas
+    heard = [None, 1e-4 * 2 ** (2 / 6), 1e-4 * 2 ** (3 / 6)]
+    assert FG.fingering(line, eight, heard=heard, b_open=b8, strings=sc) == FG.fingering(line, eight, heard=heard, b_open=b8)

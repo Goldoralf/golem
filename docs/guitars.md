@@ -37,6 +37,18 @@ pickup may need its own map — each Guitar-TECHS player used one pickup), tappi
 picked; 8/9 tapped notes of one riff were placed right), 7- and 8-string factory maps (only the maintainer's exists), chords
 (the map judges single notes only).
 
+**2026-11-21 — measured again on two bought sample libraries (an 8-string recorded as two guitars, a 6-string;
+string and fret known for every note), and it contradicts parts of this proposal** — see
+[`tablature-fingering.md`](tablature-fingering.md) §1 "The candidate string":
+
+- **Factory maps do not hold.** The map of another guitar *of the same model* places 43–50 % of the notes
+  (chance 26 %); the Guitar-TECHS maps and the maintainer's place 17–47 % on the bought 6-string (chance 29–30 %).
+- **A map interpolated from a few frets is weaker than point 2 above says**: 48–57 % on frets it never measured,
+  on both 8-strings; 41–47 % on the 6-string.
+- **One note per string is enough for the string's inharmonicity** (`b_open`), which places 88–100 % of sustained
+  notes on 60 ms. The wizard of §3.4 could shrink to the open strings; whether the map is still worth its three
+  minutes (palm mutes, the string pair B cannot separate) is to be measured before this screen is built.
+
 ## 2. The data — what exists, what is added
 
 | What | Where | Today | Added |

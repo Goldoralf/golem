@@ -90,6 +90,27 @@ Related: [`compo.md`](compo.md) §5 (a riff is transcribed on the rack — uncha
   pitches, 12/13 lengths, 13/13 string and fret with the calibration (5/13 without); take 260 6/6 string and fret.
   The five rules on TX02: 10/13 pitches, 11 invented. 2026-10-30: the 13 bench takes unchanged by the rules above;
   the 8-string's open-string takes 8/8 pitch, string and fret (takes 286–294).
+- **The candidate string, for brief notes** (CODED 2026-11-21, `inharm.string_costs`) — `estimate_b` *estimates* B
+  and needs 0.21 s of note; fast notes were left to the neck map alone. Here B is not estimated: each possible
+  position of a single note **predicts** its partials (B_open(string)·2^(fret/6), at k·f0·√(1+B·k²)), and the
+  spectrum of the note's first 30–120 ms (15 ms after the attack) says which prediction fits — the summed level at
+  the predicted frequencies, the same number of partials for every candidate. The lag behind the best position, in
+  dB per partial, is a fingering cost: `W_CAND` = 0.5 per dB, capped at `CAND_CAP_DB` = 4
+  (`fingering.fingering(strings=)`), **only for a note that `heard` did not read**; a note read by `estimate_b`
+  keeps that reading alone. It needs every candidate string calibrated (`b_open`) and nothing else: no map.
+  **It keeps silent on a muted note** (`CAND_MIN_TOP_DB` = 15: the upper half of the partials, the ones that carry
+  B, must be there): on palm mutes it is wrong more often than right.
+  Measured on two bought sample libraries, note by note with string and fret known (bench
+  `~/golem-doc-work/libmaps`, machine-local, no audio in the repository; calibration = **one note per string**;
+  chance 26–29 %): two 8-strings 100 % and 95 % of the strings right on 60 ms, a 6-string 88 %, tapping 93–96 %,
+  unchanged with the attack dated 15 ms early or 20 ms late; with the guard 75–78 % of sustained notes still get a
+  verdict on the 8-strings (72 % on the 6-string), 84–94 % of palm mutes get none. **Palm mute is unsolved**: without the guard 16–48 % right, and the notes
+  the guard lets through are 33–77 % right. Whole chain on riffs made of those labelled notes set end to end
+  (16ths at 120, string and fret right among the notes found): 31 → 49 of 59, 19 → 26 of 32, 46 → 48 of 56; 8ths
+  98 → 100 of 109, 77 → 81 of 94, 83 → 83 of 84. **Not measured on a real riff**: the takes of the 2026-11-01 bench
+  are gone, and `W_CAND`, `CAND_CAP_DB` and the guard were set on library notes of three guitars, none on a riff.
+  The same bench on the neck map below: right only on frets it measured at a similar dynamic (about 90 %); 55 % on
+  interpolated frets, 30 % from one note per string, 43–50 % with the map of another guitar of the same model.
 - **The neck map** (CODED 2026-11-01, `bridge/neckmap.py`) — the fingerprint of every fret of ONE guitar, a second
   piece of evidence next to B. Two positions of a note do not sound alike (a thicker string shortened has other
   partials than a thinner one left long): the guitar is recorded fret by fret, one whole note per bar and per string,

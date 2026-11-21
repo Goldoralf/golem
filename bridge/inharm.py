@@ -121,6 +121,70 @@ def estimate_b(y, sr, t0, t1, f0_hint):
     return min(outs, key=lambda r: r[3] / r[4])[0] if outs else None
 
 
+# ── LA CORDE CANDIDATE, SUR UNE NOTE BRÈVE (2026-11-21) ────────────────────────────────────────────────────────────
+# `estimate_b` ESTIME B puis le compare : il lui faut 0,21 s de note et une lecture sur cinq est fausse. Ici on ne
+# cherche pas B : chaque position possible de la note PRÉDIT ses partiels (B_vide(corde)·2^(case/6)), et on regarde
+# laquelle tombe le mieux sur le spectre — la somme des niveaux aux fréquences k·f0·√(1 + B·k²), même nombre de partiels
+# pour toutes (Hjerrild & Christensen 2019, l'idée ; la somme sur grille, la nôtre). Mesuré sur deux librairies de notes
+# étiquetées (banc ~/golem-doc-work/libmaps, 2026-11-21 ; étalonnage : UNE note par corde) : deux 8 cordes 95 et 99 %
+# de bonnes cordes sur 50 ms (hasard 26 %), une 6 cordes 88 %, le tapping 93 %. Une note ÉTOUFFÉE n'a pas de partiels
+# aigus, ceux qui portent B : là la preuve se trompe plus qu'elle ne dit vrai (16 à 48 %) — `CAND_MIN_TOP_DB` la fait
+# taire.
+CAND_SKIP_S = 0.015                      # le médiator, pas la corde
+CAND_MIN_S, CAND_MAX_S = 0.03, 0.12      # la fenêtre lue : la note, entre ces deux durées
+CAND_MAX_HZ = 8000.0
+CAND_MAX_PARTIALS = 30
+CAND_MIN_PARTIALS = 4
+CAND_FLOOR_DB = 70.0                     # un partiel absent vaut 0, le plus fort du spectre CAND_FLOOR_DB
+CAND_CENTS = 40.0                        # f0 cherchée autour de la note : une guitare n'est jamais au cent près
+CAND_MIN_TOP_DB = 15.0                   # niveau moyen de la moitié AIGUË des partiels en dessous duquel on ne dit rien
+
+
+def string_costs(y, sr, events, b_open, tuning, frets=22):
+    """Pour chaque note SEULE à plusieurs positions, toutes sur des cordes étalonnées : {(corde, case): retard sur la
+    meilleure position, en dB par partiel (0 pour elle)} ; None pour un accord, une note trop brève (< CAND_MIN_S),
+    trop aiguë, étouffée, ou une corde non étalonnée. `events` = [(t0, t1, hauteurs)], `tuning` grave -> aigu."""
+    import numpy as np
+    n = len(tuning)
+    nfft = 1 << int(np.ceil(np.log2(sr * 1.3)))
+    cents = np.linspace(-CAND_CENTS, CAND_CENTS, 33)
+    out = []
+    for t0, t1, ps in events:
+        out.append(None)
+        if len(ps) != 1:
+            continue
+        cand = {(n - i, ps[0] - o): None for i, o in enumerate(tuning) if 0 <= ps[0] - o <= frets}
+        if len(cand) < 2 or any(s not in b_open for s, _f in cand):
+            continue
+        w = min(CAND_MAX_S, t1 - t0 - CAND_SKIP_S - 0.005)
+        if w < CAND_MIN_S:
+            continue
+        seg = np.asarray(y[int((t0 + CAND_SKIP_S) * sr):int((t0 + CAND_SKIP_S + w) * sr)], float)
+        if len(seg) < 64 or not np.any(seg):
+            continue
+        sp = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), nfft))
+        db = np.maximum(20 * np.log10(sp / sp.max() + 1e-9), -CAND_FLOOR_DB) + CAND_FLOOR_DB
+        f0 = 440.0 * 2 ** ((ps[0] - 69) / 12)
+        bs = {c: b_open[c[0]] * 2 ** (c[1] / 6.0) for c in cand}
+        ks = np.arange(1, CAND_MAX_PARTIALS + 1)
+        # le MÊME nombre de partiels pour toutes : ceux que la plus raide garde sous CAND_MAX_HZ
+        ks = ks[ks * f0 * 2 ** (CAND_CENTS / 1200) * np.sqrt(1 + max(bs.values()) * ks ** 2) < min(CAND_MAX_HZ, sr / 2)]
+        if len(ks) < CAND_MIN_PARTIALS:
+            continue
+        fs = f0 * 2 ** (cents / 1200)
+        score, top = {}, {}
+        for c, b in bs.items():
+            lv = db[np.rint(fs[:, None] * ks[None, :] * np.sqrt(1 + b * ks[None, :] ** 2) * nfft / sr).astype(int)]
+            j = int(np.argmax(lv.sum(axis=1)))
+            score[c] = float(lv[j].mean())
+            top[c] = float(lv[j, len(ks) // 2:].mean())
+        best = max(score, key=score.get)
+        if top[best] < CAND_MIN_TOP_DB:
+            continue
+        out[-1] = {c: score[best] - v for c, v in score.items()}
+    return out
+
+
 # ── LES GUITARES DU RACK (2026-10-29 : « une 8 cordes plutôt ? ») ──────────────────────────────────────────────────
 # Un profil par guitare dans le même fichier : son accordage (notes MIDI, de la plus GRAVE à la plus aiguë), son
 # nombre de cases, et le B à vide de chaque corde — l'inharmonicité dépend du calibre, du filage et du diapason : celle

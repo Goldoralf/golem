@@ -23,7 +23,7 @@ import urllib.request
 
 log = logging.getLogger("golem.factory-demos")
 
-TAG = "factory-demos-v3"   # v3 (2026-11-16) : le contenu d'usine refait sur golem-fx (51 patches, 13 presets)
+TAG = "factory-demos-v4"   # v4 (2026-11-21) : le lot partagé avec golem.fm (index étendu, basses rendues) ; v3 = 2026-11-16
 NAME = "golem-factory-demos"
 BASE = os.environ.get("GOLEM_FACTORY_DEMOS_BASE") or f"https://github.com/Goldoralf/golem-binaries/releases/download/{TAG}/"
 STATE_NAME = ".factory-demos.json"

@@ -144,8 +144,8 @@ working. Hiding the factory setlist does not remove it from a mode that names it
 > shipped with golem and held by golem.fm, the same for every account, with nothing to render or upload again.
 > CODED on the rack: the extended bundle index (below), `factory_edited` in the heartbeat, the `factory-reset` job.
 > Also CODED, and inert until golem.fm announces its store: the rack stops pushing `factory-*` documents and refuses
-> a preview job for one ("The switch", below). The extended bundle is **not published** (current release:
-> `factory-demos-v3`).
+> a preview job for one ("The switch", below). The extended bundle is **published** as `factory-demos-v4`
+> (2026-11-21).
 
 **The rule for a factory object changed on a golem** (maintainer, 2026-11-21, relayed by the golem.fm session and
 confirmed by him there):
@@ -189,7 +189,7 @@ A render's `fingerprint` is the one of the patch **bound to the rendering rack's
 one of the shipped file in `documents[]`: the two are not expected to be equal.
 
 Packed on the maintainer's rack, 2026-11-21, after the batch ran again (Golem Engine, 57 minutes: 31 patches
-rendered, 39 preset lanes copied, no failure) — **`factory-demos-v4` is packed, not published**: 116 documents (13 of
+rendered, 39 preset lanes copied, no failure) — **published as `factory-demos-v4`**: 116 documents (13 of
 them preset export envelopes, none with an unresolved asset), 20 reference DIs (3 named by the index have no file:
 `voice/male`, `voice/female`, `keys/arp`), 406 renders (178 patch scenes, 228 preset lane scenes), 101.3 MB. Of 53
 factory patches: **40 rendered and up to date**, 11 voice patches without a reference DI (the maintainer's decision
@@ -206,8 +206,8 @@ Known holes of this pack:
 
 **Still to do**, in this order:
 
-1. Publish: `./tools/pack-factory-demos.py --publish factory-demos-v4`, then bump `factory_demos.TAG` (a golem
-   fetches by that tag).
+1. ~~Publish~~ DONE 2026-11-21: `./tools/pack-factory-demos.py --publish factory-demos-v4`, `factory_demos.TAG`
+   bumped (a golem fetches by that tag).
 2. golem.fm imports the bundle into its user-less factory store and serves it to every account.
 3. golem.fm announces its store in the answer to the heartbeat; the rack then follows by itself (below).
 

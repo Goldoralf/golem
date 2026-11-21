@@ -319,7 +319,7 @@ half an hour of engine time for ~67 MB. Now they are rendered **once**, on the m
   `drum_preview.factory_kits`) into `golem-factory-demos.tar` with an index (`.json`: every file's sha256, the
   archive's sha256); `--publish <tag>` creates the release on `Goldoralf/golem-binaries` (never marked latest). First
   release: `factory-demos-v1` (127 folders, 460 files, 68.6 MB); `factory-demos-v2` (2026-11-15, 127 folders, 68.5 MB:
-  the factory AVL kits' demos re-rendered through the GM safety net, docs/drums-kit.md §8.1). `factory-demos-v3` (2026-11-16, 153 folders, 86.6 MB: the factory rebuilt on golem-fx, docs/factory.md §5; no voice or bass demos until their reference DIs are recorded). Never a user's demo (Vital presets, imported kits,
+  the factory AVL kits' demos re-rendered through the GM safety net, docs/drums-kit.md §8.1). `factory-demos-v3` (2026-11-16, 153 folders, 86.6 MB: the factory rebuilt on golem-fx, docs/factory.md §5; no voice or bass demos until their reference DIs are recorded). `factory-demos-v4` (2026-11-21, 169 folders, 101.3 MB: the set shared with golem.fm, bass patches rendered, no voice demos). Never a user's demo (Vital presets, imported kits,
   listening clips).
 - **When** (maintainer's decision, 2026-11-15): at **install** (`provision/install.sh` after the bridge step;
   `installer/desktop_steps._sound_di` on Windows/macOS, which loads the module by path — standard library only) and
@@ -336,7 +336,7 @@ half an hour of engine time for ~67 MB. Now they are rendered **once**, on the m
   before. No network, or nothing published yet: nothing happens. `GOLEM_FACTORY_DEMOS=0` turns it off (the test
   suite does); `GOLEM_FACTORY_DEMOS_BASE` points it elsewhere.
 - **golem.fm** reads the same archive: one source, served to everyone.
-- **The index also describes the whole factory set for golem.fm** (CODED 2026-11-21, not published yet): the shipped
+- **The index also describes the whole factory set for golem.fm** (CODED 2026-11-21, published in `factory-demos-v4`): the shipped
   documents, the reference DIs, every render with its patch, scene, DI and duration, and every factory patch with its
   renders or the reason it has none — [factory.md](factory.md) §3 bis. A golem still places only `items`.
 - To publish a new version after factory demos change: run the batch on the maintainer's rack, then

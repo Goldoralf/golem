@@ -205,3 +205,59 @@ def test_le_manifeste_des_composants_cite_golem_fx():
     c = comps["golem-fx"]
     assert c["license"] == "GPL-3.0" and c["version"] == G.VERSION
     assert any("GoleM FX" in g for g in c["check"]["glob"] + c["check_win"]["glob"] + c["check_mac"]["glob"])
+
+
+# ── le rattrapage après une mise à jour (docs/update.md §3 bis) ─────────────────────────────────────────────────────
+def test_needed_seulement_quand_aucun_bundle_n_est_la(tmp_path):
+    dest = tmp_path / "vst3"
+    assert G.needed(dest) is True                                          # dossier absent : à poser
+    dest.mkdir()
+    (dest / "Other.vst3").mkdir()
+    assert G.needed(dest) is True                                          # les plugins des autres ne comptent pas
+    G.place(_tgz(), G.ASSETS["linux"], dest, journal=tmp_path / "none.json", log=lambda *_: None)
+    assert G.needed(dest) is False                                         # un bundle est là : on ne retouche rien
+
+
+def test_les_lanceurs_rattrapent_avant_que_reaper_ne_scanne():
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    reload_sh = open(os.path.join(root, "provision", "reload.sh"), encoding="utf-8").read()
+    # reload.sh : posé AVANT la décision d'arrêter REAPER, et des plugins neufs le relancent
+    assert reload_sh.index('golem_fx_catch_up "$HERE" && FX_NEW=1') < reload_sh.index("stop_rack_reaper")
+    assert '[ "$FX_NEW" = 1 ]' in reload_sh
+    start_sh = open(os.path.join(root, "provision", "start.sh"), encoding="utf-8").read()
+    assert start_sh.index('golem_fx_catch_up "$HERE"') < start_sh.index('setsid nohup "$REAPER_BIN"')
+    desk = open(os.path.join(root, "provision", "desktop.py"), encoding="utf-8").read()
+    restart = desk[desk.index("def restart("):desk.index("def _pending_pip(")]
+    assert restart.index("_pending_golem_fx()") < restart.index("start(window=False)")   # avant de relancer REAPER et le bridge
+
+
+@pytest.mark.skipif(not __import__("sys").platform.startswith("linux"), reason="the Linux launchers' shell library")
+def test_le_rattrapage_ne_telecharge_ni_sans_besoin_ni_sans_reseau(tmp_path):
+    import subprocess
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    fake = tmp_path / "golem" / "provision"
+    fake.mkdir(parents=True)
+    # un faux golem : la vraie bibliothèque, le vrai golem_fx.py, et un install-golem-fx.sh qui laisse une trace
+    for name in ("lib-golem-fx.sh", "golem_fx.py", "receipt.py"):
+        (fake / name).write_text(open(os.path.join(root, "provision", name), encoding="utf-8").read(), encoding="utf-8")
+    (fake / "install-golem-fx.sh").write_text('#!/bin/sh\necho called >> "$(dirname "$0")/called"\n')
+    (fake / "install-golem-fx.sh").chmod(0o755)
+    bindir = tmp_path / "bin"
+    bindir.mkdir()
+
+    def run(home, net, extra=None):
+        (bindir / "curl").write_text(f"#!/bin/sh\nexit {0 if net else 7}\n")
+        (bindir / "curl").chmod(0o755)
+        env = {**os.environ, "HOME": str(home), "PATH": f"{bindir}:{os.environ['PATH']}", **(extra or {})}
+        env.pop("GOLEM_FX_CATCH_UP", None) if not extra else None
+        return subprocess.run(["bash", "-c", f'. "{fake}/lib-golem-fx.sh"; golem_fx_catch_up "{fake.parent}"; echo rc=$?'],
+                              env=env, capture_output=True, text=True, timeout=30).stdout
+
+    empty = tmp_path / "home-empty"
+    empty.mkdir()
+    assert "rc=1" in run(empty, net=False) and not (fake / "called").exists()          # pas de réseau : on n'attend pas
+    assert "rc=1" in run(empty, net=True, extra={"GOLEM_FX_CATCH_UP": "0"}) and not (fake / "called").exists()
+    assert "rc=0" in run(empty, net=True) and (fake / "called").read_text() == "called\n"   # à poser, réseau là
+    have = tmp_path / "home-have"
+    (have / ".vst3" / "GoleM FX Gate.vst3").mkdir(parents=True)
+    assert "rc=1" in run(have, net=True) and (fake / "called").read_text() == "called\n"    # déjà là : rien

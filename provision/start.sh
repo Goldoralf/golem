@@ -71,6 +71,9 @@ fi
 if [ -n "$(rack_reaper_pids)" ]; then
   echo "→ Reaper déjà ouvert (ouvre sets/golem-set.rpp si besoin)"
 elif [ -x "$REAPER_BIN" ]; then
+  # golem-fx absent après une mise à jour (provision/lib-golem-fx.sh) : posé avant le scan REAPER, si le réseau répond.
+  . "$HERE/provision/lib-golem-fx.sh"
+  golem_fx_catch_up "$HERE" || true
   # Le lecteur des captures vivantes voyage avec golem ; le poser avant le scan REAPER.
   python3 -c 'from provision.capture_player import install_bundled; install_bundled()'
   # Reaper FERMÉ : garantir la config reaper.ini (audio + OSC + activation MIDI lane Keys).

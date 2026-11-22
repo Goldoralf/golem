@@ -29,9 +29,14 @@ pkill -x aseqdump 2>/dev/null || true   # -x = nom exact (pas la cmdline : évit
 # les JSFX de la nouvelle version — start.sh le relance, puisqu'il n'y en a plus
 # Sans l'option : REAPER aussi quand ses scripts ont changé depuis son lancement (reaper_scripts_stale) — c'est le cas
 # d'une mise à jour lancée par une version d'avant, qui ne passe pas --with-reaper.
+# golem-fx absent (un golem d'avant golem-fx qui vient de se mettre à jour, provision/lib-golem-fx.sh) : posé ICI, et
+# REAPER relancé aussi — il ne voit un plugin neuf qu'à son démarrage. Une seule fois : ensuite les bundles sont là.
 . "$HERE/provision/lib-reaper.sh"
-if [ -n "$(rack_reaper_pids)" ] && { [ "${1:-}" = "--with-reaper" ] || reaper_scripts_stale "$HERE"; }; then
-  echo "→ Reaper : arrêt (ses scripts ont changé)…"
+. "$HERE/provision/lib-golem-fx.sh"
+FX_NEW=0
+golem_fx_catch_up "$HERE" && FX_NEW=1
+if [ -n "$(rack_reaper_pids)" ] && { [ "${1:-}" = "--with-reaper" ] || [ "$FX_NEW" = 1 ] || reaper_scripts_stale "$HERE"; }; then
+  echo "→ Reaper : arrêt (ses scripts ou ses plugins ont changé)…"
   stop_rack_reaper || true
 fi
 

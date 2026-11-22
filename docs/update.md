@@ -64,6 +64,25 @@ by `routes_system` whenever the install is not a git repository:
 When a release key is declared (from v0.6.2), the release's signed file list is checked before anything is copied
 ([`release-signing.md`](release-signing.md) §5).
 
+## 3 bis. What an update does not carry: golem's own effects (golem-fx)
+
+The update brings the code of a release, not its plugins. golem-fx is placed by the install (`install-golem-fx.sh`
+on Linux, the setup on Windows and macOS). A golem installed before golem-fx existed (v0.6.4 and earlier) would keep
+its previous plugins under a factory rebuilt on golem-fx, and the blocks only golem-fx plays would stay out of the
+sound. So the restart that follows an update catches up (2026-11-22):
+
+- **When**: no `GoleM FX ….vst3` bundle on the machine (`provision/golem_fx.py --needed`). As soon as one is there —
+  a release or a dev build — nothing is touched: a newer golem-fx release is placed by the install, not here.
+- **Linux**: `reload.sh` (the restart after an update, git or archive) and `start.sh` call
+  `provision/lib-golem-fx.sh` before REAPER starts; `reload.sh` also restarts REAPER when plugins were just placed,
+  since REAPER only sees a new plugin at its start. Nothing without network (a 5 s probe: a golem offline on stage
+  never waits for a download); a failure is retried at the next start.
+- **Windows, macOS**: `provision.desktop restart` (the restart after an update) places the pinned release before it
+  starts REAPER and the bridge again (`_pending_golem_fx`, 30 s per network read).
+- Never fatal: without golem-fx the blocks keep their previous plugins. `GOLEM_FX_CATCH_UP=0` turns it off.
+
+The **Golem Engine** is not caught up: an updated golem keeps playing on REAPER until the install line is run again.
+
 ## 4. Which REAPER is the rack's
 
 `provision/lib-reaper.sh` (`rack_reaper_pids`) and `routes_system._rack_reaper_pids`: a process named `reaper` that is
@@ -84,6 +103,9 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
 4. The website's Download button points at `releases/latest`: nothing to change there.
 
 ## 6. Not covered yet
+
+- The golem-fx catch-up (§3 bis) is proven by tests on its parts (the check, the shell library with a fake network,
+  the order in the launchers), **not by a real update from v0.6.4** on a machine, on any system.
 
 - On a git install (Linux), Python dependencies are not reinstalled by the button: a release that changes
   `bridge/requirements.lock` needs that step there too (the archive way already has it). None did up to v0.6.1.

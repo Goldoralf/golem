@@ -1447,6 +1447,7 @@ def restart(shell="device"):
     # le bridge qui nous lance nous passe son GOLEM_LAUNCH : un `golem server` revient server (sans fenêtre,
     # code d'appairage), pas desktop
     _pending_pip()
+    _pending_golem_fx()
     if os.environ.get("GOLEM_LAUNCH") == "server":
         start(window=False)
     else:
@@ -1467,6 +1468,21 @@ def _pending_pip():
     else:
         print("golem: pip after the update failed — " + ((r.stderr or "").strip().splitlines() or ["?"])[-1],
               file=sys.stderr)
+
+
+def _pending_golem_fx():
+    """LE RATTRAPAGE DE golem-fx (docs/update.md §3 bis, 2026-11-22) : la mise à jour depuis About pose le code, pas les
+    plugins — un golem d'avant golem-fx gardait ses anciens plugins sous une usine refaite sur golem-fx. Ici REAPER est
+    arrêté : il verra les bundles à son démarrage. Seulement si AUCUN bundle n'est là ; jamais fatal ; 30 s au plus par
+    lecture réseau (un échec se réessaie à la prochaine relance après mise à jour). GOLEM_FX_CATCH_UP=0 le coupe."""
+    if os.environ.get("GOLEM_FX_CATCH_UP", "1") == "0":
+        return
+    try:
+        from provision import golem_fx
+        if golem_fx.needed():
+            golem_fx.install(timeout=30)
+    except Exception as exc:
+        print(f"golem: golem-fx not installed ({exc}) — the blocks keep playing their previous plugins.", file=sys.stderr)
 
 
 def _tell(message, error=False):

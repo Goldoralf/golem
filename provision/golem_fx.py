@@ -189,7 +189,16 @@ def found(dest=None):
         return []
 
 
-def install(fetch=None, log=print, dest=None, platform=None, journal=None):
+def needed(dest=None):
+    """LE RATTRAPAGE APRÈS UNE MISE À JOUR (docs/update.md §3 bis, 2026-11-22) : aucun bundle golem-fx sur cette machine.
+    Settings ▸ About ▸ Update pose le code, pas les plugins — un golem d'avant golem-fx (v0.6.4) se retrouvait avec
+    une usine refaite sur des effets qu'il n'avait pas. Les lanceurs (reload.sh, start.sh, desktop.py) le posent alors
+    avant que REAPER ne relise ses plugins. Ne juge PAS la version : dès qu'un bundle est là (release ou build de dev),
+    rien n'est retouché ici — c'est l'installation qui repose une release plus récente."""
+    return not found(dest)
+
+
+def install(fetch=None, log=print, dest=None, platform=None, journal=None, timeout=300):
     """Windows / macOS : télécharge l'archive épinglée, vérifie son empreinte, pose les bundles. `fetch(url) -> bytes`
     remplaçable par les tests."""
     o = _os(platform)
@@ -199,7 +208,7 @@ def install(fetch=None, log=print, dest=None, platform=None, journal=None):
     if fetch is None:
         def fetch(url):
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (golem install)"})
-            with urllib.request.urlopen(req, timeout=300) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
     name = p["url"].rsplit("/", 1)[-1]
     log(f"→ downloading {name} (golem-fx {VERSION}, GPL-3)")
@@ -216,6 +225,8 @@ def main(argv):
         n = found()
         print(f"{'✓' if n else '✗'} {len(n)} golem-fx plugin(s) in {dest_dir()}")
         return 0 if n else 1
+    if "--needed" in argv:                       # 0 : à poser (aucun bundle) ; 1 : rien à faire
+        return 0 if needed() else 1
     if "--place" in argv:
         i = argv.index("--place")
         if i + 1 >= len(argv):

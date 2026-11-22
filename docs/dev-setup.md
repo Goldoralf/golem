@@ -125,6 +125,10 @@ invariants — rename a field on one side and it fails there first.
 and a real NAM render in a portable REAPER (`tools/check-native-nam.py`) on Windows. **macOS joins only on a manual
 run** — its minutes cost ten times Linux's on this private repository. Run it by hand before a release.
 
+Not covered on Windows: a separation engine that is a **program** (`tests/test_separation.py`, the tests marked
+`script_program`). The test program is a shebang script, which Windows cannot start; those ten tests are skipped
+there, so that door is only proven on Linux and macOS.
+
 `rack-selftest.yml` runs every night at 03:45 UTC on a **self-hosted runner on the Windows dev box** (label `rack`,
 free minutes): first `tools/rack-free.py` — the reamp's "free" rule, ten minutes without a gesture, nothing playing
 or recording — then the Python suite on the real machine, `check-ui.py` against the live bridge and

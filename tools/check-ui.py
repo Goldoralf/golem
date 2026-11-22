@@ -155,6 +155,13 @@ class Bridge:
                "GOLEM_NO_REACH": "1", "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1",
                # 2026-10-31 : sans lui, le banc ouvrait le pédalier du rack voisin (bank 0 + LEDs SW6-8 → stomps du live)
                "GOLEM_NO_HW_MIDI": "1"}
+        # LA MÊME MACHINE PARTOUT (2026-11-22) : depuis que REAPER est optionnel (2026-11-18), les moteurs présents se
+        # lisent sur la machine — le runner n'en a aucun (Settings ▸ Engines sans « ✓ Selected », CI rouge), le poste
+        # du mainteneur les deux. Le banc pose la sienne : REAPER installé (un fichier), pas de Golem Engine.
+        if sys.platform.startswith("linux"):
+            reaper = Path(self.tmp.name) / "reaper-bin"
+            reaper.write_text("")
+            env.update(REAPER_BIN=str(reaper), GOLEM_ENGINE_DIR=str(Path(self.tmp.name) / "no-golem-engine"))
         self.env = env
         subprocess.run([sys.executable, "-c", "from bridge import factory; factory.seed()"], cwd=self.root, env=env,
                        check=True, capture_output=True, timeout=600)

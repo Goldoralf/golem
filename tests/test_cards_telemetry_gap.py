@@ -24,6 +24,10 @@ def _run(monkeypatch, actuals):
     seen, feed = [], iter(actuals)
     monkeypatch.setattr(monitors.sys, "platform", "win32")
     monkeypatch.setattr(state, "reaper_connected", True)
+    # sous REAPER : c'est SA télémétrie qu'on teste. Sur un poste où le Golem Engine est le moteur choisi, le veilleur
+    # lisait l'état du moteur à la place et trois tests n'étaient verts que sur la CI (2026-11-22).
+    from bridge import engines
+    monkeypatch.setattr(engines, "current", lambda *a, **k: "reaper")
     monkeypatch.setattr(state, "cards", None, raising=False)
 
     def settings():

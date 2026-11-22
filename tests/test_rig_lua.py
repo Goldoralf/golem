@@ -632,6 +632,10 @@ def _amp_lab(tmp_path, monkeypatch, patch):
         files[ref] = str(p)
     monkeypatch.setattr(compile_rig, "_resolve", lambda ref, comps=None, model=None: files.get(str(ref), ""))
     monkeypatch.setattr(compile_rig, "ASSET_CACHE", str(tmp_path / "cache"))
+    # LE MÊME SYSTÈME DES DEUX CÔTÉS (2026-11-22) : le moteur factice est un Linux (Lab os_name « Other », NAM et x42 en
+    # LV2) ; le compilateur, lui, lisait le VRAI système — sous Windows il rendait un cœur natif que ce moteur ne pose pas,
+    # et six tests y étaient rouges depuis le 2026-11-15
+    monkeypatch.setattr(compile_rig, "COMPILE_TARGET", "linux")
     monkeypatch.setattr(compile_rig, "_ir_guard", lambda src, dst: shutil.copy2(src, dst))   # un faux .wav
     lab = Lab(tmp_path)
     nam = [{"name": "Input Lvl", "min": -20, "max": 20, "def": 0}, {"name": "Output Lvl", "min": -20, "max": 20, "def": 0},

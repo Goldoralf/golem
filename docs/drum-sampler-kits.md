@@ -1,7 +1,7 @@
 # Sampled drum kits: from a capture library to a rack kit
 
 > **Status: PROPOSED** (2026-11-20) — design only, nothing is coded. Asked by the maintainer after a review of
-> Greg's [`dunkean/drum-toolchain`](https://github.com/dunkean/drum-toolchain) (last commit 2026-09-01). **Blocked on
+> The [`dunkean/drum-toolchain`](https://github.com/dunkean/drum-toolchain) (last commit 2026-09-01). **Blocked on
 > one thing outside golem**: that repository carries no licence (see §2). Nothing below copies its code.
 
 Related: [drums-kit.md](drums-kit.md) (rack kits, the `drumkit` block, kit import §8, General MIDI §8.1),
@@ -14,7 +14,7 @@ golem plays drum kits it did not make: three AVL banks, one DrumGizmo kit, and w
 lets a drummer turn **a kit they own** — an acoustic kit with mics, or their own e-drum module's sounds — into a rack
 kit, and golem has no free multi-velocity kit of its own beyond those four.
 
-Greg's `drum-sampler` does the hard part: it fires each articulation of a kit over MIDI at a grid of velocities and
+The toolchain's `drum-sampler` does the hard part: it fires each articulation of a kit over MIDI at a grid of velocities and
 repetitions, records the audio, checks it (peak, clipping, level outliers), and writes a **neutral sample library**
 — a JSON manifest plus untouched WAV files — then exports that library as a DrumGizmo 2.0 kit.
 
@@ -25,7 +25,7 @@ import pipeline it already has. Later, golem can also run the capture itself (§
 
 **The code.** `drum-toolchain` has no `LICENSE`: by default all rights are reserved, and golem (GPL-3.0-or-later)
 cannot take any of it, public or not. golem does not need its code — §4 writes golem's own reader and SFZ writer —
-but it relies on the **format**. Ask Greg for:
+but it relies on the **format**. Ask its author for:
 
 - MIT (or Apache-2.0) on `contracts/schemas/sample-library.schema.json` and the capture-session schema, so golem can
   ship the schema and a validator as interchange specifications, MIT like golem's own (`licence.md` §2);
@@ -44,13 +44,13 @@ captured:
 | a module's factory sounds (DDrum4, Roland, Alesis…) | yes, local use | **no** |
 | a commercial software drummer (Superior Drummer 3, EZdrummer, BFD…) | yes, local use | **no** — its EULA forbids redistributing its samples, re-recorded or not |
 
-Greg's current campaigns capture SD3 through a loopback, so his libraries are of the last kind: playable on his own
+The author's current campaigns capture SD3 through a loopback, so his libraries are of the last kind: playable on his own
 golem, never a factory kit and never uploaded. golem therefore treats a sampled kit like an imported kit (§5): local
 only, a card on golem.fm and never the audio, unless the library declares a free licence for **every** take.
 
 ## 3. The input: a neutral sample library
 
-`schema_version: 1`, `kind: "neutral-sample-library"`, as Greg's schema defines it:
+`schema_version: 1`, `kind: "neutral-sample-library"`, as the toolchain's schema defines it:
 
 ```json
 { "schema_version": 1, "kind": "neutral-sample-library", "id": "kit-metalcore-4",
@@ -103,7 +103,7 @@ A sampled library names pieces freely (`kick_metalcore` / `head`, `snare1` / `ri
 - Then the kit is rewritten in **General MIDI** exactly as an imported kit is (`_gm_moves`, §8.1), so grooves, demos
   and the drum machine play it on the right pieces, and an e-drum reaches it through its descriptor.
 
-Greg's model of **one pad, one logical sound per scene** (the stack that plays "Glitch" in a DnB song) is not part of
+The toolchain's model of **one pad, one logical sound per scene** (the stack that plays "Glitch" in a DnB song) is not part of
 this import: on golem it is several rack kits in one patch, one per scene (`scene_bake.annotate_drumkit_union`).
 Whether a single kit should switch sounds per scene is the subject of another design.
 
@@ -128,7 +128,7 @@ Whether a single kit should switch sounds per scene is the subject of another de
 
 **The DrumGizmo kit**: `drumkit.xml`, `midimap.xml` (GM, so no `midimap-gm.xml` rewrite is needed), one instrument
 per element, one `<sample>` per take. A sample's `power` must be its **measured energy** (from `rms_dbfs`): DrumGizmo
-picks the sample whose power is closest to the hit. Greg's exporter writes `velocity / 127` there — fine for its own
+picks the sample whose power is closest to the hit. The toolchain's exporter writes `velocity / 127` there — fine for its own
 use, not for a kit whose layers were captured at uneven levels. The `mix[]` comes from channel names (`kick` → group
 `kick`, `snare` → `snare`, `left`/`right` → `oh` panned hard), as an imported DrumGizmo kit does today.
 
@@ -174,14 +174,14 @@ knows the module's notes from its descriptor. A "Sample this module" action woul
    65 minutes;
 2. ask for the source and the licence before starting (§2), and require an explicit start: it plays sound and
    records, so it never starts by itself and refuses while the rack is busy;
-3. write a neutral sample library (§3) — the same file Greg's tool writes — and hand it to §4.
+3. write a neutral sample library (§3) — the same file the toolchain writes — and hand it to §4.
 
-It sends notes only. It never writes to a module (no SysEx, no bank transfer): Greg's DDrum4 bank builder, DDTi
+It sends notes only. It never writes to a module (no SysEx, no bank transfer): the toolchain's DDrum4 bank builder, DDTi
 editor and Arduino firmware stay in his repository.
 
 ## 8. Open questions
 
-- **For Greg**: the licence (§2); whether `rms_dbfs` is measured on the prepared or the raw file; whether he wants
+- **For the toolchain's author**: the licence (§2); whether `rms_dbfs` is measured on the prepared or the raw file; whether he wants
   golem's SFZ writer upstream (it would give his libraries a Windows player besides SD3).
 - **sfizz**: whether its `output=` opcode (several stereo outputs) is reliable enough on all three OS to drop the
   DrumGizmo path for multi-mic libraries; how it chokes a cymbal on polyphonic aftertouch (the descriptor's

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Le FILL avant la variation (2026-11-20, demande golem-fm validée par Raph) : l'op fill existait sans rien pour
+"""Le FILL avant la variation (2026-11-20, demande golem-fm validée par le mainteneur) : l'op fill existait sans rien pour
 l'appeler. Désormais le maintien qui passe à la variation suivante joue d'abord le fill du bloc — à la prochaine barre,
 en entier — puis la variation ; sans fill, rien ne change. Un seul message : op fill + then_idx, le séquenceur (JSFX,
 Lua du Golem Engine) repart sur ce groove-là au lieu du courant."""

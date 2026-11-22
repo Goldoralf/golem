@@ -9,7 +9,7 @@ Moteur de GESTES sur une seule pédale (fronts press/release), trois seuils :
                                        qui lance arrête ; le FILL au tap ne faisait RIEN sur un bloc sans fills, et
                                        les grooves d'usine n'en ont pas. Le fill n'a plus de geste au pied).
   - EN COURS + release VAR_S..STOP_S -> VARIATION (partie suivante, à la mesure). Le bloc a des FILLS (2026-11-20,
-                                       demande golem-fm validée par Raph) : le fill joue d'abord, à la prochaine barre
+                                       demande golem-fm validée par le mainteneur) : le fill joue d'abord, à la prochaine barre
                                        et EN ENTIER, puis la variation part — pas de geste ni de switch en plus.
   - EN COURS + maintenu >= STOP_S   -> STOP.
 

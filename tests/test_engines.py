@@ -15,8 +15,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 @pytest.fixture(autouse=True)
 def no_golem_engine(monkeypatch, tmp_path):
-    """Une machine SANS Golem Engine construit (le cas d'un rack de musicien aujourd'hui)."""
+    """Une machine SANS Golem Engine construit, AVEC REAPER installé. REAPER est posé ici (REAPER_BIN) : depuis qu'il
+    est optionnel (2026-11-18), sa présence se lit sur la machine — la CI n'en a pas, le poste du mainteneur si, et
+    trois tests n'étaient verts que chez lui."""
     monkeypatch.setenv("GOLEM_ENGINE_DIR", str(tmp_path / "no-golem-engine"))
+    reaper = tmp_path / "reaper-bin"
+    reaper.write_text("")
+    monkeypatch.setenv("REAPER_BIN", str(reaper))
 
 
 @pytest.fixture

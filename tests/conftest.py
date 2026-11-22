@@ -83,6 +83,22 @@ def _pas_les_configs_des_blocs_singletons(monkeypatch, tmp_path_factory):
 
 
 @pytest.fixture(autouse=True)
+def _golem_ne_reste_pas_en_arret():
+    """Le ⏻ complet (routes_dev, 2026-11-19) pose « golem s'arrête » (reamp._CLOSING) et GARDE le verrou des rendus
+    (preview._gen_lock) : dans un vrai bridge le process meurt juste après, dans la suite il continue. Un test qui
+    appuie sur ⏻ (test_macos_emulated_today) laissait les suivants avec « golem is stopping » et « a generation is
+    already running » : 19 échecs, la CI rouge du 2026-11-14 au 2026-11-22. Chaque test repart d'un golem qui tourne."""
+    yield
+    from bridge import preview, reamp
+    reamp._CLOSING["at"] = None
+    if preview._gen_lock.locked():
+        try:
+            preview._gen_lock.release()
+        except RuntimeError:
+            pass
+
+
+@pytest.fixture(autouse=True)
 def _pas_de_peripheriques_reels(monkeypatch):
     """Aucun test ne lit le gestionnaire de périphériques de la machine (Get-PnpDevice, ~1 s, et ce qui est
     branché sur le PC du développeur) — 2026-10-03. Le test de usb_ids le rejoue avec une sortie simulée."""

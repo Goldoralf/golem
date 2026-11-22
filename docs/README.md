@@ -91,7 +91,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [fcb/uno2/README.md](fcb/uno2/README.md) | CODED | The FCB1010 UnO2 chip: flash and check tools, bank species |
 | [pedal-registry.md](pedal-registry.md) | PARTLY CODED | Descriptors for MIDI-controlled pedals, one-tap install |
 | [drums-kit.md](drums-kit.md) | PARTLY CODED | Electronic drum kits, rack kits and the drums lane |
-| [drum-sampler-kits.md](drum-sampler-kits.md) | PROPOSED | Sampled drum kits: a neutral capture library (Greg's drum-sampler) imported as an SFZ or DrumGizmo rack kit; licences; capture from golem later |
+| [drum-sampler-kits.md](drum-sampler-kits.md) | PROPOSED | Sampled drum kits: a neutral capture library (the drum-sampler toolchain) imported as an SFZ or DrumGizmo rack kit; licences; capture from golem later |
 | [drums-library.md](drums-library.md) | CODED | Library ▸ Drums: kits drawn and heard, grooves read (meter, length, tempo, unknown notes) and added to the drum machine |
 | [rack-hardware.md](rack-hardware.md) | PARTLY CODED | The reference x86 rack and real-time OS tuning |
 | [rack-classes.md](rack-classes.md) | PARTLY CODED | What a machine declares about what it can play |

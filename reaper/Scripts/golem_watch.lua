@@ -110,7 +110,7 @@ local verify_heal = false
 
 -- ── LE FONDU DE CHANGEMENT DE PRESET (2026-11-20) ─────────────────────────────────────────────────────────────────
 -- « Quand on change de preset, on entend des craquements le temps que la lane se charge ; après, le son est nickel »
--- (Raph). Le limiteur de sécurité (golem_safety.jsfx, dernier FX de chaque lane qui sort vers la carte) lit un drapeau
+-- (le mainteneur). Le limiteur de sécurité (golem_safety.jsfx, dernier FX de chaque lane qui sort vers la carte) lit un drapeau
 -- partagé, gmem[0] de l'espace golem_out : 1 = sortie coupée (fondu 20 ms), 0 = ouverte (fondu 120 ms). Ici :
 --   · un rig_recall coupe AVANT la chirurgie et attend OUT_PRE que le fondu de sortie soit fini (la commande n'est
 --     pas consommée entre-temps : la boucle la relit au tick suivant) ;

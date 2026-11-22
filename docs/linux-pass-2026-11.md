@@ -7,7 +7,7 @@ The Windows port changed code that Linux runs too: the fork's C++ patches, the w
 adapter bench, the drum machine. Every change was measured on Windows only. This pass rebuilds Linux, runs the benches
 there, and publishes the Linux package with the same fixes.
 
-Rules as always: nobody playing; the benches use their own engine and ports, never the rack's; commit only when Raph
+Rules as always: nobody playing; the benches use their own engine and ports, never the rack's; commit only when the maintainer
 asks. Read [CLAUDE.md](../CLAUDE.md) and this file first.
 
 ## 1. Rebuild the fork on Linux
@@ -64,14 +64,14 @@ Windows is on `golem-engine-9.9-g4` (release of Goldoralf/golem-binaries, Window
 - The CI workflow `golem-engine.yml` **creates** the release (`gh release create`): it fails on `golem-engine-9.9-g4`,
   which exists. Either change its publish step to upload into an existing release (`gh release upload`, keep the
   Windows asset), or tag a new `golem-engine-9.9-g5` and publish both systems there (rebuild the Windows package from
-  the same tag with `golem/tools/bundle.py` on Windows). Ask Raph which.
+  the same tag with `golem/tools/bundle.py` on Windows). Ask the maintainer which.
 - Release tags of the engine must be **lightweight** (the workflow says why: `git describe`).
 - Then pin Linux: `VERSION` in `provision/golem_engine.py` and the line in `provision/downloads.sha256` (sha256
   recomputed on the downloaded asset and compared with the release's `SHA256SUMS`).
 
 ## 5. Not for this pass
 
-- `grit` (Prisma) has no Windows build: Raph asks golem-fx for a VST3; nothing to do in golem or the fork.
+- `grit` (Prisma) has no Windows build: the maintainer asks golem-fx for a VST3; nothing to do in golem or the fork.
   Done on 2026-11-21: gfx-grit plays `grit` on every system (catalogue v51, [golem-fx-migration.md](golem-fx-migration.md) §4).
 - The DSP load at buffer 128 on Windows (crackles; 256 is fine): a Windows question, measured with the engine's
   `dspstats`.

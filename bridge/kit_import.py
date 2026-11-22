@@ -88,7 +88,7 @@ def parse_midimap_multi(text):
 
 # ── UN KIT IMPORTÉ JOUE EN GENERAL MIDI (2026-11-15) ────────────────────────────────────────────────────────────────
 # Les phrases des démos, les grooves de la bibliothèque et une batterie électronique envoient du GM. Un kit importé
-# garde sinon la numérotation de SA bibliothèque (Greg Hybrid : grosse caisse sur 24, caisse claire sur 32) et un
+# garde sinon la numérotation de SA bibliothèque (un kit hybride importé : grosse caisse sur 24, caisse claire sur 32) et un
 # groove y tape à côté — « un kit qui n'en est pas un ». L'import réécrit donc la table : chaque pièce reconnue sur
 # sa note GM (les mêmes que la batterie d'usine drums-aasimonster), le reste du kit (variantes, pièces sans case GM,
 # noms inconnus) sur des notes LIBRES hors de la plage batterie GM (35..81) — rien n'est perdu, rien ne sonne dans
@@ -104,7 +104,7 @@ GM_FALLBACK = {"kick": None, "snare-rim": "snare", "snare-xstick": "snare-rim", 
                "hh-open": "hh-closed", "tom2": "tom1", "tom3": "tom2", "tom4": "tom3", "crash2": "crash1",
                "ride-edge": "ride", "ride-bell": "ride", "china": "crash2", "splash": "crash1"}
 GM_RANGE = range(35, 82)
-# QUELLE VARIANTE pour une pièce GM (2026-11-15, entendu sur la démo rock de Greg Hybrid : « un charley remplacé par un
+# QUELLE VARIANTE pour une pièce GM (2026-11-15, entendu sur la démo rock d'un kit hybride importé : « un charley remplacé par un
 # claquement de doigts ») : un kit hybride porte plusieurs instruments par pièce (hh__electronic_closed, hh__bow_closed…).
 # La plus basse note gagnait — souvent la variante électronique. Une phrase GM attend une batterie : l'acoustique et le
 # jeu « bow » d'abord, les variantes de boîte à rythmes / de genre ensuite, le bord (edge) après le corps.

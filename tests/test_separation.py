@@ -17,6 +17,12 @@ if not shutil.which("ffmpeg"):
 from bridge import separation as S
 from tests import separation_engines as T
 
+# LE PROGRAMME DE TEST EST UN SCRIPT À SHEBANG (tests/separation_engines.split_program) : sous Windows un programme est
+# un .exe, et celui-ci ne se lance pas (« could not be started »). Ces tests n'y ont jamais tourné : le module entier
+# était sauté faute de ffmpeg, jusqu'à ce que la nuit Windows l'installe (2026-11). La porte « programme » n'est donc
+# PAS éprouvée sous Windows — dit dans docs/dev-setup.md.
+script_program = pytest.mark.skipif(os.name == "nt", reason="the test program is a shebang script: POSIX only")
+
 
 @pytest.fixture
 def sep(tmp_path, monkeypatch):
@@ -38,6 +44,7 @@ def _tested(eid):
     return S._engine(S.load(), eid)["test"]
 
 
+@script_program
 def test_deux_moteurs_d_architectures_differentes_passent_par_le_meme_chemin(sep):
     """§1.1 : le bouclier de l'avocat — un graphe ONNX et un programme, sans rien en commun, même code."""
     onnx = S.add_onnx(T.band_split_onnx(str(sep / "bands.onnx")), "test", accepted=True)
@@ -294,6 +301,7 @@ def _tool_like_program(path):
     return path
 
 
+@script_program
 def test_l_essai_a_blanc_lit_les_fichiers_et_propose_les_stems(sep):
     prog = _tool_like_program(str(sep / "tool.py"))
     r = S.probe_program(prog, ["{input}", "{outdir}"])
@@ -304,6 +312,7 @@ def test_l_essai_a_blanc_lit_les_fichiers_et_propose_les_stems(sep):
     assert S.load()["engines"] == []                                     # un essai n'enregistre rien
 
 
+@script_program
 def test_un_programme_qui_nomme_a_sa_facon_passe_avec_l_association(sep):
     prog = _tool_like_program(str(sep / "tool.py"))
     e = S.add_program(prog, ["{input}", "{outdir}"], accepted=True,
@@ -313,6 +322,7 @@ def test_un_programme_qui_nomme_a_sa_facon_passe_avec_l_association(sep):
     assert sorted(t["stems"]) == ["bass", "other"]
 
 
+@script_program
 def test_sans_association_le_test_dit_quoi_faire_et_montre_les_fichiers(sep):
     prog = _tool_like_program(str(sep / "tool.py"))
     e = S.add_program(prog, ["{input}", "{outdir}"], accepted=True)
@@ -336,6 +346,7 @@ def test_le_fichier_de_moteur_s_exporte_et_se_reimporte_sans_rien_activer(sep):
         S.read_engine_file({**doc, "outputs": {"../../etc/passwd.wav": "bass"}})
 
 
+@script_program
 def test_les_controles_du_programme_se_disent_un_par_un(sep):
     assert S.program_checks("/nope/x") == {"ok": False, "why": "file not found", "exists": False, "runnable": False,
                                             "not_script": False}
@@ -353,6 +364,7 @@ def test_le_fichier_onnx_se_lit_avant_l_ajout(sep):
         S.inspect_source(T.no_contract_onnx(str(sep / "x.onnx")))
 
 
+@script_program
 def test_le_navigateur_ne_montre_que_ce_qui_peut_servir(sep):
     (sep / "d").mkdir()
     T.band_split_onnx(str(sep / "d" / "m.onnx"))
@@ -380,6 +392,7 @@ def _two_engines(sep):
     return a, b
 
 
+@script_program
 def test_deux_moteurs_s_enchainent_et_la_somme_reste_le_morceau(sep):
     a, b = _two_engines(sep)
     c = S.add_combined(a["id"], ["low"], b["id"], "", accepted=True)
@@ -391,6 +404,7 @@ def test_deux_moteurs_s_enchainent_et_la_somme_reste_le_morceau(sep):
     assert t["analysis"]["residual_db"] < -40                           # la somme est le morceau
 
 
+@script_program
 def test_une_combinaison_refuse_ce_qui_n_a_pas_de_sens(sep):
     a, b = _two_engines(sep)
     with pytest.raises(S.SeparationError, match="two different"):
@@ -404,6 +418,7 @@ def test_une_combinaison_refuse_ce_qui_n_a_pas_de_sens(sep):
         S.add_combined(c["id"], ["low"], b["id"], accepted=True)
 
 
+@script_program
 def test_retirer_un_moteur_retire_ses_combinaisons_et_l_ecran_le_sait(sep):
     a, b = _two_engines(sep)
     c = S.add_combined(a["id"], ["low"], b["id"], "Combo", accepted=True)
@@ -414,6 +429,7 @@ def test_retirer_un_moteur_retire_ses_combinaisons_et_l_ecran_le_sait(sep):
     assert a["id"] in ids and b["id"] not in ids and c["id"] not in ids
 
 
+@script_program
 def test_une_combinaison_de_programmes_s_exporte_et_se_reinstalle(sep):
     p1 = S.add_program(T.split_program(str(sep / "split.py")), ["--in", "{input}", "--out", "{outdir}"], accepted=True,
                        label="Split")

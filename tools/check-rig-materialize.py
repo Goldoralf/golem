@@ -49,8 +49,10 @@ REAPER_WARM = ("reaper-vstplugins64.ini", "reaper-vstplugins.ini", "reaper-vstpl
                "reaper-clap-macos-x86_64.ini", "reaper-auplugins64.ini", "reaper-license.rk")
 
 
-def free_port():
-    with socket.socket() as s:
+def free_port(udp=False):
+    """`udp` : un port pour l'OSC. Libre en TCP ne dit rien de l'UDP — la nuit Windows du 2026-11-22, le bridge du banc
+    est mort sur WinError 10013 en ouvrant en UDP un port qu'on n'avait essayé qu'en TCP."""
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM if udp else socket.SOCK_STREAM) as s:
         s.bind(("127.0.0.1", 0))
         return s.getsockname()[1]
 
@@ -1757,7 +1759,7 @@ def main():
                          rev=working_tree_commit() if a.working_tree else "HEAD")
         resource, runtime = work / "REAPER", work / "runtime"
         runtime.mkdir(exist_ok=True)
-        port, osc_send, osc_recv = free_port(), free_port(), free_port()
+        port, osc_send, osc_recv = free_port(), free_port(udp=True), free_port(udp=True)
         env = {**os.environ, "GOLEM_RUNTIME_DIR": str(runtime), "GOLEM_REAPER_RESOURCE_DIR": str(resource),
                "GOLEM_PORT": str(port), "GOLEM_OSC_SEND": str(osc_send), "GOLEM_OSC_RECV": str(osc_recv),
                # pas d'annonce mDNS : ce bridge ne doit pas se faire passer pour le rack de la machine
@@ -1775,7 +1777,7 @@ def main():
                         "GOLEM_ENGINE_LOG": str(work / "engine.log"),
                         # son port OSC à lui : sans ça, à côté d'un rack qui tourne sur le Golem Engine (3819 pris), le
                         # moteur du banc prenait 3820 et le bridge du banc parlait au moteur du rack
-                        "GOLEM_ENGINE_OSC": str(free_port())})
+                        "GOLEM_ENGINE_OSC": str(free_port(udp=True))})
             if a.real_card:
                 env.update({"GOLEM_ENGINE_BACKEND": "ALSA", "GOLEM_ENGINE_DEVICE": card_name,
                             "GOLEM_ENGINE_NO_OUTPUT": "1"})

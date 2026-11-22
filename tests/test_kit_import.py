@@ -196,8 +196,8 @@ def test_un_job_kit_install_qui_porte_une_carte_n_installe_rien(monkeypatch):
         TJ._kit_install({"action": "kit-install", "sha": "x"})
 
 
-# ── un kit importé joue en General MIDI (2026-11-15 : Greg Hybrid gardait la numérotation de sa bibliothèque) ──────
-GREG = """<?xml version='1.0'?><midimap>
+# ── un kit importé joue en General MIDI (2026-11-15 : un kit hybride importé gardait la numérotation de sa bibliothèque) ──────
+HYBRID_MAP = """<?xml version='1.0'?><midimap>
   <map note="24" instr="kick__acoustic"/><map note="25" instr="kick__sleep"/><map note="32" instr="snare1__metalcore"/>
   <map note="32" instr="snare_layer__a"/><map note="35" instr="rim1__rimshot"/><map note="36" instr="rim1__cross"/>
   <map note="52" instr="tom1__electronic"/><map note="53" instr="tom2__electronic"/><map note="66" instr="hh__pedal_close"/>
@@ -210,7 +210,7 @@ GREG = """<?xml version='1.0'?><midimap>
 
 
 def test_la_table_d_un_kit_est_reecrite_en_general_midi_sans_rien_perdre():
-    multi = KI.parse_midimap_multi(GREG)
+    multi = KI.parse_midimap_multi(HYBRID_MAP)
     pieces, _u, extra = KI.pieces_from_names({n: v[0] for n, v in multi.items()})
     table, notes, left = KI.gm_remap(multi, KI.best_pieces(multi, pieces, extra))
     # chaque pièce sur sa note GM, les deux couches d'une frappe gardées
@@ -233,25 +233,25 @@ def test_la_table_d_un_kit_est_reecrite_en_general_midi_sans_rien_perdre():
 
 
 def test_un_kit_drumgizmo_importe_avant_est_reecrit_une_fois(monkeypatch, tmp_path):
-    rack = tmp_path / "rack"; kd = rack / "library" / "drumkits" / "greg"; kd.mkdir(parents=True)
+    rack = tmp_path / "rack"; kd = rack / "library" / "drumkits" / "hybrid"; kd.mkdir(parents=True)
     (rack / "library" / "kits").mkdir(parents=True)
-    (kd / "drumkit.xml").write_text("<drumkit/>"); (kd / "midimap.xml").write_text(GREG)
+    (kd / "drumkit.xml").write_text("<drumkit/>"); (kd / "midimap.xml").write_text(HYBRID_MAP)
     monkeypatch.setattr(KI.C, "ROOT", str(rack)); monkeypatch.setattr(K.C, "ROOT", str(rack))
     monkeypatch.setattr(K, "KITS_DIR", str(rack / "library" / "kits")); monkeypatch.setattr(K, "_sync_soon", lambda: None)
-    old = {"id": "drums-greg", "name": "Greg", "role": "drum", "engine": "drumgizmo",
-           "drumkit": "library/drumkits/greg/drumkit.xml", "midimap": "library/drumkits/greg/midimap.xml",
+    old = {"id": "drums-hybrid", "name": "Hybrid", "role": "drum", "engine": "drumgizmo",
+           "drumkit": "library/drumkits/hybrid/drumkit.xml", "midimap": "library/drumkits/hybrid/midimap.xml",
            "notes": {"kick": 24, "snare": 32}, "notes_note": "read in midimap.xml at import", "imported": {"at": 1}}
     assert K.save_kit(old, allow_drums=True)["ok"]
-    assert KI.remap_imported_gm() == ["drums-greg"]
-    k = K.get_kit("drums-greg")
-    assert k["midimap"] == "library/drumkits/greg/midimap-gm.xml" and k["midimap_src"] == "library/drumkits/greg/midimap.xml"
+    assert KI.remap_imported_gm() == ["drums-hybrid"]
+    k = K.get_kit("drums-hybrid")
+    assert k["midimap"] == "library/drumkits/hybrid/midimap-gm.xml" and k["midimap_src"] == "library/drumkits/hybrid/midimap.xml"
     assert k["notes"]["kick"] == 36 and k["notes"]["snare"] == 38 and "General MIDI" in k["notes_note"]
-    assert (kd / "midimap.xml").read_text() == GREG                     # la table d'origine n'est pas touchée
+    assert (kd / "midimap.xml").read_text() == HYBRID_MAP                     # la table d'origine n'est pas touchée
     assert KI.remap_imported_gm() == []                                 # idempotent
-    K.save_kit(dict(K.get_kit("drums-greg"), gm_rev=1), allow_drums=True)  # réécrit par une règle plus ancienne
-    assert KI.remap_imported_gm() == ["drums-greg"]
-    k = K.get_kit("drums-greg")
-    assert k["gm_rev"] == KI.GM_REV and k["midimap_src"] == "library/drumkits/greg/midimap.xml"   # repart de l'original
+    K.save_kit(dict(K.get_kit("drums-hybrid"), gm_rev=1), allow_drums=True)  # réécrit par une règle plus ancienne
+    assert KI.remap_imported_gm() == ["drums-hybrid"]
+    k = K.get_kit("drums-hybrid")
+    assert k["gm_rev"] == KI.GM_REV and k["midimap_src"] == "library/drumkits/hybrid/midimap.xml"   # repart de l'original
     assert k["notes_note"].count("General MIDI") == 1
 
 

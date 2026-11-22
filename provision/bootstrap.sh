@@ -17,9 +17,9 @@ REPO="${GOLEM_REPO:-https://github.com/Goldoralf/golem}"
 # (le comportement d'avant). Renseignée : la release clonée doit être un tag SIGNÉ par cette clé, sinon on s'arrête.
 # Elle vit ICI, dans le script servi par la ligne d'installation, et pas dans le dépôt téléchargé : une release piégée ne
 # choisit pas la clé qui la vérifie.
-# 2026-11-22 : DEUX lignes le temps de la bascule — « golem release 2 » signe à partir de v0.6.5 ; l'ancienne (phrase de
+# 2026-11-22 : DEUX lignes le temps de la bascule — « golem release 2 » signe à partir de v0.7.0 ; l'ancienne (phrase de
 # passe perdue, plus personne ne signe avec) reste tant que v0.6.4 est la dernière release, sinon cette ligne
-# d'installation ne poserait plus rien. À RETIRER dès que v0.6.5 est « latest » (docs/release-signing.md §4).
+# d'installation ne poserait plus rien. À RETIRER dès que v0.7.0 est « latest » (docs/release-signing.md §4).
 GOLEM_RELEASE_SIGNERS='golem namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEnQjtX6NBOBAr+L3HV0C8Q8LTAa/T7XvA4mQ3TCo47I golem release 2
 golem namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJjcxUxxUG4j7eBBraww7MiR5QdCOorn9cNjuozesVk9 golem release'
 CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/golem-installer"

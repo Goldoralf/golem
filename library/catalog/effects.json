@@ -4499,7 +4499,7 @@
      "hidden": true
     }
    ],
-   "note": "x42-Autotune (fat1.lv2 = zita-at1 de Fons Adriaensen). Autotune temps réel LV2, notes cibles = 12 ports C..B (masqués ici, pilotés par Key+Scale à la compile). Hard = fastmode (effet T-Pain). Voice only (roles)."
+   "note": "x42-Autotune (fat1.lv2 = zita-at1 de Fons Adriaensen). Autotune temps réel LV2, notes cibles = 12 ports C..B (masqués ici, pilotés par Key+Scale à la compile). Hard = fastmode (correction en marches, sans glissé). Voice only (roles)."
   },
   {
    "type": "detune",

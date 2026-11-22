@@ -39,11 +39,11 @@ def _setlist(dirs, lines, sid="covers"):
 
 # ── la création ──────────────────────────────────────────────────────────────────────────────
 def test_une_chanson_nee_ici_porte_un_id_rs_et_le_dit_dans_un_champ():
-    d = S.create("Killing in the Name", "cover", band="b_night", preset="riot", bpm=88)
+    d = S.create("Harbour Rain", "cover", band="b_night", preset="riot", bpm=88)
     assert d["id"].startswith("rs:") and len(d["id"]) == 3 + 32
     assert d["born"] == "rack" and d["rev"] == 1 and d["band"] == "b_night"
     assert d["sheet"] == {"preset": "riot", "bpm": 88}
-    assert S.load(d["id"])["title"] == "Killing in the Name"
+    assert S.load(d["id"])["title"] == "Harbour Rain"
 
 
 def test_la_nature_est_obligatoire_et_sans_defaut():

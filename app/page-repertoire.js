@@ -315,7 +315,7 @@ function NewSongSheet({ presets, spaces, defaultSpace, onClose }) {
           </select></label></div>
       <div class="sgn-row">
         <label class="sgn-in sgn-wide"><span class="k">Title <em>required</em></span>
-          <input autofocus maxlength="160" value=${f.title} placeholder="Killing in the Name"
+          <input autofocus maxlength="160" value=${f.title} placeholder="Song title"
             onInput=${e => set('title', e.target.value)} onKeyDown=${e => e.key === 'Enter' && create()} /></label>
         <label class="sgn-in"><span class="k">Artist</span>
           <input maxlength="160" value=${f.artist} placeholder="—" onInput=${e => set('artist', e.target.value)} /></label>

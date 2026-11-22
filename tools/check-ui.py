@@ -361,7 +361,16 @@ def press_page(page, base, target, size, settle_ms, writes, keys, log, dialogs=N
         page.wait_for_timeout(settle_ms)
         return page.evaluate("() => location.hash"), page.evaluate(_OPEN_JS)
     hash0, open0 = fresh()
+    # LA LISTE DOIT ÊTRE ARRIVÉE AVANT QU'ON DÉCIDE QUOI APPUYER (2026-11-22). L'attente ci-dessous ne servait qu'aux
+    # commandes déjà retenues : sur le runner la page Patches n'en montrait encore qu'une à cet instant (4 ici), les
+    # trois autres étaient « control not found » en fin de course. On relit jusqu'à ce que la page ne bouge plus.
     present = stable_controls(page.evaluate(_LIST_JS, PRESSABLE))
+    for _ in range(12):
+        page.wait_for_timeout(700)
+        again = stable_controls(page.evaluate(_LIST_JS, PRESSABLE))
+        if again == present:
+            break
+        present = again
     todo = [k for k in present if keys is None or k in keys]
     out, dirty = {}, False
     for key in todo:

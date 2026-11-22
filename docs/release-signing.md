@@ -72,9 +72,10 @@ was done instead:
 1. A new key, `golem release 2` (`SHA256:R9hUTiwEkpHeBb3FpOnvM/7M23ijCyC5KJshEb90tos`), signs every release from
    **v0.7.0**. The old private key file is kept aside (`~/.ssh/golem_release.old`) in case the passphrase comes back.
 2. `provision/release-signers` carries the new key only.
-3. `GOLEM_RELEASE_SIGNERS` in `provision/bootstrap.sh` carries **both** keys while v0.6.4 is still the latest release —
-   otherwise the install line would refuse the only release there is. The old line is removed as soon as v0.7.0 is
-   "latest".
+3. `GOLEM_RELEASE_SIGNERS` in `provision/bootstrap.sh` carried **both** keys while v0.6.4 was still the latest release —
+   otherwise the install line would have refused the only release there was. v0.7.0 came out the same day, its tag and
+   its signed file list checked against the new key, and the old line was removed: the install line no longer
+   installs v0.6.2 to v0.6.4.
 
 **What it costs:** a golem installed from v0.6.2 to v0.6.4 verifies with the old key, so its built-in update refuses
 v0.7.0 and later ("not signed"). It runs the README's install line once more, over the existing install (Linux: or a

@@ -129,8 +129,20 @@ def test_le_pid_est_celui_du_process_moteur(slot, monkeypatch):
         assert e.pid() is None                       # un process qui n'est pas luasession : pas le moteur
         # le nom que CE système donne à ce process, pas basename(sys.executable) : Windows rend l'image sans « .exe »
         # (tasklist), macOS le binaire du framework (« Python », pas « python3.12 ») — rouge sur les deux (2026-11-22)
-        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", tuple(A._proc_names(p.pid)[:1]))
-        assert e.pid() == p.pid and e.running()
+        # … lu quand il ne bouge plus : un process tout juste lancé n'a pas encore son nom définitif (le python du
+        # framework macOS se ré-exécute en « Python »), et le premier `tasklist` d'un runner Windows peut dépasser
+        # son délai et ne rien rendre — la première lecture seule laissait le test rouge sur les deux
+        import time
+        names, same = [], 0
+        for _ in range(50):
+            now = A._proc_names(p.pid)[:1]
+            same = same + 1 if now and now == names else 0
+            names = now
+            if same >= 2:
+                break
+            time.sleep(0.2)
+        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", tuple(names))
+        assert e.pid() == p.pid and e.running(), (names, A._proc_names(p.pid))
         assert e.stop(timeout=3) and e.pid() is None
     finally:
         p.kill()

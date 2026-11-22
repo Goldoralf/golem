@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Marcus Miller",
-   "why": "slap pioneer whose rack held a fast dbx 160X compressor",
-   "source": "Sound On Sound, Paul Tingen, 1999",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "bright",

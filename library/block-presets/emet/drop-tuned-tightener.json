@@ -14,13 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Periphery",
-   "why": "a drive at low gain as a tight boost before high-gain amps",
-   "verified": false
-  }
- ],
  "level_db": 7,
  "tags": [
   "tight",

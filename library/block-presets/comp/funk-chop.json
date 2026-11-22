@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Chic",
-   "song": "Le Freak",
-   "why": "bright, even, mostly direct funk rhythm guitar",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "bright",

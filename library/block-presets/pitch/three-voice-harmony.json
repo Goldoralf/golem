@@ -15,19 +15,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Steve Vai",
-   "why": "an H3000 harmonizer user who contributed its signature presets",
-   "source": "Performer Magazine, 2013",
-   "verified": true
-  },
-  {
-   "artist": "Queen",
-   "why": "Brian May's three-part guitar harmonies (multitracked)",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "modern"

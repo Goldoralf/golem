@@ -15,19 +15,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Sleep",
-   "song": "Dopesmoker",
-   "why": "fuzz into walls of cranked Orange amps",
-   "verified": false
-  },
-  {
-   "artist": "Electric Wizard",
-   "why": "dark, saturated fuzz for down-tuned doom riffs",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "dark",

@@ -16,14 +16,6 @@
  ],
  "gain": "any",
  "use": "utility",
- "refs": [
-  {
-   "artist": "DNCE",
-   "why": "FOH Brian Pomp puts a de-esser in the live lead vocal chain",
-   "source": "Vintage King, Brian Pomp FOH interview, 2017",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "subtle"

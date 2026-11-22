@@ -15,15 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "David Bowie",
-   "song": "Breaking Glass",
-   "why": "Visconti pitched the snare down through an H910 Harmonizer",
-   "source": "Red Bull Music Academy Daily, 2017",
-   "verified": true
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

@@ -16,14 +16,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "The Strokes",
-   "song": "Is This It",
-   "why": "vocals sung through a small practice amp for a lo-fi, band-limited voice",
-   "verified": false
-  }
- ],
  "level_db": -2,
  "tags": [
   "lo-fi",

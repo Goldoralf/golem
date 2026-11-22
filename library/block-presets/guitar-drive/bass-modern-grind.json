@@ -14,13 +14,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Periphery",
-   "why": "split-band bass: clean lows under a distorted midrange",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "modern",

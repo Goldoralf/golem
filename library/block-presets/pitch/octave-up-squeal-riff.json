@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Pantera",
-   "song": "Becoming",
-   "why": "Dimebag's Whammy on the main riff for squealing jumps",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "aggressive",

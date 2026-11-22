@@ -16,14 +16,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Pink Floyd",
-   "song": "Comfortably Numb",
-   "why": "David Gilmour's solo tone: delay into a moderate hall",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "wide"

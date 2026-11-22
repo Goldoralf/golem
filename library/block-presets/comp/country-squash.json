@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Brent Mason",
-   "why": "Nashville session lines played through a compressor pedal",
-   "source": "Premier Guitar, Brent Mason's Gear, 2016",
-   "verified": true
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

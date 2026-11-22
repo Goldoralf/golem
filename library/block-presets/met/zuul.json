@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Meshuggah",
-   "why": "their signature preamp builds in a keyed gate for staccato riffs",
-   "source": "Gearnews, Fortin Meshuggah pedal, 2025",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "tight",

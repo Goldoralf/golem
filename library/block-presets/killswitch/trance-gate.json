@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Mark'Oh",
-   "song": "Tears Don't Lie",
-   "why": "early stuttering gated synth chords on a mid-90s dance hit",
-   "verified": false
-  }
- ],
  "level_db": -4,
  "sync": "1/16",
  "tags": [

@@ -14,14 +14,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Stevie Ray Vaughan",
-   "song": "Pride and Joy",
-   "why": "TS9 with drive low and level near full into a cranked Fender",
-   "verified": false
-  }
- ],
  "level_db": 7,
  "tags": [
   "vintage",

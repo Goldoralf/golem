@@ -5,8 +5,9 @@
 golem-fx researches and annotates a factory preset set per pedal (golem-fx/presets/<crate>.json, exported COMPLETE in
 visuals/data/descriptors.json: every parameter of the plugin). Each becomes one block preset file, keyed by the rack's
 block type and the preset's stable id — golem.fm's AI refers to it as "<type>/<id>", and golem.fm's sync reads these
-files from this repository. The fields are golem-fx's (id, type, name, desc, inst, genres, subgenres, gain, use, refs,
-level_db, sync, tags, default, params, notes), plus `factory: true` and `golem_fx: true`.
+files from this repository. The fields are golem-fx's (id, type, name, desc, inst, genres, subgenres, gain, use,
+level_db, sync, tags, default, params, notes), plus `factory: true` and `golem_fx: true`. golem-fx's `refs` (artist,
+song, source) are NOT copied: this repository is public and names no artist.
 
 Params are rewritten in the block's vocabulary (bridge/golem_fx.preset_params): the id the sheet shows (a catalogue id
 where the setting is a catalogue knob), a list by its RANK. A type's IDENTITY setting (reverb-plate = algo Plate…) is
@@ -30,7 +31,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 OUT = ROOT / "library" / "block-presets"
-FIELDS = ("id", "type", "name", "desc", "inst", "genres", "subgenres", "gain", "use", "refs", "level_db", "sync", "tags",
+# PAS `refs` (2026-11-22, le mainteneur) : les références de golem-fx (artiste, morceau, source) servent ses prompts
+# d'IA et restent chez lui — ce dépôt est public et ne nomme aucun artiste. Semées par erreur du 2026-11-13 au
+# 2026-11-22 ; tests/test_block_presets_no_refs.py garde la porte.
+FIELDS = ("id", "type", "name", "desc", "inst", "genres", "subgenres", "gain", "use", "level_db", "sync", "tags",
           "default", "params", "notes")
 
 

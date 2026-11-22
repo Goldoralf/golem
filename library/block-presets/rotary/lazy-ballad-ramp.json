@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Procol Harum",
-   "song": "A Whiter Shade of Pale",
-   "why": "slow, churchy organ swirl carrying the ballad",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

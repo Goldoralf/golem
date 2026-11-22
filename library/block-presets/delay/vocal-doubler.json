@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "utility",
- "refs": [
-  {
-   "artist": "The Beatles",
-   "why": "Abbey Road's ADT for Lennon's vocals instead of a second take",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

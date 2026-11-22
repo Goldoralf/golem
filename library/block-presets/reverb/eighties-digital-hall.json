@@ -15,20 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Rush",
-   "song": "Power Windows",
-   "why": "Lexicon-era big digital hall on synths and guitars",
-   "verified": false
-  },
-  {
-   "artist": "Peter Gabriel",
-   "song": "So",
-   "why": "early-digital hall reverbs across the album",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

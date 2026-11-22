@@ -15,15 +15,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Creedence Clearwater Revival",
-   "song": "Born on the Bayou",
-   "why": "the swampy amp vibrato on Fogerty's E7 riff, from his Kustom amp",
-   "source": "American Songwriter, 2013",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

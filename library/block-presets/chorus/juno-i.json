@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "a-ha",
-   "song": "Take On Me",
-   "why": "Juno-60 layer in the keyboard part, chorus mode on",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

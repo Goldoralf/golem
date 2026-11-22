@@ -15,22 +15,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Brian Eno",
-   "song": "Apollo: Atmospheres and Soundtracks",
-   "why": "Eno and Lanois's octave-up shifter in a reverb feedback loop",
-   "source": "Valhalla DSP blog, 2010",
-   "verified": true
-  },
-  {
-   "artist": "U2",
-   "song": "The Unforgettable Fire",
-   "why": "the Eno/Lanois shimmer featured on the 1984 album",
-   "source": "Valhalla DSP blog, 2010",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

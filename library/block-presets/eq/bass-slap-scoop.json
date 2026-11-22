@@ -16,18 +16,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Marcus Miller",
-   "why": "both-pickup Jazz bass slap with the mids scooped and the top open",
-   "verified": false
-  },
-  {
-   "artist": "Red Hot Chili Peppers",
-   "why": "Flea's bright, percussive slap lines",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "bright",

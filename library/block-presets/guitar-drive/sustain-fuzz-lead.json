@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "solo",
- "refs": [
-  {
-   "artist": "David Gilmour",
-   "song": "Comfortably Numb",
-   "why": "a Ram's Head Big Muff into a clean Hiwatt for the solos",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "vintage",

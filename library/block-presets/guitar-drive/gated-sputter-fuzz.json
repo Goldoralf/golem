@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Kevin Shields",
-   "song": "Loveless",
-   "why": "stacked fuzzes for a squashed, heavily gated tone",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "lo-fi",

@@ -15,13 +15,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Stevie Ray Vaughan",
-   "why": "Tube Screamer with drive low and level high into cranked amps",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "vintage",

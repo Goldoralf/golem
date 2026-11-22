@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Tommy James and the Shondells",
-   "song": "Crimson and Clover",
-   "why": "the vocal sung through an amp's tremolo on the outro",
-   "verified": false
-  }
- ],
  "level_db": -1,
  "tags": [
   "vintage",

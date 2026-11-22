@@ -16,13 +16,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "DJ Screw",
-   "why": "slowed, pitched-down voices where the timbre drops with the pitch",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "dark",

@@ -15,13 +15,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Van Halen",
-   "why": "Eventide harmonizer detune mixed with the dry guitar",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

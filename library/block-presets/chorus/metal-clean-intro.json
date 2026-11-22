@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Metallica",
-   "song": "Welcome Home (Sanitarium)",
-   "why": "clean intro through a stereo amp chorus (JC-120 style)",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "wide",

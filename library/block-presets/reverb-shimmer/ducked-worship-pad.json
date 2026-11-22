@@ -16,13 +16,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Hillsong United",
-   "why": "worship guitar pads of swells and octave shimmer under the band",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

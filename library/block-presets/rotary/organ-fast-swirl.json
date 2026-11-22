@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Booker T. & the M.G.'s",
-   "song": "Green Onions",
-   "why": "tonewheel organ riff with a spinning cabinet",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

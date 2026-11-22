@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Small Faces",
-   "song": "Itchycoo Park",
-   "why": "Olympic's tape flanging on the bridge, credited to George Chkiantz",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

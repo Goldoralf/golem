@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Sleep Token",
-   "song": "Emergence",
-   "why": "the octave double pushed darker and louder for a climax scene",
-   "verified": false
-  }
- ],
  "level_db": 3,
  "tags": [
   "dark",

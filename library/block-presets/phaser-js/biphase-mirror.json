@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The Smashing Pumpkins",
-   "song": "Siamese Dream",
-   "why": "Butch Vig: guitars ran through a Mu-Tron Bi-Phase",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "wide",

@@ -14,21 +14,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Metallica",
-   "song": "Enter Sandman",
-   "why": "Hammett's Cry Baby lead break cutting over the riff",
-   "source": "Total Guitar, 2021",
-   "verified": true
-  },
-  {
-   "artist": "Zakk Wylde",
-   "why": "signature Cry Baby wah in his Black Label Society rig",
-   "source": "Premier Guitar, 2016",
-   "verified": true
-  }
- ],
  "level_db": 3,
  "tags": [
   "aggressive"

@@ -15,18 +15,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Michael Schenker",
-   "why": "leads through a wah parked at one spot instead of rocked",
-   "verified": false
-  },
-  {
-   "artist": "Mick Ronson",
-   "why": "half-open wah colouring his Ziggy-era lead tone",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

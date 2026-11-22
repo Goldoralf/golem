@@ -16,14 +16,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Death Cab for Cutie",
-   "why": "mixer Carlos de la Garza starts every vocal on a Gray LA-2A",
-   "source": "Universal Audio blog, Carlos de la Garza interview (undated)",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "warm",

@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Frank Sinatra",
-   "song": "In the Wee Small Hours",
-   "why": "Capitol Studios' underground echo chambers on his 50s ballads",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

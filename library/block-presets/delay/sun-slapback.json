@@ -15,20 +15,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Scotty Moore",
-   "song": "Mystery Train",
-   "why": "the Sun-era tape slap on Elvis's early singles",
-   "verified": false
-  },
-  {
-   "artist": "Sam Phillips",
-   "why": "Sun's tape slapback measured at about 134 - 137 ms",
-   "source": "Tor Halmrast, Art of Record Production conference (via Joe Bennett), 2017",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

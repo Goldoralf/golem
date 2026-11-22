@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Sleep Token",
-   "song": "Emergence",
-   "why": "an octave-below component follows the sung chorus line note for note, centred",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "modern"

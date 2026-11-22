@@ -15,15 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The White Stripes",
-   "song": "Seven Nation Army",
-   "why": "a guitar riff dropped an octave to stand in for a bass",
-   "source": "Far Out Magazine, 2021",
-   "verified": true
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Link Wray",
-   "song": "Rumble",
-   "why": "menacing amp tremolo on sustained twangy chords",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

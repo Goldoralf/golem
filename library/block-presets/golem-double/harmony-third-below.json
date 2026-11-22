@@ -16,13 +16,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "The Everly Brothers",
-   "why": "close harmony a third away from the melody",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "warm",

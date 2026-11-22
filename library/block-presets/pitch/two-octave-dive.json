@@ -15,13 +15,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Rage Against the Machine",
-   "why": "Whammy settings from two octaves up to two down across the record",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "extreme",

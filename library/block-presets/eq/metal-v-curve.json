@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Metallica",
-   "song": "Master of Puppets",
-   "why": "Mark IIC+ five-band graphic EQ set in a V, deepest cut near 750 Hz",
-   "verified": false
-  }
- ],
  "level_db": -1,
  "tags": [
   "aggressive",

@@ -16,14 +16,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Metallica",
-   "song": "(Anesthesia) Pulling Teeth",
-   "why": "Cliff Burton's distorted bass solo through a wah",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "warm"

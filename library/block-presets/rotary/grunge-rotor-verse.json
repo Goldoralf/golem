@@ -15,15 +15,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Soundgarden",
-   "song": "Black Hole Sun",
-   "why": "verse guitar through a Leslie 16 powered by a Marshall",
-   "source": "Stereogum, 2024",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "dark",

@@ -16,13 +16,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Bill Frisell",
-   "why": "reverse delay and looping as part of his clean jazz palette",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4",
  "tags": [

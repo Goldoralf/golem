@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Guns N' Roses",
-   "song": "Sweet Child O' Mine",
-   "why": "Slash's stock Cry Baby on the Appetite-era solos",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage"

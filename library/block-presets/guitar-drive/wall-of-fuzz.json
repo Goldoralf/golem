@@ -14,14 +14,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The Smashing Pumpkins",
-   "song": "Siamese Dream",
-   "why": "the op-amp Big Muff layered into Marshall heads",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "extreme",

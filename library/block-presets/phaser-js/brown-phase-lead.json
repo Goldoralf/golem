@@ -15,21 +15,6 @@
  ],
  "gain": "high",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Van Halen",
-   "song": "Eruption",
-   "why": "Eddie's MXR Phase 90 into a cranked amp",
-   "source": "Guitar World, 2014",
-   "verified": true
-  },
-  {
-   "artist": "Van Halen",
-   "song": "Ain't Talkin' 'bout Love",
-   "why": "Phase 90 on the main riff",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

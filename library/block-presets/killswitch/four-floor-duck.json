@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Eric Prydz",
-   "song": "Call on Me",
-   "why": "the whole track pumps against the kick like a sidechain duck",
-   "verified": false
-  }
- ],
  "level_db": -3,
  "sync": "1/4",
  "tags": [

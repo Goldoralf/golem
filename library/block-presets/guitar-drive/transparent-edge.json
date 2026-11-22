@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Nels Cline",
-   "why": "a Klon Centaur on his Wilco pedalboard",
-   "source": "Premier Guitar Rig Rundown, 2012",
-   "verified": true
-  }
- ],
  "level_db": 7,
  "tags": [
   "subtle"

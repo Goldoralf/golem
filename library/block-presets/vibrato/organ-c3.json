@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Booker T. & the M.G.'s",
-   "song": "Green Onions",
-   "why": "organ played with the C3 chorus-vibrato setting",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

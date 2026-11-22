@@ -15,14 +15,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Peter Frampton",
-   "song": "Show Me the Way",
-   "why": "talk-box vowels that this formant filter imitates",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "extreme"

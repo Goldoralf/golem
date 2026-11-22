@@ -15,15 +15,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Van Halen",
-   "song": "Unchained",
-   "why": "Eddie's MXR Flanger on the main riff",
-   "source": "Guitar World, 2014",
-   "verified": true
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

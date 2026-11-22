@@ -15,15 +15,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Jimi Hendrix",
-   "song": "Purple Haze",
-   "why": "the Octavia's octave-up on the solo",
-   "source": "Sound On Sound, 2021",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

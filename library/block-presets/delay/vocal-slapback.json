@@ -15,15 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Elvis Presley",
-   "song": "That's All Right",
-   "why": "Sam Phillips's tape slap on the Sun singles",
-   "source": "Tor Halmrast, Art of Record Production conference (via Joe Bennett), 2017",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

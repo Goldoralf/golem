@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Meshuggah",
-   "song": "Bleed",
-   "why": "8-string polyrhythms that need a bass-tight boosted amp",
-   "verified": false
-  }
- ],
  "level_db": 13,
  "tags": [
   "tight",

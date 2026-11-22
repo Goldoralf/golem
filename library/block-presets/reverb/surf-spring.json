@@ -15,20 +15,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Dick Dale",
-   "song": "Misirlou",
-   "why": "drenched spring reverb on staccato tremolo-picked surf leads",
-   "verified": false
-  },
-  {
-   "artist": "The Chantays",
-   "song": "Pipeline",
-   "why": "wet surf guitar drip",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

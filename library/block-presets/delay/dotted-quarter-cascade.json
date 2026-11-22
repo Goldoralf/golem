@@ -15,18 +15,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "U2",
-   "why": "the Edge stacks a dotted-eighth and a quarter delay for cascading parts",
-   "verified": false
-  },
-  {
-   "artist": "Hillsong United",
-   "why": "worship guitar convention: dotted-eighth plus quarter under swells",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4",
  "tags": [

@@ -14,15 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The Smiths",
-   "song": "How Soon Is Now?",
-   "why": "Marr's rhythm re-amped through several Twins with tremolo on",
-   "source": "Radio X, 2025",
-   "verified": true
-  }
- ],
  "level_db": -1,
  "sync": "1/16",
  "tags": [

@@ -14,15 +14,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Grateful Dead",
-   "song": "Shakedown Street",
-   "why": "Jerry Garcia made the Mu-Tron III part of his lead sound",
-   "source": "Premier Guitar, 2008",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "warm",

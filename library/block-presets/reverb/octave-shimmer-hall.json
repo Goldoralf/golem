@@ -16,21 +16,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Brian Eno & Daniel Lanois",
-   "song": "Apollo",
-   "why": "pitch shifter at +1 octave in a feedback loop with a long reverb",
-   "source": "Valhalla DSP blog (Eno/Lanois shimmer), 2010",
-   "verified": true
-  },
-  {
-   "artist": "U2",
-   "song": "The Unforgettable Fire",
-   "why": "the shimmer heard on The Unforgettable Fire",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

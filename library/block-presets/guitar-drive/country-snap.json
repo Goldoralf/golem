@@ -14,13 +14,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Brad Paisley",
-   "why": "a low-gain signature overdrive into clean Dr. Z amps",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "bright",

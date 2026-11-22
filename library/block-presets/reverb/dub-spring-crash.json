@@ -15,18 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "King Tubby",
-   "why": "spring reverb slams and throws in the dub mix",
-   "verified": false
-  },
-  {
-   "artist": "Lee \"Scratch\" Perry",
-   "why": "Black Ark spring reverb alongside the Space Echo",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

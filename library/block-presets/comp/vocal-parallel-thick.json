@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "The Shins",
-   "why": "Chiccarelli tucked a heavily squeezed parallel 1176 under the lead vocal",
-   "source": "Vintage King, Five Sounds with Joe Chiccarelli, 2022",
-   "verified": true
-  }
- ],
  "level_db": 1,
  "tags": [
   "warm"

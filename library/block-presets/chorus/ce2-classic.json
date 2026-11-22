@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The Police",
-   "song": "Message in a Bottle",
-   "why": "Andy Summers' chorus-and-flanger swirl on clean arpeggiated chords",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

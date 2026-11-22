@@ -15,13 +15,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Hillsong United",
-   "why": "worship pad guitars: volume-swelled notes into a huge blooming verb",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

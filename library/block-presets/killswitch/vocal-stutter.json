@@ -16,14 +16,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Paul Hardcastle",
-   "song": "19",
-   "why": "stuttered vocal syllables used as the hook",
-   "verified": false
-  }
- ],
  "level_db": -3,
  "sync": "1/16",
  "tags": [

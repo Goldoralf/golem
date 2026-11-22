@@ -14,13 +14,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Brent Mason",
-   "why": "Nashville session sound: short slap under fast hybrid picking",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "tight",

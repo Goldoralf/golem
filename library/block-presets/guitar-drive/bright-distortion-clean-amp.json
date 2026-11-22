@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Nirvana",
-   "song": "Smells Like Teen Spirit",
-   "why": "a Boss DS-1 into a clean amp channel as the dirty sound",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "bright",

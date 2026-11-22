@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Van Halen",
-   "why": "Eventide harmonizer pair detuned a few cents each way, blended with the dry",
-   "verified": false
-  }
- ],
  "level_db": 1.5,
  "tags": [
   "wide"

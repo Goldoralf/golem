@@ -16,14 +16,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Buckethead",
-   "song": "Jordan",
-   "why": "right hand on a hard-wired kill switch while the left hand taps legato",
-   "verified": false
-  }
- ],
  "level_db": -3,
  "tags": [
   "extreme",

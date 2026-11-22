@@ -15,18 +15,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Dream Theater",
-   "why": "John Petrucci's lead patches with TC 2290 style dynamic delay",
-   "verified": false
-  },
-  {
-   "artist": "Steve Lukather",
-   "why": "80s studio lead sound: 2290 delay ducked under the line",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4",
  "tags": [

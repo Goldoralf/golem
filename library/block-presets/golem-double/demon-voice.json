@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Tyler, the Creator",
-   "why": "a pitched-down voice as a second character in the verses",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "dark",

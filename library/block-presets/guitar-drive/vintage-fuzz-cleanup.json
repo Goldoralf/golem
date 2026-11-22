@@ -14,14 +14,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Jimi Hendrix",
-   "song": "Fire",
-   "why": "a Fuzz Face into cranked Marshalls, volume knob for cleaner tones",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "vintage"

@@ -15,19 +15,6 @@
  ],
  "gain": "high",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Thin Lizzy",
-   "song": "The Boys Are Back in Town",
-   "why": "twin guitar leads a third apart (played by two guitarists)",
-   "verified": false
-  },
-  {
-   "artist": "Iron Maiden",
-   "why": "harmonized twin-guitar melodies in thirds",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage"

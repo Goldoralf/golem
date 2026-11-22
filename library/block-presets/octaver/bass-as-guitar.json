@@ -14,13 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Royal Blood",
-   "why": "Mike Kerr's octave-up bass split to guitar and bass amps",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "aggressive"

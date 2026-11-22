@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Mac DeMarco",
-   "song": "Salad Days",
-   "why": "Boss VB-2-type wet-only vibrato warble on clean guitar",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "lo-fi",

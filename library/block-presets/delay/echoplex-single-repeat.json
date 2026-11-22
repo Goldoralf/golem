@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "The Police",
-   "song": "Walking on the Moon",
-   "why": "Andy Summers's Echoplex single repeat on sparse chords",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

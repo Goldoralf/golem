@@ -13,15 +13,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "U2",
-   "song": "Where the Streets Have No Name",
-   "why": "the Edge's dotted-eighth echo over muted eighth-note picking",
-   "source": "Premier Guitar (Electric Etudes: U2's the Edge), 2015",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "sync": "1/8.",
  "tags": [

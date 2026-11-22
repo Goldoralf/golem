@@ -14,19 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Kirk Hammett",
-   "song": "Master of Puppets",
-   "why": "a Tube Screamer in front of the Mesa Mark IIC+ rig",
-   "verified": false
-  },
-  {
-   "artist": "James Hetfield",
-   "why": "a TS-9 used to push and tighten his high-gain amps",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "tight",

@@ -14,13 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Jeff Beck",
-   "why": "a ProCo RAT among the drives he used on stage",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "vintage"

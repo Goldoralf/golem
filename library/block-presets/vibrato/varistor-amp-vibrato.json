@@ -15,19 +15,6 @@
  ],
  "gain": "crunch",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Lonnie Mack",
-   "song": "Memphis",
-   "why": "Magnatone amp vibrato (some credit the Bigsby instead)",
-   "verified": false
-  },
-  {
-   "artist": "Buddy Holly",
-   "why": "played a Magnatone Custom 280 with true pitch vibrato",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

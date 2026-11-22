@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Jean-Michel Jarre",
-   "song": "Oxygène",
-   "why": "string machine through a Small Stone-type phaser",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

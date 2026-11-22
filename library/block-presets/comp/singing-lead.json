@@ -14,15 +14,6 @@
  ],
  "gain": "crunch",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Pink Floyd",
-   "song": "Comfortably Numb",
-   "why": "Gilmour's compressor pedal into a fuzz for the solo's sustain",
-   "source": "Guitar World feature, reprinted in Australian Guitar, 2021",
-   "verified": true
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

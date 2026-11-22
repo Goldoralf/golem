@@ -15,21 +15,6 @@
  ],
  "gain": "crunch",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Cream",
-   "song": "White Room",
-   "why": "Clapton named a Vox wah for the song's wah parts",
-   "source": "Guitar Player, 1970",
-   "verified": true
-  },
-  {
-   "artist": "The Jimi Hendrix Experience",
-   "song": "Voodoo Child (Slight Return)",
-   "why": "the scratched, muted wah intro and wah-soaked leads",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

@@ -15,18 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Lee \"Scratch\" Perry",
-   "why": "Space Echo multi-head echoes at the Black Ark",
-   "verified": false
-  },
-  {
-   "artist": "Radiohead",
-   "why": "Jonny Greenwood's tape echo textures on clean parts",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4.",
  "tags": [

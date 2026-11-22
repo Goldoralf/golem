@@ -16,19 +16,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Kanye West",
-   "song": "Through the Wire",
-   "why": "sped-up soul vocal samples, timbre raised with the pitch",
-   "verified": false
-  },
-  {
-   "artist": "100 gecs",
-   "why": "pitched-up, formant-shifted vocal layers over the lead",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "bright",

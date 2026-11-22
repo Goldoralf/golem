@@ -16,14 +16,6 @@
  ],
  "gain": "high",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Rage Against the Machine",
-   "why": "Tom Morello flicks between a dead and a live pickup to stutter notes",
-   "source": "The Tim Ferriss Show, 2022",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "aggressive"

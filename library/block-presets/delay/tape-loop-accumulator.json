@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Robert Fripp & Brian Eno",
-   "song": "The Heavenly Music Corporation",
-   "why": "two-Revox tape delay of several seconds, layered live",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

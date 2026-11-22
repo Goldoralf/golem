@@ -15,14 +15,6 @@
  ],
  "gain": "crunch",
  "use": "solo",
- "refs": [
-  {
-   "artist": "Pink Floyd",
-   "song": "Comfortably Numb",
-   "why": "David Gilmour's solo echo around 440 ms, often under a touch of reverb",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "warm",

@@ -15,14 +15,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Alice in Chains",
-   "song": "Man in the Box",
-   "why": "Cantrell's dark, punchy wah woven through the riffs",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "dark",

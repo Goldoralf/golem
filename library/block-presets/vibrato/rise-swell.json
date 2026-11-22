@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Prince",
-   "why": "reportedly moved from a Boss CE-2 to a VB-2 vibrato after Purple Rain",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

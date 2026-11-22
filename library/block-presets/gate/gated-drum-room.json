@@ -15,21 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Phil Collins",
-   "song": "In the Air Tonight",
-   "why": "heavily compressed room mic gated to cut the big ambience short",
-   "source": "MusicTech, Hugh Padgham interview, 2019",
-   "verified": true
-  },
-  {
-   "artist": "Peter Gabriel",
-   "why": "Padgham found the gated room sound on Gabriel's third album at Townhouse",
-   "source": "MusicTech, Hugh Padgham interview, 2019",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

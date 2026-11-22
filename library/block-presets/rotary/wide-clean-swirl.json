@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "The Beatles",
-   "song": "Something",
-   "why": "Harrison's guitar fed through a rotating speaker",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "wide",

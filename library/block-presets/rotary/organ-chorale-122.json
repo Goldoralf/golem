@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Jimmy Smith",
-   "song": "The Sermon!",
-   "why": "organ-trio tone: tonewheel organ through a spinning cabinet",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

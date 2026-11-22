@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Deep Purple",
-   "why": "Jon Lord's Hammond pushed through Marshall amps",
-   "verified": false
-  }
- ],
  "level_db": 3,
  "tags": [
   "vintage",

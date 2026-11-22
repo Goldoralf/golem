@@ -14,14 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Dave Grohl",
-   "song": "Foo Fighters (1995)",
-   "why": "a ProCo RAT on the self-recorded debut",
-   "verified": false
-  }
- ],
  "level_db": 5,
  "tags": [
   "aggressive"

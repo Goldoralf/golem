@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Isaac Hayes",
-   "song": "Theme from Shaft",
-   "why": "Skip Pitts' rhythmic wah-wah guitar intro",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "bright",

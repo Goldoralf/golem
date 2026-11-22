@@ -14,14 +14,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Jon Lord",
-   "song": "Highway Star",
-   "why": "his Hammond C3 driven straight into Marshall amps",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "vintage",

@@ -16,14 +16,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Daft Punk",
-   "why": "mixer Mick Guzauski picks a slow LA-2A for smooth vocals and bass",
-   "source": "Universal Audio blog, 10 Questions with Mick Guzauski (undated)",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "warm",

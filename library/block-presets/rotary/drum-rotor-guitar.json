@@ -15,14 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Stevie Ray Vaughan",
-   "song": "Cold Shot",
-   "why": "rotating-speaker cabinet on the clean rhythm part",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

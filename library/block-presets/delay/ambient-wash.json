@@ -15,18 +15,6 @@
  ],
  "gain": "any",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Slowdive",
-   "why": "washes of delay and reverb behind clean chords",
-   "verified": false
-  },
-  {
-   "artist": "Sigur Ros",
-   "why": "oceanic long-feedback delays under bowed guitar",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4",
  "tags": [

@@ -15,21 +15,6 @@
  ],
  "gain": "any",
  "use": "utility",
- "refs": [
-  {
-   "artist": "Phil Collins",
-   "song": "In the Air Tonight",
-   "why": "compressed room mic gated about a second after each hit",
-   "source": "MusicTech (Hugh Padgham interview), 2019",
-   "verified": true
-  },
-  {
-   "artist": "Peter Gabriel",
-   "song": "Intruder",
-   "why": "the first gated-drum sound with Padgham and Collins",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/8",
  "tags": [

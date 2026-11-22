@@ -15,15 +15,6 @@
  ],
  "gain": "clean",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Paul Young",
-   "song": "Wherever I Lay My Hat (That's My Home)",
-   "why": "Pino Palladino's fretless line, recorded with Eventide and AMS chorus",
-   "source": "Making Music, November 1986",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "modern",

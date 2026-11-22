@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Sleep Token",
-   "song": "Emergence",
-   "why": "the same octave double, voiced darker as the heavier option",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "dark",

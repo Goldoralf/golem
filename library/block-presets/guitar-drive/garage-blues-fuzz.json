@@ -15,20 +15,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Dan Auerbach",
-   "why": "an early-70s Ibanez fuzz on guitar and bass since the first record",
-   "source": "Premier Guitar, 2010",
-   "verified": true
-  },
-  {
-   "artist": "The White Stripes",
-   "song": "Seven Nation Army",
-   "why": "a Big Muff after the octave-down Whammy",
-   "verified": false
-  }
- ],
  "level_db": 6,
  "tags": [
   "lo-fi",

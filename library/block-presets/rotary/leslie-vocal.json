@@ -15,15 +15,6 @@
  ],
  "gain": "clean",
  "use": "texture",
- "refs": [
-  {
-   "artist": "The Beatles",
-   "song": "Tomorrow Never Knows",
-   "why": "Lennon's vocal re-recorded through a Leslie cabinet",
-   "source": "Geoff Emerick, Here, There and Everywhere, 2006",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "tags": [
   "vintage",

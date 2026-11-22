@@ -16,18 +16,6 @@
  ],
  "gain": "any",
  "use": "ambient",
- "refs": [
-  {
-   "artist": "Sigur Ros",
-   "why": "bowed guitar into vast reverb, building walls of sound",
-   "verified": false
-  },
-  {
-   "artist": "Stars of the Lid",
-   "why": "endless drones of reverberated guitar and strings",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

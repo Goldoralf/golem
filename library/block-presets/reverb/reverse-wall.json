@@ -14,15 +14,6 @@
  ],
  "gain": "crunch",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "My Bloody Valentine",
-   "song": "Loveless",
-   "why": "Kevin Shields: reverse reverb on an SPX90, no dry guitar signal",
-   "source": "Guitar World, March 1992",
-   "verified": true
-  }
- ],
  "level_db": 0,
  "sync": "1/4",
  "tags": [

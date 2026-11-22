@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Led Zeppelin",
-   "song": "Kashmir",
-   "why": "studio phasing on Bonham's drums",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

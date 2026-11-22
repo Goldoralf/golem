@@ -14,14 +14,6 @@
  ],
  "gain": "high",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Periphery",
-   "why": "staccato riffs with dead-silent stops between mutes, gate set for it",
-   "source": "Reverb.com, Misha Mansoor outlines the ultimate metal pedalboard (undated)",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "tight",

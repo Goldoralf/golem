@@ -16,21 +16,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Bon Iver",
-   "song": "715 - CRΣΣKS",
-   "why": "real-time harmonies generated from Vernon's single voice",
-   "source": "W Magazine, 2016",
-   "verified": true
-  },
-  {
-   "artist": "Imogen Heap",
-   "song": "Hide and Seek",
-   "why": "a harmonizer turning one voice into a chordal choir",
-   "verified": false
-  }
- ],
  "level_db": 2,
  "tags": [
   "wide"

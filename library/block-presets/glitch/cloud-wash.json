@@ -14,13 +14,6 @@
  ],
  "gain": "clean",
  "use": "texture",
- "refs": [
-  {
-   "artist": "Stars of the Lid",
-   "why": "in the spirit of: guitar dissolved into slow drones",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "dreamy",

@@ -15,18 +15,6 @@
  ],
  "gain": "any",
  "use": "texture",
- "refs": [
-  {
-   "artist": "King Tubby",
-   "why": "live front-panel echo moves pushing the tape into runaway feedback",
-   "verified": false
-  },
-  {
-   "artist": "Lee \"Scratch\" Perry",
-   "why": "Black Ark Space Echo throws and pitch dives",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/4.",
  "tags": [

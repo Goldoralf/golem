@@ -15,13 +15,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Vangelis",
-   "why": "wide, long echoes on CS-80 leads and arpeggios",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/8.",
  "tags": [

@@ -13,13 +13,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Nirvana",
-   "why": "op-amp distortion pedal rhythm tones of the early 90s",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "aggressive"

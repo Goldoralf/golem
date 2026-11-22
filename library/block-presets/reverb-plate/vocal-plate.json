@@ -16,13 +16,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "The Beatles",
-   "why": "Abbey Road's EMT 140 plates behind mid-period vocals",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "bright",

@@ -13,20 +13,6 @@
  ],
  "gain": "crunch",
  "use": "solo",
- "refs": [
-  {
-   "artist": "The Jimi Hendrix Experience",
-   "song": "Are You Experienced?",
-   "why": "the reversed-tape guitar solo",
-   "verified": false
-  },
-  {
-   "artist": "The Beatles",
-   "song": "I'm Only Sleeping",
-   "why": "reversed guitar solo built from tape",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "sync": "1/2",
  "tags": [

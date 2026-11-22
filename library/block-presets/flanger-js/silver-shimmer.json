@@ -14,20 +14,6 @@
  ],
  "gain": "clean",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Rush",
-   "song": "The Spirit of Radio",
-   "why": "Alex Lifeson's Electric Mistress shimmer on the clean arpeggios",
-   "verified": false
-  },
-  {
-   "artist": "The Police",
-   "song": "Walking on the Moon",
-   "why": "Andy Summers' flanger-like chord swirl (studio unit disputed)",
-   "verified": false
-  }
- ],
  "level_db": 1,
  "tags": [
   "vintage",

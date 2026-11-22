@@ -11,19 +11,6 @@
  ],
  "gain": "any",
  "use": "lead",
- "refs": [
-  {
-   "artist": "Cher",
-   "song": "Believe",
-   "why": "the instant note steps that made hard tuning an effect",
-   "verified": false
-  },
-  {
-   "artist": "T-Pain",
-   "why": "the stair-step vocal used as the lead sound on every hook",
-   "verified": false
-  }
- ],
  "level_db": 0,
  "tags": [
   "extreme",

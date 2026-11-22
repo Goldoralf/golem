@@ -15,14 +15,6 @@
  ],
  "gain": "any",
  "use": "rhythm",
- "refs": [
-  {
-   "artist": "Pink Floyd",
-   "why": "Uni-Vibe in David Gilmour's Dark Side of the Moon-era rig",
-   "source": "Guitar World, 2023",
-   "verified": true
-  }
- ],
  "level_db": 2,
  "tags": [
   "vintage",

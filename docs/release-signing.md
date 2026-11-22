@@ -82,6 +82,11 @@ v0.7.0 and later ("not signed"). It runs the README's install line once more, ov
 manual `git pull` of the tag); from then on it carries the new key and the button works again. Release notes of v0.7.0
 say so first.
 
+**Found the same day:** on Linux the install line did **not** update an install it had made itself — the installer's
+source step ran `git pull --ff-only` on a checkout pinned on a tag and stopped (replayed v0.6.4 → v0.7.0: the install
+stayed at v0.6.4, nothing lost). Fixed in **v0.7.1** ([`installer.md`](installer.md), `_update_checkout`): since the
+install line always runs the latest release's installer, it works from v0.7.1 on, on any older install.
+
 **So that it does not happen again:** the passphrase lives in a password manager, and the private key has a copy off
 the machine — both checked before the first release signed with a new key.
 

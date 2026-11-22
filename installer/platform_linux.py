@@ -373,6 +373,58 @@ def keepalive(ctx):
 
 
 # ── les étapes ────────────────────────────────────────────────────────────────────────
+def _git_q(target, *args):
+    """(code, sortie) d'une question posée au dépôt `target` — rien dans le journal de l'installateur."""
+    r = subprocess.run(["git", "-C", target, *args], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    return r.returncode, r.stdout.strip()
+
+
+def _update_checkout(ctx, src, target):
+    """LE CODE D'UNE INSTALL EXISTANTE PASSE À LA RELEASE DE L'INSTALLATEUR (2026-11-22). Avant : `git pull --ff-only`,
+    qui ne sait avancer qu'une BRANCHE dont l'histoire contient la nouvelle release. Or une install posée par la ligne
+    d'installation est un clone de profondeur 1 FIGÉ SUR UN TAG (HEAD détachée) : le pull s'arrêtait (« You are not
+    currently on a branch »), l'install restait à l'ancienne version, et relancer la ligne d'installation — le seul
+    chemin d'un golem dont le bouton Update refuse la release (clé de release remplacée, docs/release-signing.md §4.1)
+    — ne mettait rien à jour. Rejoué sur une install v0.6.4 → v0.7.0 : rc=1.
+    Maintenant : on rapporte le commit de l'installateur, puis
+      · une branche que la release prolonge → avance rapide, comme avant (un clone de dev en retard) ;
+      · une install FIGÉE SUR UNE RELEASE (HEAD détachée, ou branche posée exactement sur un tag — l'install venue
+        d'une archive, ensure_git_repo) → bascule sur la nouvelle, comme le bouton Update (`git checkout <tag>`) ;
+      · une branche qui porte des commits que la release n'a pas → REFUS, rien n'est touché : c'est le travail de
+        quelqu'un, pas à nous de le déplacer.
+    L'état de la machine (presets, sets, config…) est hors git : aucune de ces voies ne le touche. Un fichier SUIVI
+    modifié à la main qui gêne la bascule la fait échouer (git le dit dans le journal), sans rien écraser."""
+    # hors de ctx.run : depuis un clone de profondeur 1, git écrit « error: Could not read <parent> » en RÉUSSISSANT
+    # (le parent coupé par la profondeur) — une ligne qui ferait croire à une panne dans le journal. Dite si ça échoue.
+    ctx.log("$ git fetch (the installer's release)", "source")
+    r = subprocess.run(["git", "-C", target, "fetch", "--quiet", "--update-shallow", src, "HEAD"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        for ln in (r.stderr or r.stdout or "git fetch failed").splitlines():
+            ctx.log(ln, "source")
+        return r.returncode
+    # le commit de la release, lu TOUT DE SUITE : FETCH_HEAD est réécrit par chaque fetch (le suivant y mettrait des tags)
+    rc, new = _git_q(target, "rev-parse", "--verify", "FETCH_HEAD^{commit}")
+    if rc != 0 or not new:
+        ctx.log("✗ cannot read the release the installer carries", "source")
+        return 1
+    # le tag de la release, pour que la version se lise ; jamais fatal (un tag local du même nom, différent, reste)
+    subprocess.run(["git", "-C", target, "fetch", "--quiet", "--update-shallow", "--no-tags", "--no-write-fetch-head",
+                    src, "refs/tags/*:refs/tags/*"], capture_output=True)
+    _, old = _git_q(target, "rev-parse", "HEAD")
+    if old == new:
+        ctx.log("✓ the code is already at this release", "source")
+        return 0
+    on_branch, branch = _git_q(target, "symbolic-ref", "-q", "--short", "HEAD")
+    if on_branch == 0 and _git_q(target, "merge-base", "--is-ancestor", "HEAD", new)[0] == 0:
+        return ctx.run(["git", "-C", target, "merge", "--ff-only", new], "source")
+    if on_branch != 0 or _git_q(target, "describe", "--exact-match", "--tags", "HEAD")[0] == 0:
+        return ctx.run(["git", "-C", target, "checkout", "--quiet", "--detach", new], "source")
+    ctx.log(f"✗ {target} is on branch '{branch}' with commits this release does not have — nothing was changed. "
+            "Update it yourself with git, or install golem in another folder.", "source")
+    return 1
+
+
 def step_source(ctx, src, target):
     src = os.path.abspath(src); target = os.path.abspath(target)
     if src == target:
@@ -385,7 +437,7 @@ def step_source(ctx, src, target):
         return ctx.run(ctx.dry_cmd("source"), "source")
     if os.path.isdir(os.path.join(src, ".git")) and shutil.which("git"):
         if os.path.isdir(os.path.join(target, ".git")):
-            rc = ctx.run(["git", "-C", target, "pull", "--ff-only", src], "source")
+            rc = _update_checkout(ctx, src, target)
         else:
             rc = ctx.run(["git", "clone", "--quiet", src, target], "source")
             if rc == 0:

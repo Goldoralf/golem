@@ -121,8 +121,9 @@ def default_id(root=None, platform=None):
 
 
 def current(root=None, platform=None):
-    """Le moteur choisi sur cette machine (config/engine.json). Absent ou devenu indisponible : le
-    défaut — un rack installé avant cette page n'a pas le fichier, et il tourne sur Reaper."""
+    """Le moteur choisi sur cette machine (config/engine.json). Absent ou devenu indisponible : default_id() — le
+    moteur marqué `default` (le Golem Engine) s'il est installé ici, sinon le premier disponible. Un rack sans ce
+    fichier et sans Golem Engine tourne donc sur REAPER ; avec les deux moteurs et sans fichier, sur le Golem Engine."""
     r = _root(root)
     choice = (_read(os.path.join(r, "config", CHOICE_FILE), {}) or {}).get("engine")
     ok = {e["id"] for e in descriptors(r, platform) if e["available"]}

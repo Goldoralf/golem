@@ -400,8 +400,9 @@ def engines_list():
 
 @router.post("/api/engine")
 async def engine_select(body: dict):
-    """Choisir le moteur. Aujourd'hui seul le moteur courant est sélectionnable : la route valide
-    et répond, elle ne bascule rien. Un moteur indisponible est refusé avec sa raison (409)."""
+    """Choisir le moteur. Le choix est écrit (config/engine.json) et, s'il diffère du moteur qui tourne, la BASCULE
+    part en tâche de fond (bridge/engine/switch.py ; son état : GET /api/engine/switch). Refus en 409, avec le moteur
+    courant : un moteur indisponible (sa raison), une prise en cours, une bascule déjà lancée."""
     from . import engines
     from .engine import switch
     eid = str(body.get("id") or "")

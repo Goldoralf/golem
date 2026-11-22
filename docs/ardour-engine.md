@@ -1,25 +1,41 @@
 # Ardour as a second audio engine
 
-> **Status: PROPOSED** — a free engine (built from Ardour) next to REAPER, behind an explicit engine
-> contract. **Nothing is built** except its greyed-out descriptor `config/engines/ardour.json`
-> ([`audio-engine-choice.md`](audio-engine-choice.md)). Nothing here is measured on a rig.
+> **Status: CODED — the proposal was adopted.** The engine exists: the **Golem Engine**, built from Ardour 9.9
+> (repository `Goldoralf/golem-engine`, GPL), shipped since golem v0.7.0. It is selectable on **Linux and Windows**
+> wherever it is installed, and it is the default engine there (`config/engines/ardour.json`); macOS runs REAPER only.
+> The bridge talks to an engine contract (`bridge/engine/`), and Settings ▸ Engines ▸ Audio switches between the two
+> ([`audio-engine-choice.md`](audio-engine-choice.md)).
+>
+> **This page is the proposal of 2026-11, kept as the reasoning behind the engine**: the principle (§1), what was
+> expected to map or be lost (§2), how the gaps were to be filled (§3), the first plan (§4). It was written before
+> anything was built. **What was actually built, in what order, with its measurements, is in
+> [`ardour-plan.md`](ardour-plan.md)** (decisions §6, logs §7–§7e). Each section below says where reality differs.
 
 ## 1. Principle
 
 The bridge already compiles a preset into an engine-neutral **plan** — tracks, blocks, sends,
 scenes (`bridge/compile_rig.py`, `bridge/scene_bake.py`; see [`architecture.md`](architecture.md) and
-[`live-engine.md`](live-engine.md)). Today REAPER alone materialises that plan, through the Lua
+[`live-engine.md`](live-engine.md)). REAPER materialises that plan through the Lua
 scripts in `reaper/Scripts/`, the JSFX in `reaper/Effects/`, `gmem` shared memory and the command
-slot. The proposal adds a second engine behind an **engine contract**; REAPER stays as it is.
+slot. The Golem Engine is a second engine behind an **engine contract** (`bridge/engine/base.py`, `EngineAdapter`;
+adapters `reaper.py` and `ardour.py`): commands in the vocabulary `golem_watch.lua` has always read, a fast path
+for knobs and transport, and the same telemetry files (`presets/.rig-check.json`, `.livemap.json`…), whoever writes
+them. REAPER stays as it is.
 
-- **Free edition**: an engine built by golem from Ardour (GPL, redistributable with the rack). It must
-  ship under **another name**: Ardour's maintainers ask forks not to call themselves "Ardour".
+- **Free edition**: an engine built by golem from Ardour (GPL, redistributable with the rack). It ships
+  under **another name** — the Golem Engine — because Ardour's maintainers ask forks not to call themselves "Ardour".
 - **REAPER edition**: per-machine licence paid by the user, every feature.
 
 Each rack declares what its engine can do (`capabilities`, already in the descriptors); the screen
 hides what is missing instead of letting it fail.
 
 ## 2. What maps, what is lost, what is gained
+
+> **As proposed, before the build.** Today the Golem Engine's descriptor declares all 14 features of
+> `config/engines/features.json` as `yes` (lanes and scenes, NAM and IR, recording, backing, click, MIDI clock, looper,
+> drum machine, samples, standards, riff, kill switch, previews, reamp) — the descriptor calls this "the target, not a
+> measurement"; what was measured, feature by feature, is in [`ardour-plan.md`](ardour-plan.md) §7c–§7e. Its card
+> states the known gap: no plugin windows yet. The ➖ and ❓ below are the expectations of the time, not today's state.
 
 Legend: ✅ equivalent · ➖ missing at first (or for good) · ➕ better · ❓ to measure on the rig.
 
@@ -69,6 +85,12 @@ Legend: ✅ equivalent · ➖ missing at first (or for good) · ➕ better · �
 
 ## 3. Replacing what is missing
 
+> **What happened instead of the table below:** the blocks were not handed to third-party LV2 plugins engine by
+> engine. golem wrote its own effects, **golem-fx**, which play the catalogue's blocks on both engines and on all three
+> systems, and retired the old third-party pedals ([`golem-fx-migration.md`](golem-fx-migration.md),
+> [`golem-fx-reaper.md`](golem-fx-reaper.md); decision D3 of [`ardour-plan.md`](ardour-plan.md) §6). The rule that
+> follows — our own plugin, running in both editions — is the one that was kept.
+
 **Rule:** what Ardour lacks is not rewritten as Ardour Lua DSP (slow, no file access). It comes from
 a mature free plugin, or is written **in Rust with nih-plug** — the toolchain of the spectral blocks
 (`plugins/`), which builds VST3 (for Ardour) and CLAP (for REAPER). A golem plugin therefore runs in
@@ -102,6 +124,10 @@ The real cost is not the code:
 
 ## 4. Plan
 
+> **Superseded.** The plan that was followed is [`ardour-plan.md`](ardour-plan.md) §5 (phases A0–A5), with a log per
+> phase. Step 5 below ("Product") is done on Linux: the installer always installs the Golem Engine and offers REAPER
+> as a checkbox ([`install-v2.md`](install-v2.md)).
+
 Each step has a gate: the next one starts only if the measurement says yes.
 
 | Step | Content | Gate |
@@ -113,13 +139,14 @@ Each step has a gate: the next one starts only if the measurement says yes.
 | 4 — Rewrites | Looper, drum machine, samples, standards, knobs, kill switch, tuner: for each, port it or keep it REAPER-only | Per feature |
 | 5 — Product | Engine choice at install, capabilities in the heartbeat, features hidden with "available with REAPER", Ardour pitfalls in `CLAUDE.md`, GPL sources published with the build | — |
 
-## 5. Open decisions
+## 5. Decisions — taken
 
-1. Which ➖ features must exist in the free edition (looper? drum machine?); the rest can stay
-   REAPER-only.
-2. The name of the engine we build (not "Ardour").
-3. Distribution package or our own build: distribution packages lag behind and lack the HTTP API;
-   our own build means maintaining it.
-4. Windows: official Ardour Windows binaries are sold (the code is free); a golem build means
-   cross-compiling from Linux. Hosting the rack's NAM LV2 natively could be a reason to do it
-   ([`platforms.md`](platforms.md)).
+The four questions this page left open were settled on 2026-11-10 ([`ardour-plan.md`](ardour-plan.md) §6):
+
+1. **Which ➖ features must exist in the free edition** — looper and click first (D6); the descriptor now declares
+   every feature, the drum machine, samples and standards included.
+2. **The name** — **Golem Engine** (D1).
+3. **Distribution package or our own build** — our own build, in `Goldoralf/golem-engine`, pinned by release in the
+   installers (Ardour 9.9, D8).
+4. **Windows** — reached on 2026-11-20 (D7; PortAudio/ASIO, [`ardour-plan.md`](ardour-plan.md) §7e). macOS: not
+   ported.

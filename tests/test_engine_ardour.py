@@ -17,6 +17,8 @@ from bridge.reaper_osc import ReaperLink
 sys.path.insert(0, os.path.dirname(__file__))
 from fakeardour import FakeSurface, FakeWatcher, free_udp_port  # noqa: E402
 
+_REAL_PLATFORM = sys.platform        # lu à l'import, avant tout monkeypatch
+
 
 @pytest.fixture
 def surface():
@@ -122,6 +124,10 @@ def test_le_pid_est_celui_du_process_moteur(slot, monkeypatch):
     # un process dont le nom est sûr : `sleep` peut être un binaire multi-appel (coreutils) dont /proc/…/cmdline ne
     # commence pas par « sleep » — le test échouait en CI (2026-11-17)
     import sys
+    # LE VRAI SYSTÈME pour ce test (2026-11-22) : `slot` pose sys.platform = « linux » pour la file de commandes, et
+    # c'est le MÊME module sys partout — sous Windows, _proc_names prenait alors la voie `ps` au lieu de `tasklist` et
+    # ne rendait jamais rien (« ([], []) » au diagnostic). Un défaut du test, pas du moteur.
+    monkeypatch.setattr(sys, "platform", _REAL_PLATFORM)
     p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
         (slot / ".engine.pid").write_text(str(p.pid))

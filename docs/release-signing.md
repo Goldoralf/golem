@@ -4,6 +4,9 @@
 > (checked by `git verify-tag`) and a signed file list joined to each release (§5, for everything that installs without
 > git). v0.6.2 is the first release that carries the key, so it is the last one installed without verification; every
 > later release must be signed. Releases are cut with `tools/release.sh`.
+>
+> **Key replaced on 2026-11-22** (passphrase of the first key lost): releases from v0.6.5 are signed by `golem release 2`.
+> Installs from v0.6.2 to v0.6.4 run the install line once more — §4.1.
 
 ## 1. What it protects, and what it does not
 
@@ -59,6 +62,27 @@ be signed.
 
 First publish a release **signed with the old key** that ADDS the new key to `provision/release-signers` (and to
 `GOLEM_RELEASE_SIGNERS`). Once racks have moved to it, a later release removes the old key.
+
+### 4.1 When the old key can no longer sign — done on 2026-11-22
+
+The passphrase of the first release key (`golem release`, 2026-11-06, signed v0.6.2 to v0.6.4) was lost: nothing kept
+it but the maintainer's memory, and the desktop keyring held no copy. The rotation above was therefore impossible. What
+was done instead:
+
+1. A new key, `golem release 2` (`SHA256:R9hUTiwEkpHeBb3FpOnvM/7M23ijCyC5KJshEb90tos`), signs every release from
+   **v0.6.5**. The old private key file is kept aside (`~/.ssh/golem_release.old`) in case the passphrase comes back.
+2. `provision/release-signers` carries the new key only.
+3. `GOLEM_RELEASE_SIGNERS` in `provision/bootstrap.sh` carries **both** keys while v0.6.4 is still the latest release —
+   otherwise the install line would refuse the only release there is. The old line is removed as soon as v0.6.5 is
+   "latest".
+
+**What it costs:** a golem installed from v0.6.2 to v0.6.4 verifies with the old key, so its built-in update refuses
+v0.6.5 and later ("not signed"). It runs the README's install line once more, over the existing install (Linux: or a
+manual `git pull` of the tag); from then on it carries the new key and the button works again. Release notes of v0.6.5
+say so first.
+
+**So that it does not happen again:** the passphrase lives in a password manager, and the private key has a copy off
+the machine — both checked before the first release signed with a new key.
 
 ## 5. The signed file list — installing without git
 

@@ -5,6 +5,7 @@ import importlib.util
 import io
 import os
 import subprocess
+import sys
 import tarfile
 from pathlib import Path
 
@@ -81,6 +82,7 @@ def _mk(d):
     (d / "golem" / "engine" / "run.sh").write_text("#!/bin/sh\n")
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="compares with provision/lib-engine.sh, run by bash")
 def test_le_moteur_se_trouve_partout_par_la_meme_regle(tmp_path, monkeypatch):
     """GOLEM_ENGINE_DIR, sinon l'arbre de dev, sinon le paquet installé — provision, bridge et lanceur."""
     from bridge import engines
@@ -157,6 +159,8 @@ def test_install_sh_pose_le_golem_engine_d_abord_et_reaper_seulement_s_il_est_ch
     assert '"$HERE/install-reaper.sh"' in block.split("\nfi\n")[0]                 # REAPER : sous la condition
     assert 'if [ "$WITH_REAPER" = 1 ]; then\n  log "Config Reaper' in txt         # sa configuration aussi
     assert txt.index("write_engine_choice \"$WANT_ENGINE\"") > txt.index("install-golem-engine.sh")   # le choix, après la pose
+    if sys.platform == "win32":                 # `bash` y est l'amorce de WSL : install.sh est l'installation Linux
+        return
     r = subprocess.run(["bash", str(ROOT / "provision" / "install.sh"), "--engine=nope"], capture_output=True, text=True, timeout=30)
     assert r.returncode == 1 and "unknown engine" in r.stdout
 
@@ -164,6 +168,7 @@ def test_install_sh_pose_le_golem_engine_d_abord_et_reaper_seulement_s_il_est_ch
 def test_reaper_absent_se_dit_et_l_installateur_le_propose_quand_meme(monkeypatch, tmp_path):
     from bridge import engines
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))          # « ~ » sous Windows
     monkeypatch.delenv("REAPER_BIN", raising=False)
     monkeypatch.setattr("shutil.which", lambda name: None)
     by = {e["id"]: e for e in engines.descriptors(str(ROOT), "linux")}

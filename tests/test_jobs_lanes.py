@@ -34,7 +34,10 @@ def test_une_prise_nattend_pas_un_gros_pack(queue):
     queue["pending"]["jobs"] = [{"id": 1, "action": "install", "uid": "t3k:1"}, {"id": 2, "action": "take-tag"}]
     r = J.process()
     assert r["processed"] == 2                                     # les deux sont PRIS
-    time.sleep(0.2)
+    for _ in range(50):                                            # 0,2 s ne suffisaient pas au runner Windows (2026-11-22)
+        if (2, True) in queue["acked"]:
+            break
+        time.sleep(0.1)
     assert (2, True) in queue["acked"] and (1, True) not in queue["acked"]   # la prise est acquittée, l'install tourne encore
     queue["gate"].set(); assert J.drain()
     assert (1, True) in queue["acked"]

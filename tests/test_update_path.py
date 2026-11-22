@@ -6,10 +6,13 @@ import asyncio
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 
-pytestmark = pytest.mark.skipif(not shutil.which("git") or os.name == "nt", reason="git and bash needed")
+# Linux seulement (2026-11-22) : l'installation par archive de platform_linux puis reload.sh. Sur un poste (Windows,
+# macOS) la bascule relance le lanceur de bureau — le test l'aurait vraiment lancé sur le runner macOS.
+pytestmark = pytest.mark.skipif(not shutil.which("git") or not sys.platform.startswith("linux"), reason="the Linux install and reload.sh")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

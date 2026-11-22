@@ -4,6 +4,7 @@ docs/quality-automation.md, lot 4. Ce que ces tests prouvent : la matérialisati
 (pistes, FX résolus par le catalogue, sends, armement, carte vivante), la bascule de scène SANS rebuild, le stomp,
 et les pièges de docs/pitfalls/reaper.md que le moteur doit déjouer. Ce qu'ils ne prouvent pas : le son, ni ce que
 le vrai REAPER fait d'un chunk ou d'un plugin qui charge — ça, c'est tools/check-rig-materialize.py sur un vrai REAPER."""
+import sys
 import json
 import os
 from pathlib import Path
@@ -714,6 +715,9 @@ def test_deux_amplis_le_stomp_vise_le_bon_nam(two_amps):
     assert amps["golem:amp-x4x1"][2].enabled is True and amps["golem:amp-smku"][2].enabled is True
 
 
+# Windows joue l'ampli par le cœur natif (compile_rig, win32) : l'état LV2 du NAM n'y porte jamais un chemin « C:… », et
+# la mémoire des fichiers ne le relit pas — le test y passait à côté du défaut qu'il pose (2026-11-22).
+@pytest.mark.skipif(sys.platform == "win32", reason="an LV2 NAM state holding a Windows path: a pairing no rack has")
 def test_la_verification_voit_le_mauvais_fichier(two_amps):
     """UN fichier chargé ne suffit plus : le NAM de l'EVH qui afficherait le modèle du Fender est un défaut."""
     lab = two_amps
@@ -756,7 +760,8 @@ def test_un_seul_ampli_se_pose_comme_avant(tmp_path, monkeypatch):
     plan = json.loads((lab.root / "reaper/FXChains/one-amp.rig.json").read_text(encoding="utf-8"))
     track = plan["paths"][0]["tracks"][0]
     assert "core_ids" not in track
-    core = (lab.root / "reaper/FXChains" / track["rfxchain"]).read_text(encoding="latin-1")
+    # en octets, comme _tpl lit le gabarit : read_text rendait « \n » pour les « \r\n » d'un dépôt cloné sous Windows
+    core = (lab.root / "reaper/FXChains" / track["rfxchain"]).read_bytes().decode("latin-1")
     model = compile_rig._safe_asset(str(tmp_path / "lib/evh-5150.nam"))
     assert core == compile_rig._tpl(compile_rig.TEMPLATE_HEAD, {"%MODEL%": model})
     lab.run(action="rig_recall", preset="one-amp", scene="A")

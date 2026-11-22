@@ -97,5 +97,9 @@ def test_un_bridge_vivant_mais_lent_n_est_plus_tue(rdir, monkeypatch, tmp_path):
     started = []
     monkeypatch.setattr(desktop, "_bring_up", lambda *a, **k: started.append(clock["t"]))
     monkeypatch.setattr(desktop, "_backend_pids_file", lambda: None)
+    # à la sortie, Windows et macOS font réapparaître REAPER (osascript sur Mac, par subprocess.run — donc par le Popen
+    # factice ci-dessus) : aucune fenêtre ici
+    import provision.desktop_window as _dw
+    monkeypatch.setattr(_dw, "set_reaper_windows_visible", lambda *a, **k: None)
     desktop.start(window=False)
     assert started and started[0] >= 120

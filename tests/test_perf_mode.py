@@ -3,6 +3,7 @@
 deux moteurs, sauf sur batterie ou interrupteur coupé ; reposé quand le système le retire ; rendu à l'arrêt."""
 import os
 import subprocess
+import sys
 
 import pytest
 
@@ -97,6 +98,7 @@ def test_la_batterie_se_lit_sur_l_alimentation_secteur(tmp_path):
     assert RS.on_battery(str(tmp_path)) is True
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="provision/lib-engine.sh is the Linux launcher, run by bash")
 def test_golem_stop_rend_le_mode_d_avant(tmp_path):
     """provision/lib-engine.sh golem_perf_restore : la marque lue et retirée ; sans marque, rien."""
     here = tmp_path / "golem"

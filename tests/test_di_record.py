@@ -43,7 +43,7 @@ def rack(tmp_path, monkeypatch):
 def test_la_prise_force_tracks_di_sur_la_seule_entree_puis_rend_le_reglage(rack):
     restored = []
     r = DR.record(2, 5, state=object(), write_command=rack["engine"], restore=lambda: restored.append(1), sleep=lambda s: None)
-    assert r["ok"] and r["file"].endswith("recordings/perf-new/DI-Sandbox-Input-2.wav")
+    assert r["ok"] and r["file"].replace("\\", "/").endswith("recordings/perf-new/DI-Sandbox-Input-2.wav")   # Windows : « \\ »
     src = next(x[1] for x in rack["log"] if isinstance(x, tuple))
     assert src["mode"] == "tracks_di" and src["mix"] is False and src["in2"] is True and src["in1"] is False   # elle seule
     assert [c["on"] for c in rack["log"] if isinstance(c, dict)] == [True, False] and restored == [1]

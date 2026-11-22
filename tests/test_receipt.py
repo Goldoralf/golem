@@ -39,6 +39,9 @@ def R(tmp_path, monkeypatch):
     monkeypatch.delenv("SUDO_USER", raising=False)
     m = _load("golem_receipt_t", PROV / "receipt.py")
     m._home = home
+    # le reçu LINUX, quel que soit le système du test : sur un Mac le module vise ~/Library/Application Support
+    # (quatre tests rouges au premier passage macOS, 2026-11-22)
+    monkeypatch.setattr(m, "_os", lambda: "linux")
     return m
 
 
@@ -286,7 +289,7 @@ def test_lib_receipt_by_est_le_script_appelant(tmp_path):
     assert out.endswith("probe.sh")
 
 
-@pytest.mark.skipif(os.name != "posix", reason="runs provision/link-reaper.sh under bash")
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="runs provision/link-reaper.sh, the Linux install, under bash")
 def test_link_reaper_met_de_cote_en_golem_orig(tmp_path):
     """link-reaper.sh dans un HOME temporaire : l'original de l'utilisateur part en *.golem-orig (jamais .bak) et
     le reçu dit où ; un ancien .bak posé par golem n'est pas touché ; rejouer ne déplace rien de plus."""

@@ -69,7 +69,9 @@ def test_le_plugin_du_kit(tmp_path):
     assert D.kit_plugin(str(tmp_path), "k-avl", avl) == ({"lv2": "urn:avl#BlackPearl"}, None)
     p, why = D.kit_plugin(str(tmp_path), "k-pads.json", avl)
     assert why is None and p["lv2"] == D.SFIZZ and p["write"]["prop"] == D.SFIZZ_FILE
-    assert f"sample={tmp_path}/s/kick.wav key=36 volume=-3 loop_mode=one_shot" in p["write"]["text"]
+    # les séparateurs du système (Windows mêle « \\ » et « / ») ne sont pas ce qu'on teste
+    assert (f"sample={tmp_path}/s/kick.wav key=36 volume=-3 loop_mode=one_shot".replace("\\", "/")
+            in p["write"]["text"].replace("\\", "/"))
     assert D.kit_plugin(str(tmp_path), "k-dg", avl) == (None, "kit engine drumgizmo is not on this engine yet")
     assert D.kit_plugin(str(tmp_path), "nope", avl)[1] == "kit nope not found"
     p, _ = D.kit_plugin(str(tmp_path), '["s/a.wav", "s/b.wav"]', avl)       # une liste de samples nue : notes GM dans l'ordre
@@ -132,6 +134,6 @@ def test_un_sample_lance_part_avec_ses_chemins_absolus_et_ses_durees(tmp_path):
         w.writeframes(b"\0\0" * 24000)                                  # 0,5 s
     cmd = A.sample_play({"action": "sample", "op": "play", "block": "b", "idx": 1,
                          "samples": ["assets/samples/hit.wav", str(p), "assets/samples/missing.wav"]}, root=str(tmp_path))
-    assert cmd["files"] == [str(p), str(p), str(tmp_path / "assets" / "samples" / "missing.wav")]   # l'ordre et les index ne bougent pas
+    assert [os.path.normpath(f) for f in cmd["files"]] == [str(p), str(p), str(tmp_path / "assets" / "samples" / "missing.wav")]   # l'ordre et les index ne bougent pas
     assert cmd["durs"][0] == cmd["durs"][1] == 0.6 and cmd["durs"][2] == 0.0                    # la durée, plus une marge ; absent : 0
     assert cmd["idx"] == 1 and cmd["samples"][0] == "assets/samples/hit.wav"                    # la commande d'origine est intacte

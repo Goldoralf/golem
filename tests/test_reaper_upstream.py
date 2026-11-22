@@ -20,6 +20,7 @@ def _fresh(monkeypatch, tmp_path):
     active.touch()
     monkeypatch.setattr(R, "ACTIVE", str(active))
     monkeypatch.setattr(R, "WINDOWS", False)       # la mécanique du RACK, quel que soit l'OS du test
+    monkeypatch.setattr(R, "MACOS", False)         # macOS aussi (cinq tests rouges au premier passage macOS, 2026-11-22)
     return R._UP
 
 

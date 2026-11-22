@@ -127,7 +127,9 @@ def test_le_pid_est_celui_du_process_moteur(slot, monkeypatch):
         (slot / ".engine.pid").write_text(str(p.pid))
         e = A.ArdourEngine(link=object())
         assert e.pid() is None                       # un process qui n'est pas luasession : pas le moteur
-        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", (os.path.basename(sys.executable),))
+        # le nom que CE système donne à ce process, pas basename(sys.executable) : Windows rend l'image sans « .exe »
+        # (tasklist), macOS le binaire du framework (« Python », pas « python3.12 ») — rouge sur les deux (2026-11-22)
+        monkeypatch.setattr(A.ArdourEngine, "PROC_NAMES", tuple(A._proc_names(p.pid)[:1]))
         assert e.pid() == p.pid and e.running()
         assert e.stop(timeout=3) and e.pid() is None
     finally:

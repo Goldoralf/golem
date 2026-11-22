@@ -4,6 +4,7 @@ nu le tuait à la ligne 9 (premier test en VM, 2026-10-15) ; `sh -n` ne le voit 
 import os
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -11,7 +12,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BOOT = os.path.join(ROOT, "provision", "bootstrap.sh")
 
 
-@pytest.mark.skipif(os.name != "posix" or not shutil.which("dash"), reason="dash absent (Git for Windows ships one, but PATH and chmod are POSIX here)")
+# Linux seulement (2026-11-22) : bootstrap.sh est l'installation Linux x86_64 — sur le runner macOS (arm64, qui a un
+# dash) il s'arrête à sa garde d'architecture, bien avant le python factice.
+@pytest.mark.skipif(not sys.platform.startswith("linux") or not shutil.which("dash"), reason="bootstrap.sh installs Linux; dash absent elsewhere")
 def test_le_bootstrap_demarre_sous_dash(tmp_path):
     # on coupe avant le réseau et le serveur : un faux python3 qui s'arrête dès que le script le sonde
     fake = tmp_path / "bin"

@@ -2,6 +2,7 @@
 """Le plan MOTEUR du Golem Engine (bridge/engine/ardour_plan.py, lot A2.0) : topologie, paramètres à la règle de
 golem_rig, refus dits — et l'adaptateur qui joint ce plan aux rappels et aux scènes, et lit ses bornes au livemap."""
 import json
+import sys
 
 import pytest
 
@@ -652,6 +653,12 @@ def _fake_engine(tmp_path, body):
     return str(sh)
 
 
+# le faux moteur est un script bash : sous Windows `bash` est l'amorce de WSL, rien ne démarre (2026-11-22). Le juge
+# lui-même est le même code sur les trois systèmes ; le lanceur Windows (run.py) n'est pas éprouvé par ces deux tests.
+bash_engine = pytest.mark.skipif(sys.platform == "win32", reason="the fake engine is a bash script")
+
+
+@bash_engine
 @pytest.mark.parametrize("body, want", [
     ("echo '{\"done\":true,\"stall_ms\":12,\"noise_ms\":3}' > $OUT; sleep 5", (True, None, {"stall_ms": 9, "engine": "golem-engine"})),
     ("echo '{\"done\":true,\"stall_ms\":420,\"noise_ms\":5}' > $OUT; sleep 5",
@@ -665,6 +672,7 @@ def test_le_banc_du_golem_engine_juge_gel_plantage_et_trou(tmp_path, monkeypatch
     assert T.trial_engine("VST3: X (Y)", script=_fake_engine(tmp_path, body)) == want
 
 
+@bash_engine
 def test_le_banc_du_golem_engine_ne_juge_pas_un_plugin_introuvable(tmp_path):
     from bridge import plugin_trial as T
     with pytest.raises(RuntimeError, match="plugin not found"):

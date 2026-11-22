@@ -112,7 +112,9 @@ def test_tone3000_demande_l_appairage_puis_passe_par_le_relais(monkeypatch, tmp_
     (target / "tools" / "t3k.py").write_text((ROOT / "tools" / "t3k.py").read_text(encoding="utf-8"), encoding="utf-8")
     assert EA.apply_env(str(target)) is True
     env = (target / ".env").read_text()
-    assert "T3K_ACCESS_TOKEN=acc" in env and "T3K_REFRESH_TOKEN=ref" in env and oct((target / ".env").stat().st_mode & 0o777) == "0o600"
+    assert "T3K_ACCESS_TOKEN=acc" in env and "T3K_REFRESH_TOKEN=ref" in env
+    if os.name != "nt":                                   # Windows n'a pas ces droits : le fichier y suit ceux du dossier
+        assert oct((target / ".env").stat().st_mode & 0o777) == "0o600"
 
 
 def test_a_blanc_rien_ne_part_et_tout_se_joue(monkeypatch):

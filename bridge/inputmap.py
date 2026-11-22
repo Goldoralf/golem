@@ -134,8 +134,10 @@ def _card_channels(device):
                     return int(actual["INPUT_COUNT"]), int(actual["OUTPUT_COUNT"])
                 except (KeyError, TypeError, ValueError):
                     pass
-            return (2, 2)
-        settings = desktop_audio.settings()
+            # PAS de « return (2, 2) » ici (2026-11-22) : une carte qui n'est pas celle que REAPER a ouverte — débranchée,
+            # ou déclarée à la main — se compte par le registre plus bas, comme sous Linux et Windows. Le Mac la
+            # ramenait à 2 entrées / 2 sorties quoi qu'en dise config/cards (cinq tests rouges au premier passage macOS).
+        settings = desktop_audio.settings() if sys.platform == "win32" else {}
         if sys.platform == "win32" and device == "asio:" + settings.get("driver", ""):
             actual = settings.get("actual") or {}
             opened = (actual.get("IDENT_IN", "") + " " + actual.get("IDENT_OUT", "")).casefold()

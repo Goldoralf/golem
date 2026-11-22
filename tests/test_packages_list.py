@@ -15,7 +15,9 @@ LIB = os.path.join(ROOT, "provision", "lib-packages.sh")
 LIST = os.path.join(ROOT, "provision", "packages.txt")
 
 # sous Windows, `bash` est le lanceur de WSL, sans distribution sur le runner (CI Desktop tests, 2026-11-09)
-pytestmark = pytest.mark.skipif(shutil.which("bash") is None or sys.platform == "win32", reason="un vrai bash")
+# Linux seulement (2026-11-22) : ce sont les paquets apt de l'installation Linux, et le bash 3.2 de macOS refuse un
+# tableau vide sous `set -u`
+pytestmark = pytest.mark.skipif(shutil.which("bash") is None or not sys.platform.startswith("linux"), reason="the apt lists of the Linux install, read by a recent bash")
 
 # le faux apt-cache : « dispo » a un candidat, « retire » est connu sans version, tout le reste est inconnu (sortie vide)
 FAKE_APT_CACHE = """#!/bin/sh

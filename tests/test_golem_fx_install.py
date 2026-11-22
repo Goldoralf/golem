@@ -85,7 +85,7 @@ def test_pose_les_bundles_seulement_executables_et_au_recu(tmp_path, monkeypatch
     posed, kept = G.place(_tgz(), G.ASSETS["linux"], dest, journal=tmp_path / "none.json", log=lambda *_: None)
     assert sorted(p.name for p in dest.iterdir()) == ["GoleM FX Delay.vst3", "GoleM FX Gate.vst3"]   # pas BUILDINFO
     so = dest / "GoleM FX Gate.vst3" / "Contents" / "x86_64-linux" / "GoleM FX Gate.so"
-    assert so.read_bytes() == b"so-Gate" and so.stat().st_mode & stat.S_IXUSR
+    assert so.read_bytes() == b"so-Gate" and (os.name == "nt" or so.stat().st_mode & stat.S_IXUSR)   # pas de bit x sous Windows
     assert kept == [] and len(posed) == 2
     items = {i["path"]: i for i in json.loads(rpath.read_text(encoding="utf-8"))["items"]}
     assert {str(p) for p in posed} <= {R.expand(k) for k in items}
@@ -140,6 +140,7 @@ def test_dossiers_d_installation_par_systeme(tmp_path, monkeypatch):
 @pytest.mark.parametrize("plat", ["linux", "win32", "darwin"])
 def test_le_bridge_trouve_les_bundles_dans_les_dossiers_de_son_systeme(tmp_path, monkeypatch, plat):
     monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path / "home"))             # « ~ » sous Windows
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "Local"))
     monkeypatch.setenv("CommonProgramFiles", str(tmp_path / "Common Files"))
     monkeypatch.setattr(_rig, "_platform", lambda: plat)

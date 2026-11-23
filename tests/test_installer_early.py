@@ -4,6 +4,7 @@ relais TONE3000, des jetons qui ne sortent jamais par l'écran, et les captures 
 import importlib.util
 import os
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -97,10 +98,13 @@ def test_tone3000_demande_l_appairage_puis_passe_par_le_relais(monkeypatch, tmp_
         if method == "POST":
             assert body == {"challenge": "challenge"}                             # le verifier reste ici
             return 200, {"authorize_url": "https://www.tone3000.com/authorize?x", "state": "st1"}
+        vu_attente.wait(5)                                # le relais répond après que le test a lu « waiting »
         return 200, {"status": "ready", "code": "C", "client_id": "cid", "redirect_uri": "https://golem.fm/t3k/cb"}
+    vu_attente = threading.Event()
     monkeypatch.setattr(EA, "_http", http)
     st = EA.t3k_start(str(ROOT))
     assert st["t3k"]["phase"] == "waiting" and st["t3k"]["auth_url"].startswith("https://www.tone3000.com/")
+    vu_attente.set()
     assert _wait(lambda: EA.state()["t3k_signed_in"])
     assert seen["exchange"] == {"grant_type": "authorization_code", "code": "C", "redirect_uri": "https://golem.fm/t3k/cb",
                                 "client_id": "cid", "code_verifier": "verifier"}

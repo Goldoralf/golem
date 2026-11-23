@@ -1519,6 +1519,18 @@ setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). L
 - **REAPER for Windows, checked 2026-11-20** (golem switched to REAPER): the drum machine's fill leads to the next
   variation (fill at the next bar, in full, then the variation — `.drums.json`), and the Electric piano block mounts Dexed
   with the scene's voice (`fxdump`: the zone filter, `dx7-ctl` on patch 15, Dexed with algorithm 2, not its init voice).
+- **Fresh Windows 11 VM, 2026-11-23** (install line, v0.7.1, dummy card):
+  - *The engine opened a console window over golem and logged nothing.* The bridge started `run.py` as a detached
+    process, under `pythonw.exe` when `golem desktop` did it: with no console to inherit, the engine (a console program)
+    opened its own, visible, and wrote its log there. `ArdourEngine.restart` now gives `run.py` a hidden console
+    (`CREATE_NO_WINDOW`) under `python.exe`; `golem-engine.log` fills again. Fixed in golem, no engine rebuild.
+  - *The engine crashed when a preset with the piano was followed by another within seconds, disk cache cold*
+    (`0xC0000005` in `sfizz.dll`, or `0xC0000374`; three cold runs out of three). sfizz reports its file loaded as soon
+    as the `.sfz` is parsed, then preloads samples in its own threads; destroying it meanwhile crashed. Keeping the DLL
+    loaded was not enough (tried). The watcher now keeps a removed sampler's reference for 60 s (`GRAVE`, in
+    `golem_watch.lua`: rig blocks with `loaded_output`, the Standards instruments, the drum kit) and destroys it once
+    its threads are done: three cold runs out of three without a crash, six recalls 4 s apart included. **In the fork,
+    not in the published 9.9-g4 package**: a dev tree gets it by `git pull`, an install needs the next package.
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

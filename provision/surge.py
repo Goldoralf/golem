@@ -89,7 +89,7 @@ def install(fetch=None, log=print, dest=None):
             shutil.rmtree(final)
         os.replace(tmp, final)
     _record(dest / BUNDLE, False)
-    log(f"✓ Surge XT Effects → {dest} (REAPER sees it at its next start)")
+    log(f"✓ Surge XT Effects → {dest} (golem's audio engine sees it at its next start)")
     return dest
 
 

@@ -104,7 +104,7 @@ def install(fetch=None, log=print, dest=None):
             os.replace(tmp, final)
             posed.append(final)
     _record(posed, False)
-    log(f"✓ Dragonfly Reverb → {dest} (REAPER sees it at its next start)")
+    log(f"✓ Dragonfly Reverb → {dest} (golem's audio engine sees it at its next start)")
     return dest
 
 

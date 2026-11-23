@@ -102,7 +102,8 @@ tag key (`ssh-keygen -Y sign -n git`). Who checks it:
 | the update by archive (Windows, macOS — [`update.md`](update.md) §3) | `release_update._verify`: `release_sig.verify_manifest` (`ssh-keygen -Y verify`, the **installed** key list), then `release_sig.check_tree` — every file listed, unchanged, and **no file the list does not name**. Before anything is copied. |
 | the bootstrap without git (`provision/bootstrap.sh`, `verify_archive`) | same checks with `ssh-keygen`, `sha256sum -c` and a file-list comparison; on any difference the download is erased and the install stops |
 | the bootstrap and the update **with** git | `git verify-tag` (§2) |
+| the Windows bootstrap (`provision/bootstrap.ps1`, `Verify-Release`, since 2026-11-23) | the same checks as `verify_archive`: `ssh-keygen.exe -Y verify` on `SHA256SUMS` with the key the script carries (a copy of `GOLEM_RELEASE_SIGNERS`, a test keeps the two equal), then every extracted file against the list, and no file the list does not name; on any difference the download is erased and the install stops. A branch is refused, and a cached download is never trusted |
 
-**Not covered:** the Windows bootstrap (`provision/bootstrap.ps1`) checks no signature yet — it downloads the archive
-as before. Once installed, a Windows golem's updates are checked (by the bridge, which needs `ssh-keygen.exe`, part of
-Windows' OpenSSH client).
+**Not covered:** a Windows without `ssh-keygen.exe` (the OpenSSH client, installed by default on Windows 10 1809+ and
+Windows 11): the bootstrap says the signature is **not checked** and goes on, as it did before. Once installed, a
+Windows golem's updates are checked (by the bridge, which needs the same `ssh-keygen.exe`).

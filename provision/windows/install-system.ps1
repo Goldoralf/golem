@@ -450,7 +450,7 @@ try {
     # d'avance la réponse sûre : la boucle locale n'est pas filtrée, GoleM lui parle toujours, et plus
     # personne sur le réseau ne peut le piloter. Rien en sortie n'est touché.
     if ($Firewall) {
-        Say '▶ Firewall: Reaper accepts nothing from the network (GoleM talks to it locally)'
+        Say '▶ Firewall: Reaper accepts nothing from the network (golem talks to it locally)'
         # le REAPER que golem lance — où qu'il soit (-ReaperDir, passé par l'installateur), Program Files sinon
         $rexe = Join-Path $(if ($ReaperDir) { $ReaperDir } else { Join-Path $env:ProgramFiles 'REAPER (x64)' }) 'reaper.exe'
         $name = 'GoleM - Reaper, no inbound network'
@@ -486,7 +486,7 @@ try {
         if ($BridgePython -and (Test-Path $BridgePython)) { $rule.Program = $BridgePython }
         New-NetFirewallRule @rule | Out-Null
         Rcpt-Append 'firewall.added' $bname
-        Say "✓ GoleM open on TCP $Port and 80, every network$(if ($rule.Program) { " ($BridgePython)" }) — devices still have to be paired"
+        Say "✓ golem open on TCP $Port and 80, every network$(if ($rule.Program) { " ($BridgePython)" }) — devices still have to be paired"
         # le nom `golem.local` : le bridge répond lui-même aux questions mDNS (UDP 5353)
         $mname = 'GoleM - golem.local (mDNS)'
         Get-NetFirewallRule -DisplayName $mname -ErrorAction SilentlyContinue | Remove-NetFirewallRule

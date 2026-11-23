@@ -161,7 +161,7 @@ def place(data, name, dest, journal=None, log=print):
         log(f"  = golem-fx: {len(kept)} dev build(s) from tools/golem-fx-install.py kept as is "
             f"({', '.join(sorted(kept)[:6])}{'…' if len(kept) > 6 else ''})")
     _record(posed)
-    log(f"✓ golem-fx {VERSION}: {len(posed)} plugin(s) → {dest} (REAPER sees them at its next start)")
+    log(f"✓ golem-fx {VERSION}: {len(posed)} plugin(s) → {dest} (golem's audio engine sees them at its next start)")
     return posed, kept
 
 

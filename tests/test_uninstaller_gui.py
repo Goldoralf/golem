@@ -797,8 +797,30 @@ def test_la_fenetre_vit_tant_qu_un_navigateur_porte_son_profil(monkeypatch):
     le serveur croyait sa fenêtre fermée et s'arrêtait. On cherche le profil sur les lignes de commande."""
     from installer import platform_windows as PW
     monkeypatch.setattr(PW, "_OPEN_PROFILE", r"C:\Users\Jean Paul\AppData\Local\Temp\golem-uninstaller-ab\browser")
-    rows = {"out": 'msedge.exe --app=x --user-data-dir="C:\\Users\\Jean Paul\\AppData\\Local\\Temp\\golem-uninstaller-ab\\browser"\n'}
+    # une ligne par processus : « <pid> <ligne de commande> » (_profile_pids)
+    rows = {"out": '4776 msedge.exe --app=x --user-data-dir="C:\\Users\\Jean Paul\\AppData\\Local\\Temp\\golem-uninstaller-ab\\browser"\n'}
     monkeypatch.setattr(PW.subprocess, "run", lambda *a, **k: type("R", (), {"stdout": rows["out"]})())
     assert PW.app_alive() is True
-    rows["out"] = "msedge.exe --user-data-dir=C:\\Users\\Jean Paul\\AppData\\Local\\GoleM\\browser\n"   # la fenêtre de golem
+    rows["out"] = "812 msedge.exe --user-data-dir=C:\\Users\\Jean Paul\\AppData\\Local\\GoleM\\browser\n"   # la fenêtre de golem
     assert PW.app_alive() is False
+
+
+def test_fermer_la_fenetre_tue_le_navigateur_qui_porte_le_profil(monkeypatch):
+    """VM Windows 11 vierge, 2026-11-23 : le msedge.exe lancé n'est qu'un relais, sorti aussitôt ; la fenêtre vit dans un
+    AUTRE processus. `taskkill` sur le PID lancé ne fermait rien — « Open golem » laissait l'installateur ouvert, figé.
+    close_app tue aussi les processus de tête qui portent le profil (pas leurs enfants `--type=`, ni un autre profil)."""
+    from installer import platform_windows as PW
+    prof = r"C:\Users\golem\AppData\Local\GoleM\installer-browser"
+    monkeypatch.setattr(PW, "_OPEN_PROFILE", prof)
+    listing = (f'4776 msedge.exe --app=x --user-data-dir="{prof}" --window-size=1120,736\n'
+               f'5010 msedge.exe --type=renderer --user-data-dir="{prof}"\n'
+               '6968 msedge.exe --app=y --user-data-dir="C:\\Users\\golem\\AppData\\Local\\GoleM\\browser"\n')
+    killed = []
+
+    def run(cmd, *a, **k):
+        if cmd[0] == "taskkill":
+            killed.append(cmd[cmd.index("/PID") + 1])
+        return type("R", (), {"stdout": listing})()
+    monkeypatch.setattr(PW.subprocess, "run", run)
+    PW.close_app(type("W", (), {"pid": 6364})())
+    assert killed == ["6364", "4776"]

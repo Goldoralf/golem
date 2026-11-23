@@ -513,6 +513,17 @@ def backing_load(cmd, rate=48000, cache_dir=None, ffmpeg="ffmpeg"):
     return out
 
 
+def _console_python():
+    """Le Python qui lance run.py. Sous Windows, jamais pythonw.exe (celui de `golem desktop`) : programme sans
+    console, il ne peut pas en porter une cachée — le moteur qu'il lance ouvrirait la sienne, visible."""
+    exe = sys.executable
+    if sys.platform == "win32" and os.path.basename(exe).lower() == "pythonw.exe":
+        con = os.path.join(os.path.dirname(exe), "python.exe")
+        if os.path.isfile(con):
+            return con
+    return exe
+
+
 class ArdourEngine(EngineAdapter):
     id = "ardour"
     actions = frozenset({"ping", "status", "rig_recall", "scene_apply", "stomp", "rig_verify", "dump", "audio_set",
@@ -785,8 +796,12 @@ class ArdourEngine(EngineAdapter):
         # le lanceur des trois systèmes (run.py, bibliothèque standard) quand le moteur l'a ; un paquet plus ancien
         # n'a que run.sh
         py = os.path.join(os.path.dirname(script), "run.py")
-        cmd = [sys.executable, py] if os.path.isfile(py) else ["bash", script]
-        detach = {"creationflags": 0x00000008 | 0x00000200} if sys.platform == "win32" else {"start_new_session": True}
+        cmd = [_console_python(), py] if os.path.isfile(py) else ["bash", script]
+        # Windows : CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP — une console CACHÉE, dont le moteur hérite. C'était
+        # DETACHED_PROCESS (aucune console) : le moteur, programme console lancé par run.py, s'en ouvrait alors une
+        # VISIBLE par-dessus golem, et son journal partait dans cette fenêtre au lieu de RUN_LOG (VM Windows 11 vierge,
+        # 2026-11-23 : fenêtre noire « ardour9-lua.exe » au premier démarrage, golem-engine.log vide).
+        detach = {"creationflags": 0x08000000 | 0x00000200} if sys.platform == "win32" else {"start_new_session": True}
         env = dict(os.environ)
         buf = card_buffer() if DEVICE else None
         if buf:

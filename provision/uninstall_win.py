@@ -1632,6 +1632,13 @@ def plan_text(plan):
 
 
 def main(argv=None):
+    # une sortie qui ne sait pas écrire un caractère (cp1252, sortie redirigée sans PYTHONUTF8 : « ▸ ») ne doit jamais
+    # faire tomber le plan — `uninstall.py plan` hors de golem.cmd finissait sur un UnicodeEncodeError (VM, 2026-11-23)
+    for _st in (sys.stdout, sys.stderr):
+        try:
+            _st.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
     ap = argparse.ArgumentParser(prog="uninstall.py", description="Uninstall golem (docs/uninstall.md §9).")
     ap.add_argument("--root-fs", default=None, help=argparse.SUPPRESS)
     sub = ap.add_subparsers(dest="cmd", required=True)

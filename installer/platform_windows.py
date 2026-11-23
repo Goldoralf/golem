@@ -489,9 +489,38 @@ def open_url(url):
 
 
 def close_app(window):
-    """Ferme la fenêtre ouverte par open_app — Chrome y a des processus enfants : tout l'arbre."""
+    """Ferme la fenêtre ouverte par open_app — Chrome y a des processus enfants : tout l'arbre. PUIS tout navigateur
+    qui porte notre profil : le processus lancé peut n'être qu'un relais, sorti aussitôt (Edge sur un Windows 11
+    vierge, VM 2026-11-23 — il confie la fenêtre à un autre msedge.exe) ; tuer son PID ne fermait alors rien, et
+    « Open golem » laissait l'installateur ouvert, figé, derrière golem."""
     subprocess.run(["taskkill", "/PID", str(window.pid), "/T", "/F"], capture_output=True,
                    timeout=10, creationflags=NO_WINDOW)
+    for pid in _profile_pids() or []:
+        subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True,
+                       timeout=10, creationflags=NO_WINDOW)
+
+
+def _profile_pids():
+    """Les navigateurs (processus de tête, pas leurs enfants `--type=`) qui portent le profil de notre fenêtre.
+    None si la lecture échoue — app_alive ne ferme pas sur un doute ; close_app n'a alors rien à tuer."""
+    if not _OPEN_PROFILE:
+        return []
+    marker = ("--user-data-dir=" + _OPEN_PROFILE).replace('"', "").casefold()
+    try:
+        out = subprocess.run(
+            ["powershell.exe", "-NoProfile", "-Command",
+             "Get-CimInstance Win32_Process -Filter \"Name='msedge.exe' or Name='chrome.exe'\" | "
+             "ForEach-Object { \"$($_.ProcessId) $($_.CommandLine)\" }"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=20,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None
+    pids = []
+    for ln in out.splitlines():
+        pid, _, cmd = ln.strip().partition(" ")
+        if pid.isdigit() and marker in cmd.replace('"', "").casefold() and "--type=" not in cmd:
+            pids.append(int(pid))
+    return pids
 
 
 # la taille de l'installateur : son rail d'étapes se replie sous 900 px (installer.css)
@@ -531,19 +560,8 @@ def app_alive():
     quand un autre Edge tourne déjà — la fenêtre de golem —, le processus qu'on lance PASSE LA MAIN et se termine tout
     de suite, fenêtre ouverte ; le serveur le croyait fermé, s'arrêtait et vidait sa copie : « Uninstall golem » ne
     montrait rien, ou « not found »). True en cas de doute : on ne ferme pas sur une lecture ratée."""
-    if not _OPEN_PROFILE:
-        return False
-    marker = ("--user-data-dir=" + _OPEN_PROFILE).replace('"', "").casefold()
-    try:
-        out = subprocess.run(
-            ["powershell.exe", "-NoProfile", "-Command",
-             "Get-CimInstance Win32_Process -Filter \"Name='msedge.exe' or Name='chrome.exe'\" | "
-             "ForEach-Object { $_.CommandLine }"],
-            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=20,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
-    except (OSError, subprocess.SubprocessError):
-        return True
-    return any(marker in ln.replace('"', "").casefold() for ln in out.splitlines())
+    pids = _profile_pids()
+    return True if pids is None else bool(pids)
 
 
 def open_app(url):

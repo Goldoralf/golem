@@ -140,6 +140,16 @@ class ReaperEngine(EngineAdapter):
         if sys.platform in ("win32", "darwin"):
             from .. import desktop_audio
             current = desktop_audio.settings()
+            if sys.platform == "win32" and current.get("driver") not in (current.get("drivers") or ()):
+                # AUCUN PILOTE ASIO choisi (ou installé) : rien à réappliquer — et start_apply refusait (« Choose an
+                # installed ASIO driver »), si bien qu'on ne pouvait pas passer du Golem Engine à REAPER sur un PC sans
+                # carte ASIO (VM Windows 11, 2026-11-23), alors que `golem desktop` y démarre REAPER sans carte (Dummy
+                # Audio). On fait comme lui : REAPER sur le projet de golem, la carte se choisit dans Settings ▸ Soundcard.
+                from provision import desktop
+                if desktop.reaper_running():
+                    self.stop()
+                desktop.launch_reaper(desktop_audio._reopen_args(desktop.reaper_binary(), None), cwd=str(desktop.ROOT))
+                return {"ok": True, "restarting": True, "audio": "none"}
             keys = ("sample_rate", "sample_rate_use", "buffer_size", "buffer_size_use")
             keys += (("driver", "input_first", "input_last", "output_first", "output_last")
                      if sys.platform == "win32" else ("input_device", "output_device"))

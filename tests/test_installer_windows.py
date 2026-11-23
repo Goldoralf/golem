@@ -64,6 +64,23 @@ def test_bootstrap_python_pin_matches_pins_json():
     assert f"$pySha = '{pins['python']['sha256']}'" in boot
 
 
+def test_bootstrap_ps1_checks_the_release_with_the_same_key_as_bootstrap_sh():
+    """La ligne d'installation Windows vérifie la liste signée de la release (2026-11-23 ; elle ne vérifiait rien) avec
+    LA clé de bootstrap.sh — deux copies, qui ne doivent jamais diverger — et le fait pour toute archive téléchargée."""
+    boot = open(os.path.join(ROOT, "provision", "bootstrap.ps1"), encoding="ascii").read()
+    sh = open(os.path.join(ROOT, "provision", "bootstrap.sh"), encoding="utf-8").read()
+    key_sh = re.search(r"^GOLEM_RELEASE_SIGNERS='([^']+)'", sh, re.M).group(1)
+    key_ps = re.search(r"^\$releaseSigners = '([^']+)'", boot, re.M).group(1)
+    assert key_ps == key_sh
+    signers = open(os.path.join(ROOT, "provision", "release-signers"), encoding="utf-8").read()
+    assert key_ps in signers                                   # la clé qui vérifie l'installation vérifie les mises à jour
+    assert "if ($releaseSigners) { Verify-Release $src $ref | Out-Null }" in boot
+    assert "refusing to install an unverified branch" in boot
+    for refusal in ("has no signed file list", "is NOT signed by the golem release key",
+                    "holds a file its signed list does not name", "do not match its signed list", "misses files of its signed list"):
+        assert refusal in boot, refusal
+
+
 def test_pins_are_complete():
     pins = json.load(open(os.path.join(ROOT, "provision", "windows", "pins.json")))
     for k in ("python", "reaper", "nam_vst3"):

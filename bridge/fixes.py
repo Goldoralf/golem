@@ -319,21 +319,44 @@ ACTIONS = {
 }
 
 
+def _engine_said(x):
+    """Les textes du registre nomment REAPER ; sous un autre moteur, on dit le SIEN (VM Windows, 2026-11-23 : `golem
+    doctor` proposait « Resync REAPER » pour un Golem Engine qui ne répondait pas). Chaînes, listes et dictionnaires."""
+    name = "REAPER"
+    with contextlib.suppress(Exception):
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper":
+            name = eng.descriptor().get("name") or name
+    if name == "REAPER":
+        return x
+
+    def say(v):
+        if isinstance(v, str):
+            return v.replace("REAPER", name)
+        if isinstance(v, list):
+            return [say(i) for i in v]
+        if isinstance(v, dict):
+            return {k: say(i) for k, i in v.items()}
+        return v
+    return say(x)
+
+
 def label_for(name, params=None):
     """Le libellé d'une action AVEC ses paramètres (le buffer monte ou descend) — celui du registre sinon."""
     a = ACTIONS.get(name) or {}
     with contextlib.suppress(Exception):
         if a.get("label_for"):
-            return a["label_for"](params or {})
-    return a.get("label") or name
+            return _engine_said(a["label_for"](params or {}))
+    return _engine_said(a.get("label") or name)
 
 
 def registry():
     """Ce que la machine sait faire, tel qu'un appelant (l'écran, doctor, un modèle) peut le lire — sans le code."""
     out = []
     for name, a in ACTIONS.items():
-        out.append({"name": name, "label": a["label"], "description": a["description"], "risk": a["risk"],
-                    "params": a["params"](), "live_allowed": a["live_allowed"], "help": a["help"]})
+        out.append({"name": name, "label": _engine_said(a["label"]), "description": _engine_said(a["description"]),
+                    "risk": a["risk"], "params": a["params"](), "live_allowed": a["live_allowed"], "help": a["help"]})
     return out
 
 
@@ -423,7 +446,7 @@ def plan(name, params=None):
     if err:
         return {"ok": False, "error": err}
     a = ACTIONS[name]
-    doc = a["plan"](p)
+    doc = _engine_said(a["plan"](p))
     return {"ok": True, "action": name, "params": p, "risk": a["risk"], "blocked": blocked(name), **doc}
 
 
@@ -457,6 +480,7 @@ def _verify_loop(rec, verify, timeout):
         now = time.time()
         try:
             verdict, text = verify(ctx, now)
+            text = _engine_said(text)
         except Exception as e:
             _swallowed(e)
             verdict, text = "ko", "the check failed"

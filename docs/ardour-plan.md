@@ -1485,8 +1485,9 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 
 **Status: CODED, played by hand on the dev box** (Universal Audio Volt over ASIO, 48 kHz, buffer 256, the factory
 "Jazz Box" patch; no crackle at 256, crackles at 128). **Packaged and published**: release `golem-engine-9.9-g4` of
-Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), pinned in `provision/windows/pins.json`; the Windows
-setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). Linux stays on 9.9-g3 until rebuilt.
+Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), then `golem-engine-9.9-g5` (2026-11-23, both
+systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
+to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pass.
 
 - **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
   `golem/tools/win-portaudio-asio.sh` builds PortAudio 19.7.0 statically with Steinberg's ASIO SDK 2.3.4 (dual-licensed
@@ -1529,8 +1530,11 @@ setup installs it in `~/opt/golem-engine` (checked end to end on the dev box). L
     as the `.sfz` is parsed, then preloads samples in its own threads; destroying it meanwhile crashed. Keeping the DLL
     loaded was not enough (tried). The watcher now keeps a removed sampler's reference for 60 s (`GRAVE`, in
     `golem_watch.lua`: rig blocks with `loaded_output`, the Standards instruments, the drum kit) and destroys it once
-    its threads are done: three cold runs out of three without a crash, six recalls 4 s apart included. **In the fork,
-    not in the published 9.9-g4 package**: a dev tree gets it by `git pull`, an install needs the next package.
+    its threads are done: three cold runs out of three without a crash, six recalls 4 s apart included. **Published in
+    `golem-engine-9.9-g5`** (2026-11-23, tag on `1a1827be1`): one release for both systems — the Linux package by the
+    CI workflow, the Windows one built on the dev box (`win-build.sh`, `bundle.py --version 9.9-g5`, 85.7 MB; the
+    extracted package starts on the dummy backend). Windows is pinned to g5 (`provision/windows/pins.json`); Linux
+    stays pinned to g3 until the Linux pass ([linux-pass-2026-11.md](linux-pass-2026-11.md) §4).
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

@@ -57,17 +57,21 @@ Linux build (`golem-engine-9.9-g3`) — each one must still compile and behave o
 
 ## 4. Publish the Linux package with these fixes
 
-Windows is on `golem-engine-9.9-g4` (release of Goldoralf/golem-binaries, Windows asset only, pinned in
-`provision/windows/pins.json`). Linux is still on `golem-engine-9.9-g3` (`VERSION` in `provision/golem_engine.py`,
-`provision/downloads.sha256`).
+**Decided and published 2026-11-23: `golem-engine-9.9-g5`**, one release for both systems (tag on `1a1827be1`, which
+also carries the sfizz fix: a removed sampler destroyed 60 s later). A new tag rather than re-uploading into g4: a
+replaced asset under the same version would break every golem still pinning g4's sha256, and two binaries would both
+say `9.9-g4`. The Linux asset was built by the CI workflow `golem-engine.yml` (run 45272355819: build, then a start
+on the dummy backend); the Windows asset on the dev box. Windows is pinned to g5 (`provision/windows/pins.json`).
 
-- The CI workflow `golem-engine.yml` **creates** the release (`gh release create`): it fails on `golem-engine-9.9-g4`,
-  which exists. Either change its publish step to upload into an existing release (`gh release upload`, keep the
-  Windows asset), or tag a new `golem-engine-9.9-g5` and publish both systems there (rebuild the Windows package from
-  the same tag with `golem/tools/bundle.py` on Windows). Ask the maintainer which.
-- Release tags of the engine must be **lightweight** (the workflow says why: `git describe`).
-- Then pin Linux: `VERSION` in `provision/golem_engine.py` and the line in `provision/downloads.sha256` (sha256
-  recomputed on the downloaded asset and compared with the release's `SHA256SUMS`).
+What is left for this pass:
+
+- Run §1–3 against **the g5 package** (or the dev tree at the tag), not only the dev tree.
+- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g5` and the line in `provision/downloads.sha256`:
+  `9fff329aeb09c6e45ccc1948317352693481e69f9dcc391686cb6d74479f3455` for `golem-engine-linux-x86_64.tar.gz` (the
+  release's `SHA256SUMS`; recompute it on the downloaded asset and compare).
+- Release tags of the engine must stay **lightweight** (the workflow says why: `git describe`). The workflow still
+  creates its release: a later tag that should carry both systems runs the workflow first, then uploads the Windows
+  asset and rewrites `SHA256SUMS` / `BUILDINFO.txt` with both lines (`gh release upload --clobber`).
 
 ## 5. Not for this pass
 

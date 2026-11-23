@@ -790,7 +790,8 @@ class ArdourEngine(EngineAdapter):
         if not os.path.isfile(script):
             raise RuntimeError(f"Golem Engine not found ({script})")
         dead = self.stop()
-        logf = open(RUN_LOG, "a")
+        # encodage explicite : sans PYTHONUTF8, Windows écrit en cp1252 et « ── » lève avant même de lancer le moteur
+        logf = open(RUN_LOG, "a", encoding="utf-8")
         logf.write(time.strftime("\n── %Y-%m-%d %H:%M:%S ") + f"restart ({why}) — ancien arrêté : {dead}\n")
         logf.flush()
         # le lanceur des trois systèmes (run.py, bibliothèque standard) quand le moteur l'a ; un paquet plus ancien

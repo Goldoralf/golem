@@ -44,3 +44,15 @@ def test_un_secret_tape_disparait_avant_tout_le_reste():
 def test_libelles_connus_par_ordre_et_mot_entier():
     sc = _load().Scrubber(known=((["Set Léa"], "<preset>"), (["Léa"], "<name>")))
     assert sc("Set Léa by Léa, unclean") == "<preset> by <name>, unclean"
+
+
+def test_un_compte_golem_ne_reecrit_pas_le_rapport(monkeypatch):
+    # 2026-11-24 : sur un golem dont le compte s'appelle « golem », « golem-set » et la clé « golem » devenaient
+    # « <user> » et diag.py refusait tout rapport (« liste blanche violée : ['<user>'] »)
+    m = _load()
+    monkeypatch.setattr(m.getpass, "getuser", lambda: "golem")
+    sc = m.Scrubber()
+    assert sc("golem-set.rpp in /home/golem/Music/golem") == "golem-set.rpp in ~/Music/golem"
+    assert sc.deep({"golem": {"dry": True}}) == {"golem": {"dry": True}}
+    monkeypatch.setattr(m.getpass, "getuser", lambda: "alice")
+    assert m.Scrubber()("alice played") == "<user> played"            # un vrai nom, lui, s'efface toujours

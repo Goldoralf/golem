@@ -46,7 +46,9 @@ def test_ce_qui_ne_identifie_pas_reste():
 
 def test_un_chemin_du_rack_devient_relatif_un_chemin_perso_devient_tilde():
     assert S.redact_str(os.path.join(S.ROOT, "songs", "a.golem")) == "songs/a.golem"
-    assert S.redact_str(os.path.expanduser("~") + "/golem-inbox") == "~/golem-inbox"
+    home = os.path.expanduser("~")
+    want = home + "/golem-inbox" if S._demo_path(home) else "~/golem-inbox"   # compte « golem » : la forme de la démo
+    assert S.redact_str(home + "/golem-inbox") == want
 
 
 def test_les_champs_secrets_et_la_tonalite():

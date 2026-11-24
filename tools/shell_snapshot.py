@@ -176,10 +176,13 @@ def redact_str(s):
 
     def path(m):
         p = m.group(0)
-        if _demo_path(p):
-            return p
+        # le dépôt AVANT la démo (2026-11-24) : sur un golem dont le compte s'appelle « golem », le dépôt est sous
+        # /home/golem — il passait pour un chemin de démo et restait absolu. Le reste de /home/golem garde la forme de la
+        # démo : ce compte-là ne désigne personne (bridge/scrub.py NOT_PERSONAL).
         if p == root or p.startswith(root + "/") or p.startswith(root + "\\"):
             return p[len(root):].lstrip("/\\").replace("\\", "/") or "."       # relatif au dépôt, en « / » partout
+        if _demo_path(p):
+            return p
         if p == home or p.startswith(home + "/") or p.startswith(home + "\\"):
             return "~" + p[len(home):].replace("\\", "/")
         return "<path>"

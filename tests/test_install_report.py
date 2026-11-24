@@ -60,7 +60,7 @@ def test_le_paquet_n_emporte_rien_de_personnel(tmp_path):
     files = _unzip(b["path"])
     assert set(files) == {"golem-report.json", "report.json", "logs/install.log"}
     blob = b"".join(files.values()).decode("utf-8")
-    for leak in (KEY, PW, LAN, HOME, str(tmp_path)) + ((user,) if len(user) >= 3 else ()) + ((host,) if len(host) >= 3 else ()):
+    for leak in (KEY, PW, LAN, HOME, str(tmp_path)) + ((user,) if S._personal(user) else ()) + ((host,) if S._personal(host) else ()):
         assert leak not in blob, leak
     man = json.loads(files["golem-report.json"])
     assert man["golem_report"] == 2 and man["kind"] == "install"

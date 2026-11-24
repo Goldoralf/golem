@@ -62,8 +62,11 @@ def pii_known():
                 out[f"preset {n!r}"] = n
     except Exception:
         pass
-    out["$USER"] = getpass.getuser()
-    out["hostname"] = socket.gethostname()
+    from bridge.scrub import _personal          # « golem », « root »… ne désignent personne : le scrubber les garde
+    if _personal(getpass.getuser()):
+        out["$USER"] = getpass.getuser()
+    if _personal(socket.gethostname()):
+        out["hostname"] = socket.gethostname()
     out["home"] = os.path.expanduser("~")
     return {k: v for k, v in out.items() if v and len(v) >= 3}
 
@@ -113,7 +116,9 @@ def main():
     blob = b"".join(z.read(n) for n in names).decode("utf-8", "replace")
     known = pii_known()
     for label, val in known.items():
-        if re.search(re.escape(val), blob, re.IGNORECASE):
+        # mot ENTIER, comme le scrubber (bridge/scrub.py Scrubber._rx) : le prénom « Raph » se trouvait dans
+        # « graph_equalizer » (un plugin LSP du journal REAPER) — une fausse fuite (2026-11-24)
+        if re.search(r"(?<!\w)" + re.escape(val) + r"(?!\w)", blob, re.IGNORECASE):
             fails.append(f"PII : {label} présent dans le paquet")
     for rx, label in ((r"gmt_[A-Za-z0-9_\-]{6,}", "jeton gmt_"), (r"\b192\.168\.\d+\.\d+\b", "IP LAN"),
                       (r"/home/[a-z]", "chemin /home")):

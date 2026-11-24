@@ -25,6 +25,18 @@ RX_HOME = re.compile(r"/home/[^/\s\"']+|/Users/[^/\s\"']+|[A-Za-z]:[\\/]+Users[\
 RX_SONG_ID = re.compile(r"(?<![\w:-])(?:bs|rs|us|ct)[:-][A-Za-z0-9_-]+")
 
 
+# UN NOM DE COMPTE QUI NE DÉSIGNE PERSONNE (2026-11-24) : un golem dédié tourne sous le compte « golem » (l'Acer de
+# test, et la démo de tools/shell_snapshot.py). Effacer ce mot partout réécrivait le rapport lui-même — « golem-set »,
+# la clé « golem » du paquet → « <user> », et la liste blanche refusait tout rapport (diag.py : « liste blanche
+# violée »). Ces noms-là ne mènent à personne : on ne les efface pas. Le dossier personnel, lui, devient toujours `~`.
+NOT_PERSONAL = frozenset({"golem", "root", "admin", "user", "ubuntu", "debian", "fedora", "guest"})
+
+
+def _personal(name):
+    """Un nom de compte ou de machine à effacer : ≥ 3 caractères, et pas un des noms génériques ci-dessus."""
+    return bool(name) and len(name) >= 3 and name.lower() not in NOT_PERSONAL
+
+
 def _song_id_sub(m):
     """`bs:2` → `<song-id>` ; mais `us-east-1`, `rs-232` ne sont pas des ids : une forme fichier (`-`) n'est effacée
     que si elle a la longueur d'un id tiré au hasard."""
@@ -92,9 +104,9 @@ class Scrubber:
         s = RX_TOKEN.sub("<token>", s)
         s = RX_IP.sub("<ip>", s)
         s = RX_MAC.sub("<mac>", s)
-        if self.host and len(self.host) >= 3:
+        if _personal(self.host):
             s = re.sub(re.escape(self.host), "<host>", s, flags=re.IGNORECASE)
-        if self.user and len(self.user) >= 3:
+        if _personal(self.user):
             s = re.sub(r"\b" + re.escape(self.user) + r"\b", "<user>", s, flags=re.IGNORECASE)
         if self._rx_known:
             s = self._rx_known.sub(lambda m: self._ph.get(m.group(0).lower(), "<name>"), s)

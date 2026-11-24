@@ -156,7 +156,7 @@ most every 60 s, since the name lists change.
 | `gmt_…`, `t3k_…`, `Bearer …`, hex ≥ 32 chars | `<token>` |
 | private IPv4 (10/8, 172.16/12, 192.168/16, 127/8) | `<ip>` |
 | MAC addresses | `<mac>` |
-| hostname, POSIX user name (≥ 3 chars) | `<host>`, `<user>` |
+| hostname, POSIX user name (≥ 3 chars, except names that point to nobody: `golem`, `root`, `admin`, `user`, `ubuntu`, `debian`, `fedora`, `guest` — `bridge/scrub.py` `NOT_PERSONAL`, 2026-11-24: on a box whose account is `golem`, scrubbing that word rewrote the report itself and the whitelist refused every report) | `<host>`, `<user>` |
 | roster names and ids, band names, input-map `person` names | `<name>` |
 | preset, artist, lane and patch names | `<preset>` |
 | song titles and golem.fm song slugs, setlist names and line titles | `<song>` |
@@ -227,7 +227,7 @@ the job fails with `reports disabled on this rack`, which golem.fm displays as i
 | `GET /api/diag/{id}/download` | the zip, for local troubleshooting |
 | `POST /api/diag/settings {auto}` | the box; stored in `config/diag.json` `{"auto": bool}` (absent = ticked) |
 | MCP `diag_report` | last `report.json` + timeline tail, admin only ([`rack-mcp.md`](rack-mcp.md)) |
-| `tools/check-report.py [--kind …] [--keep]` | builds a package on the running rack and checks manifest, hashes, size, vocabulary and whitelist, then greps the personal data the rack knows about itself (roster names, preset names, `$USER`, hostname, token, LAN addresses). Removes the package from the index unless `--keep` |
+| `tools/check-report.py [--kind …] [--keep]` | builds a package on the running rack and checks manifest, hashes, size, vocabulary and whitelist, then greps the personal data the rack knows about itself (roster names, preset names, `$USER`, hostname, token, LAN addresses) as whole words, like the scrubber ("Raph" inside `graph_equalizer` is not a leak). Removes the package from the index unless `--keep` |
 
 ## 6. Tests
 

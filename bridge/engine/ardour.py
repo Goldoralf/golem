@@ -82,10 +82,21 @@ def card_device():
             return (audio.get("asio_driver_name") or "").strip('"') or None if audio.get("mode") == "3" else None
         except Exception:
             return None
+    cid = C.alsa_card()
     try:
-        with open(os.path.join(C.ROOT, "config", "cards", f"{C.alsa_card()}.json"), encoding="utf-8") as f:
+        with open(os.path.join(C.ROOT, "config", "cards", f"{cid}.json"), encoding="utf-8") as f:
             return (json.load(f) or {}).get("name") or None
     except (OSError, ValueError, AttributeError):
+        pass
+    # PAS DE FICHE, MAIS LA CARTE EST BRANCHÉE (2026-11-24) : un rack dont la carte vient de config/io.json n'a pas
+    # forcément de config/cards/ — REAPER ouvrait hw:iTwo, le Golem Engine partait sur le pilote factice : la DI de la
+    # carte (retour direct) et aucun effet. Le nom sondé de la carte ACTIVE et BRANCHÉE ; absente : None, comme avant.
+    if not cid:
+        return None
+    try:
+        from .. import cards
+        return (cards.probe(cid) or {}).get("name") or None
+    except Exception:
         return None
 
 
@@ -767,17 +778,39 @@ class ArdourEngine(EngineAdapter):
         from .. import monitors
         return monitors._watch_started_since(t0)        # golem_watch.lua écrit la même ligne « démarré. surveille »
 
+    def _rack_pids(self):
+        """Linux : TOUS les moteurs de CE rack — luasession sur golem_watch.lua avec C.ROOT pour racine (un banc a la sienne,
+        jamais touché). Le fichier PID n'en connaît qu'un : des relances en rafale (2026-11-24) en laissaient d'autres
+        vivants, l'un tenant la carte, les suivants échouant à l'ouvrir en boucle. Ailleurs : vide (le fichier PID seul)."""
+        if not os.path.isdir("/proc") or sys.platform in ("win32", "darwin"):
+            return set()
+        out = set()
+        for d in os.listdir("/proc"):
+            if not d.isdigit():
+                continue
+            try:
+                with open(f"/proc/{d}/cmdline", "rb") as f:
+                    cmd = [c.decode("utf-8", "replace") for c in f.read().split(b"\0") if c]
+            except OSError:
+                continue
+            if (len(cmd) >= 3 and os.path.basename(cmd[0]) in self.PROC_NAMES
+                    and os.path.basename(cmd[1]) == "golem_watch.lua" and cmd[2].rstrip("/") == C.ROOT.rstrip("/")):
+                out.add(int(d))
+        return out
+
     def stop(self, timeout=10.0):
+        pids = self._rack_pids()
         pid = self.pid()
-        if pid is None:
+        if pid is not None:
+            pids.add(pid)
+        if not pids:
             return True
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except OSError:
-            return True
+        for p in pids:
+            with contextlib.suppress(OSError):
+                os.kill(p, signal.SIGTERM)
         end = time.time() + timeout
         while time.time() < end:
-            if self.pid() is None:
+            if self.pid() is None and not any(_proc_names(p) for p in pids):
                 return True
             time.sleep(0.2)
         return False
@@ -789,6 +822,13 @@ class ArdourEngine(EngineAdapter):
         script = self.run_script()
         if not os.path.isfile(script):
             raise RuntimeError(f"Golem Engine not found ({script})")
+        # UN ARRÊT VOULU S'ANNONCE (2026-11-24) : sans intention, le moniteur prenait l'arrêt d'un Restart pour un
+        # plantage et relançait un DEUXIÈME moteur pendant que le premier démarrait (monitors._engine_crash_restart)
+        if why != "crash":
+            with contextlib.suppress(Exception):
+                from .. import diag
+                diag.intent("reaper", f"restart-{why}")
+        self.launched_at = time.time()
         dead = self.stop()
         # encodage explicite : sans PYTHONUTF8, Windows écrit en cp1252 et « ── » lève avant même de lancer le moteur
         logf = open(RUN_LOG, "a", encoding="utf-8")

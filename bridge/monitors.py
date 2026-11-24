@@ -220,6 +220,10 @@ async def _engine_crash_restart():
     await asyncio.sleep(1.0)
     if engine.get() is not eng or eng.pid() is not None:
         return                                              # basculé entre-temps, ou déjà reparti
+    # UN MOTEUR LANCÉ IL Y A PEU N'EST PAS TOMBÉ : il démarre (run.py balaie les VST3 avant d'écrire son PID, quelques
+    # secondes où le fichier désigne encore l'ancien process). Le relancer en faisait tourner deux (2026-11-24).
+    if time.time() - (getattr(eng, "launched_at", 0) or 0) < 30.0:
+        return
     _CRASH_RESTARTS.append(time.time())
     log_reaper.warning(f"{eng.id} tombé sans arrêt annoncé — relance automatique ({len(_CRASH_RESTARTS)}/{CRASH_MAX})")
     with contextlib.suppress(Exception):

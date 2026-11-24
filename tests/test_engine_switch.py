@@ -286,3 +286,61 @@ def test_fermer_golem_annonce_l_arret_du_golem_engine_avant_de_l_arreter(monkeyp
     monkeypatch.setattr(ardour.ArdourEngine, "stop", lambda self, timeout=10.0: seen.append(diag.peek_intent("reaper")) or True)
     assert routes_dev._stop_golem_engine_for_shutdown() is True
     assert seen == ["shutdown"]
+
+
+def test_un_golem_engine_qui_demarre_n_est_pas_relance(monkeypatch):
+    # rack 2026-11-24 : pendant le démarrage, le fichier PID désigne encore l'ancien process — le moniteur relançait un
+    # deuxième moteur, puis un troisième ; le premier tenait la carte, les autres échouaient à l'ouvrir
+    import time
+    from bridge import monitors
+    eng = New()
+    eng.up = False
+    eng.launched_at = time.time()
+    prev = engine.use(eng)
+    real = asyncio.sleep
+    monkeypatch.setattr(monitors.asyncio, "sleep", lambda s: real(0))
+    monkeypatch.setattr(monitors, "_CRASH_RESTARTS", [])
+    try:
+        asyncio.run(monitors._engine_crash_restart())
+    finally:
+        engine.use(prev)
+    assert not [e for e in eng.events if e.startswith("restart")]
+
+
+def test_un_restart_voulu_du_golem_engine_s_annonce(monkeypatch, tmp_path):
+    from bridge import diag
+    from bridge.engine import ardour as A
+    e = A.ArdourEngine(link=object())
+    monkeypatch.setattr(e, "run_script", lambda: str(tmp_path / "absent.sh"))
+    (tmp_path / "absent.sh").write_text("")
+    monkeypatch.setattr(e, "stop", lambda timeout=10.0: True)
+    monkeypatch.setattr(A, "RUN_LOG", str(tmp_path / "engine.log"))
+    monkeypatch.setattr(A.subprocess, "Popen", lambda *a, **k: None)
+    diag.peek_intent("reaper", clear=True)
+    e.restart(why="requested")
+    assert diag.peek_intent("reaper", clear=True) == "restart-requested"
+    e.restart(why="crash")                                          # une relance après plantage n'est pas un arrêt voulu
+    assert diag.peek_intent("reaper") is None
+
+
+def test_l_arret_ne_vise_que_les_moteurs_de_ce_rack(monkeypatch, tmp_path):
+    import os
+    import subprocess
+    import sys
+    import time
+    from bridge import config as C
+    from bridge.engine import ardour as A
+    if not os.path.isdir("/proc") or sys.platform != "linux":
+        return
+    # un faux moteur : argv = [luasession, …/golem_watch.lua, <racine>] comme run.py, mais c'est python qui dort
+    watch = tmp_path / "golem_watch.lua"
+    watch.write_text("import time\ntime.sleep(30)\n")
+    procs = [subprocess.Popen(["bash", "-c", f'exec -a luasession "{sys.executable}" "{watch}" "{root}"'])
+             for root in (str(tmp_path), "/ailleurs")]
+    try:
+        time.sleep(0.3)
+        monkeypatch.setattr(C, "ROOT", str(tmp_path))
+        assert A.ArdourEngine(link=object())._rack_pids() == {procs[0].pid}
+    finally:
+        for p in procs:
+            p.kill()

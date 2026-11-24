@@ -313,6 +313,20 @@ def test_la_carte_par_defaut_est_celle_de_golem(monkeypatch, tmp_path):
     assert A.card_device() == "Universal Audio Volt 276"
 
 
+def test_sans_fiche_la_carte_branchee_est_sondee(monkeypatch, tmp_path):
+    # rack réel 2026-11-24 : iTwo choisie par config/io.json, aucun config/cards/ — le moteur partait sur Dummy
+    from bridge import cards
+    monkeypatch.setattr(A.sys, "platform", "linux")
+    monkeypatch.setattr(C, "ROOT", str(tmp_path))
+    monkeypatch.setattr(C, "alsa_card", lambda: "iTwo")
+    monkeypatch.setattr(cards, "probe", lambda cid: {"id": cid, "name": "PreSonus AudioBox iTwo"} if cid == "iTwo" else None)
+    assert A.card_device() == "PreSonus AudioBox iTwo"
+    monkeypatch.setattr(cards, "probe", lambda cid: None)               # débranchée : rien n'est deviné
+    assert A.card_device() is None
+    monkeypatch.setattr(C, "alsa_card", lambda: "")
+    assert A.card_device() is None
+
+
 def test_sous_windows_la_carte_est_le_pilote_asio_de_settings_audio(monkeypatch, tmp_path):
     """Windows (2026-11-20) : pas de config/cards — la carte est le pilote ASIO réglé dans Settings ▸ Audio (le
     reaper.ini de golem) ; un autre mode audio ne devine rien : le moteur reste sur le pilote factice."""

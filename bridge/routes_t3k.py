@@ -9,7 +9,7 @@ L'install tourne en THREAD (la requête rend la main) : download des modèles co
 catalogue -> classification -> l'ampli apparaît dans Amps ET le tiroir Designer
 (caches sur mtime). Suivi via GET /api/t3k/status.
 """
-import importlib.util, json, os, sys, threading, urllib.parse
+import contextlib, importlib.util, json, os, sys, threading, urllib.parse
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -327,6 +327,16 @@ def _install_worker(tid, model_ids):
                 if m.get("id") in want and m.get("id") not in got and m.get("model_url"):
                     picked.append(m)
                     got.add(m.get("id"))
+            # UN MODÈLE RETIRÉ DE LA LISTE N'EST PAS UN MODÈLE DISPARU (2026-11-24) : l'auteur du tone 27435 a remplacé
+            # ses captures en septembre 2026 ; les 106490/106491 que l'usine épingle ne sont plus listés par
+            # /models?tone_id=, mais /models/<id> les sert encore. On les demande un par un, sous réserve qu'ils
+            # appartiennent bien à CE tone.
+            for mid in sorted(x for x in want if x not in got):
+                with contextlib.suppress(Exception):
+                    st_m, m = _t3k.api_get(f"/api/v1/models/{mid}")
+                    if st_m == 200 and isinstance(m, dict) and str(m.get("tone_id")) == str(tid) and m.get("model_url"):
+                        picked.append(m)
+                        got.add(m.get("id"))
             models = picked
         models = _cap_models(models, model_cap(meta.get("gear")))
         if not models:

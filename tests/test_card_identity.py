@@ -21,6 +21,15 @@ def test_la_cle_usb_relie_le_nom_linux_et_le_pilote_windows(monkeypatch, tmp_pat
     assert cards.same_card("hw:V276", "asio:Universal Audio Volt")
 
 
+def test_sans_fiche_locale_la_volt_linux_reste_la_volt_asio(monkeypatch, tmp_path):
+    # 2026-11-24 : sous Windows, config/cards/ n'a pas la fiche V276 du rack Linux — le mode « Home » (hw:V276) n'était
+    # plus la Volt branchée, et le Designer posait les lanes sur le câblage Linux (Voice IN 2, Guitar IN 1)
+    monkeypatch.setattr(cards, "CARDS_DIR", str(tmp_path))            # registre VIDE
+    assert cards.usb_of("hw:V276") == "2b5a:0023"
+    assert cards.same_card("hw:V276", "asio:Universal Audio Volt")
+    assert cards.usb_of("hw:XR18") is None                            # une carte jamais mesurée n'est pas devinée
+
+
 def test_un_pilote_generique_ou_une_autre_carte_ne_correspond_pas(monkeypatch, tmp_path):
     _registry(monkeypatch, tmp_path)
     assert cards.usb_of("asio:ASIO4ALL v2") is None                    # un emballage n'est l'identité de rien

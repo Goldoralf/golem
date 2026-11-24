@@ -45,7 +45,11 @@ Local state (git-ignored). Module `bridge/cards.py`.
 - `cards.remember(cid)`: probe + write. Enriched fields (`phones`, `labels`, `buffer_safe`) of an
   existing descriptor are **kept**; the probe only refreshes what it can measure.
 - `cards.known(cid)`, `cards.registry()`, `cards.usb_of(device)`, `cards.same_card(a, b)` (two names of
-  one card, by USB identity across OS keys — [returns.md](returns.md) §2).
+  one card, by USB identity across OS keys — [returns.md](returns.md) §2). `config/cards/` is local state: a
+  Windows or macOS machine has no descriptor for a card a mode declared under its Linux name. `usb_of("hw:<id>")`
+  then falls back to `cards.KNOWN_ALSA_USB`, the ALSA ids measured on real hardware (`v276` → `2b5a:0023`), the
+  Linux counterpart of `provision/desktop.KNOWN_USB_ASIO`. Without it the mode "Home" (`hw:V276`) was not the Volt
+  plugged in over ASIO, and the Designer laid lanes on the Linux wiring (fixed 2026-11-24).
 - ALSA gives the **number** of channels, never their **independence** (a headphone jack usually
   mirrors OUT 1–2). That is declared (`phones`), never guessed ([mixer.md](mixer.md) §5).
 

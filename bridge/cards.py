@@ -228,7 +228,9 @@ def usb_of(device):
         for c in registry():
             if c.get("id") == cid and c.get("usb"):
                 return str(c["usb"]).lower()
-        return None
+        # le registre est LOCAL (config/cards/, rempli par le probe Linux) : sous Windows il n'a pas la fiche de la carte
+        # qu'un mode venu de Linux déclare. Repli : les identifiants ALSA mesurés (KNOWN_ALSA_USB)
+        return KNOWN_ALSA_USB.get(cid.casefold())
     if d.startswith("asio:"):
         try:
             from provision.desktop import KNOWN_USB_ASIO
@@ -249,6 +251,14 @@ def usb_of(device):
 # plutôt que par un nom figé. À lancer sur une vraie machine avant de s'y fier : `python -c "from bridge import
 # cards; print(cards._mac_usb_devices())"` doit lister la Volt avec 2b5a:0023.
 _MAC_USB_CACHE = {"at": 0.0, "val": None}
+
+
+# L'IDENTIFIANT ALSA -> LA CLÉ USB des cartes mesurées (2026-11-24) — le pendant Linux de provision/desktop.KNOWN_USB_ASIO.
+# Le mode « Home » du mainteneur déclare `hw:V276` (fait sous Linux) ; sous Windows, sans fiche locale, rien ne disait
+# que c'était la Volt branchée en ASIO : le Designer préparait les lanes sur le câblage Linux (Guitar 1, Voice 2) alors
+# que la carte branchée a Voice en 1 et Guitar en 2 — onglets « Voice IN 2 / Guitar IN 1 », patch guitare sur IN 1.
+# Une entrée par carte MESURÉE (lsusb + /proc/asound/cards), jamais devinée depuis un nom.
+KNOWN_ALSA_USB = {"v276": "2b5a:0023"}                 # Universal Audio Volt 276 (rack de dev, 2026-07)
 
 
 def _hexid(v):

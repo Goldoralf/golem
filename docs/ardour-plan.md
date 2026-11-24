@@ -1486,7 +1486,7 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 **Status: CODED, played by hand on the dev box** (Universal Audio Volt over ASIO, 48 kHz, buffer 256, the factory
 "Jazz Box" patch; no crackle at 256, crackles at 128). **Packaged and published**: release `golem-engine-9.9-g4` of
 Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), then `golem-engine-9.9-g5` (2026-11-23, both
-systems) and `golem-engine-9.9-g6` (2026-11-24, both systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
+systems), `golem-engine-9.9-g6` and `golem-engine-9.9-g7` (2026-11-24, both systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
 to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pass.
 
 - **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
@@ -1541,7 +1541,14 @@ to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pas
     recreated every device info as enabled, so the request looked like a no-op: the keys lane stayed silent.
     `WinMMEMidiIO::open_device` opens it under the device lock; a rescan keeps the infos of devices still present.
     Played by hand on the dev box (MPK Mini, factory preset #01 scene C). g6 also holds a preview's start out of the
-    dropout counter. Windows is pinned to g6 (`provision/windows/pins.json`).
+    dropout counter.
+- **The latency the driver applies** (2026-11-24, `golem-engine-9.9-g7`, tag on `24d7d6844`): an ASIO driver's own
+    panel may impose a larger buffer than the one requested (the UA Volt ran at 512 in safe mode while golem asked for
+    256), and golem showed two requested buffers, 10.7 ms for a real ~27 ms. Patch 15 of the fork
+    (`AudioBackend::device_input_latency` / `device_output_latency`, PortAudio's stream latency, bound in Lua); the
+    watcher writes `latency_in` / `latency_out` in `.engine-status.json`, and `cards.engine_card()` shows that figure
+    (`latency_source: "driver"`) and warns when the driver keeps its own buffer. Checked on the Volt: 8.6 ms at 128,
+    14.3 ms at 256, the figures REAPER reports. Windows is pinned to g7 (`provision/windows/pins.json`).
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

@@ -65,13 +65,17 @@ on the dummy backend); the Windows asset on the dev box.
 
 **Superseded 2026-11-24 by `golem-engine-9.9-g6`** (tag on `db506a0d9`; CI run 45472265334): g5 plus a WinMME fix
 (Windows only: a MIDI keyboard enabled at runtime is opened) and a preview's start no longer counted as dropouts (both
-systems). Windows is pinned to g6 (`provision/windows/pins.json`).
+systems).
+
+**Superseded 2026-11-24 by `golem-engine-9.9-g7`** (tag on `24d7d6844`; CI run 45492816198): g6 plus the latency the
+driver applies (`latency_in` / `latency_out` in `.engine-status.json`; PortAudio only, the ALSA backend reports
+nothing yet and golem keeps its own ALSA figure). Windows is pinned to g7 (`provision/windows/pins.json`).
 
 What is left for this pass:
 
-- Run §1–3 against **the g6 package** (or the dev tree at the tag), not only the dev tree.
-- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g6` and the line in `provision/downloads.sha256`:
-  `ccc2d1be63c3f9686bf5571bb7cc37c1fae2d081ce551cab8eb3e2b9156164e8` for `golem-engine-linux-x86_64.tar.gz` (the
+- Run §1–3 against **the g7 package** (or the dev tree at the tag), not only the dev tree.
+- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g7` and the line in `provision/downloads.sha256`:
+  `e623acaa326ab9e7d17650ee86bb29b0dcb7d22ee5b91ef4d1a98504dc014274` for `golem-engine-linux-x86_64.tar.gz` (the
   release's `SHA256SUMS`; recompute it on the downloaded asset and compare).
 - Release tags of the engine must stay **lightweight** (the workflow says why: `git describe`). The workflow still
   creates its release: a later tag that should carry both systems runs the workflow first, then uploads the Windows

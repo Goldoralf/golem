@@ -334,6 +334,12 @@ def _read_latency_ms():
     c'est xruns l'indicateur temps réel). period_size, PAS buffer_size (le ring complet = 3 périodes
     sur-compte ×3). None si Reaper ne tient pas la carte ('closed')."""
     if sys.platform in ("win32", "darwin"):
+        # le Golem Engine : la latence que SON pilote déclare (cards.engine_card) — la télémétrie de REAPER est vide
+        # ou périmée quand REAPER ne tourne pas
+        from . import cards
+        eng = cards.engine_card()
+        if eng is not None:
+            return eng["latency_ms"] if eng["present"] else None
         from . import desktop_audio
         return desktop_audio.latency_ms()[0]
     try:
@@ -709,6 +715,14 @@ async def _monitor_audio():
                            "buffer_size": int(actual["BSIZE"]),
                            "driver": actual.get("IDENT_IN") or actual.get("IDENT_OUT"),
                            "xruns_available": "AUDIO_XRUN_TIME" in actual}
+            from . import cards
+            eng = await loop.run_in_executor(None, cards.engine_card)
+            if eng is not None:                          # le Golem Engine : sa carte, pas la télémétrie de REAPER
+                metrics = {"platform": sys.platform}
+                if eng["present"] and eng["sample_rate"] and eng["buffer"]:
+                    metrics = {"platform": sys.platform, "source": eng["latency_source"],
+                               "sample_rate": eng["sample_rate"], "buffer_size": eng["buffer"],
+                               "driver": None, "xruns_available": False}
             if metrics != state.audio_metrics:
                 state.audio_metrics = metrics; changed = True
         if xr is not None and xr != state.xruns:

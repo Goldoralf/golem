@@ -254,6 +254,14 @@ def system():
         out["audio_dsp_load"] = eng_audio.get("dsp_load")
         out["audio_backend"] = eng_audio.get("backend")
         out["audio_live_buffer"] = True                  # le buffer change à chaud : pas de redémarrage
+        # la latence et la carte : celles que le moteur a ouvertes, pas la télémétrie (vide ou périmée) de REAPER
+        from . import cards as _cards
+        card = _cards.engine_card() if desktop else None
+        if card is not None:
+            ok = card["present"]
+            out["audio_latency_ms"] = card["latency_ms"] if ok else None
+            out["audio_latency_source"] = card["latency_source"] if ok else None
+            out["audio_driver_override"] = _cards.engine_driver_override(card)
     return out
 
 
@@ -818,7 +826,7 @@ def soundcard():
             opened = present = eng["present"]
             inputs, outputs = (eng["inputs"], eng["outputs"]) if present else (None, None)
             srate, names_in, names_out = (eng["sample_rate"] if present else None), None, None
-            latency, source = (eng["latency_ms"], "nominal") if present else (None, source)
+            latency, source = (eng["latency_ms"], eng["latency_source"]) if present else (None, source)
             actual = {"IDENT_IN": "engine", "IDENT_OUT": "engine"} if present else {}
         # la rangée RACK de l'écran (USB 1-4 + MIDI IN/OUT) : bridge/desktop_midi.py
         from . import desktop_midi, devices, foot as _foot, midi_out as _mout

@@ -78,6 +78,29 @@ def test_windows_soundcard_on_the_golem_engine_shows_the_card_the_engine_holds(m
     assert cards.connected() == [{"index": 0, "id": "UMC ASIO Driver", "name": "UMC ASIO Driver"}]
 
 
+def test_windows_engine_latency_is_what_the_driver_reports_not_the_requested_buffer(monkeypatch, tmp_path):
+    # la Volt (2026-11-24) : golem demandait 256, son panneau ASIO imposait 512 en mode sûr — ~27 ms, pas 10,7
+    monkeypatch.setattr(monitors.sys, "platform", "win32")
+    sound = _on_engine(monkeypatch, tmp_path, {**VOLT, "latency_in": 640, "latency_out": 640})
+    assert sound["latency_ms"] == 26.7 and sound["latency_source"] == "driver"
+    assert monitors._read_latency_ms() == 26.7
+    card = cards.engine_card()
+    assert card["nominal_ms"] == 10.7
+    assert cards.engine_driver_override(card) == {"reported_ms": 26.7, "expected_ms": 10.7, "driver": None}
+
+
+@pytest.mark.parametrize("extra", [{}, {"latency_in": 0, "latency_out": 0}, {"latency_in": 300, "latency_out": 300}])
+def test_windows_engine_latency_falls_back_or_stays_quiet(monkeypatch, tmp_path, extra):
+    # un moteur d'avant g7 (aucun champ), un backend qui ne sait pas (0), un pilote honnête (12,5 ms à 256) : rien à dire
+    sound = _on_engine(monkeypatch, tmp_path, {**VOLT, **extra})
+    card = cards.engine_card()
+    assert cards.engine_driver_override(card) is None
+    if extra.get("latency_in"):
+        assert sound["latency_source"] == "driver" and sound["latency_ms"] == 12.5
+    else:
+        assert sound["latency_source"] == "nominal" and sound["latency_ms"] == 10.7
+
+
 @pytest.mark.parametrize("status,age", [({**VOLT, "running": False}, 0.0),
                                         ({**VOLT, "backend": "None (Dummy)"}, 0.0),
                                         (VOLT, 30.0)])                      # statut périmé : le moteur ne bat plus

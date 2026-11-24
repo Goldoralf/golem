@@ -745,7 +745,7 @@ function DashboardPanel({ rig, admin, acts }) {
         <div class="dash-buf">
           <div class="dash-buf-head">
             <b>Audio buffer</b>
-            <span class="muted">${desktopAudio ? 'device latency' : 'round-trip = 2 × buffer @ 48 kHz'} — ${desktopAudio ? (latencySource === 'reaper' ? 'REAPER reports' : 'nominal estimate') : 'measured live'}: ${lat != null ? html`<b>${lat} ms</b>` : '—'}${desktopAudio ? '' : ` · xruns ${xr}`}</span>
+            <span class="muted">${desktopAudio ? 'device latency' : 'round-trip = 2 × buffer @ 48 kHz'} — ${desktopAudio ? (latencySource === 'reaper' ? 'REAPER reports' : latencySource === 'driver' ? 'the driver reports' : 'nominal estimate') : 'measured live'}: ${lat != null ? html`<b>${lat} ms</b>` : '—'}${desktopAudio ? '' : ` · xruns ${xr}`}</span>
           </div>
           <div class="dash-buf-chips">
             ${sizes.map(sz => { const off = !!(okSizes && !okSizes.includes(sz) && sz !== bsize);
@@ -765,8 +765,9 @@ function DashboardPanel({ rig, admin, acts }) {
             ${desktopAudio && !applying && data && data.audio_driver_override ? html`<span class="dash-hint warn">
               ⚠ ${(data.audio_driver_override.driver ? esc(data.audio_driver_override.driver) + ' reports ' : 'Your audio driver reports ')
               + data.audio_driver_override.reported_ms} ms where ${bsize || 'this'} samples should give about ${data.audio_driver_override.expected_ms} ms:
-              the driver keeps its own buffer. Set it in the card's control panel (Focusrite Control, or REAPER ▸ Preferences ▸
-              Audio ▸ Device ▸ ASIO Configuration), turn off any “Safe Mode”, then restart REAPER from the Reaper tile.</span>` : ''}
+              the driver keeps its own buffer. ${data.engine && data.engine.id !== 'reaper'
+                ? 'Set it in the card’s control panel (Focusrite Control, UA Volt Control Panel…), turn off any “Safe Mode”, then restart golem.'
+                : 'Set it in the card’s control panel (Focusrite Control, or REAPER ▸ Preferences ▸ Audio ▸ Device ▸ ASIO Configuration), turn off any “Safe Mode”, then restart REAPER from the Reaper tile.'}</span>` : ''}
           </div>
         </div>
         ${admin && data ? html`<${MachineRow} platform=${data.platform} acts=${acts} />` : ''}

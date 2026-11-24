@@ -50,9 +50,29 @@ def engine_card(now=None):
         except (KeyError, TypeError, ValueError):
             return None
     sr, buf = _int("sample_rate"), _int("buffer")
+    # aller-retour nominal : un buffer en entrée, un en sortie (sans la latence des convertisseurs)
+    nominal = round(2000.0 * buf / sr, 1) if sr and buf else None
+    # CE QUE LE PILOTE DÉCLARE (latency_in/out, échantillons, buffer compris — PortAudio, Pa_GetStreamInfo) : le panneau
+    # d'une carte ASIO impose parfois son propre buffer. La Volt tournait à 512 quand golem demandait 256 et la page
+    # affichait 10,7 ms au lieu de ~25 (2026-11-24). Absent (moteur d'avant g7, backend qui ne sait pas) : le nominal.
+    lin, lout = _int("latency_in"), _int("latency_out")
+    if sr and lin and lout and lin > 0 and lout > 0:
+        latency, source = round(1000.0 * (lin + lout) / sr, 1), "driver"
+    else:
+        latency, source = nominal, "nominal"
     return {"present": present, "inputs": _int("inputs"), "outputs": _int("outputs"), "sample_rate": sr, "buffer": buf,
-            # aller-retour nominal : un buffer en entrée, un en sortie (sans la latence des convertisseurs)
-            "latency_ms": round(2000.0 * buf / sr, 1) if sr and buf else None}
+            "latency_ms": latency, "latency_source": source, "nominal_ms": nominal}
+
+
+def engine_driver_override(eng):
+    """Le pilote garde-t-il la main sur le buffer, sous le Golem Engine ? Même règle que desktop_audio.driver_override
+    (REAPER) : la latence DÉCLARÉE dépasse largement deux buffers demandés. {reported_ms, expected_ms, driver} ou None."""
+    if not eng or not eng.get("present") or eng.get("latency_source") != "driver":
+        return None
+    lat, nominal = eng.get("latency_ms"), eng.get("nominal_ms")
+    if not lat or not nominal or lat <= max(2 * nominal, nominal + 8):
+        return None
+    return {"reported_ms": lat, "expected_ms": nominal, "driver": None}
 
 
 # ── probe ALSA (lecture seule, sans dépendance) ──────────────────────────────

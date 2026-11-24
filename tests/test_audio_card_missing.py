@@ -19,6 +19,7 @@ def rig(monkeypatch):
                                          "active_name": "PreSonus AudioBox iTwo"})
     monkeypatch.setattr(state, "perf", {})
     monkeypatch.setitem(monitors._AUDIO_FIX, "tried", False)
+    monkeypatch.setattr(monitors, "_engine_overloaded", lambda: None)   # le moteur de la machine qui teste n'y entre pas
     return sent
 
 
@@ -45,3 +46,30 @@ def test_carte_presente_rien_ne_change(rig):
 def test_desktop_ignores_linux_alsa_card(rig, monkeypatch):
     monkeypatch.setattr(monitors.sys, "platform", "win32")
     assert monitors._active_card_missing() is None
+
+
+def test_moteur_sature_on_ne_rouvre_pas_la_carte(rig, monkeypatch):
+    # rack 2026-11-24 (i5-3337U, Golem Engine, « Chill Jazz » à 100 % DSP) : chaque calage rouvrait la carte, 22 fois
+    state.cards = {**state.cards, "active_present": True}
+    monkeypatch.setattr(monitors, "_engine_overloaded", lambda: 100.0)
+    for _ in range(3):
+        a = monitors._audio_recover(False, "audio thread stalled — sound card lost?")
+    assert rig == [] and monitors._AUDIO_FIX["tried"] is False
+    assert a["ok"] is False and a["overload"] is True and "overloaded" in a["why"]
+    monkeypatch.setattr(monitors, "_engine_overloaded", lambda: None)   # la charge retombe, le calage reste : on tente
+    assert monitors._audio_recover(False, "stalled")["fix"] == "recovering…" and rig == [{"action": "audio_reset"}]
+
+
+def test_la_surcharge_se_lit_dans_la_charge_dsp_du_moteur(monkeypatch):
+    from bridge import engine
+
+    class E:
+        def __init__(self, load):
+            self.load = load
+
+        def audio(self):
+            return {} if self.load is None else {"dsp_load": self.load}
+
+    for load, want in ((100, 100.0), (95, 95.0), (60, None), (None, None)):
+        monkeypatch.setattr(engine, "get", lambda e=E(load): e)
+        assert monitors._engine_overloaded() == want

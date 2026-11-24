@@ -76,6 +76,11 @@ def test_un_fait_rouge_recoit_l_action_qui_lui_repond(rack, monkeypatch):
     assert F.suggest({"id": "audio", "level": "bad"}) is None, "une carte débranchée se rebranche"
     monkeypatch.setattr(state, "audio", {"ok": False, "why": "the audio thread stopped"})
     assert F.suggest({"id": "audio", "level": "bad"})["action"] == "audio_reset"
+    # moteur saturé (2026-11-24) : rouvrir la carte ne rend pas de CPU — le buffer suivant, ou rien au plus grand
+    monkeypatch.setattr(state, "audio", {"ok": False, "why": "audio engine overloaded (100% DSP)", "overload": True})
+    assert F.suggest({"id": "audio", "level": "bad"}) is None, "déjà au plus grand : rien à proposer"
+    monkeypatch.setattr(F, "_bsize", lambda: 128)
+    assert F.suggest({"id": "audio", "level": "bad"}) == {"action": "set_buffer", "params": {"size": 192}}
     assert F.suggest({"id": "disk", "level": "bad"}) is None
     assert F.suggest({"id": "dropouts", "level": "ok"}) is None
 

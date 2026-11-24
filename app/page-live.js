@@ -584,7 +584,7 @@ function PedalboardLive({ rig, presets }) {
             barre ne doit pas faire quitter /live sur scène — la puce reste une information, son infobulle aussi. */''}
       ${st.audio && st.audio.ok === false ? html`<span class=${cls('live-inf warn', toHealth && 'tap')} onClick=${toHealth && toHealth('audio')}
         title=${(st.audio.why || 'audio stalled') + (st.audio.fix ? ' · ' + st.audio.fix : '') + healthHint}
-        >⚠ ${st.audio.card ? 'NO CARD' : 'NO AUDIO'}${st.audio.fix && /waiting|recovering/.test(st.audio.fix) ? ' …' : ''}</span>` : ''}
+        >⚠ ${st.audio.card ? 'NO CARD' : st.audio.overload ? 'OVERLOAD' : 'NO AUDIO'}${st.audio.fix && /waiting|recovering/.test(st.audio.fix) ? ' …' : ''}</span>` : ''}
       ${/* même raison que NO AUDIO : la sentinelle MIDI portait « lane Keys morte, masque
              midiins périmé » et sa réparation, sans que rien ne l'affiche. Un clavier muet se
              cherchait alors à la main, bloc par bloc. */''}

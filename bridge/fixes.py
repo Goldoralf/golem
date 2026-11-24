@@ -420,6 +420,10 @@ def suggest(fact):
         a = getattr(st, "audio", None) or {}
         if a.get("card") or "not connected" in str(a.get("why") or ""):
             return None                                   # une carte débranchée se rebranche, elle ne se « répare » pas
+        if a.get("overload"):                             # moteur saturé : rouvrir la carte ne rend pas de CPU, un buffer si
+            cur, sizes = _bsize(), _buffer_sizes()
+            nxt = next((s for s in sizes if cur and s > cur), None)
+            return {"action": "set_buffer", "params": {"size": nxt}} if nxt else None
         return {"action": "audio_reset", "params": {}}
     if fid == "pedalboard" and (getattr(st, "midi", None) or {}).get("ok") is False:
         return {"action": "midi_reinit", "params": {}}

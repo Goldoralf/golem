@@ -484,6 +484,20 @@ def _active_card_missing():
     return None
 
 
+OVERLOAD_DSP = 95.0           # % de charge DSP du moteur au-delà duquel un calage est une SURCHARGE, pas une carte perdue
+
+
+def _engine_overloaded():
+    """La charge DSP du moteur (%) s'il est SATURÉ, sinon None. Seul un moteur qui la publie (le Golem Engine,
+    presets/.engine-status.json `dsp_load`) peut le dire ; REAPER : None, son chemin d'avant."""
+    with contextlib.suppress(Exception):
+        from . import engine
+        load = (engine.get().audio() or {}).get("dsp_load")
+        if load is not None and float(load) >= OVERLOAD_DSP:
+            return float(load)
+    return None
+
+
 def _audio_recover(alive, why):
     """Rend le nouvel état `state.audio` et déclenche au plus UNE récupération par épisode."""
     if alive:
@@ -498,6 +512,14 @@ def _audio_recover(alive, why):
     if missing:
         return {"ok": False, "why": f"{missing} is not connected", "card": missing,
                 "fix": "plug it in, or switch to another card"}
+    # garde-fou 5 (2026-11-24) : LE MOTEUR EST SATURÉ, la carte va bien. Sur un i5-3337U, « Chill Jazz » demandait 6,3 ms
+    # de calcul par cycle de 5,3 ms au Golem Engine (dspstats) : le fil audio calait par moments, le témoin figeait, et
+    # chaque calage rouvrait la carte — 22 fois en quelques minutes, une coupure de plus à chaque fois. Rouvrir la carte
+    # ne rend pas de CPU : on dit la surcharge, et on ne brûle pas la tentative (une vraie perte de carte reste possible).
+    load = _engine_overloaded()
+    if load is not None:
+        return {"ok": False, "why": f"audio engine overloaded ({load:.0f}% DSP) — the CPU can't keep up",
+                "overload": True, "fix": "choose a lighter preset, or a larger buffer"}
     recording = bool((state.perf or {}).get("recording"))
     if recording:                                    # garde-fou 1 : la prise passe avant tout
         return {"ok": False, "why": why, "fix": "waiting — a take is recording"}

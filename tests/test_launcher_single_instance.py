@@ -36,8 +36,8 @@ def test_le_premier_lanceur_prend_le_verrou_un_autre_processus_non(rdir):
 def test_le_second_lanceur_attend_puis_ouvre_la_fenetre_sans_demarrer_de_bridge(rdir, monkeypatch):
     monkeypatch.setattr(desktop, "venv_python", lambda: desktop.Path(desktop.sys.executable))
     monkeypatch.setattr(desktop, "_launcher_lock", lambda: False)        # un autre lanceur tient le verrou
-    answers = iter([False, False, True])
-    monkeypatch.setattr(desktop, "bridge_answers", lambda port: next(answers, True))
+    health = iter([None, None, {"ok": True}])
+    monkeypatch.setattr(desktop, "bridge_health", lambda port: next(health, {"ok": True, "screens": 1}))
     monkeypatch.setattr(desktop.time, "sleep", lambda s: None)
     opened = []
     monkeypatch.setattr(desktop, "open_window", lambda *a, **k: opened.append(a))
@@ -49,10 +49,37 @@ def test_le_second_lanceur_attend_puis_ouvre_la_fenetre_sans_demarrer_de_bridge(
 def test_un_premier_demarrage_qui_ne_finit_pas_est_dit(rdir, monkeypatch):
     monkeypatch.setattr(desktop, "venv_python", lambda: desktop.Path(desktop.sys.executable))
     monkeypatch.setattr(desktop, "_launcher_lock", lambda: False)
-    monkeypatch.setattr(desktop, "bridge_answers", lambda port: False)
+    monkeypatch.setattr(desktop, "bridge_health", lambda port: None)
     monkeypatch.setattr(desktop.time, "sleep", lambda s: None)
     with pytest.raises(RuntimeError, match="still starting"):
         desktop.start(window=True)
+
+
+def test_un_golem_qui_s_arrete_n_est_pas_un_golem_qui_tourne(rdir, monkeypatch):
+    """2026-11-24 : cliqué pendant l'arrêt, le lanceur attendait un `ok` qui ne venait plus — le premier clic ne lançait
+    rien. Le lanceur parti, le verrou est à nous : on démarre."""
+    locks = iter([False, False, False, True])                            # l'autre lanceur sort au 3e tour
+    monkeypatch.setattr(desktop, "_launcher_lock", lambda: next(locks, True))
+    monkeypatch.setattr(desktop, "bridge_health", lambda port: {"stopping": True, "ok": True})
+    monkeypatch.setattr(desktop.time, "sleep", lambda s: None)
+    assert desktop._wait_other_launcher(8770, seconds=5) == "free"
+
+
+def test_un_clic_pendant_l_arret_demarre_golem_au_lieu_d_attendre(rdir, monkeypatch):
+    monkeypatch.setattr(desktop, "venv_python", lambda: desktop.Path(desktop.sys.executable))
+    monkeypatch.setattr(desktop, "_wait_other_launcher", lambda port: "free")
+    monkeypatch.setattr(desktop, "_launcher_lock", lambda: False)
+    started = []
+    # après « free », le lanceur suit le chemin d'un premier lanceur : l'arrêt fini, plus aucun bridge -> il démarre
+    monkeypatch.setattr(desktop, "bridge_health", lambda port: None)
+    monkeypatch.setattr(desktop, "bridge_answers", lambda port: False)
+    monkeypatch.setattr(desktop, "chosen_engine", lambda: started.append("engine") or "ardour")
+    monkeypatch.setattr(desktop, "reaper_running", lambda: False)
+    monkeypatch.setattr(desktop, "open_window", lambda *a, **k: pytest.fail("no window without a bridge"))
+    with pytest.raises(BaseException):                                   # coupé au démarrage réel (pas de vrai golem ici)
+        monkeypatch.setattr(desktop, "copy_resources", lambda d: (_ for _ in ()).throw(KeyboardInterrupt()))
+        desktop.start(window=True)
+    assert started == ["engine"]
 
 
 def test_un_bridge_vivant_mais_lent_n_est_plus_tue(rdir, monkeypatch, tmp_path):

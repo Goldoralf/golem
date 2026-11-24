@@ -1202,13 +1202,22 @@ def _launcher_lock():
 
 
 def _wait_other_launcher(port, seconds=None):
-    """Un autre lanceur démarre le golem : attendre que son bridge réponde. Rend True s'il répond."""
+    """Un autre lanceur tient le verrou : attendre que SON golem réponde — rend "running" — ou qu'il PARTE — rend
+    "free", le verrou est alors à nous et ce lanceur démarre golem lui-même. None au bout du délai.
+
+    LE PREMIER CLIC NE LANÇAIT RIEN, LE SECOND OUVRAIT DEUX FENÊTRES (2026-11-24). Le lanceur d'un golem qu'on arrête
+    (⏻, la croix) vit jusqu'à la fin de l'arrêt et garde le verrou ; son bridge répond `stopping`, jamais `ok`. Un clic
+    à ce moment attendait un `ok` qui ne venait plus (6 min sans fenêtre) ; le clic suivant, verrou libre, démarrait
+    golem — et le premier, qui attendait toujours, voyait ce nouveau bridge et ouvrait une seconde fenêtre."""
     seconds = seconds if seconds is not None else BRIDGE_START_S + 60     # au moins le délai du premier lanceur
     for _ in range(int(seconds * 2)):
-        if bridge_answers(port):
-            return True
+        if _launcher_lock():
+            return "free"
+        h = bridge_health(port) or {}
+        if h.get("ok") and not h.get("stopping"):
+            return "running"
         time.sleep(0.5)
-    return False
+    return None
 
 
 def start(shell="device", reset=False, fullscreen=False, window=True):
@@ -1221,16 +1230,22 @@ def start(shell="device", reset=False, fullscreen=False, window=True):
     port = int(os.environ.get("GOLEM_PORT", "8770"))
     # UN AUTRE LANCEUR DÉMARRE DÉJÀ LE GOLEM : on l'attend, puis on fait comme « déjà lancé » (la fenêtre, ou l'adresse)
     if not _launcher_lock():
-        print("golem is already starting — waiting for it…")
-        if not _wait_other_launcher(port):
+        print("golem is already starting or stopping — waiting for it…")
+        other = _wait_other_launcher(port)
+        if other is None:
             raise RuntimeError("golem is still starting (the first start on a new machine can take a few minutes). "
                                "Wait a moment, then open golem again.")
-        if not window:
-            _notify(server_message(port))
+        if other == "running":
+            if not window:
+                _notify(server_message(port))
+                return
+            # la fenêtre de L'AUTRE lanceur d'abord (il l'ouvre dès que son bridge répond) : on la ramène devant au lieu
+            # d'en ouvrir une seconde à côté
+            wait_for_screen(port, timeout=8.0)
+            open_window(port, shell, reset, fullscreen)
+            print(f"golem is already running: window opened on http://127.0.0.1:{port}/app/")
             return
-        open_window(port, shell, reset, fullscreen)
-        print(f"golem is already running: window opened on http://127.0.0.1:{port}/app/")
-        return
+        # "free" : l'autre lanceur est parti (golem arrêté) — le verrou est à nous, on démarre
     # EN TRAIN DE S'ARRÊTER : relancé pendant le ⏻, le lanceur ouvrait une fenêtre sur le bridge mourant et ne
     # démarrait rien — « Bridge link lost » jusqu'à une seconde relance (2026-10-10). On attend la fin.
     if (bridge_health(port) or {}).get("stopping"):

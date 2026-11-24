@@ -372,9 +372,10 @@
       "hint": "The pedal never answers on MIDI — the wire only goes one way."
      },
      {
-      "title": "MIDI channel",
-      "do": "The Whammy DT listens on channel 1 out of the box. golem sends on channel 1.",
-      "hint": "If you changed it on the pedal, set the same number in this mapping."
+      "title": "MIDI channel 1, not Omni",
+      "do": "Unplug the Whammy's power. Hold the WHAMMY footswitch while you plug it back in: a WHAMMY LED blinks on the current channel. Turn the WHAMMY knob to the “↓ 2 OCT” position, that is channel 1. Press the WHAMMY footswitch to leave.",
+      "hint": "Not Omni (all channels): golem lights the foot controller's LEDs with program changes 0–9 on channel 16, on the same MIDI line, and a Whammy in Omni turns on at each one.",
+      "action": "midi_channel"
      },
      {
       "title": "Kill the merge on the FCB1010",

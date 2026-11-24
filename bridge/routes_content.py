@@ -2547,7 +2547,7 @@ def list_mappings():
         fams = d.get("families") or {}
         out.append({
             "id": d["id"], "name": d.get("name") or d["id"], "device": d.get("device") or "",
-            "midi_out": d.get("midi_out") or "", "channel": d.get("channel") or 1,
+            "midi_out": d.get("midi_out") or "", "channel": d.get("channel") or 1, "omni": d.get("omni"),
             "treadle_cc": (d.get("treadle") or {}).get("cc") or d.get("treadle_cc"),
             "modes": len(d["modes"]),
             "families": [{"id": k, "label": (v or {}).get("label") or k} for k, v in fams.items()],
@@ -2675,7 +2675,37 @@ def pedals_remove(pid: str):
 
 @router.get("/api/mapping/{name}")
 def get_mapping(name: str):
-    return _read_json(os.path.join(C.MAPPINGS_DIR, f"{_safe_id(name)}.json"), {})
+    d = _read_json(os.path.join(C.MAPPINGS_DIR, f"{_safe_id(name)}.json"), {})
+    # LA PROCÉDURE suit le catalogue (2026-11-24) : une pédale installée garde une COPIE figée de son descripteur, et
+    # l'étape « MIDI channel » de la Whammy affirmait encore « canal 1 d'usine » à un rack dont la pédale était en
+    # Omni. Les réglages locaux (canal, omni, étiquettes, verdict) restent ceux du fichier installé ; seules les
+    # étapes `install`, une recette livrée, viennent du catalogue quand la pédale en vient.
+    if isinstance(d, dict) and d.get("installed_from") == "catalog":
+        cat = _read_json(os.path.join(PEDALS_CATALOG, f"{_safe_id(name)}.json"), None)
+        if isinstance(cat, dict) and isinstance(cat.get("install"), dict):
+            d["install"] = cat["install"]
+    return d
+
+
+@router.post("/api/pedals/{pid}/omni")
+def pedals_omni(pid: str, body: dict):
+    """Ce que la pédale ÉCOUTE, déclaré par l'utilisateur après l'avoir réglée (golem ne peut pas l'entendre : une
+    pédale DIN ne répond pas). `omni` false = elle n'écoute que son canal ; true = tous les canaux ; null = on ne sait
+    pas. Pour la Whammy, false fait taire la garde qui redit son bypass après chaque appui à distance du pédalier
+    (app._whammy_after_remote_press, docs/pitfalls/midi.md)."""
+    p = os.path.join(C.MAPPINGS_DIR, f"{_safe_id(pid)}.json")
+    d = _read_json(p, None)
+    if not isinstance(d, dict):
+        return JSONResponse({"error": "pedal not installed"}, status_code=404)
+    v = (body or {}).get("omni")
+    if v not in (True, False, None):
+        return JSONResponse({"error": "omni must be true, false or null"}, status_code=400)
+    if v is None:
+        d.pop("omni", None)
+    else:
+        d["omni"] = v
+    _write_json_atomic(p, d)
+    return {"ok": True, "id": d.get("id"), "omni": d.get("omni")}
 
 
 @router.post("/api/mapping")

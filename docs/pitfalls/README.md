@@ -69,7 +69,7 @@ of a subsystem before changing it.
 - Windows: the sound card's DIN ports offered for calibration in Controllers / Drums / plug banners → exclude the active card's ports (signer of its ASIO DLL = driver provider of their PnP parent) → [midi.md](midi.md#windows-the-sound-cards-midi-ports-are-not-instruments)
 - Foot controller deaf (USB, or after card re-enumeration) → transport is descriptor data; restart reader on "Port unsubscribed" → [midi.md](midi.md#foot-controller-din-versus-usb-and-a-reader-subscribed-to-nothing)
 - Switch LED/behaviour wrong → reflash when switch ownership changes; `check-uno2.py` → [midi.md](midi.md#the-foot-controller-chip-must-be-reflashed-when-switch-ownership-changes)
-- Whammy turns on at every preset change → the LED remote presses (PC 0–9, ch 16) reach it through the shared MIDI OUT; golem re-states its state, the pedal must not be Omni → [midi.md](midi.md#a-pedal-on-the-midi-out-obeys-the-foot-controllers-remote-presses)
+- Whammy turns on at every preset change → the LED remote presses (PC 0–9, ch 16) reach it through the shared MIDI OUT; golem re-states its state; set the pedal to channel 1 and declare `"omni": false` to silence it → [midi.md](midi.md#a-pedal-on-the-midi-out-obeys-the-foot-controllers-remote-presses)
 
 ## Windows
 

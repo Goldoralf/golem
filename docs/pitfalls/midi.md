@@ -157,9 +157,14 @@ each LED press as "engage this program". The bridge log shows it: `POST /api/rec
 `diode SW6 -> ON (appui à distance)`.
 
 **Rule.** A message meant for one device on a shared DIN line reaches all of them; golem cannot know which
-channel a pedal listens to. Right after each remote press, golem re-states the Whammy state it believes in: the
-engaged program if any, otherwise the bypass of the program the press may have engaged (only when the input
-map declares a Whammy on MIDI OUT and its table exists). The clean setting is still the pedal's: give the
-Whammy its own channel (1, `mappings/whammy-dt.json`), never Omni.
+channel a pedal listens to, so it is told. By default golem assumes the Whammy may be in Omni: right after each
+remote press it re-states the state it believes in, the engaged program if any, otherwise the bypass of the
+program the press may have engaged. That is two messages to the pedal at each scene change that moves a LED,
+even with the Whammy in one preset only ("it does it all the time"). The clean fix is the pedal's: set the
+Whammy DT to its own channel (1, the one in `mappings/whammy-dt.json`; owner's manual, "MIDI Channel": power up
+holding the WHAMMY footswitch, turn the WHAMMY knob, press the footswitch to leave), then declare `"omni": false`
+in `mappings/whammy-dt.json`: the pedal ignores the presses and golem sends it nothing when a scene changes.
+Measured on the maintainer's DT (2026-11-24 evening): with the guard off it engaged at golem's start and at
+every scene, so it is in Omni.
 
 **Code.** `bridge/app.py` `_led_press`, `_whammy_after_remote_press`; `tests/test_whammy_remote_press_guard.py`.

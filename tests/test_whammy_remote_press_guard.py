@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Garde-fou Whammy (2026-11-24) : l'appui à distance du pédalier (PC 0-9, canal 16) part sur le MIDI OUT de la
-Whammy ; une Whammy en Omni s'allumait à chaque changement de preset. Juste après l'appui, golem redit son état."""
+Whammy ; une Whammy en Omni s'allumait à chaque changement de preset. Juste après l'appui, golem redit son état —
+sauf pour une Whammy déclarée hors Omni (`"omni": false`) sur un autre canal que celui du pédalier."""
 import pytest
 
 from bridge import app, inputmap, midi_out
@@ -56,3 +57,21 @@ def test_l_appui_a_distance_appelle_le_garde_fou(sent, monkeypatch):
         "remote_press": {"supported": True, "channel": 16, "pc_base": 0}}}})
     assert app._led_press(6) is True                        # SW6 -> PC 5 canal 16
     assert sent == [(5, 16), (26, 1)]
+
+
+def test_whammy_sur_son_canal_ne_recoit_rien_apres_l_appui(sent, monkeypatch):
+    # une Whammy sur le canal 1 ignore les PC du canal 16 : redire son bypass à chaque scène était du bruit
+    cfg = {**CFG, "omni": False}
+    monkeypatch.setattr(midi_out, "_whammy_cfg", lambda: cfg)
+    app._whammy_after_remote_press(5, 16)
+    monkeypatch.setattr(state, "whammy_on", True)
+    monkeypatch.setattr(state, "whammy_mode", "↑2 Oct")
+    app._whammy_after_remote_press(6, 16)
+    assert sent == []
+
+
+def test_whammy_sur_le_canal_du_pedalier_est_gardee_sans_omni(sent, monkeypatch):
+    cfg = {**CFG, "omni": False, "channel": 16}
+    monkeypatch.setattr(midi_out, "_whammy_cfg", lambda: cfg)
+    app._whammy_after_remote_press(5, 16)
+    assert sent == [(26, 16)]

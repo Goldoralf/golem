@@ -125,6 +125,8 @@ ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/re
                 "/api/preview/blocks", "/api/preview/blocks/stop",
                 # le banc CPU (docs/cpu-budget.md §2) : le moteur pris une dizaine de minutes
                 "/api/cpu/calibrate")
+# …dont ce qu'une pédale MIDI écoute (Omni ou son canal) : un réglage du rack, pas d'un téléphone de musicien
+ADMIN_WRITES_PEDALS = ("/api/pedals/",)
 ADMIN_WRITE_PREFIX = ("/api/devices/",)              # vérification du karaoké : remplace le preset joué
 ADMIN_PREFIX = ("/api/network/", "/api/auth/devices", "/api/backup", "/api/cards/",
                 # docs/separation.md : ajouter un moteur « programme », c'est faire EXÉCUTER un fichier choisi
@@ -799,7 +801,8 @@ def allowed_http(request):
         return False
     if path in ADMIN_PATHS or path.startswith(ADMIN_PREFIX):
         return bool(dev.get("admin"))         # M-1 : les gestes SYSTÈME exigent la promotion
-    if method != "GET" and (path in ADMIN_WRITES or path.startswith(ADMIN_WRITE_PREFIX)):
+    if method != "GET" and (path in ADMIN_WRITES or path.startswith(ADMIN_WRITE_PREFIX)
+                            or (path.startswith(ADMIN_WRITES_PEDALS) and path.endswith("/omni"))):
         return bool(dev.get("admin"))
     if method == "DELETE" and is_guest(dev) and not dev.get("admin"):
         return False                          # audit 2026-10-15 : un invité de 24 h n'efface pas les prises du groupe

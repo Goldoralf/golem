@@ -97,6 +97,8 @@ function PedalPanel({ head, rig, onRemoved, setup: setup0 }) {
   const [sent, setSent] = useState(null);
   const [flash, setFlash] = useState('');
   const [verify, setVerify] = useState(false);
+  const [omniBusy, setOmniBusy] = useState(false);
+  const [startAt, setStartAt] = useState(0);         // l'étape où la procédure s'ouvre (le lien de la bannière)
 
   if (!w || !w.id) return html`<${LoadGuard} err=${err} reload=${reload} label=${'Loading ' + head.name + '…'} />`;
 
@@ -115,6 +117,29 @@ function PedalPanel({ head, rig, onRemoved, setup: setup0 }) {
   const fn = list.find(f => f.id === fnId) || list[0];
   const fam = fn.id === 'droptune' ? dir : (fn.fams ? fn.fams[0] : null);
   const modes = fam ? allModes.filter(m => m.family === fam) : allModes;
+
+  // CE QUE LA PÉDALE ÉCOUTE (2026-11-24) : une Whammy en Omni prend les appuis à distance du pédalier (PC 0-9,
+  // canal 16, même ligne DIN) pour des programmes et s'allume. golem ne peut pas l'entendre — on le DEMANDE, dans
+  // l'étape « MIDI channel » de la procédure, et on le dit tant que la réponse manque.
+  const steps = ((w.install || {}).phases || []).flatMap(ph => ph.steps || []);
+  const chanStep = steps.findIndex(st => st.action === 'midi_channel');
+  const setOmni = async v => {
+    setOmniBusy(true);
+    await post('/api/pedals/' + w.id + '/omni', { omni: v }).catch(() => {});
+    setOmniBusy(false);
+    reload();
+  };
+  const actions = {
+    midi_channel: () => html`<div class="pdl-chan">
+      <button class=${cls('chip', w.omni === false && 'primary')} disabled=${omniBusy}
+        onClick=${() => setOmni(false)}>✓ Set to channel ${w.channel || 1}</button>
+      <button class=${cls('chip', w.omni === true && 'on')} disabled=${omniBusy}
+        onClick=${() => setOmni(true)}>Left on Omni</button>
+      <span class="muted">${w.omni === false ? 'golem sends it nothing when a scene changes.'
+        : w.omni === true ? 'golem sends it a bypass after every LED press of the foot controller.'
+        : 'Tell golem once the pedal is set.'}</span>
+    </div>`,
+  };
 
   const send = async (m, active) => {
     setSent({ name: m.name, active });
@@ -169,9 +194,13 @@ function PedalPanel({ head, rig, onRemoved, setup: setup0 }) {
           sent from here will reach ${esc(w.name)}.
           <a href="#/system/gear/sound">Set it on Soundcard →</a></div>`;
       })()}
+      ${isWhammy && chanStep >= 0 && w.omni !== false && !stage ? html`<div class="pdl-warn">
+          ⚠ ${w.omni === true ? esc(w.name) + ' listens on every channel (Omni): it hears the foot controller’s LED presses, so golem sends it a bypass after each one.'
+            : 'Is ' + esc(w.name) + ' on MIDI channel ' + (w.channel || 1) + '? In Omni it turns on at every scene, from the foot controller’s LED presses.'}
+          <a href="#" onClick=${e => { e.preventDefault(); setStartAt(chanStep); setSetup('install'); }}>Set the MIDI channel →</a></div>` : ''}
       <div class="pdl-head">
         <h2>${esc(w.name || head.name)}</h2>
-        <span class="pd-chip">${esc(w.midi_out || '—')} · Ch ${w.channel || 1}${w.treadle_cc ? ' · treadle CC' + w.treadle_cc + ' ●' : ''}</span>
+        <span class="pd-chip">${esc(w.midi_out || '—')} · Ch ${w.channel || 1}${w.omni === true ? ' · Omni' : ''}${w.treadle_cc ? ' · treadle CC' + w.treadle_cc + ' ●' : ''}</span>
         <span class="grow"></span>
         ${/* Un ÉTAT, une ACTION, et le reste dans le ⋯ (retour 2026-07-29 : « on comprend pas
              tout ce qu'ils font »). Trois boutons de même poids racontaient trois choses de
@@ -192,7 +221,7 @@ function PedalPanel({ head, rig, onRemoved, setup: setup0 }) {
           <button class="mini" onClick=${() => { setMenu(!menu); setArmRm(false); }}>⋯</button>
           ${menu ? html`<div class="save-pop">
             ${(w.install && (w.install.phases || []).length) ? html`<button class="row-btn"
-              onClick=${() => { setMenu(null); setSetup('install'); }}>⚙ Setup steps<small>what to set ON the pedal</small></button>` : ''}
+              onClick=${() => { setMenu(null); setStartAt(0); setSetup('install'); }}>⚙ Setup steps<small>what to set ON the pedal</small></button>` : ''}
             ${(w.verify && (w.verify.checks || []).length) ? html`<button class="row-btn"
               onClick=${() => { setMenu(null); setSetup('verify'); }}>✓ Quick check<small>${(w.verify.checks || []).length} canonical controls</small></button>` : ''}
             ${(w.modes || []).length ? html`<button class="row-btn"
@@ -206,8 +235,8 @@ function PedalPanel({ head, rig, onRemoved, setup: setup0 }) {
       </div>
 
       ${stage === 'install'
-        ? html`<${InstallSteps} install=${w.install} name=${w.name}
-            onDone=${() => setSetup((w.verify && (w.verify.checks || []).length) ? 'verify' : null)} />`
+        ? html`<${InstallSteps} install=${w.install} name=${w.name} actions=${actions} start=${startAt}
+            onDone=${() => { setStartAt(0); setSetup((w.verify && (w.verify.checks || []).length) ? 'verify' : null); }} />`
         : stage === 'verify'
         ? html`<${VerifyChecks} pedal=${w} onDone=${() => { setSetup(null); reload(); }} />` : ''}
 
@@ -286,8 +315,8 @@ function AddPedal({ onClose, onDone, onWizard }) {
 // écrites dans le fichier sans qu'aucun écran ne les montre. C'est ce qui séparait « la table
 // est juste » de « ça marche chez toi ».
 // Exporté : le stepper du FCB1010 (page-pedalboard) s'en sert aussi — un seul dérouleur.
-export function InstallSteps({ install, name, onDone, actions, doneLabel }) {
-  const [i, setI] = useState(0);
+export function InstallSteps({ install, name, onDone, actions, doneLabel, start }) {
+  const [i, setI] = useState(start || 0);
   const phases = (install || {}).phases || [];
   const flat = phases.flatMap((ph, pi) => (ph.steps || []).map(st => ({ ...st, phase: ph.name, pi })));
   if (!flat.length) return '';

@@ -45,7 +45,8 @@ CONFIDENCES = {"verified", "reported", "unconfirmed"}
 # gestes que le rack sait offrir DANS une étape — Linux : le rack envoie lui-même ;
 # Windows/macOS : Control Center (docs/fcb/uno2/README.md, addendum 2026-10-02)
 ACTIONS = {"fcb-flash", "pedalboard-load",
-           "pedalboard-editor", "pedalboard-hold", "pedalboard-copy", "pedalboard-flashed"}
+           "pedalboard-editor", "pedalboard-hold", "pedalboard-copy", "pedalboard-flashed",
+           "midi_channel"}                       # une pédale : ce qu'elle écoute, Omni ou son canal (page-pedals.js)
 RECIPES = {"uno104", "uno2"}                     # recettes de charge résolues par le bridge (routes_system._LOAD_RECIPES)
 NOTE_EDGES = {"paired", "clean"}
 TRANSPORTS = {"din-soundcard", "usb"}            # par où le pédalier ARRIVE (foot.resolve_port)

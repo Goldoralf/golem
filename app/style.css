@@ -4099,6 +4099,9 @@ input.rig-lbl-in:focus{outline:none; border-bottom-color:var(--sect)}
   border-radius:10px; padding:8px 12px; margin:0 2px 10px}
 .pdl-warn a{color:var(--accent); text-decoration:none; font-weight:600}
 .pdl-warn a:hover{text-decoration:underline}
+/* l'étape « MIDI channel » de la procédure : ce que la pédale écoute, déclaré d'un tap (2026-11-24) */
+.pdl-chan{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px}
+.pdl-chan .muted{font-size:12px}
 
 /* État de vérification SUR CE RACK, dans l'en-tête du panneau : « verified » au catalogue veut
    dire « vérifié par quelqu'un, quelque part » — ceci dit ce que la machine a constaté. */

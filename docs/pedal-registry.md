@@ -52,7 +52,7 @@ One file per pedal **and per firmware revision**, in tiers; every tier is option
 | Tier | Fields | Answers |
 |---|---|---|
 | Identity | `identity` | who the pedal is, how to recognise it |
-| MIDI contract | `channel`, `midi_out`, `modes[]`, `families`, `pc_ranges`, `treadle`, `bypass_rule`… | what to send it |
+| MIDI contract | `channel`, `omni`, `midi_out`, `modes[]`, `families`, `pc_ranges`, `treadle`, `bypass_rule`… | what to send it |
 | Procedure | `install` | what to set **on** the pedal, once (MIDI channel, receive on, merge off…) |
 | Verification | `verify` | how to know it works |
 | Provenance | `provenance` | where the data comes from and how far to trust it |
@@ -100,7 +100,16 @@ Rules:
   new verb.
 - `action` is a **gesture id** known to the rack, not a boolean. Known ids
   (`tools/check-descriptors.py` `ACTIONS`): `fcb-flash`, `pedalboard-load`, `pedalboard-editor`,
-  `pedalboard-hold`, `pedalboard-copy`, `pedalboard-flashed`.
+  `pedalboard-hold`, `pedalboard-copy`, `pedalboard-flashed`, `midi_channel` (the pedal's MIDI channel step:
+  "Set to channel N" / "Left on Omni", written by `POST /api/pedals/{id}/omni`).
+- `omni` is local, written on the installed pedal only: `false` = it listens on its `channel` only, `true` = on
+  every channel, absent = not said. A DIN pedal never answers, so golem cannot measure it. For the Whammy DT,
+  anything but `false` keeps the guard that re-states its state after each LED press of the foot controller
+  ([pitfalls/midi.md](pitfalls/midi.md#a-pedal-on-the-midi-out-obeys-the-foot-controllers-remote-presses)), and
+  System ▸ Gear ▸ Pedals asks for it.
+- An installed pedal that came from the catalogue (`installed_from: "catalog"`) reads its `install` steps from the
+  catalogue (`GET /api/mapping/{id}`): a recipe fixed in a release reaches a rack that installed the pedal earlier.
+  Its local settings (`channel`, `omni`, labels, `verified_here`) stay its own.
 - `provenance.source` ∈ `measured | manual | manual+hardware | imported | hardware`;
   `confidence` ∈ `verified | reported | unconfirmed`. The catalogue's `verified` means "verified
   somewhere"; `verified_here` is what *this* rack observed.

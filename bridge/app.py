@@ -1975,18 +1975,26 @@ def _led_press(sw):
         return False
     ok = bool(midi_out.program_change(pc, channel=ch))
     if ok:
-        _whammy_after_remote_press(pc)
+        _whammy_after_remote_press(pc, ch)
     return ok
 
 
-def _whammy_after_remote_press(pc):
+def _whammy_after_remote_press(pc, remote_channel=16):
     """GARDE-FOU WHAMMY (2026-11-24). L'appui à distance part sur le MIDI OUT DIN — celui de la Whammy : une Quadra
     Thru (ou le THRU du pédalier) le donne aux deux. Sur la DT, les PC 0-9 sont des programmes ACTIFS (↑2 Oct, ↑1 Oct…) :
     une Whammy en Omni (ou sur le canal du pédalier) s'allumait à CHAQUE changement de preset, sous REAPER comme sous le
     Golem Engine (retour du mainteneur : « à chaque fois que je change de son, ma whammy est activée »). golem ne peut
     pas savoir qu'elle écoute ce canal : juste après l'appui, il REDIT l'état qu'il connaît — le programme engagé s'il
     l'est, sinon le bypass du programme que l'appui a pu engager. Sans Whammy déclarée (input map, table des réglages),
-    rien n'est envoyé."""
+    rien n'est envoyé.
+
+    SEULEMENT POUR UNE WHAMMY QUI ENTEND CE CANAL (2026-11-24, le soir) : la garde redisait le bypass après CHAQUE
+    appui, donc à chaque scène qui change une diode — deux messages vers une pédale qui n'est que dans un preset
+    (« ça le fait tout le temps »). Une Whammy sur son canal (1) ignore les PC du canal 16 : rien à corriger, rien à
+    envoyer. golem ne peut pas l'entendre : c'est la table qui le dit. `"omni": false` dans mappings/whammy-dt.json
+    (la pédale réglée sur son canal, pas en Omni) -> la garde se tait, sauf si ce canal est celui du pédalier. Sans
+    ce champ, la garde parle : une Whammy en Omni (celle du mainteneur, mesuré le soir même) s'allumait sinon dès le
+    démarrage et à chaque scène."""
     from . import inputmap
     try:
         if inputmap.din_role("midi_out") != "whammy-dt":
@@ -1994,6 +2002,8 @@ def _whammy_after_remote_press(pc):
         w = midi_out._whammy_cfg() or {}
         modes = w.get("modes") or []
         if not modes:
+            return
+        if w.get("omni") is False and int(w.get("channel", 1)) != int(remote_channel):
             return
         if state.whammy_on and state.whammy_mode:
             midi_out.whammy_mode(state.whammy_mode, True)

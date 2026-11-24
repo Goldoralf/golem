@@ -768,12 +768,19 @@ def compile_preset(preset: dict) -> str:
                     # cette scène (golem_rig allume sa paire, bypass les autres — zéro rebuild entre scènes).
                     engines = []
                     for kid in (b.get("kits") or ([active] if active else [])):
-                        k = _kits.get_kit(kid or "") or {}
+                        k, asked = _kits.playable(kid or "")
+                        k = k or {}
                         if not k:
                             log.warning(f"drumkit {b.get('id')} : kit « {kid} » introuvable — moteur ignoré")
                             continue
+                        if asked:                                       # remplaçant (kits.playable) : il garde l'id
+                            log.info(f"drumkit {b.get('id')} : {asked.get('name') or kid} ne joue pas ici — "
+                                     f"{k.get('name') or k.get('id')} le remplace")
                         tr = _dk.translation(desc, _kits.kit_notes(k))
-                        e = {"kit_id": k.get("id"), "kit_engine": k.get("engine"), "kit_bank": k.get("bank"),
+                        # `kit_id` reste celui DEMANDÉ : c'est par lui que les scènes allument leur moteur (golem_rig, le
+                        # veilleur) ; le moteur, sa banque et ses fichiers sont ceux du remplaçant
+                        e = {"kit_id": (asked or k).get("id"), "kit_engine": k.get("engine"), "kit_bank": k.get("bank"),
+                             "kit_plays": k.get("id"),
                              "drum_map": tr["map"], "drum_hh": tr["hh"], "drum_lost": tr["lost"], "drum_chan": tr["channel"],
                              "drum_slot": _drum_slot[0]}
                         if k.get("engine") == "drumgizmo":              # kit multi-micros : fichiers + mix d'usine (golem_rig)

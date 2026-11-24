@@ -141,3 +141,25 @@ the asyncio loop).
 
 **Code.** `bridge/desktop_midi.py` `card_ports` / `card_ports_from` / `usb_devices`,
 `tests/test_desktop_midi_card_ports.py`.
+
+## A pedal on the MIDI OUT obeys the foot controller's remote presses
+
+FIXED 2026-11-24 (Whammy DT behind a Quadra Thru, UnO2 chip).
+
+**Symptom.** The Whammy turns on at every preset change, with no Whammy block in the preset, on REAPER and on
+the Golem Engine alike: "every time I change sound my Whammy is on".
+
+**Cause.** golem lines up the foot controller's LEDs by pressing its switches remotely: Program Change 0–9 on
+the chip's remote channel (16), sent on the DIN MIDI OUT (`foot_leds`, `app._led_press`). That OUT is the
+Whammy's too — a MIDI thru box (Quadra Thru) or the controller's THRU hands every message to both. On the
+Whammy DT, PC 0–9 are **active** programs (↑2 Oct, ↑1 Oct…): a Whammy set to Omni, or to channel 16, takes
+each LED press as "engage this program". The bridge log shows it: `POST /api/recall` then
+`diode SW6 -> ON (appui à distance)`.
+
+**Rule.** A message meant for one device on a shared DIN line reaches all of them; golem cannot know which
+channel a pedal listens to. Right after each remote press, golem re-states the Whammy state it believes in: the
+engaged program if any, otherwise the bypass of the program the press may have engaged (only when the input
+map declares a Whammy on MIDI OUT and its table exists). The clean setting is still the pedal's: give the
+Whammy its own channel (1, `mappings/whammy-dt.json`), never Omni.
+
+**Code.** `bridge/app.py` `_led_press`, `_whammy_after_remote_press`; `tests/test_whammy_remote_press_guard.py`.

@@ -133,7 +133,7 @@ for an imported kit.
 
 - **Factory seeds** — `library/kits-factory/*.json` (drum engines, plus rs5k pad kits flagged
   `factory`). `kits.seed_factory()` reseeds missing ones into `library/kits/` at bridge start and
-  refreshes the `notes` table of an already-placed factory kit when the seed changes. Shipped:
+  refreshes the `notes` table and the `fallback` of an already-placed factory kit when the seed changes. Shipped:
   `drums-black-pearl`, `drums-red-zeppelin`, `drums-blonde-bop` (AVL banks), `drums-aasimonster`
   (DrumGizmo, 16 mics), and pad kits. A factory kit is never created, deleted (403) or overwritten
   from a screen; a new factory kit is a rack update.
@@ -149,6 +149,17 @@ for an imported kit.
 `kits.availability(kit)` says whether a drum kit can sound on **this** machine (files present,
 plugin in REAPER's inventory); `GET /api/kits` carries `available` / `unavailable_why`, and the
 kit picker uses it.
+
+**A stand-in for a factory kit that cannot sound here** (CODED 2026-11-24). A factory seed may
+name a `fallback` kit: `drums-aasimonster` → `drums-red-zeppelin` (AVL, "rock · dry"), because
+DrumGizmo and its 3.3 GB are not on Windows and the factory preset "Iron Thicket" had no drums
+there. `kits.playable(kid)` returns the stand-in only when the kit is **sure** not to sound
+(`availability` False) and the stand-in is not sure to fail. The preset is not changed: it still
+asks for Aasimonster and gets it wherever it plays (Linux). The compiler (`compile_rig`, both
+engines) keeps the **requested** `kit_id` — scenes light their engine by it — and takes engine,
+bank and files from the stand-in (`kit_plays` names it); the block status says `ready` with
+`stand_in` ("Red Zeppelin plays Aasimonster here"). `seed_factory` carries `fallback` to an
+already-placed factory kit, as it does `notes`.
 
 Routes: `GET /api/kits`, `POST /api/kit`, `DELETE /api/kit/{id}`, `POST /api/kit/audition`,
 `GET /api/kit/{id}/export`, `POST /api/kit/import` (`bridge/routes_content.py`).

@@ -1973,7 +1973,39 @@ def _led_press(sw):
     pc = int(sw) - 1 + int(caps.get("pc_base", 0))
     if not (1 <= ch <= 16 and 0 <= pc <= 127):
         return False
-    return bool(midi_out.program_change(pc, channel=ch))
+    ok = bool(midi_out.program_change(pc, channel=ch))
+    if ok:
+        _whammy_after_remote_press(pc)
+    return ok
+
+
+def _whammy_after_remote_press(pc):
+    """GARDE-FOU WHAMMY (2026-11-24). L'appui à distance part sur le MIDI OUT DIN — celui de la Whammy : une Quadra
+    Thru (ou le THRU du pédalier) le donne aux deux. Sur la DT, les PC 0-9 sont des programmes ACTIFS (↑2 Oct, ↑1 Oct…) :
+    une Whammy en Omni (ou sur le canal du pédalier) s'allumait à CHAQUE changement de preset, sous REAPER comme sous le
+    Golem Engine (retour du mainteneur : « à chaque fois que je change de son, ma whammy est activée »). golem ne peut
+    pas savoir qu'elle écoute ce canal : juste après l'appui, il REDIT l'état qu'il connaît — le programme engagé s'il
+    l'est, sinon le bypass du programme que l'appui a pu engager. Sans Whammy déclarée (input map, table des réglages),
+    rien n'est envoyé."""
+    from . import inputmap
+    try:
+        if inputmap.din_role("midi_out") != "whammy-dt":
+            return
+        w = midi_out._whammy_cfg() or {}
+        modes = w.get("modes") or []
+        if not modes:
+            return
+        if state.whammy_on and state.whammy_mode:
+            midi_out.whammy_mode(state.whammy_mode, True)
+            if state.whammy_drop and state.whammy_drop != state.whammy_mode:
+                midi_out.whammy_mode(state.whammy_drop, True)
+            return
+        hit = next((m for m in modes if m.get("active_pc", m.get("pc")) == pc), None)
+        if hit:
+            midi_out.whammy_mode(hit["name"], False)
+            get("foot").info(f"Whammy : l'appui à distance (PC {pc}) est aussi son programme « {hit['name']} » — bypass redit")
+    except Exception as e:
+        get("foot").warning(f"Whammy : état non redit après l'appui à distance ({e})")
 
 
 foot_leds.configure(_led_desired, _led_press)

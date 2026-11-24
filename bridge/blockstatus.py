@@ -442,13 +442,19 @@ def _drumkit_state(b, preset, inv):
     ids = [((b.get("params") or {}).get("kit"))]
     for sc in (preset or {}).get("scenes") or []:
         ids.append(((sc.get("params") or {}).get(b.get("id")) or {}).get("kit"))
+    stand_in = []
     for kid in [k for k in dict.fromkeys(ids) if k]:
-        kit = kits.get_kit(kid)
+        kit, asked = kits.playable(kid, inv)
         if not kit:
             return {"state": "unavailable", "why": f"drum kit « {kid} » is not on this machine", "reason": "plugin"}
+        if asked:                                        # un remplaçant joue (kits.playable) : le bloc sonne
+            stand_in.append(f"{kit.get('name') or kit.get('id')} plays {asked.get('name') or kid} here")
+            continue
         ok, why = kits.availability(kit, inv)
         if ok is False:
             return {"state": "unavailable", "why": f"{kit.get('name') or kid}: {why}", "reason": "plugin"}
+    if stand_in:
+        return {"state": "ready", "why": None, "stand_in": "; ".join(stand_in)}
     return None
 
 

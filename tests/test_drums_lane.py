@@ -204,6 +204,8 @@ def test_le_plan_compile_un_moteur_par_kit_avec_son_slot_de_traduction(tmp_path,
     monkeypatch.setattr(inputmap, "usb_ports", lambda: [{"ch": "usb1", "port": 1, "role": "drums", "bound": True,
                                                          "device": "Alesis Nitro", "kit": {"id": "alesis-nitro", "auto": True}}])
     monkeypatch.setattr(vital, "midi_input_for", lambda role, in_sel: "hw:Nitro")
+    from bridge import kits
+    monkeypatch.setattr(kits, "availability", lambda kit, inv=None: (True, None))   # chaque kit joue ICI (voir plus bas)
     baked = scene_bake.to_paths_preset(_preset_deux_kits(), "B", union=True)
     plan = json.load(open(compile_rig.compile_preset(baked)))
     b = plan["paths"][0]["tracks"][0]["blocks"][0]
@@ -213,6 +215,31 @@ def test_le_plan_compile_un_moteur_par_kit_avec_son_slot_de_traduction(tmp_path,
     assert b["engines"][1]["kit_engine"] == "avldrums" and b["engines"][1]["kit_bank"] == "black-pearl"
     assert b["kit_id"] == "drums-aasimonster" and b["kit_engine"] == "drumgizmo"    # le kit ACTIF de cette scène, à plat
     assert b["engines"][0]["drum_map"][46] != b["engines"][1]["drum_map"][46]        # chaque kit sa table (hh-open 46 vs 48)
+
+
+def test_un_kit_qui_ne_joue_pas_ici_compile_son_remplacant_sous_son_id(tmp_path, monkeypatch):
+    """Sous Windows Aasimonster ne joue pas (DrumGizmo) : le plan pose son remplaçant de graine (Red Zeppelin, AVL) mais
+    GARDE l'id demandé — c'est par lui que la scène allume son moteur (2026-11-24, « Iron Thicket » sans batterie)."""
+    from bridge import compile_rig, inputmap, scene_bake, kits
+    monkeypatch.setattr(compile_rig, "OUT_DIR", str(tmp_path / "FXChains"))
+    monkeypatch.setattr(compile_rig, "IO_PATH", str(tmp_path / "io.json"))
+    (tmp_path / "io.json").write_text(json.dumps({"outputs": [{"ch": 1}, {"ch": 2}], "mono_fallback": {"on": False, "gain": -3}}))
+    monkeypatch.setattr(compile_rig, "ASSET_CACHE", str(tmp_path / ".cache"))
+    monkeypatch.setattr(inputmap, "usb_ports", lambda: [])
+    monkeypatch.setattr(vital, "midi_input_for", lambda role, in_sel: "hw:Nitro")
+    real = kits.get_kit
+    monkeypatch.setattr(kits, "get_kit", lambda kid: ({**(real(kid) or {}), "fallback": "drums-red-zeppelin"}
+                                                     if kid == "drums-aasimonster" else real(kid)))
+    monkeypatch.setattr(kits, "availability", lambda kit, inv=None:
+                        (False, "its samples are not installed on this machine") if kit.get("engine") == "drumgizmo"
+                        else (True, None))
+    baked = scene_bake.to_paths_preset(_preset_deux_kits(), "B", union=True)
+    plan = json.load(open(compile_rig.compile_preset(baked)))
+    b = plan["paths"][0]["tracks"][0]["blocks"][0]
+    e = b["engines"][0]
+    assert e["kit_id"] == "drums-aasimonster" and e["kit_plays"] == "drums-red-zeppelin"
+    assert e["kit_engine"] == "avldrums" and e["kit_bank"] == "red-zeppelin" and "kit_drumkit" not in e
+    assert b["kit_id"] == "drums-aasimonster" and b["kit_engine"] == "avldrums"      # le kit actif, à plat
 
 
 def test_changer_le_kit_d_un_bloc_pads_change_la_forme():

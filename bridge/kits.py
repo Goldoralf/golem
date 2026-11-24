@@ -119,8 +119,17 @@ def seed_factory():
         if isinstance(cur, dict) and cur.get("factory"):
             # docs/drums-kit.md lot 2 : la table ÉLÉMENT -> NOTE (`notes`) vit dans la GRAINE ; un kit
             # d'usine déjà posé la reprend quand elle change (une graine est la vérité d'un kit d'usine)
+            upd = {}
             if seed.get("notes") and cur.get("notes") != seed.get("notes"):
-                _write_json_atomic(p, {**cur, "notes": seed["notes"], "notes_note": seed.get("notes_note")})
+                upd.update(notes=seed["notes"], notes_note=seed.get("notes_note"))
+            # le REMPLAÇANT (`fallback`, 2026-11-24) vit lui aussi dans la graine : ajouté, changé ou retiré avec elle
+            if cur.get("fallback") != seed.get("fallback"):
+                upd["fallback"] = seed.get("fallback")
+            if upd:
+                doc = {**cur, **upd}
+                if doc.get("fallback") is None:
+                    doc.pop("fallback", None)
+                _write_json_atomic(p, doc)
                 done.append(seed["id"])
             continue
         _write_json_atomic(p, seed)
@@ -207,6 +216,23 @@ def get_kit(kid):
     p = os.path.join(KITS_DIR, f"{_safe_id(kid)}.json")
     k = _read_json(p, None)
     return k if isinstance(k, dict) else None
+
+
+def playable(kid, inv=None):
+    """(le kit QUI JOUE ici, le kit demandé s'il est remplacé — sinon None). Une batterie d'usine qui ne peut pas jouer
+    sur CETTE machine joue son REMPLAÇANT (`fallback` de sa graine) s'il joue, lui : sous Windows, Aasimonster (DrumGizmo
+    et ses 3,3 Go, ni l'un ni l'autre portés) laissait le preset d'usine « Iron Thicket » sans batterie (2026-11-24). Le
+    preset ne change pas : il redemande Aasimonster partout, et le retrouve là où il joue (Linux). Jamais de remplaçant
+    quand on ne sait pas (availability None) : on ne remplace que ce qui est SÛR de ne pas jouer."""
+    k = get_kit(kid)
+    if not k:
+        return None, None
+    fb = k.get("fallback")
+    if fb and availability(k, inv)[0] is False:
+        f = get_kit(fb)
+        if f and availability(f, inv)[0] is not False:
+            return f, k
+    return k, None
 
 
 def save_kit(kit, allow_drums=False):

@@ -3,6 +3,7 @@
  "name": "Aasimonster",
  "role": "drum",
  "engine": "drumgizmo",
+ "fallback": "drums-red-zeppelin",
  "drumkit": "library/drumkits/aasimonster2/aasimonster.xml",
  "midimap": "library/drumkits/aasimonster2/midimap.xml",
  "mix": [

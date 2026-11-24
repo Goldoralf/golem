@@ -39,7 +39,7 @@ active setlist) is cached 60 s. Page: `app/page-health.js`; pure part: `app/heal
 |---|---|---|
 | Engine (`engine`) | `state.reaper_running`, `reaper_connected`, `rigstatus.reaper_version` | running but not answering → Dashboard (resync); not running after 60 s → red, Dashboard |
 | Sound card (`audio`) | `state.audio` (the `.clock.json` witness), `rigstatus.engine_doc` | `audio.ok` false → red, Soundcard page |
-| Dropouts (`dropouts`) | `state.xruns`, `xruns_recent` (10 min), `xruns_last` | 1–9 recent → orange, ≥ 10 → red; Dashboard (buffer) |
+| Dropouts (`dropouts`) | `state.xruns` (kernel log + the engine's own count: REAPER on Linux via `xruns` in `.clock.json`, written by `golem_clock.lua`), `xruns_recent` (10 min), `xruns_last` | 1–9 recent → orange, ≥ 10 → red; Dashboard (buffer) |
 | Pedalboard & MIDI (`pedalboard`) | `pedalboard.active()`, `state.midi` (`.midi.json`) | stale probe or a MIDI issue → orange, Calibration; only declared → wait |
 | Playing (`playing`) | `state.preset_name`, `rig_check` (`.rig-check.json`), `rig_error` | files not loaded → red (Designer); repaired after the build → orange; refused recall → red |
 | Setlist on the foot (`setlist`) | `setlists.active_id/load`, `blockstatus.preset_status` per preset (cached 60 s) | blocks that will not play here, counted by reason (plugin missing on this OS, capture format this engine cannot play, capture to download) → orange, Patches (each patch opens in the Designer, which downloads or swaps in a playable twin — Health itself never downloads: a download re-poses the preset) |

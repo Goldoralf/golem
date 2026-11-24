@@ -219,7 +219,21 @@ end
 -- `ticks` fige avec `t` qui avance = le thread audio est MORT, et c'est ca qu'on veut nommer.
 local W_OUT, w_next = ROOT .. "/presets/.clock.json", 0
 
+-- LES XRUNS DE REAPER LUI-MÊME (2026-11-24) : sous Linux le bridge ne lisait que le journal du noyau, qui ne les voit
+-- pas — « Dropouts » restait à 0 pendant que le son craquait toutes les 2 s (Acer Aspire S7). GetUnderrunTime rend
+-- l'heure du DERNIER xrun audio : chaque changement en est un. Lu à chaque tick defer (~30/s), plusieurs xruns dans le
+-- même tick n'en font qu'un — un plancher, jamais une invention. Le premier relevé (l'ouverture de la carte) ne compte
+-- pas. Compteur remis à zéro à chaque lancement de REAPER : le bridge cumule (monitors._engine_xruns).
+local xrun_last, xrun_count = nil, 0
+local function count_xruns()
+  if not reaper.GetUnderrunTime then return end
+  local audio_xrun = tonumber((reaper.GetUnderrunTime())) or 0
+  if xrun_last ~= nil and audio_xrun ~= xrun_last and audio_xrun > 0 then xrun_count = xrun_count + 1 end
+  xrun_last = audio_xrun
+end
+
 function publish_witness(tr)
+  count_xruns()
   local now = reaper.time_precise()
   if now < w_next then return end
   w_next = now + 1.0
@@ -227,8 +241,8 @@ function publish_witness(tr)
   local ticks = (fx and fx >= 0) and reaper.TrackFX_GetParam(tr, fx, 1) or -1
   local f = io.open(W_OUT .. ".tmp", "w")
   if not f then return end
-  f:write(string.format('{"ticks":%d,"t":%.3f,"on":%s}', math.floor(ticks), now,
-                        clock_enabled() and "true" or "false"))
+  f:write(string.format('{"ticks":%d,"t":%.3f,"on":%s,"xruns":%d}', math.floor(ticks), now,
+                        clock_enabled() and "true" or "false", xrun_count))
   f:close()
   os.remove(W_OUT); os.rename(W_OUT .. ".tmp", W_OUT)
 end

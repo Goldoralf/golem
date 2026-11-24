@@ -118,7 +118,7 @@ class EngineAdapter:
 
     def xruns(self):
         """Les xruns que le MOTEUR a comptés depuis son démarrage (surcharge DSP comprise), None s'il ne les compte pas
-        (REAPER : le journal du noyau seul, monitors._read_xruns)."""
+        (REAPER sous Linux : golem_clock.lua via presets/.clock.json ; sous Windows/macOS, monitors._read_kernel_xruns)."""
         return None
 
     def adopt_audio(self, audio):

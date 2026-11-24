@@ -159,6 +159,26 @@ class ReaperEngine(EngineAdapter):
         routes_system._restart_reaper_async(why=why)
         return {"ok": True, "restarting": True}
 
+    def xruns(self):
+        """Linux : les xruns que REAPER signale (golem_clock.lua, champ `xruns` de presets/.clock.json, compté depuis le
+        lancement de REAPER). Le journal du noyau ne les voit pas : « Dropouts » restait à 0 pendant que le son craquait
+        (2026-11-24). Windows/macOS : None, golem_desktop_audio.lua les compte déjà (monitors._read_kernel_xruns).
+        Témoin illisible un instant (réécriture, relance) : on rend la dernière valeur lue — un None ferait retomber le
+        total au seul noyau, et la remontée suivante passerait pour une rafale."""
+        import json
+        import os
+        import sys
+        if sys.platform in ("win32", "darwin"):
+            return None
+        try:
+            with open(os.path.join(C.PRESETS_DIR, ".clock.json"), encoding="utf-8") as f:
+                n = json.load(f).get("xruns")
+            if isinstance(n, int) and n >= 0:
+                self._xruns = n
+        except (OSError, ValueError, AttributeError):
+            pass
+        return getattr(self, "_xruns", None)
+
     def audio(self):
         from ..routes_system import _read_bsize           # reaper.ini (Linux) ou la carte réelle (Windows/macOS)
         return {"buffer": _read_bsize()}

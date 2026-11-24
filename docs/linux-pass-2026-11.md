@@ -61,13 +61,17 @@ Linux build (`golem-engine-9.9-g3`) — each one must still compile and behave o
 also carries the sfizz fix: a removed sampler destroyed 60 s later). A new tag rather than re-uploading into g4: a
 replaced asset under the same version would break every golem still pinning g4's sha256, and two binaries would both
 say `9.9-g4`. The Linux asset was built by the CI workflow `golem-engine.yml` (run 45272355819: build, then a start
-on the dummy backend); the Windows asset on the dev box. Windows is pinned to g5 (`provision/windows/pins.json`).
+on the dummy backend); the Windows asset on the dev box.
+
+**Superseded 2026-11-24 by `golem-engine-9.9-g6`** (tag on `db506a0d9`; CI run 45472265334): g5 plus a WinMME fix
+(Windows only: a MIDI keyboard enabled at runtime is opened) and a preview's start no longer counted as dropouts (both
+systems). Windows is pinned to g6 (`provision/windows/pins.json`).
 
 What is left for this pass:
 
-- Run §1–3 against **the g5 package** (or the dev tree at the tag), not only the dev tree.
-- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g5` and the line in `provision/downloads.sha256`:
-  `9fff329aeb09c6e45ccc1948317352693481e69f9dcc391686cb6d74479f3455` for `golem-engine-linux-x86_64.tar.gz` (the
+- Run §1–3 against **the g6 package** (or the dev tree at the tag), not only the dev tree.
+- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g6` and the line in `provision/downloads.sha256`:
+  `ccc2d1be63c3f9686bf5571bb7cc37c1fae2d081ce551cab8eb3e2b9156164e8` for `golem-engine-linux-x86_64.tar.gz` (the
   release's `SHA256SUMS`; recompute it on the downloaded asset and compare).
 - Release tags of the engine must stay **lightweight** (the workflow says why: `git describe`). The workflow still
   creates its release: a later tag that should carry both systems runs the workflow first, then uploads the Windows

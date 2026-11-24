@@ -1486,7 +1486,7 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 **Status: CODED, played by hand on the dev box** (Universal Audio Volt over ASIO, 48 kHz, buffer 256, the factory
 "Jazz Box" patch; no crackle at 256, crackles at 128). **Packaged and published**: release `golem-engine-9.9-g4` of
 Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), then `golem-engine-9.9-g5` (2026-11-23, both
-systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
+systems) and `golem-engine-9.9-g6` (2026-11-24, both systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
 to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pass.
 
 - **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
@@ -1533,8 +1533,15 @@ to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pas
     its threads are done: three cold runs out of three without a crash, six recalls 4 s apart included. **Published in
     `golem-engine-9.9-g5`** (2026-11-23, tag on `1a1827be1`): one release for both systems — the Linux package by the
     CI workflow, the Windows one built on the dev box (`win-build.sh`, `bundle.py --version 9.9-g5`, 85.7 MB; the
-    extracted package starts on the dummy backend). Windows is pinned to g5 (`provision/windows/pins.json`); Linux
-    stays pinned to g3 until the Linux pass ([linux-pass-2026-11.md](linux-pass-2026-11.md) §4).
+    extracted package starts on the dummy backend). Linux stays pinned to g3 until the Linux pass
+    ([linux-pass-2026-11.md](linux-pass-2026-11.md) §4).
+- **WinMME keyboards opened at runtime** (2026-11-24, `golem-engine-9.9-g6`, tag on `db506a0d9`): the watcher closes
+    every MIDI device at start (a Windows port has one owner, the bridge needs the foot controller's) and enables a
+    keys lane's keyboard later. The PortAudio backend never opened a device enabled after startup, and each rescan
+    recreated every device info as enabled, so the request looked like a no-op: the keys lane stayed silent.
+    `WinMMEMidiIO::open_device` opens it under the device lock; a rescan keeps the infos of devices still present.
+    Played by hand on the dev box (MPK Mini, factory preset #01 scene C). g6 also holds a preview's start out of the
+    dropout counter. Windows is pinned to g6 (`provision/windows/pins.json`).
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

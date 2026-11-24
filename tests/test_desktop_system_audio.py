@@ -1,8 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Le dashboard et Soundcard d'origine consomment aussi le pilote ASIO desktop."""
 import asyncio
+import json
+import os
+import time
 
-from bridge import cards, desktop_audio, inputmap, monitors, routes_system
+import pytest
+
+from bridge import cards, desktop_audio, engines, inputmap, monitors, routes_system
+from bridge import config as C
+
+
+@pytest.fixture(autouse=True)
+def _reaper_by_default(monkeypatch):
+    # le moteur choisi sur LA MACHINE (config/engine.json) ne doit pas décider du test
+    monkeypatch.setattr(engines, "current", lambda *a, **k: "reaper")
 
 
 def _settings():
@@ -38,6 +50,42 @@ def test_windows_soundcard_uses_reaper_and_keeps_input_patch_per_driver(monkeypa
     assert cards.connected() == [{"index": 0, "id": "UMC ASIO Driver", "name": "UMC ASIO Driver"}]
     assert monitors._read_latency_ms() == 5.3
     assert sound["latency_source"] == "reaper"
+
+
+def _on_engine(monkeypatch, tmp_path, status, age=0.0):
+    for module in (cards, routes_system):
+        monkeypatch.setattr(module.sys, "platform", "win32")
+    monkeypatch.setattr(engines, "current", lambda *a, **k: "ardour")
+    monkeypatch.setattr(desktop_audio, "settings", lambda: {**_settings(), "actual": None})   # REAPER ne tourne pas
+    monkeypatch.setattr(C, "PRESETS_DIR", str(tmp_path))
+    p = tmp_path / ".engine-status.json"
+    p.write_text(json.dumps(status), encoding="utf-8")
+    t = time.time() - age
+    os.utime(p, (t, t))
+    return routes_system.soundcard()
+
+
+VOLT = {"running": True, "backend": "PortAudio", "device": "PortAudio · Universal Audio Volt", "inputs": 2,
+        "outputs": 2, "sample_rate": 48000, "buffer": 256}
+
+
+def test_windows_soundcard_on_the_golem_engine_shows_the_card_the_engine_holds(monkeypatch, tmp_path):
+    sound = _on_engine(monkeypatch, tmp_path, VOLT)
+    assert sound["engine"] == "ardour"
+    assert sound["card"]["present"] and sound["card"]["inputs"] == 2 and sound["card"]["outputs"] == 2
+    assert sound["capture_open"] and sound["playback_open"]
+    assert sound["sample_rate"] == 48000 and sound["bsize"] == 256 and sound["latency_ms"] == 10.7
+    assert cards.connected() == [{"index": 0, "id": "UMC ASIO Driver", "name": "UMC ASIO Driver"}]
+
+
+@pytest.mark.parametrize("status,age", [({**VOLT, "running": False}, 0.0),
+                                        ({**VOLT, "backend": "None (Dummy)"}, 0.0),
+                                        (VOLT, 30.0)])                      # statut périmé : le moteur ne bat plus
+def test_windows_soundcard_on_the_golem_engine_never_claims_a_card_it_does_not_hold(monkeypatch, tmp_path, status, age):
+    sound = _on_engine(monkeypatch, tmp_path, status, age)
+    assert not sound["card"]["present"] and sound["card"]["inputs"] is None
+    assert not sound["capture_open"] and not sound["playback_open"]
+    assert cards.connected() == []
 
 
 def test_windows_soundcard_does_not_claim_a_closed_driver_is_connected(monkeypatch):

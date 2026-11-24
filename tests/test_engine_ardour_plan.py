@@ -129,7 +129,17 @@ def test_un_clavier_debranche_est_dit_et_la_piste_reste():
     assert "no MIDI device" in plan["skipped"][0]["why"]
 
 
-def test_le_nom_du_clavier_vient_de_la_carte_alsa():
+def test_sous_windows_le_clavier_est_le_nom_de_son_port(monkeypatch):
+    # midi_in y est déjà le port présent (vital._hw_of) : None muait toutes les lanes Keys / Drums du moteur
+    monkeypatch.setattr(P.sys, "platform", "win32")
+    assert P.midi_device("MPK Mini Mk II") == "MPK Mini Mk II"
+    assert P.midi_device("usb1") is None and P.midi_device("") is None and P.midi_device(None) is None
+    assert P.midi_device("hw:II", CARDS) == "MPK Mini Mk II"           # la forme Linux reste comprise
+
+
+def test_le_nom_du_clavier_vient_de_la_carte_alsa(monkeypatch):
+    monkeypatch.setattr(P.sys, "platform", "linux")
+    assert P.midi_device("MPK Mini Mk II", CARDS) is None               # sous Linux, seul « hw:… » nomme une carte
     assert P.midi_device("hw:II", CARDS) == "MPK Mini Mk II"
     assert P.midi_device("hw:4", CARDS) == "MPK Mini Mk II"            # par numéro aussi
     assert P.midi_device("usb1", CARDS) is None and P.midi_device(None, CARDS) is None

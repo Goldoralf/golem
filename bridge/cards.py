@@ -22,6 +22,39 @@ from .golog import swallowed as _swallowed
 CARDS_DIR = os.path.join(C.CONFIG_DIR, "cards")
 
 
+def engine_card(now=None):
+    """La carte que le Golem Engine tient, quand c'est LUI le moteur choisi — None sinon (REAPER : sa télémétrie fait
+    foi). Sous Windows, REAPER ne tourne pas avec le moteur : sa télémétrie est vide ou périmée, et tout ce qui la lisait
+    disait « pas de carte » alors que le moteur tenait la Volt (2026-11-24). `present` exige un statut FRAIS
+    (presets/.engine-status.json, réécrit toutes les 2 s : même règle que ArdourEngine.talking), un moteur `running` et
+    une vraie carte (pas le backend Dummy des bancs)."""
+    import time
+    try:
+        from . import engines as _engines
+        if _engines.current() != "ardour":
+            return None
+    except Exception:
+        return None
+    path = os.path.join(C.PRESETS_DIR, ".engine-status.json")
+    try:
+        fresh = ((now or time.time()) - os.stat(path).st_mtime) < 6.0
+        with open(path, encoding="utf-8") as f:
+            est = json.load(f) or {}
+    except (OSError, ValueError):
+        fresh, est = False, {}
+    present = bool(fresh and est.get("running") and "Dummy" not in str(est.get("backend") or ""))
+
+    def _int(k):
+        try:
+            return int(est[k])
+        except (KeyError, TypeError, ValueError):
+            return None
+    sr, buf = _int("sample_rate"), _int("buffer")
+    return {"present": present, "inputs": _int("inputs"), "outputs": _int("outputs"), "sample_rate": sr, "buffer": buf,
+            # aller-retour nominal : un buffer en entrée, un en sortie (sans la latence des convertisseurs)
+            "latency_ms": round(2000.0 * buf / sr, 1) if sr and buf else None}
+
+
 # ── probe ALSA (lecture seule, sans dépendance) ──────────────────────────────
 
 def connected():
@@ -39,6 +72,9 @@ def connected():
         settings = desktop_audio.settings()
         actual = settings.get("actual") or {}
         name = settings.get("driver") or ""
+        eng = engine_card()
+        if eng is not None:                     # le Golem Engine ouvre le pilote ASIO de golem (Settings ▸ Audio)
+            return [{"index": 0, "id": name, "name": name}] if name and eng["present"] else []
         opened = (actual.get("MODE", "").upper() == "ASIO" and
                   name.casefold() in (actual.get("IDENT_IN", "") + " " +
                                       actual.get("IDENT_OUT", "")).casefold())

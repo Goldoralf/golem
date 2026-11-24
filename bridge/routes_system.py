@@ -806,6 +806,20 @@ def soundcard():
         except (KeyError, TypeError, ValueError):
             inputs = outputs = None
         latency, source = desktop_audio.latency_ms(actual)
+        srate, names_in, names_out = (actual.get("SRATE") if opened else None,
+                                      actual.get("INPUT_NAMES") if opened else None,
+                                      actual.get("OUTPUT_NAMES") if opened else None)
+        # LE GOLEM ENGINE : REAPER ne tourne pas, sa télémétrie (`actual`) est vide ou périmée — l'écran disait « soundcard
+        # not detected », aucune entrée ni sortie, alors que le moteur tenait la carte (2026-11-24). La carte est celle
+        # que le moteur a ouverte (presets/.engine-status.json), comme le fait monitors.py pour le bandeau.
+        from . import cards as _cards
+        eng = _cards.engine_card()
+        if eng is not None:
+            opened = present = eng["present"]
+            inputs, outputs = (eng["inputs"], eng["outputs"]) if present else (None, None)
+            srate, names_in, names_out = (eng["sample_rate"] if present else None), None, None
+            latency, source = (eng["latency_ms"], "nominal") if present else (None, source)
+            actual = {"IDENT_IN": "engine", "IDENT_OUT": "engine"} if present else {}
         # la rangée RACK de l'écran (USB 1-4 + MIDI IN/OUT) : bridge/desktop_midi.py
         from . import desktop_midi, devices, foot as _foot, midi_out as _mout
         mports = desktop_midi.ports()
@@ -826,14 +840,15 @@ def soundcard():
                for d in devices.detected()]
         return {"card": {"alsa": driver or "", "name": driver or "", "present": present,
                          "backend": backend, "inputs": inputs, "outputs": outputs,
-                         "input_names": actual.get("INPUT_NAMES") if opened else None,
-                         "output_names": actual.get("OUTPUT_NAMES") if opened else None},
+                         "input_names": names_in, "output_names": names_out},
+                "engine": "ardour" if eng is not None else "reaper",
                 "platform": sys.platform, "drivers": settings.get("drivers", []),
-                "sample_rate": actual.get("SRATE") if opened else None,
+                "sample_rate": srate,
                 "latency_ms": latency, "latency_source": source,
                 "playback_open": bool(opened and actual.get("IDENT_OUT")),
                 "capture_open": bool(opened and actual.get("IDENT_IN")),
-                "bsize": _read_bsize(), "midi": midi, "usb": usb, "binding": bound}
+                "bsize": (eng["buffer"] if eng is not None and eng["present"] and eng["buffer"] else _read_bsize()),
+                "midi": midi, "usb": usb, "binding": bound}
     alsa, idx = C.alsa_card(), _card_index(C.alsa_card())
     name, present = None, False
     try:                                     # "/proc/asound/cards :  1 [V276 ]: USB-Audio - Volt 276"

@@ -82,6 +82,7 @@ of a subsystem before changing it.
 - One golem per installer click, hidden "golem server" boxes → `bridge_start` asks `/api/health`; `GOLEM_NO_DIALOG` → [windows.md](windows.md#the-installer-started-golem-once-per-click)
 - Golem Engine OSC late by seconds (looper, transport, levels) → Windows throttles a windowless process: lift it at launch, and the surface's per-message `usleep (1)` is a full tick → [windows.md](windows.md#a-windowless-engine-is-throttled-and-its-osc-surface-falls-behind)
 - Crackles on every preset after switching to the Golem Engine, zero xruns → REAPER was never stopped on Windows; an old engine that survives cancels the switch → [windows.md](windows.md#switching-to-the-golem-engine-left-reaper-running)
+- "soundcard not detected", no inputs/outputs while the Golem Engine plays → REAPER's telemetry is empty with the engine: ask the active engine (`cards.engine_card()`) → [windows.md](windows.md#the-sound-card-page-shows-no-card-on-the-golem-engine)
 
 ## Data
 

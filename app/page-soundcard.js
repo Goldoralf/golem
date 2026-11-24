@@ -358,7 +358,7 @@ export function SoundcardPage({ rig }) {
       </div>`)}
       <div class="sc-head">
         <b>${sc && sc.card && sc.card.present ? (sc.card.name || sc.card.alsa) : 'soundcard not detected'}</b>
-        <span class="muted">${sc && sc.card ? `${sc.card.backend || 'ALSA'} ${sc.card.alsa}` : ''}${desktop && sc.card.inputs != null ? ` · ${nIn} enabled in / ${nOut} enabled out` : ''}${sc && sc.bsize ? ` · ${sc.bsize} smp` : ''}${lat != null ? ` · ${lat} ms${desktop ? ' REAPER' : ''}` : ''}</span>
+        <span class="muted">${sc && sc.card ? `${sc.card.backend || 'ALSA'} ${sc.card.alsa}` : ''}${desktop && sc.card.inputs != null ? ` · ${nIn} enabled in / ${nOut} enabled out` : ''}${sc && sc.bsize ? ` · ${sc.bsize} smp` : ''}${lat != null ? ` · ${lat} ms${desktop ? (sc.engine === 'ardour' ? ' Golem Engine' : ' REAPER') : ''}` : ''}</span>
         ${desktop ? html`<button class="mini" onClick=${() => setAudioOpen(true)}>Configure ${sc.card.backend || 'audio'}…</button>` : ''}
         ${desktop && (midi.restart_needed || restarting) ? html`<button class="mini sc-restart" disabled=${restarting} onClick=${restartEngine}
           title="REAPER opens and releases MIDI ports only when it starts: the pedalboard port must be released, a bound keyboard opened">

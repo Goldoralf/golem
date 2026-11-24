@@ -199,3 +199,20 @@ Golem Engine kept the card with golem closed. Every deliberate stop posts `diag.
 
 **Code.** `bridge/engine/reaper.py` `_stop_desktop`, `bridge/engine/switch.py` `_run`,
 `bridge/routes_dev.py` `_stop_golem_engine_for_shutdown`; `tests/test_engine_switch.py`.
+
+## The sound card page shows no card on the Golem Engine
+
+FIXED 2026-11-24.
+
+**Symptom.** golem plays on the Golem Engine, sound comes out, but Soundcard says "soundcard not detected", no inputs,
+no outputs, no sample rate. Every time golem runs on the Golem Engine.
+
+**Cause.** On Windows the card's facts came only from REAPER's audio telemetry (`desktop_audio.settings()["actual"]`,
+written by `golem_desktop_audio.lua`). With the Golem Engine REAPER is not running: that telemetry is empty or stale.
+`/api/soundcard` and `cards.connected()` read it anyway; only the poller (`monitors.py`) had been taught the engine.
+
+**Rule.** On Windows, a question about the card asks the active engine. With the Golem Engine the card is the one it
+holds: `presets/.engine-status.json`, fresh (< 6 s), `running`, not the Dummy backend — `cards.engine_card()`.
+
+**Code.** `bridge/cards.py` `engine_card`, `connected`; `bridge/routes_system.py` `soundcard`;
+`tests/test_desktop_system_audio.py`.

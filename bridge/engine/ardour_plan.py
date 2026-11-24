@@ -20,6 +20,7 @@ sinon son rang (raw) ou son rang normalisé (norm, converti par le veilleur avec
 import json
 import os
 import re
+import sys
 
 from .. import config as C
 
@@ -60,7 +61,11 @@ def midi_device(midi_in, cards_text=None):
     if m.startswith("port:"):                             # un port du moteur nommé tel quel (un banc, la carte factice)
         return m
     if not m.startswith("hw:"):
-        return None
+        # WINDOWS / macOS : `midi_in` est déjà le NOM DU PORT présent (vital._hw_of : « MPK Mini Mk II ») — le veilleur
+        # ouvre l'appareil du backend par ce préfixe. Rendre None ici (pas de /proc/asound sous Windows) muait toutes les
+        # lanes Keys et Drums du Golem Engine : « clavier « nil » absent — piste muette » (2026-11-24).
+        # (« usbN » est un sélecteur de prise, jamais un port)
+        return m if (m and sys.platform in ("win32", "darwin") and not re.fullmatch(r"usb\d*", m)) else None
     cid = m[3:].split(",")[0]
     if cards_text is None:
         try:

@@ -116,3 +116,11 @@ def test_le_peripherique_audio_par_defaut_n_est_plus_la_carte_du_rack_de_dev(mon
     monkeypatch.setattr(m, "active_card", lambda: "iTwo")    # la carte active du bridge (io.json d'abord, puis branchée)
     insert, _ = m.audio_keys({})
     assert insert["alsa_indev"] == insert["alsa_outdev"] == "hw:iTwo"
+
+
+def test_la_priorite_temps_reel_d_alsa_est_posee_sur_un_ini_neuf(monkeypatch):
+    # 2026-11-24 : sans alsa_rtprio, les fils reaper/audio et reaper/livefx tournaient en TS (xruns toutes les ~2 s)
+    m = _ini_setup()
+    monkeypatch.setattr(m, "active_card", lambda: "")
+    insert, fix = m.audio_keys({})
+    assert insert["alsa_rtprio"] == "80" and "alsa_rtprio" not in fix   # insérée si absente, jamais forcée

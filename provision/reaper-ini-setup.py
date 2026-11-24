@@ -220,6 +220,7 @@ def remember_keys_device(direction, name):
 # (bridge/config.alsa_card : io.json > registre > carte USB branchée). Aucune carte : le PCM `null` d'ALSA, un vrai
 # périphérique muet — le moteur tourne sans modale, et la carte sera prise au prochain démarrage où elle est là.
 LINUX_AUDIO_ALSA = "1"          # reaper.ini linux_audio_mode : 1 = ALSA (même valeur que tools/shell_snapshot.py)
+ALSA_RTPRIO = "80"               # reaper.ini alsa_rtprio : priorité SCHED_FIFO des fils audio (sous le plafond @audio 95)
 
 
 def active_card():
@@ -253,7 +254,10 @@ def audio_keys(section_values):
     d'autre, et sa modale d'erreur figerait le moteur. Un choix de l'utilisateur qui marche n'est jamais changé."""
     card = active_card()
     dev = f"hw:{card}" if card else "null"
-    insert = {"linux_audio_mode": LINUX_AUDIO_ALSA, "alsa_indev": dev, "alsa_outdev": dev}
+    # alsa_rtprio (2026-11-24, Acer Aspire S7, i5-3337U) : sans cette clé, un reaper.ini neuf laisse les fils
+    # reaper/audio et reaper/livefx en ordonnancement normal (`ps -L` : TS), malgré rtprio 95 pour @audio — ils se
+    # battaient avec Firefox et gnome-shell, xruns toutes les ~2 s. Insérée seulement si absente.
+    insert = {"linux_audio_mode": LINUX_AUDIO_ALSA, "alsa_indev": dev, "alsa_outdev": dev, "alsa_rtprio": ALSA_RTPRIO}
     fix = {}
     if card and card_present(dev):
         for k in ("alsa_indev", "alsa_outdev"):

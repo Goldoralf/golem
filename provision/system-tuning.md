@@ -47,6 +47,17 @@ Network fallback (access point) is separate: [docs/network.md](../docs/network.m
 - REAPER uses ALSA directly. `provision/reaper-ini-setup.py` inserts default `alsa_indev`/`alsa_outdev` keys only when
   absent (it never overwrites an existing value); the card is then chosen in the app (Soundcard page, which rewrites
   those keys after REAPER has exited — `bridge/routes_system.py`).
+- **Real-time priority for REAPER's audio threads**: `reaper-ini-setup.py` inserts `alsa_rtprio=80` when the key is
+  absent (an existing value is never changed). Without it, a fresh `reaper.ini` leaves `reaper/audio` and
+  `reaper/livefx` on normal scheduling even though `@audio` may use rtprio 95: they compete with the browser and the
+  desktop, and the result is xruns every few seconds (measured 2026-11-24 on an Acer Aspire S7, i5-3337U, 3 GB).
+  Check with `ps -L -o tid,cls,rtprio,comm -p $(pgrep -x reaper)`: the audio threads must show `RR 80`, not `TS`.
+  `start.sh` runs the script before every REAPER launch, so a restart applies it.
+- **Memory on small machines**: on 3 GB, a browser with a few tabs is enough to push REAPER into swap. The audio
+  thread then takes major page faults (`/proc/<pid>/task/<tid>/stat`, field 12) and every one of them is a likely
+  xrun. Close other applications on such a machine. Real-time priority does not cure this.
+- golem's dropout counter (`state.xruns`) reads the kernel log only on Linux: it does **not** see REAPER's own
+  xruns, so it can show 0 while the sound crackles.
 - Target 48 kHz; lower the buffer step by step (256 → 128 → 64) while watching xruns.
 - Make sure REAPER opens the audio interface, not a secondary "Generic USB Audio" device.
 - `reaper-ini-setup.py` also forces `norunmute=0` (`ENGINE_FORCED`): REAPER must keep processing muted tracks, because

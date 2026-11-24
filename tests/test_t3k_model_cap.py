@@ -48,6 +48,7 @@ def test_fetch_models_hors_linux_met_l_a1_en_tete_et_garde_l_a2(monkeypatch, api
     """Le NAM de Windows/macOS ne lit pas l'A2 : l'A1 passe en tête (défaut d'un bloc sans épingle),
     l'A2 jumeau reste derrière pour les patches faits sous Linux qui l'épinglent par son id."""
     monkeypatch.setattr(rig, "_platform", lambda: plat)
+    monkeypatch.setattr(rig, "_nam_golem_version", lambda: "")     # le NAM officiel, pas le témoin de LA MACHINE
     got = R._fetch_models(1)
     assert [m["id"] for m in got] == list(range(100, 110)) + [110, 111, 112] + list(range(10, 20)) + [20, 21]
     assert len(api) == 4

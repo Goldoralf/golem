@@ -13,6 +13,9 @@ def cfg(tmp_path, monkeypatch):
     monkeypatch.delenv("GOLEM_MIDI_PORT", raising=False)
     monkeypatch.setattr(M, "ports", lambda: {"in": ["Volt 276", "MPK Mini Mk II", "loopMIDI Port"],
                                               "out": ["Microsoft GS Wavetable Synth", "Volt 276", "MPK Mini Mk II"]})
+    # aucune prise n'est « de la carte active » : sinon la vraie requête PnP de LA MACHINE (une Volt branchée) retire
+    # « Volt 276 » de la liste — juste chez elle, faux dans ce test (test_desktop_midi_card_ports.py couvre ce tri)
+    monkeypatch.setattr(M, "card_ports", lambda names: set())
     return tmp_path
 
 

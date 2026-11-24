@@ -7,7 +7,24 @@ CONTENU du fichier et pas son nom ; l'état de bloc en fait la raison `format` (
 télécharger ailleurs n'y changerait rien). Sous Linux, rien ne change."""
 import json
 
+import pytest
+
 from bridge import blockstatus, rig
+
+
+@pytest.fixture(autouse=True)
+def _nam_officiel(monkeypatch):
+    # le NAM OFFICIEL, sans le témoin du NAM bâti par golem : sinon le test lit celui de LA MACHINE (un poste
+    # Windows installé a le NAM 0.7.15 de golem, qui lit l'A2 — rien n'y est refusé, à raison)
+    monkeypatch.setattr(rig, "_nam_golem_version", lambda: "")
+
+
+def test_le_nam_de_golem_lit_l_a2_partout(monkeypatch):
+    monkeypatch.setattr(rig, "_platform", lambda: "win32")
+    monkeypatch.setattr(rig, "_nam_golem_version", lambda: "0.7.15")
+    assert rig.nam_unreadable() == []
+    monkeypatch.setattr(rig, "_nam_golem_version", lambda: "0.7.13")
+    assert rig.nam_unreadable() == ["SlimmableContainer"]
 
 
 def _nam(tmp_path, name, arch):

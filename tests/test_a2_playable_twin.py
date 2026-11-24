@@ -3,7 +3,15 @@
 la tirer de TONE3000 sans retirer l'A2 du catalogue — un patch fait sous Linux reste portable."""
 import json
 
+import pytest
+
 from bridge import resolver, rig, routes_t3k as T
+
+
+@pytest.fixture(autouse=True)
+def _nam_officiel(monkeypatch):
+    # « hors Linux » = le NAM officiel, qui ne lit pas l'A2 — pas le témoin du NAM de golem posé sur LA MACHINE
+    monkeypatch.setattr(rig, "_nam_golem_version", lambda: "")
 
 A2 = {"id": 418200, "name": "Tim R Fender TwinVerb Vibrato Bright", "file": "assets/m/vib-a2.nam", "arch": "2"}
 A2B = {"id": 418201, "name": "Tim R Fender TwinVerb Norm Bright", "file": "assets/m/norm-a2.nam", "arch": "2"}

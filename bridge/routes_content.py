@@ -1373,11 +1373,16 @@ def _wav_peaks(path, buckets=1000):
     `buckets` tours. Indépendant du nombre de canaux : les échantillons entrelacés sont mélangés,
     ce qui revient à prendre la crête sur toutes les voies (exactement ce qu'on veut afficher)."""
     import wave
-    with wave.open(path, "rb") as w:
-        nfr, sw, fr, nch = w.getnframes(), w.getsampwidth(), w.getframerate(), w.getnchannels()
-        if not nfr or not fr:
-            return {"peaks": [], "dur": 0}
-        raw = w.readframes(nfr)
+    try:
+        with wave.open(path, "rb") as w:
+            nfr, sw, fr, nch = w.getnframes(), w.getsampwidth(), w.getframerate(), w.getnchannels()
+            if not nfr or not fr:
+                return {"peaks": [], "dur": 0}
+            raw = w.readframes(nfr)
+    except wave.Error:
+        # le Golem Engine (Ardour) enregistre en 32 bits FLOTTANT (format 3) : `wave` le refuse — sans ce chemin,
+        # Recordings dessinait un long rectangle noir (2026-11-25)
+        return _float_wav_peaks(path, buckets)
     hi = raw[sw - 1::sw]
     if sw == 1:                                    # 8 bits = NON signé, centré sur 128
         tbl = bytes(min(255, abs(i - 128) * 2) for i in range(256))
@@ -1388,6 +1393,62 @@ def _wav_peaks(path, buckets=1000):
     step = max(1, total // buckets)
     pk = [round(max(mag[i:i + step]) / 255, 3) for i in range(0, total, step)][:buckets]
     return {"peaks": pk, "dur": round(nfr / fr, 3), "rate": fr, "ch": nch}
+
+
+def _float_chunks(path):
+    """(format, canaux, fréquence, bits, début des données, taille des données) d'un RIFF/WAVE, lu à la main.
+    WAVE_FORMAT_EXTENSIBLE (0xFFFE) : le vrai format est dans les deux premiers octets du sous-format."""
+    import struct
+    with open(path, "rb") as f:
+        head = f.read(12)
+        if head[:4] != b"RIFF" or head[8:12] != b"WAVE":
+            raise ValueError("not a RIFF/WAVE file")
+        fmt = None
+        while True:
+            ch = f.read(8)
+            if len(ch) < 8:
+                raise ValueError("no data chunk")
+            cid, size = ch[:4], struct.unpack("<I", ch[4:])[0]
+            if cid == b"fmt ":
+                body = f.read(size + (size & 1))
+                tag, nch, fr, _, _, bits = struct.unpack("<HHIIHH", body[:16])
+                if tag == 0xFFFE and len(body) >= 26:
+                    tag = struct.unpack("<H", body[24:26])[0]
+                fmt = (tag, nch, fr, bits)
+            elif cid == b"data":
+                if not fmt:
+                    raise ValueError("data before fmt")
+                # une prise encore ouverte par le moteur peut annoncer une taille nulle ou fausse : on borne au fichier
+                start = f.tell()
+                avail = os.path.getsize(path) - start
+                return (*fmt, start, min(size, avail) if size else avail)
+            else:
+                f.seek(size + (size & 1), 1)
+
+
+def _float_wav_peaks(path, buckets=1000):
+    """Même enveloppe que `_wav_peaks`, pour un .wav en 32/64 bits flottant. `array` convertit en C ; `max`/`min`
+    par tranche aussi : la boucle Python ne fait que `buckets` tours (≈ 1 s pour 5 min stéréo, puis le cache)."""
+    from array import array
+    tag, nch, fr, bits, start, size = _float_chunks(path)
+    if tag != 3 or bits not in (32, 64) or not nch or not fr:
+        raise ValueError(f"unsupported WAV format {tag}/{bits} bits")
+    a = array("f" if bits == 32 else "d")
+    with open(path, "rb") as f:
+        f.seek(start)
+        raw = f.read(size - size % a.itemsize)
+    a.frombytes(raw)
+    if sys.byteorder != "little":
+        a.byteswap()
+    total = len(a)
+    if not total:
+        return {"peaks": [], "dur": 0}
+    step = max(1, total // buckets)
+    pk = []
+    for i in range(0, total, step):
+        s = a[i:i + step]
+        pk.append(round(min(1.0, max(max(s), -min(s))), 3))
+    return {"peaks": pk[:buckets], "dur": round(total / nch / fr, 3), "rate": fr, "ch": nch}
 
 
 _PEAK_ROOTS = ("assets", "library", "recordings")     # racines auditionnables (anti path-traversal)

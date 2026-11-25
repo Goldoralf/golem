@@ -300,8 +300,12 @@ def find_di(job):
 def wav_info(path):
     """(fréquence, nombre d'échantillons, canaux) d'un .wav — FLAC : via ffprobe."""
     if path.lower().endswith(".wav"):
-        with contextlib.closing(wave.open(path, "rb")) as w:
-            return w.getframerate(), w.getnframes(), w.getnchannels()
+        try:
+            with contextlib.closing(wave.open(path, "rb")) as w:
+                return w.getframerate(), w.getnframes(), w.getnchannels()
+        except wave.Error:
+            pass          # 32 bits flottant (une prise du Golem Engine) : `wave` le refuse, ffprobe le lit
+
     import json as _json
     import subprocess
     out = subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",

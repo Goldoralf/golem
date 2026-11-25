@@ -459,7 +459,24 @@ def _audio_alive():
     if w.get("ticks") == prev["ticks"]:
         # ⚠ chaîne AFFICHÉE (title de la puce « NO AUDIO » sur /live) -> ANGLAIS, règle 4
         return False, "audio thread stalled — sound card lost?"
+    # UN FLUX QUI RAMPE EST MORT (2026-11-25) : le Golem Engine bloqué avançait encore de 256 échantillons de temps en
+    # temps — 0 % du temps réel. Vu « vivant » à chaque pas, l'épisode se refermait, la carte était rouverte au tour
+    # suivant (120 fois), et la récupération n'allait jamais plus loin. Ses ticks sont des échantillons : on exige un débit.
+    rate = _samples_rate()
+    if rate and _stream_flowing(rate) is False:
+        return False, "audio thread stalled — sound card lost?"
     return True, ""
+
+
+def _samples_rate():
+    """La fréquence du moteur quand ses ticks sont des ÉCHANTILLONS (le Golem Engine : AudioEngine:processed_samples),
+    None pour REAPER (golem_clock.lua compte autre chose : aucune règle de débit)."""
+    with contextlib.suppress(Exception):
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper":
+            return (eng.audio() or {}).get("rate") or 48000
+    return None
 
 
 # ── RÉCUPÉRATION AUTOMATIQUE, avec trois garde-fous ──────────────────────────────────────
@@ -474,7 +491,43 @@ def _audio_alive():
 #      n'ajoute que du bruit dans les journaux et de la latence à chaque cycle.
 #   3. ON LE DIT. Journal à l'envoi, journal au retour, et la puce reste rouge tant que ce n'est
 #      pas revenu — une réparation silencieuse cache la panne au lieu de la traiter.
-_AUDIO_FIX = {"tried": False}
+_AUDIO_FIX = {"tried": False, "tried_at": 0.0}
+_ENGINE_RESTARTS = []         # instants des redémarrages du moteur pour un flux mort (au plus 1 par ENGINE_RESTART_WINDOW_S)
+ENGINE_RESTART_WINDOW_S, ENGINE_RESTART_AFTER_S = 600, 8.0
+
+
+def _restart_dead_engine():
+    """ÉTAPE 2 DE LA RÉCUPÉRATION (2026-11-25) : la carte rouverte n'a rien changé et le flux du moteur reste MORT. Le
+    backend ALSA du Golem Engine, bloqué après un preset trop lourd, ne repartait qu'avec un moteur entier relancé (mesuré
+    au rack : audio_reset sans effet, restart → 0 xrun). Un moteur qui n'est pas REAPER, une fois par 10 min, une
+    intention posée (pas un « plantage ») ; le moniteur remonte ensuite le patch comme après tout redémarrage. Vrai si
+    lancé."""
+    try:
+        from . import engine
+        eng = engine.get()
+    except Exception:
+        return False
+    rate = 48000
+    with contextlib.suppress(Exception):
+        rate = (eng.audio() or {}).get("rate") or 48000
+    if eng.id == "reaper" or _stream_flowing(rate) is not False:
+        return False
+    now = time.time()
+    if getattr(state, "rig_loading", None) or now - (getattr(eng, "launched_at", 0) or 0) < 60.0:
+        return False                                          # un rig se monte, un moteur démarre : pas un flux mort
+    if now - _AUDIO_FIX.get("tried_at", 0.0) < ENGINE_RESTART_AFTER_S:
+        return False                                          # la réouverture n'a pas encore eu le temps d'agir
+    _ENGINE_RESTARTS[:] = [t for t in _ENGINE_RESTARTS if now - t < ENGINE_RESTART_WINDOW_S]
+    if _ENGINE_RESTARTS:
+        return False
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return False
+    _ENGINE_RESTARTS.append(now)
+    log_audio.warning("⚠ flux audio toujours mort après la réouverture de la carte — redémarrage du moteur")
+    loop.run_in_executor(None, eng.restart, "audio-dead")
+    return True
 
 
 def _active_card_missing():
@@ -546,11 +599,14 @@ def _audio_recover(alive, why):
         return {"ok": False, "why": why, "fix": "waiting — a take is recording"}
     if not _AUDIO_FIX["tried"]:                      # garde-fou 2 : une seule fois
         _AUDIO_FIX["tried"] = True
+        _AUDIO_FIX["tried_at"] = time.time()
         log_audio.warning(f"⚠ {why} — récupération AUTOMATIQUE : audio_reset (une seule tentative)")
         with contextlib.suppress(Exception):
             from .commands import write_command
             write_command({"action": "audio_reset"})
         return {"ok": False, "why": why, "fix": "recovering…"}
+    if _restart_dead_engine():
+        return {"ok": False, "why": why, "fix": "recovering… restarting the audio engine"}
     return {"ok": False, "why": why, "fix": "recovery had no effect — check the cable"}
 
 

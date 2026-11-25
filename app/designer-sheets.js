@@ -9,6 +9,7 @@ import { BackingDrawer } from './designer-backing.js';
 import { ClickSongCols, PerSongNote, SongLayer, sheetBlocks } from './designer-song.js';   // la chanson chargée (docs/designer-song.md)     // le tiroir Backing Track (docs/song-backing.md)
 import { PadsDrawer } from './pads-drawer.js';   // le tiroir du bloc Pads v2 (mockups/pads-drawer-v2.html)
 import { Icon } from './icons.js';
+import { isLocalHost, LOCAL_TILES_KEY, localTilesAllowed } from './anim-stepper.mjs';   // les cases figées sur l'écran local
 import { orderModels, describe as capDescribe } from './capture-gain.js';
 import { useGestures, GestureLegend } from './gestures.js';   // la légende des gestes au pied, en phrases
 import { ParametricControls } from './capture-parametric.js';
@@ -1376,15 +1377,24 @@ export function EffectPicker({ current, pc, onPick, onClose }) {
   // le default garde ses valeurs NUES (compat des presets écrits avant les packs)
   const valOf = eid => (pid === 'default' ? eid : (eid ? pid + '/' + eid : ''));
   const items = pack ? pack.effects : ANIM_STYLES.map(([v, l]) => ({ id: v, name: l }));
+  // une case animée fait redessiner l'écran sans arrêt : sur la machine qui joue le son, c'est du temps volé à
+  // l'audio (2026-11-25, docs/pitfalls/ui.md) ; l'écran LOCAL les fige donc (app/anim-stepper.mjs), un écran déporté
+  // les garde. Le réglage ne se montre que sur l'écran local, le seul où il change quelque chose.
+  const local = isLocalHost(location.hostname);
+  const [liveTiles, setLiveTiles] = useState(localTilesAllowed());
+  const toggleTiles = () => {
+    const v = !liveTiles;
+    try { if (v) localStorage.setItem(LOCAL_TILES_KEY, '1'); else localStorage.removeItem(LOCAL_TILES_KEY); } catch { /* stockage refusé */ }
+    setLiveTiles(v);
+  };
   return html`<div class="detail" onClick=${bg}>
     <div class="detail-card set-cfg">
       <button class="close" onClick=${onClose}>×</button>
       <h2>Animation effect</h2>
       <div class="fx-pick-hd">
         <p class="muted">Tap an effect — it plays on this tile on the Live page.
-          ${/* une case animée fait redessiner l'écran sans arrêt : sur la machine qui joue le son, c'est du temps
-               volé à l'audio (2026-11-25, docs/pitfalls/ui.md) ; sur une tablette, ça ne coûte rien au rack */ ''}
-          <br/>Moving tiles keep the screen redrawing: on the computer that plays the sound, they cost CPU.</p>
+          ${local ? html`<br/>Still on this screen (it shares the computer that plays the sound):
+            <label class="fx-live-tiles"><input type="checkbox" checked=${liveTiles} onChange=${toggleTiles} /> Animate here</label>` : ''}</p>
         ${packs.length > 1
           ? html`<select class="flt-sel fx-packsel" value=${pid} title="tile pack — new packs arrive from golem.fm"
               onChange=${e => setPid(e.target.value)}>

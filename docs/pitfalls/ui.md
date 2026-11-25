@@ -137,15 +137,24 @@ is about 10 messages and 60 KB a second.
 - Infinite CSS animations are put on a step by `app/anim-stepper.mjs`, started by `main.js` and `mobile.js`. Each one
   is paused and set in turn to its "on" and "off" state at its own half-period. A blink looks the same and a pulse
   becomes two steps. The cost is two frames a second instead of 240: the GPU process drops to 0.4–0.6 % of a core.
-- Exempt by design: spinners (a stepped rotation does not turn) and the Live tile animations the user picks
-  (`anim-*`). The Designer's effect picker says these tiles cost CPU on the computer that plays the sound.
+- The Live tile animations (`anim-*`) are frozen on one frame on the local screen. The local screen is the app
+  served from `127.0.0.1` or `localhost`, which runs on the machine that plays the sound. Most factory patches carry
+  9–10 of them.
+  - Measured on the 240 Hz panel with the 14 tiles of Jazz Box: animated, the GPU process used 134 % of a core and
+    the renderer 26 %; frozen, 0.7 % and 3 %.
+  - On the Linux rack, `prefers-reduced-motion` (which stops the same animations) took ALSA restarts from 137 to 0
+    a minute.
+  - A remote screen keeps them animated. The effect picker's "Animate here" box (stored as
+    `localStorage['golem.localTileAnims']`) gives them back to the local screen.
+- Free by design: spinners (a stepped rotation does not turn) and the effect picker's previews (`.fx-opt`).
 - Values that move by themselves (looper progress and ring, record timer, bar clock, backing progress, all in
   `page-live.js`) update about 15 times a second through `useLiveTick`, and write only when the value changed.
   They never use a `requestAnimationFrame` loop.
 - A gesture animation (a transition, a one-shot keyframe) is fine: it ends.
 
-**Detect.** `tools/check-ui.py` fails a page that, at rest, keeps an infinite CSS animation running (outside the
-exemptions) or makes more than 20 `requestAnimationFrame` calls in a second. Live check: with the window in front,
+**Detect.** `tools/check-ui.py` reads the app on localhost, which is the local screen. It fails a page that, at
+rest, keeps an infinite CSS animation running (spinners and picker previews excepted), tile animations included,
+or that makes more than 20 `requestAnimationFrame` calls in a second. Live check: with the window in front,
 compare the CPU of the golem Chrome processes (Task Manager, or `top` on Linux) with the window minimised.
 
 **Code.** `app/anim-stepper.mjs`, `app/anim-stepper.test.mjs`, `app/page-live.js` (`useLiveTick`, `setIfChanged`),

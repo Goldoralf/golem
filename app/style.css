@@ -4818,6 +4818,8 @@ button.arr-d-dot{cursor:pointer; padding:0}
 /* sélecteur de PACK de tuiles dans le picker d'animation (docs/anim-packs.md) */
 .fx-pick-hd{display:flex; align-items:center; gap:12px; margin-bottom:12px}
 .fx-pick-hd p{margin:0; flex:1; min-width:0}
+.fx-live-tiles{display:inline-flex; align-items:center; gap:6px; margin-left:10px; color:var(--text); cursor:pointer; white-space:nowrap}
+.fx-live-tiles input{width:16px; height:16px; margin:0}
 .fx-packsel{flex:none; max-width:210px}
 .fx-packsel.one{display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 11px;
   border-radius:8px; background:var(--panel2); border:1px solid var(--line);

@@ -215,12 +215,13 @@ class Bridge:
         self.tmp.cleanup()
 
 
-# les animations CSS infinies qui TOURNENT (pas en pause) ; libres par conception : les spinners, et les animations de
-# cases du Live que l'utilisateur choisit (classes anim-*) — mêmes exceptions qu'app/anim-stepper.mjs
+# les animations CSS infinies qui TOURNENT (pas en pause) ; libres par conception : les spinners et les aperçus du
+# sélecteur d'effet (.fx-opt) — mêmes exceptions qu'app/anim-stepper.mjs. La sonde lit l'app sur localhost : c'est
+# l'écran LOCAL, où les cases animées du Live sont figées — une case qui tourne encore est un manquement.
 _ENDLESS_JS = """() => document.getAnimations().filter(a => a.animationName && a.playState === 'running'
       && a.effect && a.effect.getTiming().iterations === Infinity && !/spin/i.test(a.animationName)).map(a => {
     const t = a.effect.target, el = t && (t.nodeType === 1 ? t : t.parentElement);
-    if (el && [...el.classList].some(c => c.startsWith('anim-'))) return null;
+    if (el && el.closest('.fx-opt')) return null;
     return a.animationName + ' on ' + (el ? el.tagName.toLowerCase() + '.' + [...el.classList].join('.') : '?');
   }).filter(Boolean)"""
 # compte les images demandées par requestAnimationFrame (posé avant le chargement de la page)

@@ -1548,7 +1548,18 @@ to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pas
     (`AudioBackend::device_input_latency` / `device_output_latency`, PortAudio's stream latency, bound in Lua); the
     watcher writes `latency_in` / `latency_out` in `.engine-status.json`, and `cards.engine_card()` shows that figure
     (`latency_source: "driver"`) and warns when the driver keeps its own buffer. Checked on the Volt: 8.6 ms at 128,
-    14.3 ms at 256, the figures REAPER reports. Windows is pinned to g7 (`provision/windows/pins.json`).
+    14.3 ms at 256, the figures REAPER reports. Windows was pinned to g7.
+- **The late cycles ASIO never reports** (2026-11-25, `golem-engine-9.9-g8`, tag on `4061ba79f`, Linux CI run 45651950343):
+    - Under ASIO no xrun is ever reported: the engine counted 0 dropouts while the musician heard clicks.
+    - Patch 16 of the fork (`AudioBackend::late_cycles` / `late_starts`): the PortAudio backend counts the cycles that end
+      after their deadline, and apart those that started more than half a period late.
+    - The watcher adds the late cycles to its published `xruns`, and holds the count across a buffer change and a card
+      reopen. It writes both counters into `.engine-status.json`.
+    - golem's Health says whether a driver or the patch causes the clicks, and its first check picks the smallest buffer
+      with none ([health.md](health.md) §2 bis).
+    - Measured on the Volt with the NVIDIA GPU on: 64 → 142 late cycles in 10 s, 128 → 1, 256 → 0.
+    - g8 also carries the watcher's three ALSA periods (`4c830b1f7`).
+    - Windows is pinned to g8 (`provision/windows/pins.json`).
 - **Open**: DSP load at 128
   (55–70 % at 256 for one dual-amp patch: the second NAM, golem-fx, and the engine's own 36 tracks); the Linux pass of
   these changes.

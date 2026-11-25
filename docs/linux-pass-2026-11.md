@@ -69,13 +69,20 @@ systems).
 
 **Superseded 2026-11-24 by `golem-engine-9.9-g7`** (tag on `24d7d6844`; CI run 45492816198): g6 plus the latency the
 driver applies (`latency_in` / `latency_out` in `.engine-status.json`; PortAudio only, the ALSA backend reports
-nothing yet and golem keeps its own ALSA figure). Windows is pinned to g7 (`provision/windows/pins.json`).
+nothing yet and golem keeps its own ALSA figure).
+
+**Superseded 2026-11-25 by `golem-engine-9.9-g8`** (tag on `4061ba79f`; CI run 45651950343).
+
+- It is g7 plus patch 16, the late cycles under ASIO. Their counters are PortAudio only: under ALSA golem reads its real
+  xruns.
+- It also carries the watcher's three ALSA periods (`4c830b1f7`), not yet measured with a rig mounted.
+- Windows is pinned to g8 (`provision/windows/pins.json`).
 
 What is left for this pass:
 
-- Run §1–3 against **the g7 package** (or the dev tree at the tag), not only the dev tree.
-- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g7` and the line in `provision/downloads.sha256`:
-  `e623acaa326ab9e7d17650ee86bb29b0dcb7d22ee5b91ef4d1a98504dc014274` for `golem-engine-linux-x86_64.tar.gz` (the
+- Run §1–3 against **the g8 package** (or the dev tree at the tag), not only the dev tree.
+- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g8` and the line in `provision/downloads.sha256`:
+  `384c9042569ac14192e5c6c24901602d92c99b17994916707b9c454fe5d5e32f` for `golem-engine-linux-x86_64.tar.gz` (the
   release's `SHA256SUMS`; recompute it on the downloaded asset and compare).
 - Release tags of the engine must stay **lightweight** (the workflow says why: `git describe`). The workflow still
   creates its release: a later tag that should carry both systems runs the workflow first, then uploads the Windows

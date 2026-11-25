@@ -53,9 +53,9 @@
   "sha256": "4f5537a63fb191192999c797d64e32ca5e7c3dd01dee8fa71b6d9fb241c51cee"
  },
  "golem_engine": {
-  "_comment": "Le Golem Engine pour Windows (golem docs/ardour-plan.md §7e) : release golem-engine-9.9-g7 de Goldoralf/golem-binaries, construite par MSYS2 UCRT64 depuis le tag golem-engine-9.9-g7 du fork (24d7d6844 : la latence que le pilote applique, latency_in/out) et golem/tools/bundle.py ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release (2026-11-24). Posé par provision/golem_engine.py (provision/desktop.py setup) dans ~/opt/golem-engine, sans droits d'administrateur. Linux garde sa propre épingle (VERSION de golem_engine.py, provision/downloads.sha256).",
-  "version": "9.9-g7",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g7/golem-engine-windows-x86_64.tar.gz",
-  "sha256": "20c852ceb001e316a0e11cb264c89699cb584dc790b0bfd5986e5d24358ed7ae"
+  "_comment": "Le Golem Engine pour Windows (golem docs/ardour-plan.md §7e) : release golem-engine-9.9-g8 de Goldoralf/golem-binaries, construite par MSYS2 UCRT64 depuis le tag golem-engine-9.9-g8 du fork (4061ba79f : les cycles en retard que l'ASIO ne signale pas, late_cycles/late_starts, patch 16) et golem/tools/bundle.py ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release (2026-11-25). Posé par provision/golem_engine.py (provision/desktop.py setup) dans ~/opt/golem-engine, sans droits d'administrateur. Linux garde sa propre épingle (VERSION de golem_engine.py, provision/downloads.sha256).",
+  "version": "9.9-g8",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g8/golem-engine-windows-x86_64.tar.gz",
+  "sha256": "0e2d64701ff1c4e1cf8732eb676e2b78f91f7accb4c599092afe99d0150d21cd"
  }
 }

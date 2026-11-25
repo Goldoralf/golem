@@ -1381,7 +1381,10 @@ export function EffectPicker({ current, pc, onPick, onClose }) {
       <button class="close" onClick=${onClose}>×</button>
       <h2>Animation effect</h2>
       <div class="fx-pick-hd">
-        <p class="muted">Tap an effect — it plays on this tile on the Live page.</p>
+        <p class="muted">Tap an effect — it plays on this tile on the Live page.
+          ${/* une case animée fait redessiner l'écran sans arrêt : sur la machine qui joue le son, c'est du temps
+               volé à l'audio (2026-11-25, docs/pitfalls/ui.md) ; sur une tablette, ça ne coûte rien au rack */ ''}
+          <br/>Moving tiles keep the screen redrawing: on the computer that plays the sound, they cost CPU.</p>
         ${packs.length > 1
           ? html`<select class="flt-sel fx-packsel" value=${pid} title="tile pack — new packs arrive from golem.fm"
               onChange=${e => setPid(e.target.value)}>

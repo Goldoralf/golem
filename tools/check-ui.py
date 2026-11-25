@@ -8,6 +8,8 @@ page du rack à 1024×600 et le Companion à 390×844 dans le Chrome du système
 téléchargé), et vérifie sur chacune :
 
   - aucune erreur JavaScript, aucune erreur console ;
+  - au repos, rien ne se redessine en continu : ni animation CSS infinie qui tourne, ni boucle requestAnimationFrame
+    (chaque image volerait du temps au moteur audio de la même machine) ;
   - AUCUN défilement (le rack est une tablette 1024×600 qui ne scrolle pas ; le téléphone ne scrolle pas en largeur) ;
   - aucun libellé FRANÇAIS à l'écran (règle 4 du CLAUDE.md) — le même détecteur que tools/check-descriptors.py ;
   - la marque s'écrit « golem », jamais « GoleM » ;
@@ -213,6 +215,19 @@ class Bridge:
         self.tmp.cleanup()
 
 
+# les animations CSS infinies qui TOURNENT (pas en pause) ; libres par conception : les spinners, et les animations de
+# cases du Live que l'utilisateur choisit (classes anim-*) — mêmes exceptions qu'app/anim-stepper.mjs
+_ENDLESS_JS = """() => document.getAnimations().filter(a => a.animationName && a.playState === 'running'
+      && a.effect && a.effect.getTiming().iterations === Infinity && !/spin/i.test(a.animationName)).map(a => {
+    const t = a.effect.target, el = t && (t.nodeType === 1 ? t : t.parentElement);
+    if (el && [...el.classList].some(c => c.startsWith('anim-'))) return null;
+    return a.animationName + ' on ' + (el ? el.tagName.toLowerCase() + '.' + [...el.classList].join('.') : '?');
+  }).filter(Boolean)"""
+# compte les images demandées par requestAnimationFrame (posé avant le chargement de la page)
+_RAF_COUNTER = """(() => { const raf = window.requestAnimationFrame.bind(window); window.__golemRaf = 0;
+  window.requestAnimationFrame = cb => raf(t => { window.__golemRaf++; cb(t); }); })();"""
+
+
 def visit(page, url, size, settle_ms):
     """Ouvre une page, attend qu'elle se pose, et rend ce que l'on a vu : erreurs, défilement, texte, hash final."""
     errors = []
@@ -228,6 +243,22 @@ def visit(page, url, size, settle_ms):
     except Exception:
         pass
     page.wait_for_timeout(settle_ms)
+    # LA PAGE AU REPOS NE DESSINE PAS EN CONTINU (2026-11-25, docs/pitfalls/ui.md « An endless animation steals the
+    # audio thread ») : une animation CSS infinie qui tourne, ou une boucle requestAnimationFrame, font recomposer
+    # l'image à chaque rafraîchissement de l'écran — du temps volé au moteur audio de la même machine. Deux relevés à
+    # 400 ms : seule compte une animation présente aux deux (le minuteur d'app/anim-stepper.mjs en pause une neuve en
+    # moins de 200 ms).
+    endless = []
+    for _ in range(2):
+        endless.append(set(page.evaluate(_ENDLESS_JS)))
+        page.wait_for_timeout(400)
+    raf0 = page.evaluate("() => window.__golemRaf || 0")
+    page.wait_for_timeout(1000)
+    raf = page.evaluate("() => window.__golemRaf || 0") - raf0
+    if endless[0] & endless[1]:
+        errors.append("endless animation running at rest: " + " | ".join(sorted(endless[0] & endless[1])[:4]))
+    if raf > 20:
+        errors.append(f"requestAnimationFrame loop at rest: {raf} frames in 1 s")
     metrics = page.evaluate("""() => {
         // l'INVENTAIRE de ce qui s'actionne sur la page : tag, rôle, nom accessible (aria-label, texte, title,
         // placeholder) — ce que le fichier tests/ui/inventory.json tient comme contrat de la surface
@@ -269,6 +300,7 @@ def check(base, out, settle_ms, pages_rack, pages_phone, log):
                 url = base + ("/app/" + target if target.startswith("#") else target)
                 page = browser.new_page(viewport={"width": size[0], "height": size[1]})
                 page.route("**/api/**", guard)
+                page.add_init_script(_RAF_COUNTER)
                 try:
                     errors, m = visit(page, url, size, settle_ms)
                 except Exception as e:                                 # la page n'a pas chargé : c'est un manquement

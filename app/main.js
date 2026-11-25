@@ -16,6 +16,7 @@ import { SongsPage } from './page-songs.js';
 import { DesignerPage } from './page-designer.js';
 import { SystemePage } from './page-systeme.js';
 import { watchErrors } from './ui-errors.mjs';             // les erreurs de l'app vers les rapports (docs/diagnostics.md §7.2)
+import { startAnimStepper } from './anim-stepper.mjs';     // docs/pitfalls/ui.md « An endless animation steals the audio thread »
 
 // Topbar = 5 sections (décision 2026-07-30) : Live / Songs / Designer / Library / Settings —
 // le flux d'une soirée : choisir, jouer, retoucher. Songs = CE QUE TU JOUES (presets, setlists,
@@ -385,6 +386,7 @@ function App() {
 }
 
 watchErrors('rack');
+startAnimStepper();                          // les animations infinies au pas : la fenêtre ne vole plus l'audio
 render(html`<${App} />`, document.getElementById('app'));
 // fenêtre du poste de travail : elle retrouve sa taille (no-op sur le rack et dans un onglet
 // ordinaire — la mémoire ne s'active que sur ?shell=, posé par provision/golem).

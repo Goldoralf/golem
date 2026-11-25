@@ -10,6 +10,7 @@
 //   (batteur sans entrée) · Rec · Tuner (ouvert depuis Mine). Les onglets suivent les LIGNES de la personne.
 import { html, render, useState, useEffect, useRef, post, cls, useRigState, keepAwake } from './lib.js';
 import { watchErrors } from './ui-errors.mjs';
+import { startAnimStepper } from './anim-stepper.mjs';
 import { ICON, hydrateBlockMeta, shortBlockName } from './designer-model.js';
 import { PhoneCaptures } from './capture-module.js';
 import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
@@ -510,5 +511,6 @@ function Companion() {
 
 export function mountCompanion(el) {
   watchErrors('companion');                  // docs/diagnostics.md §7.2
+  startAnimStepper();                        // les animations infinies au pas (le téléphone aussi : sa batterie)
   render(html`<${Companion} />`, el);
 }

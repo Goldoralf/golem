@@ -118,25 +118,37 @@ const dropRiff = (e, uid) => { e.stopPropagation(); post('/api/compo/drop', { ui
 const LOOP_COLOR = { rec: '#e02020', dub: '#ff8c1a', play: '#2ecc71', stop: '#8a94a3', empty: '#8a94a3' };
 const LOOP_ANIM = { rec: 'pulse', dub: 'ember', play: '', stop: '', empty: '' };
 
+// ── LES AFFICHAGES QUI AVANCENT TOUT SEULS (progression, anneau, chrono, horloge) : ~15 images par seconde, et une
+// écriture seulement si la valeur a changé. Une boucle requestAnimationFrame demandait une image à CHAQUE
+// rafraîchissement de l'écran (240 Hz sur le rack de dev), même looper arrêté : du temps volé au moteur audio de la
+// même machine (2026-11-25, docs/pitfalls/ui.md « An endless animation steals the audio thread »).
+const LIVE_TICK_MS = 66;
+function useLiveTick(fn, deps = []) {
+  useEffect(() => {
+    fn();
+    const t = setInterval(fn, LIVE_TICK_MS);
+    return () => clearInterval(t);
+  }, deps);
+}
+const setIfChanged = (el, key, v, attr) => {          // n'écrit que ce qui change : une page immobile ne redessine rien
+  if (!el || el['_g' + key] === v) return;
+  el['_g' + key] = v;
+  if (attr) el.setAttribute(key, v);
+  else if (key === 'text') el.textContent = v;
+  else if (key === 'html') el.innerHTML = v;
+  else el.style[key] = v;
+};
+
 function LoopProgress({ looper }) {
   // barre de progression de la loop maîtresse, extrapolée côté client depuis la dernière frame
   const ref = useRef(null);
   const snap = useRef({ pos: 0, len: 0, at: 0 });
   snap.current = { pos: looper.pos || 0, len: looper.len || 0, at: performance.now() };
-  useEffect(() => {
-    let alive = true;
-    const tick = () => {
-      if (!alive) return;
-      const { pos, len, at } = snap.current;
-      if (ref.current) {
-        const cur = len > 0 ? ((pos + (performance.now() - at) / 1000) % len) / len : 0;
-        ref.current.style.width = (cur * 100).toFixed(1) + '%';
-      }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    return () => { alive = false; };
-  }, []);
+  useLiveTick(() => {
+    const { pos, len, at } = snap.current;
+    const cur = len > 0 ? ((pos + (performance.now() - at) / 1000) % len) / len : 0;
+    setIfChanged(ref.current, 'width', (cur * 100).toFixed(1) + '%');
+  });
   return html`<div class="loop-prog"><div class="loop-prog-fill" ref=${ref}></div></div>`;
 }
 
@@ -168,35 +180,21 @@ function LoopRing({ looper }) {
   const ref = useRef(null);
   const snap = useRef({ pos: 0, len: 0, at: 0 });
   snap.current = { pos: looper.pos || 0, len: looper.len || 0, at: performance.now() };
-  useEffect(() => {
-    let alive = true;
+  useLiveTick(() => {
     const C = 100.5;                                     // 2πr, r = 16
-    const tick = () => {
-      if (!alive) return;
-      const { pos, len, at } = snap.current;
-      const f = len > 0 ? ((pos + (performance.now() - at) / 1000) % len) / len : 0;
-      if (ref.current) ref.current.setAttribute('stroke-dashoffset', (C * (1 - f)).toFixed(1));
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    return () => { alive = false; };
-  }, []);
+    const { pos, len, at } = snap.current;
+    const f = len > 0 ? ((pos + (performance.now() - at) / 1000) % len) / len : 0;
+    setIfChanged(ref.current, 'stroke-dashoffset', (C * (1 - f)).toFixed(1), true);
+  });
   return html`<svg class="loop-ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" class="lr-bg" />
     <circle cx="20" cy="20" r="16" class="lr-fg" ref=${ref} stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 20 20)" /></svg>`;
 }
 
 function RecTimer({ since }) {
   const ref = useRef(null);
-  useEffect(() => {
-    let alive = true;
-    const tick = () => {
-      if (!alive) return;
-      const t = Math.max(0, (performance.now() - since) / 1000);
-      if (ref.current) ref.current.textContent = Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0') + '.' + Math.floor((t % 1) * 10);
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    return () => { alive = false; };
+  useLiveTick(() => {
+    const t = Math.max(0, (performance.now() - since) / 1000);
+    setIfChanged(ref.current, 'text', Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0') + '.' + Math.floor((t % 1) * 10));
   }, [since]);
   return html`<span class="loop-timer" ref=${ref}>0:00.0</span>`;
 }
@@ -206,24 +204,20 @@ function LoopClock({ looper, bpm }) {
   const lamps = useRef(null), txt = useRef(null);
   const snap = useRef({ pos: 0, len: 0, at: 0, bpm: 120 });
   snap.current = { pos: looper.pos || 0, len: looper.len || 0, at: performance.now(), bpm: bpm || 120 };
-  useEffect(() => {
-    let alive = true;
-    const tick = () => {
-      if (!alive) return;
-      const { pos, len, at, bpm: b } = snap.current;
-      const beat = 60 / b, bar = beat * 4;
-      if (len > 0) {
-        const p = (pos + (performance.now() - at) / 1000) % len;
-        const bi = Math.floor(p / bar), be = Math.floor((p % bar) / beat);
-        const nb = Math.max(1, Math.round(len / bar));
-        if (txt.current) txt.current.innerHTML = `${bi + 1}.${be + 1} <small>/ ${nb} bar${nb > 1 ? 's' : ''} · ${len.toFixed(1)} s</small>`;
-        if (lamps.current) [...lamps.current.children].forEach((el, k) => el.classList.toggle('on', k <= be));
+  useLiveTick(() => {
+    const { pos, len, at, bpm: b } = snap.current;
+    const beat = 60 / b, bar = beat * 4;
+    if (len > 0) {
+      const p = (pos + (performance.now() - at) / 1000) % len;
+      const bi = Math.floor(p / bar), be = Math.floor((p % bar) / beat);
+      const nb = Math.max(1, Math.round(len / bar));
+      setIfChanged(txt.current, 'html', `${bi + 1}.${be + 1} <small>/ ${nb} bar${nb > 1 ? 's' : ''} · ${len.toFixed(1)} s</small>`);
+      if (lamps.current && lamps.current._gbe !== be) {
+        lamps.current._gbe = be;
+        [...lamps.current.children].forEach((el, k) => el.classList.toggle('on', k <= be));
       }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    return () => { alive = false; };
-  }, []);
+    }
+  });
   const none = !(looper.len > 0);
   return html`<span class="loop-clock"><span class="lc-beats" ref=${lamps}><i></i><i></i><i></i><i></i></span>
     <span class="lc-bar" ref=${txt}>${none ? html`— <small>no loop yet</small>` : ''}</span></span>`;
@@ -236,20 +230,11 @@ function BackingProgress({ bk }) {
   const ref = useRef(null);
   const snap = useRef({ pos: 0, len: 0, at: 0, playing: false });
   snap.current = { pos: bk.pos || 0, len: bk.len || 0, at: performance.now(), playing: !!bk.playing };
-  useEffect(() => {
-    let alive = true;
-    const tick = () => {
-      if (!alive) return;
-      const { pos, len, at, playing } = snap.current;
-      if (ref.current) {
-        const p = playing ? Math.min(len, pos + (performance.now() - at) / 1000) : pos;
-        ref.current.style.width = (len > 0 ? (p / len) * 100 : 0).toFixed(1) + '%';
-      }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    return () => { alive = false; };
-  }, []);
+  useLiveTick(() => {
+    const { pos, len, at, playing } = snap.current;
+    const p = playing ? Math.min(len, pos + (performance.now() - at) / 1000) : pos;
+    setIfChanged(ref.current, 'width', (len > 0 ? (p / len) * 100 : 0).toFixed(1) + '%');
+  });
   return html`<div class="loop-prog"><div class="loop-prog-fill" ref=${ref}></div></div>`;
 }
 

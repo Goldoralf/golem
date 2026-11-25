@@ -115,6 +115,44 @@ instance and exits.
 
 ---
 
+## An endless animation steals the audio thread
+
+FIXED 2026-11-25 (Windows dev box: i9-13900H laptop, 240 Hz screen; Linux rack: i5-3337U, 2 cores).
+
+**Symptom.** Crackles that come and go with the golem window: none when it is minimised, closed or covered by
+another window, crackles as soon as it is in front. This happens whatever the patch, the engine, the buffer or the
+power plan. On Linux (REAPER, Funk Clean), 116–119 ALSA restarts a minute with the window open and 0 with it
+minimised. On Windows (Golem Engine, buffer 128), the engine's peak load is 80–86 % with the window in front against
+58–66 % with it minimised.
+
+**Cause.** As long as ONE infinite CSS animation runs, or one `requestAnimationFrame` loop requests the next frame,
+Chrome recomposes the page at every screen refresh: 240 times a second on a 240 Hz panel. That holds even for a
+26-pixel blinking caret (the `/golem_` wordmark), a pulsing dot or a progress bar of a stopped looper. Measured in a
+windowed Chrome on that panel, the GPU process used 16–49 % of a core and the renderer 6–18 %, while script and
+layout cost only 4–6 ms a second (CDP `Performance.getMetrics`). The work competes with the audio thread on the same
+machine. A remote screen (a tablet or phone) costs the rack nothing: it draws with its own CPU, and the state stream
+is about 10 messages and 60 KB a second.
+
+**Rule.** At rest, nothing on screen redraws continuously.
+- Infinite CSS animations are put on a step by `app/anim-stepper.mjs`, started by `main.js` and `mobile.js`. Each one
+  is paused and set in turn to its "on" and "off" state at its own half-period. A blink looks the same and a pulse
+  becomes two steps. The cost is two frames a second instead of 240: the GPU process drops to 0.4–0.6 % of a core.
+- Exempt by design: spinners (a stepped rotation does not turn) and the Live tile animations the user picks
+  (`anim-*`). The Designer's effect picker says these tiles cost CPU on the computer that plays the sound.
+- Values that move by themselves (looper progress and ring, record timer, bar clock, backing progress, all in
+  `page-live.js`) update about 15 times a second through `useLiveTick`, and write only when the value changed.
+  They never use a `requestAnimationFrame` loop.
+- A gesture animation (a transition, a one-shot keyframe) is fine: it ends.
+
+**Detect.** `tools/check-ui.py` fails a page that, at rest, keeps an infinite CSS animation running (outside the
+exemptions) or makes more than 20 `requestAnimationFrame` calls in a second. Live check: with the window in front,
+compare the CPU of the golem Chrome processes (Task Manager, or `top` on Linux) with the window minimised.
+
+**Code.** `app/anim-stepper.mjs`, `app/anim-stepper.test.mjs`, `app/page-live.js` (`useLiveTick`, `setIfChanged`),
+`tools/check-ui.py` (`_ENDLESS_JS`, `_RAF_COUNTER`).
+
+---
+
 ## Never ship a mode without a tested exit
 
 A full-screen kiosk with no way out locks the user in. Every mode, overlay or full-screen view ships

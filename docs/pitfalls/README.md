@@ -109,6 +109,7 @@ of a subsystem before changing it.
 - Window frozen, `/api/health` says 0 screens, its WebSocket still "open" in the log → a dropped screen must be closed so it reconnects → [ui.md](ui.md#a-screen-dropped-on-a-send-error-must-have-its-socket-closed)
 - Window at wrong size → dedicated `--user-data-dir` → [ui.md](ui.md#chrome-ignores---window-size-when-an-instance-already-runs)
 - User trapped in a mode → ship every mode with a tested exit → [ui.md](ui.md#never-ship-a-mode-without-a-tested-exit)
+- Crackles only while the golem window is in front → no endless animation or rAF loop at rest (`anim-stepper.mjs`) → [ui.md](ui.md#an-endless-animation-steals-the-audio-thread)
 
 ## Tooling
 

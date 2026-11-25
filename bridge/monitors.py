@@ -496,6 +496,20 @@ _ENGINE_RESTARTS = []         # instants des redémarrages du moteur pour un flu
 ENGINE_RESTART_WINDOW_S, ENGINE_RESTART_AFTER_S = 600, 8.0
 
 
+def _engine_settling():
+    """Vrai quand un moteur qui n'est pas REAPER monte un rig ou a démarré il y a moins de 60 s : son flux ralentit alors
+    sans être mort. Le rouvrir à ce moment-là cassait le flux USB de l'iTwo (rack, 2026-11-25 : chaque démarrage du Golem
+    Engine suivi d'une réouverture, et plus un échantillon après)."""
+    try:
+        from . import engine
+        eng = engine.get()
+    except Exception:
+        return False
+    if eng.id == "reaper":
+        return False
+    return bool(getattr(state, "rig_loading", None)) or time.time() - (getattr(eng, "launched_at", 0) or 0) < 60.0
+
+
 def _restart_dead_engine():
     """ÉTAPE 2 DE LA RÉCUPÉRATION (2026-11-25) : la carte rouverte n'a rien changé et le flux du moteur reste MORT. Le
     backend ALSA du Golem Engine, bloqué après un preset trop lourd, ne repartait qu'avec un moteur entier relancé (mesuré
@@ -513,7 +527,7 @@ def _restart_dead_engine():
     if eng.id == "reaper" or _stream_flowing(rate) is not False:
         return False
     now = time.time()
-    if getattr(state, "rig_loading", None) or now - (getattr(eng, "launched_at", 0) or 0) < 60.0:
+    if _engine_settling():
         return False                                          # un rig se monte, un moteur démarre : pas un flux mort
     if now - _AUDIO_FIX.get("tried_at", 0.0) < ENGINE_RESTART_AFTER_S:
         return False                                          # la réouverture n'a pas encore eu le temps d'agir
@@ -594,6 +608,8 @@ def _audio_recover(alive, why):
     if load is not None:
         return {"ok": False, "why": f"audio engine overloaded ({load:.0f}% DSP) — the CPU can't keep up",
                 "overload": True, "fix": "choose a lighter preset, or a larger buffer"}
+    if _engine_settling():                           # garde-fou 6 : un rig se monte, un moteur démarre — le flux ralentit
+        return {"ok": False, "why": why, "fix": "waiting — the audio engine is starting"}
     recording = bool((state.perf or {}).get("recording"))
     if recording:                                    # garde-fou 1 : la prise passe avant tout
         return {"ok": False, "why": why, "fix": "waiting — a take is recording"}

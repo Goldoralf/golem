@@ -20,6 +20,7 @@ def rig(monkeypatch):
     monkeypatch.setattr(state, "perf", {})
     monkeypatch.setitem(monitors._AUDIO_FIX, "tried", False)
     monkeypatch.setattr(monitors, "_engine_overloaded", lambda: None)   # le moteur de la machine qui teste n'y entre pas
+    monkeypatch.setattr(monitors, "_engine_settling", lambda: False)
     return sent
 
 
@@ -152,7 +153,7 @@ def test_reaper_n_est_pas_redemarre_par_la_recuperation(rig, monkeypatch):
     assert monitors._restart_dead_engine() is False
 
 
-def test_pas_de_redemarrage_pendant_un_montage_ni_au_demarrage(rig, monkeypatch):
+def test_pas_de_redemarrage_pendant_un_montage_ni_au_demarrage(monkeypatch):
     import time
     from bridge import engine
 
@@ -165,12 +166,28 @@ def test_pas_de_redemarrage_pendant_un_montage_ni_au_demarrage(rig, monkeypatch)
 
     e = E()
     monkeypatch.setattr(engine, "get", lambda: e)
-    monkeypatch.setattr(monitors, "_ENGINE_RESTARTS", [])
-    monkeypatch.setitem(monitors._AUDIO_FIX, "tried_at", time.time() - 60)
-    now = time.time()
-    monkeypatch.setattr(monitors, "_CLOCK_HIST", [(now - 12, 1000), (now, 1000)])
     monkeypatch.setattr(state, "rig_loading", {"preset": "x"})
-    assert monitors._restart_dead_engine() is False
+    assert monitors._engine_settling() is True                        # un rig se monte
     monkeypatch.setattr(state, "rig_loading", None)
     e.launched_at = time.time() - 20
+    assert monitors._engine_settling() is True                        # le moteur vient de démarrer
+    e.launched_at = time.time() - 120
+    assert monitors._engine_settling() is False
+    e.id = "reaper"
+    e.launched_at = time.time()
+    assert monitors._engine_settling() is False                       # REAPER : son chemin d'avant
+    monkeypatch.setattr(monitors, "_engine_settling", lambda: True)
+    monkeypatch.setattr(monitors, "_ENGINE_RESTARTS", [])
+    e.id = "ardour"
+    now = time.time()
+    monkeypatch.setattr(monitors, "_CLOCK_HIST", [(now - 12, 1000), (now, 1000)])
+    monkeypatch.setitem(monitors._AUDIO_FIX, "tried_at", now - 60)
     assert monitors._restart_dead_engine() is False
+
+
+def test_pas_de_reouverture_pendant_le_demarrage_du_moteur(rig, monkeypatch):
+    # rack 2026-11-25 : rouvrir la carte juste après le montage du rig cassait le flux USB de l'iTwo
+    state.cards = {**state.cards, "active_present": True}
+    monkeypatch.setattr(monitors, "_engine_settling", lambda: True)
+    a = monitors._audio_recover(False, "stalled")
+    assert rig == [] and monitors._AUDIO_FIX["tried"] is False and "starting" in a["fix"]

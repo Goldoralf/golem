@@ -73,3 +73,23 @@ def test_la_surcharge_se_lit_dans_la_charge_dsp_du_moteur(monkeypatch):
     for load, want in ((100, 100.0), (95, 95.0), (60, None), (None, None)):
         monkeypatch.setattr(engine, "get", lambda e=E(load): e)
         assert monitors._engine_overloaded() == want
+
+
+def test_un_flux_mort_a_100_pourcent_n_est_pas_une_surcharge(monkeypatch):
+    # rack 2026-11-25 : après « Chill Jazz », le backend ALSA du moteur restait bloqué — 2 560 échantillons en 20 s,
+    # `dsp_load` figé à 100 : pris pour une surcharge, il n'était plus jamais rouvert
+    import time
+    from bridge import engine
+
+    class E:
+        def audio(self):
+            return {"dsp_load": 100.0, "rate": 48000}
+
+    monkeypatch.setattr(engine, "get", lambda: E())
+    now = time.time()
+    monkeypatch.setattr(monitors, "_CLOCK_HIST", [(now - 12, 1000), (now - 6, 1500), (now, 2560)])
+    assert monitors._engine_overloaded() is None                      # mort : la réouverture repart
+    monkeypatch.setattr(monitors, "_CLOCK_HIST", [(now - 12, 0), (now - 6, 200_000), (now, 400_000)])
+    assert monitors._engine_overloaded() == 100.0                     # 70 % du temps réel : saturé mais vivant
+    monkeypatch.setattr(monitors, "_CLOCK_HIST", [(now - 2, 0), (now, 10)])
+    assert monitors._engine_overloaded() == 100.0                     # fenêtre pas encore pleine : on ne conclut pas

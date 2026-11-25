@@ -433,6 +433,7 @@ def _read_kernel_xruns():
 #   `t` avance et `ticks` FIGE    -> la boucle Lua vit, le THREAD AUDIO est mort  <- la panne
 #   `t` fige                      -> c'est Reaper ou la boucle : un autre problème, pas celui-ci
 _CLOCK_W = {"ticks": None, "t": None}
+_CLOCK_HIST = []              # (instant, ticks) des dernières lectures du témoin : le débit du flux (_stream_flowing)
 
 
 def _read_clock_witness():
@@ -449,6 +450,8 @@ def _audio_alive():
     if not w:
         return None, "pas de témoin"
     prev, _CLOCK_W["ticks"], _CLOCK_W["t"] = dict(_CLOCK_W), w.get("ticks"), w.get("t")
+    _CLOCK_HIST.append((time.time(), w.get("ticks")))
+    del _CLOCK_HIST[:-12]                            # ~12 lectures, une toutes les 1 à 3 s : une fenêtre de 10 s et plus
     if prev["t"] is None:
         return None, "première lecture"
     if w.get("t") == prev["t"]:
@@ -487,13 +490,31 @@ def _active_card_missing():
 OVERLOAD_DSP = 95.0           # % de charge DSP du moteur au-delà duquel un calage est une SURCHARGE, pas une carte perdue
 
 
+def _stream_flowing(rate, window=10.0, share=0.25):
+    """Le flux audio a-t-il traité au moins `share` du temps réel sur les `window` dernières secondes ? Les ticks du
+    Golem Engine sont des ÉCHANTILLONS (AudioEngine:processed_samples). None tant que la fenêtre n'est pas pleine."""
+    now = time.time()
+    old = [(t, k) for t, k in _CLOCK_HIST if now - t >= window and isinstance(k, (int, float))]
+    last = _CLOCK_HIST[-1] if _CLOCK_HIST else None
+    if not old or not last or not rate or not isinstance(last[1], (int, float)):
+        return None
+    t0, k0 = old[-1]
+    return (last[1] - k0) >= share * rate * (last[0] - t0)
+
+
 def _engine_overloaded():
-    """La charge DSP du moteur (%) s'il est SATURÉ, sinon None. Seul un moteur qui la publie (le Golem Engine,
-    presets/.engine-status.json `dsp_load`) peut le dire ; REAPER : None, son chemin d'avant."""
+    """La charge DSP du moteur (%) s'il est SATURÉ MAIS VIVANT, sinon None. Seul un moteur qui la publie (le Golem
+    Engine, presets/.engine-status.json `dsp_load`) peut le dire ; REAPER : None, son chemin d'avant.
+    UN FLUX MORT N'EST PAS UNE SURCHARGE (2026-11-25) : après un preset trop lourd, le backend ALSA du moteur restait
+    bloqué — plus un échantillon traité, des xruns en continu, et `dsp_load` figé à 100. Pris pour une surcharge, il
+    n'était plus jamais rouvert. Sous un quart du temps réel sur 10 s : None, la réouverture repart."""
     with contextlib.suppress(Exception):
         from . import engine
-        load = (engine.get().audio() or {}).get("dsp_load")
+        audio = engine.get().audio() or {}
+        load = audio.get("dsp_load")
         if load is not None and float(load) >= OVERLOAD_DSP:
+            if _stream_flowing(audio.get("rate") or 48000) is False:
+                return None
             return float(load)
     return None
 

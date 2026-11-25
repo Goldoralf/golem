@@ -1133,14 +1133,41 @@ def _close_hung_reaper():
     return killed
 
 
+def _close_leftover_reaper(wait_s=30.0):
+    """UN REAPER DE GOLEM RESTÉ OUVERT, VIVANT (2026-11-25). Vécu : `golem restart` sous REAPER — le bridge a demandé la
+    fermeture, attendu 20 s, puis il est parti ; REAPER répondait mais restait ouvert (une reconstruction du patch
+    lancée pendant l'arrêt). Le lanceur, autre processus, ne voyait pas le registre de session et ne savait fermer
+    qu'un REAPER figé : `stop` levait « REAPER is still open », puis `start` refusait (« Close REAPER first »), et golem
+    restait éteint avec un REAPER seul en mémoire. Ici, le REAPER de golem (retrouvé par sa ligne de commande : un projet
+    de sets/ — jamais un REAPER ouvert à la main) reçoit WM_CLOSE comme le ferait sa croix ; figé, il est terminé.
+    Rend True si plus aucun REAPER de golem ne tourne."""
+    if sys.platform != "win32":
+        return not reaper_running()
+    pids = _golem_reaper_pids()
+    if not pids:
+        return True
+    from provision.desktop_window import request_reaper_close
+    asked = request_reaper_close(pids)
+    print(f"golem: closing the REAPER golem left open ({asked} window(s) asked)…")
+    deadline = time.monotonic() + wait_s
+    while time.monotonic() < deadline:
+        if not (_golem_reaper_pids() & pids):
+            return True
+        time.sleep(0.5)
+    _close_hung_reaper()
+    return not (_golem_reaper_pids() & pids)
+
+
 def stop():
     """`golem stop` : le ⏻ de la coquille — fenêtres, REAPER, puis le bridge."""
     port = int(os.environ.get("GOLEM_PORT", "8770"))
     if not bridge_answers(port):
         closed = close_app_windows()
         forced = _close_hung_reaper() if reaper_running() else 0
+        left = reaper_running() and _close_leftover_reaper()   # un REAPER de golem vivant, resté seul : fermé poliment
         print("golem is not running." + (f" {closed} golem window process(es) closed." if closed else "")
-              + (" REAPER had stopped responding and was closed." if forced else ""))
+              + (" REAPER had stopped responding and was closed." if forced else "")
+              + (" The REAPER golem left open was closed." if left else ""))
         return
     req = urllib.request.Request(f"http://127.0.0.1:{port}/api/ui/quit", data=b'{"stop": true}',
                                  headers={"Content-Type": "application/json"}, method="POST")
@@ -1157,6 +1184,9 @@ def stop():
                 time.sleep(0.5)
             if _close_hung_reaper() and not reaper_running():
                 print("golem stopped (REAPER had stopped responding and was closed).")
+                return
+            if _close_leftover_reaper():                 # vivant mais resté ouvert : la croix, une seconde fois
+                print("golem stopped (REAPER closed after a second request).")
                 return
             raise RuntimeError("golem stopped, but REAPER is still open — it may be asking to save "
                                "its project. Answer it, then start golem again.")
@@ -1269,6 +1299,8 @@ def start(shell="device", reset=False, fullscreen=False, window=True):
         hint = (f"install it from {json.loads((ROOT / 'provision' / 'macos' / 'pins.json').read_text(encoding='utf-8'))['reaper']['url']} "
                 "or set REAPER_BIN" if sys.platform == "darwin" else "set REAPER_BIN to its reaper.exe")
         raise RuntimeError(f"REAPER not found: {reaper} ({hint})")
+    if reaper_running():
+        _close_leftover_reaper()                         # le REAPER que golem a laissé : fermé ; un REAPER à la main : jamais
     if reaper_running():
         raise RuntimeError("Close REAPER first: " + ("it holds the audio card the Golem Engine needs." if golem_engine
                                                      else "golem loads its scripts when REAPER starts."))

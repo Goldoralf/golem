@@ -169,6 +169,8 @@ library/grooves/index.json
 library/standards/
 # formes d'onde précalculées (dérivé)
 assets/samples/peaks/
+# le cache de forme d'onde que REAPER écrit à côté d'un média qu'il lit (les DI de référence…)
+library/**/peaks/
 # overlay des photos d'amplis (tone id -> fichier) : état LOCAL, réécrit par le bridge,
 # et il pointe vers library/images/ qui est déjà hors git — l'index n'a pas de sens sans
 # ses cibles. Le fichier reste sur le rack, il sort juste du dépôt.

@@ -123,6 +123,12 @@ const LOOP_ANIM = { rec: 'pulse', dub: 'ember', play: '', stop: '', empty: '' };
 // rafraîchissement de l'écran (240 Hz sur le rack de dev), même looper arrêté : du temps volé au moteur audio de la
 // même machine (2026-11-25, docs/pitfalls/ui.md « An endless animation steals the audio thread »).
 const LIVE_TICK_MS = 66;
+// LE NIVEAU DE JEU (--vu) n'est posé que sur une case qui le LIT : l'effet « VU reactive » (anim-vu) — ou une animation de
+// pack, dont on ne connaît pas le CSS. Posé sur TOUTES les cases, il changeait le style de chacune 20 fois par seconde
+// pendant qu'on joue : Chrome redessinait chaque case et ses calques figés (fumée, aurore, feu : flous, mix-blend) —
+// sur la machine Linux à 2 cœurs, ~2 décrochages par seconde en jouant sur le Live d'Eight-String Nu, aucun sur
+// /system (2026-11-25, golem-rack-acer ; docs/pitfalls/ui.md « An endless animation steals the audio thread »).
+const vuVar = (anim, vu) => (anim === 'vu' || String(anim || '').includes('/') ? ';--vu:' + vu : '');
 function useLiveTick(fn, deps = []) {
   useEffect(() => {
     fn();
@@ -244,7 +250,7 @@ function BackingTile({ st, sw, color, vu, onSheet }) {
   const song = (bk.songs || []).find(s => s.slug === bk.slug) || (bk.songs || [])[0] || null;
   const label = !loaded ? '⬇ not synced' : bk.playing ? '▶ PLAY' : bk.paused ? '⏸ PAUSE' : '■ READY';
   return html`<button class=${cls('lpad', 'backing', !loaded && 'dim', bk.playing && 'on')}
-    style=${`--pc:${color};--vu:${vu}`}
+    style=${`--pc:${color}`}
     ...${longPress(onSheet)}
     onClick=${() => loaded && backingOp('toggle')}
     title="backing track — tap: play/pause · double-tap (foot): restart · hold: songs & stop">
@@ -298,7 +304,7 @@ function LoopTile({ st, i, vu, laneLbl }) {
   if (ci > 0) {
     const s = slots[i] || {};
     const nm = s.label || (laneLbl ? laneLbl(s.src) : s.src) || ('loop ' + (i + 1));
-    return html`<button class=${cls('lpad', 'loop', 'on', 'loop-ci')} style=${`--pc:#ff4d4d;--vu:${vu}`}
+    return html`<button class=${cls('lpad', 'loop', 'on', 'loop-ci')} style=${'--pc:#ff4d4d'}
       onClick=${() => looperOp('tap', i)} title="count-in — the loop starts on the 1 · tap: cancel">
       <span class="lpad-sw">#${s.sw}</span><span class="lpad-name big">${esc(nm)}</span>
       <span class="loop-ci-n">${ci}</span>
@@ -324,7 +330,7 @@ function LoopTile({ st, i, vu, laneLbl }) {
       const base = { 'keys-pads': 'Keys', keys: 'Keys', pads: 'Pads', guitar: 'Guitar', bass: 'Bass', voice: 'Voice', drums: 'Drums', line: 'Line' }[m[1]] || m[1];
       return base + (m[2] && m[2] !== '1' ? ' ' + m[2] : ''); })();
     return html`<button class=${cls('lpad', 'loop', stt === 'empty' && 'dim', (stt === 'play' || stt === 'rec' || stt === 'dub') && 'on', animClass(anim))}
-      style=${`--pc:${color};--vu:${vu}`}
+      style=${`--pc:${color}${vuVar(anim, vu)}`}
       ...${longPress(() => s.has || stt !== 'empty' ? looperOp('clear', i) : null)}
       onClick=${() => looperOp('tap', i)}
       title=${`loop ${nm} (records ${laneLbl ? laneLbl(s.src) : s.src}) — tap: empty→rec, rec→play, playing→stop · double-tap/⊕ = overdub · hold = clear`}>
@@ -345,7 +351,7 @@ function LoopTile({ st, i, vu, laneLbl }) {
 
 function LoopClearTile({ st, vu }) {
   const anyLoop = ((st.looper || {}).len || 0) > 0;
-  return html`<button class=${cls('lpad', 'loop', 'ctl', 'danger', !anyLoop && 'dim')} style=${`--pc:#e02020;--vu:${vu}`}
+  return html`<button class=${cls('lpad', 'loop', 'ctl', 'danger', !anyLoop && 'dim')} style=${'--pc:#e02020'}
       ...${longPress(() => looperOp('clear_all'), 1200)}
       title="switch 10 — HOLD to delete all loops">
       <span class="lpad-sw">#10</span>
@@ -714,7 +720,7 @@ function PedalboardLive({ rig, presets }) {
         // ce qu'est la case, le nom ce qu'elle fait
         const dfltMonster = !used && !anims[sw.sw];          // le monstre par défaut : sa variante suit le numéro
         return html`<button class=${cls('lpad', 'stomp', !used && 'empty', used && !on && 'dim', on && 'on', sp && 'special', animClass(anim), dfltMonster && monsterOf(sw.sw))} data-doc=${'live.stomp.' + sw.sw}
-          disabled=${!used} style=${sp ? `--pc:${sp[1]};--sc:${sp[1]};--vu:${vu}` : `--pc:${colors[sw.sw] || (used ? PALETTE[i] : EMPTY_COLOR)};--vu:${vu}`} onClick=${() => used && toggleStomp(sw.sw)}>
+          disabled=${!used} style=${(sp ? `--pc:${sp[1]};--sc:${sp[1]}` : `--pc:${colors[sw.sw] || (used ? PALETTE[i] : EMPTY_COLOR)}`) + vuVar(anim, vu)} onClick=${() => used && toggleStomp(sw.sw)}>
           ${dfltMonster ? MONSTER_LAYERS : ''}
           ${sp ? html`<span class="lpad-band">#${sw.sw} ${sp[0]}</span>` : ''}
           <span class="lpad-sw">#${sw.sw}</span>
@@ -811,7 +817,7 @@ function PedalboardLive({ rig, presets }) {
           const playing = (lp.slots || []).some(x => x && ['play', 'dub', 'rec'].includes(x.state));
           const any = (lp.len || 0) > 0;
           return html`<button class=${cls('lpad', 'scene', 'loop', 'ctl', !any && 'dim')}
-            style=${`--pc:#3d9be9;--vu:${vu}`} onClick=${() => looperOp('toggle_all')}
+            style=${'--pc:#3d9be9'} onClick=${() => looperOp('toggle_all')}
             title="switch 5 — play / stop ALL loops together">
             <span class="lpad-sw">#5</span>
             ${/* le TRANSPORT, plus une « scène E » (maquette live-looper v2) : il porte le temps de la boucle maîtresse */''}
@@ -874,7 +880,7 @@ function PedalboardLive({ rig, presets }) {
           const anyOn = claims.some(svcOn) || (!!st.perf_countin && claims.some(c => c.type === 'rec'));
           const sp = specialOf(claims);
           return html`<button class=${cls('lpad', 'scene', 'claim', 'pile', anyOn && 'on', !anyOn && 'dim', sp && 'special', animClass(anim))}
-            style=${sp ? `--pc:${sp[1]};--sc:${sp[1]};--vu:${vu}` : `--pc:${pc};--vu:${vu}`} onClick=${tap}
+            style=${(sp ? `--pc:${sp[1]};--sc:${sp[1]}` : `--pc:${pc}`) + vuVar(anim, vu)} onClick=${tap}
             title=${claims.map(c => svcName(c)).join(' + ') + ' — on switch ' + (i + 1) + ', in place of this scene slot (tap = ' + nm.toLowerCase() + ')'}>
             ${sp ? html`<span class="lpad-band">#${i + 1} ${sp[0]}</span>` : ''}
             <span class="lpad-sw">#${i + 1}</span>
@@ -908,14 +914,14 @@ function PedalboardLive({ rig, presets }) {
           const sum = rows.filter(r => !r.mute && r.state && !r.implicit).slice(0, 2)
             .map(r => (LANE_TAG[r.role] || String(r.role || '').toUpperCase()) + ' ' + r.state).join(' · ');
           return html`<button class=${cls('lpad', 'scene', 'acc', 'compact', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
-            style=${`--pc:${colors[s.id] || PALETTE[i]};--vu:${vu}`} onClick=${() => current && recall(null, s.id)}>
+            style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`} onClick=${() => current && recall(null, s.id)}>
             <span class="lpad-sw">#${i + 1}</span>
             <span class="lpad-schead"><b>${s.id}</b><em>${esc(s.name || '')}</em></span>
             ${sum ? html`<span class="lsc-sum">${esc(sum)}</span>` : ''}
           </button>`;
         }
         if (rows.length) return html`<button class=${cls('lpad', 'scene', 'acc', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
-          style=${`--pc:${colors[s.id] || PALETTE[i]};--vu:${vu}`}
+          style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`}
           onClick=${() => current && recall(null, s.id)}>
           <span class="lpad-sw">#${i + 1}</span>
           ${/* ── LETTRE ET NOM EN GRAND, LES INSTRUMENTS UN PAR UN EN BAS (maquette live-tiles-v2, 2026-10-14 : « trop
@@ -932,7 +938,7 @@ function PedalboardLive({ rig, presets }) {
                 scène en choisit un qui a un nom, « silent » barré pour une lane coupée — mais une à la fois, en bas */''}
         </button>`;
         return html`<button class=${cls('lpad', 'scene', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
-          style=${`--pc:${colors[s.id] || PALETTE[i]};--vu:${vu}`}
+          style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`}
           onClick=${() => current && recall(null, s.id)}>
           <span class="lpad-sw">#${i + 1}</span>
           <span class="lpad-sc">${s.id}</span>

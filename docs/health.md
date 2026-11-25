@@ -25,6 +25,25 @@ the "rack free" guard (`tools/rack-free.py`, `reamp.md` §2).
 
 Three layers, because they differ in cost and in moment.
 
+**Layout, V2 — CODED 2026-11-25** (mockup `mockups/health-v2.html`, validated by the maintainer). The V1
+(`mockups/health.html`) showed the thirteen facts at one level with their source files, and the same problem up to four
+times (verdict, list, two incidents): "very crowded, and you don't understand everything". The V2 keeps the same facts,
+repairs and incidents, and changes how they are said:
+- **The verdict** says whether you can play: "Ready to play", "Playable — 2 things need you", or "Not ready — …". It no
+  longer gives counts.
+- **Needs you**: one card per orange or red fact, titled by what happens ("Clicks in the sound"), with its gesture (the
+  registry repair, or the bridge's navigation) and "Details →". The environment drift is information (blue), never a
+  problem. golem.fm is a blue card, "Playing does not need it".
+- **The other facts** are chips (plain names, first words of the bridge text). The section is titled "Everything else is
+  fine" only when they are all green.
+- **Test it**: "Why no sound?" and "Full check", each said by what you do and how long it takes.
+- **History**: the incidents grouped by subject, in words ("happening now", "came back by itself after 38 s", "fixed by
+  golem").
+- **A tap opens the detail**: a sheet on the right with what is happening and what you can do. The sources (fact id,
+  level, probe, detail) are folded under "For developers".
+
+The pure part (`needs`, `verdictWords`, `problemTitle`, `historyRows`…) is in `app/health-model.mjs`, tested.
+
 ### 1.1 Now — facts read continuously, costing nothing — CODED
 
 `bridge/health.py` reads the eleven facts below every 5 s (a daemon thread, `health.start()`), caches them, and
@@ -155,6 +174,89 @@ name: when someone later says "it never worked here", we know what the machine s
 offers "Try the pedalboard again" (replays gesture 3 only) and "Open golem →"; "Skip for now" always exits.
 A rack installed before this version sees the check once, at its next start. Dev: `?boot=firstcheck[&at=input|done]`
 shows the screens; the UI probe renders both.
+
+## 2 bis. Audio stability: the right buffer for this machine, and saying why it crackles — CODED 2026-11-25
+
+**Where it comes from.** On 2026-11-25 the maintainer's Windows laptop (i9-13900H, UA Volt over ASIO, Golem Engine)
+crackled at 128 and 64 samples, even on a light patch. The full measurement campaign is in
+[pitfalls/ui.md](pitfalls/ui.md#an-endless-animation-steals-the-audio-thread) and in this section.
+
+What the measurements showed:
+- The plugins cost about 20 % of a cycle, and they scale linearly with the buffer.
+- What crackled were single cycles taking 3 to 6 times as long as the average.
+- LatencyMon found the cause: the NVIDIA driver (`nvlddmkm.sys`) blocked a core for up to 5.5 ms at a time. With the
+  GPU disabled, LatencyMon went green.
+- A second cause was golem's own window, which redrew continuously (fixed, see the pitfall above).
+
+The engine already outranks every ordinary program. Its DSP threads run at priority 24, the driver's at 25–26, the
+process is in the High class, and applications stay at 15 or below. Only drivers interrupt it, and no thread
+priority beats a driver.
+
+The product cannot ask every user to disable a graphics card. It must:
+- pick a buffer that holds on the machine;
+- say plainly when a driver, not golem or the patch, is the cause.
+
+**Decisions.**
+
+1. **The engine counts late cycles.** This is fork patch 16, which replaces the "higher MMCSS priority" idea measured
+   as useless above.
+   - Why it is needed: under ASIO the PortAudio backend reports no xrun. Here, `xruns = 0` while the musician heard
+     crackles. `dsp_load` is a peak-hold that decays over about 5 s (`dsp_load_calculator.h`), read every 2 s, so it
+     cannot count anything.
+   - What the patch does: `PortAudioBackend::blocking_process_main` counts:
+     - a cycle whose own processing exceeded its period;
+     - a callback that started more than one period late (`_cycle_timer` deviation, already computed and only logged
+       today).
+   - It exposes both counts through `AudioBackend::late_cycles ()` (0 on other backends) and binds them in Lua.
+   - The watcher writes `late_cycles` and `late_starts` in `.engine-status.json`.
+   - On Linux, ALSA's own xruns already cover this.
+2. **Health says why it crackles** (a fact "Audio stability", next to "Dropouts").
+   - The bridge counts late cycles over the last 10 minutes.
+   - When there are some while the patch's plugins use less than half a cycle (`dspstats`), the cause is not the
+     patch. The fact then says something like: "Something on this computer interrupts the audio — a driver (graphics,
+     Wi-Fi…), not golem or this patch. LatencyMon finds which one. Larger buffer: fewer clicks."
+   - When the plugins themselves use most of the cycle, it points to the patch and the buffer instead.
+   - Repair: the existing `set_buffer` fix, one size up.
+3. **The first check picks the buffer.** This is a fourth gesture-free step, "Audio stability", run after "Listen".
+   - The bridge tries the buffers from 64 upwards on the first preset, about 10 s each, counting late cycles.
+   - It keeps the smallest buffer with none, and also notes how many late cycles 128 and 256 showed.
+   - Verdict, for example: "256 samples (13 ms) holds here; 128 clicked 4 times in 10 s — a driver interrupts the
+     audio, see Health."
+   - The musician can choose smaller in Settings ▸ Audio Engine, knowingly.
+   - The step never blocks: no audio engine, or a REAPER rack, means "not measured".
+4. Also fixed on the way: `fixes._buffer_sizes()` used the REAPER list under the Golem Engine on Windows. It now uses
+   the engine's own list (`ArdourEngine.BUFFERS`).
+
+**Code.**
+- Engine: fork patch 16 (`golem/README.md`), in `golem-engine` 9.9-g8. The watcher adds the late cycles to its published `xruns`,
+  so they reach Dropouts, the `set_buffer` repair and its verification with no new path. A buffer change and
+  a card reopen are held like a rebuild: their first cycles are not counted.
+- Bridge: `health.dropout_cause` and `_f_dropouts` (the cause in the Dropouts text); `bridge/audio_stability.py`
+  (the measure); `first_check` (the `stability` step, `AUTO_STEPS`, whitelisted in `diag.py`); `app/first-check-model.mjs`
+  (`stabilityRow`) and `app/page-first-check.js`.
+- Tests: `tests/test_audio_stability.py`, `tests/test_dropout_cause.py`, `app/first-check-model.test.mjs`.
+- Measured on the dev box (Volt, NVIDIA on): 64 → 142 late cycles in 10 s, 128 → 1, 256 → 0. Kept: 256, 11.3 ms.
+
+**Also decided the same day (CODED):**
+
+- **Each engine keeps its own buffer.** The Golem Engine reads `config/golem-engine.json`. Under Windows and macOS,
+  REAPER was seeded without "Request block size" and took the driver's *preferred* size. A Thesycon driver (UA Volt)
+  remembers the last size any program asked for, so REAPER came back with the Golem Engine's buffer. At each switch
+  away from REAPER, its buffer is now written explicitly into `reaper.ini` (`ReaperEngine.keep_audio`, called by
+  `engine/switch.py` once REAPER has stopped). Test: `tests/test_engine_switch.py`.
+- **Display** (Settings ▸ System ▸ Display, `bridge/display.py`): the Live tile animations are Auto, On or Off, and the
+  status lights blink or stay lit. See [pitfalls/ui.md](pitfalls/ui.md#an-endless-animation-steals-the-audio-thread).
+  - A Health fact "Display" turns orange only when the tiles move on the audio machine while the sound clicks.
+  - Its repair, `display_animations` → Auto ("Calm the screen"), counts clicks for 2 minutes and can be undone.
+  - Like every repair that changes the machine, it is not offered while you play.
+- **The card's safe mode** (`desktop_audio.asio_safe_mode`): a Thesycon ASIO driver writes `AsioSafeMode` in the
+  registry.
+  - When it is on, Health shows a *tip*, never an alarm. The "Card safe mode" chip turns blue, and the detail says to
+    turn it off in the card's control panel: about 3 ms less delay, measured on the Volt at 256 samples, 16.7 → 13.5 ms.
+  - golem does not change the driver's setting itself.
+
+**Not decided:** the measured round trip (loopback cable) as a calibration stored per card, so the screen shows the
+real latency (the driver leaves out the converters: +2.2 ms on the Volt).
 
 ## 3. No health dot in the top bar — DECIDED 2026-10-20
 

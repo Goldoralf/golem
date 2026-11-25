@@ -83,9 +83,36 @@ export const gestureRows = (steps, current, live) => {
   });
 };
 
+// 4 · LE BUFFER QUI TIENT ICI (docs/health.md §2 bis) : une étape SANS geste, mesurée par le bridge
+// (bridge/audio_stability.py). `step` : l'étape écrite (steps.stability) ; `run` : la mesure en cours ({at, index, total}).
+export const STABILITY = '4 · Audio stability';
+const clicks = n => n + ' click' + (n === 1 ? '' : 's');
+export const stabilityRow = (step, current, run) => {
+  const id = 'stability', name = STABILITY;
+  if (step) {
+    if (step.skipped) return { id, name, state: 'skip', text: 'skipped — the buffer stays as it was' };
+    if (!step.measured) return { id, name, state: 'skip', text: 'not measured with this audio engine' };
+    const tried = String(step.tried || '').split(' ').filter(Boolean).map(t => t.split(':').map(Number));
+    const worse = tried.filter(([n, late]) => late > 0 && n < step.buffer).pop();
+    const ms = step.latency_ms ? ' (' + step.latency_ms + ' ms)' : '';
+    if (!step.ok) return { id, name, state: 'late', text: 'even ' + step.buffer + ' samples clicked — something on this computer interrupts the audio',
+      fix: 'Settings ▸ Health says what' };
+    return { id, name, state: 'ok', text: step.buffer + ' samples' + ms + ', no click'
+      + (worse ? ' · ' + worse[0] + ': ' + clicks(worse[1]) + ' in 10 s' : '') };
+  }
+  if (current === id) {
+    const r = run || {};
+    return { id, name, state: 'on', text: r.at ? 'trying ' + r.at + ' samples (' + ((r.index || 0) + 1) + ' of ' + (r.total || 5) + ')… listening for clicks' : 'starting…' };
+  }
+  return { id, name, state: 'wait', text: 'next — golem finds the smallest buffer that holds on this computer' };
+};
+
 // le bilan, une phrase : tout vert, ou le premier geste qui manque avec ce qu'il faut faire
 export const summary = steps => {
   steps = steps || {};
+  const st = steps.stability;
+  if (st && st.measured && !st.ok && ['input', 'output', 'foot'].every(id => steps[id] && steps[id].ok)) return { level: 'warn',
+    title: 'Ready, but this computer interrupts the audio.', text: 'Even ' + st.buffer + ' samples clicked. A driver (graphics, Wi-Fi…) holds the processor — Settings ▸ Health says more.' };
   const ok = id => !!(steps[id] && steps[id].ok);
   const g = steps.input && steps.input.ok && steps.input.gain;
   if (ok('input') && ok('output') && ok('foot') && g && g !== 'good') return { level: 'warn', title: 'Ready, one adjustment: the input gain.',
@@ -111,6 +138,7 @@ export const demoStatus = at => {
   if (at === 'input') return { pending: true, auto, steps: {}, current: { step: 'input', at: 990 }, now: 1000, foot_wait_s: 30,
     demo: { levels: { in1: 0, in2: dbVu(-11) } } };
   if (at === 'done') return { pending: false, auto, done_at: 1000, took_s: 160, verdict: 'partial', now: 1000, foot_wait_s: 30,
-    steps: { input, output: { ok: true, heard: true, click_ticks: 42 }, foot: { ok: false, answered: false, took_s: 30 } } };
+    steps: { input, output: { ok: true, heard: true, click_ticks: 42 }, foot: { ok: false, answered: false, took_s: 30 },
+      stability: { ok: true, measured: true, buffer: 256, latency_ms: 13.5, tried: '64:812 128:4 256:0' } } };
   return { pending: true, auto, steps: { input }, current: { step: 'output', at: 990 }, now: 1000, foot_wait_s: 30, demo: { ticks: 7 } };
 };

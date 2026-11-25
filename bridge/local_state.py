@@ -15,7 +15,7 @@ from . import config as C
 
 # Les chemins du dépôt qui sont de l'état local (dossiers terminés par « / »). Miroir de la section « ÉTAT LOCAL DU
 # RACK » de .gitignore.
-PATHS = ("config/click.json", "config/compo.json", "config/recorder.json", "config/perf.json", "config/io.json", "config/cards/",
+PATHS = ("config/click.json", "config/compo.json", "config/recorder.json", "config/perf.json", "config/display.json", "config/io.json", "config/cards/",
          "config/inputmaps/", "setlists/")
 
 

@@ -117,6 +117,8 @@ ADMIN_WRITES = ("/api/mode/update", "/api/mode/new", "/api/mode/reset", "/api/re
                 "/api/vst-host/capture/parametric/setup",
                 # Health ▸ Fix (docs/assistant.md §3) : redémarre REAPER, change le buffer — le geste d'un admin
                 "/api/health/fix",
+                # les animations de l'écran (Settings ▸ System ▸ Display) : un réglage de la machine, comme le buffer
+                "/api/system/display",
                 # « Ask golem » : envoie l'état de la machine à golem.fm (docs/assistant.md §6) — le geste d'un admin
                 "/api/health/assistant",
                 # les démos d'usine par lot (docs/preset-preview.md §7) : le moteur pris une demi-heure

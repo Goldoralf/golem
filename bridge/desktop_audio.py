@@ -717,3 +717,40 @@ PHASE_LABEL = {"starting": "starting", "waiting_for_reaper": "waiting for REAPER
 def status():
     """Où en est le changement : phase, erreur, et `busy` tant que le verrou est pris."""
     return {**_status, "busy": _lock.locked()}
+
+
+# ── LE « SAFE MODE » DES PILOTES THESYCON (2026-11-25) ─────────────────────────────────────────────────────────────
+# Beaucoup de cartes USB (UA Volt, et d'autres marques) ont un pilote ASIO Thesycon dont le panneau porte une case
+# « safe mode » : une marge ajoutée aux tampons. Mesuré au câble sur la Volt (sortie 1 → entrée 2) : 16,7 ms → 13,5 ms
+# à 256 en la décochant, 10,9 → 9,0 ms à 128. Le pilote l'écrit dans le registre
+# (HKLM\SYSTEM\CurrentControlSet\Services\<pilote>\ParametersDriver\Settings\AsioSafeMode) : Health le dit, le
+# musicien la décoche dans le panneau de sa carte (golem n'y touche pas : c'est le réglage du pilote).
+_SAFE = {"at": 0.0, "value": None}
+
+
+def asio_safe_mode():
+    """[{driver, on}] pour chaque pilote Thesycon qui déclare AsioSafeMode — [] ailleurs ou sous Linux/macOS.
+    Lu au plus une fois par minute (un parcours des services du registre)."""
+    if sys.platform != "win32":
+        return []
+    if _SAFE["value"] is not None and time.time() - _SAFE["at"] < 60:
+        return _SAFE["value"]
+    out = []
+    with contextlib.suppress(OSError, ImportError):
+        import winreg
+        root = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Services")
+        i = 0
+        while True:
+            try:
+                name = winreg.EnumKey(root, i)
+            except OSError:
+                break
+            i += 1
+            try:
+                with winreg.OpenKey(root, name + r"\ParametersDriver\Settings") as k:
+                    v, _ = winreg.QueryValueEx(k, "AsioSafeMode")
+                    out.append({"driver": name, "on": bool(v)})
+            except OSError:
+                continue
+    _SAFE.update(at=time.time(), value=out)
+    return out

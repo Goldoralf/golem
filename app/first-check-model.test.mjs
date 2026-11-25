@@ -67,3 +67,16 @@ test('dB, durées, et la démo des deux écrans', () => {
   assert.equal(demoStatus().current.step, 'output'); assert.equal(demoStatus('done').verdict, 'partial');
   assert.equal(demoStatus('input').current.step, 'input'); assert.ok(demoStatus('input').demo.levels.in2 > 0);
 });
+
+test('4 · Audio stability : le buffer retenu, ce qu’ont fait les plus petits, ou rien d’inventé', async () => {
+  const { stabilityRow } = await import('./first-check-model.mjs');
+  const ok = stabilityRow({ ok: true, measured: true, buffer: 256, latency_ms: 13.5, tried: '64:812 128:4 256:0' }, null, null);
+  assert.equal(ok.state, 'ok'); assert.equal(ok.text, '256 samples (13.5 ms), no click · 128: 4 clicks in 10 s');
+  const bad = stabilityRow({ ok: false, measured: true, buffer: 1024, tried: '64:9 1024:3' }, null, null);
+  assert.equal(bad.state, 'late'); assert.match(bad.text, /even 1024 samples clicked/);
+  assert.equal(stabilityRow({ ok: true, measured: false }, null, null).state, 'skip');
+  assert.match(stabilityRow(null, 'stability', { at: 128, index: 1, total: 5 }).text, /trying 128 samples \(2 of 5\)/);
+  assert.equal(stabilityRow(null, null, null).state, 'wait');
+  const s = summary({ input: { ok: true }, output: { ok: true }, foot: { ok: true }, stability: { measured: true, ok: false, buffer: 1024 } });
+  assert.equal(s.level, 'warn'); assert.match(s.title, /interrupts the audio/);
+});

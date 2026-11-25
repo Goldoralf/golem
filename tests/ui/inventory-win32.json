@@ -885,9 +885,9 @@
   "button | Mode",
   "button | Network",
   "button | Patches →",
-  "button | Run",
   "button | Separation Engine",
   "button | Soundcard",
+  "button | Start",
   "button | Storage",
   "button | System"
  ],

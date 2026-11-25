@@ -291,6 +291,8 @@ config/click.json
 config/compo.json
 config/recorder.json
 config/perf.json
+# les animations de l'écran (Settings ▸ System ▸ Display, bridge/display.py)
+config/display.json
 # la carte son ACTIVE de cette machine (écrite à l'adoption, page Soundcard)
 config/io.json
 # registre des cartes RENCONTRÉES sur cette machine (bridge/cards.py)

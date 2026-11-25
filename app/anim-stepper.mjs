@@ -12,12 +12,16 @@
 //    images par seconde au lieu de 240 (mesuré : GPU 0,4–0,6 %).
 //  - « freeze » : les animations de cases du Live (classes anim-*, la plupart des patchs d'usine en portent) SUR
 //    L'ÉCRAN LOCAL — celui de la machine qui joue le son. Figées sur une image : la case garde son allure. Un écran
-//    déporté (tablette, téléphone) dessine avec son propre processeur et les garde animées ; le réglage
-//    « Animate tiles on this screen » (sélecteur d'effet du Designer) les rend à l'écran local.
+//    déporté (tablette, téléphone) dessine avec son propre processeur et les garde animées. Le réglage de
+//    Settings ▸ System ▸ Display (bridge/display.py, l'état diffusé `display`) décide : auto (ce qui précède), on
+//    (animées partout), off (figées partout) ; `blinks` faux tient les voyants allumés, sans clignoter.
 //  - « free » : les spinners (une rotation au pas ne tourne pas) et les aperçus du sélecteur d'effet (.fx-opt).
 
 export const TICK_MS = 200;                  // le minuteur ne coûte rien : seule une BASCULE produit une image
-export const LOCAL_TILES_KEY = 'golem.localTileAnims';
+// le réglage du moment, posé par l'app à chaque état reçu (main.js, mobile.js) ; défaut tant que rien n'est arrivé
+export const DISPLAY_DEFAULT = { animations: 'auto', blinks: true };
+export const setDisplay = d => { globalThis.__golemDisplay = d && typeof d === 'object' ? { ...DISPLAY_DEFAULT, ...d } : DISPLAY_DEFAULT; };
+const currentDisplay = () => globalThis.__golemDisplay || DISPLAY_DEFAULT;
 const FREEZE_AT = 0.35;                      // l'image retenue d'une case figée : au tiers de son cycle
 
 // le pas d'une animation : sa durée d'un état à l'autre, et les deux instants qui les montrent
@@ -32,11 +36,15 @@ export function stepPlan(timing) {
 // l'écran est-il celui de la machine qui joue le son ?
 export const isLocalHost = h => ['127.0.0.1', 'localhost', '::1', '[::1]'].includes(String(h || '').toLowerCase());
 
-// au pas, figée, ou libre ? `where` : { tile, picker } — l'élément est dans une case animée, dans le sélecteur
-export function sortOf(name, where, { local = false, localTiles = false } = {}) {
+// au pas, figée, tenue ou libre ? `where` : { tile, picker } — l'élément est dans une case animée, dans le sélecteur.
+// `display` : le réglage {animations: auto|on|off, blinks}. « hold » = tenue sur son état allumé (voyants sans clignoter).
+export function sortOf(name, where, { local = false, display = DISPLAY_DEFAULT } = {}) {
   if (/spin/i.test(name || '') || (where && where.picker)) return 'free';
-  if (where && where.tile) return local && !localTiles ? 'freeze' : 'free';
-  return 'step';
+  if (where && where.tile) {
+    const m = display.animations || 'auto';
+    return m === 'on' ? 'free' : m === 'off' ? 'freeze' : local ? 'freeze' : 'free';
+  }
+  return display.blinks === false ? 'hold' : 'step';
 }
 
 // l'état (0 = allumé, 1 = éteint) à l'instant `now`
@@ -47,20 +55,17 @@ const whereOf = el => ({
   picker: !!(el && el.closest && el.closest('.fx-opt')),
 });
 
-export const localTilesAllowed = () => {
-  try { return globalThis.localStorage.getItem(LOCAL_TILES_KEY) === '1'; } catch { return false; }
-};
-
 // le minuteur, dans une page ; rend la fonction qui l'arrête
 export function startAnimStepper(doc = globalThis.document, clock = () => performance.now(),
-  { local = isLocalHost(globalThis.location && globalThis.location.hostname), allowTiles = localTilesAllowed, where = whereOf } = {}) {
+  { local = isLocalHost(globalThis.location && globalThis.location.hostname), display = currentDisplay, where = whereOf } = {}) {
   if (!doc || typeof doc.getAnimations !== 'function') return () => {};
-  let seen = new WeakMap(), allowed = allowTiles();
+  const keyOf = d => (d.animations || 'auto') + '|' + (d.blinks !== false);
+  let seen = new WeakMap(), shown = keyOf(display());
   const tick = () => {
     const now = clock();
-    const a2 = allowTiles();
-    if (a2 !== allowed) {                              // le réglage a changé : on relâche ce qu'on tenait et on reclasse
-      allowed = a2;
+    const d = display();
+    if (keyOf(d) !== shown) {                          // le réglage a changé : on relâche ce qu'on tenait et on reclasse
+      shown = keyOf(d);
       for (const a of doc.getAnimations()) {
         const s = seen.get(a);
         if (s && s.sort !== 'free') { try { a.play(); } catch { /* animation partie */ } }
@@ -75,11 +80,12 @@ export function startAnimStepper(doc = globalThis.document, clock = () => perfor
         const el = t && (t.nodeType === 1 ? t : t.parentElement);
         const timing = a.effect && a.effect.getTiming();
         const plan = stepPlan(timing);
-        const sort = plan ? sortOf(a.animationName, where(el), { local, localTiles: allowed }) : 'free';
+        const sort = plan ? sortOf(a.animationName, where(el), { local, display: display() }) : 'free';
         s = { sort, plan, phase: -1 };
         seen.set(a, s);
         if (sort === 'step') a.pause();
         else if (sort === 'freeze') { a.pause(); a.currentTime = (Number(timing.duration) || 0) * FREEZE_AT; }
+        else if (sort === 'hold') { a.pause(); a.currentTime = 0; }       // un voyant tenu : son état « allumé »
       }
       if (s.sort !== 'step') continue;
       const ph = phaseAt(s.plan, now);

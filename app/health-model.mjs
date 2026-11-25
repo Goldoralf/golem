@@ -83,3 +83,76 @@ export const undoCandidate = items => {
 // arrière doit rester à portée — sinon la feuille promet un « Undo » introuvable. Une heure, pas plus.
 export const lastFixUndo = (last, now) => (last && last.undo && !last.incident && ['done', 'failed'].includes(last.phase)
   && now - (last.ended_at || 0) < 3600 ? last : null);
+
+// ── HEALTH V2 (maquette mockups/health-v2.html, validée le 2026-11-25 : « elle est très chargée, et on ne comprend pas
+// tout ») : un verdict en mots de musicien, ce qui DEMANDE quelque chose en cartes (une fois chacun), ce qui va bien en
+// pastilles, l'historique groupé par sujet. Les sources techniques ne sont plus au premier niveau : elles vivent dans le
+// détail, sous « For developers ». Toujours le verdict et les faits du BRIDGE : l'écran ne fait que les dire.
+
+// le nom d'un fait pour un musicien (le bridge nomme pour le diagnostic) ; un fait inconnu garde son nom
+const PLAIN = { engine: 'Audio engine', audio: 'Sound card', dropouts: 'Clicks', pedalboard: 'Pedalboard', playing: 'Sound loaded',
+  setlist: 'Setlist', plugins: 'Plugins', disk: 'Disk', golemfm: 'golem.fm', scripts: 'Scripts', perf: 'Processor speed',
+  cpu: 'CPU budget', environment: 'Since last start', display: 'Display', safemode: 'Card safe mode' };
+export const plainName = f => PLAIN[f && f.id] || (f && f.name) || '';
+
+// le titre d'une carte « Needs you » : ce qui se passe, pas le nom de la sonde
+const PROBLEM = { dropouts: 'Clicks in the sound', golemfm: 'golem.fm is out of reach', engine: 'The audio engine is not playing',
+  audio: 'The sound card is not playing', pedalboard: 'The pedalboard does not answer', playing: 'The sound is not fully loaded',
+  setlist: 'The setlist is not ready', plugins: 'Plugins are missing', disk: 'The disk is almost full', scripts: 'A script failed',
+  perf: 'The processor is saving power', cpu: 'The CPU budget is not measured', display: 'Moving tiles may cause the clicks' };
+export const problemTitle = f => PROBLEM[f && f.id] || plainName(f);
+
+// une INFORMATION, pas un problème : ce qui a changé depuis le dernier démarrage (une mise à jour se dit, elle n'alarme
+// pas), et un CONSEIL du bridge (`advice` : le safe mode de la carte, qui ajoute ~3 ms) — en bleu, hors du compte ;
+// et ce dont le jeu ne dépend pas (golem.fm) — une carte bleue, qui compte quand même parmi ce qui demande
+export const isInfo = f => !!f && (f.id === 'environment' || !!f.advice);
+// la couleur d'une pastille : bleue pour une information qui dit quelque chose (un conseil, un changement), sinon son niveau
+export const chipLevel = f => (isInfo(f) && (f.advice || f.level !== 'ok') ? 'info' : f.level);
+export const offStage = f => !!f && f.id === 'golemfm';
+export const OFF_STAGE_NOTE = 'Playing does not need it.';
+
+// ce qui demande quelque chose : orange ou rouge, sauf une information ; le rouge d'abord
+export const needs = facts => (facts || []).filter(f => (f.level === 'warn' || f.level === 'bad') && !isInfo(f))
+  .sort((a, b) => (b.level === 'bad') - (a.level === 'bad') || offStage(a) - offStage(b));
+
+// le verdict en mots : peut-on jouer ? `level` est celui du bridge ; `n` = le nombre de choses qui demandent
+export const verdictWords = (level, n) => {
+  const things = n + (n === 1 ? ' thing needs you' : ' things need you');
+  if (level === 'bad') return { title: 'Not ready — ' + things, sub: 'Look at the red one first.' };
+  if (level === 'warn' && n) return { title: 'Playable — ' + things, sub: 'Everything else works.' };
+  if (level === 'wait') return { title: 'Measuring…', sub: 'golem is reading the rack.' };
+  return { title: 'Ready to play', sub: 'Every check is green.' };
+};
+
+// la ligne courte d'une pastille : les deux premiers morceaux du texte du bridge (la suite est dans le détail)
+export const chipText = f => String((f && f.text) || '').split(' · ').slice(0, 2).join(' · ').split(' — ')[0];
+
+// « 5 weeks ago », « today » : la date du dernier passage du first check, en mots
+export const sinceWords = (t, now) => {
+  if (!t || !now) return 'never';
+  const d = Math.max(0, now - t) / 86400;
+  if (d < 1) return 'today';
+  if (d < 2) return 'yesterday';
+  if (d < 14) return Math.round(d) + ' days ago';
+  if (d < 60) return Math.round(d / 7) + ' weeks ago';
+  return Math.round(d / 30) + ' months ago';
+};
+
+// l'historique groupé par SUJET : le plus récent de chaque titre, combien de fois, et comment il a fini — en mots
+const ENDED = { action: 'fixed by golem', restart: 'fixed by a restart', outside: 'came back by itself' };
+export const historyRows = (items, now) => {
+  const by = new Map();
+  for (const i of items || []) {
+    const k = i.title || '';
+    const g = by.get(k);
+    if (!g) by.set(k, { ...i, times: 1 });
+    else g.times += 1;
+  }
+  return [...by.values()].map(i => {
+    const open = i.state !== 'closed';
+    const how = open ? 'happening now · since ' + when(i.opened_at, now).replace('today ', '')
+      : when(i.closed_at, now) + ' · ' + (ENDED[i.resolved_by] || i.resolved_by || 'ended') + (i.resolved_by === 'outside' ? ' after ' + dur(i.after_s || 0) : '')
+        + (i.hint ? ' (' + i.hint + ')' : '');
+    return { id: i.id, title: i.title, open, times: i.times, text: how + (i.times > 1 ? ' · ' + i.times + ' times' : '') };
+  }).sort((a, b) => b.open - a.open);
+};

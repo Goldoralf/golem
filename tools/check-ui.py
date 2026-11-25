@@ -49,7 +49,7 @@ RACK_PAGES = [
     "#/library/samples/short", "#/library/samples/songs",
     "#/library/tracks/backing", "#/library/tracks/vocals", "#/library/tracks/standards", "#/library/tracks/recordings",
     # Settings, la barre de mockups/settings-nav.html (2026-10-20) : Mode · System · Gear · Engines · Content · Connect · About
-    "#/system/mode", "#/system/mode/compare", "#/system/sys", "#/system/sys/health", "#/system/sys/cores",
+    "#/system/mode", "#/system/mode/compare", "#/system/sys", "#/system/sys/health", "#/system/sys/cores", "#/system/sys/display",
     "#/system/gear/sound", "#/system/gear/controllers", "#/system/gear/pedals", "#/system/gear/board", "#/system/gear/drums",
     "#/system/engines/audio", "#/system/engines/separation",
     "#/system/content/storage", "#/system/content/factory",
@@ -89,7 +89,10 @@ _VOLATILE = re.compile(r"\bUSB #|🔒 connected|● LIVE|\b(?:asio|hw|coreaudio)
 # … et celles qui ne le sont que sur UNE page : « × » y oublie un réseau connu du poste ; « Fix… » n'existe que
 # pour un incident OUVERT (le runner en a un selon les passes, le poste presque toujours)
 _VOLATILE_ON = {"#/system/connect/wifi": re.compile(r"\| ×$"),
-                "#/system/sys/health": re.compile(r"\| Fix…$")}
+                # Health V2 (2026-11-25) : les cartes, les pastilles et leurs gestes SONT l'état de la machine (un fait de plus
+                # sous Windows, une réparation selon l'incident) — seuls la navigation et « Start » sont la surface
+                "#/system/sys/health": re.compile(r"^button \| (?!(Dashboard|Health|CPU cores|Display|Mode|System|Gear|Engines|Content"
+                                                  r"|Connect|About|Start)$)")}
 
 
 def stable_controls(controls, page=None):

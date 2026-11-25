@@ -63,3 +63,32 @@ test('une réparation sans incident garde son retour arrière une heure', () => 
   assert.equal(lastFixUndo({ ...last, incident: 'i3' }, 1600), null, 'avec un incident, l’undo vit sur l’incident');
   assert.equal(lastFixUndo({ ...last, phase: 'verifying' }, 1600), null);
 });
+
+test('Health v2 : le verdict en mots, ce qui demande quelque chose, ce qui est une information', async () => {
+  const M = await import('./health-model.mjs');
+  const facts = [{ id: 'engine', level: 'ok' }, { id: 'golemfm', level: 'warn' }, { id: 'dropouts', level: 'warn' },
+    { id: 'environment', level: 'warn' }, { id: 'playing', level: 'bad' }];
+  assert.deepEqual(M.needs(facts).map(f => f.id), ['playing', 'dropouts', 'golemfm'], 'le rouge d’abord, golem.fm après, la mise à jour n’est pas un problème');
+  assert.equal(M.verdictWords('warn', 2).title, 'Playable — 2 things need you');
+  assert.equal(M.verdictWords('warn', 1).title, 'Playable — 1 thing needs you');
+  assert.equal(M.verdictWords('ok', 0).title, 'Ready to play');
+  assert.match(M.verdictWords('bad', 1).title, /^Not ready/);
+  assert.equal(M.problemTitle({ id: 'dropouts' }), 'Clicks in the sound');
+  assert.equal(M.plainName({ id: 'nouveau', name: 'New probe' }), 'New probe');
+  assert.equal(M.chipText({ text: 'Golem Engine 9.9-g8 · running · talking to the bridge' }), 'Golem Engine 9.9-g8 · running');
+  assert.equal(M.chipText({ text: '4 in the last 10 min — something interrupts' }), '4 in the last 10 min');
+  assert.equal(M.sinceWords(1000, 1000 + 35 * 86400), '5 weeks ago');
+  assert.equal(M.sinceWords(null, 5), 'never');
+});
+
+test('Health v2 : l’historique groupé par sujet, en mots', async () => {
+  const M = await import('./health-model.mjs');
+  const now = Date.UTC(2026, 10, 25, 16) / 1000;
+  const rows = M.historyRows([
+    { id: 'a', title: 'Audio dropouts', state: 'open', opened_at: now - 600 },
+    { id: 'b', title: 'Sound card stopped', state: 'closed', closed_at: now - 1800, resolved_by: 'outside', after_s: 38 },
+    { id: 'c', title: 'Audio dropouts', state: 'closed', closed_at: now - 3600, resolved_by: 'action' }], now);
+  assert.equal(rows.length, 2);
+  assert.equal(rows[0].open, true); assert.match(rows[0].text, /^happening now · since .* · 2 times$/);
+  assert.match(rows[1].text, /came back by itself after 38 s$/);
+});

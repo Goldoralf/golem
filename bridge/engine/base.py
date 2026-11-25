@@ -124,6 +124,10 @@ class EngineAdapter:
     def adopt_audio(self, audio):
         """À une bascule : reprendre le réglage audio du moteur d'avant ({buffer…}) quand on n'en a pas à soi."""
 
+    def keep_audio(self, audio):
+        """À une bascule qui QUITTE ce moteur, une fois arrêté : garder son réglage audio ({buffer…}, lu pendant qu'il
+        tournait) pour qu'il revienne tel quel — chaque moteur garde son buffer (décision du 2026-11-25)."""
+
     def set_buffer(self, size):
         """Change le buffer ; rend un dict pour l'API. Lève ValueError/RuntimeError/OSError (409)."""
         raise RuntimeError(f"{self.id}: buffer change not supported")

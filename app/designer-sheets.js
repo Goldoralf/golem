@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Bottom sheets du Designer : potards (Knob/ParamSheet), assign, réglages preset (extraits, P3).
-import { html, useState, useEffect, useRef, useAsync, cls, esc, LIVE_PALETTE, GENRE_FAMILIES } from './lib.js';
+import { html, useState, useEffect, useRef, useAsync, cls, esc, go, LIVE_PALETTE, GENRE_FAMILIES } from './lib.js';
 import { ANIM_STYLES, blkColor, ICON, animClass, animPackOf, ensurePackCss, refKey } from './designer-model.js';
 import { PCell, PDial, PToggle, PFader, PFaderBank, fmtVal, DynMeter } from './designer-widgets.js';
 import { BlockPresetsPane } from './designer-block-presets.js';   // presets en colonne + façade (maquette Chorus drawer, 2026-11-15)
@@ -9,7 +9,7 @@ import { BackingDrawer } from './designer-backing.js';
 import { ClickSongCols, PerSongNote, SongLayer, sheetBlocks } from './designer-song.js';   // la chanson chargée (docs/designer-song.md)     // le tiroir Backing Track (docs/song-backing.md)
 import { PadsDrawer } from './pads-drawer.js';   // le tiroir du bloc Pads v2 (mockups/pads-drawer-v2.html)
 import { Icon } from './icons.js';
-import { isLocalHost, LOCAL_TILES_KEY, localTilesAllowed } from './anim-stepper.mjs';   // les cases figées sur l'écran local
+import { isLocalHost, sortOf } from './anim-stepper.mjs';   // les cases figées sur l'écran local (Settings ▸ System ▸ Display)
 import { orderModels, describe as capDescribe } from './capture-gain.js';
 import { useGestures, GestureLegend } from './gestures.js';   // la légende des gestes au pied, en phrases
 import { ParametricControls } from './capture-parametric.js';
@@ -1378,23 +1378,17 @@ export function EffectPicker({ current, pc, onPick, onClose }) {
   const valOf = eid => (pid === 'default' ? eid : (eid ? pid + '/' + eid : ''));
   const items = pack ? pack.effects : ANIM_STYLES.map(([v, l]) => ({ id: v, name: l }));
   // une case animée fait redessiner l'écran sans arrêt : sur la machine qui joue le son, c'est du temps volé à
-  // l'audio (2026-11-25, docs/pitfalls/ui.md) ; l'écran LOCAL les fige donc (app/anim-stepper.mjs), un écran déporté
-  // les garde. Le réglage ne se montre que sur l'écran local, le seul où il change quelque chose.
-  const local = isLocalHost(location.hostname);
-  const [liveTiles, setLiveTiles] = useState(localTilesAllowed());
-  const toggleTiles = () => {
-    const v = !liveTiles;
-    try { if (v) localStorage.setItem(LOCAL_TILES_KEY, '1'); else localStorage.removeItem(LOCAL_TILES_KEY); } catch { /* stockage refusé */ }
-    setLiveTiles(v);
-  };
+  // l'audio (2026-11-25, docs/pitfalls/ui.md). Le réglage vit dans Settings ▸ System ▸ Display (bridge/display.py) :
+  // ici, on dit seulement si les cases bougent sur CET écran, et où le changer.
+  const still = sortOf('lp-tile', { tile: true }, { local: isLocalHost(location.hostname), display: globalThis.__golemDisplay || undefined }) === 'freeze';
   return html`<div class="detail" onClick=${bg}>
     <div class="detail-card set-cfg">
       <button class="close" onClick=${onClose}>×</button>
       <h2>Animation effect</h2>
       <div class="fx-pick-hd">
         <p class="muted">Tap an effect — it plays on this tile on the Live page.
-          ${local ? html`<br/>Still on this screen (it shares the computer that plays the sound):
-            <label class="fx-live-tiles"><input type="checkbox" checked=${liveTiles} onChange=${toggleTiles} /> Animate here</label>` : ''}</p>
+          ${still ? html`<br/>Tiles stay still on this screen.
+            <button class="fx-live-tiles" onClick=${() => { onClose(); go('system/sys/display'); }}>Display settings →</button>` : ''}</p>
         ${packs.length > 1
           ? html`<select class="flt-sel fx-packsel" value=${pid} title="tile pack — new packs arrive from golem.fm"
               onChange=${e => setPid(e.target.value)}>

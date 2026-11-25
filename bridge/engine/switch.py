@@ -70,6 +70,11 @@ def _run(target_id, on_osc, registry):
         on_osc = app.on_osc
     reg = registry or _registry()
     _diag_intent("switch")
+    # le réglage audio que l'ancien moteur JOUE, lu tant qu'il tourne (arrêté, REAPER ne dit plus sa carte réelle)
+    try:
+        before = old.audio() or {}
+    except Exception:
+        before = {}
     try:
         dead = old.stop()
     except Exception as e:
@@ -92,9 +97,13 @@ def _run(target_id, on_osc, registry):
             os.remove(os.path.join(_presets_dir(), name))
         except OSError:
             pass
+    try:
+        old.keep_audio(before)                        # chaque moteur garde son buffer : l'ancien reviendra tel quel
+    except Exception as e:
+        log.warning(f"réglage audio de {old.id} non gardé : {e}")
     new = reg[target_id]()
     try:
-        new.adopt_audio(old.audio() or {})            # le buffer joué jusqu'ici, si le nouveau n'a pas de réglage à lui
+        new.adopt_audio(before)                       # le buffer joué jusqu'ici, si le nouveau n'a pas de réglage à lui
     except Exception as e:
         log.warning(f"réglage audio non repris : {e}")
     use(new)

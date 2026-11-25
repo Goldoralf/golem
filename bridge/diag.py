@@ -151,10 +151,12 @@ WHITELIST = {
     "rig_check.issues[]": ("kind", "expected", "repaired"),
     "health": ("cpu_pct", "temp_c", "ram_used_pct", "disk"),
     "first_check": ("done_at", "skipped", "took_s", "verdict", "steps"),
-    "first_check.steps": ("input", "output", "foot"),
+    "first_check.steps": ("input", "output", "foot", "stability"),
     "first_check.steps.input": ("ok", "took_s", "peak_db", "input", "role", "gain"),
     "first_check.steps.output": ("ok", "took_s", "click_ticks", "heard"),
     "first_check.steps.foot": ("ok", "took_s", "answered"),
+    # le buffer qui tient ici (docs/health.md §2 bis) : la taille retenue, sa latence, et « 64:812 128:4 256:0 »
+    "first_check.steps.stability": ("ok", "took_s", "measured", "skipped", "buffer", "latency_ms", "tried"),
     "health.disk": ("free_gb", "used_pct"),
     "usage": ("started_at", "ended_at", "ended", "duration_s", "modes", "recalls", "scene_switches",
               "presets_distinct", "block_types_used", "takes", "standards_played", "looper_used",
@@ -189,7 +191,8 @@ _DOC = {
     "rig_check": "what each plugin REALLY loaded (NAM model / IR), read from the plugin after recall",
     "health": "CPU, temperature, RAM, disk at report time",
     "first_check": "the first-start check (docs/health.md §2): verdicts and durations of the three gestures — signal "
-                   "seen on an input, the click heard, the pedalboard answering — never a name",
+                   "seen on an input, the click heard, the pedalboard answering — and the buffer that holds on this "
+                   "computer (late audio cycles per size tried) — never a name",
     "usage": "what happened during this session, computed from timeline.ndjson",
     "anomalies": "warning chips that lit up during the session, with durations",
     "previous_session": "present in a boot report when the previous session did not close cleanly",

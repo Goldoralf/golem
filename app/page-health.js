@@ -1,15 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SETTINGS ▸ HEALTH (docs/health.md §1, maquette mockups/health.html validée le 2026-10-20) : UN écran, trois couches.
-// « Now » : des faits que le bridge a MESURÉS (bridge/health.py), chacun avec sa source et, en orange ou rouge, le
-// geste qui répare. « Check now » : les contrôles à la demande, chacun avec son coût annoncé. « Incidents » : les
-// pannes de cette machine et COMMENT elles ont fini (bridge/incidents.py).
+// SETTINGS ▸ HEALTH (docs/health.md §1 ; V2, maquette mockups/health-v2.html validée le 2026-11-25 — la V1,
+// mockups/health.html, montrait treize faits au même niveau avec leurs fichiers sources : « très chargée, on ne comprend
+// pas tout »). UN écran : le VERDICT en mots (peut-on jouer ?), « Needs you » (une carte par fait orange ou rouge : ce
+// qui se passe, le geste qui répare), « Everything else is fine » (les faits verts en pastilles), « Test it » (deux
+// contrôles à la demande, dits par ce qu'on y fait et ce que ça dure), « History » (bridge/incidents.py, groupé par
+// sujet, en mots). Un tap ouvre le DÉTAIL d'un fait ; ses sources y sont repliées sous « For developers ».
 // HEALTH ▸ FIX (docs/assistant.md §3, maquette mockups/health-fix.html validée le 2026-10-20) : quand le registre
 // d'actions (bridge/fixes.py) sait répondre à un fait, la ligne porte « Fix… » ; la FEUILLE dit avant → après, ce que
 // ça coûte, comment golem vérifiera et comment revenir — rien ne part sans le tap. La garde (une prise, une chanson,
 // un mode verrouillé) est celle du bridge : l'écran affiche sa raison, il ne la juge pas.
 // La page ne juge rien : elle affiche le verdict du bridge et ses dates.
 import { html, useState, useEffect, api, post, go, cls } from './lib.js';
-import { ago, countsLine, incidentChip, incidentLine, hintCandidate, undoCandidate, lastFixUndo } from './health-model.mjs';
+import { ago, hintCandidate, undoCandidate, lastFixUndo, needs, verdictWords, problemTitle, plainName, chipText, isInfo, offStage,
+  OFF_STAGE_NOTE, sinceWords, historyRows, chipLevel } from './health-model.mjs';
 
 const POLL_MS = 5000;
 const FIX = '/api/health/fix';
@@ -24,6 +27,9 @@ export function HealthPage({ focus }) {
   const [sheet, setSheet] = useState(null);               // {action, params, incident} — la feuille ouverte
   // la ligne qu'une puce de /live désigne : soulignée quelques secondes, jamais une action d'office
   const [lit, setLit] = useState(focus || null);
+  const [detail, setDetail] = useState(null);                // le fait dont la feuille de détail est ouverte
+  const [hintOpen, setHintOpen] = useState(false);
+  const [all, setAll] = useState(false);                     // la liste de tous les faits (« + N more »)          // « what fixed it? » déplié
   useEffect(() => { setLit(focus || null); if (!focus) return; const t = setTimeout(() => setLit(null), 6000); return () => clearTimeout(t); }, [focus]);
   const running = !!(fix.current && ['running', 'verifying'].includes(fix.current.phase));
   // « ASK GOLEM » (docs/assistant.md §5, maquette écran 4) : présent seulement si le rack est appairé et que le mode le
@@ -55,90 +61,114 @@ export function HealthPage({ focus }) {
   const facts = doc.facts || [];
   const guard = doc.guard || {};
   const cur = running ? fix.current : null;
-  // pendant une vérification, le bandeau dit ce que golem regarde — le verdict du bridge revient ensuite
-  const v = cur ? { level: 'on', title: 'Checking the fix.', text: cur.label + ' · ' + (cur.text || '') } : (doc.verdict || {});
-  const age = ago(Math.max(0, (Date.now() / 1000) - doc.at));   // ≈ l'âge du cache (≤ 5 s) ; le bridge date, l'écran arrondit
   const now = doc.at;
+  const age = ago(Math.max(0, (Date.now() / 1000) - doc.at));   // ≈ l'âge du cache (≤ 5 s) ; le bridge date, l'écran arrondit
+  // HEALTH V2 (maquette mockups/health-v2.html, validée le 2026-11-25) : le verdict en mots, ce qui demande en cartes,
+  // ce qui va bien en pastilles, l'historique par sujet ; le détail (et les sources) dans une feuille
+  const need = needs(facts);
+  // les conseils d'abord (ils ne doivent jamais tomber sous « + N more »), puis l'ordre du bridge
+  const fine = facts.filter(f => !need.includes(f)).sort((a, b) => !!b.advice - !!a.advice);
+  // autant de pastilles que la place en laisse (rangées de quatre, sous 0, 1, 2 ou 3 cartes) ; le reste dans « All checks »
+  const room = [20, 16, 12, 8][Math.min(3, need.length)];
+  const shownFine = fine.length > room ? fine.slice(0, room - 1) : fine;
+  const vw = verdictWords((doc.verdict || {}).level, need.length);
+  const v = cur ? { level: 'on', title: 'Checking the fix…', sub: cur.label + (cur.text ? ' · ' + cur.text : '') }
+    : { level: (doc.verdict || {}).level || 'wait', ...vw };
   // la question facultative attend une prise ou une chanson, pas « quelqu'un a touché l'écran il y a 30 s » : c'est
   // justement la personne devant l'écran qui répond
   const ask = hintCandidate(incs, now, guard.free === false && !/^in use/.test(guard.why || '') ? guard.why : null);
   const undo = undoCandidate(incs);
   const lastUndo = running ? null : lastFixUndo(fix.last, now);
-  const sendHint = h => post(INC + '/' + ask.id + '/hint', { hint: h }).then(() => api(INC).then(d => setIncs(d.items || []))).catch(() => {});
-  const fixCell = f => {
+  const sendHint = h => { setHintOpen(false); post(INC + '/' + ask.id + '/hint', { hint: h }).then(() => api(INC).then(d => setIncs(d.items || []))).catch(() => {}); };
+  const openFix = f => setSheet({ action: f.repair.action, params: f.repair.params, incident: f.incident });
+  // le geste d'une carte : la réparation du registre, sinon la navigation du bridge
+  const act = (f, primary) => {
     const r = f.repair;
-    if (cur && r && (cur.incident ? cur.incident === f.incident : cur.action === r.action))
-      return html`<span class="hl-fix hl-on">checking…</span>`;
-    if (r && (f.level === 'warn' || f.level === 'bad'))
-      return r.blocked || running ? html`<span class="hl-src hl-why">${r.blocked || 'another fix is running'}</span>`
-        : html`<button class=${'hl-fix hl-go edit-only hl-' + f.level} onClick=${() => setSheet({ action: r.action, params: r.params, incident: f.incident })}>${r.label}</button>`;
-    if (f.fix && (f.level === 'warn' || f.level === 'bad'))
-      return html`<button class=${'hl-fix hl-' + f.level} onClick=${() => go(f.fix.go)}>${f.fix.label}</button>`;
-    return html`<span class="hl-src">${f.source}</span>`;
+    if (cur && r && (cur.incident ? cur.incident === f.incident : cur.action === r.action)) return html`<span class="hv-busy">checking…</span>`;
+    if (r && !r.blocked && !running) return html`<button class=${cls('hv-btn edit-only', primary && 'p')} onClick=${e => { e.stopPropagation(); openFix(f); }}>${r.title || r.label}</button>`;
+    if (r && (r.blocked || running)) return html`<span class="hv-busy" title=${r.blocked || ''}>${r.blocked ? 'not now — ' + r.blocked : 'another fix is running'}</span>`;
+    if (f.fix) return html`<button class="hv-btn" onClick=${e => { e.stopPropagation(); go(f.fix.go); }}>${f.fix.label}</button>`;
+    return '';
   };
+  const hist = historyRows(incs, now);
+  const HIST_MAX = lastUndo ? 3 : 4;
+  const fc = doc.first_check || {};
   return html`
-    <div class="hl-page pg-body">
-      <div class=${cls('hl-verdict', 'hl-' + (v.level || 'wait'))} data-doc="health.verdict">
-        <span class="hl-big"></span>
-        <div class="hl-vtxt"><b>${v.title || ''}</b><span class="hl-m">${v.text || ''}</span></div>
-        <span class="hl-counts">checked ${age} · ${((doc.verdict || {}).counts || {}).total || facts.length} facts
-          ${countsLine((doc.verdict || {}).counts).map(c => html` · <b class=${'hl-c hl-' + c.level}>${c.n}</b>${c.word ? ' ' + c.word : ''}`)}</span>
-        ${assist && assist.available ? html`<button class="hl-ask" data-doc="health.ask" onClick=${() => setAskOpen(true)}><b>✦ Ask golem</b><span>your words, e.g. « it crackles »</span></button>` : ''}
-      </div>
-      <div class="hl-cols">
-        <div class="hl-card hl-now" data-doc="health.now">
-          <div class="hl-ch"><b>Now</b><span class="hl-m">read every 5 s · nothing touched</span></div>
-          <div class="hl-rows">
-            ${facts.map(f => html`<div class=${cls('hl-row', lit === f.id && 'hl-lit')} key=${f.id} data-doc=${'health.fact:' + f.id} title=${f.text}>
-              <span class=${'hl-d hl-' + (cur && f.repair && cur.action === f.repair.action ? 'on' : f.level)}></span>
-              <span class="hl-n">${f.name}<small>${cur && f.repair && cur.action === f.repair.action ? cur.text : f.text}</small></span>
-              ${fixCell(f)}
-            </div>`)}
-          </div>
-          <div class="hl-guard" data-doc="health.guard"><i class=${cls('hl-gi', guard.free === true && 'ok', guard.free === false && 'busy')}></i>
-            <span>${guard.free === true ? 'Rack free for a check' + (guard.idle_s != null ? ' · nobody touched it for ' + ago(guard.idle_s).replace(' ago', '') : '')
-              : guard.free === false ? 'Rack not free for a check — ' + (guard.why || 'in use')
-              : 'Rack availability unknown'}</span>
-          </div>
+    <div class="hl-page pg-body hv-page">
+      <div class="hv-main">
+        <div class=${cls('hv-verdict', 'hv-' + v.level)} data-doc="health.verdict">
+          <span class="hv-big"></span>
+          <div class="hv-vt"><b>${v.title}</b><span>${v.sub}${cur ? '' : ' Checked ' + age + '.'}</span></div>
+          ${assist && assist.available ? html`<button class="hv-ask" data-doc="health.ask" onClick=${() => setAskOpen(true)}>✦ Ask golem</button>` : ''}
         </div>
-        <div class="hl-side">
-          <div class="hl-card" data-doc="health.checks">
-            <div class="hl-ch"><b>Check now</b><span class="hl-m">each one says what it costs</span></div>
-            <${SilenceHunt} />
-            <div class="hl-chk"><span class="hl-cn"><b>Inputs, output, pedalboard</b><small>the first-start check, again: play, listen, press a switch</small></span>
-              <span class="hl-cost"><span class="hl-tag">~2 min</span><span class="hl-tag snd">click</span><span class="hl-tag you">you</span>
-                <button class="hl-run edit-only" onClick=${async () => { await post('/api/health/first-check', { action: 'reset' }).catch(() => {}); go('live'); }}>Run</button></span></div>
-            ${doc.first_check && doc.first_check.done_at ? html`<div class="hl-m">last run ${ago(doc.at - doc.first_check.done_at)} · ${doc.first_check.verdict === 'ok' ? 'all three gestures green' : 'one gesture missing'}</div>` : ''}
-          </div>
-          <div class="hl-card hl-grow hl-incs" data-doc="health.incidents">
-            <div class="hl-ch"><b>Incidents</b><span class="hl-m">this golem · 30 days · sent with the reports</span></div>
-            ${lastUndo ? html`<div class="hl-inc">
-                <span class=${'hl-d ' + (lastUndo.phase === 'done' ? 'hl-ok' : 'hl-bad')}></span>
-                <span class="hl-cn"><b>${lastUndo.label}</b><small>${lastUndo.text || ''}</small></span>
-                <button class="hl-link hl-undo edit-only" onClick=${() => setSheet({ ...lastUndo.undo, by: 'undo' })}>undo</button>
-                <span class=${'hl-by ' + (lastUndo.phase === 'done' ? 'act' : 'open')}>${lastUndo.phase === 'done' ? 'done' : 'failed'}</span>
-              </div>` : ''}
-            ${incs.length ? incs.slice(0, ask ? 4 : 5).map(i => {
-              const c = incidentChip(i);
-              return html`<div class="hl-inc" key=${i.id} title=${i.detail || ''}>
-                <span class=${'hl-d ' + (i.state === 'open' ? 'hl-bad' : i.state === 'verifying' ? 'hl-on' : '')}></span>
-                <span class="hl-cn"><b>${i.title}</b><small>${incidentLine(i, now)}</small></span>
-                ${undo && undo.id === i.id && !running ? html`<button class="hl-link hl-undo edit-only" onClick=${() => setSheet({ ...undo.undo, by: 'undo' })}>undo</button>` : ''}
-                <span class=${'hl-by ' + c.cls}>${c.text}</span>
-              </div>`;
-            }) : html`<div class="hl-empty">No incident in the last 30 days. When something fails, it shows here with how it ended — fixed by golem, by a restart, or by you.</div>`}
-            ${incs.length > (ask ? 4 : 5) ? html`<div class="hl-m">+ ${incs.length - (ask ? 4 : 5)} earlier</div>` : ''}
-            ${ask ? html`<div class="hl-hint"><b>« ${ask.title} » came back by itself. What fixed it?</b>
-                ${['cable', 'gain', 'power', 'other'].map(h => html`<button key=${h} onClick=${() => sendHint(h)}>${h[0].toUpperCase() + h.slice(1)}</button>`)}
-                <span class="hl-m">optional</span></div>` : ''}
-          </div>
+        ${need.length ? html`<div class="hv-gh">Needs you</div>
+          <div class="hv-needs">${need.slice(0, 3).map(f => html`<div class=${cls('hv-need', 'hv-' + (offStage(f) ? 'info' : f.level), lit === f.id && 'hv-lit')} key=${f.id}
+              data-doc=${'health.fact:' + f.id} onClick=${() => setDetail(f.id)}>
+            <div class="hv-nt"><b>${problemTitle(f)}</b>${f.level === 'bad' ? html`<span class="hv-tag bad">BROKEN</span>` : f.id === 'dropouts' ? html`<span class="hv-tag now">NOW</span>` : ''}</div>
+            <div class="hv-nw">${cur && f.repair && cur.action === f.repair.action ? cur.text : f.text}${offStage(f) ? (/[.!]$/.test(f.text) ? ' ' : '. ') + OFF_STAGE_NOTE : ''}</div>
+            <div class="hv-na">${act(f, true)}<button class="hv-btn s" onClick=${e => { e.stopPropagation(); setDetail(f.id); }}>Details →</button></div>
+          </div>`)}
+          ${need.length > 3 ? html`<button class="hv-more" onClick=${() => setDetail(need[3].id)}>+ ${need.length - 3} more</button>` : ''}</div>` : ''}
+        <div class="hv-fine" data-doc="health.now">
+          <div class="hv-fh"><b>${!need.length ? 'What golem watches' : fine.every(f => f.level === 'ok' || isInfo(f)) ? 'Everything else is fine' : 'Everything else'}</b><span>${fine.some(f => f.advice) ? 'blue: a tip · ' : ''}tap one for the details</span></div>
+          <div class=${cls('hv-chips', fine.length > 9 && 'many')}>${shownFine.map(f => html`<button class=${cls('hv-chip', 'hv-' + chipLevel(f), lit === f.id && 'hv-lit')} key=${f.id}
+              data-doc=${'health.fact:' + f.id} aria-label=${plainName(f)} onClick=${() => setDetail(f.id)}>
+            <i></i><span><b>${plainName(f)}</b><small>${chipText(f)}</small></span></button>`)}
+            ${shownFine.length < fine.length ? html`<button class="hv-chip hv-morechip" onClick=${() => setAll(true)}>
+              <span><b>+ ${fine.length - shownFine.length} more</b><small>all checks</small></span></button>` : ''}</div>
         </div>
       </div>
+      <div class="hv-side">
+        <div class="hv-card" data-doc="health.checks">
+          <div class="hv-fh"><b>Test it</b><span>nothing runs by itself</span></div>
+          <${SilenceHunt} />
+          <div class="hv-test"><b>Full check</b>
+            <span>Plug, listen, press a switch, find the buffer. ~3 min. Last: ${sinceWords(fc.done_at, now)}.</span>
+            <button class="hv-btn edit-only" onClick=${async () => { await post('/api/health/first-check', { action: 'reset' }).catch(() => {}); go('live'); }}>Start</button></div>
+          ${guard.free === false ? html`<div class="hv-guard">Not now: ${guard.why || 'the rack is in use'}.</div>` : ''}
+        </div>
+        <div class="hv-card hv-grow" data-doc="health.incidents">
+          <div class="hv-fh"><b>History</b><span>30 days · sent with the reports</span></div>
+          ${lastUndo ? html`<div class="hv-ev"><i class=${lastUndo.phase === 'done' ? 'ok' : 'now'}></i><b>${lastUndo.label}</b>
+              <span>${lastUndo.phase === 'done' ? 'done' : 'failed'}${lastUndo.text ? ' · ' + lastUndo.text : ''} · <button class="hv-link edit-only" onClick=${() => setSheet({ ...lastUndo.undo, by: 'undo' })}>undo</button></span></div>` : ''}
+          ${hist.length ? hist.slice(0, HIST_MAX).map(h => html`<div class="hv-ev" key=${h.id}><i class=${h.open ? 'now' : ''}></i><b>${h.title}</b>
+              <span>${h.text}${undo && undo.id === h.id && !running ? html` · <button class="hv-link edit-only" onClick=${() => setSheet({ ...undo.undo, by: 'undo' })}>undo</button>` : ''}${ask && ask.id === h.id ? html` · <button class="hv-link" onClick=${() => setHintOpen(o => !o)}>what fixed it?</button>` : ''}</span></div>`)
+            : html`<div class="hv-empty">Nothing in the last 30 days. When something fails, it shows here with how it ended.</div>`}
+          ${ask && hintOpen ? html`<div class="hv-hint">${['cable', 'gain', 'power', 'other'].map(h => html`<button key=${h} class="hv-btn s" onClick=${() => sendHint(h)}>${h[0].toUpperCase() + h.slice(1)}</button>`)}</div>` : ''}
+          ${hist.length > HIST_MAX ? html`<div class="hv-m">+ ${hist.length - HIST_MAX} earlier</div>` : ''}
+        </div>
+      </div>
+      ${all ? html`<div class="hl-dim" onClick=${() => setAll(false)}></div>
+        <div class="hl-sheet hv-detail" role="dialog" aria-label="All checks"><h2>All checks</h2>
+          <div class="hv-all">${facts.map(f => html`<button key=${f.id} class=${cls('hv-chip', 'hv-' + chipLevel(f))} onClick=${() => { setAll(false); setDetail(f.id); }}>
+            <i></i><span><b>${plainName(f)}</b><small>${chipText(f)}</small></span></button>`)}</div>
+          <div class="hl-acts"><button onClick=${() => setAll(false)}>Close</button></div></div>` : ''}
+      ${detail ? html`<${DetailSheet} f=${facts.find(f => f.id === detail)} act=${act} onClose=${() => setDetail(null)} />` : ''}
       ${askOpen && assist ? html`<${AskDrawer} assist=${assist} setAssist=${setAssist} convo=${convo} setConvo=${setConvo}
           onClose=${() => setAskOpen(false)}
           onReview=${pr => { const f = facts.find(x => x.repair && x.repair.action === pr.action);
             setAskOpen(false); setSheet({ action: pr.action, params: pr.params, incident: f && f.incident, by: 'assistant' }); }} />` : ''}
-      ${sheet ? html`<${FixSheet} req=${sheet} onClose=${() => setSheet(null)} onStarted=${f => { setSheet(null); setFix({ current: f }); }} />` : ''}
+      ${sheet ? html`<${FixSheet} req=${sheet} onClose=${() => setSheet(null)} onStarted=${f => { setSheet(null); setDetail(null); setFix({ current: f }); }} />` : ''}
+    </div>`;
+}
+
+// LE DÉTAIL D'UN FAIT (maquette health-v2, écran 3) : une feuille à droite, la page reste visible. Ce qui se passe, en
+// clair ; ce qu'on peut faire (le geste de la carte) ; et, replié, ce que lisent les développeurs — la source du bridge.
+function DetailSheet({ f, act, onClose }) {
+  const [dev, setDev] = useState(false);
+  if (!f) return '';
+  const bad = f.level === 'warn' || f.level === 'bad';
+  return html`<div class="hl-dim" onClick=${onClose}></div>
+    <div class="hl-sheet hv-detail" role="dialog" aria-label=${plainName(f)}>
+      <h2><span class=${'hv-dot hv-' + chipLevel(f)}></span>${bad && !isInfo(f) ? problemTitle(f) : plainName(f)}</h2>
+      <div class="hv-sec"><h4>${bad && !isInfo(f) ? 'What is happening' : 'Now'}</h4><p>${f.text}${offStage(f) && bad ? (/[.!]$/.test(f.text) ? ' ' : '. ') + OFF_STAGE_NOTE : ''}</p></div>
+      ${f.advice ? html`<div class="hv-sec"><h4>Could be better</h4><p>${f.advice}</p></div>` : ''}
+      ${bad && (f.repair || f.fix) ? html`<div class="hv-sec"><h4>What you can do</h4>
+        <p>${f.repair ? (f.repair.title || f.repair.label) + ' — golem shows what it changes, then checks that it held.'
+          : 'Open ' + f.fix.label.replace(' →', '') + ' to look at it.'}</p></div>` : ''}
+      <div class="hv-sec hv-devs"><button class="hv-link" onClick=${() => setDev(d => !d)}>For developers ${dev ? '▾' : '▸'}</button>
+        ${dev ? html`<div class="hv-src">${f.id} · ${f.level} · ${f.source || ''}${f.detail ? ' · ' + JSON.stringify(f.detail) : ''}</div>` : ''}</div>
+      <div class="hl-acts">${bad ? act(f, true) : ''}<button onClick=${onClose}>Close</button></div>
     </div>`;
 }
 
@@ -256,10 +286,9 @@ function SilenceHunt() {
   const left = st && st.play_until ? Math.max(0, Math.ceil(st.play_until - st.now)) : null;
   const running = phase === 'listening' || phase === 'reading';
   return html`
-    <div class="hl-chk"><span class="hl-cn"><b>Why no sound?</b><small>reads the levels along the chain, names the first silent stage</small></span>
-      <span class="hl-cost"><span class="hl-tag ok">read-only</span><span class="hl-tag you">you play</span>
-        <button class=${cls('hl-run edit-only', running && 'busy')} disabled=${running} onClick=${run}>
-          ${phase === 'listening' ? 'Play now…' : phase === 'reading' ? 'Reading…' : 'Run'}</button></span></div>
+    <div class="hv-test"><b>Why no sound?</b><span>Play 4 seconds; golem shows where the sound stops. Changes nothing.</span>
+      <button class=${cls('hv-btn p edit-only', running && 'busy')} disabled=${running} onClick=${run}>
+        ${phase === 'listening' ? 'Play now…' : phase === 'reading' ? 'Reading…' : 'Start'}</button></div>
     ${err ? html`<div class="hl-sil hl-bad"><b>Not now.</b> ${err}</div>` : ''}
     ${phase === 'listening' ? html`<div class="hl-sil hl-on"><b>Play now${left != null ? ' — ' + left + ' s' : ''}.</b> The bridge watches the peaks of every track while you play.</div>` : ''}
     ${phase === 'reading' ? html`<div class="hl-sil hl-on"><b>Reading the chain…</b> input tracks, hardware outputs, the files each NAM and IR loaded.</div>` : ''}

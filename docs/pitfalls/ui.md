@@ -144,8 +144,15 @@ is about 10 messages and 60 KB a second.
     the renderer 26 %; frozen, 0.7 % and 3 %.
   - On the Linux rack, `prefers-reduced-motion` (which stops the same animations) took ALSA restarts from 137 to 0
     a minute.
-  - A remote screen keeps them animated. The effect picker's "Animate here" box (stored as
-    `localStorage['golem.localTileAnims']`) gives them back to the local screen.
+  - A remote screen keeps them animated.
+  - **Settings ▸ System ▸ Display** decides (`bridge/display.py`, `config/display.json`, broadcast as
+    `state.display`):
+    - **Auto** (default): what is described above.
+    - **On**: animated everywhere, for a computer with headroom.
+    - **Off**: still everywhere.
+  - The status lights can be held lit instead of blinking.
+  - When the sound clicks with animations On, Health shows a "Display" card. Its repair, "Calm the
+    screen", sets Auto again and counts clicks for 2 minutes.
 - Free by design: spinners (a stepped rotation does not turn) and the effect picker's previews (`.fx-opt`).
 - Values that move by themselves (looper progress and ring, record timer, bar clock, backing progress, all in
   `page-live.js`) update about 15 times a second through `useLiveTick`, and write only when the value changed.

@@ -41,6 +41,13 @@ def _st():
 
 
 def _buffer_sizes():
+    # un moteur qui porte sa propre liste (le Golem Engine : ArdourEngine.BUFFERS) la donne ; sinon celle de REAPER.
+    # Sous Windows, la liste de REAPER proposait 2048, que le Golem Engine refuse (2026-11-25, docs/health.md §2 bis)
+    with contextlib.suppress(Exception):
+        from . import engine
+        own = getattr(engine.get(), "BUFFERS", None)
+        if own:
+            return list(own)
     if sys.platform in ("win32", "darwin"):
         from .desktop_audio import BUFFER_SIZES
         return list(BUFFER_SIZES)
@@ -53,6 +60,13 @@ def _bsize():
         from .routes_system import _read_bsize
         v = _read_bsize()
         return int(v) if v else None
+    return None
+
+
+def _display_mode():
+    with contextlib.suppress(Exception):
+        from . import display
+        return display.get()["animations"]
     return None
 
 
@@ -112,6 +126,14 @@ async def _run_silence(p):
     from . import silence
     r = silence.start(p.get("seconds") or 4.0)
     return r if r.get("ok") else {"ok": False, "error": r.get("why") or "cannot start"}
+
+
+async def _run_display(p):
+    from . import display
+    from .app import _broadcast
+    display.set_(p["animations"])
+    await _broadcast()                                    # chaque écran l'applique tout de suite
+    return {"ok": True}
 
 
 async def _run_facts(p):
@@ -178,6 +200,37 @@ def _verify_dropouts(ctx, now):
     return "wait", f"checking: {n} dropout{'s' if n != 1 else ''} · {int(left)} s left — keep playing"
 
 
+def _verify_clicks(ctx, now):
+    """Un geste qui ne relance rien (les animations de l'écran) : on compte les clics pendant DROPOUTS_WATCH_S de jeu."""
+    st = _st()
+    if ctx.get("watch_from") is None:
+        ctx["watch_from"], ctx["xr0"] = now, int(getattr(st, "xruns", 0) or 0)
+    n = max(0, int(getattr(st, "xruns", 0) or 0) - ctx["xr0"])
+    left = DROPOUTS_WATCH_S - (now - ctx["watch_from"])
+    if n > DROPOUTS_OK_MAX:
+        return "ko", f"{n} clicks in {int(now - ctx['watch_from'])} s — the animations were not the cause; try a larger buffer"
+    if left <= 0:
+        return "ok", f"{n} click{'s' if n != 1 else ''} in {DROPOUTS_WATCH_S // 60} min"
+    return "wait", f"checking: {n} click{'s' if n != 1 else ''} · {int(left)} s left — keep playing"
+
+
+_DISPLAY_WORDS = {"auto": "still on this computer, moving on tablets", "on": "moving everywhere", "off": "still everywhere"}
+
+
+def _plan_display(p):
+    from . import display
+    cur = display.get()["animations"]
+    return {"title": "Calm the screen",
+            "why": "The Live tiles are animated on the computer that plays the sound. Redrawing them non-stop takes "
+                   "processor time from the audio, and the sound clicks.",
+            "before": {"value": cur, "sub": _DISPLAY_WORDS.get(cur, "")},
+            "after": {"value": p["animations"], "sub": _DISPLAY_WORDS.get(p["animations"], "")},
+            "costs": ["Nothing restarts. The tiles stop moving on this computer at once; tablets and phones keep them."],
+            "verify": f"golem counts clicks for {DROPOUTS_WATCH_S // 60} minutes while you play.",
+            "undo": "Settings ▸ System ▸ Display turns them back on.",
+            "apply_label": "Calm the screen"}
+
+
 def _verify_none(ctx, now):
     return "ok", "done"
 
@@ -225,6 +278,18 @@ ACTIONS = {
                            "properties": {"size": {"type": "integer", "enum": _buffer_sizes()}}},
         "run": _run_buffer, "verify": _verify_dropouts, "plan": _plan_buffer,
         "undo": lambda p, before: {"action": "set_buffer", "params": {"size": before}} if before else None,
+    },
+    # les animations de l'écran (Settings ▸ System ▸ Display, bridge/display.py) : proposé quand le son claque pendant
+    # que les cases bougent sur la machine qui joue le son (docs/pitfalls/ui.md, 2026-11-25)
+    "display_animations": {
+        "label": "Calm the screen",
+        "description": "Stop the Live tile animations on the computer that plays the sound (they keep moving on "
+                       "tablets and phones). Redrawing them non-stop can take enough processor time to make the sound click.",
+        "risk": "modify", "live_allowed": False, "help": ["golem/health"],
+        "params": lambda: {"type": "object", "required": ["animations"],
+                           "properties": {"animations": {"type": "string", "enum": ["auto", "off", "on"]}}},
+        "run": _run_display, "verify": _verify_clicks, "plan": _plan_display, "timeout": DROPOUTS_WATCH_S + 30,
+        "undo": lambda p, before: {"action": "display_animations", "params": {"animations": before}} if before else None,
     },
     "osc_refresh": {
         "label": "Resync REAPER",
@@ -414,6 +479,8 @@ def suggest(fact):
         cur, sizes = _bsize(), _buffer_sizes()
         nxt = next((s for s in sizes if cur and s > cur), None)
         return {"action": "set_buffer", "params": {"size": nxt}} if nxt else None
+    if fid == "display":
+        return {"action": "display_animations", "params": {"animations": "auto"}}
     if fid == "engine":
         return {"action": "osc_refresh" if getattr(st, "reaper_running", False) else "reaper_restart", "params": {}}
     if fid == "audio":
@@ -508,7 +575,7 @@ async def apply(name, params=None, by="button", incident=None):
         return {"ok": False, "error": why, "status": 409}
     a = ACTIONS[name]
     by = by if by in ("button", "assistant", "doctor", "undo") else "button"
-    before = _bsize() if name == "set_buffer" else None
+    before = _bsize() if name == "set_buffer" else _display_mode() if name == "display_animations" else None
     rec = {"id": uuid.uuid4().hex[:8], "action": name, "params": p, "by": by, "incident": incident,
            "label": label_for(name, p), "phase": "running", "text": "starting…", "started_at": round(time.time(), 3)}
     if a.get("undo"):

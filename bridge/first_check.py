@@ -23,7 +23,11 @@ from .golog import swallowed as _swallowed
 log = get("first-check")
 PATH = lambda: os.path.join(C.CONFIG_DIR, ".first-check.json")   # noqa: E731 — le dossier de config du MOMENT
 STEPS = ("input", "output", "foot")
-_FC_TITLES = {"input": "No signal on any input", "output": "The click was not heard", "foot": "The pedalboard did not answer"}
+# l'étape SANS GESTE : le buffer qui tient sur cette machine (bridge/audio_stability.py, docs/health.md §2 bis). Elle
+# ne fait échouer le bilan que si elle a été mesurée et que même le plus grand buffer claque.
+AUTO_STEPS = ("stability",)
+_FC_TITLES = {"input": "No signal on any input", "output": "The click was not heard", "foot": "The pedalboard did not answer",
+              "stability": "Even the largest buffer clicks on this computer"}
 # Le vumètre OSC de REAPER (TRACK_VU n/track/@/vu) est LINÉAIRE EN dB : 0 → −72 dB, 1 → +6 dB. Mesuré au rig le
 # 2026-10-20 : crête −18,0 dBFS (Track_GetPeakInfo, tools/check-silence.py) ↔ vumètre 0,685 (formule : 0,692) ; le
 # silence à −78 dBFS rend 0. Ce n'est PAS une amplitude : 20·log10 du vumètre donnait −3 dB pour une crête à −18.
@@ -59,7 +63,9 @@ def _verdict(d):
     steps = d.get("steps") or {}
     if not d.get("done_at"):
         return None
-    return "ok" if all((steps.get(s) or {}).get("ok") for s in STEPS) else "partial"
+    gestures = all((steps.get(s) or {}).get("ok") for s in STEPS)
+    stab = steps.get("stability")
+    return "ok" if gestures and (stab is None or stab.get("ok") is not False) else "partial"
 
 
 _BRIEF = {"key": None, "value": None}
@@ -159,7 +165,15 @@ def status():
     return {"pending": pending(), "started_at": d.get("started_at"), "steps": d.get("steps") or {},
             "current": d.get("current"), "done_at": d.get("done_at"), "skipped_at": d.get("skipped_at"),
             "took_s": d.get("took_s"), "verdict": _verdict(d), "auto": auto_facts(), "now": round(time.time(), 3),
-            "foot_wait_s": FOOT_WAIT_S}
+            "foot_wait_s": FOOT_WAIT_S, "stability": _stability_run()}
+
+
+def _stability_run():
+    """Où en est la mesure du buffer (la taille essayée, sur combien) — pour l'écran pendant l'étape."""
+    with contextlib.suppress(Exception):
+        from . import audio_stability
+        return audio_stability.status()
+    return None
 
 
 def begin(step=None):
@@ -171,10 +185,13 @@ def begin(step=None):
         prev = {k: d[k] for k in ("done_at", "skipped_at", "steps", "took_s") if k in d}
         d = {"started_at": now, "steps": {}, **({"previous": prev} if prev else {})}
     if step:
-        if step not in STEPS:
+        if step not in STEPS + AUTO_STEPS:
             raise ValueError(f"unknown step '{step}'")
         d["current"] = {"step": step, "at": now}
     _write(d)
+    if step == "stability":                      # le bridge mesure seul et écrit l'étape quand il a fini
+        from . import audio_stability
+        audio_stability.start()
     return {"ok": True, "at": now, "step": step}
 
 
@@ -182,7 +199,7 @@ def record(step, ok=None, measured=None):
     """Le verdict d'un geste. La machine vérifie ce qu'elle peut : pour le pédalier, un message reçu APRÈS le
     départ du geste (foot.last_heard) ; pour l'écoute, que le clic a vraiment tourné (.click.json) ; pour le
     signal, la crête que l'écran a vue sur le vumètre OSC (en dB)."""
-    if step not in STEPS:
+    if step not in STEPS + AUTO_STEPS:
         raise ValueError(f"unknown step '{step}'")
     d = _read()
     if not d.get("started_at") or d.get("done_at") or d.get("skipped_at"):
@@ -206,6 +223,19 @@ def record(step, ok=None, measured=None):
             entry["role"] = str(m["role"])[:24]
         entry["ok"] = bool(ok) if ok is not None else (entry["peak_db"] is not None and entry["peak_db"] >= INPUT_MIN_DB)
         entry["gain"] = gain_of(entry["peak_db"], bool(m.get("clipped"))) if entry["ok"] else None
+    elif step == "stability":
+        if m.get("skipped"):
+            with contextlib.suppress(Exception):
+                from . import audio_stability
+                audio_stability.cancel()
+        entry["measured"] = bool(m.get("measured"))
+        entry["skipped"] = bool(m.get("skipped"))
+        if entry["measured"]:
+            entry["buffer"] = m.get("buffer")
+            entry["latency_ms"] = m.get("latency_ms")
+            # « 64:812 128:4 256:0 » : ce qu'a fait chaque taille essayée, en une chaîne (le paquet de diagnostic)
+            entry["tried"] = " ".join(f"{int(n)}:{int(late)}" for n, late in (m.get("tried") or []))
+        entry["ok"] = bool(m.get("ok")) if entry["measured"] else True
     elif step == "output":
         ticks = None
         with contextlib.suppress(Exception):
@@ -267,9 +297,10 @@ def section():
     if not d.get("started_at"):
         return None
     steps = {}
-    for s in STEPS:
+    for s in STEPS + AUTO_STEPS:
         e = d.get("steps", {}).get(s)
         if e:
-            steps[s] = {k: e.get(k) for k in ("ok", "took_s", "peak_db", "input", "role", "gain", "click_ticks", "heard", "answered") if k in e}
+            steps[s] = {k: e.get(k) for k in ("ok", "took_s", "peak_db", "input", "role", "gain", "click_ticks", "heard", "answered",
+                                              "measured", "skipped", "buffer", "latency_ms", "tried") if k in e}
     return {"done_at": d.get("done_at"), "skipped": bool(d.get("skipped_at")), "took_s": d.get("took_s"),
             "verdict": _verdict(d), "steps": steps}

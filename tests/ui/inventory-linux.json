@@ -936,7 +936,7 @@
   "button | Health",
   "button | Mode",
   "button | Patches →",
-  "button | Run",
+  "button | Start",
   "button | System"
  ],
  "#/system/gear/sound": [

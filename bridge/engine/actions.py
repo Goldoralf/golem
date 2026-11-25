@@ -16,7 +16,8 @@ REAPER traite tout : son vocabulaire est le sien (`EngineAdapter.actions = None`
 
 # le mot « action » sert aussi ailleurs : réponses d'API, noms de réparations de Health ▸ Fix — pas des commandes
 NOT_COMMANDS = frozenset({"created", "kept_local", "same", "refused",                 # songs.py : ce qu'un import a fait
-                          "repose_preset", "osc_refresh", "reaper_restart", "set_buffer"})   # fixes.py : réparations
+                          "repose_preset", "osc_refresh", "reaper_restart", "set_buffer",
+                          "display_animations"})   # fixes.py : réparations
 
 REAPER_PROBE = "a REAPER probe or dev tool; nothing reads it on this engine"
 

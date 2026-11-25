@@ -121,6 +121,40 @@ def _f_audio(st):
     return _fact("audio", "Sound card", "wait", f"{device} — waits for the engine", src)
 
 
+# LA CAUSE D'UN CLIC (docs/health.md §2 bis, 2026-11-25). Le Golem Engine sous ASIO compte ses cycles EN RETARD (patch
+# 16 : `late_cycles`, et `late_starts` ceux qu'un démarrage tardif a mis en retard — un pilote ou une interruption tenait
+# le processeur). Mesuré sur le portable de dev : le pilote NVIDIA bloquait un cœur jusqu'à 5,5 ms, la charge des
+# plugins restait à ~20 % d'un cycle. Quand la plupart des cycles en retard ont démarré en retard, ce n'est ni golem ni
+# le patch : on le dit, au lieu de laisser chercher dans le preset.
+LATE_FROM_OUTSIDE = 0.5
+
+
+def dropout_cause(engine_status):
+    """« driver » (la plupart des cycles en retard ont démarré en retard), « load » (le calcul a dépassé le cycle), ou
+    None (rien de compté : un autre moteur, ou aucun cycle en retard depuis l'ouverture du flux)."""
+    st = engine_status or {}
+    cycles, starts = st.get("late_cycles"), st.get("late_starts")
+    if not isinstance(cycles, (int, float)) or cycles <= 0 or not isinstance(starts, (int, float)):
+        return None
+    return "driver" if starts / cycles >= LATE_FROM_OUTSIDE else "load"
+
+
+_CAUSE_TEXT = {
+    "driver": " — something on this computer interrupts the audio (a driver: graphics, Wi-Fi…), not golem or this "
+              "patch. LatencyMon shows which one; a larger buffer clicks less",
+    "load": " — the patch needs more than one audio cycle: a larger buffer, or a lighter patch",
+}
+
+
+def _engine_status():
+    with contextlib.suppress(Exception):
+        from . import engine
+        eng = engine.get()
+        if eng.id != "reaper" and hasattr(eng, "_status"):
+            return eng._status()
+    return {}
+
+
 def _f_dropouts(st):
     total = int(getattr(st, "xruns", 0) or 0)
     recent = int(getattr(st, "xruns_recent", 0) or 0)
@@ -130,8 +164,42 @@ def _f_dropouts(st):
         return _fact("dropouts", "Dropouts", "ok", f"0 in the last 10 min · {total} since start"
                      + (f" · last {_ago(last)}" if last else ""), src)
     lvl = "bad" if recent >= XRUN_BURST else "warn"
-    return _fact("dropouts", "Dropouts", lvl, f"{recent} in the last 10 min · {total} since start · last {_ago(last)}", src,
+    cause = dropout_cause(_engine_status())
+    return _fact("dropouts", "Dropouts", lvl, f"{recent} in the last 10 min · {total} since start · last {_ago(last)}"
+                 + _CAUSE_TEXT.get(cause, ""), src + (" · engine late cycles" if cause else ""),
                  fix={"label": "Buffer →", "go": "system/sys"})
+
+
+def _f_display(st):
+    """Les animations de l'écran (Settings ▸ System ▸ Display, bridge/display.py). Orange seulement quand les cases
+    bougent sur la machine qui joue le son PENDANT que le son claque : la réparation les fige (« Calm the screen »)."""
+    from . import display
+    mode = display.get()["animations"]
+    src = "config/display.json · xruns"
+    if mode == "on" and int(getattr(st, "xruns_recent", 0) or 0) > 0:
+        return _fact("display", "Display", "warn", "tile animations are on on the computer that plays the sound, and the "
+                     "sound clicks — redrawing them takes processor time from the audio", src,
+                     fix={"label": "Display →", "go": "system/sys/display"})
+    words = {"auto": "animations: auto — still on this computer, moving on tablets",
+             "on": "animations: on everywhere", "off": "animations: off everywhere"}
+    return _fact("display", "Display", "ok", words[mode], src)
+
+
+def _f_safemode(st):
+    """Le « safe mode » d'un pilote ASIO Thesycon (desktop_audio.asio_safe_mode) : un CONSEIL, jamais une alarme — le
+    niveau reste vert, `advice` dit le geste. None sans pilote qui le déclare (le fait n'apparaît pas)."""
+    from . import desktop_audio
+    drivers = desktop_audio.asio_safe_mode()
+    if not drivers:
+        return None
+    on = [d["driver"] for d in drivers if d["on"]]
+    src = "registry · ParametersDriver/Settings/AsioSafeMode"
+    if not on:
+        return _fact("safemode", "Card safe mode", "ok", "off — the lowest delay your card offers", src)
+    f = _fact("safemode", "Card safe mode", "ok", f"on ({', '.join(on)}) — the card adds a safety margin to its buffers", src)
+    f["advice"] = ("Turn off “safe mode” in your sound card's control panel: about 3 ms less delay (measured on a UA Volt: "
+                   "16.7 → 13.5 ms at 256 samples). If the sound then clicks, turn it back on or raise the buffer.")
+    return f
 
 
 def _f_pedalboard(st):
@@ -580,11 +648,13 @@ def compute():
         boot = boot_progress.doc()
     probes = (lambda: _f_engine(st), lambda: _f_audio(st), lambda: _f_dropouts(st), lambda: _f_pedalboard(st),
               lambda: _f_playing(st), _f_setlist, _f_plugins, _f_disk, lambda: _f_golemfm(boot), _f_scripts,
-              lambda: _f_perf(st), _f_cpu, _f_environment)
+              lambda: _f_perf(st), _f_cpu, _f_environment, lambda: _f_display(st), lambda: _f_safemode(st))
     facts = []
     for fn in probes:
         try:
-            facts.append(fn())
+            f = fn()
+            if f:                                         # une sonde sans objet ici ne rend rien (le safe mode sans pilote)
+                facts.append(f)
         except Exception as e:                            # une sonde qui casse n'emporte pas la page
             _swallowed(e)
     # HEALTH ▸ FIX (docs/assistant.md §3) : un fait orange ou rouge auquel le registre sait répondre porte son

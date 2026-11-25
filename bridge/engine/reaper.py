@@ -4,8 +4,12 @@
 Commandes : la file + le slot presets/.command.json lus par golem_watch.lua (bridge/commands.py, inchangé).
 Chemin rapide : le lien OSC (bridge/reaper_osc.py, inchangé), device reaper/OSC/golem.ReaperOSC.
 """
+import logging
+
 from .. import config as C
 from .base import EngineAdapter
+
+log = logging.getLogger("golem.engine")
 
 # actions natives de REAPER (numéros de commande)
 _TRANSPORT = {"play": 1007, "pause": 1008, "stop": 1016, "start": 40042}
@@ -182,6 +186,26 @@ class ReaperEngine(EngineAdapter):
     def audio(self):
         from ..routes_system import _read_bsize           # reaper.ini (Linux) ou la carte réelle (Windows/macOS)
         return {"buffer": _read_bsize()}
+
+    def keep_audio(self, audio):
+        """CHAQUE MOTEUR GARDE SON BUFFER (2026-11-25). Sous Windows/macOS, golem sème reaper.ini sans « Request block
+        size » (asio_bsize_use=0) : REAPER prend alors la taille que PRÉFÈRE le pilote — et un pilote Thesycon (UA Volt)
+        retient la dernière taille demandée par n'importe quel programme (mesuré : son registre est passé de 512 à 256 et
+        retour au fil des réglages du Golem Engine). Revenu après une bascule, REAPER héritait donc du buffer de l'autre
+        moteur. Ici, REAPER arrêté (sinon il réécrit reaper.ini en quittant), le buffer qu'il jouait est DEMANDÉ
+        explicitement. Linux : linux_audio_bsize est déjà explicite."""
+        import sys
+        b = (audio or {}).get("buffer")
+        if sys.platform not in ("win32", "darwin") or not isinstance(b, int) or b <= 0:
+            return
+        from .. import desktop_audio
+        cur = desktop_audio.settings()
+        if cur.get("buffer_size_use") and cur.get("buffer_size") == b:
+            return
+        section, key, use = (("audioconfig", "asio_bsize", "asio_bsize_use") if sys.platform == "win32"
+                             else ("REAPER", "coreaudiobs", "coreaudiobsuse"))
+        desktop_audio.apply_ini(section, {key: str(b), use: "1"})
+        log.info(f"REAPER : buffer {b} gardé pour son retour (reaper.ini)")
 
     def version(self):
         from ..rigstatus import reaper_version

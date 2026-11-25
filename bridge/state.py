@@ -16,6 +16,14 @@ def _foot_heard():
         return None
 
 
+def _display_brief():
+    from . import display
+    try:
+        return display.brief()
+    except Exception:
+        return None
+
+
 def _engine_brief():
     """Le moteur audio en service, pour ce que l'écran affiche (l'écran de chargement disait « REAPER » sous le Golem
     Engine, 2026-11-18). Jamais d'exception : au pire REAPER, le moteur historique."""
@@ -201,6 +209,7 @@ class RigState:
             "engine": _engine_brief(),               # {id, name} : l'écran dit le moteur par son nom, jamais « REAPER » d'office
             "health": health.brief(),
             "first_check": first_check.brief(),
+            "display": _display_brief(),             # les animations de l'écran (Settings ▸ System ▸ Display)
             "startup": startup_home.describe(),      # l'accueil (chip ⌂ de /live, menus ⋯)
             "reaper_connected": self.reaper_connected,
             "reaper_running": self.reaper_running,

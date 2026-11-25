@@ -430,6 +430,27 @@ async def engine_select(body: dict):
     return {"ok": True, "current": eid, "switch_pending": True, "switch": switch.start(eid)}
 
 
+@router.get("/api/system/display")
+def display_get():
+    """Les animations de l'écran : {animations: auto|on|off, blinks} (bridge/display.py)."""
+    from . import display
+    return display.get()
+
+
+@router.post("/api/system/display")
+async def display_set(body: dict):
+    """Change les animations de l'écran ; chaque écran l'applique sans recharger (l'état diffusé porte `display`)."""
+    from . import display
+    from .app import _broadcast
+    body = body or {}
+    try:
+        d = display.set_(body.get("animations"), body.get("blinks"))
+    except ValueError as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+    await _broadcast()
+    return {"ok": True, **d}
+
+
 @router.get("/api/engine/switch")
 def engine_switch_status():
     """Où en est la bascule : {phase: idle|stopping|starting|remounting|done|reverting|failed, from, to, error?}."""

@@ -16,7 +16,7 @@ import { SongsPage } from './page-songs.js';
 import { DesignerPage } from './page-designer.js';
 import { SystemePage } from './page-systeme.js';
 import { watchErrors } from './ui-errors.mjs';             // les erreurs de l'app vers les rapports (docs/diagnostics.md §7.2)
-import { startAnimStepper } from './anim-stepper.mjs';     // docs/pitfalls/ui.md « An endless animation steals the audio thread »
+import { startAnimStepper, setDisplay } from './anim-stepper.mjs';     // docs/pitfalls/ui.md « An endless animation steals the audio thread »
 
 // Topbar = 5 sections (décision 2026-07-30) : Live / Songs / Designer / Library / Settings —
 // le flux d'une soirée : choisir, jouer, retoucher. Songs = CE QUE TU JOUES (presets, setlists,
@@ -242,6 +242,7 @@ function useLivePreload(st, bootSkip) {
 function App() {
   const route = useRoute();
   const rig = useRigState();
+  setDisplay(rig.state && rig.state.display);          // les animations de l'écran (Settings ▸ System ▸ Display)
   // L'ÉCRAN DE CHARGEMENT (mockups/loading.html) remplace /live tant que le premier preset ne joue pas. « Open the
   // app anyway » (seulement quand quelque chose traîne) sort POUR CE démarrage (t0) ; un restart le ramène.
   const [bootSkip, setBootSkip] = useState(() => { try { return Number(sessionStorage.getItem('golemBootSkip')) || null; } catch (e) { return null; } });

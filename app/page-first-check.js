@@ -8,11 +8,13 @@
 // départ du geste, vérifié par le bridge). L'écran a toujours une sortie (« Skip for now ») ; rejouable depuis
 // Settings ▸ Health. Le résultat est gardé (config/.first-check.json) et part dans le paquet de démarrage.
 import { html, useState, useEffect, useRef, api, post, go, cls } from './lib.js';
-import { INPUT_MIN, autoRows, gestureRows, summary, fmtTook, db, gainOf, gainText, cardInputs, loudest, inst, METERED, AUDIO_ROLES } from './first-check-model.mjs';
+import { INPUT_MIN, autoRows, gestureRows, stabilityRow, summary, fmtTook, db, gainOf, gainText, cardInputs, loudest, inst, METERED, AUDIO_ROLES } from './first-check-model.mjs';
 
 const DOT = { ok: '✓', on: '', wait: '', late: '!', skip: '–' };
 const FC = '/api/health/first-check';
 const HOLD_MS = 3000;                                     // la crête « récente » : celle qu'on juge pendant qu'on règle le gain
+// l'ordre des étapes : les trois gestes, puis le buffer qui tient ici — mesuré par le bridge seul (docs/health.md §2 bis)
+const FLOW = ['input', 'output', 'foot', 'stability'];
 
 export function FirstCheckPage({ rig, onDone, demo }) {
   const st = (rig && rig.state) || {};
@@ -38,7 +40,7 @@ export function FirstCheckPage({ rig, onDone, demo }) {
       if (!s) return;
       setStatus(s);
       if (s.done_at) return;
-      const next = ['input', 'output', 'foot'].find(id => !(s.steps || {})[id]);
+      const next = FLOW.find(id => !(s.steps || {})[id]);
       if (next) await startStep(next);
     })();
   }, []);
@@ -63,10 +65,27 @@ export function FirstCheckPage({ rig, onDone, demo }) {
     setCurrent(null); setBusy(false);
     if (!s) return;
     setStatus(s);
-    const next = ['input', 'output', 'foot'].find(x => !(s.steps || {})[x]);
+    const next = FLOW.find(x => !(s.steps || {})[x]);
     if (next) await startStep(next);
     else { const f = await act({ action: 'finish' }).catch(() => null); if (f) await reload(); }
   };
+
+  // 5. le buffer qui tient ici : le bridge essaie les tailles et écrit l'étape quand il a fini ; l'écran suit (1 s)
+  useEffect(() => {
+    if (current !== 'stability' || !live) return;
+    const t = setInterval(async () => {
+      const s = await api(FC).catch(() => null);
+      if (!s) return;
+      setStatus(s);
+      if ((s.steps || {}).stability) {
+        clearInterval(t);
+        setCurrent(null);
+        const f = await act({ action: 'finish' }).catch(() => null);
+        if (f) await reload();
+      }
+    }, 1000);
+    return () => clearInterval(t);
+  }, [current]);
 
   // 2. brancher et jouer : les vumètres OSC de chaque entrée (state.levels.in<N>, ~20 Hz). L'entrée retenue est la plus
   // forte des crêtes récentes ; on ne passe pas tout seul : le musicien confirme l'instrument et règle son gain d'abord.
@@ -129,6 +148,7 @@ export function FirstCheckPage({ rig, onDone, demo }) {
   const demoLive = demo && demo.demo ? demo.demo : null;
   const gest = gestureRows(steps, current, { peak: inPeak, ch: sel, ticks: demoLive ? demoLive.ticks : click.ticks, clickOff: click.off, left_s: left, foot_wait_s: waitS });
   const sum = done ? summary(steps) : null;
+  const stab = stabilityRow(steps.stability, current, status && status.stability);
   const os = (st.boot && st.boot.os) || '';
   const skip = async () => { if (live) await act({ action: 'skip' }).catch(() => {}); onDone && onDone(); };
   const again = async () => { if (!live) return; await act({ action: 'reset' }).catch(() => {}); await act({ action: 'begin' }).catch(() => {});
@@ -173,6 +193,11 @@ export function FirstCheckPage({ rig, onDone, demo }) {
             <div class="fc-acts"><button disabled=${busy} onClick=${() => finishStep('foot', false, {})}>No pedalboard — skip</button></div>
           </div>`
           : Row(r))}
+        ${stab.state === 'on' ? html`<div class="fc-ask" key="ask-stab">
+            <div class="fc-q"><i></i>4 · Audio stability — golem looks for the smallest buffer that does not click on this computer.</div>
+            <div class="fc-how">${stab.text}. About a minute; nothing to play. Smaller buffer: less delay; too small: clicks.</div>
+            <div class="fc-acts"><button disabled=${busy} onClick=${() => finishStep('stability', true, { skipped: true })}>Skip — keep the buffer as it is</button></div>
+          </div>` : Row(stab)}
       </div>
       ${done ? html`<div class="fc-acts fc-end">
           ${steps.foot && !steps.foot.ok ? html`<button onClick=${again}>Try the pedalboard again</button>` : ''}

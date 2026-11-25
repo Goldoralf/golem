@@ -14,10 +14,14 @@ test('au pas, figée ou libre', () => {
   assert.equal(sortOf('golem-caret', {}), 'step');
   assert.equal(sortOf('swspin', {}), 'free');                                          // un spinner tourne
   assert.equal(sortOf('lp-fire', { picker: true, tile: true }, { local: true }), 'free'); // l'aperçu du sélecteur
-  // une case du Live : figée sur l'écran local, animée sur un écran déporté, ou en local si le réglage le permet
+  // une case du Live, réglage auto : figée sur l'écran local, animée sur un écran déporté
   assert.equal(sortOf('lp-fire', { tile: true }, { local: true }), 'freeze');
   assert.equal(sortOf('lp-fire', { tile: true }, { local: false }), 'free');
-  assert.equal(sortOf('lp-fire', { tile: true }, { local: true, localTiles: true }), 'free');
+  // on : animée partout ; off : figée partout (Settings ▸ System ▸ Display)
+  assert.equal(sortOf('lp-fire', { tile: true }, { local: true, display: { animations: 'on' } }), 'free');
+  assert.equal(sortOf('lp-fire', { tile: true }, { local: false, display: { animations: 'off' } }), 'freeze');
+  // les voyants : au pas, ou tenus allumés
+  assert.equal(sortOf('led-pulse', {}, { display: { animations: 'auto', blinks: false } }), 'hold');
 });
 
 test("l'écran local est celui de la machine qui joue le son", () => {
@@ -53,7 +57,7 @@ test("le minuteur met en pause et ne touche l'animation qu'à la bascule", () =>
   const led = fake('led-pulse', 1600, {});
   const spin = fake('swspin', 900, {});
   spin.pause = () => { throw new Error('a spinner is never paused'); };
-  run([led, spin], [100, 300, 799, 800, 900, 1600], { local: true, allowTiles: () => false });
+  run([led, spin], [100, 300, 799, 800, 900, 1600], { local: true });
   assert.equal(led.paused, true);
   assert.deepEqual(led.writes, [0, 801, 0]);          // allumé, éteint à 800, rallumé à 1600 — rien entre deux
 });
@@ -66,7 +70,7 @@ test('une case figée en local repart quand le réglage la permet', () => {
   const realSet = globalThis.setInterval;
   globalThis.setInterval = f => { tick = f; return 1; };
   try {
-    startAnimStepper({ getAnimations: () => anims }, () => now, { local: true, allowTiles: () => allow, where: () => fire.where });
+    startAnimStepper({ getAnimations: () => anims }, () => now, { local: true, display: () => ({ animations: allow ? 'on' : 'auto', blinks: true }), where: () => fire.where });
     assert.equal(fire.paused, true);
     assert.deepEqual(fire.writes, [350]);             // figée au tiers de son cycle, une seule écriture
     for (now of [200, 400]) tick();

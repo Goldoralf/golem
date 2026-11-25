@@ -10,7 +10,7 @@
 //   (batteur sans entrée) · Rec · Tuner (ouvert depuis Mine). Les onglets suivent les LIGNES de la personne.
 import { html, render, useState, useEffect, useRef, post, cls, useRigState, keepAwake } from './lib.js';
 import { watchErrors } from './ui-errors.mjs';
-import { startAnimStepper } from './anim-stepper.mjs';
+import { startAnimStepper, setDisplay } from './anim-stepper.mjs';
 import { ICON, hydrateBlockMeta, shortBlockName } from './designer-model.js';
 import { PhoneCaptures } from './capture-module.js';
 import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
@@ -465,6 +465,7 @@ function RecPage({ st, c }) {
 function Companion() {
   useWakeLock();
   const { state: st, wsUp } = useRigState();
+  setDisplay(st && st.display);                     // les animations de l'écran (Settings ▸ System ▸ Display)
   const c = useCompanion(st);
   const qp = new URL(location.href).searchParams;
   const [tab, setTabState] = useState(qp.get('tab') || 'now');

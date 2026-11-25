@@ -344,3 +344,23 @@ def test_l_arret_ne_vise_que_les_moteurs_de_ce_rack(monkeypatch, tmp_path):
     finally:
         for p in procs:
             p.kill()
+
+
+def test_reaper_garde_son_buffer_pour_son_retour(monkeypatch):
+    """Chaque moteur garde son buffer (2026-11-25) : sans « Request block size », REAPER prenait la taille préférée du
+    pilote — celle que le Golem Engine venait de demander. À la bascule, son buffer est demandé explicitement."""
+    import sys
+    from bridge import desktop_audio
+    from bridge.engine.reaper import ReaperEngine
+    monkeypatch.setattr(sys, "platform", "win32")
+    wrote = []
+    monkeypatch.setattr(desktop_audio, "apply_ini", lambda section, updates: wrote.append((section, updates)))
+    monkeypatch.setattr(desktop_audio, "settings", lambda: {"buffer_size": 512, "buffer_size_use": False})
+    ReaperEngine(link=object()).keep_audio({"buffer": 128})
+    assert wrote == [("audioconfig", {"asio_bsize": "128", "asio_bsize_use": "1"})]
+    wrote.clear()
+    monkeypatch.setattr(desktop_audio, "settings", lambda: {"buffer_size": 128, "buffer_size_use": True})
+    ReaperEngine(link=object()).keep_audio({"buffer": 128})
+    assert wrote == [], "déjà demandé explicitement : reaper.ini n'est pas réécrit"
+    ReaperEngine(link=object()).keep_audio({"buffer": None})
+    assert wrote == []

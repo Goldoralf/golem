@@ -26,7 +26,9 @@ the call was missing.
 - `provision/install-golem-engine.sh` compiles `golem-mlock.c` into `~/.local/lib/golem/libgolem-mlock.so` (needs
   `gcc`; without it the install warns and goes on).
 - Both launchers preload it: `bridge/engine/ardour.py` (`mlock_shim`, the engine restart) and
-  `provision/lib-engine.sh`. Its constructor acts in `luasession` only (bash and `run.py` pass through it), calls
+  `provision/lib-engine.sh`; REAPER gets it from `provision/start.sh`, the only Linux path that starts it (the same
+  day REAPER had 128 MB in swap for 113 MB in RAM while Firefox played next to it, and Chill Jazz dropped out
+  at 512). Its constructor acts in `luasession` and `reaper` only (bash, `setsid`, `run.py` pass through it), calls
   `mlockall(MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT)` and removes `LD_PRELOAD` for the engine's children.
 - `MCL_ONFAULT`: a page stays in RAM once touched, but nothing is prefaulted. Without it, `MCL_CURRENT` would load
   the whole mapped space (~1.5 GB) instead of the real footprint (~1 GB).

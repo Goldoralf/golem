@@ -102,6 +102,10 @@ elif [ -x "$REAPER_BIN" ]; then
   # caché, qui fige REAPER : le rappel n'était jamais lu. Même règle que provision/desktop.py (-new).
   SET="$HERE/sets/golem-set.rpp"
   if [ -f "$SET" ]; then REAPER_PROJ=("$SET"); else REAPER_PROJ=(-new); echo "→ pas encore de sets/golem-set.rpp : projet vide"; fi
+  # REAPER ne part jamais en swap (provision/golem-mlock.c, system-tuning.md « Engine memory ») : le même verrou que le
+  # Golem Engine. Rack Linux 2026-11-26 : 128 Mo de REAPER en swap, des décrochages en rafale sur Chill Jazz à 512.
+  MLOCK_SO="$HOME/.local/lib/golem/libgolem-mlock.so"
+  if [ "${GOLEM_ENGINE_MLOCK:-1}" != 0 ] && [ -f "$MLOCK_SO" ]; then export LD_PRELOAD="$MLOCK_SO"; fi
   if [ -n "$REAPER_DISP" ]; then
     DISPLAY="$REAPER_DISP" setsid nohup "$REAPER_BIN" -nosplash "${REAPER_PROJ[@]}" \
       >>"$REAPER_LOG" 2>&1 < /dev/null &
@@ -110,6 +114,7 @@ elif [ -x "$REAPER_BIN" ]; then
     setsid nohup "$REAPER_BIN" -nosplash "${REAPER_PROJ[@]}" >>"$REAPER_LOG" 2>&1 < /dev/null &
     echo "→ Reaper + Set lancés (à l'écran)"
   fi
+  unset LD_PRELOAD
   record_reaper_tree "$HERE"                 # la version des scripts que ce REAPER charge (reload.sh la compare)
 else
   echo "⚠ Reaper introuvable ($REAPER_BIN) — ouvre-le avec sets/golem-set.rpp"

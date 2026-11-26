@@ -95,6 +95,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [drum-sampler-kits.md](drum-sampler-kits.md) | PROPOSED | Sampled drum kits: a neutral capture library (the drum-sampler toolchain) imported as an SFZ or DrumGizmo rack kit; licences; capture from golem later |
 | [drums-library.md](drums-library.md) | CODED | Library ▸ Drums: kits drawn and heard, grooves read (meter, length, tempo, unknown notes) and added to the drum machine |
 | [rack-hardware.md](rack-hardware.md) | PARTLY CODED | The reference x86 rack and real-time OS tuning |
+| [baseline-acer-s7-ubuntu-2026-11.md](baseline-acer-s7-ubuntu-2026-11.md) | FIXED | Measurements of the 2013 Acer Aspire S7 test laptop on stock Ubuntu, to compare an audio distribution against |
 | [rack-classes.md](rack-classes.md) | PARTLY CODED | What a machine declares about what it can play |
 
 ### Platform, install and engine

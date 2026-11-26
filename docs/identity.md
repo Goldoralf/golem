@@ -1,6 +1,6 @@
 # Identity: devices and people
 
-> **Status: PARTLY CODED** — no login on the rack; persons come from the golem.fm roster cached in `config/.band.json` (`bridge/roster.py`), are attributed per input, and carried by paired devices; the personal golem.fm token on phones and signed actions (§5) are PROPOSED.
+> **Status: PARTLY CODED** — no login on the rack; persons come from the golem.fm roster cached in `config/.band.json` (`bridge/roster.py`), are attributed per input, and carried by paired devices; a phone can be signed in with golem.fm through a connect ticket (owner's gestures); the personal golem.fm token on phones and signed actions (§5) are PROPOSED.
 
 Related: [devices-people.md](devices-people.md) (devices, the Companion, conductor),
 [connect.md](connect.md) (joining through golem.fm/connect), [patches.md](patches.md) ("my lines",
@@ -26,7 +26,7 @@ local device invitations / pairing codes (`bridge/auth.py`, [devices-people.md](
 | device | is… | token | status |
 |---|---|---|---|
 | **the rack** | the band's device | one golem.fm device token (`config/integrations.json`, one per server) | coded |
-| **each phone** (Companion) | a person's device | ① a rack device token (QR invitation or golem.fm/connect) · ② a personal golem.fm token, kept on the phone, never shown to the rack | ① coded · ② not built |
+| **each phone** (Companion) | a person's device | ① a rack device token (QR invitation or golem.fm/connect) · ② "signed in with golem.fm": the person vouched by a golem.fm/connect ticket, kept by the rack as `fm_auth` for 30 days ([devices-people.md](devices-people.md) §4 bis) — the phone's golem.fm session stays on golem.fm, never shown to the rack · ③ a personal golem.fm token kept on the phone, for signed actions (§5) | ① coded · ② coded · ③ not built |
 | **the rack's local screen** | nobody | none (loopback is authenticated automatically) | coded |
 
 The rack writes to golem.fm **as the rack**, with attribution as metadata (`person`, `by`…). It never

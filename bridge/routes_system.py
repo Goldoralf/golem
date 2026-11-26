@@ -2094,7 +2094,7 @@ async def auth_device_create(body: dict):
     """Crée une INVITATION taguée (rôle × type) -> son QR l'échange au 1er scan."""
     from . import auth as auth_mod
     r = auth_mod.create_invite(body.get("role"), body.get("kind"), person=body.get("person"),
-                               guest=body.get("guest"), days=body.get("days"))
+                               guest=body.get("guest"), days=body.get("days"), display=body.get("display"))
     if r.get("error"):
         return JSONResponse(r, status_code=400)
     return r
@@ -2129,8 +2129,11 @@ def auth_whoami(request: Request):
     client = request.client.host if request.client else ""
     # `token` (docs/devices-people.md, lot B) : « unknown » = un jeton présenté que le rack ne reconnaît
     # plus — l'app affiche « this device is no longer paired » au lieu de s'ouvrir figée
-    return {"local": auth_mod._is_local(client), "device": auth_mod.device_of(request),
-            "token": auth_mod.token_state(request)}
+    dev = auth_mod.device_of(request)
+    # `rights` (2026-11-26) : ce que cet appareil peut faire — le Companion grise Control, Pair et golem.fm d'après elle
+    raw = auth_mod._device_by_token(auth_mod._presented(request)) if dev else None
+    return {"local": auth_mod._is_local(client), "device": dev, "token": auth_mod.token_state(request),
+            "rights": auth_mod.rights_of(raw) if raw else None}
 
 
 @router.post("/api/auth/devices/{did}/person")
@@ -2261,12 +2264,21 @@ def auth_qr(invite: str = ""):
     # golem.local d'abord (2026-10-03, bridge/reach.py) : le JETON se range sous l'ORIGINE de l'URL — un
     # téléphone appairé sur 192.168.0.22 ne l'était plus sur golem.local, ni sur l'IP du point d'accès. Un
     # seul nom, la maison et la scène, et le raccourci de l'écran d'accueil reste appairé partout.
-    rs = reach_mod.status()
-    host = rs["host"] if rs.get("mdns") else (connect_mod.mdns_host() if addr["ap"] else None)
-    ip = host or addr["primary"]
-    if not ip:
+    # ⚠ 2026-11-26 : un NOM que le téléphone ne résout pas rendait le QR mort (« golem-<machine>.local inaccessible » : un
+    # 2e golem tenait golem.local, celui-ci avait pris golem-<machine>.local, que le téléphone ne trouvait pas). Hors point
+    # d'accès, le QR porte donc l'IP de la route par défaut, toujours joignable sur le réseau, et la page d'arrivée
+    # (connect.html#i=) range ensuite le jeton sous le nom SI le nom répond depuis ce téléphone (le transfert de 60 s
+    # du retour de golem.fm/connect). Sur le point d'accès, le DNS du rack sert le nom : le QR le garde.
+    if addr["ap"]:
+        rs = reach_mod.status()
+        host = rs["host"] if rs.get("mdns") else connect_mod.mdns_host()
+        ip = host or addr["primary"]
+        url = f"http://{ip}:{connect_mod.PORT}/app/?auth={tok}" if ip else None
+    else:
+        ip = addr["primary"]
+        url = f"http://{ip}:{connect_mod.PORT}/app/connect.html#i={tok}" if ip else None
+    if not url:
         return JSONResponse({"error": "no LAN address"}, status_code=404)
-    url = f"http://{ip}:{connect_mod.PORT}/app/?auth={tok}"
     try:
         import qrcode
         import qrcode.image.svg

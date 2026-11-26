@@ -1,19 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Golem Companion — le « site » MOBILE de GoleM (docs/devices-people.md, docs/devices-people.md lot F).
+// Golem Companion — le « site » MOBILE de GoleM (docs/devices-people.md).
 // Compagnon personnel : il lit beaucoup et agit peu. Il bascule les pédales de SES lignes, pose une
-// marque dans la prise ; s'il est CONDUCTOR, il charge, lance et arrête les morceaux. Il ne change jamais
-// de scène ni le son d'un autre : le pédalier tient l'accord du groupe (docs/band-scenes.md).
+// marque dans la prise ; s'il est CONDUCTOR, il charge, lance et arrête les morceaux, et pilote /live
+// (mode Control : scènes et stomps du pédalier — le son de tout le groupe, d'où le droit).
 //
-// Pages, validées sur maquettes le 2026-09-15 (artifact « Pages du Companion ») :
-//   Now (Between songs quand un morceau finit, Ready for the show en mode Show) · Song (conductor ou non)
-//   · Mine (une ligne audio : ses pédales ; une ligne clavier : le son de chaque scène) · Lyrics · Beat
-//   (batteur sans entrée) · Rec · Tuner (ouvert depuis Mine). Les onglets suivent les LIGNES de la personne.
+// LE TOP MENU A DEUX ICÔNES (maquettes validées le 2026-11-26, artifact « Companion · Live et System ») :
+//   Live   — un MODE choisi dans une feuille, comme la page Mode du rack : Now · Control · Mine · Lyrics · Beat · Rec
+//            (Song est fondu dans Control : un seul écran charge un morceau) — mobile-control.js pour Control ;
+//   System — This golem · Pair a device · golem.fm · Account (mobile-system.js).
+// Adresse : ?tab=live&mode=control, ?tab=system&page=golem.fm ; les anciens ?tab=now… y mènent toujours.
 import { html, render, useState, useEffect, useRef, post, cls, useRigState, keepAwake } from './lib.js';
 import { watchErrors } from './ui-errors.mjs';
 import { startAnimStepper, setDisplay } from './anim-stepper.mjs';
 import { ICON, hydrateBlockMeta, shortBlockName } from './designer-model.js';
 import { PhoneCaptures } from './capture-module.js';
 import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
+import { ControlPage } from './mobile-control.js';
+import { SystemPage } from './mobile-system.js';
 
 const api = p => fetch(p).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
 const LANE_TAG = { guitar: 'GTR', bass: 'BASS', voice: 'VOX', keys: 'KEYS', 'keys-pads': 'KEYS', pads: 'PADS', drums: 'DRUM', line: 'LINE' };
@@ -45,7 +48,8 @@ function useCompanion(st) {
   const [catalog, setCatalog] = useState(null);
   const [presets, setPresets] = useState(null);
   const [, setMeta] = useState(0);
-  useEffect(() => { api('/api/auth/whoami').then(setWho).catch(() => setWho({})); ensureMeta().then(() => setMeta(x => x + 1)); }, []);
+  const reloadWho = () => api('/api/auth/whoami').then(setWho).catch(() => setWho({}));
+  useEffect(() => { reloadWho(); ensureMeta().then(() => setMeta(x => x + 1)); }, []);
   useEffect(() => { api('/api/backing/catalog').then(d => setCatalog(d.songs || [])).catch(() => setCatalog([])); }, []);
   const dev = (who && who.device) || {};
   const person = qp.get('person') || dev.person;
@@ -70,7 +74,7 @@ function useCompanion(st) {
   const titleOf = ln => !ln ? '' : (ln.title || ((presets || []).find(p => p.id === ln.preset) || {}).name || ln.preset
     || ((catalog || []).find(x => x.slug === ln.backing) || {}).title || 'New song');
   return {
-    who, dev, person, role, mine, lanes, sl, lines, idx, songOf, presets, titleOf,
+    who, dev, person, role, mine, lanes, sl, lines, idx, songOf, presets, titleOf, reloadWho,
     personName: dev.person_name || (mine && mine.person_name) || qp.get('person') || role || 'Guest',
     conductor: !!(dev.conductor || dev.admin || qp.get('conductor') === '1' || (who && who.local && qp.get('conductor') !== '0' && !qp.get('person') && !qp.get('role'))),
     hasVoice: lanes.some(L => L.role === 'voice'),
@@ -120,16 +124,6 @@ function CountIn({ arr }) {
   if (!arr.counting) return '';
   return html`<div class="c-countin"><span class="c-lbl">Count-in</span><b>${arr.parts && arr.parts[0] ? arr.parts[0].name : ''}</b></div>`;
 }
-// STOP par appui long (0,6 s), comme le switch : un effleurement n'arrête pas un morceau
-function HoldButton({ label, sub, onHold, klass }) {
-  const [p, setP] = useState(false);
-  const t = useRef(null);
-  const down = () => { setP(true); t.current = setTimeout(() => { setP(false); onHold(); }, 600); };
-  const up = () => { setP(false); clearTimeout(t.current); };
-  return html`<button class=${cls('c-hold', klass, p && 'pressing')} onPointerDown=${down} onPointerUp=${up} onPointerLeave=${up} onPointerCancel=${up}>
-    <b>${label}</b><small>${sub}</small></button>`;
-}
-
 // ── 1. NOW (et ses deux variantes qui s'ouvrent seules) ─────────────────────────────────────────
 function NowPage({ st, c }) {
   const arr = st.arrangement || {};
@@ -139,6 +133,7 @@ function NowPage({ st, c }) {
   const nextLines = c.idx >= 0 ? c.lines.slice(c.idx + 1, c.idx + 4) : [];
   const cpu = useCpuMany([st.preset_id, ...nextLines.map(l => l && l.preset)]);
   const [cpuOpen, setCpuOpen] = useState(null);
+  const now = useTick(500);                          // la barre de la partie en cours (ex-mode Song)
   const isShow = (st.mode || {}).id === 'show';
   // READY FOR THE SHOW : mode Show, rien n'a encore joué (on est sur la 1re chanson, ou sur rien)
   if (isShow && c.conductor && !arr.running && !arr.done && c.idx <= 0) return html`<${ReadyForShow} st=${st} c=${c} />`;
@@ -147,7 +142,10 @@ function NowPage({ st, c }) {
   if (upcoming) return html`<${BetweenSongs} st=${st} c=${c} next=${upcoming} loaded=${!arr.done} />`;
   const info = c.songOf(ln);
   const next = nextLines;
+  // LA PARTIE EN COURS (ce que le mode Song montrait au musicien, 2026-11-26 : Song est fondu dans Control)
+  const playing = arr.present && (arr.running || arr.counting);
   return html`<div class="c-page">
+    ${playing ? html`<${CountIn} arr=${arr} />${arr.running && !arr.counting ? html`<${PartNow} arr=${arr} now=${now} /><${NextPart} arr=${arr} now=${now} />` : ''}` : ''}
     ${cpuOpen ? html`<${StageCpuSheet} preset=${cpuOpen.preset} title=${'CPU · ' + (cpuOpen.title || '')} onClose=${() => setCpuOpen(null)} />` : ''}
     <div class="c-card"><span class="c-lbl">Now${c.idx >= 0 ? ' · ' + (c.idx + 1) + ' / ' + c.lines.length : ''}${c.sl ? ' · ' + c.sl.name : ''}</span>
       <div class="c-big">${(ln && ln.title) || st.preset_name || 'No song'}</div>${info.artist ? html`<div class="c-sub">${info.artist}</div>` : ''}
@@ -230,67 +228,6 @@ function ReadyForShow({ st, c }) {
     ${err ? html`<p class="c-err">${err}</p>` : ''}
     <button class="c-start" disabled=${!first || st.rig_loading} onClick=${start}><b>▶ Start the show</b>
       <small>SONG 1 · ${first ? c.titleOf(first).toUpperCase() : '—'}</small></button>
-  </div>`;
-}
-
-// ── 2. SONG ───────────────────────────────────────────────────────────────────────────────────
-function SongPage({ st, c }) {
-  const now = useTick(250);
-  const arr = st.arrangement || {};
-  const [err, setErr] = useState('');
-  const [recWith, setRecWith] = useState(false);
-  const [confirmSlot, setConfirmSlot] = useState(null);
-  const isShow = (st.mode || {}).id === 'show';
-  const act = async fn => { setErr(''); try { await fn(); } catch (e) {
-    if (e.body && e.body.confirm) { return 'confirm'; }
-    setErr((e.body && e.body.error) || String(e.message || e)); } };
-  const ln = c.lines[c.idx] || null;
-  const running = arr.running || arr.counting;
-  const laneIds = c.lanes.map(L => L.id);
-
-  if (c.conductor && !running) {
-    // ── 2a : le conductor, entre deux morceaux ──
-    const loadSlot = async i => { const r = await act(() => post('/api/recall', { slot: i, ...(confirmSlot === i ? { confirm: true } : {}) }));
-      if (r === 'confirm') setConfirmSlot(i); else setConfirmSlot(null); };
-    const from = Math.max(0, c.idx - 1);
-    const shown = c.lines.slice(from, from + 5);
-    const ready = ln && ln.preset && !st.rig_loading;
-    return html`<div class="c-page">
-      <div class="c-card slim"><span class="c-lbl">${(st.mode || {}).name || 'Rack'} · ${c.sl ? c.sl.name : 'no setlist'}${c.idx >= 0 ? ' · ' + (c.idx + 1) + ' / ' + c.lines.length : ''}</span></div>
-      <div class="c-list">${shown.map((l, k) => { const i = from + k, isCur = i === c.idx;
-        return html`<div class=${cls('c-row', i < c.idx && 'dim', isCur && 'cur')}><span class="n">${String(i + 1).padStart(2, '0')}</span>${c.titleOf(l)}
-          ${!l.preset ? html`<small>no rig yet</small>`
-            : isCur ? html`<span class=${cls('c-load', 'ok')}>${st.rig_loading ? 'loading…' : 'loaded'}</span>`
-            : html`<button class=${cls('c-load', confirmSlot === i && 'confirm')} onClick=${() => loadSlot(i)}>${confirmSlot === i ? 'Stop & load' : 'Load'}</button>`}</div>`; })}</div>
-      <button class="c-start" disabled=${!ready || arr.allowed === false} onClick=${() => act(() => post('/api/arrangement', { op: 'start', rec: recWith && !isShow }))}>
-        <b>▶ Start ${ln ? c.titleOf(ln) : ''}</b>
-        <small>${st.rig_loading ? 'THE RIG IS LOADING…' : arr.allowed === false ? 'THE ARRANGEMENT IS OFF IN THIS MODE' : !arr.present ? 'NO ARRANGEMENT ON THIS SONG' : [ (arr.parts || []).length + ' PARTS', Math.round(st.tempo || 0) + ' BPM'].join(' · ')}</small></button>
-      ${isShow ? html`<p class="c-sub pad">Recording follows the show: it starts with song 1.</p>`
-        : html`<button class="c-opt" onClick=${() => setRecWith(!recWith)}><i class=${recWith ? 'on' : ''}></i>Record with the song<small>rehearsal</small></button>`}
-      ${err ? html`<p class="c-err">${err}</p>` : ''}
-      <div class="c-card"><span class="c-lbl">The band sees</span><div class="c-sub">“${ln ? c.titleOf(ln) : 'Nothing'} ${st.rig_loading ? 'loading' : 'loaded'} — waiting for ${c.personName}”.</div></div>
-    </div>`;
-  }
-  if (!arr.present) return html`<div class="c-page"><div class="c-card"><span class="c-lbl">Song</span>
-    <div class="c-big">${(ln && ln.title) || st.preset_name || 'No song'}</div>
-    <p class="c-sub">This song has no arrangement — parts are set on the setlist line.</p></div></div>`;
-  // index de la partie suivante et sa scène, pour « You in the chorus »
-  const parts = arr.parts || [];
-  const nScene = partScene(parts, (arr.index || 0) + 1);
-  return html`<div class="c-page">
-    ${!c.conductor && arr.by ? html`<div class="c-who">🎼 <span><b>${arr.by}</b> ${running ? 'started the song' : 'runs the songs'}</span></div>` : ''}
-    ${c.conductor ? html`<div class="c-card slim row"><b>${(ln && ln.title) || st.preset_name}</b><span class="c-sub">${Math.round(st.tempo || 0)} BPM</span>
-      ${st.perf && st.perf.recording ? html`<span class="c-lbl recl">● REC</span>` : ''}</div>` : ''}
-    <${CountIn} arr=${arr} />
-    ${running && !arr.counting ? html`<${PartNow} arr=${arr} now=${now} /><${NextPart} arr=${arr} now=${now} />` : ''}
-    ${!running ? html`<div class="c-card"><span class="c-lbl">${arr.done ? 'Song over' : 'Not started'}</span><div class="c-big">${(ln && ln.title) || st.preset_name}</div></div>` : ''}
-    <${Rail} arr=${arr} />
-    ${c.conductor ? html`<div class="c-ctl">
-        ${arr.mode === 'foot' ? html`<button class="c-btn" onClick=${() => act(() => post('/api/arrangement', { op: 'next' }))}><b>⏭ Next part</b><small>one tap</small></button>`
-          : html`<button class="c-btn" disabled title="the rack follows the bars"><b>↻ Parts follow the bars</b><small>start · stop with the foot</small></button>`}
-        <${HoldButton} klass="stop" label="■ Hold to stop" sub="0.6 s" onHold=${() => act(() => post('/api/arrangement', { op: 'stop' }))} /></div>`
-      : laneIds.length && arr.next && nScene ? html`<div class="c-card"><span class="c-lbl">You in the ${arr.next}</span><${Acc} rows=${myRowsIn(c.current, nScene, laneIds)} /></div>` : ''}
-    ${err ? html`<p class="c-err">${err}</p>` : ''}
   </div>`;
 }
 
@@ -461,57 +398,152 @@ function RecPage({ st, c }) {
   </div>`;
 }
 
-// ── le shell : en-tête, page, onglets ─────────────────────────────────────────────────────────
+// ── le shell : en-tête à deux icônes, le mode de Live, la page ──────────────────────────────────
+const MODES = [
+  ['now', 'Now', '≡', 'The song, your lines, what comes next.'],
+  ['control', 'Control', '◫', 'Pick a setlist or a bank, then scenes and stomps. Drives the whole band.'],
+  ['mine', 'Mine', '◉', 'Your pedals and your scene level, tuner.'],
+  ['lyrics', 'Lyrics', '¶', "Follows the song's parts."],
+  ['beat', 'Beat', '♩', 'The tempo and the parts, for a drummer without an input.'],
+  ['rec', 'Rec', '⏺', 'Mark a moment in the take.'],
+];
+// les anciennes adresses (?tab=now, ?tab=song…) : la coquille `golem phone` et les écrans d'accueil les gardent
+const LEGACY_TAB = { now: 'now', song: 'control', control: 'control', mine: 'mine', lyrics: 'lyrics', beat: 'beat', rec: 'rec', stage: 'mine' };
+const MODE_KEY = 'golem.phone.mode';
+const IcoLive = () => html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16M5 6h11l-2 4 2 4H5"/></svg>`;
+const IcoSys = () => html`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>`;
+
+// LA VUE HORIZONTALE DU MODE CONTROL (2026-11-26) : le téléphone couché montre la VRAIE page /live du rack (?embed=live :
+// sans top menu, sans liens Designer/Songs/Library ni outils), cadrée et mise à l'échelle — mêmes cases, mêmes animations,
+// mêmes flèches de bank. Hauteur logique 552 px (l'écran 1024×600 moins sa barre) ; la largeur suit le téléphone.
+// Sans le droit conductor, un voile prend les touches : on regarde, on ne pilote pas (le rack refuse de toute façon).
+const LIVE_H = 552;
+function useLandscape() {
+  const q = '(orientation: landscape) and (max-height: 600px)';
+  const [on, setOn] = useState(() => { try { return matchMedia(q).matches; } catch (_) { return false; } });
+  useEffect(() => { let m; try { m = matchMedia(q); } catch (_) { return; }
+    const f = () => setOn(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f); }, []);
+  return on;
+}
+function LiveLandscape({ canDrive }) {
+  const [box, setBox] = useState({ w: innerWidth, h: innerHeight });
+  useEffect(() => { const f = () => setBox({ w: innerWidth, h: innerHeight }); addEventListener('resize', f); return () => removeEventListener('resize', f); }, []);
+  const k = box.h / LIVE_H, w = Math.round(box.w / k);
+  return html`<div class="m-land">
+    <iframe class="m-land-f" src="/app/?desktop=1&embed=live#/live" title="Live" style=${`width:${w}px;height:${LIVE_H}px;transform:scale(${k})`}></iframe>
+    ${canDrive ? '' : html`<div class="m-land-veil"><span>🔒 View only: the conductor drives</span></div>`}
+  </div>`;
+}
+
 function Companion() {
   useWakeLock();
   const { state: st, wsUp } = useRigState();
   setDisplay(st && st.display);                     // les animations de l'écran (Settings ▸ System ▸ Display)
   const c = useCompanion(st);
   const qp = new URL(location.href).searchParams;
-  const [tab, setTabState] = useState(qp.get('tab') || 'now');
-  // l'onglet vit aussi dans l'URL : un rechargement (la coquille `golem phone`, un téléphone qui a
-  // dormi) revient sur la même page ; la coquille en est prévenue pour son propre ↻
-  const setTab = id => {
-    setTabState(id);
-    try {
-      const u = new URL(location.href); u.searchParams.set('tab', id); history.replaceState(null, '', u);
-      if (parent !== window) parent.postMessage({ type: 'golem-tab', tab: id }, location.origin);
-    } catch (_) { /* aperçu hors origine : l'onglet reste en mémoire */ }
-  };
+  const t0 = qp.get('tab');
+  const [tab, setTabState] = useState(t0 === 'system' ? 'system' : 'live');
+  const [mode, setModeState] = useState(() => {
+    const m = qp.get('mode') || LEGACY_TAB[t0];
+    if (m) return m;
+    try { return localStorage.getItem(MODE_KEY) || 'now'; } catch (_) { return 'now'; }
+  });
+  const [page, setPageState] = useState(t0 === 'system' ? qp.get('page') : null);
+  const [sheet, setSheet] = useState(false);
   const [tuner, setTuner] = useState(false);
+  // l'adresse suit l'écran : un rechargement (la coquille `golem phone`, un téléphone qui a dormi) revient au même
+  // endroit ; la coquille en est prévenue pour son propre ↻
+  const syncUrl = (t, m, pg) => {
+    try {
+      const u = new URL(location.href);
+      u.searchParams.set('tab', t);
+      if (t === 'live') { u.searchParams.set('mode', m); u.searchParams.delete('page'); }
+      else { u.searchParams.delete('mode'); if (pg) u.searchParams.set('page', pg); else u.searchParams.delete('page'); }
+      history.replaceState(null, '', u);
+      if (parent !== window) parent.postMessage({ type: 'golem-tab', tab: t === 'live' ? m : 'system' }, location.origin);
+    } catch (_) { /* aperçu hors origine : l'écran reste en mémoire */ }
+  };
+  const setTab = t => { setTabState(t); setTuner(false); syncUrl(t, mode, page); };
+  const setMode = m => { setModeState(m); setSheet(false); setTuner(false); syncUrl('live', m, null);
+    try { localStorage.setItem(MODE_KEY, m); } catch (_) { /* navigation privée */ } };
+  const setPage = pg => { setPageState(pg); syncUrl('system', mode, pg); };
   // un appareil Drums a désormais SA lane (docs/drums-kit.md lot 0) : « pas de ligne » se lit dans les lanes, plus dans le rôle
   const noLines = !c.lanes.length && (c.mine && !c.person && !c.mine.lanes.length);
-  const tabs = [['now', 'Now', '≡'], ['song', 'Song', '▤'],
-    ...(c.lanes.length ? [['mine', 'Mine', '◉']] : []),
-    ...(c.hasVoice ? [['lyrics', 'Lyrics', '¶']] : []),
-    ...(noLines ? [['beat', 'Beat', '♩']] : []),
-    ['rec', 'Rec', '⏺']].slice(0, 5);
-  const cur = tabs.some(t => t[0] === tab) ? tab : (tab === 'stage' ? (c.lanes.length ? 'mine' : 'song') : 'now');
+  const local = !!(c.who && c.who.local);
+  const rights = local ? { control: true } : ((c.who && c.who.rights) || {});
+  const avail = MODES.filter(([id]) => id === 'mine' ? c.lanes.length : id === 'lyrics' ? c.hasVoice : id === 'beat' ? noLines : true);
+  const cur = avail.some(m => m[0] === mode) ? mode : (mode === 'mine' && !c.lanes.length ? 'control' : 'now');
+  const curM = MODES.find(m => m[0] === cur);
+  const signIn = () => { setTab('system'); setPage('account'); };
+  const land = useLandscape();
+  if (land && tab === 'live' && cur === 'control' && !tuner) return html`<${LiveLandscape} canDrive=${!!rights.control} />`;
   return html`
     <header class="m-head">
       <span class="m-mark" aria-label="golem"><span class="s">/</span><span class="g">golem</span><span class="cur">_</span></span>
-      ${c.conductor && !(c.who && c.who.local && !qp.get('conductor')) ? html`<span class="c-condtag">CONDUCTOR</span>` : ''}
       <span class="m-role">${c.personName}</span>
+      <nav class="m-nav2">
+        <button class=${cls('m-ni', tab === 'live' && 'on')} aria-label="Live" onClick=${() => setTab('live')}><${IcoLive} /></button>
+        <button class=${cls('m-ni', tab === 'system' && 'on')} aria-label="System" onClick=${() => { setTab('system'); if (tab === 'system') setPage(null); }}><${IcoSys} /></button>
+      </nav>
       <span class=${cls('m-ws', wsUp && 'up')} title=${wsUp ? 'live' : 'reconnecting…'}></span>
     </header>
+    ${tab === 'live' ? html`<div class="m-sub">
+      <button class="m-mode" onClick=${() => setSheet(true)}><i>${curM[2]}</i>${curM[1]}<small>▾</small></button>
+      ${c.conductor && !(local && !qp.get('conductor')) ? html`<span class="c-condtag">CONDUCTOR</span>` : ''}
+    </div>` : ''}
     <main class="m-main">
-      ${tuner ? html`<${TunerSheet} st=${st} c=${c} onClose=${() => setTuner(false)} />`
+      ${tab === 'system' ? html`<${SystemPage} st=${st} who=${c.who} local=${local} page=${page} setPage=${setPage} reloadWho=${c.reloadWho} />`
+      : tuner ? html`<${TunerSheet} st=${st} c=${c} onClose=${() => setTuner(false)} />`
       : cur === 'now' ? html`<${NowPage} st=${st} c=${c} />`
-      : cur === 'song' ? html`<${SongPage} st=${st} c=${c} />`
+      : cur === 'control' ? html`<${ControlPage} st=${st} c=${c} rights=${rights} onTuner=${() => setTuner(true)} onSignIn=${local ? null : signIn} />`
       : cur === 'mine' ? html`<${MinePage} st=${st} c=${c} onTuner=${() => setTuner(true)} />`
       : cur === 'lyrics' ? html`<${LyricsPage} st=${st} c=${c} />`
       : cur === 'beat' ? html`<${BeatPage} st=${st} c=${c} />`
       : html`<${RecPage} st=${st} c=${c} />`}
     </main>
-    <nav class="m-nav">
-      ${tabs.map(([id, label, ico]) => html`
-        <button class=${cls('m-tab', cur === id && !tuner && 'on')} onClick=${() => { setTuner(false); setTab(id); }}>
-          <span class="m-tab-ico">${ico}</span>${label}</button>`)}
-    </nav>`;
+    ${sheet ? html`<div class="m-scrim" onClick=${() => setSheet(false)}></div>
+      <div class="m-sheet" role="dialog" aria-label="Live mode">
+        <span class="m-grab"></span><span class="c-lbl pad">Live mode on this phone</span>
+        ${avail.map(([id, label, ico, sub]) => { const lk = id === 'control' && !rights.control;
+          return html`<button class=${cls('m-mo', id === cur && 'on', lk && 'lk')} onClick=${() => setMode(id)}>
+            <span class="ic">${ico}</span><div><b>${label}${lk ? ' 🔒' : ''}</b><small>${lk ? 'View only on this phone: the conductor drives.' : sub}</small></div>
+            ${id === cur ? html`<span class="dot"></span>` : ''}</button>`; })}
+      </div>` : ''}`;
+}
+
+// L'AFFICHAGE TABLETTE D'UN TÉLÉPHONE (docs/devices-people.md §4 ter, 2026-11-26) : des musiciens n'ont qu'un téléphone et
+// veulent l'app complète. Couché, elle s'ouvre dans un cadre de 1024×600 mis à l'échelle (petit, mais permis) ; debout,
+// on demande de le tourner. Les droits restent ceux d'un téléphone (le rack les décide par le type d'appareil). LA SORTIE
+// est toujours à l'écran : la pastille 📱 ramène au Companion (règle du projet : jamais de mode sans sortie testée).
+const APP_W = 1024, APP_H = 600;
+function TabletDisplay() {
+  const [box, setBox] = useState({ w: innerWidth, h: innerHeight });
+  useEffect(() => { const f = () => setBox({ w: innerWidth, h: innerHeight }); addEventListener('resize', f); return () => removeEventListener('resize', f); }, []);
+  const [busy, setBusy] = useState(false);
+  const back = async () => { setBusy(true); try { await post('/api/auth/display', { display: 'phone' }); } catch (_) { /* la pastille reste */ }
+    location.replace('/app/m.html'); };
+  const land = box.w > box.h;
+  const k = Math.min(box.w / APP_W, box.h / APP_H);
+  return html`<div class="m-tab-host">
+    ${land ? html`<iframe class="m-land-f" src="/app/?desktop=1#/live" title="golem"
+        style=${`width:${APP_W}px;height:${APP_H}px;left:${Math.round((box.w - APP_W * k) / 2)}px;top:${Math.round((box.h - APP_H * k) / 2)}px;transform:scale(${k})`}></iframe>
+      <button class="m-tab-back" disabled=${busy} onClick=${back} title="Back to the phone display" aria-label="Back to the phone display">📱</button>`
+    : html`<div class="m-turn"><div class="m-turn-ico">⟳</div><b>Turn your phone sideways</b>
+        <span>This phone shows the tablet display: the full golem app, made smaller.</span>
+        <button class="c-btn wide" disabled=${busy} onClick=${back}><b>Back to the phone display</b><small>the Companion</small></button></div>`}
+  </div>`;
+}
+
+function Root() {
+  const [who, setWho] = useState(null);
+  useEffect(() => { api('/api/auth/whoami').then(setWho).catch(() => setWho({})); }, []);
+  if (!who) return '';
+  if (!who.local && who.device && who.device.display === 'tablet') return html`<${TabletDisplay} />`;
+  return html`<${Companion} />`;
 }
 
 export function mountCompanion(el) {
   watchErrors('companion');                  // docs/diagnostics.md §7.2
   startAnimStepper();                        // les animations infinies au pas (le téléphone aussi : sa batterie)
-  render(html`<${Companion} />`, el);
+  render(html`<${Root} />`, el);
 }

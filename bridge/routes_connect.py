@@ -28,9 +28,16 @@ async def _body(request):
 async def auth_connect(request: Request):
     """Ticket golem.fm ⇒ appareil de la personne. Le rachat est un appel réseau : hors de la boucle."""
     body = await _body(request)
+    # un téléphone déjà appairé qui revient de golem.fm/connect (« Sign in with golem.fm ») présente son jeton :
+    # c'est cet appareil qu'on met à niveau (docs/devices-people.md §5)
+    # …ou, revenu sous une autre origine (golem.fm renvoie vers l'IP), celui qui est parti de cette IP (auth.start_signin)
+    ip = request.client.host if request.client else ""
+    dev = auth_mod.device_of(request)
+    did = (dev or {}).get("id") or auth_mod.pending_signin(ip)
     st, out = await asyncio.get_running_loop().run_in_executor(
-        None, lambda: connect.redeem(body.get("ticket"), ua=request.headers.get("user-agent", ""),
-                                     ip=request.client.host if request.client else ""))
+        None, lambda: connect.redeem(body.get("ticket"), ua=request.headers.get("user-agent", ""), ip=ip, device_id=did))
+    if st == 200 and did and out.get("kind") == "Phone":
+        out["open"] = "/app/m.html?tab=system&page=account"     # retour sur la page du compte, connecté
     return out if st == 200 else JSONResponse(out, status_code=st)
 
 
@@ -51,6 +58,44 @@ async def auth_handoff_claim(request: Request):
     if not got:
         return JSONResponse({"error": "This link has expired. Open golem.fm/connect again."}, status_code=410)
     return got
+
+
+@router.post("/api/auth/signin")
+def auth_signin(request: Request):
+    """« Sign in with golem.fm » : retient l'appareil qui part (auth.start_signin) et rend l'adresse de golem.fm/connect.
+    Le rack doit être appairé à golem.fm : c'est lui qui rachètera le ticket au retour."""
+    from . import golemfm
+    dev = auth_mod.device_of(request)
+    if dev is None:
+        return JSONResponse({"error": "no device token"}, status_code=400)
+    base, token = golemfm._cfg()
+    if not base or not token:
+        return JSONResponse({"error": "This golem is not paired with golem.fm yet. Pair it first (System ▸ golem.fm)."},
+                            status_code=409)
+    auth_mod.start_signin(dev["id"], request.client.host if request.client else "")
+    return {"url": base.rstrip("/") + "/connect/"}
+
+
+@router.post("/api/auth/display")
+async def auth_display(request: Request):
+    """L'appareil qui parle choisit SON affichage (`phone` | `tablet`) — un choix d'écran, pas un droit."""
+    dev = auth_mod.device_of(request)
+    if dev is None:
+        return JSONResponse({"error": "no device token"}, status_code=400)
+    body = await _body(request)
+    if not auth_mod.set_display(dev["id"], body.get("display")):
+        return JSONResponse({"error": "display must be phone or tablet"}, status_code=400)
+    return {"ok": True, "display": body.get("display")}
+
+
+@router.post("/api/auth/signout")
+def auth_signout(request: Request):
+    """Se déconnecter de golem.fm sur CET appareil (docs/devices-people.md §5) : il reste appairé."""
+    dev = auth_mod.device_of(request)
+    if dev is None:
+        return JSONResponse({"error": "no device token"}, status_code=400)
+    auth_mod.sign_out(dev["id"])
+    return {"ok": True}
 
 
 @router.get("/api/connect/where")

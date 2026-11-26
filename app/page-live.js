@@ -572,7 +572,8 @@ function PedalboardLive({ rig, presets }) {
     let alive = true;
     const load = () => fetch('/api/perf').then(r => r.json()).then(d => alive && setPerf(d)).catch(() => {});
     load();
-    if (perfAuto) fetch('/api/perf').then(r => r.json()).then(d => { if (alive && !d.recording) post('/api/perf/start'); }).catch(() => {});
+    // intégré dans le Companion (?embed=live) : le REC automatique reste au rack, un téléphone ne lance pas la prise
+    if (perfAuto && new URLSearchParams(location.search).get('embed') !== 'live') fetch('/api/perf').then(r => r.json()).then(d => { if (alive && !d.recording) post('/api/perf/start'); }).catch(() => {});
     const t = setInterval(load, 3000);
     return () => { alive = false; clearInterval(t); };
   }, [perfOn, perfAuto]);

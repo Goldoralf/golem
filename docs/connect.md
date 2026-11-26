@@ -18,6 +18,11 @@ paired. Nobody types an IP on a gig night.
 
 The invitation QR uses the address of the **default route** (`connect.lan_ip` → `addresses()`), never a
 virtual bridge (`_VIRTUAL`: docker, libvirt, VPN… are skipped); the access point address comes last.
+Since 2026-11-26 the QR carries that **IP**, not the rack's name: a name the phone does not resolve made the QR
+dead (a second golem on the network held `golem.local`, this one took `golem-<machine>.local`, the phone found
+neither). It opens `/app/connect.html#i=<invitation>`, which claims it, then hands the token over to the rack's
+name (§3, 60 s code) only if that name answers from the phone; otherwise it stays on the IP. With the access
+point up, the QR keeps the name, which the rack's own DNS serves (§4).
 
 ## 2. Device types
 
@@ -34,6 +39,14 @@ the rack creates the device with it (`auth.connect_device`):
 **"Use as the rack screen"** is offered only to the **rack's owner**, for a tablet: the device becomes
 "Rack screen", with no person and admin rights — like the pairing code. A band member never gets admin
 this way.
+
+
+**A phone stays a `Phone`** (2026-11-26). A phone that picked "Tablet" became a real Tablet device and skipped the
+phone's conductor guard. golem.fm/connect now offers a phone (phone User-Agent, or a touch screen whose smallest
+side is under 600 px; an iPad stays a tablet) "Phone display" / "Tablet display (sideways)" instead of the three
+kinds: the ticket says `kind: "Phone"` and `display`. The ticket route refuses with 422 a phone User-Agent asking
+for `Tablet` or `Computer`, and a `display` on anything but a `Phone`. The tablet display keeps the phone's rights
+([`devices-people.md`](devices-people.md) §4 ter).
 
 ## 3. Online path (home, rehearsal room)
 
@@ -129,11 +142,14 @@ Request `{"ticket": "…"}`.
 
 | Code | Body | Meaning |
 |---|---|---|
-| 200 | `{"person": {"id": "<handle>", "name": "…", "roles": ["guitar","voice"]}, "band": "b_…", "kind": "Phone", "screen": false, "client": "<sha256>"}` | valid ticket, consumed |
+| 200 | `{"person": {"id": "<handle>", "name": "…", "roles": ["guitar","voice"], "rights": "owner"}, "band": "b_…", "kind": "Phone", "display": "tablet", "screen": false, "client": "<sha256>"}` | valid ticket, consumed |
 | 404 | `{"detail": "unknown ticket"}` | unknown, or issued for another rack |
 | 410 | `{"detail": "ticket expired"}` / `"ticket already used"` | too late or replayed |
 
-`person.id` is the global handle (the same as in `GET /api/ext/band`). `kind` is exactly `Phone`, `Tablet`
+`display` (`"phone"` | `"tablet"` | `null`, 2026-11-26) sets a phone's display ([`devices-people.md`](devices-people.md)
+§4 ter); `null` (old tickets, Tablet, Computer) leaves it as it is (a new phone gets `phone`). `person.id` is the global handle (the same as in `GET /api/ext/band`). `person.rights` (2026-11-26) is the
+person's right in the ticket's band, `owner` | `admin` | `member`; for a personal space or no space, `owner`
+when the person paired the rack. The rack keeps it as the device's `fm_auth` ([`devices-people.md`](devices-people.md) §4 bis). `kind` is exactly `Phone`, `Tablet`
 or `Computer`. `screen: true` only for the owner's "Use as the rack screen"; `person` is then `null`.
 
 The rack turns every outcome into an English message for the phone (`connect.redeem`): not paired → 409
@@ -146,7 +162,8 @@ The ticket URL golem.fm redirects to is the presence's first IP URL + `/app/conn
 
 | Route | Open to | Role |
 |---|---|---|
-| `POST /api/auth/connect {ticket}` | anyone (Origin checked) | redeems the ticket, creates or finds the device → `{token, name, kind, screen, open, local_url}` |
+| `POST /api/auth/connect {ticket}` | anyone (Origin checked) | redeems the ticket, creates or finds the device → `{token, name, kind, screen, open, local_url}`. A device that presents its token, or that started a sign-in from the same IP within 5 minutes, is **upgraded** instead (Sign in with golem.fm) |
+| `POST /api/auth/signin` · `POST /api/auth/signout` | a device | remember this device for the return from golem.fm/connect and get its address · drop the golem.fm sign-in ([`devices-people.md`](devices-people.md) §4 bis) |
 | `POST /api/auth/handoff` | a device (token) | single-use code, 60 s, in memory, to set the same token under another origin |
 | `POST /api/auth/handoff/claim {code}` | anyone (Origin checked) | → `{token, open}`; 410 when expired |
 | `GET /api/connect/where` | local or device | what the presence announces (without `rack_id`, `session`), plus `enabled` and the last push status |

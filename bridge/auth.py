@@ -269,7 +269,10 @@ def _slug(s):
     return re.sub(r"[^a-z0-9]+", "-", str(s or "").lower()).strip("-")[:24] or "guest"
 
 
-def create_invite(role, kind, person=None, guest=None, days=None):
+DISPLAYS = ("phone", "tablet")
+
+
+def create_invite(role, kind, person=None, guest=None, days=None, display=None):
     """Invitation TAGUÉE : QUI × QUOI. Depuis le 2026-09-15 (docs/devices-people.md, lot A), le « qui »
     est une PERSONNE du groupe (`person` = id du roster) ou un INVITÉ d'un soir (`guest` = son prénom,
     appareil qui expire en 24 h) ; le rôle ne sert plus qu'à une personne SANS entrée (batterie sans pad,
@@ -291,6 +294,8 @@ def create_invite(role, kind, person=None, guest=None, days=None):
         inv.update(person=str(person), person_name=ppl.get(person) or str(person))
     elif not role:
         inv["role"] = role = "Guitar"
+    if display in DISPLAYS:
+        inv["display"] = display      # l'AFFICHAGE d'un téléphone (2026-11-26) : Companion, ou l'app tablette couchée
     inv["name"] = f"{inv.get('person_name') or role}"          # « · Phone » s'ajoute au scan (kind_from_ua)
     db["invites"].append(inv)
     _save()
@@ -404,7 +409,7 @@ def claim(invite_tok, ua="", ip=""):
             dev = {"id": i["id"], "name": name, "role": i.get("role"), "kind": kind,
                    "model": _model_from_ua(ua), "mac": _mac_of(ip), "ip": ip,
                    "token": secrets.token_urlsafe(32), "created": _now(), "last_seen": _now()}
-            for k in ("person", "person_name"):
+            for k in ("person", "person_name", "display"):
                 if i.get(k):
                     dev[k] = i[k]
             if i.get("guest"):
@@ -533,7 +538,125 @@ def claim_pair(code, ua="", ip=""):
 # Charger un morceau reconstruit le rig pendant quelques secondes : cinq téléphones capables de le faire,
 # c'est un doigt qui coupe le son du groupe. Un TÉLÉPHONE ne charge, ne lance, n'arrête un morceau ou la
 # prise que s'il est CONDUCTOR (ou admin). Les écrans (tablette, ordinateur) gardent ce qu'ils avaient.
-CONDUCTOR_PATHS = ("/api/recall", "/api/arrangement", "/api/perf/start", "/api/perf/stop", "/api/backing")
+CONDUCTOR_PATHS = ("/api/recall", "/api/arrangement", "/api/perf/start", "/api/perf/stop", "/api/backing",
+                   # LE MODE CONTROL DU COMPANION (docs/devices-people.md §4, 2026-11-26) : les cinq stomps du pédalier
+                   # changent le son de tout le groupe, comme une scène. /api/stomp était ouvert à tout téléphone appairé.
+                   "/api/stomp")
+
+
+def _conductor_path(path):
+    """Les gestes qui changent le son ou le morceau du groupe : CONDUCTOR_PATHS, la backing, et la liste au pied
+    (`/api/setlists/<id>/activate` : changer de setlist ou de bank, c'est changer ce que le pied joue)."""
+    if path in ("/api/backing/meta",) or path.startswith("/api/backing/meta/"):
+        return False
+    return (path in CONDUCTOR_PATHS or path.startswith("/api/backing/")
+            or (path.startswith("/api/setlists/") and path.endswith("/activate")))
+
+
+# ── CONNECTÉ AVEC GOLEM.FM (docs/devices-people.md §5, 2026-11-26) ──────────────────────────────
+# Un appareil arrivé par un ticket de golem.fm/connect a été AUTHENTIFIÉ par golem.fm : la personne n'est pas
+# une sélection faite sur l'écran du rack (docs/identity.md §1.3), golem.fm s'en porte garant. Si cette personne
+# est owner ou admin de l'espace du rack, le téléphone peut faire les gestes d'owner : appairer un téléphone ou
+# une tablette, appairer le rack à golem.fm. La preuve vieillit (FM_AUTH_TTL) : on se reconnecte, ou on se déconnecte.
+FM_AUTH_TTL = 30 * 86400
+OWNER_PATHS = ("/api/auth/devices", "/api/auth/qr", "/api/golemfm/pair", "/api/golemfm/pair/status")
+
+
+def _fm_rights(dev):
+    """Le rôle de la personne connectée dans l'espace du rack : celui du ticket, sinon celui du roster."""
+    fa = dev.get("fm_auth") or {}
+    if fa.get("rights") in ("owner", "admin", "member"):
+        return fa["rights"]
+    try:
+        from . import roster
+        return roster.person(dev.get("person")).get("rights") or "member"
+    except Exception:
+        return "member"
+
+
+def fm_signed_in(dev):
+    fa = (dev or {}).get("fm_auth") or {}
+    return bool(fa.get("at") and fa.get("person") and fa["person"] == dev.get("person")
+                and _now() - fa["at"] < FM_AUTH_TTL)
+
+
+def owner_ok(dev):
+    """Les gestes d'owner : un appareil admin, ou connecté avec golem.fm par un owner/admin de l'espace."""
+    if not dev:
+        return False
+    return bool(dev.get("admin")) or (fm_signed_in(dev) and _fm_rights(dev) in ("owner", "admin"))
+
+
+def _golemfm_paired():
+    try:
+        from . import golemfm
+        return bool(golemfm._cfg()[1])
+    except Exception:
+        return False
+
+
+def rights_of(dev):
+    """Ce que CET appareil peut faire, dit une fois ici pour que le Companion n'en recopie pas les règles."""
+    if not dev:
+        return {}
+    phone = dev.get("kind") == "Phone"
+    fa = dev.get("fm_auth") or {}
+    signed = fm_signed_in(dev)
+    return {"control": (not phone) or bool(dev.get("conductor") or dev.get("admin")),
+            "pair_devices": owner_ok(dev),
+            "pair_golemfm": owner_ok(dev) or (not _golemfm_paired() and bool(dev.get("conductor"))),
+            "signed_in": signed,
+            "signed_until": (fa["at"] + FM_AUTH_TTL) if signed else None,
+            "band_role": _fm_rights(dev) if signed else None}
+
+
+# LE RETOUR DE GOLEM.FM/CONNECT (2026-11-26) : golem.fm renvoie toujours vers la première URL de la présence (l'IP,
+# docs/connect.md §5.2), alors que le téléphone a souvent son jeton sous le NOM du rack (golem.local) — le stockage
+# d'une origine ne se lit pas depuis l'autre, et le rachat créait un doublon. Avant de partir, le téléphone dit
+# « c'est moi qui pars me connecter » : le rack retient son appareil sous son adresse IP, 5 minutes, en mémoire.
+SIGNIN_TTL = 300
+_signins = {}                                    # ip -> (id d'appareil, échéance)
+
+
+def start_signin(device_id, ip):
+    now = _now()
+    for k in [k for k, (_, exp) in _signins.items() if exp <= now]:
+        _signins.pop(k, None)
+    if ip:
+        _signins[ip] = (device_id, now + SIGNIN_TTL)
+
+
+def pending_signin(ip):
+    """L'appareil parti se connecter depuis cette IP (consommé : un seul retour)."""
+    got = _signins.pop(ip, None) if ip else None
+    return got[0] if got and got[1] > _now() else None
+
+
+def set_display(did, display):
+    """L'AFFICHAGE D'UN TÉLÉPHONE (docs/devices-people.md §4 ter, 2026-11-26) : `phone` = le Companion, `tablet` = l'app
+    complète, couchée et mise à l'échelle. Un choix d'écran, jamais un droit : le rack décide des droits par le TYPE
+    d'appareil (un téléphone en affichage tablette reste un téléphone : conductor pour charger, pas d'admin)."""
+    if display not in DISPLAYS:
+        return False
+    db = _load()
+    for d in db["devices"]:
+        if d["id"] == did:
+            d["display"] = display
+            _save()
+            return True
+    return False
+
+
+def sign_out(did):
+    """Se déconnecter de golem.fm sur CET appareil : il garde son appairage (ses lignes, ses pédales, conductor),
+    il perd les gestes d'owner. Rien n'est écrit chez golem.fm."""
+    db = _load()
+    for d in db["devices"]:
+        if d["id"] == did:
+            d.pop("fm_auth", None)
+            _save()
+            return True
+    return False
 
 
 def set_conductor(did, flag):
@@ -596,16 +719,26 @@ def open_path(kind):
     return "/app/m.html" if kind == "Phone" else "/app/"
 
 
-def connect_device(person=None, kind="Phone", screen=False, client=None, ua="", ip=""):
+def connect_device(person=None, kind="Phone", screen=False, client=None, ua="", ip="", device_id=None, display=None):
     """Crée ou retrouve l'appareil d'une personne connectée par golem.fm. `screen` : la tablette du
     propriétaire devient « Rack screen » (sans personne, admin — comme le code d'appairage du lot C).
-    Rend {token, name, kind, screen, open} ou {error}."""
+    `device_id` : l'appareil qui a PRÉSENTÉ son jeton avec le ticket (« Sign in with golem.fm » depuis un téléphone
+    déjà appairé par QR, 2026-11-26) — c'est lui qu'on met à niveau, pas un doublon. Rend {token, name, kind, screen,
+    open} ou {error}."""
     kind = kind if kind in KINDS else "Phone"
     if not screen and not (isinstance(person, dict) and person.get("id")):
         return {"error": "golem.fm did not say who you are"}
     db = _load()
     _purge(db)
-    d = next((x for x in db["devices"] if client and x.get("client") == client), None)
+    d = next((x for x in db["devices"] if device_id and x["id"] == device_id and not x.get("screen")), None) if not screen else None
+    if d is not None:
+        kind = d.get("kind") or kind                 # le téléphone reste un téléphone, quoi que dise le ticket
+        if client:                                   # un autre appareil portait déjà ce `client` : il n'est plus le bon
+            for x in db["devices"]:
+                if x is not d and x.get("client") == client:
+                    x.pop("client", None)
+    if d is None:
+        d = next((x for x in db["devices"] if client and x.get("client") == client), None)
     if d is None:
         d = {"id": secrets.token_urlsafe(6), "token": secrets.token_urlsafe(32), "created": _now()}
         db["devices"].append(d)
@@ -623,6 +756,10 @@ def connect_device(person=None, kind="Phone", screen=False, client=None, ua="", 
             d.pop("admin", None)                 # l'admin venait de l'écran du rack, pas d'une promotion
         d.update(person=str(person["id"])[:64], person_name=str(person.get("name") or person["id"])[:40])
         d["name"] = f"{d['person_name']} · {kind}"
+        if display in DISPLAYS and d.get("kind") == "Phone":
+            d["display"] = display     # le ticket peut porter l'affichage choisi sur golem.fm/connect (absent = inchangé)
+        rights = person.get("rights") if person.get("rights") in ("owner", "admin", "member") else None
+        d["fm_auth"] = {"at": _now(), "person": d["person"], "rights": rights}   # golem.fm s'en est porté garant
         if isinstance(person.get("rights"), str) and "conductor" not in d and kind == "Phone":
             d["conductor"] = person["rights"] in ("owner", "admin")   # le ticket porte les droits
         _grant_conductor(d)                                           # sinon le roster les porte
@@ -670,7 +807,8 @@ def device_of(request):
     d = _device_by_token(tok)
     if d is None:
         return None
-    out = {k: d.get(k) for k in ("id", "name", "role", "kind", "person", "person_name", "screen", "admin", "conductor")}
+    out = {k: d.get(k) for k in ("id", "name", "role", "kind", "person", "person_name", "screen", "admin", "conductor", "via")}
+    out["display"] = d.get("display") or "phone"
     if d.get("person") and not str(d["person"]).startswith("guest:"):
         out["person_name"] = _people().get(d["person"]) or d.get("person_name") or d["person"]
     return out
@@ -801,6 +939,16 @@ def allowed_http(request):
     dev = _device_by_token(_presented(request))
     if dev is None:
         return False
+    if path in OWNER_PATHS:
+        # les gestes d'OWNER (2026-11-26) : un admin, ou un owner connecté avec golem.fm. Rack PAS ENCORE appairé
+        # à golem.fm : un conductor peut lancer l'appairage depuis son téléphone (personne ne détourne un lien qui
+        # n'existe pas ; re-lier un rack déjà appairé reste un geste d'owner). Son suivi suit la même règle que son
+        # départ (audit 2026-11-04, H3 : un membre ne lit pas l'appairage).
+        if owner_ok(dev):
+            return True
+        if path.startswith("/api/golemfm/pair") and not _golemfm_paired():
+            return bool(dev.get("conductor"))
+        return False
     if path in ADMIN_PATHS or path.startswith(ADMIN_PREFIX):
         return bool(dev.get("admin"))         # M-1 : les gestes SYSTÈME exigent la promotion
     if method != "GET" and (path in ADMIN_WRITES or path.startswith(ADMIN_WRITE_PREFIX)
@@ -808,8 +956,7 @@ def allowed_http(request):
         return bool(dev.get("admin"))
     if method == "DELETE" and is_guest(dev) and not dev.get("admin"):
         return False                          # audit 2026-10-15 : un invité de 24 h n'efface pas les prises du groupe
-    if (dev.get("kind") == "Phone" and (path in CONDUCTOR_PATHS or path.startswith("/api/backing/"))
-            and path not in ("/api/backing/meta",) and not path.startswith("/api/backing/meta/")):
+    if dev.get("kind") == "Phone" and _conductor_path(path):
         return bool(dev.get("conductor") or dev.get("admin"))   # lot F : un téléphone ne lance le groupe que s'il est conductor
     return True
 

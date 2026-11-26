@@ -79,23 +79,52 @@
       try {
         if (frag.get('t')) {
           say('Connecting to this golem…', 'golem.fm is telling the rack who you are.');
-          const d = await post('/api/auth/connect', { ticket: frag.get('t') });
+          // un appareil déjà appairé sous CETTE origine présente son jeton : le rack le met à niveau (Sign in with golem.fm)
+          let mine = '';
+          try { mine = localStorage.getItem('golem_token') || ''; } catch (_) { /* navigation privée */ }
+          const d = await post('/api/auth/connect', { ticket: frag.get('t') }, mine);
           store(d.token);
           if (d.local_url && d.local_url !== location.origin) {
             say('Connecting to this golem…', 'Saving it under its name, so it follows you to the gig.');
             if (await reachable(d.local_url)) {
               try {
                 const h = await post('/api/auth/handoff', {}, d.token);
-                location.replace(d.local_url + '/app/connect.html#h=' + encodeURIComponent(h.code));
+                // la page d'arrivée suit le transfert (Sign in with golem.fm revient sur Account, pas sur Live)
+                location.replace(d.local_url + '/app/connect.html#h=' + encodeURIComponent(h.code)
+                  + (d.open ? '&o=' + encodeURIComponent(d.open) : ''));
                 return;
               } catch (_) { /* le transfert a échoué : on reste sur l'adresse IP, qui marche */ }
             }
           }
           return done(d);
         }
+        if (frag.get('i')) {
+          // LE QR D'INVITATION (2026-11-26) : il porte l'IP, toujours joignable ; l'invitation devient un jeton, puis,
+          // si le NOM du rack répond depuis ce téléphone, le jeton est posé sous ce nom — comme au retour de golem.fm
+          say('Pairing this device…', 'One moment.');
+          const c = await post('/api/auth/claim', { invite: frag.get('i') });
+          if (!c.token) throw new Error('This QR has expired or was already used. Ask for a new one on the rack.');
+          store(c.token);
+          const w = await fetch('/api/auth/whoami', { headers: { 'x-golem-token': c.token } }).then(r => r.json());
+          const kind = (w.device || {}).kind;
+          const open = kind === 'Phone' ? '/app/m.html' : '/app/';
+          let where = {};
+          try { where = await fetch('/api/connect/where', { headers: { 'x-golem-token': c.token } }).then(r => r.json()); } catch (_) { /* reste sur l'IP */ }
+          const name = where.local_url;
+          if (name && name !== location.origin && await reachable(name)) {
+            try {
+              const h = await post('/api/auth/handoff', {}, c.token);
+              location.replace(name + '/app/connect.html#h=' + encodeURIComponent(h.code) + '&o=' + encodeURIComponent(open));
+              return;
+            } catch (_) { /* le transfert a échoué : l'IP marche */ }
+          }
+          return done({ name: c.name, kind, open });
+        }
         if (frag.get('h')) {
           const d = await post('/api/auth/handoff/claim', { code: frag.get('h') });
           store(d.token);
+          const o = frag.get('o') || '';
+          if (/^\/app\/([\w.\-]+)?(\?[\w=&.\-]*)?$/.test(o)) d.open = o;   // un chemin de l'app, rien d'autre
           return done(d);
         }
         // sans fragment : la page gardée par golem.fm/connect hors ligne arrive ici — jeton déjà rangé ?

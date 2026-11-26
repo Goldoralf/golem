@@ -30,12 +30,28 @@ body { background: var(--bg); color: var(--txt); font: 15px/1.4 system-ui, sans-
 .m-main { flex: 1; min-height: 0; display: flex; }
 .mv { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 16px; }
 .m-center { align-items: center; justify-content: center; text-align: center; }
-.m-nav { flex: none; display: flex; border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom); background: var(--panel); }
-.m-tab { flex: 1; background: none; border: 0; color: var(--muted); font: inherit; font-size: 12px;
-  padding: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.m-tab-ico { font-size: 20px; line-height: 1; }
-.m-tab.on { color: var(--accent); }
+/* — le top menu à DEUX icônes (Live, System) et le mode de Live (2026-11-26) : plus de barre d'onglets en bas — */
+.m-main { padding-bottom: env(safe-area-inset-bottom); }
+.m-nav2 { display: flex; gap: 6px; }
+.m-ni { width: 44px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel);
+  color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.m-ni svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.m-ni.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.m-sub { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.m-mode { display: flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--panel2); color: var(--txt); font: 700 14px system-ui, sans-serif; }
+.m-mode i { font-style: normal; color: var(--accent); } .m-mode small { color: var(--muted); font-weight: 400; }
+.m-sub .c-condtag { margin-left: auto; }
+.m-scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .55); z-index: 20; }
+.m-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; background: var(--panel); border-top: 1px solid var(--line);
+  border-radius: 18px 18px 0 0; padding: 8px 14px calc(14px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 7px; }
+.m-grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line); align-self: center; margin-bottom: 4px; }
+.m-mo { display: flex; gap: 12px; align-items: flex-start; text-align: left; padding: 11px 12px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--panel2); color: var(--txt); font: inherit; }
+.m-mo .ic { font-size: 18px; width: 24px; text-align: center; color: var(--accent); }
+.m-mo div { flex: 1; min-width: 0; display: flex; flex-direction: column; } .m-mo small { color: var(--muted); font-size: 12px; }
+.m-mo.on { border-color: var(--accent); } .m-mo.lk { opacity: .65; }
+.m-mo .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); margin-top: 6px; }
 
 .m-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
 .m-muted { color: var(--muted); font-size: 13px; }
@@ -271,3 +287,86 @@ body { background: var(--bg); color: var(--txt); font: 15px/1.4 system-ui, sans-
 
 /* les glyphes de golem-fx (app/glyphs.js) : au trait, à la taille et dans la couleur du texte qu'ils remplacent */
 svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:visible}
+
+/* — Live ▸ Control (mobile-control.js) et System (mobile-system.js), 2026-11-26 — */
+.cc-tap { width: 100%; text-align: left; font: inherit; color: inherit; border: 0; background: var(--panel); cursor: pointer; }
+.cc-tap:disabled { cursor: default; }
+.cc-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-go { font-style: normal; color: var(--muted); }
+.cc-arm { color: var(--accent) !important; } .cc-stop { color: #ff8a80 !important; } .cc-ok { color: var(--ok) !important; }
+.cc-crumb { display: flex; align-items: center; gap: 10px; } .cc-crumb b { font-size: 16px; } .cc-crumb small { margin-left: auto; color: var(--muted); font-size: 11px; }
+.cc-lines { overflow-y: auto; }
+.cc-lock { display: flex; gap: 10px; align-items: flex-start; border: 1px solid #d9a23a; border-radius: 12px; padding: 10px 12px;
+  background: rgba(217, 162, 58, .1); }
+.cc-lock i { font-style: normal; font-size: 16px; } .cc-lock div { display: flex; flex-direction: column; gap: 2px; }
+.cc-lock span { color: var(--muted); font-size: 12.5px; }
+.cc-ghost { opacity: .42; filter: saturate(.4); pointer-events: none; }
+.cc-push { margin-top: auto; }
+.cc-play { overflow: hidden; }
+.cc-now { display: flex; align-items: center; gap: 8px; }
+.cc-arrow { width: 52px; height: 52px; flex: none; border-radius: 12px; border: 1px solid var(--line); background: var(--panel2); color: var(--txt); font-size: 18px; }
+.cc-title { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; border: 0; background: none; color: var(--txt); font: inherit; }
+.cc-title b { font-size: 22px; font-weight: 800; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-stomps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.cc-st { min-height: 76px; border-radius: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--txt);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 8px 9px 7px; font: inherit; text-align: left; }
+.cc-st .sw { font: 700 10px ui-monospace, monospace; color: var(--muted); }
+.cc-st .g { font-size: 14px; line-height: 1; min-height: 14px; }
+.cc-st b { font-size: 14px; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; max-width: 100%; white-space: nowrap; }
+.cc-st small { margin-top: auto; font: 700 10px ui-monospace, monospace; color: var(--muted); }
+.cc-st.on { background: color-mix(in srgb, var(--c) 30%, var(--panel)); border-color: var(--c); box-shadow: 0 0 0 1px var(--c) inset; }
+.cc-st.on small { color: var(--txt); }
+.cc-st.empty { opacity: .4; border-style: dashed; }
+.cc-st.cc-tool { background: var(--panel2); }
+.cc-scenes { display: grid; gap: 6px; }
+.cc-sc { min-height: 84px; border-radius: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--txt);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 3px; font: inherit; }
+.cc-sc b { font: 800 22px ui-monospace, monospace; }
+.cc-sc small { font-size: 10.5px; line-height: 1.15; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+.cc-sc.on { background: var(--c); border-color: var(--c); color: #fff; } .cc-sc.on small { color: rgba(255, 255, 255, .85); }
+.cc-foot { display: flex; gap: 6px; } .cc-foot .c-chip { flex: 1; align-items: center; }
+.cs-acc { display: flex; gap: 10px; align-items: center; padding: 11px 12px; border-radius: 13px; background: var(--panel2); border: 1px solid var(--line); }
+.cs-acc div { display: flex; flex-direction: column; min-width: 0; } .cs-acc small { color: var(--muted); font-size: 12px; }
+.cs-av { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 800; display: flex; align-items: center; justify-content: center; flex: none; }
+.cs-menu { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
+.cs-mi { display: flex; align-items: center; gap: 11px; padding: 13px 12px; border: 0; border-bottom: 1px solid var(--line);
+  background: var(--panel); color: var(--txt); font: inherit; text-align: left; }
+.cs-mi:last-child { border-bottom: 0; }
+.cs-mi .ic { width: 30px; height: 30px; border-radius: 8px; background: var(--panel2); color: var(--accent); display: flex; align-items: center; justify-content: center; flex: none; }
+.cs-mi div { flex: 1; min-width: 0; display: flex; flex-direction: column; } .cs-mi small { color: var(--muted); font-size: 12px; }
+.cs-mi em { font-style: normal; color: var(--muted); }
+.cs-need { font: 700 10px ui-monospace, monospace; letter-spacing: .06em; color: #d9a23a; } .cs-need.ok { color: var(--ok); }
+.cs-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14px; }
+.cs-kv span { color: var(--muted); } .cs-kv b { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.cs-url { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--panel2); border: 1px solid var(--line);
+  font: 600 13px ui-monospace, monospace; user-select: text; }
+.cs-url span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.cs-center { align-items: center; text-align: center; }
+.cs-qr { width: 190px; height: 190px; background: #fff; border-radius: 10px; padding: 8px; align-self: center; }
+.cs-code { font: 800 30px ui-monospace, monospace; letter-spacing: .14em; }
+.cs-link { text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; }
+.cs-more { color: var(--muted); font-size: 13px; padding: 0 4px; } .cs-more summary { cursor: pointer; padding: 4px 0; }
+.cs-ok { color: var(--ok); } .cs-warn { color: #d9a23a; } .cs-no { color: var(--muted); }
+.cs-rights { display: flex; flex-direction: column; gap: 5px; }
+.cs-rg { display: flex; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 9px; background: var(--panel); border: 1px solid var(--line); font-size: 13px; }
+.cs-rg b { font: 700 11px ui-monospace, monospace; white-space: nowrap; }
+.cs-in { font: inherit; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--txt); }
+
+/* — Control couché : la page /live du rack, plein écran, mise à l'échelle (mobile.js, LiveLandscape) — */
+.m-land { position: fixed; inset: 0; background: #000; overflow: hidden; }
+.m-land-f { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #000; }
+.m-land-veil { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; }
+.m-land-veil span { font: 700 12px system-ui, sans-serif; color: #f2d58a; background: rgba(0, 0, 0, .7); border: 1px solid #d9a23a;
+  border-radius: 999px; padding: 4px 12px; }
+
+/* les cases animées (anim-tiles.mjs lit les animations de /live dans style.css) : couches ::before/::after rognées par la
+   case, le texte au-dessus ; une case éteinte garde son animation — l'identité, pas l'état (comme /live) */
+.cc-st, .cc-sc { position: relative; overflow: hidden; isolation: isolate; }
+.cc-st > *, .cc-sc > * { position: relative; z-index: 2; }
+
+/* — l'affichage TABLETTE d'un téléphone (mobile.js, TabletDisplay) : l'app complète couchée, mise à l'échelle — */
+.m-tab-host { position: fixed; inset: 0; background: #000; overflow: hidden; }
+.m-tab-back { position: absolute; left: calc(6px + env(safe-area-inset-left)); bottom: calc(6px + env(safe-area-inset-bottom));
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(20, 23, 29, .85); font-size: 18px; z-index: 5; }
+.m-turn { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
+.m-turn-ico { font-size: 54px; color: var(--accent); } .m-turn b { font-size: 20px; } .m-turn span { color: var(--muted); max-width: 30ch; }

@@ -229,3 +229,89 @@ def test_where_ne_montre_jamais_l_id_du_rack(monkeypatch):
     from bridge import routes_connect
     monkeypatch.setattr(connect, "where", lambda: {"rack_id": "secret", "session": "s", "urls": ["http://1.2.3.4:8770"]})
     assert routes_connect.connect_where() == {"urls": ["http://1.2.3.4:8770"]}
+
+
+# ── SIGN IN WITH GOLEM.FM depuis le Companion (docs/devices-people.md §5, 2026-11-26) ─────────────
+class PhoneReq:
+    def __init__(self, method, path, tok="", host="192.168.0.30"):
+        self.method = method
+        self.headers = {"x-golem-token": tok} if tok else {}
+        self.cookies, self.query_params = {}, {}
+        self.url = type("U", (), {"path": path, "hostname": "192.168.0.22"})()
+        self.client = type("C", (), {"host": host})()
+
+
+def _rights_ticket(fm, name, rights, client="c-phone"):
+    _ticket(fm, name, client=client)
+    fm.tickets[name]["person"]["rights"] = rights
+
+
+def test_un_telephone_appaire_par_qr_se_connecte_sans_doublon(db, monkeypatch):
+    """Le téléphone appairé par QR revient de golem.fm/connect : c'est LUI qui est mis à niveau, même revenu sous
+    une autre origine (golem.fm renvoie vers l'IP, le jeton est sous golem.local) — le rack l'a retenu par son IP."""
+    fm = FakeFm(monkeypatch)
+    monkeypatch.setattr(auth, "_signins", {})
+    inv = auth.create_invite(None, "Phone", person="alex")
+    tok = auth.claim(auth.invite_token(inv["id"]))["token"]
+    did = auth.device_of(Req(tok))["id"]
+    assert auth.rights_of(auth._device_by_token(tok))["signed_in"] is False
+    auth.start_signin(did, "192.168.0.30")
+    _rights_ticket(fm, "s1", "owner")
+    st, got = connect.redeem("s1", ip="192.168.0.30", device_id=auth.pending_signin("192.168.0.30"))
+    assert st == 200 and got["token"] == tok and len(auth.list_devices()["devices"]) == 1
+    r = auth.rights_of(auth._device_by_token(tok))
+    assert r["signed_in"] and r["band_role"] == "owner" and r["pair_devices"] and r["pair_golemfm"]
+    assert auth.pending_signin("192.168.0.30") is None                     # un seul retour
+
+
+def test_les_gestes_d_owner_suivent_la_connexion_golem_fm(db, monkeypatch):
+    fm = FakeFm(monkeypatch)
+    _rights_ticket(fm, "own", "owner")
+    _rights_ticket(fm, "mem", "member", client="c-member")
+    otok = connect.redeem("own")[1]["token"]
+    mtok = connect.redeem("mem")[1]["token"]
+    for method, path in (("GET", "/api/auth/devices"), ("POST", "/api/auth/devices"), ("GET", "/api/auth/qr"),
+                         ("POST", "/api/golemfm/pair")):
+        assert auth.allowed_http(PhoneReq(method, path, otok)) is True, path
+        assert auth.allowed_http(PhoneReq(method, path, mtok)) is False, path
+    # révoquer un appareil ou en promouvoir un reste un geste d'admin
+    assert auth.allowed_http(PhoneReq("DELETE", "/api/auth/devices/x", otok)) is False
+    assert auth.allowed_http(PhoneReq("POST", "/api/auth/promote", otok)) is False
+    # la preuve vieillit, et se déconnecter la retire
+    db["t"] += auth.FM_AUTH_TTL + 1
+    assert auth.allowed_http(PhoneReq("POST", "/api/auth/devices", otok)) is False
+    _rights_ticket(fm, "own2", "owner")
+    connect.redeem("own2")
+    assert auth.allowed_http(PhoneReq("POST", "/api/auth/devices", otok)) is True
+    auth.sign_out(auth.device_of(Req(otok))["id"])
+    assert auth.allowed_http(PhoneReq("POST", "/api/auth/devices", otok)) is False
+    assert auth.device_of(Req(otok))["person"] == "alex"                  # toujours appairé
+
+
+def test_appairer_un_rack_neuf_a_golem_fm_depuis_un_telephone_conductor(db, monkeypatch):
+    """Rack pas encore appairé : un conductor lance l'appairage (personne ne détourne un lien qui n'existe pas).
+    Rack déjà appairé : re-lier reste un geste d'owner."""
+    FakeFm(monkeypatch, paired=False)
+    inv = auth.create_invite(None, "Phone", person="alex")
+    tok = auth.claim(auth.invite_token(inv["id"]))["token"]
+    assert auth.allowed_http(PhoneReq("POST", "/api/golemfm/pair", tok)) is False
+    auth.set_conductor(auth.device_of(Req(tok))["id"], True)
+    assert auth.allowed_http(PhoneReq("POST", "/api/golemfm/pair", tok)) is True
+    assert auth.allowed_http(PhoneReq("GET", "/api/golemfm/pair/status", tok)) is True
+    from bridge import golemfm
+    monkeypatch.setattr(golemfm, "_cfg", lambda: ("https://golem.fm", "gmt_x"))
+    assert auth.allowed_http(PhoneReq("POST", "/api/golemfm/pair", tok)) is False
+    assert auth.allowed_http(PhoneReq("GET", "/api/golemfm/pair/status", tok)) is False
+
+
+def test_le_ticket_peut_porter_l_affichage_d_un_telephone(db, monkeypatch):
+    """golem.fm/connect peut proposer « téléphone en affichage tablette » au lieu d'en faire une tablette : le
+    ticket porte `kind: Phone` et `display: tablet` ; absent, l'affichage reste celui du Companion."""
+    fm = FakeFm(monkeypatch)
+    _ticket(fm, "d1")
+    fm.tickets["d1"]["display"] = "tablet"
+    tok = connect.redeem("d1")[1]["token"]
+    dev = auth.device_of(Req(tok))
+    assert (dev["kind"], dev["display"]) == ("Phone", "tablet")
+    _ticket(fm, "d2", client="c-two")
+    assert auth.device_of(Req(connect.redeem("d2")[1]["token"]))["display"] == "phone"

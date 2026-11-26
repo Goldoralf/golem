@@ -377,7 +377,7 @@ def where():
 
 
 # ── 3. le rachat du ticket ──────────────────────────────────────────────────────────────────────
-def redeem(ticket, ua="", ip=""):
+def redeem(ticket, ua="", ip="", device_id=None):
     """Ticket golem.fm ⇒ appareil. Rend (code HTTP, corps) — les messages sont pour l'écran du téléphone."""
     from . import auth, golemfm
     ticket = str(ticket or "").strip()
@@ -405,7 +405,8 @@ def redeem(ticket, ua="", ip=""):
         except Exception as e:
             log.warning(f"roster avant connexion : {e}")
     got = auth.connect_device(person=person, kind=d.get("kind"), screen=screen,
-                              client=client_key(d.get("client")), ua=ua, ip=ip)
+                              client=client_key(d.get("client")), ua=ua, ip=ip, device_id=device_id,
+                              display=d.get("display"))
     if got.get("error"):
         return 400, got
     log.info(f"appareil connecté par golem.fm : {got['name']}")

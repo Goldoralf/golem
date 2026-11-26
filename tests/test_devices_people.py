@@ -188,11 +188,16 @@ def test_un_telephone_ne_lance_le_groupe_que_s_il_est_conductor(db):
     tok = auth.claim(auth.invite_token(inv["id"]))["token"]
     for path in ("/api/recall", "/api/arrangement", "/api/perf/start", "/api/backing"):
         assert auth.allowed_http(HttpReq("POST", path, tok)) is False, path
+    # les stomps du pédalier et la liste au pied (mode Control, 2026-11-26) : le son de tout le groupe
+    assert auth.allowed_http(HttpReq("POST", "/api/stomp", tok)) is False
+    assert auth.allowed_http(HttpReq("POST", "/api/setlists/factory/activate", tok)) is False
+    assert auth.allowed_http(HttpReq("POST", "/api/backing/meta", tok)) is True        # lire les paroles, oui
     assert auth.allowed_http(HttpReq("POST", "/api/lane/stomp", tok)) is True          # ses pédales, oui
     assert auth.allowed_http(HttpReq("POST", "/api/take/flag", tok)) is True           # « Mark that », oui
     did = auth.device_of(Req(tok))["id"]
     auth.set_conductor(did, True)
     assert auth.allowed_http(HttpReq("POST", "/api/arrangement", tok)) is True
+    assert auth.allowed_http(HttpReq("POST", "/api/stomp", tok)) is True
     # une tablette garde ce qu'elle avait ; le rack en local, tout
     t = auth.create_invite("Guitar", "Tablet")
     ttok = auth.claim(auth.invite_token(t["id"]))["token"]
@@ -211,3 +216,18 @@ def test_le_pedalier_et_le_moteur_ne_se_reecrivent_que_par_un_admin(db):
         assert auth.allowed_http(HttpReq("POST", path, tok)) is False, path
         assert auth.allowed_http(HttpReq("POST", path, host="127.0.0.1")) is True, path   # l'écran du rack, oui
     assert auth.allowed_http(HttpReq("POST", "/api/pedalboard/goto", tok)) is True    # changer de banque : jouer
+
+
+def test_un_telephone_choisit_son_affichage_sans_changer_ses_droits(db):
+    """2026-11-26 : un téléphone peut afficher l'app tablette (couchée, mise à l'échelle). Le choix se fait à
+    l'invitation ou depuis le téléphone ; les droits restent ceux d'un téléphone."""
+    ua = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/129.0 Mobile Safari/537.36"
+    inv = auth.create_invite(None, "Phone", guest="Max", display="tablet")
+    tok = auth.claim(auth.invite_token(inv["id"]), ua=ua)["token"]
+    dev = auth.device_of(Req(tok))
+    assert (dev["kind"], dev["display"]) == ("Phone", "tablet")
+    assert auth.allowed_http(HttpReq("POST", "/api/recall", tok)) is False      # toujours un téléphone sans conductor
+    assert auth.set_display(dev["id"], "phone") and auth.device_of(Req(tok))["display"] == "phone"
+    assert auth.set_display(dev["id"], "desktop") is False
+    plain = auth.claim(auth.invite_token(auth.create_invite(None, "Phone", person="alex")["id"]), ua=ua)["token"]
+    assert auth.device_of(Req(plain))["display"] == "phone"                      # par défaut : le Companion

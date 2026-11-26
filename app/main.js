@@ -239,6 +239,8 @@ function useLivePreload(st, bootSkip) {
   return !t0 || saw.current !== t0 || bootSkip === t0 || !!ready[key];
 }
 
+const EMBED_LIVE = new URLSearchParams(location.search).get('embed') === 'live';
+
 function App() {
   const route = useRoute();
   const rig = useRigState();
@@ -337,6 +339,12 @@ function App() {
   const fcDemo = (location.search.match(/[?&]boot=firstcheck(?:&at=(\w+))?/) || null);
   if (fcDemo) return html`<${FirstCheckPage} rig=${rig} demo=${firstCheckDemo(fcDemo[1])} onDone=${() => {}} />`;
   const fc = rig.state && rig.state.first_check;
+  // /live INTÉGRÉ (?embed=live, 2026-11-26) : la vue horizontale du mode Control du Companion (docs/devices-people.md §4) —
+  // la page /live seule, sans le top menu (les liens Designer, Songs, Library et ses outils), ni bandeaux, ni écran de
+  // chargement. Le téléphone la cadre et la met à l'échelle ; les droits restent ceux du téléphone (auth.py).
+  if (EMBED_LIVE) {
+    return html`<div class="shell embed-live" data-sect="live"><main class="page"><${LivePage} rig=${rig} sub="" /></main></div>`;
+  }
   if (base === 'live' && fc && fc.pending && !fcHide && rig.state.boot && rig.state.boot.done && !(mode.ui && mode.ui.locked)
       && !showBoot(rig.state, bootSkip)) {
     return html`<${FirstCheckPage} rig=${rig} onDone=${() => setFcHide(true)} />`;

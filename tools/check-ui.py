@@ -61,7 +61,11 @@ RACK_PAGES = [
 ]
 # Le Companion du musicien (app/m.html) : ses onglets dépendent de l'appareil appairé ; depuis l'écran local,
 # Now et Song existent toujours.
-PHONE_PAGES = ["/app/m.html?tab=now", "/app/m.html?tab=song", "/app/m.html?tab=rec"]
+# le Companion à deux icônes (docs/devices-people.md §4, 2026-11-26) : les modes de Live et les pages de System ;
+# `?tab=song` reste une ancienne adresse (elle mène à Control)
+PHONE_PAGES = ["/app/m.html?tab=live&mode=now", "/app/m.html?tab=live&mode=control", "/app/m.html?tab=live&mode=rec",
+               "/app/m.html?tab=song", "/app/m.html?tab=system", "/app/m.html?tab=system&page=connect",
+               "/app/m.html?tab=system&page=pair", "/app/m.html?tab=system&page=golem.fm"]
 
 # Le détecteur de français, dans l'esprit de tools/check-descriptors.py : des mots outils qui n'existent qu'en
 # français — TROIS dans une même ligne (un titre de chanson comme « Pour que tu m'aimes encore » en a deux et

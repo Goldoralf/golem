@@ -1,6 +1,6 @@
 # Devices, people and the Companion
 
-> **Status: CODED** — paired devices carry a person (or a guest), phones get the Companion (`/app/m.html`) showing that person's lines, a conductor right lets one phone run the songs, and a headless rack gets its first screen by pairing code; the per-person monitor mix and signed actions are not built.
+> **Status: CODED** — paired devices carry a person (or a guest), phones get the Companion (`/app/m.html`) showing that person's lines, a conductor right lets one phone run the songs and drive /live (Control: scenes and stomps), a phone signed in with golem.fm as the band's owner can pair devices and the rack, and a headless rack gets its first screen by pairing code; the per-person monitor mix and signed actions are not built.
 
 Related: [identity.md](identity.md) (no login on the rack, the roster, what leaves the rack),
 [connect.md](connect.md)
@@ -20,8 +20,9 @@ the screen), [golemfm-protocol.md](golemfm-protocol.md).
 4. **The rack's screen belongs to the band, not to a person.** A tablet used as the rack screen is
    a device without a person, admin, opening the full app.
 5. **A phone reads a lot and acts little**, within its musician's scope: its stomps, a flag, and —
-   only with the conductor right — the song transport. Nothing a pocket can press should be able to
-   cut the band's sound by accident.
+   only with the conductor right — the song transport, the foot list, and the pedalboard's scenes and
+   stomps (Live ▸ Control, decided 2026-11-26: before that, a phone never changed a scene). Nothing a
+   pocket can press should be able to cut the band's sound by accident.
 
 ## 2. Devices — `bridge/auth.py`
 
@@ -32,13 +33,14 @@ person, person_name, expires, screen, via, guest_days}`.
 | concept | rule | code |
 |---|---|---|
 | kinds | `Phone`, `Tablet`, `Computer` (`KINDS`); guessed from the user agent at scan | `kind_from_ua` |
+| display | a phone's screen: `phone` (the Companion, default) or `tablet` (the full app, sideways, scaled — §4 ter); chosen on the invitation (`display`) or from the phone (`POST /api/auth/display`), or carried by a golem.fm/connect ticket. A screen choice, never a right: rights follow the kind | `set_display`, `DISPLAYS` |
 | roles | `Guitar`, `Bass`, `Voice`, `Keys`, `Drums`, `Pads`, `Keys + Pads` (`ROLES`) — only chooses the view for a device **without** a person (a drummer without pads, a sound engineer) | |
 | invitation | `{person | guest, kind, role?}` — one-shot QR, dies after 15 min (`INVITE_TTL`). `person` = a roster id (refused if not in the band); `guest` = a first name typed locally → `person: "guest:<slug>"` | `create_invite`, `claim` |
 | guest | device expires after 1, 7 or 30 days (`GUEST_DAYS`, default 1 day), extendable | `guest_ttl`, `extend` |
 | set the person later | from the device's row, without rescanning | `POST /api/auth/devices/{did}/person`, `set_person` |
 | left the band | a device whose person is no longer in the synced roster is flagged `left_band`; revoked by a tap, never silently (the roster can be incomplete) | `list_devices` |
 | stale token | `whoami.token` = `none` \| `ok` \| `unknown` (a presented token the rack no longer knows) → the app opens `app/unpaired.html` ("This device is no longer paired…", "I have a pairing code") instead of a frozen desktop view | `token_state` |
-| conductor | a phone may load, start and stop songs, backing and takes only with `conductor` (or admin): `CONDUCTOR_PATHS` = `/api/recall`, `/api/arrangement`, `/api/perf/start`, `/api/perf/stop`, `/api/backing`. Tablets and computers keep their rights. A phone whose person is `owner`/`admin` of the space is conductor by default **at creation** (`_grant_conductor`); a manual choice is never overwritten | `set_conductor`, `POST /api/auth/conductor` |
+| conductor | a phone may load, start and stop songs, backing and takes, change the foot list and toggle the pedalboard's stomps only with `conductor` (or admin): `CONDUCTOR_PATHS` = `/api/recall` (a scene too), `/api/arrangement`, `/api/perf/start`, `/api/perf/stop`, `/api/backing`, `/api/stomp`, plus `/api/backing/*` (not `meta`) and `/api/setlists/<id>/activate` (`_conductor_path`). Tablets and computers keep their rights. A phone whose person is `owner`/`admin` of the space is conductor by default **at creation** (`_grant_conductor`); a manual choice is never overwritten | `set_conductor`, `POST /api/auth/conductor` |
 | admin | explicit gesture on the rack | `set_admin`, `POST /api/auth/promote` |
 
 Routes (`bridge/routes_system.py`): `GET/POST /api/auth/devices`, `GET /api/auth/qr`,
@@ -66,17 +68,32 @@ A device of kind `Phone` never lands on the full app: at boot (`app/lib.js`) `wh
 routed. Same API and WebSocket as the app, a different shell (`app/mobile.js`). Dark, one hand, no
 scroll except lyrics, automatic WS reconnection, screen kept awake.
 
-**Tabs** (at most 5, in this order, `Companion` in `app/mobile.js`; the open tab survives a reload
-through `?tab=`):
+**Top menu: two icons**, Live and System (mockups validated 2026-11-26). The address keeps the
+screen: `?tab=live&mode=<mode>`, `?tab=system&page=<page>`; the old `?tab=now|song|mine|…` still lead to
+the matching mode (`LEGACY_TAB`; the `golem phone` shell keeps `?tab=<mode>` or `?tab=system`). There is no bottom tab bar.
 
-| tab | shown when | content |
+**Live modes**, picked from a sheet that reads like Settings ▸ Mode (name, what it does, the active
+dot, 🔒), remembered by the phone (`localStorage golem.phone.mode`):
+
+| mode | shown when | content |
 |---|---|---|
-| **Now** | always | title, tempo, key (from the backing catalogue `key`; none without a backing), scene, next song. Opens **Between songs** when the arrangement is finished or loaded but not started, and **Ready for the show** (Show mode, conductor, nothing played yet) |
-| **Song** | always | **conductor**, stopped: the setlist with "Load", "Start", "Record with the song" (rehearsal). Running: part, next part, rail, "Next part" (foot mode) or nothing (bars mode), "■ Hold to stop" (0.6 s). **Musician**: "<who> started the song", part, next, "You in the chorus" (from the preset summary `scenes[].lanes`) |
+| **Now** | always | title, tempo, key (from the backing catalogue `key`; none without a backing), scene, next song; while the arrangement runs, the count-in, the part now and the next one. Opens **Between songs** when the arrangement is finished or loaded but not started, and **Ready for the show** (Show mode, conductor, nothing played yet) |
+| **Control** | always (🔒 without the right) | `app/mobile-control.js`. ① the foot lists: setlists ▤ or banks ⛓, the one on the foot marked; ② a list's lines: a tap loads the line (`/api/recall {slot}`); a line of another list arms first ("tap again: play this list"), then activates the list and loads; while a song plays the rack answers 409 and the second tap confirms ("stop & load"); ▶ Start / ⏭ Next part / ■ Hold to stop (the former Song tab); ③ the play screen: ◀ ▶ (the foot list's playable lines, like `live-bankbar.js`), the title opens the lines, the five stomps SW 6-10 (`/api/stomp {switch}`; service blocks show whether they play, like /live) and a Tuner tile, the scenes at the bottom under the thumb (`/api/recall {scene}`), colours, names and **animations** from the preset (`preset.anims`; the rules are read from `app/style.css` by `app/anim-tiles.mjs`, still tiles when Display ▸ Animations is Off). **Phone turned sideways**: the rack's real /live page, `/app/?desktop=1&embed=live#/live` (no top menu, no Designer/Songs/Library links, no tools, no automatic REC), scaled to the phone (logical height 552 px). Without `rights.control` the same screen, greyed (sideways: a veil takes the taps), says why and offers "Sign in with golem.fm" |
 | **Mine** | the person has lanes | my lanes: state of the scene, level, my stomps (tap = toggle); keys lanes show sound, instrument, zone, transposition per scene (`lane_stomps.instruments_by_scene`); opens the **Tuner** sheet |
 | **Lyrics** | the person has a voice lane | lyrics of the backing (`/api/backing/meta/<slug>`); `[Chorus]`-style markers follow the current part, else the whole text; size from `prefs.lyrics_size`, "A− text" / "A+ text" for the session. "No lyrics for this song" / "No lyrics: this song has no backing track" |
 | **Beat** | the device has no lines | bar and beat, count-in, next part |
 | **Rec** | always | REC state and elapsed time, a big "Mark that" flag, last takes |
+
+**System** (`app/mobile-system.js`) is not the rack's Settings: four pages. What needs a right says so
+on its row before the tap; the rights come from `whoami.rights` (`auth.rights_of`), never re-derived.
+
+| page | content | right |
+|---|---|---|
+| **Display** (`page=display`) | Phone display or Tablet display (§4 ter) | paired |
+| **This golem** (`page=connect`) | name (`golem_N`), mode, network, IP, `.local` name, the local URLs with Copy (`/api/connect/where`, `/api/system`) | paired |
+| **Pair a device** (`page=pair`) | Phone (a person of the roster, or a guest for 1 day) or Tablet → the invitation QR (`POST /api/auth/devices`, `/api/auth/qr`), 15 min, once | owner (§5 bis) |
+| **golem.fm** (`page=golem.fm`) | paired or not; "Pair this golem": the device code and "Approve on golem.fm" opened in the same browser (already signed in there), a QR for another device; polls `/api/golemfm/pair/status` | owner; a conductor while the rack is not paired yet |
+| **Account** (`page=account`) | signed in or not, what this phone can do, "Sign in with golem.fm" / "Sign out" | paired |
 
 - **Between songs** computes what to prepare: tuning and capo against the previous line, instruments
   to put down or pick up (my lines now vs in the next song, `GET /api/lane/mine?preset=`), "You
@@ -99,6 +116,40 @@ through `?tab=`):
   (mostly iOS; Chrome Android needs HTTPS for an installed app).
 
 Dev: `golem phone` opens the Companion at 390×844 with a **Who** selector and a 🎼 conductor switch.
+
+### 4 ter. A phone with the tablet display
+
+Some musicians only have a phone and want the full app (2026-11-26). A `Phone` device whose `display` is
+`tablet` still lands on `/app/m.html`, which then shows, sideways, the full app (`/app/?desktop=1`) in a
+1024×600 frame scaled to fit (about 0.65 on a phone: small, but allowed); upright, "Turn your phone sideways".
+The way back is always on screen: the 📱 button in a corner, and "Back to the phone display" upright
+(`POST /api/auth/display {display: "phone"}`). From the Companion: System ▸ Display. On an invitation for a
+phone, Pair a device asks "Phone display / Tablet display". The rack keeps deciding rights by the kind: a phone
+with the tablet display still needs the conductor right to load songs, scenes and stomps, and never gets admin.
+
+### 4 bis. Signed in with golem.fm — the owner's gestures from a phone
+
+A device created or upgraded through a golem.fm/connect ticket was **authenticated by golem.fm**: its
+person is not a selection made on the rack screen ([identity.md](identity.md) §1.3). The rack keeps
+`fm_auth = {at, person, rights}` on the device (`auth.connect_device`; `rights` from the ticket's
+`person.rights`, else the cached roster), valid 30 days (`FM_AUTH_TTL`).
+
+- **Sign in** (System ▸ Account): `POST /api/auth/signin` → the rack remembers this device under the
+  phone's IP for 5 minutes (`auth.start_signin`) and returns `<golem.fm>/connect/`; the person opens the
+  rack there; golem.fm sends the ticket to the presence's **first URL, the IP** — often another origin
+  than the one holding the phone's token (`golem.local`). `POST /api/auth/connect` therefore upgrades
+  the device that presented its token, else the one remembered for that IP (`auth.pending_signin`, one
+  return only), instead of creating a duplicate; the phone lands on `?tab=system&page=account`.
+- **Owner's gestures** (`OWNER_PATHS`: `GET/POST /api/auth/devices`, `GET /api/auth/qr`,
+  `POST /api/golemfm/pair`, `GET /api/golemfm/pair/status`): an admin device, or a signed-in device
+  whose person is `owner` or `admin` of the band (`auth.owner_ok`). Revoking, promoting, the conductor
+  switch stay admin gestures (the rack screen). While the rack is **not paired** with golem.fm, a
+  conductor may start the pairing (no existing link to hijack); re-linking a paired rack is an owner's
+  gesture. The pairing status follows the same rule as the pairing (audit 2026-11-04, H3).
+- **Sign out**: `POST /api/auth/signout` drops `fm_auth`; the phone stays paired (its lines, its
+  pedals, its conductor right). Nothing is written to golem.fm.
+- Playing never needs golem.fm: offline, a paired phone works as before; only the owner's gestures
+  wait for a sign-in, or are made on the rack screen or the tablet.
 
 ## 5. Two screens do not edit the same draft silently
 

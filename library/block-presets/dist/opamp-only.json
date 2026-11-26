@@ -31,7 +31,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "No clipper: the op-amp's own rails and slew are the whole distortion, raw and loud",
  "factory": true,

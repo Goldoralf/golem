@@ -1,0 +1,63 @@
+{
+ "id": "bass-organ",
+ "type": "guitar-organ",
+ "name": "Bass organ",
+ "desc": "Bass lines as an 88 8000 000 organ, foldback keeping the 16' above 65 Hz, no rotor",
+ "inst": "bass",
+ "genres": [
+  "rnb",
+  "jazz"
+ ],
+ "subgenres": [
+  "funk",
+  "soul-jazz"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "dark"
+ ],
+ "default": true,
+ "params": {
+  "register": "Custom",
+  "organ": 0,
+  "dry": -60,
+  "mod": 50,
+  "click": 30,
+  "leslie": "slow",
+  "db16": 8,
+  "db513": 8,
+  "db8": 8,
+  "db4": 0,
+  "db223": 0,
+  "db2": 0,
+  "db135": 0,
+  "db113": 0,
+  "db1": 0,
+  "perc": false,
+  "perc_harm": "3rd",
+  "perc_decay": "Fast",
+  "perc_vol": "Normal",
+  "perc_trig": "Pick",
+  "vibrato": "Off",
+  "speaker": "Off",
+  "tuning": "Tonewheel",
+  "drive": 0,
+  "ramp": 100,
+  "spacing": 50,
+  "hold": 100,
+  "touch": 30,
+  "strings": 0,
+  "swell": 0,
+  "release": 60,
+  "bank": "Dual",
+  "lowest": 35,
+  "thresh": -66,
+  "bypass": false,
+  "trails": true
+ },
+ "factory": true,
+ "golem_fx_seed": "gfx-organ",
+ "golem_fx": true
+}

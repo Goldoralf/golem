@@ -31,7 +31,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Stable for the low register; put it before the amp so the drive sees the low note",
  "factory": true,

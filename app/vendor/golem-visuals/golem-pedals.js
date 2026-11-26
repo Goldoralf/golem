@@ -169,6 +169,28 @@
     if (typeof v !== 'number' || !isFinite(v)) v = (p.min + p.max) / 2;
     return -135 + 270 * Math.max(0, Math.min(1, (v - p.min) / (p.max - p.min)));
   };
+  // The value a control shows: `values` is {param id: value} in the parameter's own unit, as a golem patch
+  // stores a block's params. An enum also takes its option's name, a toggle a boolean; a missing or unreadable
+  // key leaves the default.
+  const valueOf = (p, values) => {
+    let v = values && values[p.id] != null ? values[p.id] : p.value != null ? p.value : p.default;
+    if (typeof v === 'boolean') v = v ? 1 : 0;
+    if (typeof v === 'string') {
+      const i = (p.options || []).findIndex(o => String(o).toLowerCase() === v.trim().toLowerCase());
+      v = i >= 0 ? i : v.trim() !== '' && isFinite(+v) ? +v : p.default;
+    }
+    return typeof v === 'number' && isFinite(v) ? v : (p.min + p.max) / 2;
+  };
+  // a face (or a catalogue block) with every control set to its value in `values`
+  const CONTROL_LISTS = ['knobs', 'selectors', 'toggles', 'params'];
+  function withValues(spec, values) {
+    if (!values || typeof values !== 'object') return spec;
+    const out = Object.assign({}, spec);
+    CONTROL_LISTS.forEach(k => {
+      if (Array.isArray(spec[k])) out[k] = spec[k].map(p => p && values[p.id] != null ? Object.assign({}, p, { value: valueOf(p, values) }) : p);
+    });
+    return out;
+  }
   const polar = (cx, cy, r, deg) => {
     const a = (deg - 90) * Math.PI / 180;
     return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
@@ -204,7 +226,7 @@
   // a small pointer selector, one tick per option
   function selectorClay(cx, cy, r, p, accent, inkOpacity, ink) {
     const n = (p.options || []).length || 2;
-    const idx = Math.round(p.value != null ? p.value : p.default);
+    const idx = Math.max(0, Math.min(n - 1, Math.round(p.value != null ? p.value : p.default) || 0));
     const sweep = Math.min(270, 30 * (n - 1));
     const at = i => n === 1 ? 0 : -sweep / 2 + sweep * i / (n - 1);
     let ticks = '';
@@ -224,7 +246,7 @@
 
   function toggleClay(cx, cy, p, ink) {
     const on = (p.value != null ? p.value : p.default) >= .5;
-    return `<g class="gp-toggle"><rect x="${cx - 3.2}" y="${cy - 5}" width="6.4" height="10" rx="1.6" fill="#16120f"/>
+    return `<g class="gp-toggle" data-param="${esc(p.id)}"><rect x="${cx - 3.2}" y="${cy - 5}" width="6.4" height="10" rx="1.6" fill="#16120f"/>
   <circle cx="${cx}" cy="${on ? cy - 2.4 : cy + 2.4}" r="2.1" fill="url(#gp-chrome)"/>
   <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="${FONT.gfx}" font-size="5.4" font-weight="600" fill="${ink || '#000'}" fill-opacity="${ink ? .9 : .6}">${esc(shortLabel(p.name))}</text></g>`;
   }
@@ -274,8 +296,11 @@
   // ---------- gfx: clay ----------
   function gfxPedal(crateOrSpec, opts) {
     opts = opts || {};
-    const spec = typeof crateOrSpec === 'string' ? data().gfx[crateOrSpec] : crateOrSpec;
+    let spec = typeof crateOrSpec === 'string' ? data().gfx[crateOrSpec] : crateOrSpec;
     if (!spec) return '';
+    // the controls at the block's settings: `values`, or `params` as a chain item carries them
+    const values = opts.values || opts.params;
+    if (values) { spec = withValues(spec, values); opts = Object.assign({}, opts, { values }); }
     let style = opts.style || api.style;
     if (style === 'auto') style = finishFor(spec);
     // the wide stomp (sliders) has no clay or blackwork drawing: those finishes fall back to anodized
@@ -363,6 +388,9 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     // germanium copper (gfx-fuzz's review: a third thrash-red drive pedal would be told apart by its
     // motif alone; no other pedal is copper)
     'gfx-fuzz': '#b0602a',
+    // gfx-octafuzz: the same germanium copper (gfx-fuzz's engine, its family and finish); the motif tells
+    // them apart
+    'gfx-octafuzz': '#b0602a',
     // deep scope green: separated from gfx-glitch's lime and modulation's green by lightness (L* 40)
     'gfx-tuner': '#126e1c',
     // deep plum: a darker sister of the pitch family's magenta (gfx-correct's review: ΔE00 16 from it,
@@ -378,10 +406,13 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-polysynth': '#ff9ecf',
     // deep crimson: a raw throat, the darker sister of the lofi family's raspberry (gfx-morph's design:
     // ΔE*ab 29 from raspberry, 34 from gfx-acoustic's rosewood, 35 from gfx-correct's plum)
-    'gfx-morph': '#9a0d2a' };
+    'gfx-morph': '#9a0d2a',
+    // midnight blue: a lacquered console at night, the darkest blue of the family (gfx-organ's design:
+    // ΔE*ab 41 from the eq blue, 41 from gfx-correct's plum, 43 from the dynamics slate)
+    'gfx-organ': '#20226a' };
   const THRASH_HUE = { drive: '#c8160e' };
   // the rune's light where the body's own hue would glow too dull
-  const RUNE_LIGHT = { dynamics: '#5fb0ff', preamp: '#ecb8ff', 'gfx-gapmeter': '#d8dde3', 'gfx-swell': '#ffd0dc', 'gfx-tape': '#94461a', 'gfx-widener': '#3a7fc0', 'gfx-tuner': '#3ddc2e', 'gfx-correct': '#ff5fb4', 'gfx-acoustic': '#ffc46b', 'gfx-radio': '#c8d86a', 'gfx-stretch': '#3040c8', 'gfx-polysynth': '#8a1060', 'gfx-morph': '#ff6a4d' };
+  const RUNE_LIGHT = { dynamics: '#5fb0ff', preamp: '#ecb8ff', 'gfx-gapmeter': '#d8dde3', 'gfx-swell': '#ffd0dc', 'gfx-tape': '#94461a', 'gfx-widener': '#3a7fc0', 'gfx-tuner': '#3ddc2e', 'gfx-correct': '#ff5fb4', 'gfx-acoustic': '#ffc46b', 'gfx-radio': '#c8d86a', 'gfx-stretch': '#3040c8', 'gfx-polysynth': '#8a1060', 'gfx-morph': '#ff6a4d', 'gfx-organ': '#f0e6c8' };
   const MOTIF = {
     'gfx-drive': 'flames', 'gfx-boost': 'chevrons', 'gfx-gate': 'barbed', 'gfx-comp': 'clamp', 'gfx-limiter': 'clamp',
     'gfx-deesser': 'clamp', 'gfx-wah': 'crescent', 'gfx-autowah': 'crescent', 'gfx-eq': 'curve', 'gfx-tremolo': 'pulse',
@@ -403,6 +434,7 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-widener': 'fan',
     'gfx-ducker': 'dips',
     'gfx-fuzz': 'sputter',
+    'gfx-octafuzz': 'octring',
     'gfx-tuner': 'strobe',
     'gfx-cab': 'cone',
     'gfx-irfx': 'impulse',
@@ -416,14 +448,15 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
     'gfx-polysynth': 'saws',
     'gfx-spectralcomp': 'skyline',
     'gfx-morph': 'canned',
-    'gfx-formant': 'formants' };
+    'gfx-formant': 'formants',
+    'gfx-organ': 'drawbars' };
   const METAL_STYLES = ['anodized', 'thrash'];
   // style 'auto' (the default): the finish follows the family. Aggressive families (drive, dynamics,
   // utility) are thrash, the rest anodized; the killswitch's lightning is thrash, the gap meter anodized.
   const FAMILY_FINISH = { drive: 'thrash', dynamics: 'thrash', utility: 'thrash', lofi: 'thrash' };
   // the high-gain companions (Fortin's role) and the vocal doubler have their own black finish
   // the swell removes attacks (violins, pads): anodized, against the dynamics family's thrash
-  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-swell': 'anodized', 'gfx-tape': 'anodized', 'gfx-widener': 'anodized', 'gfx-fuzz': 'anodized', 'gfx-tuner': 'anodized', 'gfx-correct': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork', 'gfx-golem': 'blackwork', 'gfx-acoustic': 'anodized', 'gfx-radio': 'thrash', 'gfx-polysynth': 'anodized' };
+  const CRATE_FINISH = { 'gfx-killswitch': 'thrash', 'gfx-gapmeter': 'anodized', 'gfx-swell': 'anodized', 'gfx-tape': 'anodized', 'gfx-widener': 'anodized', 'gfx-fuzz': 'anodized', 'gfx-octafuzz': 'anodized', 'gfx-tuner': 'anodized', 'gfx-correct': 'anodized', 'gfx-met': 'blackwork', 'gfx-emet': 'blackwork', 'gfx-shem': 'blackwork', 'gfx-golem': 'blackwork', 'gfx-acoustic': 'anodized', 'gfx-radio': 'thrash', 'gfx-polysynth': 'anodized', 'gfx-organ': 'anodized' };
   const finishFor = spec => CRATE_FINISH[spec.crate] || FAMILY_FINISH[spec.category] || 'anodized';
   let metalCount = 0;
   const f1 = v => (+v).toFixed(1);
@@ -737,6 +770,28 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         lens(rm, r1, a, 1);
         break;
       }
+      case 'drawbars': {
+        // a registration pulled out (gfx-organ). Two fields in the rune band, left and right of the
+        // cartouche, clear of the knobs: nine bars hang from a rail at the field's top edge, each a line
+        // ending in a short wide tip (2.5 × the stroke); lengths follow a registration, the left field
+        // 88 8000 000 (Trio), the right 88 8888 888 (full organ); a drawbar at 0 is its tip alone on the
+        // rail. The Hammond colours as opacity: brown (16', 5⅓') .55, white (8', 4', 2', 1') 1, black
+        // (2⅔', 1⅗', 1⅓') .75
+        const op = [.55, .55, 1, 1, .75, 1, .75, .75, 1];
+        const top = cy - ch / 2, len = ch;
+        const field = (x0, x1, reg) => {
+          line(`M${f1(x0)} ${f1(top)}H${f1(x1)}`, .45);
+          const step = (x1 - x0) / 9;
+          reg.forEach((n, i) => {
+            const x = x0 + step * (i + .5), y = top + len * n / 8;
+            if (n > 0) line(`M${f1(x)} ${f1(top)}V${f1(y)}`, op[i]);
+            line(`M${f1(x - 1.25)} ${f1(y)}H${f1(x + 1.25)}`, op[i]);
+          });
+        };
+        field(6, cx - cw / 2 - 6, [8, 8, 8, 0, 0, 0, 0, 0, 0]);
+        field(cx + cw / 2 + 6, W - 6, [8, 8, 8, 8, 8, 8, 8, 8, 8]);
+        break;
+      }
       case 'saws': {
         // a chord turned into oscillators (gfx-polysynth). Either side of the cartouche, within the
         // rune band, three sawtooth rows at cy − ch / 2, cy, cy + ch / 2 (amplitude ch / 6), periods
@@ -1007,6 +1062,24 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
         ring(r0 + 10.5, 1);
         break;
       }
+      case 'octring': {
+        // the octave: left of the rune a sine (2 periods), right of it the same sine full-wave
+        // rectified (4 arches at twice the frequency, the octave), at the same amplitude ±0.3 · ch (≤ 7);
+        // a thin pill round the cartouche at 60 %, the octave's ring. Polylines sampled every 1 px
+        const a = Math.min(7, .3 * ch), xl = cx - cw / 2 - 4, xr = cx + cw / 2 + 4, x0 = 6, x1 = W - 6;
+        line(sine(x0, xl, cy, a, (xl - x0) / 2, 0));
+        let d = '';
+        const pr = (x1 - xr) / 2;
+        for (let x = xr; x <= x1 + .01; x += 1) {
+          const v = Math.abs(Math.sin(((x - xr) / pr) * 2 * Math.PI));
+          d += (d ? 'L' : 'M') + f1(x) + ' ' + f1(cy + a - 2 * a * v);
+        }
+        line(d);
+        // the ring: a pill round the cartouche, as tall as the waves plus 3 units each side
+        const h = 2 * a + 6;
+        line(pill(cx - cw / 2 - 1, cy - h / 2, cw + 2, h), .6);
+        break;
+      }
       case 'sputter': {
         // a square wave each side of the rune, gating out towards it: each pulse narrower and lower
         // (widths 6 : 4.5 : 3 : 2, heights 100 / 75 / 50 / 30 %), the last two fading (60 / 35 %);
@@ -1262,11 +1335,6 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
   // fixed width (168, never driven by a parameter: the pedalboard must not reflow), one slider per fader
   // of the set the enum picks, the level slider set apart, a line through the caps when on.
   const WIDE_SLOT = { top: 16, bottom: 100, mid: 58, half: 42 };
-  const valueOf = (p, values) => {
-    let v = values && values[p.id] != null ? values[p.id] : p.value != null ? p.value : p.default;
-    if (typeof v === 'string' && p.options) v = Math.max(0, p.options.indexOf(v));
-    return typeof v === 'number' && isFinite(v) ? v : (p.min + p.max) / 2;
-  };
   // a monotone cubic through points equally spaced in x (Fritsch – Carlson), as Bézier segments
   function monotonePath(pts) {
     const n = pts.length;
@@ -1318,8 +1386,10 @@ ${stompSwitch(W / 2, H - 21, 8.5)}
       pts.push([x, capY(p)]);
     });
     if (lvl) sliders += slider(lvl, x0 + pitch * (faders.length + .5) + gap, 'LVL', accent, style === 'thrash' ? '#000' : mix(c.hue, '#000', .6));
+    // in a group of its own, with the faders it passes through and their exact places: gfx-ui's build-ui.js
+    // cuts it out and the editor draws it from the caps
     const curve = on && pts.length > 1
-      ? `<path d="${monotonePath(pts)}" fill="none" stroke="${c.light}" stroke-width="1.6" opacity=".55" filter="url(#gp-glow-soft)"/><path d="${monotonePath(pts)}" fill="none" stroke="${mix(c.light, '#fff', .5)}" stroke-width=".7"/>` : '';
+      ? `<g class="gp-curve" data-params="${faders.map(p => esc(p.id)).join(' ')}" data-x="${pts.map(q => q[0]).join(' ')}" data-slot="${S.top} ${S.bottom}"><path d="${monotonePath(pts)}" fill="none" stroke="${c.light}" stroke-width="1.6" opacity=".55" filter="url(#gp-glow-soft)"/><path d="${monotonePath(pts)}" fill="none" stroke="${mix(c.light, '#fff', .5)}" stroke-width=".7"/></g>` : '';
 
     const body = style === 'thrash'
       ? `<rect x="0" y="5" width="${W}" height="${H}" rx="${rx}" fill="${c.base}"/>
@@ -1523,7 +1593,7 @@ ${parts}
   function knobEnamel(cx, cy, r, p) {
     const a = angleOf(p);
     const [px, py] = polar(cx, cy, r * .95, a), [qx, qy] = polar(cx, cy, r * .45, a);
-    return `<g class="gp-knob"><circle cx="${cx}" cy="${cy + 1.6}" r="${r + 2.4}" fill="#000" opacity=".35"/>
+    return `<g class="gp-knob" data-param="${esc(p.id)}"><circle cx="${cx}" cy="${cy + 1.6}" r="${r + 2.4}" fill="#000" opacity=".35"/>
   <circle cx="${cx}" cy="${cy}" r="${r + 2.4}" fill="#16130f"/>
   <circle cx="${cx}" cy="${cy}" r="${r + 2.4}" fill="none" stroke="#000" stroke-width="1.6" stroke-dasharray=".8 1.2"/>
   <circle cx="${cx}" cy="${cy}" r="${r * .62}" fill="url(#gp-chrome)"/>
@@ -1586,6 +1656,7 @@ ${glyphAt(block.type, W / 2, 92, 25, mix(hue, '#000', .35), 2)}
 
   function genericPedal(block, opts) {
     opts = opts || {};
+    block = withValues(block, opts.values || opts.params);
     if (isMidi(block) && block.category === 'pitch') return enamelTreadle(block, opts);
     const on = opts.on !== false;
     const hue = hueOf(block.color, block.category);

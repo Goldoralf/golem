@@ -29,9 +29,9 @@ a314fdb9e70626a273b5e6661ed0f63a57226c277c05b460e8656655359b0237  https://github
 # rustup (provision/install-spectral.sh, audit 2026-11-04 M8) : l'installateur versionné, plus de curl | sh non vérifié
 20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c  https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-gnu/rustup-init
 e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c  https://static.rust-lang.org/rustup/archive/1.28.2/aarch64-unknown-linux-gnu/rustup-init
-# golem-fx (les effets de golem, GPL-3) — release golem-fx-0.7 de Goldoralf/golem-binaries (golem-fx ea689aa, empreinte
+# golem-fx (les effets de golem, GPL-3) — release golem-fx-0.8 de Goldoralf/golem-binaries (golem-fx ef58874, empreinte
 # recalculée sur l'archive et comparée au SHA256SUMS de la release, 2026-11-26) ; provision/install-golem-fx.sh. Windows et macOS : leurs pins.json (clé golem_fx).
-d81a0eb5751d93fd51354233cad9d0217a8387d69a30baa15b24af2da7f5fbe5  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.7/golem-fx-linux-x86_64.tar.gz
+b3864893ee02c0389c848963fbca291fe2e5793d0f5b7d325048888ed99a9310  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8/golem-fx-linux-x86_64.tar.gz
 
 # Golem Engine (le moteur audio de golem, construit depuis Ardour, GPL-2.0-or-later) — release golem-engine-9.9-g3 de
 # Goldoralf/golem-binaries (golem-engine 9c7e092, conteneur ubuntu:22.04 ; empreinte recalculée sur l'archive téléchargée

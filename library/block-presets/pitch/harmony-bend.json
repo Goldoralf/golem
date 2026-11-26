@@ -1,0 +1,46 @@
+{
+ "id": "harmony-bend",
+ "type": "pitch",
+ "name": "Harmony that bends",
+ "desc": "An in-key third above, and a whole step up off it on the switch: a twin-lead bend into the note",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock",
+  "heavy-metal"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "level_db": 1,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "shift": 4,
+  "mix": 50,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Scale",
+  "key": "E",
+  "scale": "Minor",
+  "bend": false,
+  "interval": 2,
+  "rise": 150,
+  "fall": 150,
+  "curve": "Smooth",
+  "rest": "Mix"
+ },
+ "notes": "Key placeholder (golem sets it per song). The bend is chromatic: +2 is a whole step above the in-key third; interval 1 for a half step",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

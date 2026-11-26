@@ -28,7 +28,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 120
+  "bass_keep": 120,
+  "fat": false,
+  "contour": 70
  },
  "notes": "bass_keep sends the low band through the filter and output stage only: grit on top, the low end clean",
  "factory": true,

@@ -32,7 +32,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "glide 300 ms makes a scene switch crawl up to +24 rather than jump; with an expression pedal on shift, set glide 0",
  "factory": true,

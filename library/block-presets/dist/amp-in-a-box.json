@@ -29,7 +29,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "Two op-amp stages with the clip between them: louder and more open than a TS",
  "factory": true,

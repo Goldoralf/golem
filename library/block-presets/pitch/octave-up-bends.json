@@ -30,7 +30,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Put the expression pedal on shift 0 → +12; glide 0 so the pedal is the bend. Single notes only",
  "factory": true,

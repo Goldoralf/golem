@@ -27,7 +27,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "The filter does the voicing: 45 % puts its corner near 3.5 kHz",
  "factory": true,

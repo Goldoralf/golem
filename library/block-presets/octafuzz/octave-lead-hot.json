@@ -1,0 +1,42 @@
+{
+ "id": "octave-lead-hot",
+ "type": "octafuzz",
+ "name": "Octave lead, hot",
+ "desc": "Raised bias and a 12 V supply: Q3 further from saturation, the octave holds on harder picking",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "psychedelic-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "bright"
+ ],
+ "params": {
+  "fuzz": 70,
+  "octave": 100,
+  "tone": 0,
+  "level": -3,
+  "guitar_vol": 100,
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 60,
+  "temp": 25,
+  "voltage": 12,
+  "sag": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "bias_v ≈ 7.5 V at 12 V (4.9 V stock at 9 V): more headroom before the duty moves; to be judged by ear",
+ "factory": true,
+ "golem_fx_seed": "gfx-octafuzz",
+ "golem_fx": true
+}

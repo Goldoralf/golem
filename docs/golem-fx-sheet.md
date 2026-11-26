@@ -107,6 +107,25 @@ seeded (223 files):
 `force`, Swell `fire`: the foot chip sends no release), values written from context (Bass DI `low_note`, Fuzz `pickup`,
 Radio `mains`) and the latency re-sync when a preset changes a setup setting.
 
+**Catalogue v52** (golem-fx 0.8, ef58874; the visuals and the presets synced at 189293e, which only adds AI-guide
+rules) adds two more, golem-fx only, status `testing`, with their factory presets (14 + 5):
+
+| Type | Name | Category | Roles | What golem must know |
+|---|---|---|---|---|
+| `guitar-organ` | Guitar Organ | pitch | guitar, bass | tonewheel organ from the DI, no MIDI (gfx-organ). First in the lane on a clean DI, never after a drive. The expert settings use the `organ` block's ids (drawbars `db16`…`db1`, `perc*`, `vibrato`); `leslie` (shown "Rotor") keeps the Organ's values `stop`/`slow`/`fast`, so a scene switches it the same way. New: the full registration arrives 90–170 ms after the pick, and a re-picked string can leave a ghost note at −12 to −17 dB. ~6 % of a core |
+| `octafuzz` | Octafuzz | drive | guitar | transformer octave fuzz (gfx-octafuzz): gfx-fuzz's settings plus `octave`. Octave and Guitar Vol on the EXP. **~38 % of a core in mono**, one per lane; `pickup` and `input` should follow the lane's instrument, as for Fuzz (not written yet) |
+
+golem-fx 0.8 also changes two existing blocks:
+
+- **Dist** gains three circuits **at the end** of `circuit` (Discrete OD, Studio OD, Plexi Dist; 7 options), and two
+  expert settings (`fat`, `contour`). The old circuits render bit for bit as in 0.7. Under REAPER an enum is written
+  normalized, index/(n−1): the catalogue's 7 options and golem-fx-plugins.json's `n = 7` must ship **with** the 0.8
+  plugin. With a 0.7 plugin, Booster Dist would play Blend OD, Blend OD would play Discrete OD, and MOSFET OD would
+  play Plexi Dist.
+- **Pitch** gains a bend (`bend`, `interval`, `rise`, `fall`, `curve`, `rest`; Golem Engine and golem-fx only, from the
+  descriptor). `bend` is a gesture: it is never saved at on in a preset or a scene. Its momentary footswitch needs a
+  release message, which the foot chip does not send yet; only the latched use works.
+
 Their pedals have their own **Blackwork** finish (black lacquer, an engraved skull whose eyes light in the pedal's
 colour; names in Pirata One, vendored with the other OFL fonts) — golem-fx d70807d, the maintainer's decision.
 

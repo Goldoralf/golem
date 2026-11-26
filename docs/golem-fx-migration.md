@@ -96,10 +96,18 @@ from the seven blocks that carried it: no catalogue block is pending any more, s
   pedal. The descriptors' `structural` flag is NOT used for this: it also marks settings played per scene or by foot
   (rotary speed, reverb freeze, delay time).
 
+### Catalogue v52: Guitar Organ and Octafuzz (2026-11-26)
+
+- `guitar-organ` (gfx-organ) and `octafuzz` (gfx-octafuzz) are new golem-fx-only blocks from golem-fx 0.8
+  ([golem-fx-sheet.md](golem-fx-sheet.md) §4), with 14 and 5 presets. Dist gains three circuits and Pitch a bend.
+- The catalogue (Dist's 7 circuits) and the plugin table (`n = 7`) go out **with the 0.8 pin**. They must not reach a
+  rack that still runs the 0.7 plugin, or three Dist circuits play the wrong netlist.
+- Not done yet: the stall bench for both blocks, and the Pitch bend's momentary footswitch.
+
 ### golem-fx in the installers (2026-11-15)
 
-**CODED** — the installers ship golem-fx **0.6** (pinned 2026-11-17 — same pedal code as 0.5, rebuilt; 0.5 on 2026-11-15, 0.4 before that) (prebuilt release `golem-fx-0.6` in Goldoralf/golem-binaries, golem-fx
-ca0d494, 56 VST3, incl. Formant, Morph and Spectral Comp) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
+**CODED** — the installers ship golem-fx **0.8** (pinned 2026-11-26: Organ, Octafuzz, three new Dist circuits, Pitch's bend; 0.7 earlier that day, the editor only; 0.6 on 2026-11-17; 0.5 on 2026-11-15, 0.4 before that) (prebuilt release `golem-fx-0.8` in Goldoralf/golem-binaries, golem-fx
+ef58874, 58 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
 Windows and macOS now play golem-fx blocks when the plugin is installed, as Linux does
 ([golem-fx-reaper.md](golem-fx-reaper.md)). The golem-fx-only blocks (Met, Emet, Shem, Tape, Glitch…) are therefore
 offered on Windows and macOS too. The third-party fallbacks — guitarix, Calf, Dragonfly, ZamAudio and the rest of the
@@ -124,12 +132,12 @@ Generated from the catalogue by `tools/golem-fx-progress.py` (the test suite che
 catalogue change).
 
 <!-- golem-fx-progress:begin -->
-**55 of 60 effect blocks** are played by golem-fx; 5 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
+**57 of 62 effect blocks** are played by golem-fx; 5 are ready in golem-fx and not wired yet; 0 have no golem-fx counterpart yet.
 
 | Status | Blocks |
 |---|---|
 | Played by golem-fx, replacing an open-source plugin (33) | `gate`, `comp`, `eq`, `chorus`, `flanger-js`, `phaser-js`, `tremolo`, `killswitch`, `wah`, `wah-color`, `autowah`, `delay`, `reverb`, `pitch-shift-js`, `pitch`, `volume`, `clean-boost`, `reverb-plate`, `reverb-room`, `reverb-shimmer`, `rotary`, `eq-graphic`, `limiter`, `deesser`, `granular`, `octaver`, `vibrato`, `pitch-correct`, `detune`, `ringmod`, `surge-treemonster`, `spectral-comp`, `guitar-drive` |
-| Played by golem-fx, new blocks with no open-source original (22) | `grit`, `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `formant`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth` |
+| Played by golem-fx, new blocks with no open-source original (24) | `grit`, `golem-double`, `glitch`, `met`, `emet`, `shem`, `swell`, `transient`, `mb-comp`, `ducker`, `widener`, `bass-di`, `tape`, `dist`, `fuzz`, `radio`, `morph`, `formant`, `vocoder`, `acoustic-sim`, `sustainer`, `polysynth`, `guitar-organ`, `octafuzz` |
 | … of which the engine-stall bench is still pending (1) | `grit` |
 | Ready in golem-fx, not wired yet (5) | `cab` (gfx-cab, today x42 - IR Convolver Mono), `bitcrusher` (gfx-crusher, today MDA Degrade), `surge-freqshift` (gfx-freqshift, today Surge XT Effects), `ir-fx` (gfx-irfx, today x42 - IR Convolver Stereo), `stretch` (gfx-stretch, today PaulXStretch (Sonosaurus)) |
 | No golem-fx counterpart yet (0) |  |

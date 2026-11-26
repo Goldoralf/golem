@@ -1,0 +1,41 @@
+{
+ "id": "studio-crunch",
+ "type": "dist",
+ "name": "Studio crunch",
+ "desc": "Upper-mid pre-emphasis into two clippers, lows tightened: a session-player rhythm crunch",
+ "inst": "guitar",
+ "genres": [
+  "folk",
+  "rock"
+ ],
+ "subgenres": [
+  "contemporary-country",
+  "country-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Studio OD",
+  "gain": 35,
+  "tone_stack": 55,
+  "level": 2.5,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 120,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "Tight 120 Hz stands in for the clones' Bass knob: the stock bass shelf is huge",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

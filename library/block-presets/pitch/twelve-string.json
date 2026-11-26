@@ -32,7 +32,13 @@
   "fine": 5,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "fine +5 ct keeps the octave from fusing with the dry, as real octave strings drift",
  "factory": true,

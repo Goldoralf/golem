@@ -1,0 +1,46 @@
+{
+ "id": "switch-dive-bomb",
+ "type": "pitch",
+ "name": "Dive bomb on a switch",
+ "desc": "Two octaves down over 1.5 s while held, a fast snap back on release: the dive without a treadle",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "heavy-metal",
+  "glam-metal",
+  "hard-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "level_db": 0,
+ "tags": [
+  "extreme"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": -24,
+  "rise": 1500,
+  "fall": 150,
+  "curve": "Smooth",
+  "rest": "Dry"
+ },
+ "notes": "Single notes. Smooth eases out of the note and into the bottom; the return takes 150 ms",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

@@ -1,0 +1,41 @@
+{
+ "id": "edge-of-breakup",
+ "type": "dist",
+ "name": "Edge of breakup",
+ "desc": "Discrete op-amp stage clipping softly on its rails: cleans up with the guitar's volume",
+ "inst": "guitar",
+ "genres": [
+  "blues"
+ ],
+ "subgenres": [
+  "electric-blues",
+  "modern-electric-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "warm",
+  "subtle"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Discrete OD",
+  "gain": 35,
+  "tone_stack": 35,
+  "level": 2.5,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "Tone below noon tames the circuit's famous treble; stage 2 breaks up unevenly, the even order of its class-A output",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

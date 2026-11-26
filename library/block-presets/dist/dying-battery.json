@@ -30,7 +30,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "A tired battery: less headroom and an earlier, uneven breakup as notes decay",
  "factory": true,

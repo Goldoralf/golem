@@ -1,0 +1,46 @@
+{
+ "id": "seven-string-switch",
+ "type": "pitch",
+ "name": "Low note on demand",
+ "desc": "The guitar a fourth lower while the switch is on: the 7-string drop without retuning",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "djent",
+  "nu-metal",
+  "progressive-metal"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "modern",
+  "dark"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": -5,
+  "rise": 0,
+  "fall": 0,
+  "curve": "Linear",
+  "rest": "Dry"
+ },
+ "notes": "A latching footswitch on bend: on = 5 st down, polyphonic. rest Dry keeps the open guitar exactly as it was",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

@@ -1,6 +1,6 @@
 {
  "_comment": "FX blocks = building bricks of GoleM chains. `plugin` = name for TrackFX_AddByName on the Reaper side (adjust to the install). `engine`: 'plugin' (FX in the chain) or 'midi' (Whammy DT driven over MIDI out, not a plugin). Params are normalized 0..1 on the Reaper side (we store an indicative default).",
- "catalog_version": 51,
+ "catalog_version": 52,
  "_ir_fx_comment": "v46 — `ir-fx` (2026-11-14, docs/library-tones.md §8): a stereo convolver that plays a whole impulse response (outboard IR packs: springs, echoes, reverb boxes). The compile never cuts its IR before a late echo (the Cab block's guard); bridge/playable.py routes (outboard, ir) and long (pedal, ir) packs to it.",
  "_golem_fx_only_comment": "v43/v44/v45 — blocks that ONLY golem-fx plays (met, emet, shem; golem-double, v44, 2026-11-13; glitch, v45, 2026-11-14; v47, 2026-11-15: swell, transient, mb-comp, ducker, widener, bass-di, tape, dist, fuzz, radio, vocoder, acoustic-sim, sustainer, polysynth): no original plugin exists. Their `quarantine` says so: bridge/rig.py lifts a quarantine wherever golem-fx plays the type (Golem Engine; REAPER with the plugin installed), so the drawer, the AI vocabulary and the compile see them there and nowhere else. Their params are the pedal's front panel; the expert groups come from golem-fx's descriptor (docs/golem-fx-sheet.md).",
  "_index_fallback_comment": "v36 — per-param `index_fallback: false`: golem_rig.lua never falls back to the parameter's numeric rank when its name is not found on the plugin (the default fallback, which some blocks rely on). autowah's Wah does not exist on GxAutoWah (Linux): its rank 0 landed on the plugin's BYPASS port and 0.45 switched the effect off (measured 2026-11-12, preset bench on two engines).",
@@ -6173,7 +6173,10 @@
       "Op-Amp Dist",
       "Booster Dist",
       "Blend OD",
-      "MOSFET OD"
+      "MOSFET OD",
+      "Discrete OD",
+      "Studio OD",
+      "Plexi Dist"
      ],
      "default": "Op-Amp Dist"
     },
@@ -6208,7 +6211,7 @@
      "exp": true
     }
    ],
-   "note": "golem-fx circuit-simulated distortions: op-amp dist, booster dist, blend overdrive, MOSFET overdrive (Circuit). Heavy on the processor (about 20 % of a core in mono): count it in the lane's budget.",
+   "note": "golem-fx circuit-simulated distortions: op-amp dist, booster dist, blend overdrive, MOSFET overdrive, discrete overdrive, studio overdrive, Plexi-style dist (Circuit; the last three since golem-fx 0.8). Heavy on the processor (about 20 % of a core in mono; Discrete OD and Plexi Dist up to 25 to 50 % in the worst case): count it in the lane's budget.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   },
   {
@@ -6843,6 +6846,164 @@
     }
    ],
    "note": "golem-fx guitar synth with no MIDI and no hex pickup. Spectral turns every partial into a waveform (chords play polyphonically); Mono is one tracked voice with exact bends. Put it first in the lane on a clean DI. The heaviest golem-fx pedal (7 to 8 % of a core): count it in the lane's budget.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+  },
+  {
+   "type": "guitar-organ",
+   "name": "Guitar Organ",
+   "category": "pitch",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Organ (GoleM)",
+   "short": "Organ",
+   "color": "#b06ad4",
+   "roles": [
+    "guitar",
+    "bass"
+   ],
+   "params": [
+    {
+     "id": "register",
+     "name": "Register",
+     "type": "enum",
+     "options": [
+      "Tutti",
+      "Trio",
+      "Choir",
+      "Bark",
+      "Nave",
+      "Chime",
+      "Velvet",
+      "Combo",
+      "Coupler",
+      "Custom"
+     ],
+     "default": "Trio"
+    },
+    {
+     "id": "organ",
+     "name": "Organ",
+     "min": -60,
+     "max": 12,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "dry",
+     "name": "Dry",
+     "min": -60,
+     "max": 0,
+     "default": -60,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "mod",
+     "name": "Mod",
+     "min": 0,
+     "max": 100,
+     "default": 50,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "click",
+     "name": "Click",
+     "min": 0,
+     "max": 100,
+     "default": 30,
+     "unit": "%",
+     "fmt": 0
+    },
+    {
+     "id": "leslie",
+     "name": "Rotor",
+     "type": "enum",
+     "options": [
+      "stop",
+      "slow",
+      "fast"
+     ],
+     "default": "slow",
+     "note": "Same ids and values as the Organ block (stop / slow / fast), so a scene or a stomp switches the Rotor the way it switches the Leslie."
+    }
+   ],
+   "note": "golem-fx tonewheel organ played from a guitar or bass DI, with no MIDI: each string becomes an organ note, with drawbars, percussion, scanner vibrato and a Rotor (its expert settings use the Organ block's ids). Put it first in the lane on a clean DI, before any drive. New in golem-fx 0.8: the full registration blooms 90 to 170 ms after the pick (the 8' about 20 ms), and a re-picked string can leave a faint ghost note. About 6 % of a core.",
+   "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
+  },
+  {
+   "type": "octafuzz",
+   "name": "Octafuzz",
+   "category": "drive",
+   "engine": "plugin",
+   "plugin": "VST3: GoleM FX Octafuzz (GoleM)",
+   "short": "Octafuzz",
+   "color": "#b0602a",
+   "roles": [
+    "guitar"
+   ],
+   "params": [
+    {
+     "id": "fuzz",
+     "name": "Fuzz",
+     "min": 0,
+     "max": 100,
+     "default": 70,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "octave",
+     "name": "Octave",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "tone",
+     "name": "Tone",
+     "min": -100,
+     "max": 100,
+     "default": 0,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "level",
+     "name": "Level",
+     "min": -24,
+     "max": 24,
+     "default": 0,
+     "unit": "dB",
+     "fmt": 1,
+     "exp": true
+    },
+    {
+     "id": "guitar_vol",
+     "name": "Guitar Vol",
+     "min": 0,
+     "max": 100,
+     "default": 100,
+     "unit": "%",
+     "fmt": 0,
+     "exp": true
+    },
+    {
+     "id": "buffer",
+     "name": "Buffer",
+     "type": "bool",
+     "default": false
+    }
+   ],
+   "note": "golem-fx transformer octave fuzz, simulated as a circuit with the guitar in front: the octave above blooms on held and high notes, the pick attack stays a fuzz. Octave and Guitar Vol are the EXP's natural targets. First after the input, before the amp. Very heavy on the processor (about 38 % of a core, mono): one per lane, and count it in the lane's budget.",
    "quarantine": "golem-fx only: no original plugin plays this block. Offered where golem-fx plays it (Golem Engine, or REAPER with the plugin installed); elsewhere out of the drawer, the AI vocabulary and the compile."
   }
  ],

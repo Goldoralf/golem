@@ -1,0 +1,42 @@
+{
+ "id": "octave-bloom",
+ "type": "octafuzz",
+ "name": "Octave bloom",
+ "desc": "The pick attack in fuzz, the octave growing as the note decays and the input clamp lets go",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "stoner-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dreamy"
+ ],
+ "params": {
+  "fuzz": 60,
+  "octave": 100,
+  "tone": 0,
+  "level": 1.5,
+  "guitar_vol": 100,
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "voltage": 9,
+  "sag": 0,
+  "input": -6,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "Hold single notes: the coupling capacitors release the bias over a few tens of ms and the octave swells in",
+ "factory": true,
+ "golem_fx_seed": "gfx-octafuzz",
+ "golem_fx": true
+}

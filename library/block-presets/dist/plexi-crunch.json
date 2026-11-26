@@ -1,0 +1,40 @@
+{
+ "id": "plexi-crunch",
+ "type": "dist",
+ "name": "Plexi crunch",
+ "desc": "Three op-amp gain stages with a bright cap at low gain, mids kept: a cranked-stack rhythm",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Plexi Dist",
+  "gain": 40,
+  "tone_stack": 55,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "Into a clean amp; the contour at 70 % keeps the mids forward",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

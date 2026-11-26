@@ -31,7 +31,13 @@
   "fine": 0,
   "harmony": "Scale",
   "key": "E",
-  "scale": "Minor"
+  "scale": "Minor",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Scale: shift 4 = a third in the scale; golem sets key / scale per song (E minor is the placeholder). Single notes; bends hold the old interval",
  "factory": true,

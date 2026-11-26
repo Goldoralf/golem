@@ -31,7 +31,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Fixed interval, so it stays parallel (not in key): right for riffs, wrong for melodic leads (see twin-lead-third)",
  "factory": true,

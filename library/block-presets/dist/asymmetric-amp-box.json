@@ -29,7 +29,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "The rarer germanium version: 0.6 / 0.9 V clipping, a touch of 2nd harmonic",
  "factory": true,

@@ -31,7 +31,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "The dry is delayed by the 12 ms latency so the blend stays coherent. For a synth-like sub use gfx-octaver",
  "factory": true,

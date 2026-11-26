@@ -1,0 +1,45 @@
+{
+ "id": "capo-jump",
+ "type": "pitch",
+ "name": "Bend from a capo",
+ "desc": "The expression pedal sets a capo on shift, the switch jumps an octave up from wherever the foot is",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "indie-rock",
+  "post-rock"
+ ],
+ "gain": "any",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "modern"
+ ],
+ "default": false,
+ "params": {
+  "shift": -5,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 80,
+  "fall": 120,
+  "curve": "Linear",
+  "rest": "Mix"
+ },
+ "notes": "Expression pedal on shift (rest −5 … 0), bend on a footswitch: the octave rides on the foot",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

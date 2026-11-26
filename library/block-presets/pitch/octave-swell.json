@@ -1,0 +1,47 @@
+{
+ "id": "octave-swell",
+ "type": "pitch",
+ "name": "Octave lift into a chorus",
+ "desc": "An octave up swells in under the chords over 3 s and back out over 2 s: a pad lift on the switch",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "pop"
+ ],
+ "subgenres": [
+  "post-rock",
+  "shoegaze",
+  "dream-pop"
+ ],
+ "gain": "clean",
+ "use": "texture",
+ "level_db": 1,
+ "tags": [
+  "dreamy",
+  "wide"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "mix": 50,
+  "engine": "Poly",
+  "tracking": "Stable",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 3000,
+  "fall": 2000,
+  "curve": "Smooth",
+  "rest": "Dry"
+ },
+ "notes": "Latching. The dry stays under the rising octave, 0 dB at both ends",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

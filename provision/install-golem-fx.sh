@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# golem-fx (les effets de golem, GPL-3) sous Linux : la release précompilée golem-fx-0.7 de Goldoralf/golem-binaries,
+# golem-fx (les effets de golem, GPL-3) sous Linux : la release précompilée golem-fx-0.8 de Goldoralf/golem-binaries,
 # épinglée dans provision/downloads.sha256 (fetch_verified la refuse si son empreinte change), posée dans ~/.vst3 —
 # le dossier que REAPER parcourt et que bridge/rig.py lit (_golem_fx_installed). Au reçu d'install : le désinstalleur
 # retire chaque bundle. Un build de dev de tools/golem-fx-install.py (son journal) est GARDÉ, et la ligne le dit.
@@ -10,7 +10,7 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$HERE/lib-fetch.sh"
-GFX_VERSION="0.7"
+GFX_VERSION="0.8"
 GFX_ASSET="golem-fx-linux-x86_64.tar.gz"
 GFX_URL="https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-${GFX_VERSION}/${GFX_ASSET}"
 case "$(uname -m)" in

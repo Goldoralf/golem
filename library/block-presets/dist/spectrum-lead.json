@@ -1,0 +1,40 @@
+{
+ "id": "spectrum-lead",
+ "type": "dist",
+ "name": "Spectrum lead",
+ "desc": "Bright Spectrum over a bass shelf that saturates on low notes: a singing overdrive lead",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "classic-rock",
+  "hard-rock"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "bright"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Studio OD",
+  "gain": 75,
+  "tone_stack": 75,
+  "level": -3.5,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "IC2B clips on its rails on low notes: the low end compresses while the top stays open",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

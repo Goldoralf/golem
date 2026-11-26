@@ -31,7 +31,13 @@
   "fine": 0,
   "harmony": "Scale",
   "key": "E",
-  "scale": "Minor"
+  "scale": "Minor",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Scale: shift 4 = third, shift2 7 = fifth above. Key placeholder; voice 2 −4 dB keeps the third as the main harmony",
  "factory": true,

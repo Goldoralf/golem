@@ -326,8 +326,8 @@ ${plugs}
 </svg>`;
   }
 
-  // golem's lane chain -> render() items. chain: golem's {pre, split, post} (lanes v2) or a flat block
-  // list; state: a lane state ({blocks: {id: on}, branches: {id: {mute}}}) to draw the scene as it plays.
+  // golem's lane chain -> render() items. chain: golem's {pre, split, post} (lanes v2), {chain: [blocks]} or a
+  // flat block list (any other form throws); state: a lane state ({blocks: {id: on}, branches: {id: {mute}}}) to draw the scene as it plays.
   // Capture labels resolve to the catalogue's archetypes, never to a maker's name.
   function fromGolem(chain, state) {
     state = state || {};
@@ -351,11 +351,19 @@ ${plugs}
         }
         // an outboard capture keeps its label: the rack unit and the 500 module read their setting from it
         if (b.label != null && /^(preamp-nam|comp-nam|ir-fx)$/.test(b.type)) it.label = b.label;
+        // an instrument (keys, pads, drum kit) is drawn from its sound: its params and name go with it
+        if (familyOf(b.type) === 'instrument') { if (b.label != null) it.label = b.label; if (b.title != null) it.title = b.title; }
+        // the block's settings go with it: a pedal turns its knobs to them, an instrument reads its sound in them
+        if (b.params && typeof b.params === 'object') it.params = b.params;
         return it;
       });
     };
     if (Array.isArray(chain)) return conv(chain);
     chain = chain || {};
+    // the linear form golem writes for keys, voice and drum lanes (and part of the factory): {chain: [blocks]}
+    if (Array.isArray(chain.chain)) return conv(chain.chain);
+    if (Object.keys(chain).length && !['pre', 'split', 'post'].some(k => k in chain))
+      throw new Error(`GolemStage.fromGolem: unknown chain form {${Object.keys(chain).join(', ')}}: expected a block list, {chain: [...]} or {pre, split, post}`);
     const out = conv(chain.pre);
     if (chain.split && (chain.split.branches || []).length) {
       out.push({ split: { mode: chain.split.mode, gain: chain.split.gain, branches: chain.split.branches.map(br => ({
@@ -364,5 +372,16 @@ ${plugs}
     return out.concat(conv(chain.post));
   }
 
-  root.GolemStage = { render, fromGolem, stageBox, splitBox };
+  // a whole lane -> render() items. lane: golem's lane ({chain, states, …}); state: a lane state object, the id
+  // or name of one of lane.states, or nothing for the lane's first state.
+  function fromLane(lane, state) {
+    lane = lane || {};
+    const states = lane.states || [];
+    const st = state && typeof state === 'object' ? state
+      : state != null ? states.find(x => x.id === state || x.name === state) : states[0];
+    if (state != null && typeof state !== 'object' && !st) throw new Error(`GolemStage.fromLane: lane "${lane.id || lane.name || '?'}" has no state "${state}"`);
+    return fromGolem(lane.chain, st);
+  }
+
+  root.GolemStage = { render, fromGolem, fromLane, stageBox, splitBox };
 })(typeof window !== 'undefined' ? window : globalThis);

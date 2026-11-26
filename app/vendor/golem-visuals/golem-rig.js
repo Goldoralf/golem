@@ -11,7 +11,9 @@
 //
 // chain: GolemStage.render()'s items (block types, {type, on, …} objects, {split: {…}}), so
 // GolemRig.sections(GolemStage.fromGolem(lane.chain, laneState)) draws a golem lane.
-// A section: {key: 'pre' | 'outboard' | 'amp' | 'post' | 'tools', label, items}. Each item keeps its path in
+//   GolemRig.fromLane(lane, state, opts)                   a golem lane -> its sections (needs golem-stage.js)
+//   GolemRig.presetCard(lanes, {floor, seed})              the picture of a preset: one cell per lane
+// A section: {key: 'instrument' | 'pre' | 'outboard' | 'amp' | 'post' | 'tools', label, items}. Each item keeps its path in
 // the chain as `idx` ("3", or "3.1.0" inside a branch) and is drawn with data-idx; a block of a split's branch
 // carries `branch` (its letter) and a tape with data-split / data-branch / data-b, as GolemStage does.
 // Needs golem-pedals.js and its defs().
@@ -44,7 +46,7 @@
   function sections(chain, opts) {
     opts = opts || {};
     const rackMode = opts.outboard !== 'board', feat = opts.features || 'tab';
-    const pre = [], post = [], amps = [], ob = [], tools = [];
+    const pre = [], post = [], amps = [], ob = [], tools = [], inst = [];
     let obAfter = false;
     const norm = c => (typeof c === 'string' ? { type: c } : c);
     // one series of blocks; `seen`: an amp already came before. Returns whether one has come by its end.
@@ -64,9 +66,10 @@
         }
         const x = Object.assign({}, it, { idx }, br ? { branch: br.letter, branchInfo: br } : {}, br && br.mute ? { on: false, muted: true } : {});
         if (P().isFeature(x.type) && feat !== 'inline') { if (feat === 'tab') tools.push(x); continue; }
+        if (familyOf(x.type) === 'instrument' && feat !== 'inline-instruments') { inst.push(x); continue; }
         if (isAmp(x)) {
           const nx = list[i + 1] && norm(list[i + 1]);
-          if (isHead(x) && nx && isCab(nx)) {            // a head and its cab stand as one stack
+          if (!isCab(x) && nx && isCab(nx)) {            // an amp and the cab after it stand as one stack
             amps.push(Object.assign({}, x, { type: 'amp', family: x.family || nx.family, size: nx.size || nx.title, cabTitle: nx.title }));
             i++;
           } else amps.push(x);
@@ -80,6 +83,7 @@
     }
     walk(chain || [], '', false, null);
     const sec = [];
+    if (inst.length) sec.push({ key: 'instrument', label: inst.every(x => x.type === 'drumkit') ? 'Drums' : inst.every(x => x.type === 'pads') ? 'Pads' : inst.some(x => x.type === 'drumkit' || x.type === 'pads') ? 'Instruments' : 'Keys', items: inst });
     if (pre.length) sec.push({ key: 'pre', label: amps.length ? 'Pedals · pre' : 'Pedals', items: pre });
     if (ob.length && !obAfter) sec.push({ key: 'outboard', label: 'Outboard', items: ob });
     if (amps.length) sec.push({ key: 'amp', label: amps.length > 1 ? 'Heads / Cabs' : amps[0].type === 'amp' ? 'Head / Cab' : 'Amp', items: amps });
@@ -360,7 +364,45 @@
       ${[[0, 0], [1, 0], [0, 1], [1, 1]].map(([cx, cy]) => `<circle cx="${f(x + pad * .5 + cx * (cw - pad))}" cy="${f(y + pad * .5 + cy * (ch - pad))}" r="${f(pad * .42)}" fill="url(#gp-chrome)"/>`).join('')}`;
   }
 
-  const inner = (id, sec, W, H, o) => (sec.key === 'amp' ? amps : sec.key === 'outboard' ? outboard : pedals)(id, sec, W, H, o);
+  // ---------- the instrument of a keys, pads or drums lane, from above: the keyboard, the pads, the kit ----------
+  const pretty = s => String(s || '').replace(/^.*\//, '').replace(/\.[a-z0-9]+$/i, '').replace(/^(drums|pads|kit)-/, '').replace(/[_-]+/g, ' ').trim().replace(/\b\w/g, c => c.toUpperCase());
+  // An item is drawn from its sound: `params` as golem writes them (kit, preset, the organ's drawbars), and what
+  // the host knows better: title, kitType (KIT_TYPES), style (a synth preset's), family (an e-piano's), macros, pads.
+  function instrumentSvg(it) {
+    const p = it.params || {}, on = it.on !== false, title = it.title || it.label;
+    if (it.type === 'drumkit') {
+      const name = title || pretty(p.kit) || 'Drum kit';
+      const type = it.kitType || P().KIT_TYPES.find(k => new RegExp(k.slice(0, 5), 'i').test(`${p.kit} ${name}`)) || 'rock';
+      return P().drumKit({ type, title: name, on });
+    }
+    if (it.type === 'pads') return P().padKit({ title: title || pretty(p.kit) || 'Pads', pads: it.pads, on });
+    if (it.type === 'organ') return P().keysUnit({ kind: 'organ', title, on, drawbars: it.drawbars || ['db16', 'db513', 'db8', 'db4', 'db223', 'db2', 'db135', 'db113', 'db1'].map(k => Math.max(0, Math.min(8, Math.round(+p[k] || 0)))).join('') });
+    if (it.type === 'piano') return P().keysUnit({ kind: 'piano', title: title || 'Piano', on });
+    if (it.type === 'ep') return P().keysUnit({ kind: 'epiano', title: title || 'E. Piano', family: it.family || P().keysFamily(title || ''), on });
+    const name = title || pretty(p.preset) || (P().blockByType(it.type) || {}).name || it.type;
+    const style = it.style || Object.keys(P().KEYS_STYLE_HUE).find(k => new RegExp(`\\b${k}`, 'i').test(name)) || '';
+    return P().keysUnit({ kind: 'synth', title: name, style, macros: it.macros, on });
+  }
+  function instruments(id, sec, W, H, o) {
+    const svgs = sec.items.map(instrumentSvg), n = svgs.length;
+    if (n === 1 && /<image /.test(svgs[0])) {          // a drum kit is a photograph: it fills the frame
+      const d = place(svgs[0], 0, 0, W, sec.items[0].idx).svg.replace(/ height="[\d.]+"/, ` height="${H}"`).replace(/^<svg /, '<svg preserveAspectRatio="xMidYMid slice" ');
+      return `<rect width="${W}" height="${H}" fill="#0d0b09"/>${sec.items[0].muted ? `<g class="gr-muted" opacity=".5">${d}</g>` : d}`;
+    }
+    const G = Math.min(60, W * .05), ratio = Math.max(...svgs.map(v => place(v, 0, 0, 100).h / 100));
+    const rows = n > 1 && W / H < 1.2 ? n : 1, cols = Math.ceil(n / rows);      // a narrow band stacks them
+    const UW = Math.min((W * .86 - G * (cols - 1)) / cols, (H * .8 - G * (rows - 1)) / rows / ratio);
+    let s = floorOf(o.floor).floor(id, W, H, o.R);
+    svgs.forEach((v, i) => {
+      const c = i % cols, r = Math.floor(i / cols), h = place(v, 0, 0, UW).h;
+      const x = (W - (cols * UW + (cols - 1) * G)) / 2 + c * (UW + G), y = (H - (rows * UW * ratio + (rows - 1) * G)) / 2 + r * (UW * ratio + G) + (UW * ratio - h) / 2;
+      const d = place(v, x, y, UW, sec.items[i].idx).svg;
+      s += `<rect x="${f(x + UW * .01)}" y="${f(y + h * .1)}" width="${f(UW * .98)}" height="${f(h)}" rx="10" fill="#000" opacity=".65" filter="url(#${id}-ash)"/>${sec.items[i].muted ? `<g class="gr-muted" opacity=".5">${d}</g>` : d}`;
+    });
+    return s;
+  }
+
+  const inner = (id, sec, W, H, o) => (sec.key === 'amp' ? amps : sec.key === 'outboard' ? outboard : sec.key === 'instrument' ? instruments : pedals)(id, sec, W, H, o);
   const defs = id => `<defs><filter id="${id}-blur" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="2.4"/></filter>
     <filter id="${id}-ash" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
     <radialGradient id="${id}-spot" cx=".5" cy=".55" r=".75"><stop offset="0" stop-color="#ffe9c2" stop-opacity=".14"/><stop offset=".6" stop-color="#ffe9c2" stop-opacity=".03"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient></defs>`;
@@ -384,7 +426,7 @@
     const W = 1600, H = 900, cid = 'grc' + (++count);
     if (!list.length) return '';
     const SL = list.length > 1 ? 46 : 0, seed = seedOf(opts.seed);
-    const wt = s => (s.key === 'amp' ? 1.15 + .2 * Math.min(2, s.items.length) : s.key === 'outboard' ? .95 : Math.min(1.25, .7 + s.items.length * .11));
+    const wt = s => (s.key === 'instrument' ? 1.6 : s.key === 'amp' ? 1.15 + .2 * Math.min(2, s.items.length) : s.key === 'outboard' ? .95 : Math.min(1.25, .7 + s.items.length * .11));
     const tw = list.reduce((t, s) => t + wt(s), 0);
     let x = 0, out = '', lines = '';
     list.forEach((s, i) => {
@@ -398,6 +440,39 @@
     return `<svg class="gr-scene gr-card" viewBox="0 0 ${W} ${H}"${sizeAttr(opts, W, H)} role="img" aria-label="rig: ${list.map(s => P().esc(s.label)).join(', ')}">${out}${lines}</svg>`;
   }
 
+  // ---------- a preset: several lanes (a band) ----------
+  const needStage = fn => { if (!root.GolemStage || !root.GolemStage.fromLane) throw new Error(`GolemRig.${fn} needs golem-stage.js (GolemStage.fromLane)`); return root.GolemStage; };
+  // one golem lane -> its sections. state: a lane state, the id or name of one of lane.states, or nothing (the first)
+  const fromLane = (lane, state, opts) => sections(needStage('fromLane').fromLane(lane, state), opts);
+  // golem's lanes -> [{id, name, role, sections}]. opts.states: {lane id: state} to draw other states than the first
+  function preset(lanes, opts) {
+    opts = opts || {};
+    return (lanes || []).map(l => (l && l.sections ? l : { id: l.id, name: l.name, role: l.role, sections: fromLane(l, (opts.states || {})[l.id], opts) }));
+  }
+  // what stands for a lane in a group picture: its instrument, else its amp, else its pedals
+  const heroOf = secs => secs.find(s => s.key === 'instrument') || secs.find(s => s.key === 'amp') || secs.find(s => s.key !== 'tools');
+  // the fixed picture of a preset: one cell per lane (its instrument, its amp or its board), the lane's name
+  // on a strip of tape. lanes: golem's lanes or preset()'s result. One lane: that lane's own card.
+  function presetCard(lanes, opts) {
+    opts = opts || {};
+    const list = preset(lanes, opts).map(l => ({ lane: l, hero: heroOf(l.sections || []) })).filter(x => x.hero && x.hero.items.length);
+    if (!list.length) return '';
+    if (list.length === 1) return card(list[0].lane.sections, opts);
+    const W = 1600, H = 900, n = list.length, cols = n <= 3 ? n : n === 4 ? 2 : 3, rows = Math.ceil(n / cols), seed = seedOf(opts.seed);
+    let out = '', lines = '';
+    for (let r = 0, i = 0; r < rows; r++) {
+      const inRow = Math.min(cols, n - r * cols), cw = W / inRow, ch = H / rows;
+      for (let c = 0; c < inRow; c++, i++) {
+        const { lane, hero } = list[i], id = 'gr' + (++count), o = { floor: opts.floor, outboard: opts.outboard, detail: opts.detail || 'badge', R: rng(seed + i) };
+        out += `<svg x="${f(c * cw)}" y="${f(r * ch)}" width="${f(cw)}" height="${f(ch)}" viewBox="0 0 ${f(cw)} ${f(ch)}" data-lane="${P().esc(lane.id || '')}">${defs(id)}${inner(id, hero, cw, ch, o)}<rect width="${f(cw)}" height="${f(ch)}" fill="url(#${id}-spot)"/>
+          ${lane.name ? (k => tape(18 + (String(lane.name).length * 4.6 + 9) * k, 14 + 10 * k, String(lane.name).toUpperCase(), 0, k))(Math.max(1.5, ch / 300)) : ''}</svg>`;
+        if (c) lines += `<path d="M${f(c * cw)} ${f(r * ch)}V${f((r + 1) * ch)}" stroke="#000" stroke-opacity=".7" stroke-width="14"/><path d="M${f(c * cw)} ${f(r * ch)}V${f((r + 1) * ch)}" stroke="#ffd23c" stroke-width="5"/>`;
+      }
+      if (r) lines += `<path d="M0 ${f(r * ch)}H${W}" stroke="#000" stroke-opacity=".7" stroke-width="14"/><path d="M0 ${f(r * ch)}H${W}" stroke="#ffd23c" stroke-width="5"/>`;
+    }
+    return `<svg class="gr-scene gr-card gr-preset" viewBox="0 0 ${W} ${H}"${sizeAttr(opts, W, H)} role="img" aria-label="preset: ${list.map(x => P().esc(x.lane.name || x.hero.label)).join(', ')}">${out}${lines}</svg>`;
+  }
+
   // a drawing as a file: the namespace, golem-pedals' shared defs and (fontsCss: a stylesheet URL) the fonts.
   // What render() and card() return is meant for a page that already called GolemPedals.defs().
   function standalone(svg, opts) {
@@ -407,5 +482,5 @@
     return String(svg).replace(/^<svg /, '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/>/, `>${style}<defs>${d ? d[1] : ''}</defs>`);
   }
 
-  root.GolemRig = { sections, render, card, floorFor, standalone, FLOORS: Object.keys(FLOORS), GENRES, OUTBOARD };
+  root.GolemRig = { sections, render, card, fromLane, preset, presetCard, floorFor, standalone, FLOORS: Object.keys(FLOORS), GENRES, OUTBOARD };
 })(typeof window !== 'undefined' ? window : globalThis);

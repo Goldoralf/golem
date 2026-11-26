@@ -223,6 +223,11 @@ export const GLYPHS = {
 "uni": "◆",
 "label": "Guitar drive"
 },
+"guitar-organ": {
+"svg": "<path d='M2 12Q4 7 6 12T10 12' opacity='.45'/><path d='M11 3H22M13 3V16M16.5 3V16M20 3V9'/><path d='M13 16v.01M16.5 16v.01M20 9v.01' stroke-width='3.4'/>",
+"uni": "⫼",
+"label": "Guitar organ (gfx)"
+},
 "ir-fx": {
 "svg": "<path d='M2.5 20.5h19'/><path d='M5 20.5V3.5'/><path d='M8.5 20.5v-9M12 20.5v-5.5M15.5 20.5v-3' opacity='.7'/><path d='M19.5 20.5v-6' opacity='.45'/>",
 "uni": "⧗",
@@ -262,6 +267,11 @@ export const GLYPHS = {
 "svg": "<path d='M3 8.5h8v9.5a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 3 18z'/><ellipse cx='7' cy='8.5' rx='4' ry='1.5'/><path d='M13 12.5h2v-3h2.5v6H20v-3h1.5' />",
 "uni": "◘",
 "label": "Morph (gfx)"
+},
+"octafuzz": {
+"svg": "<path d='M2 12c1.5-6 4.5-6 6 0'/><path d='M8 12c1.5 6 4.5 6 6 0' opacity='.45'/><path d='M8 18c.9-7 2.1-7 3 0c.9-7 2.1-7 3 0M14 18c.9-7 2.1-7 3 0c.9-7 2.1-7 3 0c.5-3 1.2-4 2-4'/>",
+"uni": "∿",
+"label": "Octafuzz (circuit-simulated transformer octave fuzz, the guitar included)"
 },
 "octaver": {
 "svg": "<circle cx='10' cy='7.5' r='3.5'/><circle cx='10' cy='15.5' r='4.5'/><path d='M19 5v13M16.5 15.5 19 18l2.5-2.5'/>",

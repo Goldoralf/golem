@@ -1,0 +1,41 @@
+{
+ "id": "scooped-stack",
+ "type": "dist",
+ "name": "Scooped stack",
+ "desc": "The bridged-T scoop fully in at high gain, lows tightened: an 80s metal rhythm",
+ "inst": "guitar",
+ "genres": [
+  "metal"
+ ],
+ "subgenres": [
+  "thrash-metal",
+  "heavy-metal"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "aggressive",
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Plexi Dist",
+  "gain": 80,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 100,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 0
+ },
+ "notes": "Contour 0 % dips 1 kHz by about 12 dB re 100 Hz",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

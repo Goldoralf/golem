@@ -30,7 +30,9 @@
   "hp": true,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "HP parallels 22 kΩ on the 33 kΩ output resistor: less loss, more top",
  "factory": true,

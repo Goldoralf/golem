@@ -1,7 +1,7 @@
 {
  "_comment": "REAPER macOS (Apple Silicon) : noms des plugins, lus par golem_rig.lua sur macOS seulement (DESKTOP_TABLE) et par bridge/blockstatus.py. Révision 2 (2026-10-04, docs/platforms.md) : établie depuis la table Linux (effects.json), la table Windows (révision 5) et ce que chaque éditeur PUBLIE pour macOS (releases GitHub, pages officielles ; installeurs ouverts et en-têtes Mach-O lus). Les NOMS restent ceux de Windows — un VST3/CLAP/LV2 porte le même nom sur les deux systèmes quand l'éditeur livre le même build — mais aucun scan REAPER sur Mac ne les a encore confirmés : la recette (docs/private/recette-macos.md §7) les confronte au scan réel. Un nom faux n'est pas silencieux : le bloc est laissé de côté et le tiroir dit « not installed ». Un type ABSENT de `effects` se résout comme sur le rack (même LV2, mêmes ports : x42 limiter, autotune, eq). `unsupported` = aucune version macOS utilisable, vérifié.",
  "_unmapped_comment": "Revision 2 (2026-10-02): `unmapped` makes the table COMPLETE — every catalog type is in `effects` (mapped or unsupported) or here, so “absent” means nothing anymore. golem_rig and the bridge do NOT read this section (an entry under `effects` would switch the block to strict Windows resolution). `family` states where the code comes from, NOT a measured sound: reaper-jsfx = a JSFX shipped with REAPER, golem-jsfx = a JSFX shipped in this repository (same file on every OS, run by REAPER itself); reaper-plugin = a Cockos plugin shipped with REAPER; core = amp/cab core, played by the official NAM VST3 on this desktop OS (see docs/audit-2026-10-01-parite-coeurs-os.md — A2 captures don't play); no-plugin = MIDI hardware or a GoleM service; installed-plugin = a third-party plugin the GoleM installer puts on this desktop OS (`note` says which, and what is still missing); untested = never tried on this desktop OS (`why`).",
- "revision": 5,
+ "revision": 6,
  "derived_from": {
   "file": "effects-windows.json",
   "revision": 5
@@ -220,6 +220,12 @@
    "unsupported": "golem-fx only (catalogue v47): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
   },
   "polysynth": {
+   "unsupported": "golem-fx only (catalogue v47): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
+  },
+  "guitar-organ": {
+   "unsupported": "golem-fx only (catalogue v47): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
+  },
+  "octafuzz": {
    "unsupported": "golem-fx only (catalogue v47): the golem-fx plugin is not installed on this computer, and no original plugin plays this block"
   },
   "morph": {

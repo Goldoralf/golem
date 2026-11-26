@@ -1,0 +1,40 @@
+{
+ "id": "fat-blues",
+ "type": "dist",
+ "name": "Fat blues",
+ "desc": "The discrete overdrive with its bass switch on: low-end weight under a mild breakup",
+ "inst": "guitar",
+ "genres": [
+  "blues"
+ ],
+ "subgenres": [
+  "modern-electric-blues",
+  "soul-blues"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Discrete OD",
+  "gain": 40,
+  "tone_stack": 40,
+  "level": -2.5,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": true,
+  "contour": 70
+ },
+ "notes": "Fat switches 83 nF across the 18 nF into the tone pot: about +5 dB at 120 Hz, +2 dB at 1 kHz",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

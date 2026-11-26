@@ -1,0 +1,41 @@
+{
+ "id": "octave-blend",
+ "type": "octafuzz",
+ "name": "Octave blend",
+ "desc": "Half fuzz, half octave: the octave as a colour on a plain fuzz, chords stay readable",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "garage-rock",
+  "classic-rock"
+ ],
+ "gain": "high",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "params": {
+  "fuzz": 80,
+  "octave": 50,
+  "tone": 0,
+  "level": -2,
+  "guitar_vol": 100,
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "voltage": 9,
+  "sag": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "octave 50 % is a clone's lifted-diode position to first order: one half-wave added to the fuzz",
+ "factory": true,
+ "golem_fx_seed": "gfx-octafuzz",
+ "golem_fx": true
+}

@@ -27,7 +27,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "The common-emitter booster clips softly ahead of the op-amp: sustain without fizz",
  "factory": true,

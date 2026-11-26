@@ -37,7 +37,7 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VERSION = "0.7"
+VERSION = "0.8"
 BASE = f"https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-{VERSION}"
 ASSETS = {"linux": "golem-fx-linux-x86_64.tar.gz", "win32": "golem-fx-windows-x86_64.zip",
           "darwin": "golem-fx-macos-universal.tar.gz"}

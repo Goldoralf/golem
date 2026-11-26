@@ -29,7 +29,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "Below 40 % gain the closed loop stays wide: a crunch that cleans up with the guitar's volume",
  "factory": true,

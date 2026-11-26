@@ -1,0 +1,46 @@
+{
+ "id": "whole-step-stabs",
+ "type": "pitch",
+ "name": "Whole-step chord stabs",
+ "desc": "Chords dip a whole step for as long as the switch is held: short, repeatable bends of a strummed chord",
+ "inst": "guitar",
+ "genres": [
+  "rock",
+  "metal"
+ ],
+ "subgenres": [
+  "alternative-rock",
+  "funk-rock",
+  "nu-metal"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "tight"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "mix": 100,
+  "engine": "Poly",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": -2,
+  "rise": 20,
+  "fall": 40,
+  "curve": "Linear",
+  "rest": "Dry"
+ },
+ "notes": "Poly for chords; interval +2 to stab upwards. At rest the chord is the dry, at its level",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

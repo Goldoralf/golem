@@ -1,0 +1,47 @@
+{
+ "id": "switch-squeal",
+ "type": "pitch",
+ "name": "Squeal on the switch",
+ "desc": "Two octaves up while the switch is held, back at once on release: rhythmic squeals with the foot free",
+ "inst": "guitar",
+ "genres": [
+  "metal",
+  "rock"
+ ],
+ "subgenres": [
+  "rap-metal",
+  "alternative-metal",
+  "rap-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "shift": 0,
+  "mix": 100,
+  "engine": "Whammy",
+  "tracking": "Fast",
+  "glide": 0,
+  "shift2": 0,
+  "voice2": -60,
+  "fine": 0,
+  "harmony": "Off",
+  "key": "C",
+  "scale": "Major",
+  "bend": false,
+  "interval": 24,
+  "rise": 0,
+  "fall": 0,
+  "curve": "Linear",
+  "rest": "Dry"
+ },
+ "notes": "bend on a momentary footswitch (golem: latching until it has one). 24 ms up and down by the slew limit; interval 12 for the tamer octave",
+ "factory": true,
+ "golem_fx_seed": "gfx-pitch",
+ "golem_fx": true
+}

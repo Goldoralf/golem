@@ -1,0 +1,42 @@
+{
+ "id": "ring-chords",
+ "type": "octafuzz",
+ "name": "Ring chords",
+ "desc": "Full fuzz on double stops and bends: ring-modulator intermodulation and dive-bombs",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "garage-rock"
+ ],
+ "gain": "high",
+ "use": "solo",
+ "level_db": 0,
+ "tags": [
+  "extreme",
+  "aggressive"
+ ],
+ "params": {
+  "fuzz": 100,
+  "octave": 100,
+  "tone": 0,
+  "level": -1,
+  "guitar_vol": 100,
+  "buffer": false,
+  "pickup": "Single Coil",
+  "bias": 0,
+  "temp": 25,
+  "voltage": 9,
+  "sag": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "The rectifier multiplies the notes of a double stop: sum and difference tones, the dive on a bent double stop",
+ "factory": true,
+ "golem_fx_seed": "gfx-octafuzz",
+ "golem_fx": true
+}

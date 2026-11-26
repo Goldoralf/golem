@@ -1,0 +1,41 @@
+{
+ "id": "volume-knob-blues",
+ "type": "dist",
+ "name": "Volume-knob blues",
+ "desc": "Even-order discrete breakup that cleans up as the guitar's volume rolls back",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "electric-blues",
+  "classic-rock"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "vintage"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Discrete OD",
+  "gain": 60,
+  "tone_stack": 35,
+  "level": -2,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "The pair and the class-A PNP make the 2nd harmonic before any rail: roll the guitar back for a clean core",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

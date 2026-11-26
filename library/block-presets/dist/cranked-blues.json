@@ -1,0 +1,41 @@
+{
+ "id": "cranked-blues",
+ "type": "dist",
+ "name": "Cranked blues",
+ "desc": "Both discrete stages pushed: asymmetric breakup with a bass bump, into a clean amp",
+ "inst": "guitar",
+ "genres": [
+  "blues",
+  "rock"
+ ],
+ "subgenres": [
+  "blues-rock",
+  "texas-blues"
+ ],
+ "gain": "clean",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Discrete OD",
+  "gain": 75,
+  "tone_stack": 40,
+  "level": -4,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "The diodes after stage 1 and stage 2's rails share the clipping: thick, still touch-sensitive",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

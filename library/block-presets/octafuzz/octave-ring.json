@@ -1,0 +1,43 @@
+{
+ "id": "octave-ring",
+ "type": "octafuzz",
+ "name": "Octave ring",
+ "desc": "Neck humbucker, tone rolled back: the rectified octave rings over sustained notes above the 12th fret",
+ "inst": "guitar",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "psychedelic-rock",
+  "classic-rock"
+ ],
+ "gain": "high",
+ "use": "lead",
+ "level_db": 0,
+ "tags": [
+  "vintage",
+  "dark"
+ ],
+ "default": true,
+ "params": {
+  "fuzz": 70,
+  "octave": 100,
+  "tone": -40,
+  "level": -1.5,
+  "guitar_vol": 100,
+  "buffer": false,
+  "pickup": "Humbucker",
+  "bias": 0,
+  "temp": 25,
+  "voltage": 9,
+  "sag": 0,
+  "input": 0,
+  "mix": 100,
+  "bass_keep": 0,
+  "bypass": false
+ },
+ "notes": "Play single notes above the 12th fret and let them ring: 2f up to 24 dB over f on a held note at L_m = 1 H",
+ "factory": true,
+ "golem_fx_seed": "gfx-octafuzz",
+ "golem_fx": true
+}

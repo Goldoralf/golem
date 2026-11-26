@@ -1,0 +1,42 @@
+{
+ "id": "dark-spectrum",
+ "type": "dist",
+ "name": "Dark spectrum",
+ "desc": "Spectrum turned dark, the 700 Hz roll-off: a warm, articulate edge for clean-ish parts",
+ "inst": "guitar",
+ "genres": [
+  "jazz",
+  "rnb"
+ ],
+ "subgenres": [
+  "jazz-fusion",
+  "neo-soul"
+ ],
+ "gain": "clean",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "dark",
+  "warm"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Studio OD",
+  "gain": 25,
+  "tone_stack": 15,
+  "level": 6.5,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
+ },
+ "notes": "Low gain keeps the feedback clipper soft; the dark Spectrum takes the fizz off",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

@@ -31,7 +31,9 @@
   "hp": false,
   "tight": 120,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "Thin into a clean amp, right into a pushed one: tight 120 Hz keeps the lows from flubbing",
  "factory": true,

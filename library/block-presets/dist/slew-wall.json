@@ -29,7 +29,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "The LM308's slew and narrow closed loop round the clip before the diodes: thick, not fizzy. Into a clean amp",
  "factory": true,

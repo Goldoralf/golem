@@ -32,7 +32,13 @@
   "fine": 0,
   "harmony": "Off",
   "key": "C",
-  "scale": "Major"
+  "scale": "Major",
+  "bend": false,
+  "interval": 12,
+  "rise": 100,
+  "fall": 250,
+  "curve": "Linear",
+  "rest": "Mix"
  },
  "notes": "Virtual capo for songs tuned down a half step; Fast tracking (6.6 ms) for feel. fine can match a slightly detuned record",
  "factory": true,

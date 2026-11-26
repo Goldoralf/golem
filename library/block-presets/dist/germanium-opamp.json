@@ -30,7 +30,9 @@
   "hp": false,
   "tight": 20,
   "input": 0,
-  "bass_keep": 0
+  "bass_keep": 0,
+  "fat": false,
+  "contour": 70
  },
  "notes": "1N34A at about 0.3 V: a softer, compressed clip",
  "factory": true,

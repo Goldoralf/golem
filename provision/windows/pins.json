@@ -47,10 +47,10 @@
   "signer": "Microsoft Corporation"
  },
  "golem_fx": {
-  "_comment": "golem-fx (les effets de golem, GPL-3) : 56 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.7 de Goldoralf/golem-binaries (golem-fx ea689aa ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.7 = 0.6 + l'éditeur facultatif, mêmes DSP et paramètres). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Dragonfly et Surge) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
-  "version": "0.7",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.7/golem-fx-windows-x86_64.zip",
-  "sha256": "9d140e9a9de67fd431ad075de81501bf19dbd464e654f473cf71b010a6ceeebd"
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8 de Goldoralf/golem-binaries (golem-fx ef58874 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.8 = 0.7 + Organ et Octafuzz, trois circuits de Dist ajoutés à la fin, le bend de Pitch). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Dragonfly et Surge) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
+  "version": "0.8",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8/golem-fx-windows-x86_64.zip",
+  "sha256": "aca2e16293dc26f00c605e2a3667526465b86ace82bcfea6b47892e2bc439574"
  },
  "golem_engine": {
   "_comment": "Le Golem Engine pour Windows (golem docs/ardour-plan.md §7e) : release golem-engine-9.9-g8 de Goldoralf/golem-binaries, construite par MSYS2 UCRT64 depuis le tag golem-engine-9.9-g8 du fork (4061ba79f : les cycles en retard que l'ASIO ne signale pas, late_cycles/late_starts, patch 16) et golem/tools/bundle.py ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release (2026-11-25). Posé par provision/golem_engine.py (provision/desktop.py setup) dans ~/opt/golem-engine, sans droits d'administrateur. Linux garde sa propre épingle (VERSION de golem_engine.py, provision/downloads.sha256).",

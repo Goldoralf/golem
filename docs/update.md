@@ -74,7 +74,7 @@ sound. So the restart that follows an update catches up (2026-11-22):
 - **When** (`provision/golem_fx.py --needed`): no `GoleM FX ….vst3` bundle on the machine, **or** (2026-11-26) the
   release placed is not the one this code pins (`VERSION`, read from `~/.local/share/golem/golem-fx-release.json`,
   written by every placement). A placement from before that file counts as older and is placed again once, so an
-  updated golem moves from 0.6 to 0.7 by itself. Dev builds (`tools/golem-fx-install.py`) are never replaced: when
+  updated golem moves to the pinned release (0.8 since 2026-11-26) by itself. Dev builds (`tools/golem-fx-install.py`) are never replaced: when
   every bundle present is one, nothing is done.
 - **Linux**: `reload.sh` (the restart after an update, git or archive) and `start.sh` call
   `provision/lib-golem-fx.sh` before REAPER starts; `reload.sh` also restarts REAPER when plugins were just placed,

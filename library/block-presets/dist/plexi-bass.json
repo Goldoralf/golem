@@ -1,0 +1,40 @@
+{
+ "id": "plexi-bass",
+ "type": "dist",
+ "name": "Plexi bass",
+ "desc": "Marshall-in-a-box drive on the upper band, the fundamental kept clean below 100 Hz",
+ "inst": "bass",
+ "genres": [
+  "rock"
+ ],
+ "subgenres": [
+  "hard-rock",
+  "classic-rock"
+ ],
+ "gain": "crunch",
+ "use": "rhythm",
+ "level_db": 0,
+ "tags": [
+  "aggressive"
+ ],
+ "default": false,
+ "params": {
+  "circuit": "Plexi Dist",
+  "gain": 50,
+  "tone_stack": 50,
+  "level": 0,
+  "diodes": "Circuit",
+  "opamp": "Circuit",
+  "supply": 100,
+  "hp": false,
+  "tight": 20,
+  "input": 0,
+  "bass_keep": 100,
+  "fat": false,
+  "contour": 60
+ },
+ "notes": "Bass keep sends the low band through the post-clipper network made linear (polarity matched)",
+ "factory": true,
+ "golem_fx_seed": "gfx-dist",
+ "golem_fx": true
+}

@@ -10,6 +10,10 @@ elles ne coûtent rien d'audible (le rack Linux de dev, 2026-11-25) : le choix r
                  tablette ou un téléphone, qui dessinent avec leur propre processeur ;
                  "on" — animées partout ; "off" — figées partout.
     blinks     : les voyants d'état clignotent (au pas : deux images par seconde, app/anim-stepper.mjs) ; faux = fixes.
+                 Quand les cases sont figées, les voyants sont tenus allumés quel que soit ce réglage (0 image au repos).
+    still_tiles: ce que montre une case FIGÉE (docs/anim-packs.md §8.4, 2026-11-26) : "pedals" (défaut) — la pédale
+                 golem-fx du bloc sur les stomps, l'image fixe de l'effet sur les scènes ; "glyphs" — le glyphe golem-fx
+                 en grand ; "textures" — l'image fixe de l'effet partout. Sans effet sur des cases animées.
 
 Fichier : config/display.json (état local, .gitignore). Le choix part dans l'état diffusé (`display`) : chaque écran
 l'applique sans recharger. Health le propose quand le son claque avec les animations actives (bridge/fixes.py)."""
@@ -19,7 +23,8 @@ import os
 from . import config as C
 
 MODES = ("auto", "on", "off")
-DEFAULTS = {"animations": "auto", "blinks": True}
+STILL_STYLES = ("pedals", "glyphs", "textures")
+DEFAULTS = {"animations": "auto", "blinks": True, "still_tiles": "pedals"}
 PATH = lambda: os.path.join(C.CONFIG_DIR, "display.json")   # noqa: E731 — le dossier de config du MOMENT
 
 _BRIEF = {"key": None, "value": None}
@@ -37,10 +42,12 @@ def get():
             out["animations"] = d["animations"]
         if isinstance(d.get("blinks"), bool):
             out["blinks"] = d["blinks"]
+        if d.get("still_tiles") in STILL_STYLES:
+            out["still_tiles"] = d["still_tiles"]
     return out
 
 
-def set_(animations=None, blinks=None):
+def set_(animations=None, blinks=None, still_tiles=None):
     """Change le réglage ; rend le réglage complet. ValueError si une valeur est hors liste."""
     cur = get()
     if animations is not None:
@@ -51,6 +58,10 @@ def set_(animations=None, blinks=None):
         if not isinstance(blinks, bool):
             raise ValueError("blinks must be true or false")
         cur["blinks"] = blinks
+    if still_tiles is not None:
+        if still_tiles not in STILL_STYLES:
+            raise ValueError(f"still_tiles must be one of {list(STILL_STYLES)}")
+        cur["still_tiles"] = still_tiles
     from .store import _write_json_atomic
     os.makedirs(os.path.dirname(PATH()), exist_ok=True)
     _write_json_atomic(PATH(), cur)

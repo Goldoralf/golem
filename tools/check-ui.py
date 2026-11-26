@@ -8,7 +8,8 @@ page du rack à 1024×600 et le Companion à 390×844 dans le Chrome du système
 téléchargé), et vérifie sur chacune :
 
   - aucune erreur JavaScript, aucune erreur console ;
-  - au repos, rien ne se redessine en continu : ni animation CSS infinie qui tourne, ni boucle requestAnimationFrame
+  - au repos, rien ne se redessine en continu : ni animation CSS infinie qui tourne, ni boucle requestAnimationFrame,
+    ni case figée du Live réécrite (niveau --vu, ligne qui défile)
     (chaque image volerait du temps au moteur audio de la même machine) ;
   - AUCUN défilement (le rack est une tablette 1024×600 qui ne scrolle pas ; le téléphone ne scrolle pas en largeur) ;
   - aucun libellé FRANÇAIS à l'écran (règle 4 du CLAUDE.md) — le même détecteur que tools/check-descriptors.py ;
@@ -252,6 +253,14 @@ def visit(page, url, size, settle_ms):
     # l'image à chaque rafraîchissement de l'écran — du temps volé au moteur audio de la même machine. Deux relevés à
     # 400 ms : seule compte une animation présente aux deux (le minuteur d'app/anim-stepper.mjs en pause une neuve en
     # moins de 200 ms).
+    # …ET UNE CASE DU LIVE NE SE RÉÉCRIT PAS (2026-11-26, docs/anim-packs.md §8.4) : sur l'écran local, les cases sont
+    # figées — ni niveau --vu réécrit à chaque état, ni ligne du bas qui défile toutes les 1,5 s. On compte les écritures
+    # du DOM dans les cases pendant les ~1,8 s des relevés qui suivent.
+    page.evaluate("""() => { window.__golemTileMut = 0; const o = new MutationObserver(ms => {
+        for (const m of ms) { const t = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+          if (t && t.closest && t.closest('.lpad')) window.__golemTileMut++; } });
+      o.observe(document.body, { subtree: true, attributes: true, childList: true, characterData: true });
+      window.__golemTileObs = o; }""")
     endless = []
     for _ in range(2):
         endless.append(set(page.evaluate(_ENDLESS_JS)))
@@ -263,6 +272,9 @@ def visit(page, url, size, settle_ms):
         errors.append("endless animation running at rest: " + " | ".join(sorted(endless[0] & endless[1])[:4]))
     if raf > 20:
         errors.append(f"requestAnimationFrame loop at rest: {raf} frames in 1 s")
+    tile_mut = page.evaluate("() => { window.__golemTileObs && window.__golemTileObs.disconnect(); return window.__golemTileMut || 0; }")
+    if tile_mut and page.evaluate("() => document.documentElement.classList.contains('tiles-still')"):
+        errors.append(f"still Live tiles rewritten at rest: {tile_mut} DOM writes in 1.8 s")
     metrics = page.evaluate("""() => {
         // l'INVENTAIRE de ce qui s'actionne sur la page : tag, rôle, nom accessible (aria-label, texte, title,
         // placeholder) — ce que le fichier tests/ui/inventory.json tient comme contrat de la surface

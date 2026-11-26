@@ -221,7 +221,7 @@ any network or disk write.
 | `take-cut` | sync | `takes?[uid]` | queues cut + upload of long takes | `queued[], …` | `_take_cut` |
 | `take-recut` | sync | `parent`, `bounds[{offset_sec, duration_sec}]` | re-cuts a take from its kept source | `ok, uids[], removed[], skipped[]` | `_take_recut` |
 | `take-source-release` | sync | `takes[uid]` | deletes the full source of already-cut takes | `released[], skipped[], freed_bytes` | `_take_source_release` |
-| `anim-pack-install` | rig | `pack_id`, `version` | `GET /api/ext/anim-packs/{id}` → `{pack, css}` → validated install | `pack{id, effects}, warnings[]` | `_anim_pack_install` |
+| `anim-pack-install` | rig | `pack_id`, `version` | `GET /api/ext/anim-packs/{id}` → `{pack, css}` → validated install (each `effects[].still` through `anim_packs.check_still`, [anim-packs.md](anim-packs.md) §8) | `pack{id, effects}, warnings[]` | `_anim_pack_install` |
 | `anim-pack-remove` | rig | `pack_id` | removes a pack (`default` refused) | `pack{id}` | `_anim_pack_remove` |
 
 ### Patch documents received (`patch-install`, `patch-push`, `patch-try`, `patch-preview`)

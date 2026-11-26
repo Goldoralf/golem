@@ -13,17 +13,24 @@ const MODES = [
   ['off', 'Off', 'Still everywhere, tablets and phones included.'],
 ];
 
+// CE QUE MONTRE UNE CASE FIGÉE (docs/anim-packs.md §8.4, 2026-11-26) — Pedals par défaut
+const STILL_STYLES = [
+  ['pedals', 'Pedals', 'Each stomp shows the pedal of its block; scenes show the still image of their effect.'],
+  ['glyphs', 'Glyphs', 'The block symbol, large, in a corner of each tile; scenes show their letter. The plainest.'],
+  ['textures', 'Textures', 'Every tile shows the still image of the effect chosen for it in the Designer.'],
+];
+
 export function DisplayPanel({ rig }) {
   const st = (rig && rig.state) || {};
   const [d, setD] = useState(st.display || null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   useEffect(() => { if (!st.display) api('/api/system/display').then(setD).catch(() => {}); }, []);
-  useEffect(() => { if (st.display) setD(st.display); }, [st.display && st.display.animations, st.display && st.display.blinks]);
+  useEffect(() => { if (st.display) setD(st.display); }, [st.display && st.display.animations, st.display && st.display.blinks, st.display && st.display.still_tiles]);
   const save = async body => {
     setBusy(true); setErr('');
     const r = await post('/api/system/display', body).catch(e => ({ error: (e.body && e.body.error) || 'refused' }));
-    if (r.error) setErr(r.error); else setD({ animations: r.animations, blinks: r.blinks });
+    if (r.error) setErr(r.error); else setD({ animations: r.animations, blinks: r.blinks, still_tiles: r.still_tiles });
     setBusy(false);
   };
   if (!d) return html`<div class="dp-page"><div class="hv-m">Reading…</div></div>`;
@@ -43,10 +50,18 @@ export function DisplayPanel({ rig }) {
         animations on, Health offers to calm the screen.</p>
     </div>
     <div class="dp-card">
+      <div class="dp-h"><b>Still tiles</b><span class="dp-now">what a tile shows when it does not move${still ? '' : ' · not used on this screen now'}</span></div>
+      <div class="dp-modes" role="radiogroup" aria-label="Still tiles">
+        ${STILL_STYLES.map(([id, name, text]) => html`<button key=${id} role="radio" aria-checked=${(d.still_tiles || 'pedals') === id} disabled=${busy}
+            class=${cls('dp-mode edit-only', (d.still_tiles || 'pedals') === id && 'on')} onClick=${() => (d.still_tiles || 'pedals') !== id && save({ still_tiles: id })}>
+          <i></i><span><b>${name}</b><small>${text}</small></span></button>`)}
+      </div>
+    </div>
+    <div class="dp-card">
       <div class="dp-h"><b>Status lights</b><span class="dp-now">record, warnings, unsaved changes</span></div>
       <button class=${cls('dp-mode dp-tog edit-only', d.blinks && 'on')} role="switch" aria-checked=${d.blinks} disabled=${busy}
           onClick=${() => save({ blinks: !d.blinks })}>
-        <i></i><span><b>${d.blinks ? 'They blink' : 'They stay lit'}</b><small>A blink costs almost nothing (two frames a second); off, they stay lit.</small></span></button>
+        <i></i><span><b>${d.blinks ? 'They blink' : 'They stay lit'}</b><small>A blink costs almost nothing (two frames a second); off, they stay lit. While tiles are still, they stay lit anyway.</small></span></button>
     </div>
     ${err ? html`<div class="dp-err">Not saved: ${err}</div>` : ''}
   </div>`;

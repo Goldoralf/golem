@@ -22,6 +22,7 @@ couleur — dégradé jamais silencieux, le nom du pack manquant est rapporté p
 import json
 import os
 import re
+import xml.etree.ElementTree as ET
 
 from . import config as C
 from .golog import get
@@ -221,6 +222,94 @@ def _check_css(css, pack_id):
     return (not errs), errs, _perf_warnings(css)
 
 
+# ── L'IMAGE FIXE D'UN EFFET (docs/anim-packs.md §8, 2026-11-26) ─────────────────────────────────
+# Quand les cases du Live sont figées, chaque effet montre SON image, dessinée pour être immobile. Un SVG en chaîne,
+# fond transparent, `currentColor` = la couleur de la case. Golem.fm valide les packs AVANT de les distribuer avec
+# la MÊME liste (backend/app/services/anim_packs.py) : toute règle ajoutée ici lui est envoyée, sinon un pack accepté
+# là-bas serait refusé en entier sur scène. Refuser, jamais assainir.
+STILL_MAX = 16 * 1024                       # octets UTF-8 de la chaîne
+# éléments permis : du dessin seul. Ni filtre (un flou repeint à chaque geste coûte sur un rack à 2 cœurs), ni image
+# (un bitmap ferait sauter le budget et flouterait), ni style, ni script, ni foreignObject, ni animation SMIL.
+STILL_ELEMENTS = frozenset((
+    "svg", "g", "defs", "symbol", "use", "title", "desc",
+    "path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "text", "tspan",
+    "linearGradient", "radialGradient", "stop", "pattern", "clipPath", "mask",
+))
+_TAG_RE = re.compile(r"<\s*(/?)\s*([A-Za-z_][\w:.-]*)([^>]*)>", re.S)
+_ATTR_RE = re.compile(r"([A-Za-z_][\w:.-]*)\s*=\s*(\"[^\"]*\"|'[^']*')", re.S)
+_ENT_RE = re.compile(r"&(?!(?:amp|lt|gt|quot|apos|#[0-9]{1,7}|#x[0-9a-fA-F]{1,6});)")
+_STILL_BANNED = ("animation", "@keyframes", "@import", "javascript:", "data:", "<script", "foreignobject")
+
+
+def check_still(svg):
+    """L'image fixe d'un effet : (ok, raison). Les règles, dans l'ordre (golem.fm les applique telles quelles) :
+    chaîne ; ≤ STILL_MAX octets UTF-8 ; commence par `<svg` et finit par `</svg>` (espaces autour ignorés) ; ni `<!`
+    (DOCTYPE, ENTITY, CDATA, commentaire) ni `<?` (prologue XML) ; seules les entités &amp; &lt; &gt; &quot; &apos; et
+    numériques ; aucun des mots de _STILL_BANNED (casse ignorée) ; chaque élément dans STILL_ELEMENTS (casse exacte) ;
+    aucun attribut `on…` ; `href`/`xlink:href` = `#id` ; chaque `url(…)` = `url(#id)` ; XML bien formé."""
+    if not isinstance(svg, str):
+        return False, "still must be an SVG string"
+    if len(svg.encode("utf-8")) > STILL_MAX:
+        return False, f"still of {len(svg.encode('utf-8'))} bytes, maximum {STILL_MAX}"
+    s = svg.strip()
+    if not (s.startswith("<svg") and s.endswith("</svg>")):
+        return False, "still must start with <svg and end with </svg>"
+    if "<!" in s or "<?" in s:
+        return False, "no <!…> or <?…> in a still (DOCTYPE, ENTITY, CDATA, comment, XML prologue)"
+    if _ENT_RE.search(s):
+        return False, "only &amp; &lt; &gt; &quot; &apos; and numeric entities are allowed"
+    low = s.lower()
+    for word in _STILL_BANNED:
+        if word in low:
+            return False, f"« {word} » is not allowed in a still (no motion, nothing loaded, no code)"
+    for _close, name, rest in _TAG_RE.findall(s):
+        if name not in STILL_ELEMENTS:
+            return False, f"element <{name}> is not allowed in a still"
+        for attr, val in _ATTR_RE.findall(rest):
+            v = val[1:-1].strip()
+            if attr.lower().startswith("on"):
+                return False, f"attribute {attr} is not allowed in a still"
+            if attr in ("href", "xlink:href") and not v.startswith("#"):
+                return False, f"{attr} must point inside the still (#id)"
+    for m in re.finditer(r"url\(\s*['\"]?([^)'\"]*)", s, re.I):
+        if not m.group(1).strip().startswith("#"):
+            return False, "url() must point inside the still (#id)"
+    try:
+        ET.fromstring(s)                    # sans DOCTYPE (refusé plus haut) : aucune entité externe possible
+    except ET.ParseError as e:
+        return False, f"still is not well-formed XML ({e})"
+    return True, ""
+
+
+_STILLS = {"mtime": None, "stills": {}}
+STILLS_FILE = os.path.join(C.ROOT, "library", "catalog", "anim-stills.json")
+
+
+def default_stills():
+    """Les images fixes du pack default (library/catalog/anim-stills.json, écrit par tools/make-anim-stills.py)."""
+    try:
+        mt = os.path.getmtime(STILLS_FILE)
+    except OSError:
+        return {}
+    if _STILLS["mtime"] != mt:
+        try:
+            with open(STILLS_FILE, encoding="utf-8") as f:
+                doc = json.load(f)
+            st = doc.get("stills") if isinstance(doc, dict) else None
+            _STILLS.update(mtime=mt, stills={k: v for k, v in (st or {}).items() if check_still(v)[0]})
+        except (OSError, ValueError):
+            _STILLS.update(mtime=mt, stills={})
+    return _STILLS["stills"]
+
+
+def _default_pack():
+    """Le pack default, ses effets portant leur image fixe."""
+    st = default_stills()
+    d = dict(DEFAULT)
+    d["effects"] = [({**e, "still": st[e["id"]]} if e["id"] in st else dict(e)) for e in DEFAULT["effects"]]
+    return d
+
+
 # ── lecture des packs installés ────────────────────────────────────────────────────────────
 def _read(pid):
     d = os.path.join(PACKS_DIR, pid)
@@ -240,7 +329,7 @@ def _read(pid):
 
 def list_packs():
     """default TOUJOURS en tête (socle indésinstallable), puis les packs installés, triés."""
-    out = [dict(DEFAULT)]
+    out = [_default_pack()]
     try:
         for pid in sorted(os.listdir(PACKS_DIR)):
             if pid == "default" or not _ID_RE.match(pid):
@@ -302,9 +391,17 @@ def install(doc, css):
                 # une couleur finit dans un attribut style de l'app : #rrggbb ou rien (2026-09-15)
                 errs.append(f"effet « {e.get('id')} » : color doit être #rrggbb ({str(e.get('color'))[:20]!r})")
                 break
+            elif e.get("still") is not None:
+                ok_s, why = check_still(e.get("still"))
+                if not ok_s:
+                    errs.append(f"effect « {e.get('id')} »: {why}")
+                    break
     if not errs:
         ok, cerrs, warns = _check_css(css or "", pid)
         errs += cerrs
+        # §8.2 : un effet sans image fixe ne montre que sa couleur quand les cases sont figées
+        warns = list(warns) + [f"effect « {e.get('id')} » has no still image: a still tile shows only its colour"
+                               for e in effects if not e.get("still")]
     if errs:
         return {"ok": False, "errors": errs}
     d = os.path.join(PACKS_DIR, pid)

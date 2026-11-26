@@ -57,9 +57,18 @@ test("le minuteur met en pause et ne touche l'animation qu'à la bascule", () =>
   const led = fake('led-pulse', 1600, {});
   const spin = fake('swspin', 900, {});
   spin.pause = () => { throw new Error('a spinner is never paused'); };
-  run([led, spin], [100, 300, 799, 800, 900, 1600], { local: true });
+  run([led, spin], [100, 300, 799, 800, 900, 1600], { local: false });
   assert.equal(led.paused, true);
   assert.deepEqual(led.writes, [0, 801, 0]);          // allumé, éteint à 800, rallumé à 1600 — rien entre deux
+});
+
+test('cases figées : le curseur et les voyants sont tenus allumés, sans pas (0 image au repos)', () => {
+  assert.equal(sortOf('golem-caret', {}, { local: true }), 'hold');                            // auto, écran local
+  assert.equal(sortOf('golem-caret', {}, { local: false, display: { animations: 'off' } }), 'hold');
+  assert.equal(sortOf('golem-caret', {}, { local: true, display: { animations: 'on', blinks: true } }), 'step');
+  const led = fake('led-pulse', 1600, {});
+  run([led], [100, 800, 1600, 2400], { local: true });
+  assert.deepEqual(led.writes, [0]);                  // posé allumé une fois, plus jamais touché
 });
 
 test('une case figée en local repart quand le réglage la permet', () => {

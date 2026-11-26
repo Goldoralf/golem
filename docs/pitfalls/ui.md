@@ -145,7 +145,15 @@ is about 10 messages and 60 KB a second.
     Measured on the Linux rack's Eight-String Nu Live page: paused, 43 layers and 3 Mpx recomposited on every
     frame (caret step, tap, timer) against 5 on CPU cores, and the engine crackled on Live only, even at a
     1024 buffer. `anim-stepper.mjs` therefore sets `html.tiles-still`, and `style.css` gives the tile layers
-    `animation:none` and `mix-blend-mode:normal`: 5 layers. Each tile keeps its look, as one painted frame.
+    `animation:none` and `mix-blend-mode:normal`: 5 layers.
+  - **A still tile carries no animation at all** (2026-11-26). A frame caught mid-cycle looked like a bug, and the
+    page still rewrote tiles: the scenes' bottom line slid in every 1.5 s (3 → 14 layers for 280 ms, about 19 % of
+    the time at full frame rate), and the "VU reactive" tile got `--vu` about 10 times a second even in silence, which
+    redrew a large blurred shadow. Now `page-live.js` (`STILL`) gives a still tile no `anim-*` class, no `--vu` and no
+    cycling line. It draws a layer painted once instead, chosen in Display ▸ Still tiles: the golem-fx pedal (Pedals,
+    the default), the golem-fx glyph (Glyphs), or the effect's still image (Textures, docs/anim-packs.md §8). The caret
+    and the status lights are held lit. Measured on Rooftop Prowl, 5 s at rest: 0 DOM writes in the tiles (95 before),
+    0 layer changes, no running animation.
   - Measured on the 240 Hz panel with the 14 tiles of Jazz Box: animated, the GPU process used 134 % of a core and
     the renderer 26 %; frozen, 0.7 % and 3 %.
   - On the Linux rack, `prefers-reduced-motion` (which stops the same animations) took ALSA restarts from 137 to 0
@@ -162,15 +170,18 @@ is about 10 messages and 60 KB a second.
 - Free by design: spinners (a stepped rotation does not turn) and the effect picker's previews (`.fx-opt`).
 - Values that move by themselves (looper progress and ring, record timer, bar clock, backing progress, all in
   `page-live.js`) update about 15 times a second through `useLiveTick`, and write only when the value changed.
-  They never use a `requestAnimationFrame` loop.
+  They never use a `requestAnimationFrame` loop. When tiles are still, they go at the beat (looper ring, bar clock)
+  or at the second (progress bars, record timer, which drops its tenths).
 - A gesture animation (a transition, a one-shot keyframe) is fine: it ends.
 
 **Detect.** `tools/check-ui.py` reads the app on localhost, which is the local screen. It fails a page that, at
 rest, keeps an infinite CSS animation running (spinners and picker previews excepted), tile animations included,
-or that makes more than 20 `requestAnimationFrame` calls in a second. Live check: with the window in front,
+or that makes more than 20 `requestAnimationFrame` calls in a second. With still tiles, it also fails a Live tile
+rewritten at rest (any DOM write inside `.lpad` over 1.8 s). The disposable bridge of CI stays on the loading screen
+for /live: that rule only bites with `--base` on a rack whose Live shows its grid. Live check: with the window in front,
 compare the CPU of the golem Chrome processes (Task Manager, or `top` on Linux) with the window minimised.
 
-**Code.** `app/anim-stepper.mjs` (`tilesStill`, `STILL_CLASS`), `app/anim-stepper.test.mjs`, `app/style.css` (`html.tiles-still`), `app/page-live.js` (`useLiveTick`, `setIfChanged`),
+**Code.** `app/anim-stepper.mjs` (`tilesStill`, `STILL_CLASS`), `app/anim-stepper.test.mjs`, `app/style.css` (`html.tiles-still`), `app/page-live.js` (`STILL`, `stillLayer`, `useLiveTick`, `setIfChanged`), `app/anim-stills.js`,
 `tools/check-ui.py` (`_ENDLESS_JS`, `_RAF_COUNTER`).
 
 ---

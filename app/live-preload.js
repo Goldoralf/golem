@@ -5,6 +5,7 @@
 // Ici, pendant le chargement : /api/presets, /api/effects et le CSS des packs du preset joué. main.js garde l'écran
 // tant que ce n'est pas prêt — borné (PRELOAD_MAX_MS) : un fetch lent ne bloque jamais l'entrée dans l'app.
 import { hydrateBlockMeta, animPackOf } from './designer-model.js';
+import { loadStills } from './anim-stills.js';
 
 export const PRELOAD_MAX_MS = 6000;
 
@@ -39,7 +40,8 @@ export function preloadLive(presetId) {
     return Promise.all(Object.values((cur && cur.anims) || {}).map(v => packCss(animPackOf(v))));
   });
   const effects = fetch('/api/effects').then(r => r.json()).then(d => { hydrateBlockMeta(d.effects || d, d); });
-  _run = Promise.all([presets, effects]).then(() => true, () => true);
+  // les images fixes des effets (docs/anim-packs.md §8) : une case figée ne s'affiche jamais sans la sienne
+  _run = Promise.all([presets, effects, loadStills()]).then(() => true, () => true);
   return _run;
 }
 

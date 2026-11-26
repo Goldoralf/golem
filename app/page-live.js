@@ -18,7 +18,10 @@ import { takePresets } from './live-preload.js';
 import { BankBar } from './live-bankbar.js';
 import { StagePage } from './live-pages.js';   // les pages Répète et Concert (docs/live-pages.md)
 import { useLiveTools, useViewOverride, modeViewKey, useLivePedals } from './live-tools.js';
-import { loadVisuals, visualsReady, pedalSvg } from './golem-visuals.js';   // les pédales sur les stomps (L1)   // les outils du top menu et leurs panneaux (2026-10-15)
+import { loadVisuals, visualsReady, pedalSvg } from './golem-visuals.js';
+import { tilesStill, isLocalHost } from './anim-stepper.mjs';
+import { loadStills, stillsReady, stillBg } from './anim-stills.js';
+import { GLYPHS } from './glyphs.js';   // les pédales sur les stomps (L1)   // les outils du top menu et leurs panneaux (2026-10-15)
 
 const EMPTY_SW = [6, 7, 8, 9, 10].map(n => ({ sw: n, blocks: [], whammy: false }));   // pédalier vide (aucun preset)
 
@@ -128,13 +131,40 @@ const LIVE_TICK_MS = 66;
 // pendant qu'on joue : Chrome redessinait chaque case et ses calques figés (fumée, aurore, feu : flous, mix-blend) —
 // sur la machine Linux à 2 cœurs, ~2 décrochages par seconde en jouant sur le Live d'Eight-String Nu, aucun sur
 // /system (2026-11-25, golem-rack-acer ; docs/pitfalls/ui.md « An endless animation steals the audio thread »).
-const vuVar = (anim, vu) => (anim === 'vu' || String(anim || '').includes('/') ? ';--vu:' + vu : '');
-function useLiveTick(fn, deps = []) {
+// ── LES CASES FIGÉES (2026-11-26, docs/anim-packs.md §8.4) : sur l'écran de la machine qui joue le son (Display ▸
+// Auto) ou partout (Off), une case ne porte AUCUNE animation — ni classe anim-*, ni niveau --vu, ni ligne qui
+// défile ; ce qui avance (looper, backing, chrono) va au pas du temps musical ou de la seconde. Elle montre, selon
+// Display ▸ Still tiles : la pédale golem-fx (pedals, défaut), le glyphe golem-fx en grand (glyphs), ou l'image
+// fixe de son effet (textures). Posé par PedalboardLive à chaque rendu, lu par les cases et les compteurs (enfants).
+const STILL = { on: false, style: 'pedals', bpm: 120 };
+const vuVar = (anim, vu) => (!STILL.on && (anim === 'vu' || String(anim || '').includes('/')) ? ';--vu:' + vu : '');
+const tileAnim = anim => (STILL.on ? '' : animClass(anim));
+const glyphSvg = t => {
+  const g = GLYPHS[t];
+  return g ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">${g.svg}</svg>` : '';
+};
+// le calque d'une case figée. kind : 'stomp' (sa pédale est dessinée dans la case en style pedals), 'svc' (case de
+// service), 'scene' (lettre), 'blank' (case vierge) ; type = le 1er bloc, letter = la lettre de la scène
+function stillLayer(anim, color, kind, { type = '', letter = '' } = {}) {
+  if (!STILL.on) return '';
+  if (STILL.style === 'glyphs') {
+    if (kind === 'scene' && letter) return html`<span class="lghost" aria-hidden="true">${letter}</span>`;
+    const g = (kind === 'stomp' || kind === 'svc') && glyphSvg(type);
+    return g ? html`<span class="lglyph" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: g }}></span>` : '';
+  }
+  if (STILL.style === 'pedals' && kind === 'stomp') return '';
+  const bg = stillBg(anim, color);
+  return bg ? html`<span class="lstill" aria-hidden="true" style=${'background-image:' + bg}></span>` : '';
+}
+// cases figées : le compteur avance au pas donné (une seconde, un temps), sinon ~15 images par seconde
+const beatMs = () => Math.round(60000 / Math.max(40, Math.min(300, Number(STILL.bpm) || 120)));
+function useLiveTick(fn, deps = [], stillMs = 1000) {
+  const ms = STILL.on ? stillMs : LIVE_TICK_MS;
   useEffect(() => {
     fn();
-    const t = setInterval(fn, LIVE_TICK_MS);
+    const t = setInterval(fn, ms);
     return () => clearInterval(t);
-  }, deps);
+  }, [...deps, ms]);
 }
 const setIfChanged = (el, key, v, attr) => {          // n'écrit que ce qui change : une page immobile ne redessine rien
   if (!el || el['_g' + key] === v) return;
@@ -167,12 +197,19 @@ function Cycle({ items, ms = 1500, hold = -1 }) {
   const [k, setK] = useState(0);
   const n = items.length;
   const held = hold >= 0 && hold < n;
+  const still = STILL.on;
   useEffect(() => {
-    if (n < 2 || held) return;
+    if (n < 2 || held || still) return;
     const t = setInterval(() => setK(x => x + 1), ms);
     return () => clearInterval(t);
-  }, [n, ms, held]);
+  }, [n, ms, held, still]);
   if (!n) return '';
+  // case figée : la 1re ligne, tenue, et combien d'autres (le détail est sur le Designer)
+  if (still && !held) {
+    const it0 = items[0];
+    return html`<span class="lcy">${n > 1 ? html`<i class="lcy-n">+${n - 1}</i>` : ''}
+      <span class=${cls('lcy-it', it0.off && 'off')}>${it0.tag ? html`<em class=${'li-tag ' + (it0.cls || '')}>${it0.tag}</em>` : ''}<b>${esc(it0.t || '')}</b></span></span>`;
+  }
   const at = held ? hold : k % n;
   const it = items[at];
   return html`<span class="lcy">${n > 1 ? html`<i class="lcy-n">${at + 1}/${n}</i>` : ''}
@@ -191,7 +228,7 @@ function LoopRing({ looper }) {
     const { pos, len, at } = snap.current;
     const f = len > 0 ? ((pos + (performance.now() - at) / 1000) % len) / len : 0;
     setIfChanged(ref.current, 'stroke-dashoffset', (C * (1 - f)).toFixed(1), true);
-  });
+  }, [], beatMs());
   return html`<svg class="loop-ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" class="lr-bg" />
     <circle cx="20" cy="20" r="16" class="lr-fg" ref=${ref} stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 20 20)" /></svg>`;
 }
@@ -200,7 +237,7 @@ function RecTimer({ since }) {
   const ref = useRef(null);
   useLiveTick(() => {
     const t = Math.max(0, (performance.now() - since) / 1000);
-    setIfChanged(ref.current, 'text', Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0') + '.' + Math.floor((t % 1) * 10));
+    setIfChanged(ref.current, 'text', Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0') + (STILL.on ? '' : '.' + Math.floor((t % 1) * 10)));
   }, [since]);
   return html`<span class="loop-timer" ref=${ref}>0:00.0</span>`;
 }
@@ -223,7 +260,7 @@ function LoopClock({ looper, bpm }) {
         [...lamps.current.children].forEach((el, k) => el.classList.toggle('on', k <= be));
       }
     }
-  });
+  }, [], beatMs());
   const none = !(looper.len > 0);
   return html`<span class="loop-clock"><span class="lc-beats" ref=${lamps}><i></i><i></i><i></i><i></i></span>
     <span class="lc-bar" ref=${txt}>${none ? html`— <small>no loop yet</small>` : ''}</span></span>`;
@@ -329,11 +366,12 @@ function LoopTile({ st, i, vu, laneLbl }) {
     const src = (() => { const m = String(s.src || '').match(/^([a-z-]+?)(?:-(\d+))?$/); if (!m) return '';
       const base = { 'keys-pads': 'Keys', keys: 'Keys', pads: 'Pads', guitar: 'Guitar', bass: 'Bass', voice: 'Voice', drums: 'Drums', line: 'Line' }[m[1]] || m[1];
       return base + (m[2] && m[2] !== '1' ? ' ' + m[2] : ''); })();
-    return html`<button class=${cls('lpad', 'loop', stt === 'empty' && 'dim', (stt === 'play' || stt === 'rec' || stt === 'dub') && 'on', animClass(anim))}
+    return html`<button class=${cls('lpad', 'loop', stt === 'empty' && 'dim', (stt === 'play' || stt === 'rec' || stt === 'dub') && 'on', tileAnim(anim))}
       style=${`--pc:${color}${vuVar(anim, vu)}`}
       ...${longPress(() => s.has || stt !== 'empty' ? looperOp('clear', i) : null)}
       onClick=${() => looperOp('tap', i)}
       title=${`loop ${nm} (records ${laneLbl ? laneLbl(s.src) : s.src}) — tap: empty→rec, rec→play, playing→stop · double-tap/⊕ = overdub · hold = clear`}>
+      ${stillLayer(anim, color, 'svc', { type: 'looper' })}
       <span class="lpad-sw">#${s.sw}${s.master && stt !== 'empty' ? html`<b class="loop-master" title="this loop set the length of all">MASTER</b>` : ''}</span>
       <span class="lpad-name big">${esc(nm)}</span>
       ${src ? html`<span class="loop-src">${esc(src)}</span>` : ''}
@@ -433,10 +471,18 @@ export function LivePage({ rig }) {
 
 function PedalboardLive({ rig, presets }) {
   // LES PÉDALES SUR LES STOMPS (menu de vue ▸ « Pedals on the stomps ») : les moteurs de golem-fx, chargés à la demande
-  const pedalsOn = useLivePedals();
+  const disp = (rig.state && rig.state.display) || {};
+  STILL.on = tilesStill({ local: isLocalHost(location.hostname), display: { animations: disp.animations || 'auto', blinks: disp.blinks !== false } });
+  STILL.style = disp.still_tiles || 'pedals';
+  STILL.bpm = (rig.state && rig.state.tempo) || 120;
+  // style « Pedals » des cases figées : les pédales sur les stomps, comme le menu de vue
+  const pedalsOn = useLivePedals() || (STILL.on && STILL.style === 'pedals');
   const [visOk, setVisOk] = useState(visualsReady());
   useEffect(() => { if (pedalsOn && !visOk) loadVisuals().then(() => setVisOk(true)).catch(() => {}); }, [pedalsOn]);
   const pedals = pedalsOn && visOk;
+  // les images fixes des effets (préchargées par live-preload ; ici si /live s'ouvre autrement)
+  const [, setStillsOk] = useState(stillsReady());
+  useEffect(() => { if (STILL.on && !stillsReady()) loadStills().then(() => setStillsOk(true)); }, [STILL.on]);
   // au boot kiosk direct sur /live le Designer n'est jamais passé : on hydrate ICON/NAME ici aussi
   useAsync(() => fetch('/api/effects').then(r => r.json()).then(d => { hydrateBlockMeta(d.effects || d, d); return d; }), []);
   const st = rig.state;
@@ -474,8 +520,9 @@ function PedalboardLive({ rig, presets }) {
   const laneLbl = k => _chainLbl(k);
   const anims = (current && current.anims) || {};      // animation par tuile (preset.anims[sceneId|stompType])
   // packs non livrés : leur CSS se charge à la demande (docs/anim-packs.md)
-  useEffect(() => { Object.values(anims).forEach(v => ensurePackCss(animPackOf(v))); },
-    [Object.values(anims).join()]);
+  // …et seulement si les cases bougent : figées, elles n'ont pas d'animation à charger
+  useEffect(() => { if (!STILL.on) Object.values(anims).forEach(v => ensurePackCss(animPackOf(v))); },
+    [Object.values(anims).join(), STILL.on]);
   const vu = (st.levels && (st.levels.in1 ?? st.levels.guitar)) || 0;     // niveau de jeu 0..1 (VU OSC, entrée 1) -> glow réactif
   const tunerOn = !!(st.tuner && st.tuner.on);
   const clickOn = !!(st.click && st.click.on);   // métronome : on/off DEPUIS LA SCÈNE (topbar Live)
@@ -719,9 +766,10 @@ function PedalboardLive({ rig, presets }) {
         // pictogrammes de gestes (2026-10-08 : « des pictos blancs d'une ancienne version ») — le bandeau dit
         // ce qu'est la case, le nom ce qu'elle fait
         const dfltMonster = !used && !anims[sw.sw];          // le monstre par défaut : sa variante suit le numéro
-        return html`<button class=${cls('lpad', 'stomp', !used && 'empty', used && !on && 'dim', on && 'on', sp && 'special', animClass(anim), dfltMonster && monsterOf(sw.sw))} data-doc=${'live.stomp.' + sw.sw}
+        return html`<button class=${cls('lpad', 'stomp', !used && 'empty', used && !on && 'dim', on && 'on', sp && 'special', tileAnim(anim), dfltMonster && !STILL.on && monsterOf(sw.sw))} data-doc=${'live.stomp.' + sw.sw}
           disabled=${!used} style=${(sp ? `--pc:${sp[1]};--sc:${sp[1]}` : `--pc:${colors[sw.sw] || (used ? PALETTE[i] : EMPTY_COLOR)}`) + vuVar(anim, vu)} onClick=${() => used && toggleStomp(sw.sw)}>
-          ${dfltMonster ? MONSTER_LAYERS : ''}
+          ${stillLayer(anim, sp ? sp[1] : (colors[sw.sw] || (used ? PALETTE[i] : EMPTY_COLOR)), !used ? 'blank' : sp ? 'svc' : 'stomp', { type: used ? sw.blocks[0].type : '' })}
+          ${dfltMonster && !STILL.on ? MONSTER_LAYERS : ''}
           ${sp ? html`<span class="lpad-band">#${sw.sw} ${sp[0]}</span>` : ''}
           <span class="lpad-sw">#${sw.sw}</span>
           ${/* LE RIFF DIT S'IL ARRIVE CHEZ golem.fm (2026-10-14) : sans jeton, il reste sur le golem — le dire SUR la case,
@@ -879,9 +927,10 @@ function PedalboardLive({ rig, presets }) {
               : c.type === 'midi-pedal' ? (c.label || 'Pedal') : pileName(c); };
           const anyOn = claims.some(svcOn) || (!!st.perf_countin && claims.some(c => c.type === 'rec'));
           const sp = specialOf(claims);
-          return html`<button class=${cls('lpad', 'scene', 'claim', 'pile', anyOn && 'on', !anyOn && 'dim', sp && 'special', animClass(anim))}
+          return html`<button class=${cls('lpad', 'scene', 'claim', 'pile', anyOn && 'on', !anyOn && 'dim', sp && 'special', tileAnim(anim))}
             style=${(sp ? `--pc:${sp[1]};--sc:${sp[1]}` : `--pc:${pc}`) + vuVar(anim, vu)} onClick=${tap}
             title=${claims.map(c => svcName(c)).join(' + ') + ' — on switch ' + (i + 1) + ', in place of this scene slot (tap = ' + nm.toLowerCase() + ')'}>
+            ${stillLayer(anim, sp ? sp[1] : pc, 'svc', { type: (claims[0] || {}).type })}
             ${sp ? html`<span class="lpad-band">#${i + 1} ${sp[0]}</span>` : ''}
             <span class="lpad-sw">#${i + 1}</span>
             ${Pile(claims.map(c => ({ g: c.type === 'rec' && recOn ? html`<span class="lpl-rec"></span>` : (ICON[c.type] || '⊙'),
@@ -895,8 +944,9 @@ function PedalboardLive({ rig, presets }) {
           // fantôme configurable (Preset settings, 2026-09-15) : couleur/anim par numéro de switch
           const gc = colors[String(i + 1)] || colors[i + 1] || EMPTY_COLOR, ga = anims[String(i + 1)] || anims[i + 1] || EMPTY_ANIM;
           const dfltMonster = !(anims[String(i + 1)] || anims[i + 1]);
-          return html`<div class=${cls('lpad', 'scene', 'empty', animClass(ga), dfltMonster && monsterOf(i + 1))} style=${gc ? `--pc:${gc}` : ''}>
-            ${dfltMonster ? MONSTER_LAYERS : ''}
+          return html`<div class=${cls('lpad', 'scene', 'empty', tileAnim(ga), dfltMonster && !STILL.on && monsterOf(i + 1))} style=${gc ? `--pc:${gc}` : ''}>
+            ${stillLayer(ga, gc, 'blank')}
+            ${dfltMonster && !STILL.on ? MONSTER_LAYERS : ''}
             <span class="lpad-sw">#${i + 1}</span><span class="lpad-sc">${'ABCDE'[i]}</span></div>`;
         }
         const active = s.id === st.scene_id;
@@ -913,16 +963,18 @@ function PedalboardLive({ rig, presets }) {
         if (rows.length && loopOn) {
           const sum = rows.filter(r => !r.mute && r.state && !r.implicit).slice(0, 2)
             .map(r => (LANE_TAG[r.role] || String(r.role || '').toUpperCase()) + ' ' + r.state).join(' · ');
-          return html`<button class=${cls('lpad', 'scene', 'acc', 'compact', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
+          return html`<button class=${cls('lpad', 'scene', 'acc', 'compact', !active && 'dim', active && 'on', tileAnim(anim))} data-doc=${'live.scene.' + s.id}
             style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`} onClick=${() => current && recall(null, s.id)}>
+            ${stillLayer(anim, colors[s.id] || PALETTE[i], 'scene', { letter: s.id })}
             <span class="lpad-sw">#${i + 1}</span>
             <span class="lpad-schead"><b>${s.id}</b><em>${esc(s.name || '')}</em></span>
             ${sum ? html`<span class="lsc-sum">${esc(sum)}</span>` : ''}
           </button>`;
         }
-        if (rows.length) return html`<button class=${cls('lpad', 'scene', 'acc', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
+        if (rows.length) return html`<button class=${cls('lpad', 'scene', 'acc', !active && 'dim', active && 'on', tileAnim(anim))} data-doc=${'live.scene.' + s.id}
           style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`}
           onClick=${() => current && recall(null, s.id)}>
+          ${stillLayer(anim, colors[s.id] || PALETTE[i], 'scene', { letter: s.id })}
           <span class="lpad-sw">#${i + 1}</span>
           ${/* ── LETTRE ET NOM EN GRAND, LES INSTRUMENTS UN PAR UN EN BAS (maquette live-tiles-v2, 2026-10-14 : « trop
                 d'infos sur ces cases » — la 6e lane d'un preset de groupe était coupée) */''}
@@ -937,9 +989,10 @@ function PedalboardLive({ rig, presets }) {
           ${/* « LES INSTRUMENTS, PAS LES EFFETS » (2026-10-08) tient toujours : une entrée par lane, son SON quand la
                 scène en choisit un qui a un nom, « silent » barré pour une lane coupée — mais une à la fois, en bas */''}
         </button>`;
-        return html`<button class=${cls('lpad', 'scene', !active && 'dim', active && 'on', animClass(anim))} data-doc=${'live.scene.' + s.id}
+        return html`<button class=${cls('lpad', 'scene', !active && 'dim', active && 'on', tileAnim(anim))} data-doc=${'live.scene.' + s.id}
           style=${`--pc:${colors[s.id] || PALETTE[i]}${vuVar(anim, vu)}`}
           onClick=${() => current && recall(null, s.id)}>
+          ${stillLayer(anim, colors[s.id] || PALETTE[i], 'scene', { letter: s.id })}
           <span class="lpad-sw">#${i + 1}</span>
           <span class="lpad-sc">${s.id}</span>
           <span class="lpad-name">${esc(s.name || '')}</span>

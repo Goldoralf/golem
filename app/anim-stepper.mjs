@@ -40,13 +40,14 @@ export const isLocalHost = h => ['127.0.0.1', 'localhost', '::1', '[::1]'].inclu
 
 // au pas, figée, tenue ou libre ? `where` : { tile, picker } — l'élément est dans une case animée, dans le sélecteur.
 // `display` : le réglage {animations: auto|on|off, blinks}. « hold » = tenue sur son état allumé (voyants sans clignoter).
+// QUAND LES CASES SONT FIGÉES, RIEN NE CLIGNOTE NON PLUS (2026-11-26, maquette « /live statique ») : le curseur du
+// logo et les voyants sont tenus allumés — la règle de cet écran est 0 image au repos, pas 2.
 export function sortOf(name, where, { local = false, display = DISPLAY_DEFAULT } = {}) {
   if (/spin/i.test(name || '') || (where && where.picker)) return 'free';
-  if (where && where.tile) {
-    const m = display.animations || 'auto';
-    return m === 'on' ? 'free' : m === 'off' ? 'freeze' : local ? 'freeze' : 'free';
-  }
-  return display.blinks === false ? 'hold' : 'step';
+  const m = display.animations || 'auto';
+  const still = m === 'off' || (m !== 'on' && local);
+  if (where && where.tile) return still ? 'freeze' : 'free';
+  return display.blinks === false || still ? 'hold' : 'step';
 }
 
 // les cases du Live sont-elles figées ? Alors on les rend SANS animation (classe racine STILL_CLASS)

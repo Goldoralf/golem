@@ -432,7 +432,7 @@ async def engine_select(body: dict):
 
 @router.get("/api/system/display")
 def display_get():
-    """Les animations de l'écran : {animations: auto|on|off, blinks} (bridge/display.py)."""
+    """Les animations de l'écran : {animations: auto|on|off, blinks, still_tiles: pedals|glyphs|textures} (bridge/display.py)."""
     from . import display
     return display.get()
 
@@ -444,7 +444,7 @@ async def display_set(body: dict):
     from .app import _broadcast
     body = body or {}
     try:
-        d = display.set_(body.get("animations"), body.get("blinks"))
+        d = display.set_(body.get("animations"), body.get("blinks"), body.get("still_tiles"))
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
     await _broadcast()

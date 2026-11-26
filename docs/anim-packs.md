@@ -107,7 +107,70 @@ of its number (#1 → `m1` … #10 → `m10`, `app/style.css` `.anim-monster.mN`
 different eyes. This is a rack rendering detail, not a pack: golem.fm only knows `monster`, and a preset
 that sets `monster` on a switch gets `m1`.
 
-## 8. Not built
+## 8. The still image of each effect
+
+> **Status: CODED on the rack 2026-11-26** (`anim_packs.check_still`, `app/anim-stills.js`, `page-live.js`). golem.fm
+> validates with the same `check_still`, ported as is, and adds a still to every effect it ships (not coded yet).
+
+When tiles are still, the Live does not draw a paused animation. A frame caught mid-cycle looks like a bug (isolated
+snow dots, a stray orange smudge), and a paused animation still costs a composited layer (docs/pitfalls/ui.md). Tiles
+are still on the local screen with Display set to Auto, and everywhere with Display set to Off. Each effect therefore
+carries its own **still image**, drawn to be looked at without moving.
+
+### 8.1 The field
+
+`effects[].still` is an SVG document, as a string:
+
+```json
+{"id": "fire", "name": "Fire", "still": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' preserveAspectRatio='xMidYMid slice'>…</svg>"}
+```
+
+- **Transparent background.** The tile paints its own colour underneath: the preset's colour for that tile
+  (`preset.colors`, `--pc`). An image that fills its whole box with an opaque colour hides the tile colour, and the
+  musician's colour choice with it.
+- **`currentColor` is the tile colour.** Before drawing, the rack replaces `currentColor` with the tile's `#rrggbb`.
+  Draw with `currentColor` whatever should follow the tile colour, and with fixed colours what should not (the orange of
+  a fire, the red of a heartbeat). The same image then works on a gold tile and on a blue one.
+- **Format.** Drawn on a square `viewBox` (200 × 200 is the reference), shown with `background-size: cover`, centred.
+  Live tiles range from about 2:1 (compact scenes) to 1:1. Keep what matters inside the central 200 × 120 band.
+- **No motion.** `<animate>`, `<animateTransform>`, `<animateMotion>`, `<set>`, `@keyframes` and `animation` are
+  refused. An animated SVG would bring back exactly the cost the still removes.
+- **Self-contained.** No `<script>`, `<foreignObject>`, `on…=` attributes, `<style>` with `@import`, or `href` other
+  than `#id`. In `url(…)`, only `#id` references are allowed. The rack plays offline.
+- **≤ 16 KB** per image. Gradients, patterns and a few paths are enough. A bitmap embedded inside the SVG is refused,
+  because it would blow the budget and blur on a large screen.
+
+Validation is the same as for the CSS: **refuse, never sanitize**. A pack with an invalid still is refused as a whole,
+and the error names the effect.
+
+### 8.2 Packs without stills
+
+`still` is optional in schema 1, so the packs installed before 2026-11-26 still install and still play. An effect
+without a still shows **only its tile colour** when tiles are still, never a paused frame. `install()` returns one
+warning per effect without a still, and golem.fm shows it to the pack author. From now on, golem.fm ships a still with
+every effect, including those of packs already published.
+
+### 8.3 The default pack
+
+Its 19 stills (`None` has none) live in `library/catalog/anim-stills.json`, `{id: svg}`, and `GET /api/anim-packs`
+serves them in `effects[].still` like any other pack's. The blank tiles' monster (§7) uses the `monster` still. Its ten
+eye variants are an animation detail and are not kept when tiles are still.
+
+### 8.4 What the Live shows when tiles are still
+
+Settings ▸ System ▸ Display ▸ **Still tiles** (`config/display.json` `still_tiles`) offers three styles. They apply
+only when tiles are still; moving tiles do not change.
+
+| Style | Stomps and service tiles | Scenes |
+|---|---|---|
+| **Pedals** (default) | the golem-fx pedal of the block, at its state (LED, knobs) | the effect's still |
+| **Glyphs** | the block's golem-fx glyph, large, cropped in a corner | the scene letter, large, as a watermark |
+| **Textures** | the effect's still | the effect's still |
+
+In every style, a still tile changes only on a gesture or a state change: no `--vu` level, no cycling line, no ticking
+faster than the musical beat (docs/pitfalls/ui.md).
+
+## 9. Not built
 
 - Uninstalling from the UI (the route exists, no button calls it).
 - Previewing a pack before installation (golem.fm side).

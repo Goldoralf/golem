@@ -143,12 +143,29 @@ warn_reuse() {
   return 0
 }
 
+# ATTENDRE LE BRIDGE AVANT D'OUVRIR LA FENÊTRE (2026-11-26) : start.sh lance uvicorn en tâche de fond et rend la main
+# aussitôt. Sur le rack Linux (i5-3337U) le bridge met plus de 2 s à écouter : Chrome, ouvert 2 s après, tombait sur
+# « connexion refusée » — une page d'erreur de Chrome, qui ne se recharge jamais seule, pendant que le son jouait.
+# Il fallait fermer et relancer golem. On attend qu'il réponde (90 s au plus), puis on ouvre quand même : une fenêtre
+# en erreur se voit, une fenêtre qui n'arrive jamais non.
+wait_bridge() {
+  local i
+  for i in $(seq 1 180); do
+    curl -sf -o /dev/null --max-time 2 "http://localhost:${PORT}/app/" && return 0
+    [ "$i" = 4 ] && echo "→ attente du bridge…"
+    sleep 0.5
+  done
+  echo "⚠ le bridge ne répond pas sur :${PORT} après 90 s — la fenêtre s'ouvre quand même (journal /tmp/golem-bridge.log)"
+  return 0
+}
+
 open_app() {   # $1 = url, $2 = largeur, $3 = hauteur, $4 = échelle (0 = ne rien forcer)
   local b; b=$(browser) || { xdg-open "$1" >/dev/null 2>&1 || echo "ouvre $1 dans ton navigateur"; return; }
   mkdir -p "$APPDIR"
   local extra=(--window-size="$2,$3")
   [ "${4:-0}" != 0 ] && extra+=(--force-device-scale-factor="$4")
   warn_reuse
+  wait_bridge
   ("$b" --app="$1" --user-data-dir="$APPDIR" "${extra[@]}" \
         --no-first-run --no-default-browser-check --disable-features=Translate \
         >/dev/null 2>&1 &)
@@ -176,6 +193,7 @@ open_shell() {   # $1 = query (?d=…), $2 = coquille (device|phone), $3 = large
   # fenêtre — on n'écrase pas un réglage parce qu'on a demandé autre chose une fois.
   [ "${FULLSCR:-0}" = 1 ] && extra=(--start-fullscreen)
   warn_reuse
+  wait_bridge
   ("$b" --app="$u" --user-data-dir="$APPDIR" "${extra[@]}" \
         --no-first-run --no-default-browser-check >/dev/null 2>&1 &)
 }

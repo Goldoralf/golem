@@ -62,13 +62,6 @@ export function LoopsPage() {
     setBandPick(null); setTick(t => t + 1);
   };
   const disk = (rigState || {}).disk || {};
-  const transcribe = async dir => {
-    const r = await fetch('/api/take/transcribe', { method: 'POST',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dir }) })
-      .then(x => x.json()).catch(e => ({ error: String(e) }));
-    if (r && r.error) alert(r.error);      // un refus DOIT se dire : sinon le bouton a l'air mort
-    setTick(t => t + 1);
-  };
   const perfErr = (rigState || {}).perf_error || '';
   const MODES = {};
   (((modesData || {}).modes) || []).forEach(m => { MODES[m.id] = m; });
@@ -121,9 +114,7 @@ export function LoopsPage() {
                midi: mids, mtime: t.mtime,
                bytes: t.bytes, man, labels: t.labels || {}, name: man.preset_name || t.dir.replace(/^perf-/, ''),
                path: f => t.dir + '/' + f, delKey: t.dir, onDel: () => delTake(t.dir), rpp: t.dir,
-               // transcription : le dossier EST la clé du travail, et l'état vient du rack
-               dir: t.dir, score: t.score, can_transcribe: t.can_transcribe,
-               no_transcribe: t.no_transcribe };
+               dir: t.dir };
     }),
     ...loops.map(l => ({ key: 'f:' + l.file, multi: false, files: [l.file], mtime: l.mtime,
                          bytes: l.bytes, man: l.manifest || {}, labels: l.labels || {},
@@ -158,54 +149,14 @@ export function LoopsPage() {
   });
   const untagged = items.filter(i => i.man.kind === 'take' && !i.man.band);
 
-  // ── LE BOUTON DE TRANSCRIPTION (docs/archive/tablature-study.md §12) ────────────────────────────
-  // Quatre états, et ce sont ceux qui existent VRAIMENT — pas un état idéal :
-  //   · transcriptible      -> « Transcribe »
-  //   · en cours            -> l'avancement, source par source (un travail muet de 30 s est
-  //                            indiscernable d'un bouton cassé)
-  //   · déjà faite          -> le bouton devient l'ACCÈS à la partition, et dit son nombre de
-  //                            mesures ; tap long = refaire
-  //   · rien à transcrire   -> grisé ET la raison, avec la sortie (passer le Rec en Multi + DI)
-  const tr = (rigState || {}).transcribe || {};
-  const trBusy = (tr.current || {}).dir;
-  const TranscribeBtn = it => {
-    const done = it.score;
-    const last = (tr.last || {})[it.dir];
-    // ⚠ le garde `trBusy &&` n'est pas décoratif : sans lui, quand rien ne tourne, `undefined
-    // === undefined` est VRAI et TOUTES les prises s'affichent « en cours » (constaté).
-    if (trBusy && trBusy === it.dir) {
-      const c = tr.current || {};
-      return html`<span class="rec-tr run" title=${'transcribing ' + (c.source || '')}>
-        ◌ ${Math.round((c.progress || 0) * 100)} %${c.source ? ' · ' + esc(c.source) : ''}</span>`;
-    }
-    if (!it.can_transcribe) {
-      return html`<span class="rec-tr off" title=${it.no_transcribe || 'nothing to transcribe'}>♫</span>`;
-    }
-    if (last && last.ok === false) {
-      return html`<button class="rec-tr fail" title=${'failed: ' + (last.error || '')}
-        onClick=${() => transcribe(it.dir)}>♫ retry</button>`;
-    }
-    if (done) {
-      // Une couleur d'alerte pour l'état NORMAL se lit comme une panne : le brouillon est la
-      // règle (l'audio passe par un modèle), l'exact est l'exception (le MIDI est déjà des
-      // notes). On marque donc l'exception dans le LIBELLÉ, pas la règle dans la couleur.
-      const allExact = done.exact && !done.draft;
-      return html`<button class=${cls('rec-tr done')}
-        title=${done.sources + ' score' + (done.sources > 1 ? 's' : '') + ' · ' + done.bars + ' bars'
-                + (done.draft ? ' · audio parts are a DRAFT (fingering to review)' : '')
-                + (done.exact ? ' · ' + done.exact + ' exact from MIDI' : '')
-                + ' — tap to re-transcribe'}
-        onClick=${() => transcribe(it.dir)}>♫ ${done.bars} bars${allExact ? ' · exact' : ''}</button>`;
-    }
-    return html`<button class="rec-tr" title="transcribe this take into scores & tabs — background, lowest priority"
-      onClick=${() => transcribe(it.dir)}>♫ Transcribe</button>`;
-  };
+  // LE BOUTON « Transcribe » A ÉTÉ RETIRÉ (2026-11-26, le mainteneur) : l'écoute d'une DI (notes, rythme, tab) passe à
+  // golem.fm, qui reçoit déjà les prises — le rack ne transcrit plus rien depuis cette page.
 
   // La carte EST le mini-DAW de la prise, repliable depuis le 2026-10-15 (accordéon). Même gabarit pour une prise
   // simple — c'est juste une carte à une seule piste.
   const card = it => { const ctx = MODES[it.man.machine_mode], bk = it.man.backing;
     const isOpen = opened.has(it.delKey);
-    // un tap sur l'en-tête plie/déplie — sauf sur ses boutons, liens et champ (renommer, transcrire, .rpp, corbeille)
+    // un tap sur l'en-tête plie/déplie — sauf sur ses boutons, liens et champ (renommer, .rpp, corbeille)
     const onHead = e => { if (!e.target.closest('button, a, input')) toggle(it.delKey); };
     return html`<div class=${cls('rec-card', it.multi && 'multi', isOpen ? 'rec-open' : 'rec-shut')}>
     <div class="rec-head" onClick=${onHead}
@@ -252,12 +203,7 @@ export function LoopsPage() {
           title=${(bk.played ? 'played over this backing track' : 'backing track loaded (never played)')
                   + ' — open Backings'}>♫ ${esc(bk.title)}</a>` : ''}
       </span>
-      ${/* TRANSCRIPTION (docs/archive/tablature-study.md §12) : le geste vit ICI, dans la zone d'actions
-            de la prise, à côté de la puce +DI qui en est justement la précondition. C'est aussi
-            le SEUL chemin capable de transcrire ce qui a été enregistré avant que la fonction
-            existe — 35 DI dormaient sur le disque le jour où on l'a écrite. */''}
       ${!isOpen ? html`<span class="rec-sum muted">${fmtBytes(it.bytes)}${it.man.bpm ? ' · ♩' + it.man.bpm : ''}${it.man.scene ? ' · ' + esc(it.man.scene) : ''}</span>` : ''}
-      ${it.multi ? TranscribeBtn(it) : ''}
       ${it.man.mode === 'tracks_di' ? html`<span class="sset-org">+DI</span>` : ''}
       <span class="rec-time">${hhmm(it.mtime)}</span>
       ${/* OUVRIR CETTE PRISE DANS REAPER (2026-10-11) : un .rpp écrit à côté de l'audio — une piste par fichier,

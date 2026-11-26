@@ -59,6 +59,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [cpu-budget.md](cpu-budget.md) | FIXED · lot 1 CODED | Will this preset play on this golem? CPU per block, per lane, per preset, measured by a calibration bench |
 | [preset-preview.md](preset-preview.md) | PARTLY CODED | A short demo per scene, rendered from a reference DI |
 | [tablature-fingering.md](tablature-fingering.md) | PROPOSED | Shape-based string and fret choice for transcriptions |
+| [transcription.md](transcription.md) | ACCEPTED | Transcription moves to golem.fm: what the rack records and sends (DI, MIDI, the instrument of each lane), what leaves the rack |
 
 ### Blocks, plugins and sound
 

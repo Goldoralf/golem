@@ -20,10 +20,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REAL_INSTALLED = _rig._golem_fx_installed            # conftest le remplace à chaque test : on garde le vrai
 PLUGINS = json.load(open(os.path.join(ROOT, "library", "catalog", "golem-fx-plugins.json"), encoding="utf-8"))["plugins"]
 GATE = next(cid for cid, p in PLUGINS.items() if p["name"] == "GoleM FX Gate")
-# golem-fx 0.8 (2026-11-26) : recalculées sur les archives téléchargées, égales au SHA256SUMS de la release
-SHAS = {"linux": "b3864893ee02c0389c848963fbca291fe2e5793d0f5b7d325048888ed99a9310",
-        "win32": "aca2e16293dc26f00c605e2a3667526465b86ace82bcfea6b47892e2bc439574",
-        "darwin": "26cc67604e4dc1b2e28437107c30d8f92632e144f8e746229750eb22c3091425"}
+# golem-fx 0.8.1 (2026-11-26) : recalculées sur les archives téléchargées, égales au SHA256SUMS de la release
+SHAS = {"linux": "3e7e14dffb4c930070988337116a6af8d83a21111f837084ede097391250a123",
+        "win32": "85d6c7336f185055b322e932bce9250eaf8dd46c6c3010c4038a8a992bd1ce11",
+        "darwin": "eb3b2bbb2d2ccfd211e9d29ce573889d2558999cf074a05ad277e022fb8021fb"}
 
 
 def _tgz(names=("Gate", "Delay"), extra=()):
@@ -62,7 +62,7 @@ def _zip(names=("Gate",)):
 def test_l_archive_est_epinglee_la_ou_son_systeme_epingle(plat):
     p = G.pin(plat)
     assert p["url"] == f"{G.BASE}/{G.ASSETS[plat]}" and p["sha256"] == SHAS[plat]
-    assert p["url"].startswith("https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8/")
+    assert p["url"].startswith("https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8.1/")
 
 
 def test_le_script_linux_passe_par_fetch_verified():

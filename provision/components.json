@@ -33,9 +33,9 @@
       "by": "golem",
       "what": "golem's own effects — the pedals most blocks play (gate, drives, delays, reverbs, modulation…); prebuilt VST3 release, installed with golem on Linux, Windows and macOS",
       "license": "GPL-3.0",
-      "url": "https://github.com/Goldoralf/golem-binaries/releases/tag/golem-fx-0.8",
+      "url": "https://github.com/Goldoralf/golem-binaries/releases/tag/golem-fx-0.8.1",
       "kind": "plugin",
-      "version": "0.8",
+      "version": "0.8.1",
       "check_mac": {
         "glob": [
           "~/Library/Audio/Plug-Ins/VST3/GoleM FX *.vst3",

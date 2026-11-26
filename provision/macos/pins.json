@@ -41,10 +41,10 @@
   "sha256": "e0b854b92a4e51ce5851320fb1a9f91ab1a4309f997de070e175b3e5cab4adaf"
  },
  "golem_fx": {
-  "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8 de Goldoralf/golem-binaries (golem-fx ef58874 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.8 = 0.7 + Organ et Octafuzz, trois circuits de Dist ajoutés à la fin, le bend de Pitch). Posés par provision/golem_fx.py (provision/desktop.py setup) dans ~/Library/Audio/Plug-Ins/VST3 (sans droits d'administrateur ; bundles universels, signés ad hoc) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
-  "version": "0.8",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8/golem-fx-macos-universal.tar.gz",
-  "sha256": "26cc67604e4dc1b2e28437107c30d8f92632e144f8e746229750eb22c3091425"
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8.1 de Goldoralf/golem-binaries (golem-fx 7d79340 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.8 = 0.7 + Organ et Octafuzz, trois circuits de Dist ajoutés à la fin, le bend de Pitch ; 0.8.1 = même code que 0.8, recompilé, presets et données remis à jour). Posés par provision/golem_fx.py (provision/desktop.py setup) dans ~/Library/Audio/Plug-Ins/VST3 (sans droits d'administrateur ; bundles universels, signés ad hoc) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
+  "version": "0.8.1",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8.1/golem-fx-macos-universal.tar.gz",
+  "sha256": "eb3b2bbb2d2ccfd211e9d29ce573889d2558999cf074a05ad277e022fb8021fb"
  },
  "manual": [
   {

@@ -199,7 +199,7 @@ as is (never downgrade someone's REAPER) and is judged after installation. Unsig
 installers (AVL, sfizz, PawPaw) and the Dragonfly archive are trusted only through their pinned hash.
 
 **golem-fx on all three OS (CODED 2026-11-15).** golem's own effects ship as a prebuilt release
-(`golem-fx-0.8` in Goldoralf/golem-binaries since 2026-11-26, 58 `GoleM FX <Name>.vst3` bundles), pinned per OS and placed
+(`golem-fx-0.8.1` in Goldoralf/golem-binaries since 2026-11-26, 58 `GoleM FX <Name>.vst3` bundles), pinned per OS and placed
 **without admin rights** in the per-user VST3 folder REAPER scans; each bundle goes to the install receipt and
 non-fatal like every third-party step (the blocks then keep their previous plugins, which stay installed):
 

@@ -16,7 +16,7 @@
  ],
  "default": false,
  "params": {
-  "freeze": true,
+  "freeze": false,
   "grains": 8,
   "pos": 0.5,
   "size": 200,
@@ -49,7 +49,7 @@
   "trails": true,
   "bypass": false
  },
- "notes": "Freeze is on in the preset: it holds what the last four seconds held when the block came in",
+ "notes": "Stomp Freeze (the footswitch gesture) to hold the last four seconds, then scan through them; Freeze is a gesture, never stored on",
  "factory": true,
  "golem_fx_seed": "gfx-grains",
  "golem_fx": true

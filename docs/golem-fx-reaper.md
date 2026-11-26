@@ -3,7 +3,8 @@
 > **Status: CODED** (2026-11-13; all three OS 2026-11-15). Asked by the maintainer: "play the golem-fx under REAPER, and
 > keep the other blocks as under the Golem Engine".
 >
-> **2026-11-15:** the installers ship golem-fx 0.6 since 2026-11-17 (0.4 on 2026-11-15; prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
+> **2026-11-15:** the installers ship golem-fx 0.7 since 2026-11-26 (0.4 on 2026-11-15, 0.6 on 2026-11-17; 0.7 adds
+> the optional editor only, same DSP and parameters; prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
 > §2, Pins), and REAPER on Windows and macOS now plays golem-fx blocks when the plugin is installed, exactly as on
 > Linux. The third-party fallbacks (guitarix, Calf, Dragonfly, Zam…) stay installed until a later step.
 
@@ -54,7 +55,8 @@ The test suite never sees the machine's own golem-fx (`conftest.py`).
   measured", rerun in batches); and "track not found" was read from the last 600 characters of `.apply.log`, which still
   held a previous run's message (now only the log written after the command).
 - The parameter manifest (`library/catalog/golem-fx-plugins.json`) regenerated from golem-fx 0.6 (e7e9ecc) on
-  2026-11-20 is identical to the one from 048142e; `golem_rig.lua` `gfx_range` now matches parameter names EXACTLY
+  2026-11-20 is identical to the one from 048142e, and regenerated from 0.7 (ea689aa) on 2026-11-26 it is identical
+  again (only `golem_fx_commit` moves: 0.7 adds the editor, not parameters); `golem_rig.lua` `gfx_range` now matches parameter names EXACTLY
   (the case-insensitive substring fallback iterated `pairs()`, whose order is undefined) and logs a missing name;
   `tests/test_golem_fx_manifest_names.py` checks every name golem looks up (1,434) against the manifest.
 - macOS: coded and tested under the fake REAPER only (2026-11-15); the same checks are still to run there.

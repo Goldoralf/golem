@@ -37,12 +37,15 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VERSION = "0.6"
+VERSION = "0.7"
 BASE = f"https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-{VERSION}"
 ASSETS = {"linux": "golem-fx-linux-x86_64.tar.gz", "win32": "golem-fx-windows-x86_64.zip",
           "darwin": "golem-fx-macos-universal.tar.gz"}
 PREFIX = "GoleM FX "
 JOURNAL = Path.home() / ".local" / "share" / "golem" / "golem-fx-installed.json"
+# LA RELEASE POSÉE (2026-11-26, passage à 0.7) : {version, dest, at}, écrit par place(). Sans elle, needed() ne voyait que
+# l'ABSENCE de bundles — un golem mis à jour par Settings ▸ About gardait sa 0.6 pour toujours.
+STAMP = Path.home() / ".local" / "share" / "golem" / "golem-fx-release.json"
 BY = "provision/golem_fx.py"
 
 
@@ -121,7 +124,7 @@ def _members(data, name):
     return rows
 
 
-def place(data, name, dest, journal=None, log=print):
+def place(data, name, dest, journal=None, log=print, stamp=None):
     """Pose les bundles de l'archive (octets DÉJÀ vérifiés) dans dest. Rend (posés, gardés) : les chemins posés,
     et les noms gardés parce qu'un build de dev les a mis là."""
     dest = Path(dest)
@@ -161,8 +164,23 @@ def place(data, name, dest, journal=None, log=print):
         log(f"  = golem-fx: {len(kept)} dev build(s) from tools/golem-fx-install.py kept as is "
             f"({', '.join(sorted(kept)[:6])}{'…' if len(kept) > 6 else ''})")
     _record(posed)
+    _stamp(dest, stamp)
     log(f"✓ golem-fx {VERSION}: {len(posed)} plugin(s) → {dest} (golem's audio engine sees them at its next start)")
     return posed, kept
+
+
+def _stamp(dest, stamp=None):
+    """Note la release posée (needed() la relit). Jamais d'exception : un tampon manquant fait seulement reposer."""
+    try:
+        import time
+        path = Path(stamp or STAMP)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(".part")
+        tmp.write_text(json.dumps({"version": VERSION, "dest": str(dest),
+                                   "at": time.strftime("%Y-%m-%d %H:%M")}), encoding="utf-8")
+        os.replace(tmp, path)
+    except OSError as e:
+        print(f"  ⚠ golem-fx release not noted ({e})", file=sys.stderr)
 
 
 def _record(paths):
@@ -189,13 +207,32 @@ def found(dest=None):
         return []
 
 
-def needed(dest=None):
-    """LE RATTRAPAGE APRÈS UNE MISE À JOUR (docs/update.md §3 bis, 2026-11-22) : aucun bundle golem-fx sur cette machine.
-    Settings ▸ About ▸ Update pose le code, pas les plugins — un golem d'avant golem-fx (v0.6.4) se retrouvait avec
-    une usine refaite sur des effets qu'il n'avait pas. Les lanceurs (reload.sh, start.sh, desktop.py) le posent alors
-    avant que REAPER ne relise ses plugins. Ne juge PAS la version : dès qu'un bundle est là (release ou build de dev),
-    rien n'est retouché ici — c'est l'installation qui repose une release plus récente."""
-    return not found(dest)
+def installed_version(stamp=None):
+    """La release golem-fx que place() a posée sur cette machine, ou None (jamais posée, ou posée avant le tampon)."""
+    try:
+        v = json.loads(Path(stamp or STAMP).read_text(encoding="utf-8")).get("version")
+        return v if isinstance(v, str) and v else None
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def needed(dest=None, stamp=None, journal=None):
+    """LE RATTRAPAGE APRÈS UNE MISE À JOUR (docs/update.md §3 bis) : à poser quand
+      · aucun bundle golem-fx n'est sur cette machine (2026-11-22 : un golem d'avant golem-fx, v0.6.4, se retrouvait
+        avec une usine refaite sur des effets qu'il n'avait pas) ;
+      · ou la release posée n'est pas celle qu'épingle CE code (2026-11-26) : Settings ▸ About ▸ Update pose le code,
+        pas les plugins — sans ce test, un golem installé en 0.6 la gardait. Une pose d'avant le tampon compte
+        comme ancienne : elle est reposée une fois.
+    SAUF si chaque bundle présent vient d'un build de dev (tools/golem-fx-install.py) : le développeur choisit ses
+    plugins, et place() les garderait de toute façon. Les lanceurs (reload.sh, start.sh, desktop.py) posent alors
+    avant que REAPER ne relise ses plugins."""
+    have = found(dest)
+    if not have:
+        return True
+    if installed_version(stamp) == VERSION:
+        return False
+    dev = dev_builds(journal)
+    return not all(n[:-len(".vst3")] in dev for n in have)
 
 
 def install(fetch=None, log=print, dest=None, platform=None, journal=None, timeout=300):

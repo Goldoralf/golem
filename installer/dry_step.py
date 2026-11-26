@@ -145,7 +145,7 @@ def main():
                   "@@phase engine", "▶ Golem Engine (le moteur audio de golem — précompilé)", "✓ Golem Engine 9.9-g1 → ~/opt/golem-engine (dry)",
                   *(("@@phase reaper", "▶ Reaper", "→ already installed") if os.environ.get("GOLEM_ENGINE") == "reaper" else ()),
                   "@@phase plugins", "▶ Plugins (releases GitHub : NAM, Dexed)",
-                  "▶ golem-fx (les effets de golem — VST3 précompilés)", "✓ golem-fx 0.4: 54 plugin(s) → ~/.vst3 (dry)",
+                  "▶ golem-fx (les effets de golem — VST3 précompilés)", "✓ golem-fx 0.7: 56 plugin(s) → ~/.vst3 (dry)",
                   "▶ Plugins LV2 des blocs FX", "▶ sfizz",
                   *(["@@warn |Vital is missing — the synth of the Keys lane stays silent. It needs a free vital.audio "
                      "account: get it from vital.audio, golem finds it at its next start."] if "vital" in warn else []),

@@ -20,9 +20,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REAL_INSTALLED = _rig._golem_fx_installed            # conftest le remplace à chaque test : on garde le vrai
 PLUGINS = json.load(open(os.path.join(ROOT, "library", "catalog", "golem-fx-plugins.json"), encoding="utf-8"))["plugins"]
 GATE = next(cid for cid, p in PLUGINS.items() if p["name"] == "GoleM FX Gate")
-SHAS = {"linux": "397d8d101ef82698405bb984f16fec5b19b655f57ccd52f8adbf14dcf16d9fbf",
-        "win32": "4f5537a63fb191192999c797d64e32ca5e7c3dd01dee8fa71b6d9fb241c51cee",
-        "darwin": "fcedf6f9cb1f52a157d454e29790e0885782c3449276014dd111ee10e177153d"}
+# golem-fx 0.7 (2026-11-26) : recalculées sur les archives téléchargées, égales au SHA256SUMS de la release
+SHAS = {"linux": "d81a0eb5751d93fd51354233cad9d0217a8387d69a30baa15b24af2da7f5fbe5",
+        "win32": "9d140e9a9de67fd431ad075de81501bf19dbd464e654f473cf71b010a6ceeebd",
+        "darwin": "824a4a65e92721ae799cdf9aa3bba7a9e40fcdae049cd09b751de437b443c7db"}
 
 
 def _tgz(names=("Gate", "Delay"), extra=()):
@@ -61,7 +62,7 @@ def _zip(names=("Gate",)):
 def test_l_archive_est_epinglee_la_ou_son_systeme_epingle(plat):
     p = G.pin(plat)
     assert p["url"] == f"{G.BASE}/{G.ASSETS[plat]}" and p["sha256"] == SHAS[plat]
-    assert p["url"].startswith("https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.6/")
+    assert p["url"].startswith("https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.7/")
 
 
 def test_le_script_linux_passe_par_fetch_verified():
@@ -208,6 +209,12 @@ def test_le_manifeste_des_composants_cite_golem_fx():
 
 
 # ── le rattrapage après une mise à jour (docs/update.md §3 bis) ─────────────────────────────────────────────────────
+@pytest.fixture(autouse=True)
+def _tampon_isole(tmp_path, monkeypatch):
+    # place() note la release posée : jamais dans le vrai ~/.local/share/golem pendant les tests
+    monkeypatch.setattr(G, "STAMP", tmp_path / "stamp" / "golem-fx-release.json")
+
+
 def test_needed_seulement_quand_aucun_bundle_n_est_la(tmp_path):
     dest = tmp_path / "vst3"
     assert G.needed(dest) is True                                          # dossier absent : à poser
@@ -215,7 +222,32 @@ def test_needed_seulement_quand_aucun_bundle_n_est_la(tmp_path):
     (dest / "Other.vst3").mkdir()
     assert G.needed(dest) is True                                          # les plugins des autres ne comptent pas
     G.place(_tgz(), G.ASSETS["linux"], dest, journal=tmp_path / "none.json", log=lambda *_: None)
-    assert G.needed(dest) is False                                         # un bundle est là : on ne retouche rien
+    assert G.needed(dest) is False                                         # la release épinglée est là : rien
+    assert G.installed_version() == G.VERSION
+
+
+def test_une_release_plus_ancienne_est_reposee_une_fois(tmp_path):
+    # 2026-11-26 : un golem installé en 0.6 et mis à jour par Settings ▸ About gardait sa 0.6 — le code ne voyait que
+    # l'absence de bundles
+    dest = tmp_path / "vst3"
+    (dest / "GoleM FX Gate.vst3").mkdir(parents=True)
+    none = tmp_path / "none.json"
+    assert G.needed(dest, journal=none) is True                            # posée avant le tampon : ancienne
+    G.STAMP.parent.mkdir(parents=True, exist_ok=True)
+    G.STAMP.write_text('{"version": "0.6"}')
+    assert G.needed(dest, journal=none) is True                            # une autre release : à reposer
+    G.place(_tgz(), G.ASSETS["linux"], dest, journal=none, log=lambda *_: None)
+    assert G.needed(dest, journal=none) is False                           # reposée : le tampon le dit
+
+
+def test_des_builds_de_dev_seuls_ne_sont_jamais_reposes(tmp_path):
+    dest = tmp_path / "vst3"
+    (dest / "GoleM FX Gate.vst3").mkdir(parents=True)
+    j = tmp_path / "dev.json"
+    j.write_text('{"installed": {"GoleM FX Gate": {"sha": "x"}}}')
+    assert G.needed(dest, journal=j) is False                              # le développeur choisit ses plugins
+    (dest / "GoleM FX Boost.vst3").mkdir()
+    assert G.needed(dest, journal=j) is True                               # un bundle de release, sans tampon
 
 
 def test_les_lanceurs_rattrapent_avant_que_reaper_ne_scanne():
@@ -260,4 +292,9 @@ def test_le_rattrapage_ne_telecharge_ni_sans_besoin_ni_sans_reseau(tmp_path):
     assert "rc=0" in run(empty, net=True) and (fake / "called").read_text() == "called\n"   # à poser, réseau là
     have = tmp_path / "home-have"
     (have / ".vst3" / "GoleM FX Gate.vst3").mkdir(parents=True)
-    assert "rc=1" in run(have, net=True) and (fake / "called").read_text() == "called\n"    # déjà là : rien
+    (have / ".local" / "share" / "golem").mkdir(parents=True)
+    (have / ".local" / "share" / "golem" / "golem-fx-release.json").write_text('{"version": "%s"}' % G.VERSION)
+    assert "rc=1" in run(have, net=True) and (fake / "called").read_text() == "called\n"    # la bonne release : rien
+    old = tmp_path / "home-old"
+    (old / ".vst3" / "GoleM FX Gate.vst3").mkdir(parents=True)                             # posée avant le tampon
+    assert "rc=0" in run(old, net=True) and (fake / "called").read_text() == "called\ncalled\n"   # reposée

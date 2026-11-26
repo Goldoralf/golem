@@ -68,7 +68,7 @@ This is the foundation, it serves every machine, and it is what remains when gol
 | `help` | the help page(s) it belongs to (§4) |
 
 Kept **short** — a few dozen actions. Built (2026-10-20), all existing code paths: `set_buffer`, `osc_refresh`,
-`reaper_restart`, `audio_reset`, `midi_reinit`, `repose_preset` (modify), `silence_hunt`, `health_facts` (read).
+`reaper_restart`, `audio_reset`, `free_card`, `midi_reinit`, `repose_preset` (modify), `silence_hunt`, `health_facts` (read).
 Next candidates: the scene gap probe, assign an input's instrument (`POST /api/inputmap`), quarantine a plugin
 **as data** (`effects.json`, never a file deletion). Hardware advice ("turn down the gain of IN 2") is a verdict, not an
 action.

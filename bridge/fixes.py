@@ -101,6 +101,15 @@ async def _run_restart(p):
     return await reaper_restart()
 
 
+async def _run_free_card(p):
+    """La carte est tenue par le son du bureau (bridge/card_guard.py) : elle lui est retirée, puis le moteur redémarre
+    pour l'ouvrir — REAPER ne réessaie pas seul une carte qu'il n'a pas pu ouvrir au démarrage."""
+    import asyncio
+    from . import card_guard
+    await asyncio.to_thread(card_guard.guard, None, True)
+    return await _run_restart(p)
+
+
 async def _run_command(action):
     from .commands import write_command
     write_command({"action": action, "why": "health fix"})
@@ -334,6 +343,24 @@ ACTIONS = {
                            "verify": "golem checks that the audio thread runs again within 20 s.", "undo": "",
                            "apply_label": "Reopen the card"},
     },
+    "free_card": {
+        "label": "Free the sound card",
+        "description": "Take golem's sound card back from the desktop sound (PipeWire), then restart the engine so it "
+                       "opens the card. The desktop plays on the computer's own speakers from then on.",
+        "risk": "modify", "live_allowed": False, "help": ["help/no-sound", "golem/soundcard"],
+        "params": lambda: {"type": "object", "properties": {}},
+        "run": _run_free_card, "verify": _verify_audio, "timeout": ENGINE_BACK_S,
+        "plan": lambda p: {"title": "Fix: the desktop holds the sound card", "why": "golem opens its card directly, "
+                           "and only one program can do that at a time. A desktop application (a browser playing a "
+                           "page, a video) took it through the desktop sound first, so the engine has no card.",
+                           "before": {"value": "held by the desktop"}, "after": {"value": "golem's only"},
+                           "costs": ["The engine restarts: 10 to 30 s of silence.",
+                                     "The desktop sound moves to the computer's speakers, for good."],
+                           "verify": "golem checks that the engine's audio runs again.",
+                           "undo": "To give the card back to the desktop: delete "
+                                   "~/.config/wireplumber/wireplumber.conf.d/90-golem-card.conf and log in again.",
+                           "apply_label": "Free the card"},
+    },
     "midi_reinit": {
         "label": "Reopen MIDI devices",
         "description": "Ask REAPER to reopen its MIDI devices. For a pedalboard or keyboard plugged after REAPER "
@@ -485,6 +512,8 @@ def suggest(fact):
         return {"action": "osc_refresh" if getattr(st, "reaper_running", False) else "reaper_restart", "params": {}}
     if fid == "audio":
         a = getattr(st, "audio", None) or {}
+        if a.get("held"):                                 # tenue par le bureau : reprise ; par un autre programme : à fermer
+            return {"action": "free_card", "params": {}} if a.get("desktop") else None
         if a.get("card") or "not connected" in str(a.get("why") or ""):
             return None                                   # une carte débranchée se rebranche, elle ne se « répare » pas
         # moteur saturé : rouvrir la carte ne rend pas de CPU, un buffer si. Flux bloqué carte branchée (`stuck`,

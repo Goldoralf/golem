@@ -27,6 +27,10 @@ fi
 # 2) auto-connexion MIDI (best-effort)
 [ -x provision/midi-autoconnect.sh ] && ./provision/midi-autoconnect.sh >/dev/null 2>&1 || true
 
+# 2 bis) la carte de golem hors du son du bureau, AVANT le moteur (bridge/card_guard.py) : sinon une page qui joue dans
+# le navigateur la fait prendre par PipeWire, et le moteur démarre sans carte (rack Linux, 2026-11-26)
+./.venv/bin/python -m bridge.card_guard >/dev/null 2>&1 || true
+
 # 3) le MOTEUR AUDIO choisi (provision/lib-engine.sh) : le Golem Engine si c'est lui, sinon Reaper avec le projet Set
 . "$HERE/provision/lib-engine.sh"
 ENGINE="$(golem_engine "$HERE")"

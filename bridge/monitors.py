@@ -647,6 +647,46 @@ def _audio_recover(alive, why):
     return {**out, "fix": "recovery had no effect — check the cable"}
 
 
+HELD_AFTER_S = 12.0            # le moteur a eu le temps d'ouvrir sa carte : au-delà, un autre programme qui la tient l'en empêche
+
+
+def _card_held():
+    """Qui tient la carte active quand le moteur ne l'a pas (bridge/card_guard.held), None sinon ou trop tôt."""
+    try:
+        from . import card_guard, engine
+        eng = engine.get()
+        if not getattr(state, "reaper_running", False) or time.time() - (getattr(eng, "launched_at", 0) or 0) < HELD_AFTER_S:
+            return None
+        return card_guard.held()
+    except Exception:
+        return None
+
+
+def _held_state(h):
+    """`state.audio` d'une carte TENUE par un autre programme. Le son du bureau (PipeWire) se reprend : la carte lui est
+    retirée et le moteur la rouvre, une fois par épisode (_AUDIO_FIX). Un autre programme en ALSA direct : on le nomme,
+    c'est au musicien de le fermer. ⚠ chaînes AFFICHÉES : anglais (règle 4)."""
+    who = ", ".join(h.get("apps") or []) or ", ".join(sorted({x["name"] for x in h.get("holders") or []})) or "another program"
+    via = " through the desktop sound" if h.get("desktop") else ""
+    out = {"ok": False, "held": True, "card": None, "apps": h.get("apps") or [], "desktop": bool(h.get("desktop")),
+           "why": f"{h.get('card')} is in use by {who}{via} — the engine could not open it"}
+    if not h.get("desktop"):
+        return {**out, "fix": f"close {who}, then restart the engine"}
+    if (state.perf or {}).get("recording"):
+        return {**out, "fix": "waiting — a take is recording"}
+    if not _AUDIO_FIX["tried"]:
+        _AUDIO_FIX["tried"] = True
+        _AUDIO_FIX["tried_at"] = time.time()
+        log_audio.warning(f"⚠ {out['why']} — carte retirée au bureau, puis audio_reset (une seule tentative)")
+        with contextlib.suppress(Exception):
+            from . import card_guard
+            card_guard.guard(force=True)
+            from .commands import write_command
+            write_command({"action": "audio_reset"})
+        return {**out, "fix": "freeing it from the desktop…"}
+    return {**out, "fix": "free the card, then restart the engine"}
+
+
 # ── LE CONTRAT MIDI : le rack savait, et se taisait ──────────────────────────────────────
 # `golem_midi.lua` publie presets/.midi.json en continu — qui ouvre l'entrée de l'AKAI, qui
 # ouvre sa sortie, et ce qui cloche. Le 2026-08-08 il portait le diagnostic COMPLET (« entrée
@@ -780,6 +820,12 @@ async def _monitor_audio():
         if alive is None and why == "première lecture":
             await asyncio.sleep(1.2)
             alive, why = await loop.run_in_executor(None, _audio_alive)
+        # LA CARTE DE GOLEM HORS DU BUREAU (bridge/card_guard.py, 2026-11-26) : une fois par carte active, et qui la tient
+        # quand le moteur ne l'a pas — sans quoi l'écran restait sur « Still starting. » pendant que Firefox la gardait
+        with contextlib.suppress(Exception):
+            from . import card_guard as _cg
+            await loop.run_in_executor(None, _cg.guard)
+        held = await loop.run_in_executor(None, _card_held) if alive is not True else None
         mh = await loop.run_in_executor(None, _read_midi_health)
         pb = await loop.run_in_executor(None, _pedalboard_brief)
         changed = False
@@ -827,8 +873,8 @@ async def _monitor_audio():
                 _diag_event("midi", state="plugged" if mh.get("ok") else "unplugged")
             state.midi = mh
             changed = True
-        if alive is not None:
-            new = _audio_recover(bool(alive), why)
+        if held or alive is not None:
+            new = _held_state(held) if held else _audio_recover(bool(alive), why)
             if new != (state.audio or {}):
                 was_ok = (state.audio or {}).get("ok", True)
                 if bool(new.get("ok")) != bool(was_ok):

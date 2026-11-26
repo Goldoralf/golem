@@ -47,6 +47,10 @@ not loaded · REAPER auto-mute · a service track fell out of REAPER's live grap
      the `fix` says "choose a larger buffer" and Health offers the next size (512 held on that rack).
    - `card` set, `why: "<card> is not connected"` → chip **NO CARD**: plug it in or switch card in
      Settings ▸ Gear ▸ Soundcard. The single recovery attempt is kept for when it comes back.
+   - `held: true`, `why: "<card> is in use by <app> through the desktop sound…"` → the desktop sound (PipeWire) holds
+     golem's card, so the engine could not open it (`bridge/card_guard.py`). The monitor frees it and sends one
+     `audio_reset`; Health offers **Free the sound card** (frees it, restarts the engine). Another program in raw ALSA
+     is named instead: close it. Check by hand: `fuser -v /dev/snd/pcmC*`, `wpctl status`.
    - `t` frozen too → not a card problem: REAPER or its Lua loops stopped → tree 4.
 3. **Volume outside REAPER first.** Headphones OK but speakers silent = the interface's MONITOR knob, or
    the ALSA hardware volume (`alsamixer`), not the rig.

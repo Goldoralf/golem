@@ -57,6 +57,36 @@ a restart erases the evidence).
 
 ---
 
+## The desktop sound can hold golem's card
+
+FIXED 2026-11-26 (Linux rack, Acer Aspire S7, AudioBox iTwo, REAPER).
+
+**Symptom.** No sound after a start, and Health stuck on "Still starting." Restarting golem or replugging the card
+changes nothing. The card is listed by the kernel (`/proc/asound/cards`).
+
+**Cause.** golem opens its card in raw ALSA (REAPER `linux_audio_mode=1`, the Golem Engine's ALSA backend), and a raw
+ALSA device opens for one program at a time. On Ubuntu, PipeWire (the desktop sound) also sees the USB card, often
+makes it the default output, and opens it as soon as an application plays. That day, Firefox was playing (the
+golem.fm pairing page) and PipeWire held `/dev/snd/pcmC1D0p`: REAPER started without a card. REAPER wrote no clock
+witness, so `state.audio` stayed empty and Health kept waiting.
+
+**Rule.** golem's card belongs to golem only, never to the desktop.
+- `bridge/card_guard.py` `guard()` sets the active card's PipeWire profile to "off" (`wpctl set-profile <device> 0`)
+  and writes `~/.config/wireplumber/wireplumber.conf.d/90-golem-card.conf` (`device.disabled` on `alsa.id`). It
+  runs in `provision/start.sh` before the engine, and in the audio monitor once per active card. The desktop plays
+  on the computer's own speakers from then on.
+- When the engine has no card 12 s after it started, the monitor looks at who holds it (`card_guard.held()`: the
+  processes in `/proc`, and behind PipeWire the applications, from `pw-dump`). Health says "iTwo is in use by
+  Firefox through the desktop sound". For the desktop, the monitor frees the card and sends `audio_reset`, once per
+  episode; the Health fix "Free the sound card" (`free_card`) frees it and restarts the engine. Another program in
+  raw ALSA is named, and the musician closes it.
+- Off switch: `GOLEM_CARD_GUARD=0`. To give the card back to the desktop: delete the rule file and log in again.
+
+**Detect.** `fuser -v /dev/snd/pcmC*` (who holds each PCM), `wpctl status` (the streams on each sink).
+
+**Code.** `bridge/card_guard.py`, `bridge/monitors.py` (`_card_held`, `_held_state`), `bridge/fixes.py`
+(`free_card`), `provision/start.sh`, `tests/test_card_guard.py`.
+
 ## A relative clock persisted in the project freezes REAPER
 
 **Symptom.** Every Lua loop goes silent at once (no commands read, no telemetry, false "no sound

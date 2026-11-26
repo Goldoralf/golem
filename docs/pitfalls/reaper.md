@@ -71,10 +71,21 @@ golem.fm pairing page) and PipeWire held `/dev/snd/pcmC1D0p`: REAPER started wit
 witness, so `state.audio` stayed empty and Health kept waiting.
 
 **Rule.** golem's card belongs to golem only, never to the desktop.
-- `bridge/card_guard.py` `guard()` sets the active card's PipeWire profile to "off" (`wpctl set-profile <device> 0`)
-  and writes `~/.config/wireplumber/wireplumber.conf.d/90-golem-card.conf` (`device.disabled` on `alsa.id`). It
-  runs in `provision/start.sh` before the engine, and in the audio monitor once per active card. The desktop plays
-  on the computer's own speakers from then on.
+- `bridge/card_guard.py` `guard()` writes `~/.config/wireplumber/wireplumber.conf.d/90-golem-card.conf`
+  (`device.disabled = true`, matched on `api.alsa.card.name`) and sets the card's PipeWire profile to "off"
+  (`wpctl set-profile <device> 0`) when PipeWire already shows it. It runs in `provision/start.sh` before the
+  engine, and in the audio monitor once per active card. The desktop plays on the computer's own speakers.
+- **Match the rule on `api.alsa.card.name`, not on `alsa.id`.** WirePlumber evaluates `monitor.alsa.rules` when it
+  creates the device (`scripts/monitors/alsa.lua`, `prepareDevice`), on the udev monitor's properties.
+  `api.alsa.card.name` ("PreSonus AudioBox iTwo", the name after " - " in `/proc/asound/cards`) is there; `alsa.id`
+  is added later by the device itself.
+  - Measured on the rack's internal card: a rule on `api.alsa.card.name = "HDA Intel PCH"` removed it, a rule on
+    `alsa.id = "PCH"` did not.
+  - The first version matched `alsa.id` only and never worked. The iTwo looked removed after a WirePlumber restart
+    only because REAPER held it: the udev monitor does not announce a busy card. It came back as soon as REAPER
+    released it (a REAPER restart), with no USB event. `alsa.id` stays in the rule as a second match, harmless.
+- The profile "off" is the safety net for a device PipeWire created before the rule existed. A WirePlumber restart
+  (or a new session) is what applies a new rule.
 - When the engine has no card 12 s after it started, the monitor looks at who holds it (`card_guard.held()`: the
   processes in `/proc`, and behind PipeWire the applications, from `pw-dump`). Health says "iTwo is in use by
   Firefox through the desktop sound". For the desktop, the monitor frees the card and sends `audio_reset`, once per
@@ -82,7 +93,8 @@ witness, so `state.audio` stayed empty and Health kept waiting.
   raw ALSA is named, and the musician closes it.
 - Off switch: `GOLEM_CARD_GUARD=0`. To give the card back to the desktop: delete the rule file and log in again.
 
-**Detect.** `fuser -v /dev/snd/pcmC*` (who holds each PCM), `wpctl status` (the streams on each sink).
+**Detect.** `fuser -v /dev/snd/pcmC*` (who holds each PCM), `wpctl status` (the streams on each sink). To test a
+rule without freeing golem's card, try the same match on a free card (the internal one) and restart WirePlumber.
 
 **Code.** `bridge/card_guard.py`, `bridge/monitors.py` (`_card_held`, `_held_state`), `bridge/fixes.py`
 (`free_card`), `provision/start.sh`, `tests/test_card_guard.py`.

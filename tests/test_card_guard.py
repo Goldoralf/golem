@@ -53,13 +53,28 @@ def test_held_ignore_les_moteurs_de_golem(monkeypatch):
     assert h["desktop"] is True and h["apps"] == ["Firefox"] and h["number"] == 1
 
 
-def test_la_regle_wireplumber(tmp_path):
+def test_la_regle_wireplumber_vise_le_nom_alsa(tmp_path):
+    # mesuré au rack le 2026-11-26 : la règle est lue à la CRÉATION de l'appareil, où `alsa.id` n'existe pas encore ;
+    # c'est `api.alsa.card.name` qui retire la carte (essayé sur la carte interne : alsa.id seul ne retirait rien)
     rule = tmp_path / "wp" / "90-golem-card.conf"
-    assert G.write_rule("iTwo", str(rule)) is True
+    assert G.write_rule("iTwo", str(rule), name="PreSonus AudioBox iTwo") is True
     text = rule.read_text()
-    assert 'alsa.id = "iTwo"' in text and "device.disabled = true" in text
-    assert G.write_rule("iTwo", str(rule)) is False                 # déjà là : rien ne change
-    assert G.write_rule('x" } ] evil', str(rule)) is False          # un id étrange n'entre jamais dans la règle
+    assert '{ api.alsa.card.name = "PreSonus AudioBox iTwo" }, { alsa.id = "iTwo" }' in text
+    assert "device.disabled = true" in text
+    assert G.write_rule("iTwo", str(rule), name="PreSonus AudioBox iTwo") is False     # déjà là : rien ne change
+    assert G.write_rule('x" } ] evil', str(rule)) is False                              # un id étrange n'entre jamais
+    assert G.write_rule("iTwo", str(rule), name='a" } ] evil') is False                 # un nom étrange non plus
+
+
+def test_le_nom_alsa_de_la_carte(tmp_path):
+    cards = tmp_path / "cards"
+    cards.write_text(" 0 [PCH            ]: HDA-Intel - HDA Intel PCH\n"
+                     "                      HDA Intel PCH at 0x50510000 irq 36\n"
+                     " 1 [iTwo           ]: USB-Audio - PreSonus AudioBox iTwo\n"
+                     "                      PreSonus PreSonus AudioBox iTwo at usb-0000:00:14.0-2, high speed\n")
+    assert G.card_name(1, str(cards)) == "PreSonus AudioBox iTwo"
+    assert G.card_name(0, str(cards)) == "HDA Intel PCH"
+    assert G.card_name(5, str(cards)) is None
 
 
 def test_release_passe_le_profil_a_off(monkeypatch):

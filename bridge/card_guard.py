@@ -124,23 +124,45 @@ def held(cid=None):
     return {"card": cid, "number": n, "holders": hs, "apps": apps, "desktop": desktop}
 
 
-def rule_text(cid):
+_NAME = re.compile(r"^[A-Za-z0-9 _\-.()]+$")         # un nom de carte ALSA (« PreSonus AudioBox iTwo »)
+
+
+def card_name(n, cards="/proc/asound/cards"):
+    """Le nom ALSA de la carte n (« PreSonus AudioBox iTwo », après « - » dans /proc/asound/cards), None sinon."""
+    try:
+        with open(cards, encoding="utf-8", errors="replace") as f:
+            for line in f:
+                m = re.match(r"^\s*(\d+)\s+\[[^\]]*\]:\s*.*?\s-\s(.+?)\s*$", line)
+                if m and int(m.group(1)) == n:
+                    return m.group(2) if _NAME.match(m.group(2)) else None
+    except OSError:
+        pass
+    return None
+
+
+def rule_text(cid, name=None):
+    """La règle WirePlumber. ⚠ ELLE EST ÉVALUÉE À LA CRÉATION DE L'APPAREIL (scripts/monitors/alsa.lua prepareDevice),
+    sur les propriétés du moniteur udev : `api.alsa.card.name` y est, `alsa.id` NON (l'appareil le pose ensuite).
+    Mesuré au rack le 2026-11-26 : une règle sur `alsa.id` seul ne retirait rien — l'iTwo n'était absente que parce que
+    REAPER la tenait (le moniteur n'annonce pas une carte occupée) et revenait dès qu'il la relâchait. `alsa.id` reste
+    en secours : les correspondances d'une règle s'additionnent."""
+    matches = ([f'{{ api.alsa.card.name = "{name}" }}'] if name else []) + [f'{{ alsa.id = "{cid}" }}']
     return ("# golem (bridge/card_guard.py) : la carte de golem ne sert pas au son du bureau — golem l'ouvre en ALSA\n"
             "# brut, un seul programme à la fois. Le bureau joue sur une autre sortie. Retirer ce fichier la rend au\n"
             "# bureau (après un redémarrage de session, ou systemctl --user restart wireplumber).\n"
             "monitor.alsa.rules = [\n"
             "  {\n"
-            f"    matches = [ {{ alsa.id = \"{cid}\" }} ]\n"
+            f"    matches = [ {', '.join(matches)} ]\n"
             "    actions = { update-props = { device.disabled = true } }\n"
             "  }\n"
             "]\n")
 
 
-def write_rule(cid, path=RULE):
-    """Pose (ou met à jour) la règle WirePlumber pour la carte `cid`. Vrai si le fichier a changé."""
-    if not cid or not _ID.match(str(cid)):
+def write_rule(cid, path=RULE, name=None):
+    """Pose (ou met à jour) la règle WirePlumber pour la carte `cid` (et son nom ALSA). Vrai si le fichier a changé."""
+    if not cid or not _ID.match(str(cid)) or (name and not _NAME.match(str(name))):
         return False
-    text = rule_text(cid)
+    text = rule_text(cid, name)
     with contextlib.suppress(OSError):
         with open(path, encoding="utf-8") as f:
             if f.read() == text:
@@ -180,7 +202,11 @@ def guard(cid=None, force=False):
         return None
     out = {"card": cid, "rule": False, "released": False}
     with contextlib.suppress(OSError):
-        out["rule"] = write_rule(cid)
+        n = card_number(cid)
+        name = card_name(n) if n is not None else None
+        # carte débranchée : son nom est inconnu, on garde la règle déjà posée plutôt que de la réduire à alsa.id
+        if name or not os.path.isfile(RULE):
+            out["rule"] = write_rule(cid, name=name)
     out["released"] = release(cid)
     _done["cid"] = cid
     if out["rule"] or out["released"]:

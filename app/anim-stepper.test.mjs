@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { stepPlan, sortOf, isLocalHost, phaseAt, startAnimStepper } from './anim-stepper.mjs';
+import { stepPlan, sortOf, isLocalHost, phaseAt, startAnimStepper, tilesStill, STILL_CLASS } from './anim-stepper.mjs';
 
 test('une animation finie reste libre ; une infinie a deux états', () => {
   assert.equal(stepPlan({ duration: 300, iterations: 1 }), null);
@@ -78,5 +78,25 @@ test('une case figée en local repart quand le réglage la permet', () => {
     allow = true;
     tick();
     assert.equal(fire.paused, false);                 // rendue à l'écran local
+  } finally { globalThis.setInterval = realSet; }
+});
+
+// une animation en pause garde sa couche composée : les cases figées perdent leurs animations (html.tiles-still)
+test('les cases figées se rendent sans animation : classe racine selon le réglage et l’écran', () => {
+  assert.equal(tilesStill({ local: true }), true);                                     // auto, écran local
+  assert.equal(tilesStill({ local: false }), false);                                   // auto, tablette
+  assert.equal(tilesStill({ local: false, display: { animations: 'off' } }), true);
+  assert.equal(tilesStill({ local: true, display: { animations: 'on' } }), false);
+  const cls = new Set();
+  const root = { classList: { toggle: (c, on) => (on ? cls.add(c) : cls.delete(c)) } };
+  let allow = false, tick;
+  const realSet = globalThis.setInterval;
+  globalThis.setInterval = f => { tick = f; return 1; };
+  try {
+    startAnimStepper({ getAnimations: () => [], documentElement: root }, () => 0,
+      { local: true, display: () => ({ animations: allow ? 'on' : 'auto', blinks: true }) });
+    assert.equal(cls.has(STILL_CLASS), true);
+    allow = true; tick();
+    assert.equal(cls.has(STILL_CLASS), false);        // « Animated everywhere » : les cases retrouvent leurs animations
   } finally { globalThis.setInterval = realSet; }
 });

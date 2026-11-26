@@ -1945,6 +1945,17 @@ input.rig-lbl-in:focus{outline:none; border-bottom-color:var(--sect)}
   .set-pad[class*="anim-"]::before,.set-pad[class*="anim-"]::after,
   .fx-opt[class*="anim-"]::before,.fx-opt[class*="anim-"]::after{animation:none}
 }
+/* LES CASES FIGÉES N'ONT PLUS D'ANIMATION (2026-11-26, docs/pitfalls/ui.md « A paused animation still costs a
+   layer »). Sur l'écran local, app/anim-stepper.mjs pose html.tiles-still au lieu de mettre en pause : une animation
+   en pause garde sa couche composée, et les textes au-dessus sont promus par recouvrement — 43 couches et 3 Mpx sur
+   le Live d'Eight-String Nu contre 5 sur CPU cores, refaites à chaque image (curseur, tap, chrono). Sans animation,
+   chaque couche d'effet est peinte UNE fois dans la tuile (mesuré : 5 couches). Les aperçus du sélecteur (.fx-opt) restent animés. */
+html.tiles-still .anim-pulse,html.tiles-still .anim-wave,html.tiles-still .anim-heartbeat{animation:none}
+html.tiles-still [class*="anim-"]:not(.fx-opt)::before,html.tiles-still [class*="anim-"]:not(.fx-opt)::after,
+html.tiles-still [class*="anim-"]:not(.fx-opt) :is(.mc2,.mc3,.mc4){animation:none !important}
+/* mix-blend-mode compose À LUI SEUL (mesuré : 20 couches avec, 5 sans) : un voile en `screen` devient un voile normal */
+html.tiles-still [class*="anim-"]:not(.fx-opt)::before,html.tiles-still [class*="anim-"]:not(.fx-opt)::after{mix-blend-mode:normal}
+html.tiles-still .lpad{transition:none}
 
 /* ── Calibration (docs/calibration.md) : stepper MIDI-learn + outils pédales ── */
 .cal-panel{display:flex; flex-direction:column; gap:10px; padding:4px 2px}

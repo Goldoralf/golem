@@ -137,9 +137,15 @@ is about 10 messages and 60 KB a second.
 - Infinite CSS animations are put on a step by `app/anim-stepper.mjs`, started by `main.js` and `mobile.js`. Each one
   is paused and set in turn to its "on" and "off" state at its own half-period. A blink looks the same and a pulse
   becomes two steps. The cost is two frames a second instead of 240: the GPU process drops to 0.4–0.6 % of a core.
-- The Live tile animations (`anim-*`) are frozen on one frame on the local screen. The local screen is the app
+- The Live tile animations (`anim-*`) are still on the local screen. The local screen is the app
   served from `127.0.0.1` or `localhost`, which runs on the machine that plays the sound. Most factory patches carry
   9–10 of them.
+  - **Still means removed, not paused** (2026-11-26). A paused animation keeps its composited layer, and so does
+    a `mix-blend-mode` layer even with no animation; everything painted above them is then promoted by overlap.
+    Measured on the Linux rack's Eight-String Nu Live page: paused, 43 layers and 3 Mpx recomposited on every
+    frame (caret step, tap, timer) against 5 on CPU cores, and the engine crackled on Live only, even at a
+    1024 buffer. `anim-stepper.mjs` therefore sets `html.tiles-still`, and `style.css` gives the tile layers
+    `animation:none` and `mix-blend-mode:normal`: 5 layers. Each tile keeps its look, as one painted frame.
   - Measured on the 240 Hz panel with the 14 tiles of Jazz Box: animated, the GPU process used 134 % of a core and
     the renderer 26 %; frozen, 0.7 % and 3 %.
   - On the Linux rack, `prefers-reduced-motion` (which stops the same animations) took ALSA restarts from 137 to 0
@@ -164,7 +170,7 @@ rest, keeps an infinite CSS animation running (spinners and picker previews exce
 or that makes more than 20 `requestAnimationFrame` calls in a second. Live check: with the window in front,
 compare the CPU of the golem Chrome processes (Task Manager, or `top` on Linux) with the window minimised.
 
-**Code.** `app/anim-stepper.mjs`, `app/anim-stepper.test.mjs`, `app/page-live.js` (`useLiveTick`, `setIfChanged`),
+**Code.** `app/anim-stepper.mjs` (`tilesStill`, `STILL_CLASS`), `app/anim-stepper.test.mjs`, `app/style.css` (`html.tiles-still`), `app/page-live.js` (`useLiveTick`, `setIfChanged`),
 `tools/check-ui.py` (`_ENDLESS_JS`, `_RAF_COUNTER`).
 
 ---

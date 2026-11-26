@@ -11,7 +11,9 @@
 //    son état « éteint », au rythme de sa propre demi-période : même rendu (en marches au lieu d'un fondu), deux
 //    images par seconde au lieu de 240 (mesuré : GPU 0,4–0,6 %).
 //  - « freeze » : les animations de cases du Live (classes anim-*, la plupart des patchs d'usine en portent) SUR
-//    L'ÉCRAN LOCAL — celui de la machine qui joue le son. Figées sur une image : la case garde son allure. Un écran
+//    L'ÉCRAN LOCAL — celui de la machine qui joue le son. La racine reçoit html.tiles-still et le CSS leur retire
+//    animation ET mix-blend-mode (une pause garde la couche composée : 43 couches mesurées, 5 sans) ; la pause au
+//    tiers du cycle ne reste qu'en filet pour une animation que ce CSS ne viserait pas. Un écran
 //    déporté (tablette, téléphone) dessine avec son propre processeur et les garde animées. Le réglage de
 //    Settings ▸ System ▸ Display (bridge/display.py, l'état diffusé `display`) décide : auto (ce qui précède), on
 //    (animées partout), off (figées partout) ; `blinks` faux tient les voyants allumés, sans clignoter.
@@ -47,6 +49,11 @@ export function sortOf(name, where, { local = false, display = DISPLAY_DEFAULT }
   return display.blinks === false ? 'hold' : 'step';
 }
 
+// les cases du Live sont-elles figées ? Alors on les rend SANS animation (classe racine STILL_CLASS)
+export const STILL_CLASS = 'tiles-still';
+export const tilesStill = ({ local = false, display = DISPLAY_DEFAULT } = {}) =>
+  sortOf('', { tile: true }, { local, display }) === 'freeze';
+
 // l'état (0 = allumé, 1 = éteint) à l'instant `now`
 export const phaseAt = (plan, now) => Math.floor(now / plan.half) % 2;
 
@@ -61,9 +68,13 @@ export function startAnimStepper(doc = globalThis.document, clock = () => perfor
   if (!doc || typeof doc.getAnimations !== 'function') return () => {};
   const keyOf = d => (d.animations || 'auto') + '|' + (d.blinks !== false);
   let seen = new WeakMap(), shown = keyOf(display());
+  const root = doc.documentElement;
   const tick = () => {
     const now = clock();
     const d = display();
+    // cases figées = cases SANS animation (html.tiles-still, style.css) : une animation en pause garde sa couche
+    // composée, et le compositeur refait 40 couches à chaque image du Live (docs/pitfalls/ui.md)
+    if (root && root.classList) root.classList.toggle(STILL_CLASS, tilesStill({ local, display: d }));
     if (keyOf(d) !== shown) {                          // le réglage a changé : on relâche ce qu'on tenait et on reclasse
       shown = keyOf(d);
       for (const a of doc.getAnimations()) {

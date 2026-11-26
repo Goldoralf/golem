@@ -253,7 +253,7 @@ def compo_cfg():
 
 @router.post("/api/compo")
 def compo_set(body: dict):
-    """Écrit la config globale Compo (clés partielles : keep_s, transcribe, foot_person, persons)."""
+    """Écrit la config globale Compo (clés partielles : keep_s, foot_person, persons)."""
     from . import store
     return store.save_compo_cfg(body or {})
 
@@ -287,7 +287,7 @@ def compo_drop(body: dict = None):
 
 @router.post("/api/recorder")
 def recorder_set(body: dict):
-    """Écrit la config globale ({in1,in2,usb,mode,mix,transcribe}, clés partielles acceptées) et
+    """Écrit la config globale ({in1,in2,usb,mode,mix,count_in}, clés partielles acceptées) et
     republie presets/.perfsrc.json — ce que golem_perfrec lit — sans attendre un rappel de preset."""
     import os
     from . import config as C

@@ -95,7 +95,7 @@ function riffNote(st, now) {
              title: 'the riff leaves for golem.fm in ' + (left != null ? left + ' s' : '20 s') + ' — Drop keeps it on the rack, never sent' };
   }
   if (r && r.state === 'sending' && fmOn)
-    return { cls: 'send', text: '→ golem.fm…', title: 'transcribing, then sending to golem.fm' };
+    return { cls: 'send', text: '→ golem.fm…', title: 'sending to golem.fm' };
   if (r && r.state === 'dropped')
     return { cls: 'quiet', text: 'Riff dropped', title: 'dropped: kept on the rack, never sent' };
   if (!tg.length) return null;

@@ -87,16 +87,14 @@ compile and foot and says so on the tile ("off in Gig"); the chip is in Settings
 | `title` | `Riff YYYY-MM-DD HH:MM` on a **free** capture only; an armed capture has no title (it enters that riff). The rack never invents a riff number |
 | `bpm, sig, bars, passes, count_in, downbeat_s` | armed takes only (§6) |
 | `loops` | loop mode only: loops **started**, indicative |
-| `upload` | `{state: held, until}` → `transcribing` (`since`; due again after 20 min if abandoned) → `pending` → uploaded, or `dropped` |
+| `upload` | `{state: held, until}` → `pending` → uploaded, or `dropped`. A `transcribing` state written before 2026-11-26 is due at once |
 
 **Drop window**: the rack holds the take **20 s before sending** (`compo.DROP_S`). `POST
 /api/compo/drop {uid?}` (button on /live) sets `upload.state = "dropped"`: never uploaded, **kept on
 disk**. There is no remote delete afterwards (someone may already have attached it to a song). After
-20 s (`compo._settle`): transcription if `transcribe` is on and the engine is available
-(`transcribe_jobs`, Basic Pitch — an armed riff's guitar or bass DI through the TX strategy, the click's grid read
-from the take, [tablature-fingering.md](tablature-fingering.md) §1; `files.score` per transcribed lane), then immediate upload (not into
-the pending-takes queue). A bridge restart during the window: the uploader's safety net sends it
-later, without transcription.
+20 s (`compo._settle`): immediate upload (not into the pending-takes queue). golem.fm writes the score from the DI
+and the grid ([transcription.md](transcription.md), 2026-11-26: the rack no longer transcribes, and `transcribe` /
+`files.score` are no longer written). A bridge restart during the window: the uploader's safety net sends it later.
 
 **What is uploaded**: only the files declared in `lanes[]` + the manifest — no mix, no other
 people's tracks (`uploader.prepare`). The score goes up as a track of kind `score`, one per lane. The
@@ -135,9 +133,9 @@ golem.fm side.
   `bpm` 20–400, `sig` (default 4/4; num 1–32, den power of 2), `count_in` 0–4 bars, `bars` 1–512,
   `passes` 0–16 (default 1; **0 = loop until Stop**), `click` `always` (default) \| `count-in`, `tuning?` — the
   riff's tuning as 4 to 9 MIDI notes, read by golem.fm on the stored riff (agreed 2026-10-29): the rack picks the
-  guitar whose profile has that tuning (`inharm.guitar_for`, the active one if several), never a profile name
-  declared by the page; `take.json` gets `tuning` and `guitar` (`null` = no guitar of this rack has it: the tab
-  uses the tuning, without calibration — [tablature-fingering.md](tablature-fingering.md) §1).
+  guitar whose profile has that tuning (`guitars.guitar_for`, the active one if several), never a profile name
+  declared by the page; `take.json` gets `tuning` and `guitar` (`null` = no guitar of this rack has it), and the
+  guitar entries of `instruments` take the riff's tuning with `source: riff` ([transcription.md](transcription.md) §4).
   An out-of-range value refuses the arming with the reason. Without `bpm` and `bars`: a free capture.
 - /live and the person's Companion show the target ("armed from golem.fm (Follow Golem)").
 - Probe without golem.fm: `POST /api/compo/target {person, target | clear}`.
@@ -203,7 +201,7 @@ loading | rec | held | sending | dropped, person, uid?, until?, take?}`, `riff_f
 ## 10. Tests and tools
 
 `tests/test_compo.py`, `test_standard_take.py`, `test_modes_services.py`, `test_foot_claims_follow_edit.py`;
-`tools/check-foot.py` (the gesture without the foot), `tools/check-transcribe.py`;
+`tools/check-foot.py` (the gesture without the foot);
 `tools/check-rig-materialize.py --standard-take N` (N standard takes in an isolated REAPER, the armed start
 measured on each take's `Mix.wav`, budget 1 ms); `tests/test_compo_bed.py` and
 `tools/check-rig-materialize.py --compo-bed N` (§12).

@@ -57,9 +57,9 @@ config/instrument.json
 config/.pedalboard.json
 config/vst-knobs.json
 config/vst-trials.json
-# l'inharmonicité à vide de chaque corde de LA guitare de ce rack (bridge/inharm.py) : mesurée sur elle, pas une recette
+# les guitares de ce rack (bridge/guitars.py : accordage, cases, nom) — état local, pas une recette
 config/string-calib.json
-# sa carte du manche, case par case (bridge/neckmap.py) : mesurée sur elle aussi
+# l'ancienne carte du manche (bridge/neckmap.py, retiré le 2026-11-26) : peut rester sur un rack, jamais commitée
 config/neckmap/
 config/modes.local/
 # recettes de capture validées sur CE rack (docs/plugin-recipes.md §6.3) : état local, partagé via golem.fm

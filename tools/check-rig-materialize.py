@@ -222,7 +222,7 @@ def write_standard_bench(root, source):
     """Ce que la prise demande au banc : la grille (le corpus n'est pas dans git), une personne sur l'entrée 1 de la carte
     de banc, un patch avec SA lane guitare sur cette entrée, et le Rec en multipiste AVEC le mix — `Mix.wav` reçoit la
     sortie de chaque piste du rack sauf le Click, donc celle du Standard : la mesure se fait sur le vrai fichier de la
-    prise. Sans transcription (rien à transcrire, et elle occuperait le banc)."""
+    prise."""
     corpus = source / "library" / "standards" / "jazz-standards.json"
     if not corpus.is_file():
         raise SystemExit(f"--standard-take needs the chart corpus: {corpus} is missing")
@@ -241,7 +241,7 @@ def write_standard_bench(root, source):
 
 
 def write_take_bench(root):
-    """Une personne sur l'entrée 1, le Rec en multipiste avec le mix, sans transcription, et le patch de la prise."""
+    """Une personne sur l'entrée 1, le Rec en multipiste avec le mix, et le patch de la prise."""
     cfg = root / "config"
     im = cfg / "inputmaps" / "golem-bench.json"
     m = json.loads(im.read_text(encoding="utf-8"))
@@ -249,7 +249,6 @@ def write_take_bench(root):
     im.write_text(json.dumps(m) + "\n", encoding="utf-8")
     (cfg / "recorder.json").write_text(json.dumps({"mode": "tracks", "in1": True, "in2": False, "in3": False, "in4": False,
                                                    "usb": False, "mix": True}) + "\n", encoding="utf-8")
-    (cfg / "compo.json").write_text(json.dumps({"transcribe": False}) + "\n", encoding="utf-8")
     lane = {"id": "guitar-1", "role": "guitar", "name": "Guitar 1", "in_role": "guitar", "in_nth": 1, "midi": False,
             "stereo": False, "chain": {"pre": [{"id": "gate", "type": "gate"}], "split": None, "post": []}}
     patch = {"id": STD_PATCH, "name": "CI standard take", "role": "guitar", "tags": ["ci"], "kind": "patch", "patch_v": 2,

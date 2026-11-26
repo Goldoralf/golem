@@ -1450,8 +1450,9 @@ def _mode_set(job):
 
 def _recorder_set(job):
     """La config GLOBALE du magnétophone depuis golem.fm — `{action:"recorder-set", in1?, in2?, usb?, mode?,
-    mix?, transcribe?, count_in?}` (mêmes clés que POST /api/recorder, clés inconnues refusées). Jamais
-    pendant une prise."""
+    mix?, count_in?}` (mêmes clés que POST /api/recorder, clés inconnues refusées). Jamais pendant une prise.
+    `transcribe` est encore ACCEPTÉ et ignoré (2026-11-26, docs/transcription.md : le rack ne transcrit plus) —
+    un golem.fm d'avant l'envoie peut-être."""
     from . import store, rigstatus
     from .state import state
     if (state.perf or {}).get("recording"):
@@ -1462,8 +1463,7 @@ def _recorder_set(job):
         raise RuntimeError("refused, nothing written: unknown field(s) " + ", ".join(bad))
     if "mode" in fields and fields["mode"] not in ("mix", "tracks", "tracks_di"):
         raise RuntimeError("refused, nothing written: mode is one of mix, tracks, tracks_di")
-    if "transcribe" in fields and fields["transcribe"] not in ("manual", "auto"):
-        raise RuntimeError("refused, nothing written: transcribe is manual or auto")
+    fields.pop("transcribe", None)
     cfg = store.save_recorder_cfg(fields)
     try:
         from .store import load_preset, rec_sources, _write_json_atomic

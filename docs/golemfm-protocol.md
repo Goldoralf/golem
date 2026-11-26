@@ -472,13 +472,14 @@ setting: those go through jobs (§3).
     only), `session`, `preset_name`, `title`, `machine_mode`, `kind` (derived from `machine_mode` for takes
     older than the field), `cut_pending`, `songs_detected`, `parent`/`offset_sec` for a cut piece, and
     `upload {state, code?, at?, rec_id?, pct?, until?, since?}` with `state` ∈ `pending` · `queued` · `uploading`
-    · `done` · `refused` · `cut` · `held`/`transcribing`/`dropped` (Riff).
+    · `done` · `refused` · `cut` · `held`/`dropped` (Riff; a `transcribing` written before 2026-11-26 uploads at once).
   - **`take-tag`** skips per take with a stable reason: `unknown_take`, `band_unknown_on_rack` (+ `band`),
     `malformed`. The rack never creates a space: a band id must be in its cached roster
     (`takes.resolve_band`). `band: null` = untagged: the take stays on the rack. A tag never starts an upload.
   - **Upload** (`uploader.upload_take`): only tagged takes, never during a REC or in the Gig mode
     (`uploader.can_run`). By default the processed lanes (`kind` `mix`, `track`) go as **FLAC** plus a frozen
-    copy of `take.json` (without `upload`) as `meta`; the job's `kinds` adds `di` / `midi`. A track's kind
+    copy of `take.json` (without `upload`) as `meta` — since 2026-11-26 with `instruments`, the strings, MIDI tuning,
+    capo and guitar of each guitar or bass input ([`transcription.md`](transcription.md) §4); the job's `kinds` adds `di` / `midi`. A track's kind
     comes from its file name (`uploader.kind_of`); names are cleaned to `[A-Za-z0-9._ -]` (original kept as
     `orig`). A Riff uploads only its author's lanes and score. Steps: `POST /api/ext/recordings {uid, take,
     band, tracks[{idx, filename, kind, sha256, size_bytes}]}` (`take` = the same frozen copy), then

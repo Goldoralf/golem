@@ -1,6 +1,11 @@
 # Tablature — shape-based fingering, and how golem.fm drives transcription
 
-> **Status: PROPOSED** — a design for choosing string and fret like a guitarist (shapes and hand continuity over a
+> **Status: SUPERSEDED (2026-11-26)** by [`transcription.md`](transcription.md): the rack no longer transcribes, and
+> its ear, fingering, string calibration and neck map are removed (golem.fm listens). Kept as the record of what was
+> built and measured; only the guitar profile (name, tuning, frets in `config/string-calib.json`, `bridge/guitars.py`)
+> remains on the rack.
+>
+> Former status: PROPOSED — a design for choosing string and fret like a guitarist (shapes and hand continuity over a
 > whole song) and for letting golem.fm request and review transcriptions. §1 describes what is CODED on the rack:
 > the "ear", a naive fingering, and one staff per instrument (tabs for guitar and bass, two staves for keys, a
 > percussion staff for drums — 2026-10-17). The hand of §5 points 1–3 (candidates, costs, Viterbi, shapes) is

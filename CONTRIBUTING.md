@@ -57,7 +57,7 @@ fast steps above (ruff, syntax, node tests, about 30 s); `GOLEM_PUSH_FULL=1 git 
 
 `./tools/check-cold.sh` is the "cold" battery: everything that can be checked without a bridge,
 REAPER or hardware. It runs pytest plus checks CI does not (pedal and pedalboard descriptors, the
-UnO2 compiler, transcription rules, the Standards engine, the bar-length formula), and it does
+UnO2 compiler, the Standards engine, the bar-length formula), and it does
 **not** run ruff, the syntax check, the node tests or the factory seed. Passing one does not mean
 the other passes: before a pull request, run the CI steps **and** `check-cold.sh`, with the venv
 active (it calls `python3` from your `PATH`). Details:

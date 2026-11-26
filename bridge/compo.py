@@ -10,7 +10,7 @@ Ce module porte ce qui n'est PAS la config globale (store.load_compo_cfg) :
     celles qu'elle a décochées dans le tiroir (`persons[p].off`).
 Lot A (docs/compo.md §11) : la CAPTURE, sur le chemin de la prise Rec — tap = démarre (décompte du
 Rec), tap = arrête ; le manifeste déclare `kind:"riff"`, `by`, `target`, `lanes[]` ; 20 s de fenêtre de
-drop, puis transcription et montée des SEULS fichiers de la personne.
+drop, puis montée des SEULS fichiers de la personne (golem.fm écoute, docs/transcription.md).
 La PRISE DE STANDARD (docs/compo.md §11) : la même cible, `kind:"standard-take"` — le Standard joue la grille sur la
 lane de la personne, sur l'horloge de l'enregistrement, et take.json dit ce qui a été joué.
 """
@@ -186,7 +186,7 @@ def take_params(target):
     if not 0 <= take["count_in"] <= 4 or not 1 <= take["bars"] <= 512 or not 0 <= take["passes"] <= 16:
         return None, "bad take: count_in 0-4, bars 1-512, passes 0-16 (0 = loop until Stop)"
     # L'ACCORDAGE DU RIFF (2026-10-29, golem.fm le lit sur le riff gardé) : des notes MIDI, une par corde. Le rack en
-    # déduit la guitare jouée (inharm.guitar_for) au lieu de croire un nom de profil déclaré par la page
+    # déduit la guitare jouée (guitars.guitar_for) au lieu de croire un nom de profil déclaré par la page
     tun = target.get("tuning")
     if tun is not None:
         if not (isinstance(tun, list) and 4 <= len(tun) <= 9
@@ -834,10 +834,11 @@ def stamp_manifest(man, riff):
                    count_in=take["count_in"], downbeat_s=round(down, 6))
         if take.get("tuning"):
             # la guitare QUI A CET ACCORDAGE (la jouée, `active`, si deux l'ont) ; aucune : `guitar: null`, l'accordage
-            # reste gravé et la transcription s'en sert, sans étalonnage
-            from . import inharm
+            # reste gravé (golem.fm le lit, docs/transcription.md §4)
+            from . import guitars
             man["tuning"] = take["tuning"]
-            man["guitar"] = inharm.guitar_for(take["tuning"])
+            man["guitar"] = guitars.guitar_for(take["tuning"])
+            man["instruments"] = guitars.apply_riff_tuning(man.get("instruments") or {}, take["tuning"])
         if not take["passes"] and riff.get("t_rolling") and riff.get("t_stop"):
             # EN BOUCLE : les boucles COMMENCÉES (indicatif — golem.fm compte les complètes sur la durée)
             played = riff["t_stop"] - riff["t_rolling"] - down
@@ -852,7 +853,7 @@ def stamp_manifest(man, riff):
 
 
 def after_written(name, riff):
-    """Le manifeste est sur le disque : 20 s de fenêtre de drop, puis transcription, puis montée."""
+    """Le manifeste est sur le disque : 20 s de fenêtre de drop, puis montée."""
     from . import takes
     uid = takes.uid_of(name)
     RIFF["last"] = {"state": "held", "person": riff["person"], "uid": uid, "name": name,
@@ -900,52 +901,6 @@ def drop(uid=None):
     return True, None
 
 
-def _label(fn):
-    """Le nom qu'une source porte dans scores/index.json — MÊME règle que transcribe_cli (préfixes
-    retirés du plus long au plus court)."""
-    import os
-    base = os.path.splitext(fn)[0]
-    for pref in ("DI-Sandbox-", "MIDI-", "DI-"):
-        if base.startswith(pref):
-            return base[len(pref):]
-    return base
-
-
-def _transcribe(name, man):
-    """Transcription avant la montée (§5) : rend "done" | "failed" | "off" | "unavailable" et pose
-    `files.score` sur chaque lane transcrite."""
-    import json, os
-    from . import store, transcribe_jobs as tj, takes
-    if not (store.load_compo_cfg() or {}).get("transcribe"):
-        return "off"
-    if not tj.available():
-        return "unavailable"
-    r = tj.enqueue(name)
-    if not r.get("ok"):
-        return "failed"
-    deadline = time.time() + 900
-    while time.time() < deadline:
-        time.sleep(2)
-        with tj._lock:
-            busy = (tj._cur or {}).get("dir") == name or name in tj._queue
-        if not busy:
-            break
-    try:
-        idx = json.load(open(os.path.join(takes.RECORDINGS, name, "scores", "index.json")))
-    except Exception:
-        return "failed"
-    by_src = {str(x.get("src")): x for x in idx.get("sources") or [] if x.get("file")}
-    got = False
-    for ln in man.get("lanes") or []:
-        fs = ln.get("files") or {}
-        src = fs.get("midi") or fs.get("di")
-        hit = by_src.get(_label(src)) if src else None
-        if hit:
-            fs["score"] = hit["file"]
-            got = True
-    return "done" if got else "failed"
-
-
 def _settle(name):
     l = RIFF["last"]
     wait = (l.get("until") or time.time()) - time.time() if l else DROP_S
@@ -956,22 +911,11 @@ def _settle(name):
     if l and l.get("name") == name:
         l["state"] = "sending"
         _publish()
-    # LA FENÊTRE EST FERMÉE, LA TRANSCRIPTION COMMENCE : la prise n'est plus `held` mais pas encore due — sans cet état,
-    # une passe du monteur (n'importe quel `queue`) l'envoyait SANS sa partition, puis la fin de la transcription la
-    # renvoyait avec une piste de plus et golem.fm refusait (409 « Track 2 already uploaded », rec 242, 2026-10-29)
-    man["upload"] = {"state": "transcribing", "since": time.time(), "at": _now()}
-    _write(mp, man)
-    try:
-        man["transcribe"] = _transcribe(name, man)
-    except Exception as e:
-        log.warning(f"transcription du riff {name} : {e}")
-        man["transcribe"] = "failed"
+    # LA FENÊTRE EST FERMÉE, LA PRISE MONTE (docs/transcription.md, 2026-11-26) : golem.fm écoute la DI lui-même — plus
+    # d'état `transcribing` ni d'attente de partition. Relue juste avant : un Drop de la dernière seconde l'emporte.
     mp, cur = _manifest(name)
-    if (cur.get("upload") or {}).get("state") in ("dropped", "done"):
-        if (cur.get("upload") or {}).get("state") == "done":
-            log.warning(f"riff {name} déjà monté avant la fin de sa transcription — partition non envoyée")
+    if not mp or (cur.get("upload") or {}).get("state") in ("dropped", "done"):
         return
-    cur["lanes"], cur["transcribe"] = man.get("lanes") or cur.get("lanes"), man["transcribe"]
     cur["upload"] = {"state": "pending", "at": _now()}
     _write(mp, cur)
     try:

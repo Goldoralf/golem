@@ -45,9 +45,9 @@ PRESET = {"id": "p", "lanes_v": 2, "lanes": [
 
 def test_config_globale_defauts_validation_et_relecture(cfgdir):
     assert store.load_compo_cfg() == store.COMPO_DEFAULTS
-    out = store.save_compo_cfg({"keep_s": 60, "transcribe": False, "foot_person": "alex",
+    out = store.save_compo_cfg({"keep_s": 60, "transcribe": False, "foot_person": "alex",   # transcribe : ignoré
                                 "persons": {"alex": {"off": ["voice-1"]}, "x": {"off": []}, "": {"off": ["a"]}}})
-    assert out["keep_s"] == 60 and out["transcribe"] is False and out["foot_person"] == "alex"
+    assert out["keep_s"] == 60 and "transcribe" not in out and out["foot_person"] == "alex"
     assert out["persons"] == {"alex": {"off": ["voice-1"]}}          # les entrées vides disparaissent
     assert store.save_compo_cfg({"keep_s": 45})["keep_s"] == 60          # 45 n'est pas une valeur : gardé 60
     assert json.load(open(cfgdir / "compo.json"))["keep_s"] == 60

@@ -230,8 +230,7 @@ export function ModePanel({ rig, desktop, platform, view }) {
   const { data: recD, reload: reloadRec } = useAsync(() => fetch('/api/recorder').then(r => r.json()).catch(() => null), []);
   const recGlobal = recD || { in1: true, in2: true, usb: true, mode: 'mix', mix: true };
   const recSummary = r => [[r.in1, 'IN 1'], [r.in2, 'IN 2'], [r.usb, 'USB']].filter(x => x[0]).map(x => x[1]).join('+')
-    + ' · ' + ({ mix: 'Mix', tracks: 'Multi', tracks_di: r.mix !== false ? 'Mix + Multi + DI' : 'Multi + DI' })[r.mode || 'mix']
-    + (r.transcribe === 'auto' ? ' · auto-transcribe' : '');
+    + ' · ' + ({ mix: 'Mix', tracks: 'Multi', tracks_di: r.mix !== false ? 'Mix + Multi + DI' : 'Multi + DI' })[r.mode || 'mix'];
   const setRec = async (k, v) => {                      // k au vocabulaire de la feuille (rec_mode) -> celui du fichier (mode)
     await post('/api/recorder', { [k === 'rec_mode' ? 'mode' : k]: v }).catch(() => null);
     reloadRec();

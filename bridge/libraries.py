@@ -44,7 +44,7 @@ def installed_pip(root=None):
     """Modules importables du venv du bridge (noms de dossiers de site-packages)."""
     root = root or C.ROOT
     names = set()
-    # le bridge (.venv) ET la transcription (.venv-transcribe, docs/archive/tablature-study.md) : deux venvs, un manifeste
+    # le venv du bridge (.venv*) : l'ancien .venv-transcribe d'un rack de dev compte aussi tant qu'il est sur le disque
     # Linux : .venv/lib/python3.x/site-packages ; Windows : .venv/Lib/site-packages (sans dossier de
     # version) — oublié, TOUT le Python s'affichait « missing » sous Windows, FastAPI compris (2026-10-03)
     sps = glob.glob(os.path.join(root, ".venv*", "lib", "python3*", "site-packages")) + \

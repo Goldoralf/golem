@@ -2,8 +2,8 @@
 
 > **Status: ACCEPTED** (2026-11-26) — the split between the rack and golem.fm for turning a take into notes,
 > rhythm and tablature. Decided by the maintainer on 2026-11-25/26: golem.fm owns the whole listening, Q1–Q6 of §7
-> answered, the removal of §6 approved; reviewed with the golem.fm session. Not coded yet: the `instruments` block
-> of §4 and the removal of §6. Replaces, for the rack, the transcription half of
+> answered, the removal of §6 approved; reviewed with the golem.fm session. **CODED on the rack** the same day: the
+> `instruments` block of §4 (`bridge/guitars.py`) and the removal of §6. Replaces, for the rack, the transcription half of
 > [`tablature-fingering.md`](tablature-fingering.md) and `archive/tablature-study.md` §12 (not published).
 
 Related: [`golemfm-protocol.md`](golemfm-protocol.md) (take upload), [`compo.md`](compo.md) §5 (Riff manifest),
@@ -26,7 +26,7 @@ Related: [`golemfm-protocol.md`](golemfm-protocol.md) (take upload), [`compo.md`
 |---|---|---|
 | Record the DI and the MIDI of a take | ✔ | |
 | Write the grid in `take.json` (`bpm`, `downbeat_s`, `sig`, `count_in`, `bars`) | ✔ | |
-| Write the instrument of each lane (§4) | ✔ (new, not coded yet) | |
+| Write the instrument of each lane (§4) | ✔ (2026-11-26) | |
 | Upload the DI and the MIDI | ✔ (exists) | |
 | Notes from the audio (the ear) | ✘ (removed, §6) | ✔ |
 | Rhythm on the grid, rhythm-only score | | ✔ |
@@ -82,7 +82,7 @@ never removed.
   - `null` is **not** `0`: the sheet rule is that "no capo" is not "capo 0" (`songs.update`). golem.fm asks the
     person when it is `null` and the fingering depends on it.
 - `frets`, `guitar {id, name}`: from the guitar profile in `config/string-calib.json` (the profile whose tuning
-  matches, `inharm.guitar_for`, else the active one), or `null`.
+  matches, `guitars.guitar_for`, else the active one), or `null`.
 - `source`: where `tuning` comes from, in this order:
 
   | `source` | Where the tuning comes from |
@@ -90,12 +90,12 @@ never removed.
   | `riff` | the armed Riff's tuning, sent by golem.fm |
   | `tuner` | the lane's Tuner block in the playing preset: `params.tuning`, an id of `tunings.json`, resolved to its MIDI |
   | `profile` | the guitar profile, when it **declares** a tuning |
-  | `default` | nothing stated it. A guitar is 6-string E standard (what `inharm.guitar` assumes for a profile without a tuning); a bass is 4-string E standard. **golem.fm asks the person to confirm** |
+  | `default` | nothing stated it. A guitar is 6-string E standard (what `guitars.guitar` assumes for a profile without a tuning); a bass is 4-string E standard. **golem.fm asks the person to confirm** |
 - A lane the rack knows nothing about (no role) gets **no entry**.
 - **Not sent:** calibration (`b_open`), the neck map and the hand weights. Per §8 they do not transfer between
   guitars; golem.fm does not need them.
-- Written by `monitors._take_manifest` at stop, frozen like `roles`, and completed by `compo.stamp_manifest` for a
-  Riff (`source: riff`).
+- Written by `monitors._take_manifest` at stop (`guitars.instruments_of`), frozen like `roles`, and completed by
+  `compo.stamp_manifest` for a Riff (`guitars.apply_riff_tuning`, `source: riff`).
 
 ## 5. The golem.fm half (for reference: golem.fm decides)
 
@@ -109,28 +109,32 @@ never removed.
   used, or a scale. The rack does not carry it.
 - **Review**: [`tablature-fingering.md`](tablature-fingering.md) §6.
 
-## 6. What leaves the rack (approved 2026-11-26)
+## 6. What left the rack (approved and done 2026-11-26)
 
-Done on 2026-11-26: the "Transcribe" buttons of `/recordings` (`app/page-loops.js`, `.rec-tr` CSS).
+Removed from the rack on 2026-11-26, with no score left there (Q4, Q5):
 
-Then, with no score left on the rack (Q4, Q5):
-
-| What | Where |
+| What | Where it was |
 |---|---|
-| The transcription queue and its subprocess | `bridge/transcribe_jobs.py`, `bridge/transcribe_cli.py`, `POST /api/take/transcribe` (`routes_content.py`), `state.transcribe` |
+| The "Transcribe" buttons of `/recordings` | `app/page-loops.js`, the `.rec-tr` CSS |
+| The transcription queue, its subprocess and its routes | `bridge/transcribe_jobs.py`, `bridge/transcribe_cli.py`, `POST /api/take/transcribe` and `GET /api/take/score/…` (`routes_content.py`), `state.transcribe`, the `score` / `can_transcribe` fields of `GET /api/loops` |
 | The ear, its rules and the hand | `bridge/transcribe.py`, `bridge/transcribe_di.py`, `bridge/fingering.py` (golem.fm keeps a copy if it wants one) |
-| String evidence | `bridge/inharm.py` string costs, `bridge/neckmap.py`, calibration in `config/string-calib.json` (the profile's `tuning`, `frets`, `name` stay — §4 reads them) |
-| Auto-transcription at stop | `monitors.py` (`transcribe == "auto"`), the Designer's "Transcribe takes" (Rec) |
-| The Riff's transcription before upload | `compo._transcribe`, upload state `transcribing`, the Riff block's "Transcribe on the rack", manifest field `transcribe` |
-| The `/live` chip "→ golem.fm… transcribing" | `app/page-live.js` |
-| The venv | `.venv-transcribe`, its provisioning |
+| String evidence | `bridge/inharm.py` (B, candidate string), `bridge/neckmap.py`. The guitar profile moved to `bridge/guitars.py`; the old `b_open`, `hand`, `neckmap` keys of `config/string-calib.json` and a `config/neckmap/` folder may stay on a rack, unread |
+| Auto-transcription at stop | `monitors.py` (`transcribe == "auto"`), the Designer's "Transcribe takes" (Rec drawer), the "auto-transcribe" mention in Settings ▸ Mode |
+| The Riff's transcription before upload | `compo._transcribe`, the upload state `transcribing`, the Riff drawer's "Transcribe on the rack", the manifest field `transcribe` |
+| The settings | `transcribe` in `config/recorder.json` and `config/compo.json` (ignored when still there; the `recorder-set` job still **accepts and ignores** the key, for an older golem.fm) |
+| The benches and checks | `tools/check-transcribe.py`, `tools/check-tab-vs-gp.py`, `tools/check-fingering.py` (CI and `check-cold.sh` no longer run the first) |
+| The components | Basic Pitch, partitura, tuttut, music21, librosa, pretty-midi, mido in `provision/components.json` (onnxruntime and NumPy stay: stem separation) |
 
-**The Riff (Q1):** the DI goes up as soon as the drop window closes. The `transcribing` state goes, and so does the
-15-minute wait in `compo._transcribe`. The `held` state is **kept**: it is not transcription. It is the 20 s window
+Kept: the `/live` Riff chip "→ golem.fm…" (it now says *sending to golem.fm*). `.venv-transcribe` was never installed
+by the repository's scripts: a copy on a development machine can be deleted by hand (it stays in `.gitignore`).
+Older takes keep their `scores/` folder on disk; the uploader still sends a `files.score` an older Riff declares.
+
+**The Riff (Q1):** the DI goes up as soon as the drop window closes. The `transcribing` state is gone, and so is
+the 15-minute wait in `compo._transcribe`; a take still marked `transcribing` uploads at once. The `held` state is **kept**: it is not transcription. It is the 20 s window
 in which the author can drop the take (`drop_window_s`, [`compo.md`](compo.md) §5). Removing it would remove the
 undo. `lanes[].files.score` is no longer written by the rack.
 
-`bridge/fingering.py` goes too: its only reason to stay was an exact score written on the rack, and Q4 says no.
+`bridge/fingering.py` went too: its only reason to stay was an exact score written on the rack, and Q4 says no.
 
 ## 7. Questions
 

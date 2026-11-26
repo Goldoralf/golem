@@ -136,9 +136,9 @@ def main():
                   {"id": "drums", "type": "drums", "foot": 10, "params": {"patterns": ["library/grooves/golem-rock-8.mid"], "fills": [], "kit": "drums-black-pearl"}},
                   {"id": "looper", "type": "looper", "params": {}},
                   {"id": "tuner", "type": "tuner", "params": {}}]},
-              "rec": {"blocks": [{"id": "rec-global", "type": "rec", "params": {"in1": True, "in2": True, "usb": False, "rec_mode": "tracks_di", "mix": True, "count_in": 0, "transcribe": "manual"}},
+              "rec": {"blocks": [{"id": "rec-global", "type": "rec", "params": {"in1": True, "in2": True, "usb": False, "rec_mode": "tracks_di", "mix": True, "count_in": 0}},
                                  {"id": "click-global", "type": "click", "params": {"level": -12, "beats": 4}},
-                                 {"id": "compo-global", "type": "compo", "params": {"keep_s": 30, "transcribe": False}}], "click_out": "1-2"},
+                                 {"id": "compo-global", "type": "compo", "params": {"keep_s": 30}}], "click_out": "1-2"},
               "arr": {"blocks": [{"id": "arrangement", "type": "arrangement", "params": {"advance": "bars", "sections": [
                   {"name": "Verse", "bars": 4, "scene": "A"}, {"name": "Chorus", "bars": 4, "scene": "B"}, {"name": "Bridge", "bars": 2, "scene": "C"}, {"name": "Chorus", "bars": 4, "scene": "B"}]}}]}}
     files.append(write("presets/test-band-session.json", {

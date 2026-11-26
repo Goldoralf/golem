@@ -1282,44 +1282,16 @@ def loops_list():
                 # captures MIDI (.mid) : pas de forme d'onde ni de lecteur audio, mais elles font
                 # partie de la prise (c'est la « DI » d'un instrument MIDI) -> listées à part.
                 mids = sorted(f for f in os.listdir(p) if f.lower().endswith(".mid"))
-                # partition : ce qui fait que le bouton sait s'il dit « Transcribe » ou
-                # « Score », et s'il doit être grisé (docs/archive/tablature-study.md §12).
-                from . import transcribe_jobs as _tj
-                elig, why = _tj.eligible(p)
                 takes.append({"dir": fn, "files": wavs, "midi": mids, "mtime": os.path.getmtime(p),
                               "bytes": sum(os.path.getsize(os.path.join(p, f)) for f in wavs + mids),
-                              "labels": _labels(wavs + mids, tman), "manifest": tman,
-                              "score": _tj.score_of(p), "can_transcribe": elig,
-                              **({"no_transcribe": why} if not elig else {})})
+                              "labels": _labels(wavs + mids, tman), "manifest": tman})
     out.sort(key=lambda x: -x["mtime"])
     takes.sort(key=lambda x: -x["mtime"])
     return {"loops": out, "takes": takes}
 
 
-@router.post("/api/take/transcribe")
-def take_transcribe(body: dict):
-    """Met une prise dans la file de transcription. Le geste principal du §12 — et le seul
-    chemin qui peut transcrire ce qui a été enregistré AVANT que la fonction existe."""
-    from . import transcribe_jobs as _tj
-    d = str((body or {}).get("dir") or "")
-    if not d.startswith("perf-") or "/" in d or ".." in d:
-        return JSONResponse({"error": "invalid take folder"}, status_code=400)
-    r = _tj.enqueue(d)
-    return r if r.get("ok") else JSONResponse(r, status_code=400)
-
-
-@router.get("/api/take/score/{fn:path}")
-def take_score(fn: str):
-    """Sert une partition d'une prise : <perf-…>/scores/<nom>.musicxml."""
-    from fastapi.responses import FileResponse
-    safe = os.path.normpath(fn)
-    if safe.startswith("..") or os.path.isabs(safe) or not safe.endswith(".musicxml"):
-        return JSONResponse({"error": "bad path"}, status_code=400)
-    p = os.path.join(_RECORDINGS, safe)
-    if not os.path.isfile(p):
-        return JSONResponse({"error": "not found"}, status_code=404)
-    return FileResponse(p, media_type="application/vnd.recordare.musicxml+xml",
-                        filename=os.path.basename(safe))
+# LA TRANSCRIPTION ET SES PARTITIONS ONT QUITTÉ LE RACK (docs/transcription.md, 2026-11-26) : golem.fm écoute la DI
+# et le MIDI montés ; plus de POST /api/take/transcribe ni de GET /api/take/score/… ici.
 
 
 @router.get("/api/take/rpp/{name}")

@@ -69,14 +69,13 @@ jobs:
         run: python -m pytest -q tests
       - name: Cold probes (no bridge, no REAPER, no hardware)
         # la batterie à froid de tools/check-cold.sh, hors pytest : elle ne tournait que si quelqu'un y pensait (audit
-        # 2026-11-09). Descripteurs de pédales et de pédaliers, témoin UnO2, transcription, standards d'usine, mètre.
+        # 2026-11-09). Descripteurs de pédales et de pédaliers, témoin UnO2, standards d'usine, mètre.
         env:
           GOLEM_NO_HW_MIDI: '1'
         run: |
           set -e
           python tools/check-descriptors.py
           python tools/fcb/check-uno2.py
-          python tools/check-transcribe.py
           python tools/check-standards.py
           python tools/check-meter.py --skip-js
 

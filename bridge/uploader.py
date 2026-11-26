@@ -448,9 +448,6 @@ def can_run():
     return True, None
 
 
-TRANSCRIBE_STALE_S = 20 * 60     # compo._transcribe abandonne à 15 min
-
-
 def due(uids=None):
     """Les prises à monter, plus récentes d'abord : taguées, pas encore montées, et jamais
     celles qu'un refus a marquées — un quota dépassé ne se retente pas en boucle."""
@@ -464,11 +461,7 @@ def due(uids=None):
         # un RIFF attend sa fenêtre de drop (docs/compo.md §11) ; `dropped` ne monte jamais
         if r["upload"].get("state") == "held" and time.time() < float(r["upload"].get("until") or 0):
             continue
-        # puis sa TRANSCRIPTION (compo._settle) — sauf si elle a été abandonnée (bridge relancé en route) : passé
-        # TRANSCRIBE_STALE_S, la prise monte sans partition plutôt que jamais
-        if r["upload"].get("state") == "transcribing" and \
-                time.time() < float(r["upload"].get("since") or 0) + TRANSCRIBE_STALE_S:
-            continue
+        # (l'ancien état `transcribing` d'un riff, écrit avant 2026-11-26, n'attend plus rien : il monte)
         out.append(r["uid"])
     return out
 
@@ -523,8 +516,7 @@ def queue(uids=None, kinds=None):
     picked = due(set(uids) if uids else None)
     for uid in picked:
         _set_state(by_uid[uid], {"state": "queued", "at": _now()})
-    # des uids DEMANDÉS dont aucun n'est dû = rien à monter — jamais « tout ce qui est dû » (c'est ainsi qu'un riff en
-    # pleine transcription partait sans sa partition, 2026-10-29)
+    # des uids DEMANDÉS dont aucun n'est dû = rien à monter — jamais « tout ce qui est dû » (2026-10-29)
     threading.Thread(target=lambda: tick(set(picked) if uids else None, kinds),
                      daemon=True).start()
     return {"queued": picked, "skipped": sorted(set(uids or []) - set(picked))}

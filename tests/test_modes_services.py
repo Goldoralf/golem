@@ -45,9 +45,10 @@ def test_recorder_config_globale_ecrite_et_relue(tmp_path, monkeypatch):
     from bridge import store
     monkeypatch.setattr(store, "RECORDER_CFG", str(tmp_path / "recorder.json"))
     cfg = store.save_recorder_cfg({"in2": 0, "mode": "tracks_di", "transcribe": "auto", "junk": 1, "mix": None})
-    assert cfg["in2"] is False and cfg["mode"] == "tracks_di" and cfg["transcribe"] == "auto" and "junk" not in cfg
+    assert cfg["in2"] is False and cfg["mode"] == "tracks_di" and "junk" not in cfg
+    assert "transcribe" not in cfg                                          # le rack ne transcrit plus (2026-11-26)
     back = store.load_recorder_cfg()
-    assert back["transcribe"] == "auto" and back["mode"] == "tracks_di"      # transcribe SURVIT à la relecture (bug corrigé)
+    assert back["mode"] == "tracks_di"
     assert store.save_recorder_cfg({"mode": "n'importe quoi"})["mode"] == "tracks_di"
     assert store.rec_sources({})["mode"] == "tracks_di"
     assert not hasattr(modes, "rec_of")                                        # pas de REC par mode

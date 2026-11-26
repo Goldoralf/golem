@@ -58,8 +58,8 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [reamp.md](reamp.md) | CODED | Re-playing a recorded DI through a lane, offline |
 | [cpu-budget.md](cpu-budget.md) | FIXED · lot 1 CODED | Will this preset play on this golem? CPU per block, per lane, per preset, measured by a calibration bench |
 | [preset-preview.md](preset-preview.md) | PARTLY CODED | A short demo per scene, rendered from a reference DI |
-| [tablature-fingering.md](tablature-fingering.md) | PROPOSED | Shape-based string and fret choice for transcriptions |
-| [transcription.md](transcription.md) | ACCEPTED | Transcription moves to golem.fm: what the rack records and sends (DI, MIDI, the instrument of each lane), what leaves the rack |
+| [tablature-fingering.md](tablature-fingering.md) | SUPERSEDED by transcription.md | Shape-based string and fret choice for transcriptions |
+| [transcription.md](transcription.md) | ACCEPTED, CODED | Transcription moves to golem.fm: what the rack records and sends (DI, MIDI, the instrument of each lane), what leaves the rack |
 
 ### Blocks, plugins and sound
 
@@ -87,7 +87,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [mixer.md](mixer.md) | PARTLY CODED | Output trims and mutes per source |
 | [returns.md](returns.md) | PARTLY CODED | Card maps seen from golem.fm, monitor returns |
 | [calibration.md](calibration.md) | PARTLY CODED | Learning controllers, pedals, pedalboard and drums without code |
-| [guitars.md](guitars.md) | PROPOSED | Guitar profiles, neck maps and the "map my guitar" screen (System ▸ Gear ▸ Guitars) |
+| [guitars.md](guitars.md) | SUPERSEDED by transcription.md | Guitar profiles, neck maps and the "map my guitar" screen (System ▸ Gear ▸ Guitars) |
 | [pedalboards.md](pedalboards.md) | CODED | Foot controllers: intention, descriptor, transport, LEDs |
 | [fcb/uno2/README.md](fcb/uno2/README.md) | CODED | The FCB1010 UnO2 chip: flash and check tools, bank species |
 | [pedal-registry.md](pedal-registry.md) | PARTLY CODED | Descriptors for MIDI-controlled pedals, one-tap install |

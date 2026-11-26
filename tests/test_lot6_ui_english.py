@@ -13,7 +13,7 @@ import pytest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODULES = ["bridge/routes_content.py", "bridge/routes_standards.py", "bridge/preview.py",
-           "bridge/transcribe_jobs.py", "bridge/pedalboard.py", "bridge/mixer.py"]
+           "bridge/pedalboard.py", "bridge/mixer.py"]
 FR = re.compile(r"[àâçéèêëîïôûùüœ]|\b(introuvable|inconnue?|requise?s?|manquante?|invalide|aucune?|"
                 r"déjà|vide|absente?|pas|est|une?|des|du|les?|la|sans|non|d'abord|fichier|dossier)\b", re.I)
 LOG_CALLS = {"info", "warning", "error", "debug", "exception", "critical"}

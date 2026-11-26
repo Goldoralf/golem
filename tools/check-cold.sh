@@ -16,7 +16,6 @@ run() { echo; echo "══════ $* ══════"; "$@" || fail=1; }
 run python3 -m pytest tests/ -q
 run ./tools/check-descriptors.py
 run ./tools/fcb/check-uno2.py
-run ./tools/check-transcribe.py
 run ./tools/check-standards.py
 run ./tools/check-meter.py --skip-js
 

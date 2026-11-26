@@ -1,6 +1,11 @@
 # Guitars — profiles, neck maps and the "map my guitar" screen
 
-> **Status: PROPOSED** (2026-11-02) — a screen **System ▸ Gear ▸ Guitars** to declare one's guitars, choose the one
+> **Status: SUPERSEDED (2026-11-26)** by [`transcription.md`](transcription.md): the rack no longer transcribes, and
+> its ear, fingering, string calibration and neck map are removed (golem.fm listens). Kept as the record of what was
+> built and measured; only the guitar profile (name, tuning, frets in `config/string-calib.json`, `bridge/guitars.py`)
+> remains on the rack.
+>
+> Former status: PROPOSED (2026-11-02) — a screen **System ▸ Gear ▸ Guitars** to declare one's guitars, choose the one
 > being played, and give each one a **neck map** (`bridge/neckmap.py`, CODED 2026-11-01, see
 > [`tablature-fingering.md`](tablature-fingering.md) §1): factory maps offered as a starting point, or the
 > musician's own, recorded in about three minutes. Nothing in this document is built; the engine it drives is.

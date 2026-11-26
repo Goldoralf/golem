@@ -173,9 +173,6 @@ class RigState:
         self.perf_error = ""
         self.perf_countin = None     # décompte avant une prise : {until (epoch), seconds} ou None
         self.disk = {}
-        # transcription (docs/archive/tablature-study.md §12) : {available, current, queue, last}.
-        # Un travail muet qui prend trente secondes est indiscernable d'un bouton cassé.
-        self.transcribe = {}
         # mode SÉLECTION du pied (appui long switch 1 -> 2 chiffres) : {digits, timeout_s, switch}
         # ou None. Publié parce qu'invisible, il avalait les appuis de scène (2026-09-21).
         self.foot_select = None
@@ -280,7 +277,6 @@ class RigState:
             "perf_error": self.perf_error,
             "perf_countin": self.perf_countin,
             "disk": self.disk,
-            "transcribe": self.transcribe,
             "foot_select": self.foot_select,
             "click": self.click,
             "compo": self.compo,

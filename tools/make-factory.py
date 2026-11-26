@@ -1005,7 +1005,7 @@ def d_lofi():
 
 
 # ══ PRESETS ══════════════════════════════════════════════════════════════════════════════════════════════════════
-REC_PARAMS = {"in1": True, "in2": False, "usb": False, "rec_mode": "tracks_di", "mix": True, "count_in": 0, "transcribe": "manual"}
+REC_PARAMS = {"in1": True, "in2": False, "usb": False, "rec_mode": "tracks_di", "mix": True, "count_in": 0}
 
 
 def preset(pid, name, style, bpm, lanes, scenes, feet, color, gen=None, arr_foot=None, rec_foot=9):
@@ -1058,7 +1058,7 @@ def preset(pid, name, style, bpm, lanes, scenes, feet, color, gen=None, arr_foot
     p["scenes"] = out
     rec_blocks = [{"id": "rec-global", "type": "rec", "params": dict(REC_PARAMS), **({"foot": rec_foot} if rec_foot else {})},
                   {"id": "click-global", "type": "click", "bypass": True, "params": {"level": 0.0, "beats": 4}},
-                  {"id": "compo-global", "type": "compo", "params": {"keep_s": 30, "transcribe": True}}]
+                  {"id": "compo-global", "type": "compo", "params": {"keep_s": 30}}]
     arr = {"id": "arrangement", "type": "arrangement", "params": {"advance": "bars", "sections": []}}
     if arr_foot:
         arr["foot"] = arr_foot

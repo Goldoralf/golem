@@ -794,24 +794,10 @@
       }
     },
     {
-      "id": "basic-pitch",
-      "name": "Basic Pitch",
-      "by": "Spotify",
-      "what": "audio → MIDI: hears the notes in your raw DI",
-      "license": "Apache-2.0",
-      "url": "https://github.com/spotify/basic-pitch",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "basic_pitch"
-        ]
-      }
-    },
-    {
       "id": "onnxruntime",
       "name": "ONNX Runtime",
       "by": "Microsoft & contributors",
-      "what": "runs the Basic Pitch model on CPU",
+      "what": "runs the stem separation model on CPU (docs/separation.md)",
       "license": "MIT",
       "url": "https://onnxruntime.ai",
       "kind": "python",
@@ -822,102 +808,16 @@
       }
     },
     {
-      "id": "partitura",
-      "name": "partitura",
-      "by": "CPJKU",
-      "what": "quantisation, note spelling, MusicXML",
-      "license": "Apache-2.0",
-      "url": "https://github.com/CPJKU/partitura",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "partitura"
-        ]
-      }
-    },
-    {
-      "id": "tuttut",
-      "name": "TabTranscriber (tuttut)",
-      "by": "Nicolas Vion",
-      "what": "fretboard as a graph + Viterbi — the tablature path",
-      "license": "MIT",
-      "url": "https://github.com/HugoBaby/tuttut",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "tuttut"
-        ]
-      }
-    },
-    {
-      "id": "music21",
-      "name": "music21",
-      "by": "MIT / Michael Cuthbert",
-      "what": "score model & MusicXML export",
-      "license": "BSD-3-Clause",
-      "url": "https://www.music21.org",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "music21"
-        ]
-      }
-    },
-    {
-      "id": "librosa",
-      "name": "librosa",
-      "by": "librosa team",
-      "what": "onset detection — where each attack really lands",
-      "license": "ISC",
-      "url": "https://librosa.org",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "librosa"
-        ]
-      }
-    },
-    {
-      "id": "pretty-midi",
-      "name": "pretty_midi",
-      "by": "Colin Raffel",
-      "what": "writes the MIDI of a transcribed take",
-      "license": "MIT",
-      "url": "https://github.com/craffel/pretty-midi",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "pretty_midi"
-        ]
-      }
-    },
-    {
-      "id": "mido",
-      "name": "Mido",
-      "by": "Ole Martin Bjørndalen",
-      "what": "MIDI file plumbing",
-      "license": "MIT",
-      "url": "https://mido.readthedocs.io",
-      "kind": "python",
-      "check": {
-        "pip": [
-          "mido"
-        ]
-      }
-    },
-    {
       "id": "numpy",
-      "name": "NumPy · SciPy · scikit-learn",
+      "name": "NumPy",
       "by": "their respective teams",
-      "what": "the numerical floor everything above stands on",
+      "what": "audio measurements: plugin captures, stem separation, the benches",
       "license": "BSD-3-Clause",
       "url": "https://numpy.org",
       "kind": "python",
       "check": {
         "pip": [
-          "numpy",
-          "scipy",
-          "sklearn"
+          "numpy"
         ]
       }
     },

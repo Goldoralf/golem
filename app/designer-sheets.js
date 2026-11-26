@@ -1973,11 +1973,6 @@ export function RecPanel({ svc }) {
                   })()}
                 </div>
               </div>
-              ${/* « Transcribe takes » — docs/archive/tablature-study.md §12. Le réglage vit ICI et pas
-                    dans un bloc Tablature : la transcription est une CONSÉQUENCE de
-                    l'enregistrement, pas quelque chose que le rig fait pendant qu'on joue. Et la
-                    garantie « il faut du DI » se lit dans le MÊME tiroir, au lieu de traverser
-                    deux blocs comme le prévoyait la décision abandonnée. */''}
               ${/* ── OÙ VONT LES PRISES ────────────────────────────────────────────────
                     Le groupe est une DESTINATION, pas un réglage de son : sa place est sur le
                     bloc qui enregistre, pas dans la topbar (retirée le 2026-09-07).
@@ -2023,28 +2018,6 @@ export function RecPanel({ svc }) {
                       onClick=${() => !locked && svc && svc.onRecSrc && svc.onRecSrc('count_in', k)}>${lb}</button>`)}
                 </div>
               </div>
-              <div class="svc-row"><b>Transcribe takes</b>
-                <div class="src-chips">
-                  ${(() => {
-                    const cur = (svc && svc.recSrc && svc.recSrc.transcribe) || 'manual';
-                    const hasDI = recMode === 'tracks_di';
-                    // « Starred » (transcrire ce qu'on a étoilé) a été RETIRÉ le 2026-09-08  : la
-                    // notation des prises n'existe pas, un bouton grisé promettait dans le vide.
-                    return [['manual', 'Manual'], ['auto', 'Automatic']].map(([k, lb]) => html`
-                      <button class=${cls('p-chip', cur === k && 'on')}
-                        title=${k === 'auto'
-                            ? 'every take is transcribed as soon as it is closed — background, lowest priority'
-                            : 'transcribe from the take, in Library ▸ Tracks ▸ Recordings'}
-                        onClick=${() => !locked && svc && svc.onRecSrc && svc.onRecSrc('transcribe', k)}>${lb}</button>`);
-                  })()}
-                </div>
-                ${(svc && svc.recSrc && svc.recSrc.transcribe) === 'auto' && recMode !== 'tracks_di'
-                  ? html`<span class="tr-lock warn" title="a take without DI has nothing clean to transcribe">
-                      ⛓ needs Multi + DI</span>`
-                  : recMode === 'tracks_di'
-                  ? html`<span class="tr-lock" title="the DI is the clean signal the engine reads">⛓ Multi + DI ✓</span>`
-                  : ''}
-              </div>
               <p class="muted">${recMode === 'mix'
                 ? 'One stereo file: the mix you hear from the ticked inputs — backing track & looper always included.'
                 : recMode === 'tracks'
@@ -2052,11 +2025,9 @@ export function RecPanel({ svc }) {
                 : ((!(svc && svc.recSrc) || svc.recSrc.mix !== false)
                   ? 'One file per track, plus the RAW DI of each physical input (pre-FX), plus the full stereo mix — everything, in a per-take folder. '
                   : 'One file per track, plus the RAW DI of each physical input (pre-FX) — no stereo mix. ')
-                  + 'The DI is the clean signal used to transcribe what you played into scores & tabs. The backing track is NOT duplicated as a separate file: you already own it, and the take links back to the song.'}
+                  + 'The DI is the clean signal golem.fm turns into scores & tabs once the take is uploaded. The backing track is NOT duplicated as a separate file: you already own it, and the take links back to the song.'}
                 Takes land in Library ▸ Tracks ▸ Recordings. Long-press the tile to put it on a footswitch (scene row allowed).
-                ${(svc && svc.recSrc && svc.recSrc.transcribe) === 'auto' ? html`<b> Automatic transcription is on:
-                  every closed take is turned into a score in the background, at the lowest priority — never while you
-                  play. MIDI sources (keys, pads, drums) are exact; audio is a draft.</b>` : ''}</p>`; })();
+</p>`; })();
   return html`<div class="rec-panel">${panel}</div>`;
 }
 
@@ -2095,7 +2066,7 @@ export function ClickPanel({ params, onParam }) {
 // ── LE PANNEAU COMPO (docs/compo.md §2, §4, §10 — FIGÉ 2026-09-17) ────────────────────────────
 // Config GLOBALE (config/compo.json), éditée ici dans block.params et extraite au save comme le Rec.
 // Quatre lignes, rien d'autre : les lanes de chaque personne (une bascule par lane — ce que COMPO
-// capture quand CETTE personne tape), « keep the last », la transcription, à qui appartient le
+// capture quand CETTE personne tape), « keep the last », à qui appartient le
 // switch du pédalier du rack. La destination n'est pas un réglage : c'est l'espace courant.
 export function CompoPanel({ svc, params, onParam }) {
   const persons = (svc && svc.compoPersons) || {};
@@ -2157,13 +2128,6 @@ export function CompoPanel({ svc, params, onParam }) {
       : html`<p class="muted">No one is set on the inputs of this card — assign people in Settings ▸ Mode (✎ inputs). Without a person, a tap has no author and records nothing.</p>`}
     ${/* « Keep the last » (15/30/60 s) est RETIRÉ de l'écran tant que la rétro-capture n'existe pas (docs/compo.md
           §11) : un réglage qui n'agit pas est pire qu'un réglage absent. La valeur reste dans config/compo.json. */''}
-    <div class="svc-row"><b>Transcribe on the rack</b>
-      <div class="src-chips">
-        ${[[true, 'On'], [false, 'Off']].map(([v, lb]) => html`<button class=${cls('p-chip', (params.transcribe !== false) === v && 'on')}
-          title=${v ? 'a MusicXML tab (from the DI) travels with the riff — the composer opens it already written' : 'audio only'}
-          onClick=${() => onParam && onParam('transcribe', v)}>${lb}</button>`)}
-      </div>
-    </div>
     <div class="svc-row"><b>Rack footswitch belongs to</b>
       <div class="src-chips">
         ${pids.map(pid => html`<button class=${cls('p-chip', (footP ? footP === pid : pid === pids[0]) && 'on')}

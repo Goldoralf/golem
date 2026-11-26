@@ -263,13 +263,11 @@ def _state(rig, up):
     json.dump(man, open(os.path.join(rig, "take.json"), "w"))
 
 
-def test_un_riff_en_transcription_n_est_pas_du(rig):
-    """Rec 242 (2026-10-29) : la fenêtre de drop passée, une passe du monteur montait le riff SANS sa partition,
-    puis la fin de la transcription le remontait avec une piste de plus — golem.fm refusait (409)."""
+def test_un_riff_reste_en_transcription_monte_sans_attendre(rig):
+    """docs/transcription.md (2026-11-26) : golem.fm écoute la DI ; un riff écrit avant, resté `transcribing`, n'attend
+    plus de partition — il monte."""
     _state(rig, {"state": "transcribing", "since": time.time()})
-    assert uploader.due() == []
-    _state(rig, {"state": "transcribing", "since": time.time() - uploader.TRANSCRIBE_STALE_S - 1})
-    assert uploader.due() == ["perf-20260907-120000"]                   # abandonnée : monte sans partition
+    assert uploader.due() == ["perf-20260907-120000"]
 
 
 def test_des_uids_demandes_dont_aucun_n_est_du_ne_montent_rien(rig, monkeypatch):

@@ -45,13 +45,14 @@ CLICK_DEFAULTS = {"level": -12, "beats": 4, "den": 4, "groups": None, "out": "au
 DENOMINATORS = (1, 2, 4, 8, 16)
 CLICK_OUTS = ("1", "2", "1-2", "NONE")
 # bloc COMPO (3e bloc permanent de la lane Global, docs/compo.md FIGÉ 2026-09-17) : même pattern
-# singleton. `keep_s` = les N dernières secondes gardées par un tap ; `transcribe` = partition
-# MusicXML calculée sur le rack ; `foot_person` = à QUI appartient le switch du pédalier du rack
+# singleton. `keep_s` = les N dernières secondes gardées par un tap ; `foot_person` = à QUI appartient le switch du pédalier du rack
 # (None = la première entrée de la carte qui porte une personne) ; `persons` = par personne, les
 # lanes qu'elle NE capture PAS (`off`) — absent = toutes ses lanes, pour qu'une lane neuve soit
 # prise par défaut sans qu'on ait à revenir dans le tiroir.
 COMPO_CFG = os.path.join(C.CONFIG_DIR, "compo.json")
-COMPO_DEFAULTS = {"keep_s": 30, "transcribe": True, "foot_person": None, "persons": {}}
+# (`transcribe`, la partition calculée sur le rack, est PARTI le 2026-11-26 : golem.fm écoute, docs/transcription.md —
+# la clé encore présente dans un compo.json ou un preset est ignorée)
+COMPO_DEFAULTS = {"keep_s": 30, "foot_person": None, "persons": {}}
 COMPO_KEEP = (15, 30, 60)
 
 
@@ -77,8 +78,6 @@ def _clean_compo(d, base=None):
             out["keep_s"] = k
     except (TypeError, ValueError):
         pass
-    if "transcribe" in d:
-        out["transcribe"] = bool(d["transcribe"])
     if "foot_person" in d:
         fp = d.get("foot_person")
         out["foot_person"] = str(fp)[:64] if fp else None
@@ -98,7 +97,7 @@ def save_compo_cfg(d):
     """Écrit la config globale Compo (clés partielles acceptées, validées comme au load)."""
     cur = load_compo_cfg()
     # une valeur hors table (keep_s 45) ne remplace pas la valeur en place : on nettoie AVANT d'écrire
-    merged = _clean_compo({k: v for k, v in (d or {}).items() if k in ("keep_s", "transcribe", "foot_person", "persons")}, base=cur)
+    merged = _clean_compo({k: v for k, v in (d or {}).items() if k in ("keep_s", "foot_person", "persons")}, base=cur)
     _write_json_atomic(COMPO_CFG, merged, indent=1)
     return load_compo_cfg()
 
@@ -145,8 +144,6 @@ def load_recorder_cfg():
     out = dict(REC_DEFAULTS)
     out.update({k: d[k] for k in REC_DEFAULTS if k in d})
     out.update({k: bool(v) for k, v in d.items() if re.fullmatch(r"in\d+", k)})   # in3, in4… (cartes à N entrées)
-    if d.get("transcribe") in ("manual", "auto"):
-        out["transcribe"] = d["transcribe"]
     out["count_in"] = _count_in(d.get("count_in"))
     return out
 
@@ -169,8 +166,6 @@ def save_recorder_cfg(d):
             cfg[k] = bool(d[k])
     if d.get("mode") in ("mix", "tracks", "tracks_di"):
         cfg["mode"] = d["mode"]
-    if d.get("transcribe") in ("manual", "auto"):
-        cfg["transcribe"] = d["transcribe"]
     if d.get("count_in") is not None:
         cfg["count_in"] = _count_in(d["count_in"])
     _write_json_atomic(RECORDER_CFG, cfg, indent=1)
@@ -205,12 +200,6 @@ def save_recorder_cfg_from(p, prev=None):
         for k in [*(k for k in pm if re.fullmatch(r"in\d+", k)), "usb", "mix"]:
             if k in pm:
                 cfg[k] = bool(pm[k])
-        # « Transcribe takes » (docs/archive/tablature-study.md §12) : le réglage vit ICI, dans la config
-        # du Rec, et pas dans un bloc Tablature — la transcription est une conséquence de
-        # l'enregistrement, pas un truc que le rig FAIT pendant qu'on joue. Valeurs : manual
-        # (défaut) | auto. « starred » attend que la note des prises existe (lot 6).
-        if pm.get("transcribe") in ("manual", "auto"):
-            cfg["transcribe"] = pm["transcribe"]
         if pm.get("rec_mode") in ("mix", "tracks", "tracks_di"):
             cfg["mode"] = pm["rec_mode"]
         if pm.get("count_in") is not None:
@@ -251,7 +240,7 @@ def save_recorder_cfg_from(p, prev=None):
             _write_json_atomic(CLICK_CFG, ck, indent=1)
         except OSError:
             pass
-    # bloc Compo : ses params (keep_s, transcribe, foot_person, persons) — même contrat singleton.
+    # bloc Compo : ses params (keep_s, foot_person, persons) — même contrat singleton.
     kb = next((b for b, _k in _foot_blocks(p or {}) if b.get("type") == "compo"), None)
     if kb is not None and isinstance(kb.get("params"), dict):
         try:
@@ -333,8 +322,7 @@ def migrate_config(p):
     # point. Rien de ce que porte un preset ne doit pouvoir les contredire.
     rb["params"] = {**{k: v for k, v in g.items() if re.fullmatch(r"in\d+", k)},
                     "in1": g["in1"], "in2": g["in2"], "usb": g["usb"],
-                    "rec_mode": g["mode"], "mix": g["mix"], "count_in": g.get("count_in", 0),
-                    **({"transcribe": g["transcribe"]} if g.get("transcribe") in ("manual", "auto") else {})}
+                    "rec_mode": g["mode"], "mix": g["mix"], "count_in": g.get("count_in", 0)}
     # bloc Click PERMANENT (même contrat que le Rec : config globale, foot local)
     cb = next(b for b in rec["blocks"] if isinstance(b, dict) and b.get("type") == "click")
     ck = load_click_cfg()

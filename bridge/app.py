@@ -23,7 +23,6 @@ from . import monitors
 from . import auth as auth_mod
 from . import activity as activity_mod
 from . import looper as looper_mod
-from . import transcribe_jobs as transcribe_mod
 from . import backing as backing_mod
 from . import sample as sample_mod
 from . import drums as drums_mod
@@ -885,14 +884,6 @@ async def _startup():
     _foot.start()
     pedalboard.detect_async()
     monitors.init(_broadcast)
-    # transcription : son avancement doit ARRIVER à l'écran, sinon un travail de 30 s est
-    # indiscernable d'un bouton cassé (docs/archive/tablature-study.md §12).
-    def _tr_changed():
-        state.transcribe = transcribe_mod.snapshot()
-        state.touch()
-        broadcast_threadsafe()
-    transcribe_mod.set_on_change(_tr_changed)
-    state.transcribe = transcribe_mod.snapshot()
     monitors.init_looper(_looper_ctl)
     monitors.init_backing(_backing_ctl)
     monitors.init_sample(_sample_ctl)

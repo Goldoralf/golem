@@ -14,7 +14,6 @@ log_audio = get("audio")
 log_pedalboard = get("pedalboard")
 log_midi = get("midi")
 log_perf = get("perf")
-log_transcribe = get("transcribe")
 log_take = get("take")
 log_reaper = get("reaper")
 
@@ -1459,20 +1458,6 @@ async def _poll_perf():
                 with contextlib.suppress(Exception):
                     from . import rigstatus as _rs
                     _rs.push_soon()
-                # AUTO (docs/archive/tablature-study.md §12) : la prise part en transcription dès qu'elle
-                # est fermée — donc APRÈS le manifeste, qui porte le BPM dont le moteur a besoin.
-                # Jamais pendant le jeu : on est ici précisément parce que l'enregistrement vient
-                # de s'arrêter, et le worker tourne en `nice -19` dans un autre processus.
-                with contextlib.suppress(Exception):
-                    from . import store as _store, transcribe_jobs as _tj
-                    if (_store.load_recorder_cfg() or {}).get("transcribe") == "auto":
-                        # cur["file"] EST le dossier de la prise (relatif à ROOT) en multipiste,
-                        # et un .wav plat en mode mix — qui n'a ni DI ni MIDI, donc rien à
-                        # transcrire. On ne tente que sur un vrai dossier.
-                        d = os.path.basename(cur["file"] or "")
-                        if d.startswith("perf-") and os.path.isdir(os.path.join(C.ROOT, cur["file"])):
-                            r = _tj.enqueue(d)
-                            log_transcribe.info("auto %s -> %s" % (d, r))
             last = cur
             state.perf = cur
             state.touch(); await _broadcast()
@@ -1529,10 +1514,39 @@ def stamp_bwf(path, started_at, srate=48000):
         return False
 
 
+def _played_capo():
+    """Le capo de la fiche du morceau joué (ligne de setlist ou page Songs), ou None : « pas de capo » n'est pas 0."""
+    try:
+        from . import songs, setlists
+        sg = state.song or {}
+        sheet = None
+        if sg.get("line"):
+            ln = setlists.line_by_id(sg.get("setlist") or setlists.active_id(), sg["line"])
+            sheet = songs.line_sheet(ln) if ln else None
+        elif sg.get("band_song"):
+            sheet = (songs.load(sg["band_song"]) or {}).get("sheet")
+        c = (sheet or {}).get("capo")
+        return c if isinstance(c, int) and not isinstance(c, bool) else None
+    except Exception as _e:
+        _swallowed(_e, "capo")
+        return None
+
+
+def _instruments():
+    """L'instrument de chaque entrée guitare/basse (docs/transcription.md §4) : jamais fatal pour le manifeste."""
+    try:
+        from . import guitars, store
+        p = store.load_preset(state.preset_id) if state.preset_id else None
+        return guitars.instruments_of((state.inputmap or {}).get("inputs") or [], p, _played_capo())
+    except Exception as _e:
+        _swallowed(_e, "instruments")
+        return {}
+
+
 def _active_guitar():
     try:
-        from . import inharm
-        return inharm.active_guitar()
+        from . import guitars
+        return guitars.active_guitar()
     except Exception as _e:
         _swallowed(_e, "guitar")
         return None
@@ -1566,9 +1580,8 @@ def _drums_ctx():
 
 def _take_manifest(cur):
     import time as _t
-    # ⚠ `_store` n'était importé que LOCALEMENT dans une autre fonction (celle de la transcription
-    # auto) : ici il n'existait pas, et le rôle de l'entrée MIDI faisait tomber tout le manifeste
-    # — « take.json NON écrit : NameError » à chaque prise du 2026-09-09 au 2026-09-21.
+    # ⚠ `_store` n'était importé que LOCALEMENT dans une autre fonction : ici il n'existait pas, et le rôle de
+    # l'entrée MIDI faisait tomber tout le manifeste — « take.json NON écrit : NameError » à chaque prise du 2026-09-09 au 2026-09-21.
     from . import store as _store
     if True:
         target = os.path.join(C.ROOT, cur["file"])
@@ -1613,8 +1626,8 @@ def _take_manifest(cur):
             # l'avalait sans un mot. Aucune prise n'a eu de take.json entre le 2026-07-26 et le
             # 2026-08-02. Leçon : un filet qui protège une écriture NON critique doit quand même
             # DIRE ce qu'il a rattrapé, sinon il transforme une panne en absence.
-            # LA GUITARE jouée (config/string-calib.json `active`, bridge/inharm.py) : la transcription lit son
-            # accordage, ses cases et son étalonnage — une 8 cordes a sa tab à 8 lignes (2026-10-29)
+            # LA GUITARE jouée (config/string-calib.json `active`, bridge/guitars.py) : golem.fm lit son accordage et
+            # ses cases — une 8 cordes a sa tab à 8 lignes (2026-10-29)
             "guitar": _active_guitar(),
             "roles": {**{str(i.get("ch")): i.get("label") or i.get("role")
                          for i in ((state.inputmap or {}).get("inputs") or []) if i.get("ch")},
@@ -1622,6 +1635,10 @@ def _take_manifest(cur):
                                 or ((state.inputmap or {}).get("midi") or {}).get("role")}
                          if ((state.inputmap or {}).get("midi") or {}).get("role") not in (None, "none")
                          else {})},
+            # L'INSTRUMENT de chaque entrée guitare/basse (docs/transcription.md §4, 2026-11-26) : cordes, accordage MIDI
+            # (grave -> aigu), capo, cases, profil et d'où vient l'accordage — golem.fm écrit la tab avec. Parallèle à
+            # `roles` et gelé comme lui.
+            "instruments": _instruments(),
             # CONTEXTE de la prise (badge de la carte Recordings) : le mode machine dit OÙ elle a
             # été faite (compo à la maison, concert, répétition…). Donnée automatique, jamais saisie.
             # ⚠ l'ID seulement : state.mode est le DICT complet du mode. Y graver la définition

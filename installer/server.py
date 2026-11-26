@@ -981,7 +981,13 @@ class H(BaseHTTPRequestHandler):
             d["license_present"] = license_present()     # présence seulement — jamais le contenu
             return self._send(200, d)
         if u.path == "/api/size":
-            return self._send(200, P.sizes(S["src"], q.get("dir", [S["dir"]])[0]))
+            sz = P.sizes(S["src"], q.get("dir", [S["dir"]])[0])
+            # REAPER n'est compté que s'il est installé (Linux : seulement coché à l'écran Audio engine — l'écran Size
+            # le listait « required », 40 Mo, sous le Golem Engine seul ; vu en photographiant les écrans, 2026-11-23)
+            if P.NAME == "linux" and S.get("engine") != "reaper" and "reaper" in sz.get("fixed", {}):
+                sz = {**sz, "fixed": {k: v for k, v in sz["fixed"].items() if k != "reaper"},
+                      "fixed_labels": [x for x in sz.get("fixed_labels", []) if x[0] != "reaper"]}
+            return self._send(200, sz)
         if u.path == "/api/log":
             since = int(q.get("since", ["0"])[0])
             with LOCK:

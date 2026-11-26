@@ -20,7 +20,7 @@
  "default": false,
  "params": {
   "register": "Chime",
-  "organ": 0,
+  "organ": 3,
   "dry": -60,
   "mod": 50,
   "click": 20,

@@ -20,8 +20,8 @@
  "default": false,
  "params": {
   "register": "Coupler",
-  "organ": 0,
-  "dry": -6,
+  "organ": -3,
+  "dry": -9,
   "mod": 50,
   "click": 60,
   "leslie": "slow",

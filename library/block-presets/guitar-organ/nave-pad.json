@@ -21,8 +21,8 @@
  "default": false,
  "params": {
   "register": "Nave",
-  "organ": 0,
-  "dry": -12,
+  "organ": -5,
+  "dry": -17,
   "mod": 50,
   "click": 30,
   "leslie": "slow",

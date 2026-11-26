@@ -20,7 +20,7 @@
  "default": false,
  "params": {
   "register": "Combo",
-  "organ": 0,
+  "organ": -4,
   "dry": -60,
   "mod": 60,
   "click": 30,

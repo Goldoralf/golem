@@ -21,7 +21,7 @@
  "default": true,
  "params": {
   "register": "Custom",
-  "organ": 0,
+  "organ": -5,
   "dry": -60,
   "mod": 50,
   "click": 30,

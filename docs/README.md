@@ -111,6 +111,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [ardour-engine.md](ardour-engine.md) | PROPOSED | A free engine built from Ardour, next to REAPER |
 | [ardour-plan.md](ardour-plan.md) | FIXED | Action plan for the Golem Engine: fork strategy, engine contract, block homogeneity, phases A0–A5 |
 | [release-signing.md](release-signing.md) | CODED, inactive until a key is declared | Verifying signed release tags |
+| [windows-test-2026-11-23.md](windows-test-2026-11-23.md) | TO DO | Handoff note for the live test on the Windows dev box: what the fresh Windows 11 VM found, what is fixed, what to check; deleted once done |
 | [update.md](update.md) | CODED | The "Update to …" button of Settings ▸ About, installs from an archive, and how to cut a release |
 | [network.md](network.md) | CODED (macOS reads only) | How a tablet or phone reaches the rack: station, access point |
 | [connect.md](connect.md) | CODED (rack side) | Joining the rack without typing an address |

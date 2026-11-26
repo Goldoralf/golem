@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 # GoleM — durcissement rack (B5 du plan de consolidation) :
-#   pare-feu minimal, MAJ auto figées, USB sans autosuspend, mDNS golem.local, gouverneur CPU « performance » au boot.
+#   pare-feu minimal, MAJ auto figées, USB sans autosuspend, mDNS golem.local, gouverneur CPU « performance » au boot,
+#   swappiness 10 et indexeur de fichiers coupé.
 #
 # 2026-10-16 (docs/installer.md §4) : un geste SÉPARÉ, plus jamais lié au démarrage avec la machine — System ▸ Dashboard
 # ▸ « Lock down this machine » (bridge/machine.py, le mot de passe par askpass, jamais écrit) ou ce script à la main.
@@ -112,6 +113,24 @@ receipt_add /etc/systemd/system/golem-perf.service file system --owner root
 sudo install -m 644 "$HERE/autostart/system/golem-perf.service" /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now golem-perf.service
+
+# --- 6. Mémoire : le moteur garde la RAM, pas d'indexeur de fichiers -----------
+# Rack Linux à 3 Go (2026-11-26, system-tuning.md « Engine memory ») : le moteur partait en swap et décrochait. Son
+# verrou (golem-mlock) vient d'install-golem-engine.sh ; ici la machine cesse de pousser vers le swap (60 → 10) et
+# l'indexeur de fichiers du bureau (localsearch, ~2 % CPU et des E/S en continu) ne tourne plus.
+log "Swappiness 10 · indexeur de fichiers (localsearch) coupé"
+receipt prior swappiness "$(cat /proc/sys/vm/swappiness)" --string      # le premier gagne : la valeur d'avant golem
+receipt_add /etc/sysctl.d/90-golem-swappiness.conf file dedicated --owner root
+echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/90-golem-swappiness.conf >/dev/null
+sudo sysctl -q -p /etc/sysctl.d/90-golem-swappiness.conf || true
+if systemctl --user cat localsearch-3.service >/dev/null 2>&1; then
+  receipt prior localsearch "$(systemctl --user is-enabled localsearch-3.service 2>/dev/null || echo absent)" --string
+  systemctl --user mask --now localsearch-3.service localsearch-control-3.service localsearch-writeback-3.service \
+    >/dev/null 2>&1 || true
+  gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false 2>/dev/null || true
+  gsettings set org.freedesktop.Tracker3.Miner.Files index-recursive-directories "[]" 2>/dev/null || true
+  gsettings set org.freedesktop.Tracker3.Miner.Files index-single-directories "[]" 2>/dev/null || true
+fi
 
 cat <<EOF
 

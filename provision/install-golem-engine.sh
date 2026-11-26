@@ -20,3 +20,21 @@ tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 echo "  ↓ Golem Engine (précompilé, golem-binaries)"
 fetch_verified "$URL" "$tmp/engine.tar.gz" || exit 1
 python3 "$HERE/golem_engine.py" --place "$tmp/engine.tar.gz"
+
+# le verrou mémoire du moteur (provision/golem-mlock.c, system-tuning.md « Engine memory ») : sans gcc, le moteur tourne
+# quand même, il peut seulement partir en swap
+. "$HERE/lib-receipt.sh"
+shim="$HOME/.local/lib/golem/libgolem-mlock.so"
+if command -v gcc >/dev/null 2>&1; then
+  ex=$(receipt_existed "$shim")
+  mkdir -p "$(dirname "$shim")"
+  if gcc -O2 -shared -fPIC -o "$shim" "$HERE/golem-mlock.c"; then
+    # shellcheck disable=SC2086
+    receipt_add "$shim" file golem $ex
+    echo "  ✓ Golem Engine : mémoire verrouillée (libgolem-mlock)"
+  else
+    echo "  ⚠ Golem Engine : verrou mémoire non compilé — le moteur peut partir en swap"
+  fi
+else
+  echo "  ⚠ Golem Engine : gcc absent, verrou mémoire non compilé — le moteur peut partir en swap"
+fi

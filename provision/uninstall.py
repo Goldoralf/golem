@@ -137,6 +137,8 @@ GOLEM_FIXED_ROOT = ("/etc/sudoers.d/golem-net", "/etc/sudoers.d/golem-perf", "/u
 UFW_GOLEM_RULES = ("8770/tcp", "80/tcp", "5353/udp")
 UFW_RECEIPT_ONLY = ("OpenSSH",)
 # les commandes système qu'un script root peut lancer — simulées en mode --root-fs
+# l'indexeur de fichiers du bureau, coupé par provision/harden.sh (§6)
+LOCALSEARCH_UNITS = ("localsearch-3.service", "localsearch-control-3.service", "localsearch-writeback-3.service")
 SYS_CMDS = ("systemctl", "nmcli", "ufw", "loginctl", "gpasswd", "apt-get", "dpkg-query", "sysctl", "udevadm", "snap")
 
 # les profils de navigateur DÉDIÉS d'un navigateur en snap (il ne peut écrire dans aucun dossier caché du home) :
@@ -913,6 +915,14 @@ def build_plan(ctx):
         add(_item("dedicated:governor", "dedicated", "CPU governor", [], "root", "receipt", True,
                   "set back to %s" % prior["governor"], "revert", _governor=str(prior["governor"]),
                   _prior_keys=["governor"]))
+    if prior.get("swappiness"):
+        add(_item("dedicated:swappiness", "dedicated", "Swap tendency (vm.swappiness)", [], "root", "receipt", True,
+                  "set back to %s" % prior["swappiness"], "revert", _swappiness=str(prior["swappiness"]),
+                  _prior_keys=["swappiness"]))
+    if prior.get("localsearch") and prior["localsearch"] != "masked":
+        add(_item("dedicated:localsearch", "dedicated", "Desktop file indexer (localsearch)", [], "user", "receipt",
+                  True, "golem turned it off; it was %s before" % prior["localsearch"], "revert",
+                  _prior_keys=["localsearch"]))
 
     # ── plugins ──
     for slug, label, paths, named in PLUGINS:
@@ -1157,6 +1167,11 @@ def _root_actions(ctx, it, root, rpaths):
                 sh.append("systemctl enable --now %s >/dev/null 2>&1 || true" % _q(unit))
             elif state == "masked":
                 sh.append("systemctl mask %s >/dev/null 2>&1 || true" % _q(unit))
+    elif it["id"] == "dedicated:swappiness":
+        sw = str(it["_swappiness"])
+        if not sw.isdigit():
+            raise UninstallError("refused: odd swappiness %r in the receipt" % sw)
+        sh.append("sysctl -q -w vm.swappiness=%s || true" % sw)
     elif it["id"] == "dedicated:governor":
         sh.append('for f in %s/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do [ -e "$f" ] && echo %s > "$f"; '
                   'done; true' % (_q(ctx.fsroot) if ctx.fsroot else "", _q(it["_governor"])))
@@ -1428,6 +1443,11 @@ def _user_action(ctx, it, root, rpaths):
         if _reaper_running(ctx):
             raise UninstallError("REAPER is running: it would rewrite reaper.ini when it quits")
         return revert_ini(ctx, it.get("_keys") or {}, it.get("_csurf"))
+    if it["id"] == "dedicated:localsearch":
+        run_command(ctx, ["systemctl", "--user", "unmask"] + list(LOCALSEARCH_UNITS), timeout=60)
+        for key in ("enable-monitors", "index-recursive-directories", "index-single-directories"):
+            run_command(ctx, ["gsettings", "reset", "org.freedesktop.Tracker3.Miner.Files", key], timeout=30)
+        return "unmasked; it starts again at next login"
     if a == "disable":
         run_command(ctx, ["systemctl", "--user", "disable", "--now", it["_unit"]], timeout=60)
         msg = safe_remove(ctx, it["_paths"][0], root, rpaths)
@@ -1530,7 +1550,7 @@ def run(ctx, ids, report):
     removed_deps = _run_apt(ctx, [i for i in chosen if i["group"] == "apt"], plan, report)
 
     # 4. REAPER, 5. plugins, toolchain, intégration utilisateur
-    order = (("reaper", ("reaper-links", "reaper-ini", "reaper")), ("user", ("plugins", "toolchain", "golem")))
+    order = (("reaper", ("reaper-links", "reaper-ini", "reaper")), ("user", ("plugins", "toolchain", "golem", "dedicated")))
     for step, groups in order:
         for g in groups:
             for it in chosen:

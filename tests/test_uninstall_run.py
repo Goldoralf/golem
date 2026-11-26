@@ -514,3 +514,23 @@ def test_les_bases_du_bureau_de_l_utilisateur_ne_sont_jamais_effacees(fs, calls)
     assert not fs.exists(sh + "/mime/packages/application-x-reaper.xml")
     assert any(c[0] == "update-mime-database" for c in calls)
     assert not fs.exists(sh + "/applications/mimeinfo.cache")        # plus aucune entrée de menu : le cache part
+
+
+def test_memoire_du_rack_remise_comme_avant(fs, calls):
+    """harden.sh §6 : swappiness et localsearch reprennent leur état d'avant golem."""
+    d = receipt_data()
+    d["prior"].update(swappiness="60", localsearch="static")
+    fs.receipt(d)
+    ctx = fs.ctx()
+    plan = {i["id"]: i for i in U.build_plan(ctx)["items"]}
+    assert plan["dedicated:swappiness"]["reason"] == "set back to 60"
+    assert plan["dedicated:localsearch"]["privilege"] == "user"
+    script, refused = U.root_script(ctx, [plan["dedicated:swappiness"]], INSTALL, set())
+    assert not refused and "sysctl -q -w vm.swappiness=60" in script
+    rec = Rec()
+    assert U.run(ctx, ["dedicated:swappiness", "dedicated:localsearch"], rec), rec.events
+    r = json.loads(fs.read(HOME + "/.local/share/golem/install-receipt.json"))
+    assert "swappiness" not in r["prior"] and "localsearch" not in r["prior"]
+    # une valeur étrange dans le reçu n'arrive jamais dans le script root
+    bad = dict(plan["dedicated:swappiness"], _swappiness="10; rm -rf /")
+    assert U.root_script(ctx, [bad], INSTALL, set())[1]

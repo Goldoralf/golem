@@ -15,6 +15,30 @@
 - **Restart the computer** for the limits to apply; `ulimit -r` must then print 95. Logging out is not enough when
   golem is running: its bridge and REAPER survive the session (`setsid`) and keep their old limits — `golem stop` first.
 
+## Engine memory — `provision/golem-mlock.c`
+
+CODED 2026-11-26. The Golem Engine (`luasession`) never calls `mlockall`: it locks only its real-time pool and Lua
+state (~80 MB of `mlock()`). The rest of its heap can be swapped out, and a DSP thread that touches a swapped page
+waits for the disk: an xrun. Measured on the 3 GB Linux rack: `VmSwap` went from 0 to 228 MB in an hour with the
+Live page open, while the engine crackled even at a 1024 buffer. The `memlock` limit above was already unlimited;
+the call was missing.
+
+- `provision/install-golem-engine.sh` compiles `golem-mlock.c` into `~/.local/lib/golem/libgolem-mlock.so` (needs
+  `gcc`; without it the install warns and goes on).
+- Both launchers preload it: `bridge/engine/ardour.py` (`mlock_shim`, the engine restart) and
+  `provision/lib-engine.sh`. Its constructor acts in `luasession` only (bash and `run.py` pass through it), calls
+  `mlockall(MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT)` and removes `LD_PRELOAD` for the engine's children.
+- `MCL_ONFAULT`: a page stays in RAM once touched, but nothing is prefaulted. Without it, `MCL_CURRENT` would load
+  the whole mapped space (~1.5 GB) instead of the real footprint (~1 GB).
+- Off switch: `GOLEM_ENGINE_MLOCK=0` in the bridge's environment.
+- Check, after an engine restart: `grep golem-mlock /tmp/golem-engine.log` (or the bridge's engine log) prints
+  `mlockall(onfault) ok`; `grep -E 'Vm(RSS|Lck|Swap)' /proc/$(pgrep -x luasession)/status` shows `VmLck` ≈ `VmRSS`
+  and `VmSwap` 0.
+- Cost: the engine's memory can no longer yield to the rest. On a 3 GB machine Chrome and the desktop swap more
+  instead: the UI may lag, the sound does not. Never set a finite `memlock` limit with this: with `MCL_FUTURE`, an
+  allocation past the limit fails and the engine crashes.
+- To remove when the engine calls `mlockall` itself.
+
 ## CPU governor
 
 - `provision/perf-mode.sh on|off|status` switches every CPU between `performance` and `powersave`. Without
@@ -39,6 +63,10 @@ Idempotent, and refuses to run unless the hostname is `golem-vm`, `golem-rack` o
   before a gig.
 - **USB autosuspend off**: `/etc/udev/rules.d/90-golem-usb-power.rules` sets `power/control=on` on every USB device, so
   the audio interface, keyboards and pedalboard never get suspended (xruns, disconnections).
+- **Memory** (2026-11-26): `vm.swappiness=10` (`/etc/sysctl.d/90-golem-swappiness.conf`, the kernel default is 60) and
+  the desktop file indexer off (`localsearch-3`, `-control-3`, `-writeback-3` masked, its Tracker folders emptied).
+  On the 3 GB Linux rack the engine was being swapped out and the indexer kept reading the disk. The uninstaller puts
+  both back (`dedicated:swappiness`, `dedicated:localsearch`). The engine's own lock is in "Engine memory" above.
 
 Network fallback (access point) is separate: [docs/network.md](../docs/network.md).
 

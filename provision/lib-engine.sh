@@ -38,7 +38,10 @@ start_golem_engine() {
   # la carte ACTIVE de golem en ALSA (bridge/engine/ardour.py card_device) ; sans carte connue : le pilote factice
   local device="${GOLEM_ENGINE_DEVICE-$(python3 -c "import sys; sys.path.insert(0, sys.argv[1]); from bridge.engine.ardour import card_device; print(card_device() or '')" "$here" 2>/dev/null)}"
   local backend="${GOLEM_ENGINE_BACKEND:-$([ -n "$device" ] && echo ALSA || echo "None (Dummy)")}"
-  setsid nohup bash "$dir/golem/engine/run.sh" "$here" "$session" "$backend" "$device" >>"$log" 2>&1 < /dev/null &
+  # le moteur ne part jamais en swap : provision/golem-mlock.c, précompilé par install-golem-engine.sh (GOLEM_ENGINE_MLOCK=0 le coupe)
+  local shim="$HOME/.local/lib/golem/libgolem-mlock.so" preload=""
+  if [ "${GOLEM_ENGINE_MLOCK:-1}" != 0 ] && [ -f "$shim" ]; then preload="$shim"; fi
+  LD_PRELOAD="$preload" setsid nohup bash "$dir/golem/engine/run.sh" "$here" "$session" "$backend" "$device" >>"$log" 2>&1 < /dev/null &
   echo "→ Golem Engine lancé (journal $log)"
 }
 

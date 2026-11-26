@@ -68,6 +68,19 @@ def _engine_dir():
 
 
 ENGINE_DIR = _engine_dir()
+
+
+# provision/golem-mlock.c, compilé par provision/install-golem-engine.sh : luasession ne verrouille que sa réserve temps
+# réel, le reste de son tas partait en swap (rack Linux à 3 Go : 228 Mo en une heure) et un thread DSP qui retouche
+# une page swappée décroche. GOLEM_ENGINE_MLOCK=0 le retire (provision/system-tuning.md « Engine memory »).
+MLOCK_SHIM = os.path.expanduser("~/.local/lib/golem/libgolem-mlock.so")
+
+
+def mlock_shim(path=MLOCK_SHIM):
+    """Le chemin de la bibliothèque à précharger dans le moteur, ou None (autre système, absente, coupée)."""
+    if not sys.platform.startswith("linux") or os.environ.get("GOLEM_ENGINE_MLOCK", "1") == "0":
+        return None
+    return path if os.path.isfile(path) else None
 OSC_PORT = int(os.environ.get("GOLEM_ENGINE_OSC", "3819"))
 def card_device():
     """Le nom de la carte ACTIVE de golem (config/cards/<carte>.json, la même que REAPER ouvre) — le veilleur la retrouve
@@ -847,6 +860,9 @@ class ArdourEngine(EngineAdapter):
         buf = card_buffer() if DEVICE else None
         if buf:
             env["GOLEM_ENGINE_BUFFER"] = str(buf)              # le buffer de la carte (Windows : Settings ▸ Audio)
+        shim = mlock_shim()
+        if shim:
+            env["LD_PRELOAD"] = shim                            # le moteur ne part jamais en swap (provision/golem-mlock.c)
         subprocess.Popen([*cmd, C.ROOT, SESSION_DIR, BACKEND, DEVICE], stdout=logf, stderr=subprocess.STDOUT, env=env,
                          **detach)
         return {"ok": True, "restarting": True}

@@ -307,7 +307,10 @@ def test_la_carte_par_defaut_est_celle_de_golem(monkeypatch, tmp_path):
     monkeypatch.setattr(A.sys, "platform", "linux")
     monkeypatch.setattr(C, "ROOT", str(tmp_path))
     monkeypatch.setattr(C, "alsa_card", lambda: "V276")
-    assert A.card_device() is None                                       # pas de registre : pas de carte
+    # la sonde est neutralisée : sur une machine où une Volt 276 est branchée, le test lisait la vraie carte (2026-11-25)
+    from bridge import cards
+    monkeypatch.setattr(cards, "probe", lambda cid: None)
+    assert A.card_device() is None                                       # pas de registre, pas branchée : pas de carte
     (tmp_path / "config" / "cards").mkdir(parents=True)
     (tmp_path / "config" / "cards" / "V276.json").write_text(json.dumps({"id": "V276", "name": "Universal Audio Volt 276"}))
     assert A.card_device() == "Universal Audio Volt 276"

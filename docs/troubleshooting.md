@@ -39,6 +39,12 @@ not loaded · REAPER auto-mute · a service track fell out of REAPER's live grap
      (`bridge/monitors.py` `_audio_recover`), never during a take. Manual retry:
      `python3 reaper/golem-cmd.py '{"action":"audio_reset"}'` (refused while the transport runs —
      `golem_apply.lua` `audio_reset()`). `fix: "recovery had no effect — check the cable"` → cable/hub.
+   - `stuck: true`, `why: "audio stream stopped — the sound card is still connected"` → the Golem Engine's stream
+     processes less than a quarter of real time while the active card is plugged in (`monitors._stream_stuck`). The
+     card is not the problem. Measured 2026-11-25 on an AudioBox iTwo at 256×3: after one xrun the card's capture
+     resumed in about 17.5 ms, longer than the 16 ms playback buffer, and the stream restarted five times a second
+     without ever running. The recovery is the same (`audio_reset`, then one engine restart); when it has no effect
+     the `fix` says "choose a larger buffer" and Health offers the next size (512 held on that rack).
    - `card` set, `why: "<card> is not connected"` → chip **NO CARD**: plug it in or switch card in
      Settings ▸ Gear ▸ Soundcard. The single recovery attempt is kept for when it comes back.
    - `t` frozen too → not a card problem: REAPER or its Lua loops stopped → tree 4.

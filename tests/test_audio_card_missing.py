@@ -61,6 +61,38 @@ def test_moteur_sature_on_ne_rouvre_pas_la_carte(rig, monkeypatch):
     assert monitors._audio_recover(False, "stalled")["fix"] == "recovering…" and rig == [{"action": "audio_reset"}]
 
 
+def test_flux_bloque_carte_branchee_on_ne_dit_pas_carte_perdue(rig, monkeypatch):
+    # rack 2026-11-25 (AudioBox iTwo, Golem Engine, 256×3) : flux relancé sans fin après un xrun, carte saine —
+    # l'écran disait « sound card lost? … check the cable » ; c'est le buffer 512 qui a tenu
+    from bridge import fixes
+    state.cards = {**state.cards, "active_present": True}
+    monkeypatch.setattr(monitors, "_samples_rate", lambda: 48000)
+    monkeypatch.setattr(monitors, "_stream_flowing", lambda rate, **k: False)
+    monkeypatch.setattr(monitors, "_restart_dead_engine", lambda: False)
+    a = monitors._audio_recover(False, "audio thread stalled — sound card lost?")
+    assert a["stuck"] is True and a["why"] == monitors.STUCK_WHY and a["fix"] == "recovering…"
+    assert rig == [{"action": "audio_reset"}]                           # la récupération part comme avant
+    a = monitors._audio_recover(False, "audio thread stalled — sound card lost?")
+    assert "lost" not in a["why"] and "cable" not in a["fix"] and "larger buffer" in a["fix"]
+    monkeypatch.setattr(state, "audio", a)
+    monkeypatch.setattr(fixes, "_bsize", lambda: 256)
+    monkeypatch.setattr(fixes, "_buffer_sizes", lambda: [128, 256, 512, 1024])
+    assert fixes.suggest({"id": "audio", "level": "bad"}) == {"action": "set_buffer", "params": {"size": 512}}
+
+
+def test_flux_bloque_reaper_ou_presence_inconnue_les_mots_d_avant(rig, monkeypatch):
+    monkeypatch.setattr(monitors, "_stream_flowing", lambda rate, **k: False)
+    monkeypatch.setattr(monitors, "_restart_dead_engine", lambda: False)
+    monkeypatch.setitem(monitors._AUDIO_FIX, "tried", True)
+    state.cards = {**state.cards, "active_present": True}
+    monkeypatch.setattr(monitors, "_samples_rate", lambda: None)        # REAPER : aucun débit lisible
+    assert monitors._audio_recover(False, "stalled") == {"ok": False, "why": "stalled",
+                                                         "fix": "recovery had no effect — check the cable"}
+    monkeypatch.setattr(monitors, "_samples_rate", lambda: 48000)
+    state.cards = {}                                                    # Windows : la présence n'est pas connue
+    assert "cable" in monitors._audio_recover(False, "stalled")["fix"]
+
+
 def test_la_surcharge_se_lit_dans_la_charge_dsp_du_moteur(monkeypatch):
     from bridge import engine
 

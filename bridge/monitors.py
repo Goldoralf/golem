@@ -586,6 +586,21 @@ def _engine_overloaded():
     return None
 
 
+STUCK_WHY = "audio stream stopped — the sound card is still connected"
+
+
+def _stream_stuck():
+    """Vrai quand le flux d'un moteur qui compte des ÉCHANTILLONS (le Golem Engine) est mort alors que la carte active
+    est BRANCHÉE. Rack 2026-11-25 (i5-3337U, AudioBox iTwo, 256×3) : après un xrun la capture de l'iTwo reprenait en
+    ~17,5 ms, plus que les 16 ms du tampon de lecture — le flux se relançait 5 fois par seconde sans jamais repartir.
+    L'écran disait « sound card lost? … check the cable » 96 fois ce jour-là : la carte allait bien, c'est un buffer plus
+    grand qui a tenu (512). REAPER (pas de débit lisible) et une présence inconnue : False, les mots d'avant."""
+    if (state.cards or {}).get("active_present") is not True:
+        return False
+    rate = _samples_rate()
+    return bool(rate) and _stream_flowing(rate) is False
+
+
 def _audio_recover(alive, why):
     """Rend le nouvel état `state.audio` et déclenche au plus UNE récupération par épisode."""
     if alive:
@@ -610,20 +625,27 @@ def _audio_recover(alive, why):
                 "overload": True, "fix": "choose a lighter preset, or a larger buffer"}
     if _engine_settling():                           # garde-fou 6 : un rig se monte, un moteur démarre — le flux ralentit
         return {"ok": False, "why": why, "fix": "waiting — the audio engine is starting"}
+    # garde-fou 7 (2026-11-25) : LA CARTE EST BRANCHÉE, c'est le flux qui est bloqué. On ne dit plus « carte perdue,
+    # vérifie le câble » ; la récupération reste la même, et quand elle n'a rien donné le geste est un buffer plus grand.
+    out = {"ok": False, "why": why}
+    if _stream_stuck():
+        out = {"ok": False, "why": STUCK_WHY, "stuck": True}
     recording = bool((state.perf or {}).get("recording"))
     if recording:                                    # garde-fou 1 : la prise passe avant tout
-        return {"ok": False, "why": why, "fix": "waiting — a take is recording"}
+        return {**out, "fix": "waiting — a take is recording"}
     if not _AUDIO_FIX["tried"]:                      # garde-fou 2 : une seule fois
         _AUDIO_FIX["tried"] = True
         _AUDIO_FIX["tried_at"] = time.time()
-        log_audio.warning(f"⚠ {why} — récupération AUTOMATIQUE : audio_reset (une seule tentative)")
+        log_audio.warning(f"⚠ {out['why']} — récupération AUTOMATIQUE : audio_reset (une seule tentative)")
         with contextlib.suppress(Exception):
             from .commands import write_command
             write_command({"action": "audio_reset"})
-        return {"ok": False, "why": why, "fix": "recovering…"}
+        return {**out, "fix": "recovering…"}
     if _restart_dead_engine():
-        return {"ok": False, "why": why, "fix": "recovering… restarting the audio engine"}
-    return {"ok": False, "why": why, "fix": "recovery had no effect — check the cable"}
+        return {**out, "fix": "recovering… restarting the audio engine"}
+    if out.get("stuck"):
+        return {**out, "fix": "recovery had no effect — choose a larger buffer"}
+    return {**out, "fix": "recovery had no effect — check the cable"}
 
 
 # ── LE CONTRAT MIDI : le rack savait, et se taisait ──────────────────────────────────────

@@ -1546,6 +1546,7 @@ _HANDLERS = {
     "song-push": lambda j: _song_push(j),      # le RÉPERTOIRE (docs/songs.md)
     # un .golem fabriqué par golem.fm (plan-song-sharing lot 2) : téléchargé, vérifié, fusionné (golem_pull.py)
     "song-install": lambda j: _song_install(j),
+    "song-load": lambda j: _song_load(j),           # Follow Golem « preset + arrangement » (golem.fm, 2026-11-26)
     # le geste « Store on golem.fm » fait sur golem.fm : le golem envoie le .golem qu'il détient (song-sharing §2.7)
     "golem-upload": lambda j: _golem_upload(j),
     # séparer l'original d'une chanson avec le moteur actif du golem (docs/separation.md §8) : file à part, ack différé
@@ -1655,6 +1656,74 @@ def _song_install(job):
     """Un .golem fabriqué par golem.fm : `{id, slug, url, etag}` -> ack `{song: {id}, missing}` (golem_pull.py)."""
     from . import golem_pull
     return golem_pull.song_install(job)
+
+
+def _find_song(job):
+    """La chanson d'un job `song-load` : son id si golem.fm l'a (l'id du .golem qu'il a envoyé, LU ici, jamais
+    fabriqué), sinon le slug comparé à `song_slug` — qui n'est pas une identité (docs/songs.md §2) : plusieurs
+    chansons le portent → refus, on ne devine pas."""
+    from . import songs as _sg
+    sid = job.get("id")
+    if sid:
+        doc = _sg.load(str(sid))
+        if not doc:
+            raise RuntimeError("This song is not on your golem — send it first")
+        return doc
+    slug = job.get("slug")
+    if not slug:
+        raise RuntimeError("song-load: need id or slug")
+    hits = [d for d in _sg.list_all() if d.get("song_slug") == slug]
+    if not hits:
+        raise RuntimeError("This song is not on your golem — send it first")
+    if len(hits) > 1:
+        raise RuntimeError(f"{len(hits)} songs on your golem carry this song — load it from the rack")
+    return hits[0]
+
+
+def _song_load(job):
+    """`{action:"song-load", id|null, slug, category, preset?}` — Follow Golem « preset + arrangement »
+    (golem.fm, 2026-11-26) : charge la chanson AVEC SON preset, arrangement armé mesure 1, transport à l'arrêt —
+    le même chemin que POST /api/arrangement {op:select, song}. Ack `{song, preset}`.
+
+    La chanson POSSÈDE son rig (`sheet.preset`, docs/songs.md §3) : ses parties nomment des scènes de CE preset
+    (docs/arrangement.md §1). Un `preset` envoyé qui en diffère est refusé — jamais fusionné. Un standard n'a
+    d'arrangement que s'il est une chanson sur le golem (sa forme = les sections de l'Arrangement,
+    docs/standards.md §2) : une grille du catalogue seule n'est pas une chanson, donc refusée comme absente."""
+    from . import recall
+    from .state import state
+    from .store import load_preset
+    # les refus habituels, en phrases : golem.fm les affiche tels quels et ne réessaie jamais
+    if ((state.mode or {}).get("ui") or {}).get("locked"):
+        raise RuntimeError("The mode is locked on your golem — exit it on the rack first")
+    if (state.perf or {}).get("recording"):
+        raise RuntimeError("A take is recording on your golem — try after it")
+    if (state.backing or {}).get("playing") or (state.arrangement or {}).get("running"):
+        raise RuntimeError("A song is playing on your golem — stop it first")
+    if getattr(state, "rig_loading", None):
+        raise RuntimeError("The rig is still loading — try again when it is ready")
+    doc = _find_song(job)
+    pid = (doc.get("sheet") or {}).get("preset")
+    if not pid or not load_preset(pid):
+        raise RuntimeError("This song has no preset on your golem yet")
+    want = job.get("preset")
+    if want and want != pid:
+        raise RuntimeError(f"This song plays its own preset ({pid}) — use Load preset to try another")
+    # l'état dit le morceau AVANT le rappel : il porte le TEMPO de la chanson jusqu'au moteur (comme ▶ Play)
+    state.song = recall.song_of_song(doc, pid)
+    if state.preset_id == pid:
+        recall._bind_foot_services(recall.effective_preset(load_preset(pid)))
+    else:
+        state.rig_loading = {"song": doc["id"], "since": time.time(), "by": "golem.fm"}
+        try:
+            if not recall.do_recall(pid, None):
+                raise RuntimeError("The rig did not load on your golem — look at the rack")
+        finally:
+            state.rig_loading = None
+    recall.arm_song()
+    state.touch()
+    if recall._notify:
+        recall._notify()
+    return {"song": doc["id"], "preset": pid, "_log": f"loaded {doc['id']} on {pid}"}
 
 
 def _golem_upload(job):

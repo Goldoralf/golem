@@ -17,6 +17,7 @@ def test_select_charge_la_chanson_sans_rien_lancer(monkeypatch):
     rig = {"id": "rig", "scenes": [{"id": "A"}], "config": {}}
     monkeypatch.setattr("bridge.songs.load", lambda sid: doc if sid == doc["id"] else None)
     monkeypatch.setattr(A, "load_preset", lambda pid: rig if pid == "rig" else None)
+    monkeypatch.setattr(A.recall_mod, "load_preset", lambda pid: rig if pid == "rig" else None)   # recall.arm_song
     monkeypatch.setattr(A.auth_mod, "device_of", lambda req: None)
     monkeypatch.setattr(state, "preset_id", "rig")
     monkeypatch.setattr(state, "song", None)                               # restaurée après le test

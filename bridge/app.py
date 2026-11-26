@@ -2724,18 +2724,7 @@ async def arrangement_action(request: Request, body: dict):
             # DÉCHARGER : le preset reste, seul — plus de chanson, donc plus de backing (docs/song-backing.md §1)
             _arr_ctl.stop()
             state.song = None
-        cur = load_preset(state.preset_id) if state.preset_id else None
-        eff = recall_mod.effective_preset(cur) if cur else None
-        songs = ((eff or {}).get("backing") or {}).get("songs") or []
-        state.backing = {**state.backing, "songs": songs,
-                         "enabled": bool(songs) and modes_mod.allows("backing", state.mode)}
-        _backing_ctl.on_recall(eff, allowed=state.backing["enabled"])
-        _arr_ctl.load(eff)
-        setattr(state, "arrangement", _arr_ctl.snapshot())
-        # RETENU au redémarrage : `.live.json` n'était écrit qu'au RAPPEL d'un preset — une chanson chargée sur le
-        # même preset était oubliée au prochain démarrage du bridge (adoption, accueil « last »)
-        with contextlib.suppress(Exception):
-            recall_mod.remember_live()
+        recall_mod.arm_song()           # sa backing et son arrangement, à l'arrêt (aussi le job song-load)
         state.touch()
         await _broadcast()
         return {"ok": True, "song": state.song}

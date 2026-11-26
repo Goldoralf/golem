@@ -532,6 +532,24 @@ def effective_preset(p):
     return q
 
 
+def arm_song():
+    """Arme le morceau COURANT sur le preset chargé, transport à l'arrêt : sa backing (docs/song-backing.md) et son
+    arrangement à la mesure 1. Partagé par POST /api/arrangement {op:select|unselect} et le job golem.fm `song-load`
+    — un seul chemin, sinon les deux divergent."""
+    cur = load_preset(state.preset_id) if state.preset_id else None
+    eff = effective_preset(cur) if cur else None
+    songs = ((eff or {}).get("backing") or {}).get("songs") or []
+    state.backing = {**state.backing, "songs": songs,
+                     "enabled": bool(songs) and modes_mod.allows("backing", state.mode)}
+    _backing_ctl.on_recall(eff, allowed=state.backing["enabled"])
+    _arr_ctl.load(eff)
+    setattr(state, "arrangement", _arr_ctl.snapshot())
+    # RETENU au redémarrage : `.live.json` n'était écrit qu'au RAPPEL d'un preset — une chanson chargée sur le
+    # même preset était oubliée au prochain démarrage du bridge (adoption, accueil « last »)
+    with contextlib.suppress(Exception):
+        remember_live()
+
+
 def song_click():
     """Ce que la CHANSON jouée dit du click (§9.9) : {beats?, den?} — vide sans chanson ou sans surcharge.
     À fusionner sur la config globale dans toute commande `click` (app._click_cfg). Une chanson chargée depuis Songs

@@ -53,10 +53,40 @@ def input_role():
     return INPUT_ROLE.get(instrument(), "guitar")
 
 
+# L'ACCUEIL D'USINE D'AVANT LE 2026-11-03 (rack Linux, 2026-11-26) : un golem installé ce jour-là avait reçu, au premier
+# démarrage, l'accueil « preset Chill Jazz » — hors de la banque guitare. Corrigé le jour même pour les installations
+# neuves, mais apply() n'écrase jamais un accueil présent : ce rack ouvrait toujours Chill Jazz, /live disait « not in
+# Factory Guitar » et cachait les flèches de banque. On ne migre que CET accueil-là, et seulement s'il a été écrit avec
+# config/instrument.json (le même premier démarrage, à quelques secondes) : un Chill Jazz choisi depuis son menu ⋯
+# reste tel quel.
+LEGACY_HOME = {"kind": "preset", "name": "Chill Jazz", "id": "factory-chill-jazz"}
+LEGACY_WINDOW_S = 10
+
+
+def migrate_legacy_home():
+    """Remplace l'ancien accueil d'usine guitare par la banque guitare. Rend ce qui a été fait, ou None."""
+    from . import startup_home
+    try:
+        with open(startup_home.PATH, encoding="utf-8") as f:
+            doc = json.load(f)
+        written = os.path.getmtime(startup_home.PATH)
+        installed = os.path.getmtime(_instrument_path())
+    except (OSError, ValueError):
+        return None
+    if doc != {"policy": "home", "home": LEGACY_HOME} or instrument() != "guitar":
+        return None
+    if abs(written - installed) > LEGACY_WINDOW_S:
+        return None                                       # posé plus tard, à la main : c'est un choix
+    startup_home.set_home(HOME["guitar"])
+    log.info("accueil d'usine d'avant le 2026-11-03 (preset Chill Jazz) remplacé par la banque Factory Guitar")
+    return "startup factory-chill-jazz -> factory-guitar"
+
+
 def apply():
     """Applique `config/first-run.json` s'il est là, puis le retire. Rend ce qui a été fait (liste), ou None."""
     path = _first_run_path()
     if not os.path.isfile(path):
+        migrate_legacy_home()                             # un golem déjà installé : seulement l'ancien accueil d'usine
         return None
     inst = _read(path).get("instrument")
     done = []

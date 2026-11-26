@@ -76,3 +76,34 @@ def test_un_instrument_inconnu_est_ignore_et_le_fichier_retire(cfg):
     cfg("theremin")
     assert first_run.apply() == ["unknown instrument 'theremin' ignored"]
     assert first_run.instrument() is None and not os.path.exists(cfg.dir / "first-run.json")
+
+
+def _legacy(cfg, startup_age=0.0):
+    """Un golem installé le 2026-11-03 : instrument guitare et accueil « preset Chill Jazz », du même premier démarrage."""
+    (cfg.dir / "instrument.json").write_text(json.dumps({"instrument": "guitar"}))
+    (cfg.dir / ".startup.json").write_text(json.dumps({"policy": "home", "home": first_run.LEGACY_HOME}))
+    t = os.path.getmtime(cfg.dir / "instrument.json")
+    os.utime(cfg.dir / ".startup.json", (t + startup_age, t + startup_age))
+
+
+def test_l_ancien_accueil_d_usine_devient_la_banque_guitare(cfg):
+    _legacy(cfg)
+    assert first_run.apply() is None                              # pas de first-run.json : rien d'autre ne bouge
+    h = SH.get()
+    assert h["policy"] == "home" and h["home"] == {"kind": "setlist", "id": "factory-guitar", "name": "Factory Guitar"}
+    assert first_run.migrate_legacy_home() is None                # une fois
+
+
+def test_un_chill_jazz_choisi_plus_tard_reste(cfg):
+    _legacy(cfg, startup_age=3600)                                # posé une heure après l'installation : un choix
+    first_run.apply()
+    assert SH.get()["home"]["id"] == "factory-chill-jazz"
+
+
+def test_un_autre_instrument_ou_un_autre_accueil_reste(cfg):
+    _legacy(cfg)
+    (cfg.dir / "instrument.json").write_text(json.dumps({"instrument": "bass"}))
+    t = os.path.getmtime(cfg.dir / "instrument.json")
+    os.utime(cfg.dir / ".startup.json", (t, t))
+    first_run.apply()
+    assert SH.get()["home"]["id"] == "factory-chill-jazz"

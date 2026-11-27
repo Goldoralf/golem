@@ -344,7 +344,8 @@ installed on a computer, and the reference rack is a build (`docs/rack-hardware.
    (`tools/check-ui.py --test-content --update-inventory`), commit and push.
 2. **Anchors are a contract** (§4): a renamed or removed `data-doc` anchor is said to golem.fm *before* the push. A
    new screen the doc should show gets its anchor and an example (§3).
-3. Take the snapshot at that commit (`tools/shell_snapshot.py --factory --rev <commit>`), the golem relaunched first
+3. Take the snapshot at that commit (`tools/shell_snapshot.py --factory --rev <commit>`; an example that fails is listed in
+   `examples_failed` and the others go on: rerun it alone with `--examples <name>` once fixed), the golem relaunched first
    (§2 bis). **Only the variants the change touches**: a change outside the Gear keys/drums pages does not need the
    Nitro/MPK swap — the other variant keeps its snapshot (decided by 2026-10-22). golem.fm's rule "both snapshots
    at the same commit" must then accept a variant from an older commit when the rack says the change does not concern

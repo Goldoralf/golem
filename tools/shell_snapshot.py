@@ -592,7 +592,7 @@ class Engine:
 
 def _page_url(base, target, ro):
     """Les TROIS formes de route d'un exemple, comme la coquille de golem.fm les ouvre (2026-10-22) : `#/live` (l'app
-    du rack), `?boot=firstcheck&at=input[#/…]` (une démo de l'app ouverte par sa query) et `/app/m.html?tab=now` (le
+    du rack), `?boot=firstcheck&at=input[#/…]` (une démo de l'app ouverte par sa query) et `/app/m.html?tab=live&mode=now` (le
     Companion du téléphone). `shell=ro` est ajouté à la query — l'écran tel que la doc le montre."""
     if target.startswith("#"):
         return base + ("/app/?shell=ro" if ro else "/app/") + target
@@ -944,11 +944,12 @@ EXAMPLES = [
     {"name": "first-check-done", "title": "The first-install check: its verdict",
      "line": "Golem Rising", "scene": "A", "route": "?boot=firstcheck&at=done"},
     {"name": "companion-now", "title": "The phone Companion: Now, during Golem Rising",
-     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=now"},
-    {"name": "companion-song", "title": "The phone Companion: the song",
-     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=song"},
+     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=live&mode=now"},
+    # le Companion à deux icônes (2026-11-26) : l'onglet Song est fondu dans Control ; le NOM de l'exemple reste (les pages de doc le citent)
+    {"name": "companion-song", "title": "The phone Companion: Control, the song under the thumb",
+     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=live&mode=control"},
     {"name": "companion-rec", "title": "The phone Companion: Rec",
-     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=rec"},
+     "line": "Golem Rising", "scene": "B", "route": "/app/m.html?tab=live&mode=rec"},
     # EN DERNIER : le Nitro devient « drums » (le geste « This is a drum module »), et rien ne le défait derrière
     {"name": "reference-drums-bound", "title": "Settings ▸ Gear ▸ Drums: the Alesis Nitro bound as drums, ready to measure",
      "line": "Golem Rising", "scene": "B", "route": "#/system/gear/drums", "rack": "drums",
@@ -974,6 +975,19 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
         pid = act["lines"][slot]["preset"]
     for path, body in ex.get("gestures") or []:
         _post(base, path, body)
+    try:
+        return _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir)
+    finally:
+        # ce qui remet le bridge jetable comme avant part TOUJOURS, même quand l'exemple échoue : le suivant part du même
+        # état (2026-11-27 — un exemple en échec laissait son geste en place, et faisait tomber toute l'extraction)
+        for path, body in ex.get("undo") or []:
+            try:
+                _post(base, path, body)
+            except Exception as e:
+                log("  example %s: undo %s failed (%s)" % (ex["name"], path, e))
+
+
+def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir):
     doc = _get(base, "/api/preset/" + urllib.parse.quote(pid, safe=":"))
     # le brouillon du Designer = ce preset à cette scène (sinon le Designer et le WebSocket se contredisent)
     _post(base, "/api/sandbox_apply", {"preset": doc, "scene": ex["scene"]})
@@ -1003,8 +1017,6 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
     for key, data in ((posts.get(ex["route"]) or {}).get("answers") or {}).items():
         reads[key] = redact(data)                            # « POST /api/blocks/status » : servie telle quelle
     st = redact(_get(base, "/api/state"))
-    for path, body in ex.get("undo") or []:
-        _post(base, path, body)
     # un exemple montre UN RACK QUI JOUE : le démarrage est fini et le moteur répond. Le bridge jetable n'a pas de
     # REAPER ; sans ceci, /live montrerait l'écran « /loading » (showBoot, app/boot-model.mjs). Rien d'autre n'est retouché.
     st.pop("boot", None)
@@ -1218,10 +1230,46 @@ def separation_from(url, out_dir, log=print):
     return "/api/separation"
 
 
+# LA MINI-COQUILLE DE LA CI (docs/release-tool-plan.md §3 bis, 2026-11-27) : deux pages du rack, une du Companion, deux
+# exemples — assez pour que l'outil casse AU COMMIT qui le casse (un bridge jetable qui ne démarre plus, une route
+# changée, une lecture qui fuit), pas trois semaines plus tard au moment de ré-épingler. Sans moteur ni démos : la CI
+# n'a ni Golem Engine ni REAPER ; le chemin avec moteur se vérifie sur le rack (docs/release-checklist.md).
+SMOKE_PAGES = ["#/live", "#/designer", "/app/m.html?tab=live&mode=now"]
+SMOKE_EXAMPLES = ["golem-rising-live", "companion-now"]
+
+
+def smoke_problems(res, out_dir):
+    """Ce qui ne va pas dans une mini-coquille : [] quand elle est saine."""
+    bad = []
+    try:
+        with open(os.path.join(out_dir, "SNAPSHOT.json"), encoding="utf-8") as f:
+            man = json.load(f)
+    except (OSError, ValueError) as e:
+        return ["no SNAPSHOT.json (%s)" % e]
+    if res["refused"]:
+        bad.append("refused (a trace left after redaction): %s" % ", ".join(r for r, _ in res["refused"][:5]))
+    if res.get("examples_failed"):
+        bad.append("examples failed: " + "; ".join("%s (%s)" % (e["name"], e["why"]) for e in res["examples_failed"]))
+    missing = [n for n in SMOKE_EXAMPLES if n not in man.get("examples", [])]
+    if missing:
+        bad.append("examples not made: %s" % ", ".join(missing))
+    for page in SMOKE_PAGES:
+        if not (man.get("pages") or {}).get(page):
+            bad.append("page %s made no read" % page)
+    for must in ("/api/state", "/api/presets", "/api/effects"):
+        if must not in man.get("written", []):
+            bad.append("%s is not in the snapshot" % must)
+    return bad
+
+
 def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True, demos=True, take=None,
                      take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None,
-                     bench_engine="golem-engine"):
-    """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `MANIFEST.json`."""
+                     bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False):
+    """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `SNAPSHOT.json`.
+
+    `only_pages` / `only_examples` : un sous-ensemble (des routes, des noms) — le résultat est alors PARTIEL et le dit
+    (`partial` dans SNAPSHOT.json) : golem.fm ne l'importe pas tel quel. `smoke` : la mini-coquille de la CI
+    (SMOKE_PAGES, SMOKE_EXAMPLES), `kind: "smoke"`."""
     import subprocess
     import time
     cu = _check_ui()
@@ -1230,7 +1278,9 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     ge = engine and bench_engine == "golem-engine"
     # le bridge jetable hérite de l'environnement : le moteur se choisit AVANT son démarrage. Sans moteur ou sous REAPER,
     # on le force à REAPER — sinon il se croirait sur le Golem Engine (le défaut) en face d'un REAPER.
-    os.environ.update(golem_engine_env(br.tmp.name) if ge else {"GOLEM_ENGINE": "reaper"})
+    engine_env = golem_engine_env(br.tmp.name) if ge else {"GOLEM_ENGINE": "reaper"}
+    os.environ.update(engine_env)
+    br.extra_env.update(engine_env)       # APRÈS les réglages du banc (check-ui.Bridge) : son « pas de Golem Engine » l'écrasait
     with br as base, ((GolemEngine if ge else Engine)(br, log) if engine else contextlib.nullcontext()):
         log("factory snapshot: disposable bridge on %s (worktree of %s, factory content only%s)"
             % (base, commit[:8], (", its own Golem Engine" if ge else ", its own REAPER") if engine else ", no engine"))
@@ -1242,6 +1292,10 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         log("reference rack (%s): seen %s%s" % (rack_seen["variant"] or "no variant", ", ".join(rack_seen["seen"]) or "nothing",
                                           "" if rack_seen["complete"] else " — MISSING " + ", ".join(rack_seen["missing"])))
         rack, phone = factory_pages(base, cu)
+        if smoke:
+            only_pages, only_examples = SMOKE_PAGES, SMOKE_EXAMPLES
+        if only_pages is not None:
+            rack, phone = [p for p in rack if p in only_pages], [p for p in phone if p in only_pages]
         page_anchors, page_posts = {}, {}
         by_page = crawl(base, rack, phone, settle_ms, log, anchors=page_anchors, posts=page_posts)
         observed = sorted({r for v in by_page.values() for r in v if not VOLATILE.match(r) and not _never(r, True)})
@@ -1255,8 +1309,20 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
             with open(out_path(out_dir, r), encoding="utf-8") as f:
                 base_reads[r] = json.load(f)
         # un exemple marqué `rack` n'est fait que sur cette variante (les claviers sur `keys`) ; les autres, partout
-        examples = [make_example(base, ex, base_reads, settle_ms, log, out_dir) for ex in EXAMPLES
-                    if ex.get("rack") in (None, rack_seen["variant"])]
+        # CHAQUE EXEMPLE EST INDÉPENDANT (2026-11-27) : un exemple qui échoue (une ancre partie, une page qui a changé) est
+        # noté et les autres continuent — avant, un seul sur soixante faisait perdre toute l'extraction
+        examples, examples_failed = [], []
+        for ex in EXAMPLES:
+            if ex.get("rack") not in (None, rack_seen["variant"]):
+                continue
+            if only_examples is not None and ex["name"] not in only_examples:
+                continue
+            try:
+                examples.append(make_example(base, ex, base_reads, settle_ms, log, out_dir))
+            except Exception as e:
+                why = ("%s: %s" % (type(e).__name__, e)).splitlines()[0][:300]
+                examples_failed.append({"name": ex["name"], "route": ex["route"], "why": why})
+                log("  example %-28s FAILED — %s" % (ex["name"], why))
     os.makedirs(os.path.join(out_dir, "examples"), exist_ok=True)
     for ex in examples:
         with open(os.path.join(out_dir, "examples", ex["name"] + ".json"), "w", encoding="utf-8") as f:
@@ -1264,9 +1330,14 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     # la version du catalogue AU COMMIT de l'instantané, pas celle de l'arbre de travail
     catalog_version = json.loads(subprocess.run(["git", "-C", ROOT, "show", commit + ":library/catalog/effects.json"],
                                                 capture_output=True, text=True, check=True).stdout).get("catalog_version")
+    partial = only_pages is not None or only_examples is not None
     manifest = {
-        "kind": "factory", "name": SNAPSHOT_NAMES.get(rack_seen["variant"]) or "factory", "commit": commit, "catalog_version": catalog_version, "made": time.strftime("%Y-%m-%d"),
+        "kind": "smoke" if smoke else "factory", "name": SNAPSHOT_NAMES.get(rack_seen["variant"]) or "factory", "commit": commit, "catalog_version": catalog_version, "made": time.strftime("%Y-%m-%d"),
         "reads": sorted(res["written"]), "examples": [e["name"] for e in examples],
+        # les exemples qui n'ont pas pu être rejoués, avec leur raison : à relancer seuls (--examples), jamais passés sous silence
+        "examples_failed": examples_failed,
+        **({"partial": {"pages": sorted(only_pages) if only_pages is not None else None,
+                        "examples": sorted(only_examples) if only_examples is not None else None}} if partial else {}),
         "assets": res.get("assets", {}),
         # l'AUDIO (2026-11-04) : {adresse que l'app demande: {file, type}} — golem.fm le sert à cette adresse exacte
         "media": res.get("media", {}),
@@ -1290,6 +1361,8 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     }
     with open(os.path.join(out_dir, "SNAPSHOT.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
+    res["examples"] = [e["name"] for e in examples]
+    res["examples_failed"] = examples_failed
     return res
 
 
@@ -1315,6 +1388,11 @@ def main(argv=None):
                          "home folder shown as " + DEMO_HOME)
     ap.add_argument("--reference", metavar="URL", default=REFERENCE_URL,
                     help="with --factory: the reference rack's bridge, which probes the pedalboard (default %(default)s)")
+    ap.add_argument("--examples", help="with --factory: only these examples (names, comma-separated) — the result is PARTIAL")
+    ap.add_argument("--pages", help="with --factory: only these pages (routes, comma-separated) — the result is PARTIAL")
+    ap.add_argument("--smoke", action="store_true",
+                    help="with --factory: the mini-shell CI runs (two rack pages, one Companion page, two examples) and its "
+                         "checks; exits 1 when something is wrong. Use with --no-engine --no-demos where no engine is installed")
     ap.add_argument("--out", default=os.path.join(ROOT, "shell-snapshot"))
     ap.add_argument("--list", help="a file: one GET read per line")
     ap.add_argument("--private-name", action="append", default=[], help="a person's name to pseudonymize everywhere")
@@ -1328,14 +1406,26 @@ def main(argv=None):
         collect_private(a.private_name)
         r = factory_snapshot(a.out, a.rev, engine=not a.no_engine, demos=not a.no_demos, take=a.take, bench_engine=a.bench_engine,
                              take_title=a.take_title, separation=a.separation_from,
-                             reference=a.reference, take_drop=a.take_drop_role)
+                             reference=a.reference, take_drop=a.take_drop_role, smoke=a.smoke,
+                             only_examples=a.examples.split(",") if a.examples else None,
+                             only_pages=a.pages.split(",") if a.pages else None)
     else:
         r = snapshot(a.base.rstrip("/"), a.out, listed, private=a.private_name)
     print("written %d · skipped (never in a snapshot) %d · failed %d · REFUSED %d -> %s"
           % (len(r["written"]), len(r["skipped"]), len(r["failed"]), len(r["refused"]), a.out))
     for read, why in r["failed"]:
         print("  failed %s: %s" % (read, why))
-    return 1 if r["refused"] else 0
+    for ex in r.get("examples_failed") or []:
+        print("  EXAMPLE FAILED %s (%s): %s" % (ex["name"], ex["route"], ex["why"]))
+    if a.factory and r.get("examples") is not None:
+        print("examples made %d · failed %d" % (len(r["examples"]), len(r.get("examples_failed") or [])))
+    if a.factory and a.smoke:
+        bad = smoke_problems(r, a.out)
+        for b in bad:
+            print("  SMOKE ✗ %s" % b)
+        print("shell smoke: %s" % ("FAILED" if bad else "ok"))
+        return 1 if bad else 0
+    return 1 if r["refused"] or r.get("examples_failed") else 0
 
 
 if __name__ == "__main__":

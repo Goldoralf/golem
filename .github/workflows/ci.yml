@@ -127,6 +127,12 @@ jobs:
         # --press declared : les commandes dont tests/ui/expectations.json dit l'effet attendu sont appuyées (vite) ;
         # la tournée complète (--press all, ~20 min) est celle de la nuit du rack
         run: python tools/check-ui.py --test-content --press declared --out ${{ runner.temp }}/ui-check --json ${{ runner.temp }}/ui-check/report.json
+      - name: The empty shell tool still extracts (mini-shell)
+        # tools/shell_snapshot.py --smoke (docs/release-tool-plan.md §3 bis) : deux pages du rack, une du Companion, deux
+        # exemples, sur un bridge jetable sans moteur. L'outil cassait SANS BRUIT entre deux ré-épinglages de la coquille
+        # (2026-11-22 : son moteur de banc introuvable, des routes du Companion périmées) ; il casse maintenant ici, au
+        # commit fautif. --reference vers rien : le runner n'a pas de rack à sonder.
+        run: python tools/shell_snapshot.py --factory --smoke --no-engine --no-demos --reference http://127.0.0.1:9 --out ${{ runner.temp }}/shell-smoke
       - name: Screenshots and report
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0

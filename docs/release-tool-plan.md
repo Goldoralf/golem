@@ -151,13 +151,19 @@ golem.fm, so nothing is built for it; the target is maestrium.
 
 1. **Stop the drift.** The graft and check scripts enter the repository with tests, and CI extracts a mini-shell
    (two pages, two examples) at each push: the tool breaks at the commit that breaks it.
+   **Done 2026-11-27** for the tool itself: the bench engine starts again (`check-ui.Bridge` takes the caller's
+   environment last), the Companion examples use the current routes (a test ties them to `PHONE_PAGES`), and CI runs
+   `shell_snapshot.py --factory --smoke` (19 s). A full extraction at e8cfe1fb made 58 examples of 58, none failed.
+   The graft scripts are not moved: step 2 replaces them.
 2. **Canned hardware.** The reads of each device (Volt, FCB, Nitro, MPK) are recorded once into a versioned reference
    set the bench replays: no swap, no hand graft. Re-recorded only when the Gear pages change.
 3. **By section of the menu.** `--only live|designer|songs|library/<tab>|settings/<tab>|companion`; the tool works out
    the sections a change touches from the files changed between two versions, re-extracts those and merges them into
    the existing shell; a change in a shared file says so and redoes everything. The manifest records each section's
    version, and the snapshot page shows the freshness per section.
-4. **Independent examples.** A failing example stops nothing; only the failed ones are rerun.
+4. **Independent examples.** A failing example stops nothing; only the failed ones are rerun. **Done 2026-11-27**: a
+   failed example is recorded in `SNAPSHOT.json` (`examples_failed`, with its reason), its undo always runs, and
+   `--examples a,b` reruns a chosen few (the result then says `partial`).
 5. **Noise sorted by the tool.** The bench freezes the clock and the animations, the pixel diff becomes reliable, and
    the tool lists the doc pages to review.
 6. **One command on the rack**, `shell-release vX.Y.Z`: extract the touched sections, measure the doc impact, check

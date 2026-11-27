@@ -145,7 +145,11 @@ class Bridge:
     test, rien de l'utilisateur — l'inventaire des boutons est alors le même ici et sur le runner), runtime et dossier
     REAPER temporaires, ports libres, pas d'annonce mDNS ; arrêté et nettoyé à la sortie."""
 
-    def __init__(self, test_content=False, rev="HEAD"):
+    def __init__(self, test_content=False, rev="HEAD", env=None):
+        # `env` : ce que l'appelant impose au bridge jetable, APRÈS les réglages du banc (tools/shell_snapshot.py y met son
+        # Golem Engine : sans cet ordre, « la même machine partout » ci-dessous l'écrasait, et l'instantané d'usine ne
+        # trouvait plus son moteur — cassé du 2026-11-22 au 2026-11-27, vu seulement à la relecture du code)
+        self.extra_env = dict(env or {})
         self.tmp = tempfile.TemporaryDirectory(prefix="golem-ui-check-")
         self.rev = rev                                   # HEAD, ou le commit fantôme de l'arbre de travail (--working-tree)
         self.port = free_port()
@@ -172,6 +176,7 @@ class Bridge:
             reaper = Path(self.tmp.name) / "reaper-bin"
             reaper.write_text("")
             env.update(REAPER_BIN=str(reaper), GOLEM_ENGINE_DIR=str(Path(self.tmp.name) / "no-golem-engine"))
+        env.update(self.extra_env)
         self.env = env
         subprocess.run([sys.executable, "-c", "from bridge import factory; factory.seed()"], cwd=self.root, env=env,
                        check=True, capture_output=True, timeout=600)

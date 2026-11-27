@@ -178,3 +178,69 @@ def test_la_prise_de_demo_ne_garde_que_la_musique(tmp_path):
         assert k not in got, k
     assert got["marks"] == [{"sec": 0, "kind": "scene", "value": "D"}]
     assert os.path.isfile(os.path.join(dst, "Mix.wav"))
+
+
+# ── l'outil ne dérive plus sans bruit (docs/release-tool-plan.md §3 bis, 2026-11-27) ────────────────────────────────
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def test_les_exemples_du_companion_visitent_des_pages_qui_existent():
+    """Les routes du Companion ont changé le 2026-11-26 (?tab=live&mode=…) ; les exemples gardaient ?tab=now jusqu'au
+    ré-épinglage suivant. Une route d'exemple du Companion doit être une des pages que check-ui parcourt."""
+    cu = S._check_ui()
+    phone = [ex["route"] for ex in S.EXAMPLES if ex["route"].startswith("/app/m.html")]
+    assert phone and all(r in cu.PHONE_PAGES for r in phone), [r for r in phone if r not in cu.PHONE_PAGES]
+
+
+def test_la_mini_coquille_cite_des_pages_et_des_exemples_qui_existent():
+    cu = S._check_ui()
+    names = [ex["name"] for ex in S.EXAMPLES]
+    assert len(names) == len(set(names))                                   # un nom = un fichier d'exemple
+    assert all(n in names for n in S.SMOKE_EXAMPLES)
+    assert all(p in cu.RACK_PAGES + cu.PHONE_PAGES for p in S.SMOKE_PAGES)
+    assert names[-1] == "reference-drums-bound"                            # son geste n'est pas défait : il reste le dernier
+
+
+def test_le_moteur_du_banc_passe_apres_les_reglages_du_bridge_jetable():
+    """check-ui.Bridge pose « pas de Golem Engine » pour que la CI et le poste voient la même machine ; l'instantané
+    d'usine, lui, donne SON Golem Engine au bridge. L'ordre décide : ce que l'appelant impose passe en dernier."""
+    src = open(os.path.join(ROOT, "tools", "check-ui.py"), encoding="utf-8").read()
+    assert src.index('"no-golem-engine"') < src.index("env.update(self.extra_env)") < src.index("self.env = env")
+    cu = S._check_ui()
+    br = cu.Bridge(env={"GOLEM_ENGINE_DIR": "/the/engine"})
+    try:
+        assert br.extra_env == {"GOLEM_ENGINE_DIR": "/the/engine"}
+    finally:
+        br.tmp.cleanup()
+    snap = open(os.path.join(ROOT, "tools", "shell_snapshot.py"), encoding="utf-8").read()
+    assert "br.extra_env.update(engine_env)" in snap
+
+
+def test_un_exemple_qui_echoue_defait_quand_meme_son_geste(monkeypatch):
+    sent = []
+    monkeypatch.setattr(S, "_post", lambda base, path, body: sent.append(path))
+
+    def boom(*a, **k):
+        raise RuntimeError("the anchor is gone")
+    monkeypatch.setattr(S, "_make_example", boom)
+    ex = {"name": "x", "title": "X", "preset": "p", "scene": "A", "route": "#/live",
+          "gestures": [["/api/mode", {"id": "gig"}]], "undo": [["/api/mode", {"id": "home"}]]}
+    with pytest.raises(RuntimeError):
+        S.make_example("http://b", ex, {}, 0, lambda *_: None, "/tmp/out")
+    assert sent == ["/api/mode", "/api/mode"]                              # le geste, puis son retour — malgré l'échec
+
+
+def test_la_mini_coquille_dit_ce_qui_ne_va_pas(tmp_path):
+    man = {"examples": ["golem-rising-live"], "pages": {"#/live": ["/api/state"], "#/designer": []},
+           "written": ["/api/state", "/api/presets"]}
+    (tmp_path / "SNAPSHOT.json").write_text(json.dumps(man))
+    res = {"refused": [("/api/x", "trace")], "examples_failed": [{"name": "companion-now", "why": "boom"}]}
+    bad = "\n".join(S.smoke_problems(res, str(tmp_path)))
+    for want in ("refused", "companion-now (boom)", "examples not made: companion-now", "page #/designer made no read",
+                 "page /app/m.html?tab=live&mode=now made no read", "/api/effects is not in the snapshot"):
+        assert want in bad, want
+    ok = {"examples": S.SMOKE_EXAMPLES, "pages": {p: ["/api/state"] for p in S.SMOKE_PAGES},
+          "written": ["/api/state", "/api/presets", "/api/effects"]}
+    (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
+    assert S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)) == []
+    assert S.smoke_problems({"refused": []}, str(tmp_path / "nowhere"))[0].startswith("no SNAPSHOT.json")

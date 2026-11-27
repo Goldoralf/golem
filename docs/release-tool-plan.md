@@ -180,8 +180,13 @@ golem.fm, so nothing is built for it; the target is maestrium.
 5. **Noise sorted by the tool.** **First part done 2026-11-27**: `doc-impact.py` no longer asks for a review when
    only volatile reads differ (disk, CPU, backups: `NOISE`) and no pixel moved. Left: freeze the clock and the
    animations in the bench, so the pixel diff itself stops seeing them.
-6. **One command on the rack**, `shell-release vX.Y.Z`: extract the touched sections, measure the doc impact, check
-   the pages, hand over to maestrium (through `update_site.py` while golem-site lives).
+6. **One command on the rack.** **Done 2026-11-27**: `tools/shell_release.py v0.7.3` checks what it needs (the
+   reference kit, a bench engine), extracts the full shell at the tag's commit, controls it (no failed example, no
+   refused read, the kit at the right shape; each problem says the exact command to redo it), measures the doc impact
+   against the shell golem.fm serves, per section, and writes `HANDOVER.md` (what golem.fm re-pins, the sections and
+   doc pages to review, the anchors gone, the commands). Everything lands in `~/golem-doc-work/pin-<commit>/`; no
+   other repository is touched. Run on v0.7.3: 7 minutes, 62 examples, ready to hand over; 10 sections to review,
+   6 unchanged, 22 doc pages to look at. The shell carries its version (`SNAPSHOT.json` `shell.version`).
 7. **The docs.** maestrium's `content/docs` becomes the official source; the rack copy is retired; each page records
    the shell it was written against. The exact flow is proposed to the golem-fm session before anything changes.
 

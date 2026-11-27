@@ -86,3 +86,10 @@ def test_deux_commits_ne_se_melangent_pas(tmp_path):
         S.merge_into(str(part), str(full), log=lambda *_: None)
     with pytest.raises(SystemExit, match="not a full factory snapshot"):
         S.merge_into(str(_snap(tmp_path / "p2", "c2", ["companion-now"])), str(part), log=lambda *_: None)
+
+
+def test_une_page_n_est_citee_que_pour_un_exemple_a_relire(tmp_path):
+    (tmp_path / "a.en.md").write_text('::golem{example="factory-storage"}\n::golem{example="golem-rising-live" halo="live.tile"}\n')
+    (tmp_path / "b.en.md").write_text('::golem{example="factory-storage"}\n')
+    rep = {"removed": [], "changed": {"factory-storage": {"reads": ["/api/storage"]}, "golem-rising-live": {"pixels": 0.2}}}
+    assert D.pages_citing(str(tmp_path), rep) == {"a.en.md": ["example golem-rising-live"]}     # b ne cite que du bruit

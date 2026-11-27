@@ -1377,7 +1377,7 @@ def smoke_problems(res, out_dir):
 def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True, demos=True, take=None,
                      take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None,
                      bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False, overlay=None,
-                     only_sections=None):
+                     only_sections=None, version=None):
     """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `SNAPSHOT.json`.
 
     `only_pages` / `only_examples` : un sous-ensemble (des routes, des noms) — le résultat est alors PARTIEL et le dit
@@ -1467,6 +1467,9 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     made = {e["name"] for e in examples}
     manifest = {
         "kind": "smoke" if smoke else "factory", "name": SNAPSHOT_NAMES.get(rack_seen["variant"]) or "factory", "commit": commit, "catalog_version": catalog_version, "made": time.strftime("%Y-%m-%d"),
+        # LA VERSION DE LA COQUILLE (2026-11-27) : la release de golem dont elle vient (tools/shell_release.py) — « la
+        # coquille v0.7.3 » se dit, se compare, se retrouve ; sans elle on ne connaissait qu'un commit
+        **({"shell": {"version": version}} if version else {}),
         "reads": sorted(res["written"]), "examples": [e["name"] for e in examples],
         # les exemples qui n'ont pas pu être rejoués, avec leur raison : à relancer seuls (--examples), jamais passés sous silence
         "examples_failed": examples_failed,

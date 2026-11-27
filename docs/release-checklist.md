@@ -31,23 +31,25 @@
    follows an update ([update.md](update.md) §3 bis)? If not, fix it, or the notes say what to run.
 4. **Factory content**: the factory bundle in the repository is the one golem.fm expects (see
    [factory content](#factory-content) below).
-5. **The docs that quote a version or a status** ("pinned to…", "stays until…") say the new one.
+5. **The empty shell**: when the UI changed since the shell golem.fm serves (`tools/snapshot.py`, panel "Empty shell"),
+   `tools/shell_release.py <tag>` after the release, then hand `HANDOVER.md` to the golem-fm session.
+6. **The docs that quote a version or a status** ("pinned to…", "stays until…") say the new one.
 
 ## B. Checks, always after the last change
 
-6. **The whole suite**: `pytest tests`, `node --test app/*.test.mjs`, `ruff check .`, `python tools/check-syntax.py`.
+7. **The whole suite**: `pytest tests`, `node --test app/*.test.mjs`, `ruff check .`, `python tools/check-syntax.py`.
    Never only the tests of the subject.
-7. **`tools/check-ui.py --test-content`** (as CI), rack 1024×600 and phone 390×844: every failure explained or fixed.
-8. **Public scan at 0** (`tools/public_export.py --summary`, see the memory of the public switch): before every push,
+8. **`tools/check-ui.py --test-content`** (as CI), rack 1024×600 and phone 390×844: every failure explained or fixed.
+9. **Public scan at 0** (`tools/public_export.py --summary`, see the memory of the public switch): before every push,
    not only at the release.
-9. **If the engine moved**: the benches of [linux-pass-2026-11.md](linux-pass-2026-11.md) §2 on the pinned package
+10. **If the engine moved**: the benches of [linux-pass-2026-11.md](linux-pass-2026-11.md) §2 on the pinned package
    (`tools/check-engine-ardour.py --engine-dir <package>`, 5 runs), nobody playing.
-10. **About shows the true versions** (Settings ▸ About: golem, golem-fx, Golem Engine).
+11. **About shows the true versions** (Settings ▸ About: golem, golem-fx, Golem Engine).
 
 ## C. Publish
 
 11. Commit, push, and wait for **CI green on that exact commit**.
-12. **Notes in English**, written from `git log vPREVIOUS..HEAD`: every visible change, the versions of golem-fx and
+13. **Notes in English**, written from `git log vPREVIOUS..HEAD`: every visible change, the versions of golem-fx and
     the Golem Engine, the update path from each older version, the known limits. The maintainer reads them.
 13. The maintainer runs `tools/release.sh vX.Y.Z notes.md` (the key must be in the agent; an agent session cannot sign).
 

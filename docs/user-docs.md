@@ -351,7 +351,9 @@ installed on a computer, and the reference rack is a build (`docs/rack-hardware.
 > showcase (`pages/public/homeShared.tsx`) and the Library (`PresetBuilder`, `PatchBuilder`, `PatchDetail`,
 > `GolemPresetDetail`) render it too. A UI change on the rack reaches golem.fm only through a re-pin.
 
-**On the rack** (whoever changes the UI):
+**On the rack** (whoever changes the UI). Steps 3, 4 and 6 are one command since 2026-11-27: **`tools/shell_release.py
+<tag>`** extracts the shell, controls it, measures the impact per section and writes the handover for golem.fm
+(`~/golem-doc-work/pin-<commit>/HANDOVER.md`). The steps below say what it does.
 
 1. Code the change, check it at render (1024×600), keep `tests/ui/inventory-linux.json` in step
    (`tools/check-ui.py --test-content --update-inventory`), commit and push.

@@ -152,7 +152,8 @@ def by_section(report, new_examples):
 
 def pages_citing(pages_dir, report):
     """{page: [raisons]} — les pages qui citent un exemple touché, ou visent une ancre disparue."""
-    touched = set(report["changed"]) | set(report["removed"])
+    # seulement ce qui demande une relecture : un exemple dont seul du bruit a changé (disque, CPU) ne cite aucune page
+    touched = {n for n, d in report["changed"].items() if to_review(d)} | set(report["removed"])
     gone = {an: name for name, d in report["changed"].items() for an in d.get("anchors_gone", [])}
     out = {}
     for dirpath, _dirs, files in os.walk(pages_dir):

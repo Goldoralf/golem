@@ -126,8 +126,15 @@ def report(root=None, home=None, manifest=None, dpkg=None, pip_names=None, exist
     pip_names = installed_pip(root) if pip_names is None else pip_names
     out = []
     for c in comps:
+        # `platforms` (2026-11-27) : un composant qui n'existe que sur certains systèmes (le Golem Engine : Linux et
+        # Windows) ne se déclare pas manquant ailleurs — il dit où il vit
+        plats = c.get("platforms")
+        if plats and not any(platform.startswith(p) for p in plats):
+            base = {k: v for k, v in c.items() if k not in ("check", "check_win", "check_mac", "platforms")}
+            out.append({**base, "installed": None, "only": "-".join(sorted({"win32": "windows"}.get(p, p) for p in plats))})
+            continue
         chk = check_for(c, platform)
-        base = {k: v for k, v in c.items() if k not in ("check", "check_win", "check_mac")}
+        base = {k: v for k, v in c.items() if k not in ("check", "check_win", "check_mac", "platforms")}
         if chk is None and c.get("check") is not None:
             out.append({**base, "installed": None, "only": "linux"})
             continue

@@ -28,7 +28,9 @@ def test_macos_reads_check_mac_and_says_linux_only(tmp_path):
 def test_every_desktop_component_has_a_mac_check():
     """Ce que GoleM vérifie sous Windows, il le vérifie sous macOS : aucun composant desktop oublié."""
     comps = libraries.load_manifest()
-    missing = [c["id"] for c in comps if "check_win" in c and "check_mac" not in c]
+    # `platforms` sans darwin : le composant n'existe pas sous macOS (le Golem Engine), rien à y vérifier
+    missing = [c["id"] for c in comps if "check_win" in c and "check_mac" not in c
+               and "darwin" in c.get("platforms", ["darwin"])]
     assert missing == []
     for c in comps:
         for pat in (c.get("check_mac") or {}).get("glob", []):
@@ -81,3 +83,16 @@ def test_macos_pins_match_windows_reaper_and_ci_nam():
     assert mac["nam_vst3"]["version"] == win["nam_vst3"]["version"]
     for entry in (mac["reaper"], mac["nam_vst3"]):
         assert len(entry["sha256"]) == 64 and entry["url"].endswith(".dmg")
+
+
+def test_a_component_that_does_not_exist_on_macos_is_not_missing_there(tmp_path):
+    man = tmp_path / "components.json"
+    man.write_text(json.dumps({"components": [
+        {"id": "golem-engine", "name": "E", "license": "GPL", "url": "u", "kind": "engine", "platforms": ["linux", "win32"],
+         "check": {"glob": ["~/opt/golem-engine/golem/engine/run.sh"]}, "check_win": {"glob": ["x"]}}]}))
+    mac = libraries.report(root="/r", home="/h", manifest=str(man), dpkg={}, pip_names=set(), exists=lambda p: False,
+                           platform="darwin")["components"][0]
+    assert mac["installed"] is None and mac["only"] == "linux-windows" and "platforms" not in mac
+    lin = libraries.report(root="/r", home="/h", manifest=str(man), dpkg={}, pip_names=set(), exists=lambda p: True,
+                           platform="linux")["components"][0]
+    assert lin["installed"] is True and "only" not in lin

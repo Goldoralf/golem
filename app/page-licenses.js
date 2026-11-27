@@ -346,7 +346,7 @@ function LibrariesPanel() {
           <span class="liblic-by">${esc(l.by || '')}</span>
           <span class="liblic-what muted">${esc(l.what || '')}</span>
           <span class="liblic-foot"><span class=${'liblic-lic lic-' + fam(l.license || '')}>${esc(l.license || '?')}</span>
-            ${l.only ? html`<span class="liblic-state" title="golem uses it on its Linux rack only — nothing to install on this machine">Linux only</span>`
+            ${l.only ? html`<span class="liblic-state" title="golem does not use it on this system — nothing to install on this machine">${l.only === 'linux-windows' ? 'Linux & Windows only' : 'Linux only'}</span>`
               : html`<span class=${cls('liblic-state', l.installed === true && 'ok', l.installed === false && 'no')} title=${l.installed == null ? 'not checked' : l.installed ? 'installed on this machine' : (l.manual ? 'install it yourself — see the note' : 'expected by golem, not found on this machine')}>${l.installed == null ? '' : l.installed ? '✓ installed' : (l.manual ? '⚠ install yourself' : '✗ missing')}</span>`}</span>
           <span class="liblic-url">${esc(String(l.url || '').replace(/^https:\/\//, ''))}</span>
         </div>`)}

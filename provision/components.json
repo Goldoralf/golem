@@ -1,5 +1,5 @@
 {
-  "_doc": "Manifeste des composants libres (et du seul commercial : Reaper) embarqués par GoleM — docs/installer.md §5. Servi par GET /api/system/libraries (System ▸ Licences ▸ Libraries) avec l'état RÉELLEMENT installé, et lu par l'installateur pour la taille. `check` : dpkg (un des noms de paquet), glob (chemins, ~ et $ROOT acceptés), pip (module dans le venv), always (vendu avec le dépôt). `pack` : di (requis) | piano | drums — décision 2026-09-09 : AUCUNE capture livrée, le rack neuf est vide ; il garde la liste EXHAUSTIVE du matériel (library/catalog/effects.json : amplis, pédales, baffles) et les presets de blocs, les captures viennent de golem.fm / Tone3000. Obligation GPL : dire ce qu'on embarque et d'où ça vient. `check_mac` (2026-10-04) : le même sous macOS (/Applications, /Library/Audio/Plug-Ins et ~/Library/Audio/Plug-Ins, ou which) — docs/platforms.md M3. `check_win` (2026-10-03) : le contrôle sous Windows (glob avec %ProgramFiles% / %CommonProgramFiles%, ou which) ; sans lui, un composant qui n'est ni python, ni asset, ni js n'est pas utilisé par GoleM sous Windows et s'affiche « Linux only » (bridge/libraries.py).",
+  "_doc": "Manifeste des composants libres (et du seul commercial : Reaper) embarqués par GoleM — docs/installer.md §5. Servi par GET /api/system/libraries (System ▸ Licences ▸ Libraries) avec l'état RÉELLEMENT installé, et lu par l'installateur pour la taille. `check` : dpkg (un des noms de paquet), glob (chemins, ~ et $ROOT acceptés), pip (module dans le venv), always (vendu avec le dépôt). `pack` : di (requis) | piano | drums — décision 2026-09-09 : AUCUNE capture livrée, le rack neuf est vide ; il garde la liste EXHAUSTIVE du matériel (library/catalog/effects.json : amplis, pédales, baffles) et les presets de blocs, les captures viennent de golem.fm / Tone3000. Obligation GPL : dire ce qu'on embarque et d'où ça vient. `check_mac` (2026-10-04) : le même sous macOS (/Applications, /Library/Audio/Plug-Ins et ~/Library/Audio/Plug-Ins, ou which) — docs/platforms.md M3. `check_win` (2026-10-03) : le contrôle sous Windows (glob avec %ProgramFiles% / %CommonProgramFiles%, ou which) ; sans lui, un composant qui n'est ni python, ni asset, ni js n'est pas utilisé par GoleM sous Windows et s'affiche « Linux only » (bridge/libraries.py). `platforms` (2026-11-27) : les systèmes où le composant existe (linux, win32, darwin) ; ailleurs il s'affiche « only » au lieu de « missing ».",
   "components": [
     {
       "id": "golem-engine",
@@ -20,7 +20,11 @@
           "~/golem-engine/golem/engine/run.sh",
           "~/opt/golem-engine/golem/engine/run.sh"
         ]
-      }
+      },
+      "platforms": [
+        "linux",
+        "win32"
+      ]
     },
     {
       "id": "reaper",

@@ -83,9 +83,6 @@ What is left for this pass:
 - Run §1–3 against **the g8 package** (or the dev tree at the tag), not only the dev tree.
 - **Done 2026-11-27**: Linux pinned to `9.9-g8` (hash recomputed on the downloaded asset; benches below), and an
   updated golem moves its installed engine to the pin by itself ([update.md](update.md) §3 bis).
-- Then pin Linux: `VERSION` in `provision/golem_engine.py` to `9.9-g8` and the line in `provision/downloads.sha256`:
-  `384c9042569ac14192e5c6c24901602d92c99b17994916707b9c454fe5d5e32f` for `golem-engine-linux-x86_64.tar.gz` (the
-  release's `SHA256SUMS`; recompute it on the downloaded asset and compare).
 - Release tags of the engine must stay **lightweight** (the workflow says why: `git describe`). The workflow still
   creates its release: a later tag that should carry both systems runs the workflow first, then uploads the Windows
   asset and rewrites `SHA256SUMS` / `BUILDINFO.txt` with both lines (`gh release upload --clobber`).

@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """golem-fx — les effets de golem (dépôt séparé, GPL-3) — posés par l'installation sur les TROIS systèmes.
 
-2026-11-15 : golem-fx 0.5 publie des VST3 précompilés pour Linux, Windows et macOS (release `golem-fx-0.5` de
-Goldoralf/golem-binaries, vérifiée par golem-fx : 54 bundles « GoleM FX <Nom>.vst3 » à la racine de l'archive).
+Depuis golem-fx 0.5 (2026-11-15), chaque tag de golem-fx publie des VST3 précompilés pour Linux, Windows et macOS
+(release `golem-fx-<VERSION>` de Goldoralf/golem-binaries : les bundles « GoleM FX <Nom>.vst3 » à la racine de l'archive).
+`VERSION` ci-dessous est LA SEULE copie du numéro épinglé : install-golem-fx.sh, l'installateur et les tests la lisent.
 L'archive est ÉPINGLÉE à son empreinte, par système :
   · Linux   provision/downloads.sha256 — provision/install-golem-fx.sh la télécharge par fetch_verified
             (lib-fetch.sh) et appelle `golem_fx.py --place ARCHIVE` ;
@@ -38,7 +39,7 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VERSION = "0.8.1"
+VERSION = "0.8.2"
 BASE = f"https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-{VERSION}"
 ASSETS = {"linux": "golem-fx-linux-x86_64.tar.gz", "win32": "golem-fx-windows-x86_64.zip",
           "darwin": "golem-fx-macos-universal.tar.gz"}

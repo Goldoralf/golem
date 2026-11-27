@@ -490,7 +490,7 @@ def setup():
             golem_engine.install()
         except Exception as exc:
             print(f"⚠ Golem Engine not installed ({exc}) — golem plays on REAPER.")
-    # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release épinglée (pins.json `golem_fx`, 0.8.1 depuis le 2026-11-26),
+    # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release épinglée (pins.json `golem_fx`, la version de provision/golem_fx.py),
     # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Surge et Dexed ; macOS :
     # ~/Library/Audio/Plug-Ins/VST3). Non fatal ; sans eux, les blocs qu'ils jouent sont indisponibles, sauf ceux qui
     # ont un JSFX de golem ou un plugin de REAPER en repli.

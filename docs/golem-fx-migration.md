@@ -107,8 +107,8 @@ from the seven blocks that carried it: no catalogue block is pending any more, s
 
 ### golem-fx in the installers (2026-11-15)
 
-**CODED** — the installers ship golem-fx **0.8.1** (pinned 2026-11-26, 0.8's code rebuilt with updated presets and data; 0.8 the same day: Organ, Octafuzz, three new Dist circuits, Pitch's bend; 0.7 earlier that day, the editor only; 0.6 on 2026-11-17; 0.5 on 2026-11-15, 0.4 before that) (prebuilt release `golem-fx-0.8.1` in Goldoralf/golem-binaries, golem-fx
-7d79340, 58 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
+**CODED** — the installers ship golem-fx **0.8.2** (pinned 2026-11-27: 0.8.1's code rebuilt, plus one editor archive per pedal; 0.8.1 on 2026-11-26, 0.8's code rebuilt with updated presets and data; 0.8 the same day: Organ, Octafuzz, three new Dist circuits, Pitch's bend; 0.7 earlier that day, the editor only; 0.6 on 2026-11-17; 0.5 on 2026-11-15, 0.4 before that) (prebuilt release `golem-fx-0.8.2` in Goldoralf/golem-binaries, golem-fx
+11675a2, 58 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
 Windows and macOS now play golem-fx blocks when the plugin is installed, as Linux does
 ([golem-fx-reaper.md](golem-fx-reaper.md)). The golem-fx-only blocks (Met, Emet, Shem, Tape, Glitch…) are therefore
 offered on Windows and macOS too. The third-party fallbacks stayed installed until 2026-11-27 (next section).

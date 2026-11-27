@@ -47,10 +47,10 @@
   "signer": "Microsoft Corporation"
  },
  "golem_fx": {
-  "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8.1 de Goldoralf/golem-binaries (golem-fx 7d79340 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.8 = 0.7 + Organ et Octafuzz, trois circuits de Dist ajoutés à la fin, le bend de Pitch ; 0.8.1 = même code que 0.8, recompilé, presets et données remis à jour). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Surge et Dexed) ; un échec n'est pas fatal, mais les blocs sans JSFX de golem en repli sont alors indisponibles (Dragonfly n'est plus posé depuis le 2026-11-27).",
-  "version": "0.8.1",
-  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8.1/golem-fx-windows-x86_64.zip",
-  "sha256": "85d6c7336f185055b322e932bce9250eaf8dd46c6c3010c4038a8a992bd1ce11"
+  "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8.2 de Goldoralf/golem-binaries (golem-fx 11675a2 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-27 ; 0.8.2 = le code de 0.8.1, recompilé, plus une archive « editor » par pédale). Posés par provision/golem_fx.py (provision/desktop.py setup) dans %LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM (sans droits d'administrateur, à côté de Surge et Dexed) ; un échec n'est pas fatal, mais les blocs sans JSFX de golem en repli sont alors indisponibles (Dragonfly n'est plus posé depuis le 2026-11-27).",
+  "version": "0.8.2",
+  "url": "https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8.2/golem-fx-windows-x86_64.zip",
+  "sha256": "28e0296bcac4d54fdec0b6ee8be85094c862a8c13b7535c09cea7d235b5ad019"
  },
  "golem_engine": {
   "_comment": "Le Golem Engine pour Windows (golem docs/ardour-plan.md §7e) : release golem-engine-9.9-g8 de Goldoralf/golem-binaries, construite par MSYS2 UCRT64 depuis le tag golem-engine-9.9-g8 du fork (4061ba79f : les cycles en retard que l'ASIO ne signale pas, late_cycles/late_starts, patch 16) et golem/tools/bundle.py ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release (2026-11-25). Posé par provision/golem_engine.py (provision/desktop.py setup) dans ~/opt/golem-engine, sans droits d'administrateur. Linux garde sa propre épingle (VERSION de golem_engine.py, provision/downloads.sha256).",

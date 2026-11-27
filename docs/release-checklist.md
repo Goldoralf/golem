@@ -9,12 +9,19 @@
 
 1. **Every pin against the latest release we published** (`gh release list -R Goldoralf/golem-binaries`). A pin that
    is behind is moved, or the reason is written in the doc that owns it:
-   - golem-fx: `provision/golem_fx.py` `VERSION`, `provision/downloads.sha256`, `provision/windows/pins.json` and
-     `provision/macos/pins.json` (`golem_fx`);
+   - golem-fx: `provision/golem_fx.py` `VERSION` (the only copy of the number: `install-golem-fx.sh` and the
+     installer's dry run read it), `provision/downloads.sha256`, `provision/windows/pins.json` and
+     `provision/macos/pins.json` (`golem_fx`: version, url, sha256, comment), `provision/components.json` (version,
+     url), then `tools/sync-golem-fx-manifest.py` and `tools/sync-golem-fx-presets.py` from the tag
+     (`library/catalog/golem-fx-plugins.json` records the commit), and `docs/installer.md`;
    - Golem Engine: `provision/golem_engine.py` `VERSION` (Linux), `downloads.sha256`, the two `pins.json`
      (`golem_engine`), per system;
-   - the prebuilt Linux plugins (`linux-plugins-vN` in `downloads.sha256`);
-   - REAPER (`provision/install-reaper.sh`, the two `pins.json`).
+   - the prebuilt Linux plugins (`linux-plugins-vN`: `provision/fetch-prebuilt.sh`, `downloads.sha256`);
+   - the factory demos (`bridge/factory_demos.py` `TAG`);
+   - REAPER (`provision/install-reaper.sh`, the two `pins.json`), played on the rig first.
+
+   `tests/test_pins_coherent.py` fails when two of these files disagree. It cannot know that a newer release exists:
+   that comparison is this item.
 2. **Every hash recomputed on the downloaded asset** and compared with the release's `SHA256SUMS`.
 3. **What an update brings, not only a fresh install.** For every pin that moved: is it caught up at the restart that
    follows an update ([update.md](update.md) §3 bis)? If not, fix it, or the notes say what to run.
@@ -48,5 +55,9 @@
 
 ## Factory content
 
-To be specified with the maintainer: how to check that the factory bundle shipped by the repository is the one
-golem.fm publishes.
+The index of the pinned factory release (`golem-factory-demos.json` of `factory-demos-vN`) carries the `rack_commit`,
+`catalog_version` and `golem_fx_version` it was rendered with. The check: they equal the catalogue version of the
+repository and the pinned golem-fx; otherwise the blocks added since have no demo and a new release is rendered on the
+rack (`tools/pack-factory-demos.py`, about an hour, nobody playing), published, and its tag sent to golem.fm, which
+serves the same release. Found on 2026-11-27: v4 was rendered with golem-fx 0.6 and catalogue 51 while golem pinned
+0.8.1 and 52.

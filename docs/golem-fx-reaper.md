@@ -3,7 +3,7 @@
 > **Status: CODED** (2026-11-13; all three OS 2026-11-15). Asked by the maintainer: "play the golem-fx under REAPER, and
 > keep the other blocks as under the Golem Engine".
 >
-> **2026-11-15:** the installers ship golem-fx 0.8.1 since 2026-11-26 (0.8.1: 0.8's code rebuilt, with the levelled Organ presets and the gesture flag; 0.4 on 2026-11-15, 0.6 on 2026-11-17, 0.7 earlier on 2026-11-26;
+> **2026-11-15:** the installers ship golem-fx 0.8.2 since 2026-11-27 (0.8.2: 0.8.1's code rebuilt, plus one editor archive per pedal; 0.8.1 on 2026-11-26: 0.8's code rebuilt, with the levelled Organ presets and the gesture flag; 0.4 on 2026-11-15, 0.6 on 2026-11-17, 0.7 earlier on 2026-11-26;
 > 0.8 adds Organ and Octafuzz, three Dist circuits at the end of its list and Pitch's bend, [golem-fx-sheet.md](golem-fx-sheet.md) §4; prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
 > §2, Pins), and REAPER on Windows and macOS now plays golem-fx blocks when the plugin is installed, exactly as on
 > Linux. The third-party fallbacks (guitarix, Calf, Dragonfly, Zam, Prisma, Spectral Compressor) left the installers

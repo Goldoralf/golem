@@ -26,6 +26,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 
+def _pinned(module):
+    """La version que le dépôt épingle (provision/golem_fx.py, provision/golem_engine.py `VERSION`) : l'essai à blanc montre
+    la même que la vraie installation, sans copie du numéro ici (2026-11-27 : il disait encore « 9.9-g1 »)."""
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(module, os.path.join(ROOT, "provision", module + ".py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.VERSION or "?"
+    except Exception:
+        return "?"
+
+
 def reaper_pin():
     # la version de la simulation SUIT le pin du provisioning : écrite en dur, elle vieillit en
     # silence et l'écran de démonstration ment
@@ -142,10 +155,10 @@ def main():
             warn = set(filter(None, os.environ.get("GOLEM_DRY_WARN", "").split(",")))
             lines("@@phase packages", "▶ Paquets apt", "→ 38 packages (dry)",
                   "@@phase realtime", "▶ Temps-réel : groupe audio + limits",
-                  "@@phase engine", "▶ Golem Engine (le moteur audio de golem — précompilé)", "✓ Golem Engine 9.9-g1 → ~/opt/golem-engine (dry)",
+                  "@@phase engine", "▶ Golem Engine (le moteur audio de golem — précompilé)", f"✓ Golem Engine {_pinned('golem_engine')} → ~/opt/golem-engine (dry)",
                   *(("@@phase reaper", "▶ Reaper", "→ already installed") if os.environ.get("GOLEM_ENGINE") == "reaper" else ()),
                   "@@phase plugins", "▶ Plugins (releases GitHub : NAM, Dexed)",
-                  "▶ golem-fx (les effets de golem — VST3 précompilés)", "✓ golem-fx 0.8.1: 58 plugin(s) → ~/.vst3 (dry)",
+                  "▶ golem-fx (les effets de golem — VST3 précompilés)", f"✓ golem-fx {_pinned('golem_fx')}: 58 plugin(s) → ~/.vst3 (dry)",
                   "▶ Plugins LV2 des blocs FX", "▶ sfizz",
                   *(["@@warn |Vital is missing — the synth of the Keys lane stays silent. It needs a free vital.audio "
                      "account: get it from vital.audio, golem finds it at its next start."] if "vital" in warn else []),

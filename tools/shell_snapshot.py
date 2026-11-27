@@ -642,6 +642,33 @@ def factory_pages(base, cu):
 POST_READS = ("/api/blocks/status", "/api/backing/drawer", "/api/library/try/check",
               "/api/standards/rooftop-prowl/preview")
 
+# LES COMMANDES VISIBLES de la page (bouton, lien, champ, onglet : rôle + nom) — la même mesure que l'inventaire de
+# tools/check-ui.py, que la CI compare d'un lancement à l'autre. Elle entre dans la SIGNATURE D'ÉCRAN d'un exemple.
+_CONTROLS_JS = """() => { const seen = new Set();
+  for (const el of document.querySelectorAll('button, a[href], input, select, textarea, [role=button], [role=tab], [role=menuitem], [role=switch]')) {
+    if (!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)) continue;
+    const name = (el.tagName === 'SELECT'
+      ? (el.getAttribute('aria-label') || el.getAttribute('title') || el.name || el.id || '')
+      : (el.getAttribute('aria-label') || el.innerText || el.getAttribute('title') || el.getAttribute('placeholder') || el.value || ''))
+      .replace(/\\s+/g, ' ').trim().slice(0, 48);
+    const role = el.getAttribute('role') || (el.tagName === 'INPUT' ? 'input:' + (el.type || 'text') : el.tagName.toLowerCase());
+    seen.add(role + ' | ' + (name || '(unnamed)'));
+  }
+  return [...seen].sort(); }"""
+
+
+def screen_signature(route, click, anchors, hidden, controls):
+    """LA SIGNATURE D'ÉCRAN d'un exemple (demandée par golem.fm, 2026-11-27) : une empreinte de ce qui FAIT l'écran — sa
+    route, son clic, ses ancres mesurées, celles que ?shell=ro cache, ses commandes visibles — et pas de ses données.
+    golem.fm la note à côté de chaque page de doc relue (`reviewed.json`) : une page est en retard quand un exemple
+    qu'elle cite a changé de signature. Les chiffres des noms de commandes sont neutralisés (« USB 1 » -> « USB # »),
+    comme dans l'inventaire de check-ui : un compteur qui bouge n'est pas un écran qui change."""
+    import hashlib
+    ctl = sorted({re.sub(r"\d+(?:[.,]\d+)?", "#", c) for c in controls or []})
+    blob = json.dumps([route, click or "", sorted(anchors or []), sorted(hidden or []), ctl], ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
 _ANCHORS_JS = "() => [...new Set([...document.querySelectorAll('[data-doc]')].map(e => e.getAttribute('data-doc')))].sort()"
 # les ancres présentes mais SANS TAILLE (cachées par ?shell=ro, comme la barre d'outils de /live) : on peut les cliquer,
 # jamais les entourer d'un halo — un halo sur un élément invisible ne se voit pas
@@ -650,7 +677,7 @@ _HIDDEN_JS = ("() => [...new Set([...document.querySelectorAll('[data-doc]')].fi
 
 
 def crawl(base, rack_pages, phone_pages, settle_ms=1500, log=print, shot=None, click=None, anchors=None, boot_skip=None,
-          ro=False, hidden=None, posts=None, overlay=None, example=None):
+          ro=False, hidden=None, posts=None, overlay=None, example=None, controls=None):
     """Ouvre chaque page, relève ses lectures GET /api/… (chemin + requête). Les écritures sont INTERCEPTÉES (règle 3
     du CLAUDE.md) même sur un bridge jetable : le relevé ne doit pas dépendre d'un geste qui aurait changé l'état."""
     from playwright.sync_api import sync_playwright
@@ -745,6 +772,8 @@ def crawl(base, rack_pages, phone_pages, settle_ms=1500, log=print, shot=None, c
                             seen_anchors |= set(page.evaluate(_ANCHORS_JS))
                         if hidden is not None:
                             seen_hidden |= set(page.evaluate(_HIDDEN_JS))
+                    if controls is not None:                     # l'écran tel qu'il est après les clics de l'exemple
+                        controls[target] = page.evaluate(_CONTROLS_JS)
                     if anchors is not None:                      # les ancres data-doc RENDUES (docs/user-docs.md §4)
                         anchors[target] = sorted(seen_anchors)
                     if hidden is not None:
@@ -1029,13 +1058,13 @@ def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir, over
         _post(base, "/api/recall", {"preset": pid, "scene": ex["scene"]})
     shots = os.path.join(out_dir, "..", os.path.basename(out_dir.rstrip("/")) + "-shots")
     os.makedirs(shots, exist_ok=True)
-    anchors, hidden, posts = {}, {}, {}
+    anchors, hidden, posts, controls = {}, {}, {}, {}
     t0 = ((_get(base, "/api/state") or {}).get("boot") or {}).get("t0")
     phone = ex["route"].startswith("/app/m.html")                # le Companion se mesure à 390×844
     by_page = crawl(base, [] if phone else [ex["route"]], [ex["route"]] if phone else [], settle_ms, log=lambda *_: None,
                     shot=os.path.join(shots, ex["name"] + ".png"),
                     click=ex.get("click"), anchors=anchors, boot_skip=t0, ro=True, hidden=hidden, posts=posts,
-                    overlay=overlay, example=ex["name"])
+                    overlay=overlay, example=ex["name"], controls=controls)
     reads = {}
     for r in by_page.get(ex["route"], []):
         if VOLATILE.match(r) or _never(r, True):
@@ -1064,7 +1093,9 @@ def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir, over
     st["devices_online"] = []
     out = {"name": ex["name"], "title": ex["title"], "route": ex["route"], "preset": pid, "scene": ex["scene"],
            "click": ex.get("click"), "state": st, "reads": reads, "anchors": anchors.get(ex["route"], []),
-           "anchors_hidden": hidden.get(ex["route"], [])}
+           "anchors_hidden": hidden.get(ex["route"], []),
+           "screen": screen_signature(ex["route"], ex.get("click"), anchors.get(ex["route"], []), hidden.get(ex["route"], []),
+                                      controls.get(ex["route"], []))}
     bad = leaks(out)
     if bad:
         raise RuntimeError("example %s: a trace is left: %s" % (ex["name"], bad[:3]))
@@ -1324,6 +1355,7 @@ def merge_into(partial_dir, full_dir, log=print):
         if name not in full["examples"]:
             full["examples"].append(name)
         full["anchors"]["examples"][name] = (part.get("anchors") or {}).get("examples", {}).get(name, [])
+        full.setdefault("screens", {})[name] = (part.get("screens") or {}).get(name)
         done.append(name)
     still = {e["name"]: e for e in full.get("examples_failed") or [] if e["name"] not in done}
     for e in part.get("examples_failed") or []:
@@ -1371,6 +1403,9 @@ def smoke_problems(res, out_dir):
         bad.append("the declared reference rack (tools/shell/reference-rack.json) was not applied")
     if man.get("kit_warnings"):
         bad.append("the reference kit's shape is stale: " + "; ".join(man["kit_warnings"][:3]))
+    unsigned = [n for n in man.get("examples", []) if not (man.get("screens") or {}).get(n)]
+    if unsigned:
+        bad.append("no screen signature for: %s" % ", ".join(unsigned))
     return bad
 
 
@@ -1473,6 +1508,8 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         "reads": sorted(res["written"]), "examples": [e["name"] for e in examples],
         # les exemples qui n'ont pas pu être rejoués, avec leur raison : à relancer seuls (--examples), jamais passés sous silence
         "examples_failed": examples_failed,
+        # la signature d'écran de chaque exemple (screen_signature) : ce que golem.fm note à la relecture d'une page
+        "screens": {e["name"]: e.get("screen") for e in examples},
         # chaque page et chaque exemple dans sa section du menu : la relecture se fait section par section
         "sections": sections_of(list(by_page), [ex for ex in EXAMPLES if ex["name"] in made]),
         **({"partial": {"sections": sorted(only_sections) if only_sections is not None else None,

@@ -116,7 +116,7 @@ def test_la_remise_porte_les_mots_les_lectures_neuves_et_les_commits(tmp_path):
     assert "| factory-health | screen redrawn (anchors changed) | anchors gone: health.guard; anchors new: health.fact:display |" in text
     assert "| companion-song | route changed | route /app/m.html?tab=song → /app/m.html?tab=live&mode=control |" in text
     assert text.index("| companion-song |") < text.index("| golem-rising-designer | data only |")     # l'écran d'abord, les données après
-    assert "`/api/system/display`, `/api/system/golem-engine`" in text and "no longer names: `/api/take/transcribe`" in text
+    assert "`/api/system/display` (read), `/api/system/golem-engine` (read)" in text and "no longer names: `/api/take/transcribe`" in text
     assert "- 18b605b7 Health V2, Display settings" in text
 
 
@@ -136,3 +136,13 @@ def test_une_coquille_deja_re_epinglee_se_compare_a_celle_d_avant(tmp_path):
 def test_l_onglet_golem_engine_est_parcouru():
     cu = S._check_ui()
     assert "#/system/about/engine" in cu.RACK_PAGES and S.section_of("#/system/about/engine") == "settings/about"
+
+
+def test_la_remise_dit_si_une_adresse_neuve_est_une_lecture(tmp_path):
+    man = _man(tmp_path)
+    app = {"reads_added": ["/api/auth/signin", "/api/system/golem-engine"], "reads_removed": [], "commits": [],
+           "added": {"/api/auth/signin": "write", "/api/system/golem-engine": "read"}}
+    text = R.handover("v9.9.9", "c" * 40, "/pins/factory", man, None, "4cdf4951", [], app=app)
+    assert "`/api/auth/signin` (write), `/api/system/golem-engine` (read)" in text
+    assert R._how({"read"}) == "read" and R._how({"write"}) == "write" and R._how({"read", "write"}) == "read and write"
+    assert R._WRITE.search("await post('/api/auth/signin', {})") and not R._WRITE.search("api('/api/system/golem-engine')")

@@ -241,7 +241,8 @@ def test_la_mini_coquille_dit_ce_qui_ne_va_pas(tmp_path):
                  "page /app/m.html?tab=live&mode=now made no read", "/api/effects is not in the snapshot"):
         assert want in bad, want
     ok = {"examples": S.SMOKE_EXAMPLES, "pages": {p: ["/api/state"] for p in S.SMOKE_PAGES},
-          "written": ["/api/state", "/api/presets", "/api/effects"], "rack": {"declared": {"commit": "x"}}, "kit_warnings": []}
+          "written": ["/api/state", "/api/presets", "/api/effects"], "rack": {"declared": {"commit": "x"}}, "kit_warnings": [],
+          "screens": {n: "0123456789abcdef" for n in S.SMOKE_EXAMPLES}}
     (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
     assert S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)) == []
     assert S.smoke_problems({"refused": []}, str(tmp_path / "nowhere"))[0].startswith("no SNAPSHOT.json")
@@ -260,3 +261,26 @@ def test_l_app_ne_lit_aucun_de_ses_fichiers_par_un_chemin_absolu():
             if re.search(r"""(fetch|import)\(\s*['"`]/app/""", line):
                 bad.append("%s:%d" % (os.path.basename(path), i))
     assert bad == []
+
+
+# ── la signature d'écran d'un exemple (demandée par golem.fm pour ses pages relues, 2026-11-27) ─────────────────────
+def test_la_signature_suit_l_ecran_pas_ses_donnees():
+    base = S.screen_signature("#/system/gear/controllers", None, ["gear.tab", "gear.list"], [], ["button | USB 1", "tab | Drums"])
+    assert len(base) == 16 and base == S.screen_signature("#/system/gear/controllers", None, ["gear.list", "gear.tab"], [],
+                                                         ["tab | Drums", "button | USB 2"])       # l'ordre et un chiffre : rien
+    assert base != S.screen_signature("#/system/gear/controllers", None, ["gear.tab"], [], ["button | USB 1", "tab | Drums"])  # une ancre partie
+    assert base != S.screen_signature("#/system/gear/controllers", None, ["gear.tab", "gear.list"], ["gear.list"], ["button | USB 1", "tab | Drums"])
+    assert base != S.screen_signature("#/system/gear/controllers", None, ["gear.tab", "gear.list"], [], ["button | USB 1", "tab | Drum kits"])
+    assert base != S.screen_signature("#/system/gear/pedals", None, ["gear.tab", "gear.list"], [], ["button | USB 1", "tab | Drums"])
+    assert base != S.screen_signature("#/system/gear/controllers", "gear.list", ["gear.tab", "gear.list"], [], ["button | USB 1", "tab | Drums"])
+
+
+def test_la_mini_coquille_exige_une_signature_par_exemple(tmp_path):
+    ok = {"examples": S.SMOKE_EXAMPLES, "pages": {p: ["/api/state"] for p in S.SMOKE_PAGES},
+          "written": ["/api/state", "/api/presets", "/api/effects"], "rack": {"declared": {"commit": "x"}}, "kit_warnings": [],
+          "screens": {n: "0123456789abcdef" for n in S.SMOKE_EXAMPLES}}
+    (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
+    assert S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)) == []
+    ok["screens"][S.SMOKE_EXAMPLES[0]] = None
+    (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
+    assert "no screen signature" in "\n".join(S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)))

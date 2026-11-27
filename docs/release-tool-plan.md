@@ -190,7 +190,7 @@ golem.fm, so nothing is built for it; the target is maestrium.
    doc pages to review, the anchors gone, the commands). Everything lands in `~/golem-doc-work/pin-<commit>/`; no
    other repository is touched. Run on v0.7.3: 7 minutes, 62 examples, ready to hand over; 10 sections to review,
    6 unchanged, 22 doc pages to look at. The shell carries its version (`SNAPSHOT.json` `shell.version`).
-7. **The docs.** **PROPOSED 2026-11-27, sent to the golem-fm session; the maintainer decides.** What happened at the
+7. **The docs.** **ACCEPTED by the maintainer 2026-11-27** (with golem.fm's amendment below); golem.fm applies its side. What happened at the
    v0.7.3 re-pin shows the flow that works: the rack hands over facts, golem.fm writes.
    - **One source**: maestrium's `frontend/src/content/docs`. The rack copy (`~/golem-doc-work/docs-pages`, drifted
      since 2026-10-22) and `check_pages.py` are retired; golem.fm's own test already measures every anchor.
@@ -198,9 +198,13 @@ golem.fm, so nothing is built for it; the target is maestrium.
      redrawn, data only), the anchors gone, the API addresses the app now names, the commits that touched `app/`, and
      `--notes`: what changed on screen, in words. golem.fm asked for those last three after the v0.7.3 re-pin; they
      are in `HANDOVER.md` now.
-   - **Each page records the shell it was reread against**: one file next to the pages (`reviewed.json`, page →
-     shell version), stamped by golem.fm when a page is reread. A page that cites an example changed since its stamp
-     is behind: golem.fm's test can say it, and `tools/snapshot.py` can show "doc pages behind" per site.
+   - **Each page records what it was reread against, per example** (golem.fm's amendment, accepted by the
+     maintainer 2026-11-27): `SNAPSHOT.json` `screens` gives every example a **screen signature** (`screen_signature`:
+     its route, its click, the anchors measured, those hidden in `?shell=ro`, the visible controls with their digits
+     neutralised — what makes the screen, not its data; the same on two extractions of the same code). golem.fm keeps
+     `content/docs/reviewed.json` = {page: {shell, examples: {name: signature}}}, stamped when a page is reread; a page
+     is behind when an example it cites has another signature in the pinned shell, or no stamp. No chain of impact
+     files, and noise never flags a page.
    - This replaces [user-docs.md](user-docs.md) §8's "the rack writes the golem pages and golem.fm copies them".
 
 **A shell has a version: the golem release it comes from** (`shell v0.7.3` = the app at tag v0.7.3, its factory

@@ -30,6 +30,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -114,8 +115,23 @@ def preconditions(overlay, engine, kit):
 def app_reads(commit):
     """Les adresses /api/… que le code de l'app CITE à ce commit (une chaîne dans app/*.js) — pas ce qu'un relevé a vu :
     une page que le relevé ne parcourt pas lit quand même, et golem.fm doit classer chaque lecture de l'app."""
-    out = _git("grep", "-h", "-o", "-E", r"/api/[A-Za-z0-9_./-]+", commit, "--", "app") or ""
-    return {r.rstrip("/.") for r in out.splitlines() if len(r) > 5}
+    out = _git("grep", "-h", "-E", r"/api/[A-Za-z0-9_./-]+", commit, "--", "app") or ""
+    found = {}
+    for line in out.splitlines():
+        write = bool(_WRITE.search(line))
+        for addr in re.findall(r"/api/[A-Za-z0-9_./-]+", line):
+            addr = addr.rstrip("/.")
+            if len(addr) > 5:
+                found.setdefault(addr, set()).add("write" if write else "read")
+    return found
+
+
+# une ligne de l'app qui ÉCRIT à cette adresse : post('/api/…'), put(, del(, method: 'POST'
+_WRITE = re.compile(r"\b(post|put|del|patch)\(|method:\s*['\"](POST|PUT|DELETE|PATCH)")
+
+
+def _how(kinds):
+    return "read" if kinds == {"read"} else "write" if kinds == {"write"} else "read and write"
 
 
 def app_changes(old, new):
@@ -126,7 +142,9 @@ def app_changes(old, new):
         return None
     a, b = app_reads(old), app_reads(new)
     log = _git("log", "--format=%h %s", "--reverse", "%s..%s" % (old, new), "--", "app") or ""
-    return {"reads_added": sorted(b - a), "reads_removed": sorted(a - b), "commits": log.splitlines()}
+    # `added` dit pour chaque adresse neuve si l'app la LIT (golem.fm la classe dans reads.json) ou y écrit
+    return {"reads_added": sorted(set(b) - set(a)), "reads_removed": sorted(set(a) - set(b)),
+            "added": {r: _how(b[r]) for r in sorted(set(b) - set(a))}, "commits": log.splitlines()}
 
 
 def kind_of_change(d):
@@ -210,8 +228,9 @@ def handover(version, commit, snap_dir, man, rep, prev_commit, bad, app=None, no
         out.append("")
     if app:
         out += ["## The app since the shell online", "",
-                "API addresses the app's code names now and did not (reads to classify in `golemShell/reads.json`, or writes): "
-                + (", ".join("`%s`" % r for r in app["reads_added"]) or "none") + ".", "",
+                "API addresses the app's code names now and did not — a **read** is to classify in `golemShell/reads.json`: "
+                + (", ".join("`%s` (%s)" % (r, (app.get("added") or {}).get(r, "read")) for r in app["reads_added"]) or "none")
+                + ".", "",
                 "Addresses it no longer names: " + (", ".join("`%s`" % r for r in app["reads_removed"]) or "none") + ".", "",
                 "Commits that touched `app/` (%d), oldest first — a screen redrawn is named here:" % len(app["commits"]), ""]
         out += ["- " + c for c in app["commits"]] + [""]

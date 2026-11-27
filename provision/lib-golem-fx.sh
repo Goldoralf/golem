@@ -13,10 +13,11 @@ golem_fx_catch_up() {
   [ "${GOLEM_FX_CATCH_UP:-1}" = 0 ] && return 1
   python3 "$here/provision/golem_fx.py" --needed >/dev/null 2>&1 || return 1
   if ! curl -fsI --max-time 5 https://github.com >/dev/null 2>&1; then
-    echo "→ golem-fx : pas encore posé, et pas de réseau — nouvel essai au prochain démarrage"
+    echo "→ golem-fx : la release épinglée n'est pas posée, et pas de réseau — nouvel essai au prochain démarrage"
     return 1
   fi
-  echo "→ golem-fx : les effets de golem ne sont pas sur cette machine — installation…"
+  # deux cas, un seul message juste : aucun bundle, ou une autre release que celle épinglée (provision/golem_fx.py needed)
+  echo "→ golem-fx : la release épinglée n'est pas sur cette machine — installation…"
   if "$here/provision/install-golem-fx.sh"; then
     return 0
   fi

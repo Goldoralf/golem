@@ -7,8 +7,9 @@
 
 ## A. What the release installs
 
-1. **Every pin against the latest release we published** (`gh release list -R Goldoralf/golem-binaries`). A pin that
-   is behind is moved, or the reason is written in the doc that owns it:
+1. **Every pin against the latest release we published**: run `tools/snapshot.py` (one page, every entity: here,
+   published, pinned; it exits 1 while a line is red). A pin that is behind is moved, or its reason is written in
+   `provision/pins-held.json` (the page then shows it orange, until a newer version is published):
    - golem-fx: `provision/golem_fx.py` `VERSION` (the only copy of the number: `install-golem-fx.sh` and the
      installer's dry run read it), `provision/downloads.sha256`, `provision/windows/pins.json` and
      `provision/macos/pins.json` (`golem_fx`: version, url, sha256, comment), `provision/components.json` (version,

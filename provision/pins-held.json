@@ -1,0 +1,3 @@
+{
+ "_comment": "Les RETARDS VOULUS (tools/golem_inventory.py, docs/release-checklist.md A1) : une épingle laissée derrière la dernière version publiée, avec sa raison. Clé = celle du composant (golem_fx, golem_engine.linux, golem_engine.windows, reaper, linux_plugins, factory_demos, dexed, nam_lv2, nam_vst3, surge, sfizz, paulxstretch). Valeur = {\"pinned\": \"la version épinglée\", \"latest\": \"la dernière publiée QUAND on a décidé\", \"reason\": \"pourquoi, en anglais (le snapshot l'affiche)\", \"date\": \"AAAA-MM-JJ\"}. La raison ne vaut que pour ce couple : dès qu'une version plus récente sort, la ligne redevient rouge."
+}

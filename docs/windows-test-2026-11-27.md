@@ -117,7 +117,10 @@ hash and signature are checked the same way in check 2).
   Cockos, imported once, would be kept by every later update. Not confirmed with Cockos.
 - What this means for users: someone holding an old key who taps Install 7.86 gets an update that loses the licence,
   then (as seen here) a rollback that can fail silently. The user owns the decision on this box (handled later).
-- The box is left on REAPER 7.86 in evaluation (plays normally). The user will sort out the licence on 2026-11-28.
+- The box was left on REAPER 7.86 in evaluation (plays normally). Resolved the same evening: at 19:41 the user
+  imported their current key (new `reaper-license.rk`, 560 bytes instead of 363) and reports REAPER 7.86 registered
+  (seen by the user; the agent could not re-read the title, REAPER and the bridge were closed). Confirms the cause:
+  the 2024 key's generation, not 7.86 nor golem's update.
 - The user approved the update procedure as tested.
 
 **Verdict of the Windows agent** — one of: `GO` (7.86 can ship for Windows) · `NO-GO` (say which check) · `GO WITH

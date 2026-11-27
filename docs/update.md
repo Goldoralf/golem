@@ -84,7 +84,21 @@ sound. So the restart that follows an update catches up (2026-11-22):
   starts REAPER and the bridge again (`_pending_golem_fx`, 30 s per network read).
 - Never fatal: without golem-fx the blocks keep their previous plugins. `GOLEM_FX_CATCH_UP=0` turns it off.
 
-The **Golem Engine** is not caught up: an updated golem keeps playing on REAPER until the install line is run again.
+The **Golem Engine** is caught up the same way since 2026-11-27 (it was not before: a golem installed with 9.9-g3
+kept it under code that pins 9.9-g8):
+
+- **When** (`provision/golem_engine.py --needed`): the installed package (`~/opt/golem-engine`) is not at the version
+  this code pins (Linux `VERSION`; Windows and macOS `pins.json` `golem_engine.version`). Never for a dev tree
+  (`~/golem-engine`) or `GOLEM_ENGINE_DIR`, and never when no engine is installed: adding one would change what a rack
+  that stayed on REAPER can pick, so the install line does that.
+- **Linux**: `start.sh` (so also `reload.sh`, the restart after an update) calls `golem_engine_catch_up`
+  (`provision/lib-engine.sh`) before it starts the engine. The download and the atomic placement run while the old
+  engine still plays (the old one is kept as `golem-engine.prev`); only then is the running engine stopped and the new
+  one started. No network (5 s probe): nothing, retried at the next start.
+- **Windows, macOS**: `provision.desktop restart` (`_pending_golem_engine`), while golem is stopped.
+- Never fatal: a failure keeps the previous engine. `GOLEM_ENGINE_CATCH_UP=0` turns it off.
+- Not done: no automatic return to `.prev` if the new engine does not start (`golem_engine.rollback` exists, nothing
+  calls it on this path yet).
 
 ## 4. Which REAPER is the rack's
 
@@ -95,6 +109,8 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
 `/tmp/golem-reaper-restart.log`.
 
 ## 5. Cutting a release
+
+Follow [release-checklist.md](release-checklist.md) first: pins, what an update brings, the whole suite, the notes.
 
 1. Everything on `main`, CI green on that commit, `tools/public_export.py --summary` at 0 forbidden occurrences.
 2. `tools/release.sh vX.Y.Z notes.md`: an **annotated, signed** tag, version bumped (`v0.6.1` → `v0.6.2` for fixes) —

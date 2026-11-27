@@ -34,6 +34,12 @@ fi
 # 3) le MOTEUR AUDIO choisi (provision/lib-engine.sh) : le Golem Engine si c'est lui, sinon Reaper avec le projet Set
 . "$HERE/provision/lib-engine.sh"
 ENGINE="$(golem_engine "$HERE")"
+# le moteur épinglé par cette version, posé s'il a changé depuis la mise à jour ; celui qui tourne est arrêté pour que
+# le neuf démarre ci-dessous (sous REAPER, aucun Golem Engine ne tourne : il est seulement prêt pour une bascule)
+if golem_engine_catch_up "$HERE" && [ "$ENGINE" = ardour ]; then
+  echo "→ Golem Engine : redémarrage sur la nouvelle version"
+  stop_golem_engine "$HERE" || true
+fi
 if [ "$ENGINE" = ardour ]; then
   # le lecteur LV2 des captures pilotables voyage avec golem ; posé avant que le moteur ne scanne ses plugins
   python3 -c 'from provision.capture_player import install_lv2_bundled; install_lv2_bundled()' 2>/dev/null || true

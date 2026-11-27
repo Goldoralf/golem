@@ -28,8 +28,8 @@ e0eb6337dae3602c8a4f735e6b5245cf35e1e4909242cfaf5517eb2d725207df  https://drumgi
 # recalculée sur l'archive et comparée au SHA256SUMS de la release, 2026-11-26) ; provision/install-golem-fx.sh. Windows et macOS : leurs pins.json (clé golem_fx).
 3e7e14dffb4c930070988337116a6af8d83a21111f837084ede097391250a123  https://github.com/Goldoralf/golem-binaries/releases/download/golem-fx-0.8.1/golem-fx-linux-x86_64.tar.gz
 
-# Golem Engine (le moteur audio de golem, construit depuis Ardour, GPL-2.0-or-later) — release golem-engine-9.9-g3 de
-# Goldoralf/golem-binaries (golem-engine 9c7e092, conteneur ubuntu:22.04 ; empreinte recalculée sur l'archive téléchargée
-# et comparée au SHA256SUMS de la release, 2026-11-18) ; provision/install-golem-engine.sh, provision/golem_engine.py.
-# La 9.9-g1 n'écrivait pas le témoin du fil audio : une installation neuve restait sur l'écran de chargement.
-23ea1490fd4a098e4413b78162e5ca2fa1f0d3b0f2a014ea344671a5e5049238  https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g3/golem-engine-linux-x86_64.tar.gz
+# Golem Engine (le moteur audio de golem, construit depuis Ardour, GPL-2.0-or-later) — release golem-engine-9.9-g8 de
+# Goldoralf/golem-binaries (golem-engine 4061ba79f, conteneur ubuntu:22.04, glibc 2.35 ; empreinte recalculée sur
+# l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-27) ; provision/install-golem-engine.sh,
+# provision/golem_engine.py. La même version que Windows (docs/linux-pass-2026-11.md §4). Avant : 9.9-g3 (2026-11-18).
+384c9042569ac14192e5c6c24901602d92c99b17994916707b9c454fe5d5e32f  https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-9.9-g8/golem-engine-linux-x86_64.tar.gz

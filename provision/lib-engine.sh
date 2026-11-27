@@ -71,3 +71,26 @@ golem_perf_restore() {
   [ -x "$script" ] || script="$here/provision/perf-mode.sh"
   sudo -n "$script" off >/dev/null 2>&1 && echo "→ mode performance rendu (${prev:-powersave})" || true
 }
+
+# LE RATTRAPAGE DU GOLEM ENGINE APRÈS UNE MISE À JOUR (docs/update.md §3 bis, 2026-11-27) : Settings ▸ About ▸ Update
+# pose le code d'une release, pas son moteur. Si le PAQUET installé (~/opt/golem-engine) n'est pas à la version que ce
+# code épingle (provision/golem_engine.py --needed : jamais un arbre de dev, jamais quand aucun moteur n'est installé),
+# il est téléchargé et posé (pose atomique, l'ancien gardé en .prev) PENDANT que le moteur tourne encore : la coupure
+# du son se limite au redémarrage qui suit, fait par l'appelant (start.sh). Sans réseau (sonde de 5 s), rien : nouvel
+# essai au prochain démarrage. Jamais fatal. GOLEM_ENGINE_CATCH_UP=0 le coupe (bancs, tests).
+#   golem_engine_catch_up <racine de golem>   -> 0 si un moteur neuf vient d'être posé, 1 sinon
+golem_engine_catch_up() {
+  local here="${1:?racine golem}"
+  [ "${GOLEM_ENGINE_CATCH_UP:-1}" = 0 ] && return 1
+  python3 "$here/provision/golem_engine.py" --needed >/dev/null 2>&1 || return 1
+  if ! curl -fsI --max-time 5 https://github.com >/dev/null 2>&1; then
+    echo "→ Golem Engine : une version plus récente est épinglée, pas de réseau — nouvel essai au prochain démarrage"
+    return 1
+  fi
+  echo "→ Golem Engine : la version épinglée a changé — installation…"
+  if "$here/provision/install-golem-engine.sh"; then
+    return 0
+  fi
+  echo "⚠ Golem Engine non mis à jour — l'ancien reste en service ; nouvel essai au prochain démarrage"
+  return 1
+}

@@ -1489,7 +1489,7 @@ Not judged here: the sound itself compared with REAPER, the foot controller, a k
 "Jazz Box" patch; no crackle at 256, crackles at 128). **Packaged and published**: release `golem-engine-9.9-g4` of
 Goldoralf/golem-binaries (tag `golem-engine-9.9-g4` of the fork), then `golem-engine-9.9-g5` (2026-11-23, both
 systems), `golem-engine-9.9-g6` and `golem-engine-9.9-g7` (2026-11-24, both systems), pinned in `provision/windows/pins.json`; the Windows setup installs it in `~/opt/golem-engine` (checked end
-to end on the dev box with g4). Linux stays pinned to 9.9-g3 until the Linux pass.
+to end on the dev box with g4). Linux stayed pinned to 9.9-g3 until the Linux pass; pinned to 9.9-g8 on 2026-11-27.
 
 - **Build**: MSYS2 UCRT64, `golem/tools/win-build.sh` in the fork. **ASIO**: MSYS2's PortAudio has none;
   `golem/tools/win-portaudio-asio.sh` builds PortAudio 19.7.0 statically with Steinberg's ASIO SDK 2.3.4 (dual-licensed

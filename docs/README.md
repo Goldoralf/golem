@@ -113,6 +113,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [release-signing.md](release-signing.md) | CODED, inactive until a key is declared | Verifying signed release tags |
 | [windows-test-2026-11-23.md](windows-test-2026-11-23.md) | TO DO | Handoff note for the live test on the Windows dev box: what the fresh Windows 11 VM found, what is fixed, what to check; deleted once done |
 | [update.md](update.md) | CODED | The "Update to …" button of Settings ▸ About, installs from an archive, and how to cut a release |
+| [release-checklist.md](release-checklist.md) | FIXED | The checklist followed for every release: pins against the latest published, what an update brings, the whole suite, the notes |
 | [network.md](network.md) | CODED (macOS reads only) | How a tablet or phone reaches the rack: station, access point |
 | [connect.md](connect.md) | CODED (rack side) | Joining the rack without typing an address |
 | [backups.md](backups.md) | CODED | What a backup carries, where it goes, how it is restored |

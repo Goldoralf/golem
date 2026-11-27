@@ -116,7 +116,7 @@ function EngineVersionCard() {
   return html`<section class="card-panel">
     <h3>Golem Engine</h3>
     <div class="upd-rows">
-      <div class="upd-row"><label>On this machine</label><b>${e ? (e.version || (e.installed ? '?' : '—')) : (err ? '✗' : '…')}</b>
+      <div class="upd-row"><label>On this machine</label><b>${e ? (e.dev ? `sources ${e.version || '?'}${e.built ? ` · built ${e.built}` : ''}` : (e.version || (e.installed ? '?' : '—'))) : (err ? '✗' : '…')}</b>
         ${st ? html`<span class=${cls('upd-status', st[0])}>${st[1]}</span>` : ''}</div>
       <div class="upd-row"><label>Pinned by this release</label><b>${e ? (e.pinned || '—') : '…'}</b></div>
       <div class="upd-row"><label>Audio engine now</label><b>${e ? (e.active ? 'Golem Engine' : 'REAPER') : '…'}</b></div>

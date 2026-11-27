@@ -1491,6 +1491,7 @@ def restart(shell="device"):
     # code d'appairage), pas desktop
     _pending_pip()
     _pending_golem_fx()
+    _pending_golem_engine()
     if os.environ.get("GOLEM_LAUNCH") == "server":
         start(window=False)
     else:
@@ -1526,6 +1527,22 @@ def _pending_golem_fx():
             golem_fx.install(timeout=30)
     except Exception as exc:
         print(f"golem: golem-fx not installed ({exc}) — the blocks keep playing their previous plugins.", file=sys.stderr)
+
+
+def _pending_golem_engine():
+    """LE RATTRAPAGE DU GOLEM ENGINE (docs/update.md §3 bis, 2026-11-27) : la mise à jour pose le code, pas le moteur.
+    Ici golem est arrêté (le bridge arrête le moteur en partant) : le paquet installé qui n'est pas à l'épingle de
+    pins.json est remplacé, l'ancien gardé en .prev. Jamais un arbre de dev, jamais quand aucun moteur n'est installé
+    (provision/golem_engine.py needed). Jamais fatal : un échec garde l'ancien moteur et se réessaie à la prochaine
+    relance après mise à jour. GOLEM_ENGINE_CATCH_UP=0 le coupe."""
+    if os.environ.get("GOLEM_ENGINE_CATCH_UP", "1") == "0":
+        return
+    try:
+        from provision import golem_engine
+        if golem_engine.needed():
+            golem_engine.install()
+    except Exception as exc:
+        print(f"golem: the Golem Engine was not updated ({exc}) — the previous one keeps playing.", file=sys.stderr)
 
 
 def _tell(message, error=False):

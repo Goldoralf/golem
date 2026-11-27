@@ -424,17 +424,19 @@ def golem_engine_about():
                                  text=True, timeout=3).stdout.strip().removeprefix("golem-engine-") or None
         except Exception:
             ver = None
+    # un arbre de dev : son tag git dit les SOURCES, pas le build — la date du binaire compilé le dit (2026-11-27 : sources
+    # à g5, build du 17/11, l'onglet affichait « 9.9-g5 »)
+    built = None
+    if dev:
+        for lib in ("build/libs/ardour/libardour.so", "build/libs/ardour/libardour.dll"):
+            try:
+                built = time.strftime("%Y-%m-%d", time.localtime(os.path.getmtime(d / lib)))
+                break
+            except OSError:
+                pass
     desc = next((e for e in engines.descriptors() if e.get("id") == "ardour"), {})
-    # l'épingle de CE système : Linux = golem_engine.VERSION ; Windows / macOS = leur pins.json (`golem_engine.version`),
-    # qui avance à son propre pas (9.9-g8 sous Windows quand Linux est à 9.9-g3)
-    pinned = ge.VERSION or None
-    if sys.platform in ("win32", "darwin"):
-        try:
-            sub = "windows" if sys.platform == "win32" else "macos"
-            pinned = (json.loads((ge.HERE / sub / "pins.json").read_text(encoding="utf-8")).get("golem_engine") or {}).get("version")
-        except Exception:
-            pinned = None
-    return {"installed": present, "dev": dev, "version": ver, "pinned": pinned, "available": desc.get("available") is not False,
+    pinned = ge.pinned_version(sys.platform)          # Linux : VERSION ; Windows / macOS : leur pins.json
+    return {"installed": present, "dev": dev, "version": ver, "built": built, "pinned": pinned, "available": desc.get("available") is not False,
             "unavailable_reason": desc.get("reason"),
             "active": engines.current() == "ardour", "by": desc.get("by"), "license": "GPL-2.0-or-later",
             "sources_url": desc.get("sources_url") or "https://github.com/Goldoralf/golem-engine",

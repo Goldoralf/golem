@@ -15,6 +15,7 @@ nouveau prend sa place. Un ARBRE DE DEV (~/golem-engine, ou GOLEM_ENGINE_DIR) pa
 (engine_dir) : la machine d'un développeur garde son build.
 
     python3 provision/golem_engine.py --check          # où est le moteur, quelle version ; rien n'est téléchargé
+    python3 provision/golem_engine.py --needed         # 0 si le paquet installé n'est pas à l'épingle (rattrapage)
     python3 provision/golem_engine.py --place A.tar.gz # pose une archive DÉJÀ vérifiée (install-golem-engine.sh)
     python3 provision/golem_engine.py                  # Windows / macOS : télécharge, vérifie, pose
 """
@@ -29,7 +30,7 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VERSION = "9.9-g3"    # la release épinglée (vide = aucune : l'installation le dit, sans échouer)
+VERSION = "9.9-g8"    # la release épinglée (vide = aucune : l'installation le dit, sans échouer)
 BASE = "https://github.com/Goldoralf/golem-binaries/releases/download/golem-engine-{version}"
 ASSETS = {"linux": "golem-engine-linux-x86_64.tar.gz", "win32": "golem-engine-windows-x86_64.tar.gz",
           "darwin": "golem-engine-macos-universal.tar.gz"}
@@ -164,6 +165,40 @@ def _record(paths):
         print(f"  ⚠ install receipt not updated ({e})", file=sys.stderr)
 
 
+def pinned_version(platform=None):
+    """La version qu'épingle CE code pour ce système : Linux `VERSION` ; Windows / macOS leur pins.json
+    (`golem_engine.version`), qui peut avancer à son propre pas. None s'il n'y en a pas."""
+    o = _os(platform)
+    if o == "linux":
+        return VERSION or None
+    try:
+        pins = json.loads((HERE / ("windows" if o == "win32" else "macos") / "pins.json").read_text(encoding="utf-8"))
+        return (pins.get("golem_engine") or {}).get("version") or None
+    except (OSError, ValueError):
+        return None
+
+
+def _launcher(d):
+    return (Path(d) / RUN).is_file() or (Path(d) / "golem" / "engine" / "run.py").is_file()
+
+
+def needed(env=None, home=None, platform=None):
+    """LE RATTRAPAGE APRÈS UNE MISE À JOUR (docs/update.md §3 bis, 2026-11-27) : Settings ▸ About ▸ Update pose le code
+    d'une release, pas son moteur — un golem installé avec la 9.9-g3 la gardait sous un code qui épingle la g8. Vrai
+    quand le PAQUET installé (~/opt/golem-engine) n'est pas à la version épinglée ici. Jamais :
+      · un arbre de dev (~/golem-engine) ou GOLEM_ENGINE_DIR — le développeur choisit son build ;
+      · aucun moteur installé — le poser changerait ce que le rack peut choisir (un golem d'avant v0.7 resté sur
+        REAPER) : c'est la ligne d'installation qui l'ajoute ;
+      · aucune épingle pour ce système."""
+    env = os.environ if env is None else env
+    home = Path(home) if home else Path.home()
+    if env.get("GOLEM_ENGINE_DIR") or _launcher(home / "golem-engine"):
+        return False
+    inst = home / "opt" / "golem-engine"
+    want = pinned_version(platform)
+    return bool(want) and _launcher(inst) and version_of(inst) != want
+
+
 def install(fetch=None, log=print, dest=None, platform=None):
     """Télécharge (ou `fetch(url) -> octets`), vérifie l'empreinte, pose. Rend la version, ou None quand rien n'est à
     poser ici (pas de release, système pas encore porté) — dit, jamais fatal : golem tourne alors sur REAPER."""
@@ -185,6 +220,8 @@ def main(argv):
         ok = (d / RUN).is_file()
         print(f"Golem Engine: {'installed' if ok else 'not installed'} — {d}" + (f" ({version_of(d) or 'dev tree'})" if ok else ""))
         return 0 if ok else 1
+    if "--needed" in argv:                         # 0 : le paquet installé n'est pas à l'épingle ; 1 : rien à faire
+        return 0 if needed() else 1
     if "--place" in argv:
         archive = Path(argv[argv.index("--place") + 1])
         place(archive.read_bytes())

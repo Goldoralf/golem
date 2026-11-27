@@ -110,7 +110,8 @@ function GolemLicenseCard() {
 // construit depuis Ardour — sa version, celle que la release épingle, et ses sources (GPL : obligation, pas politesse) ──
 function EngineVersionCard() {
   const { data: e, err } = useAsync(() => fetch('/api/system/golem-engine').then(r => r.json()), []);
-  const st = !e ? null : !e.installed ? ['warn', '✗ not installed'] : !e.pinned || e.version === e.pinned ? ['ok', '✓ matches this release']
+  const st = !e ? null : e.available === false && !e.installed ? ['idle', e.unavailable_reason || 'not on this system']
+    : !e.installed ? ['warn', '✗ not installed'] : !e.pinned || e.version === e.pinned ? ['ok', '✓ matches this release']
     : e.dev ? ['idle', 'development build'] : ['warn', 'differs from this release'];
   return html`<section class="card-panel">
     <h3>Golem Engine</h3>

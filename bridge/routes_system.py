@@ -425,7 +425,17 @@ def golem_engine_about():
         except Exception:
             ver = None
     desc = next((e for e in engines.descriptors() if e.get("id") == "ardour"), {})
-    return {"installed": present, "dev": dev, "version": ver, "pinned": ge.VERSION or None,
+    # l'épingle de CE système : Linux = golem_engine.VERSION ; Windows / macOS = leur pins.json (`golem_engine.version`),
+    # qui avance à son propre pas (9.9-g8 sous Windows quand Linux est à 9.9-g3)
+    pinned = ge.VERSION or None
+    if sys.platform in ("win32", "darwin"):
+        try:
+            sub = "windows" if sys.platform == "win32" else "macos"
+            pinned = (json.loads((ge.HERE / sub / "pins.json").read_text(encoding="utf-8")).get("golem_engine") or {}).get("version")
+        except Exception:
+            pinned = None
+    return {"installed": present, "dev": dev, "version": ver, "pinned": pinned, "available": desc.get("available") is not False,
+            "unavailable_reason": desc.get("reason"),
             "active": engines.current() == "ardour", "by": desc.get("by"), "license": "GPL-2.0-or-later",
             "sources_url": desc.get("sources_url") or "https://github.com/Goldoralf/golem-engine",
             "upstream_url": "https://ardour.org"}

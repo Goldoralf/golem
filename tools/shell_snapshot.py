@@ -1269,6 +1269,75 @@ def separation_from(url, out_dir, log=print):
     return "/api/separation"
 
 
+# LES SECTIONS DU MENU (docs/release-tool-plan.md §3 bis, étape 3, 2026-11-27) : chaque page et chaque exemple
+# appartient à une section — un hub du menu du haut (Live, Designer, Songs), un onglet de Library ou de Settings, le
+# Companion du téléphone, la vérification de première installation. L'extraction reste COMPLÈTE et à un seul commit (la
+# coquille est un tout : l'app, ses lectures) ; c'est la RELECTURE qui se fait par section — tools/doc-impact.py dit
+# lesquelles ont réellement changé. `--section` refait une section seule (pour itérer), `--merge-into` l'intègre à
+# une coquille complète DU MÊME COMMIT.
+def section_of(route):
+    """« #/system/gear/drums » -> « settings/gear » ; « /app/m.html?tab=live&mode=now » -> « companion »."""
+    if "boot=firstcheck" in route:
+        return "first-check"
+    if route.startswith("/app/m.html"):
+        return "companion"
+    segs = [x for x in route.split("#/", 1)[-1].split("?")[0].split("/") if x] if "#/" in route else []
+    if not segs:
+        return "live"
+    hub = {"system": "settings", "systeme": "settings"}.get(segs[0], segs[0])
+    if hub in ("library", "settings") and len(segs) > 1:
+        return hub + "/" + segs[1]
+    return hub
+
+
+def sections_of(pages, examples):
+    """{section: {pages: […], examples: […]}} — ce que SNAPSHOT.json en dit (`sections`)."""
+    out = {}
+    for p in pages:
+        out.setdefault(section_of(p), {"pages": [], "examples": []})["pages"].append(p)
+    for ex in examples:
+        out.setdefault(section_of(ex["route"]), {"pages": [], "examples": []})["examples"].append(ex["name"])
+    return {k: out[k] for k in sorted(out)}
+
+
+def merge_into(partial_dir, full_dir, log=print):
+    """Intègre une extraction PARTIELLE (--section, --examples) à une coquille complète du MÊME commit : ses exemples
+    remplacent ceux de même nom, leurs captures aussi ; un exemple qui avait échoué et passe maintenant quitte
+    `examples_failed`. Refuse deux commits différents : des exemples d'un autre commit ne se mélangent pas."""
+    import shutil
+    with open(os.path.join(partial_dir, "SNAPSHOT.json"), encoding="utf-8") as f:
+        part = json.load(f)
+    with open(os.path.join(full_dir, "SNAPSHOT.json"), encoding="utf-8") as f:
+        full = json.load(f)
+    if part.get("commit") != full.get("commit"):
+        raise SystemExit("merge refused: the partial snapshot is at %s, the full one at %s — extract both at the same commit"
+                         % (str(part.get("commit"))[:8], str(full.get("commit"))[:8]))
+    if full.get("partial") or full.get("kind") != "factory":
+        raise SystemExit("merge refused: %s is not a full factory snapshot" % full_dir)
+    done = []
+    for name in part.get("examples") or []:
+        shutil.copyfile(os.path.join(partial_dir, "examples", name + ".json"), os.path.join(full_dir, "examples", name + ".json"))
+        a, b = partial_dir.rstrip("/") + "-shots", full_dir.rstrip("/") + "-shots"
+        if os.path.exists(os.path.join(a, name + ".png")):
+            os.makedirs(b, exist_ok=True)
+            shutil.copyfile(os.path.join(a, name + ".png"), os.path.join(b, name + ".png"))
+        if name not in full["examples"]:
+            full["examples"].append(name)
+        full["anchors"]["examples"][name] = (part.get("anchors") or {}).get("examples", {}).get(name, [])
+        done.append(name)
+    still = {e["name"]: e for e in full.get("examples_failed") or [] if e["name"] not in done}
+    for e in part.get("examples_failed") or []:
+        still[e["name"]] = e
+    full["examples_failed"] = list(still.values())
+    order = [ex["name"] for ex in EXAMPLES]
+    full["examples"].sort(key=lambda n: order.index(n) if n in order else len(order))
+    with open(os.path.join(full_dir, "SNAPSHOT.json"), "w", encoding="utf-8") as f:
+        json.dump(full, f, ensure_ascii=False, indent=1)
+    log("merged %d example(s) into %s: %s%s" % (len(done), full_dir, ", ".join(done) or "none",
+                                                 (" — still failing: " + ", ".join(still)) if still else ""))
+    return done
+
+
 # LA MINI-COQUILLE DE LA CI (docs/release-tool-plan.md §3 bis, 2026-11-27) : deux pages du rack, une du Companion, deux
 # exemples — assez pour que l'outil casse AU COMMIT qui le casse (un bridge jetable qui ne démarre plus, une route
 # changée, une lecture qui fuit), pas trois semaines plus tard au moment de ré-épingler. Sans moteur ni démos : la CI
@@ -1307,7 +1376,8 @@ def smoke_problems(res, out_dir):
 
 def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True, demos=True, take=None,
                      take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None,
-                     bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False, overlay=None):
+                     bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False, overlay=None,
+                     only_sections=None):
     """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `SNAPSHOT.json`.
 
     `only_pages` / `only_examples` : un sous-ensemble (des routes, des noms) — le résultat est alors PARTIEL et le dit
@@ -1343,6 +1413,13 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         rack, phone = factory_pages(base, cu)
         if smoke:
             only_pages, only_examples = SMOKE_PAGES, SMOKE_EXAMPLES
+        if only_sections is not None:
+            known = {section_of(p) for p in rack + phone} | {section_of(ex["route"]) for ex in EXAMPLES}
+            unknown = [x for x in only_sections if x not in known]
+            if unknown:
+                raise SystemExit("unknown section(s): %s — the sections are: %s" % (", ".join(unknown), ", ".join(sorted(known))))
+            only_pages = [p for p in rack + phone if section_of(p) in only_sections]
+            only_examples = [ex["name"] for ex in EXAMPLES if section_of(ex["route"]) in only_sections]
         if only_pages is not None:
             rack, phone = [p for p in rack if p in only_pages], [p for p in phone if p in only_pages]
         page_anchors, page_posts = {}, {}
@@ -1387,12 +1464,16 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     catalog_version = json.loads(subprocess.run(["git", "-C", ROOT, "show", commit + ":library/catalog/effects.json"],
                                                 capture_output=True, text=True, check=True).stdout).get("catalog_version")
     partial = only_pages is not None or only_examples is not None
+    made = {e["name"] for e in examples}
     manifest = {
         "kind": "smoke" if smoke else "factory", "name": SNAPSHOT_NAMES.get(rack_seen["variant"]) or "factory", "commit": commit, "catalog_version": catalog_version, "made": time.strftime("%Y-%m-%d"),
         "reads": sorted(res["written"]), "examples": [e["name"] for e in examples],
         # les exemples qui n'ont pas pu être rejoués, avec leur raison : à relancer seuls (--examples), jamais passés sous silence
         "examples_failed": examples_failed,
-        **({"partial": {"pages": sorted(only_pages) if only_pages is not None else None,
+        # chaque page et chaque exemple dans sa section du menu : la relecture se fait section par section
+        "sections": sections_of(list(by_page), [ex for ex in EXAMPLES if ex["name"] in made]),
+        **({"partial": {"sections": sorted(only_sections) if only_sections is not None else None,
+                        "pages": sorted(only_pages) if only_pages is not None else None,
                         "examples": sorted(only_examples) if only_examples is not None else None}} if partial else {}),
         "assets": res.get("assets", {}),
         # l'AUDIO (2026-11-04) : {adresse que l'app demande: {file, type}} — golem.fm le sert à cette adresse exacte
@@ -1447,6 +1528,10 @@ def main(argv=None):
                          "home folder shown as " + DEMO_HOME)
     ap.add_argument("--reference", metavar="URL", default=REFERENCE_URL,
                     help="with --factory: the reference rack's bridge, which probes the pedalboard (default %(default)s)")
+    ap.add_argument("--section", help="with --factory: only these sections of the menu (comma-separated: live, designer, "
+                                      "songs, library/tones, settings/gear, companion, first-check…) — the result is PARTIAL")
+    ap.add_argument("--merge-into", metavar="DIR", help="with --factory and --section / --examples: merge the examples just made "
+                                                         "into this FULL snapshot of the same commit")
     ap.add_argument("--examples", help="with --factory: only these examples (names, comma-separated) — the result is PARTIAL")
     ap.add_argument("--pages", help="with --factory: only these pages (routes, comma-separated) — the result is PARTIAL")
     ap.add_argument("--smoke", action="store_true",
@@ -1473,7 +1558,10 @@ def main(argv=None):
                              take_title=a.take_title, separation=a.separation_from,
                              reference=a.reference, take_drop=a.take_drop_role, smoke=a.smoke,
                              only_examples=a.examples.split(",") if a.examples else None,
-                             only_pages=a.pages.split(",") if a.pages else None)
+                             only_pages=a.pages.split(",") if a.pages else None,
+                             only_sections=a.section.split(",") if a.section else None)
+        if a.merge_into:
+            merge_into(a.out, a.merge_into)
     else:
         r = snapshot(a.base.rstrip("/"), a.out, listed, private=a.private_name)
     print("written %d · skipped (never in a snapshot) %d · failed %d · REFUSED %d -> %s"

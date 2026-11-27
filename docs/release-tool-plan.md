@@ -162,15 +162,24 @@ golem.fm, so nothing is built for it; the target is maestrium.
    render (GET reads and the WebSocket state), then written into the snapshot. The hand grafts (`merge_gear.py`,
    `graft_take.py`) are no longer needed. The rack file was assembled from the entries of earlier snapshots: to
    re-record with the hardware plugged at the next occasion.
-3. **By section of the menu.** `--only live|designer|songs|library/<tab>|settings/<tab>|companion`; the tool works out
-   the sections a change touches from the files changed between two versions, re-extracts those and merges them into
-   the existing shell; a change in a shared file says so and redoes everything. The manifest records each section's
-   version, and the snapshot page shows the freshness per section.
+3. **By section of the menu.** **Done 2026-11-27, and not as first planned.** The first idea was to work out the
+   touched sections from the files changed between two versions and to re-extract only those. It does not hold:
+   nearly every UI change touches `app/style.css`, shared by every page, so the answer would be "everything" nine
+   times in ten; and the shell is one whole (the app at one commit, with its reads). So:
+   - **the extraction stays complete**, at one commit (ten minutes, unattended);
+   - **the review is by section**: every page and every example belongs to a section (`section_of`: live, designer,
+     songs, library/<tab>, settings/<tab>, companion, first-check; `SNAPSHOT.json` `sections`), and
+     `tools/doc-impact.py` says, per section, *to review* / *noise only* / *unchanged*. Measured between the shell
+     online (4cdf4951) and d0b0cb24: 9 sections to review, 2 noise only, 5 unchanged;
+   - **`--section a,b`** re-extracts chosen sections alone (1 min 35 for the Companion) and **`--merge-into DIR`** puts
+     their examples into a full snapshot **of the same commit** (a fixed example leaves `examples_failed`); two
+     different commits are refused.
 4. **Independent examples.** A failing example stops nothing; only the failed ones are rerun. **Done 2026-11-27**: a
    failed example is recorded in `SNAPSHOT.json` (`examples_failed`, with its reason), its undo always runs, and
    `--examples a,b` reruns a chosen few (the result then says `partial`).
-5. **Noise sorted by the tool.** The bench freezes the clock and the animations, the pixel diff becomes reliable, and
-   the tool lists the doc pages to review.
+5. **Noise sorted by the tool.** **First part done 2026-11-27**: `doc-impact.py` no longer asks for a review when
+   only volatile reads differ (disk, CPU, backups: `NOISE`) and no pixel moved. Left: freeze the clock and the
+   animations in the bench, so the pixel diff itself stops seeing them.
 6. **One command on the rack**, `shell-release vX.Y.Z`: extract the touched sections, measure the doc impact, check
    the pages, hand over to maestrium (through `update_site.py` while golem-site lives).
 7. **The docs.** maestrium's `content/docs` becomes the official source; the rack copy is retired; each page records

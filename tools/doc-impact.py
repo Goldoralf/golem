@@ -22,6 +22,14 @@ import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import shell_snapshot  # noqa: E402 — les sections du menu (section_of)
+
+# LE BRUIT : des lectures qui changent d'une extraction à l'autre SANS que rien n'ait changé pour le musicien — le disque
+# libre, la charge du processeur, la date d'une sauvegarde. Le matériel (contrôleurs, carte son) n'en est pas : il est
+# déclaré (tools/shell/reference-rack.json), une différence y est un vrai changement de la page Gear.
+NOISE = re.compile(r"^/api/(storage|system|system/health|system/libraries|backups|backups/overview|health/\w+)(\?|$)")
+
 PIXEL_THRESHOLD = 0.002          # sous 0,2 % des pixels : le curseur qui clignote, une horloge — pas un changement
 
 
@@ -70,7 +78,8 @@ def pixel_diffs(pairs):
 
 def compare(old, new):
     (mo, eo), (mn, en) = load(old), load(new)
-    report = {"old": {"commit": mo.get("commit"), "name": mo.get("name")},
+    report = {"old_routes": {n: e.get("route", "") for n, e in eo.items()},
+              "old": {"commit": mo.get("commit"), "name": mo.get("name")},
               "new": {"commit": mn.get("commit"), "name": mn.get("name")},
               "added": sorted(set(en) - set(eo)), "removed": sorted(set(eo) - set(en)), "changed": {}}
     so, sn = shots_dir(old), shots_dir(new)
@@ -104,7 +113,41 @@ def compare(old, new):
     if co and cn and co != cn:
         r = subprocess.run(["git", "-C", ROOT, "diff", "--stat", co, cn, "--", "app/"], capture_output=True, text=True)
         report["app_files"] = [ln.split("|")[0].strip() for ln in r.stdout.splitlines() if "|" in ln]
+    report["sections"] = by_section(report, en)
     return report
+
+
+def to_review(d):
+    """Un exemple changé demande-t-il une RELECTURE ? Oui dès que l'écran a bougé (route, clic, ancres, pixels) ou qu'une
+    lecture de CONTENU diffère. Non quand seules des lectures volatiles diffèrent (disque libre, CPU, sauvegardes :
+    NOISE) sans qu'un pixel bouge — du bruit, pas un changement de la doc."""
+    if any(k in d for k in ("route", "click", "anchors_gone", "anchors_new", "anchors_now_hidden", "pixels")):
+        return True
+    return any(not NOISE.match(r.split(" ", 1)[-1]) for r in d.get("reads", []))
+
+
+def by_section(report, new_examples):
+    """{section: {status, review: […], noise: […], added: […], removed: […], gone: [ancres]}} — la relecture se fait
+    section par section du menu ; `unchanged` : rien à relire dans cette section."""
+    route = {n: e.get("route", "") for n, e in new_examples.items()}
+    out = {}
+
+    def sec(name):
+        return out.setdefault(shell_snapshot.section_of(route.get(name, report.get("old_routes", {}).get(name, ""))),
+                              {"review": [], "noise": [], "added": [], "removed": [], "gone": []})
+    for name in report["added"]:
+        sec(name)["added"].append(name)
+    for name in report["removed"]:
+        sec(name)["removed"].append(name)
+    for name, d in report["changed"].items():
+        s = sec(name)
+        (s["review"] if to_review(d) else s["noise"]).append(name)
+        s["gone"] += d.get("anchors_gone", [])
+    for name in route:                                   # les sections où rien n'a bougé apparaissent aussi
+        sec(name)
+    for s in out.values():
+        s["status"] = "changed" if s["review"] or s["added"] or s["removed"] else ("noise only" if s["noise"] else "unchanged")
+    return {k: out[k] for k in sorted(out)}
 
 
 def pages_citing(pages_dir, report):
@@ -147,6 +190,25 @@ def main(argv=None):
     for k in ("added", "removed"):
         if rep[k]:
             print("  examples %s: %s" % (k, ", ".join(rep[k])))
+    # PAR SECTION DU MENU (2026-11-27) : ce qui est à relire, ce qui n'est que du bruit, ce qui n'a pas bougé
+    secs = rep.get("sections") or {}
+    print("  by section — to review: %d · noise only: %d · unchanged: %d" % (
+        sum(1 for s in secs.values() if s["status"] == "changed"), sum(1 for s in secs.values() if s["status"] == "noise only"),
+        sum(1 for s in secs.values() if s["status"] == "unchanged")))
+    for name, s in secs.items():
+        bits = []
+        if s["review"]:
+            bits.append("review " + ", ".join(s["review"]))
+        if s["added"]:
+            bits.append("new " + ", ".join(s["added"]))
+        if s["removed"]:
+            bits.append("removed " + ", ".join(s["removed"]))
+        if s["gone"]:
+            bits.append("anchors gone " + ", ".join(sorted(set(s["gone"]))))
+        if s["noise"]:
+            bits.append("noise (disk, CPU, backups): " + ", ".join(s["noise"]))
+        print("  %-11s %-18s %s" % ({"changed": "TO REVIEW", "noise only": "noise only", "unchanged": "unchanged"}[s["status"]],
+                                    name, "; ".join(bits)))
     for name, d in rep["changed"].items():
         print("  changed  %-32s %s" % (name, "; ".join("%s %s" % (k, v) for k, v in d.items())))
     if rep.get("app_files"):

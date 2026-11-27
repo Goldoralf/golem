@@ -363,7 +363,9 @@ installed on a computer, and the reference rack is a build (`docs/rack-hardware.
    Nitro/MPK swap — the other variant keeps its snapshot (decided by 2026-10-22). golem.fm's rule "both snapshots
    at the same commit" must then accept a variant from an older commit when the rack says the change does not concern
    it (asked of golem.fm the same day).
-4. **Measure the impact**: `tools/doc-impact.py <pinned snapshot> <new snapshot>` lists, per example, what changed
+4. **Measure the impact**: `tools/doc-impact.py <pinned snapshot> <new snapshot>` first says, **per section of the menu**
+   (Live, Designer, Songs, each tab of Library and Settings, the Companion, the first-install check), whether it is *to
+   review*, *noise only* (disk, CPU, backups) or *unchanged*; then it lists, per example, what changed
    (anchors gone or new, now hidden, reads, the rendering — pixel diff when both `-shots` folders exist), the app
    files changed between the two commits, and **the doc pages that cite a touched example** or halo a vanished anchor.
    Keep each pin's `-shots` folder next to it (`~/golem-doc-work/pin-<commit>/`) so the next comparison has pixels.

@@ -76,6 +76,19 @@ they are written (a screen needs an answer) and they describe the **reference ra
 
 ## 2 bis. The reference rack
 
+> **Since 2026-11-27 the reference rack is DECLARED, not plugged in** (`tools/shell_overlay.py`,
+> `tools/shell/reference-rack.json`; [release-tool-plan.md](release-tool-plan.md) §3 bis step 2). The extraction
+> **replays** it while the pages render: every read the kit covers is served to the browser with the kit's values (the
+> GETs and the WebSocket state), so the Gear pages, their anchors and their screenshots are those of the extracted
+> commit, with the Volt 276, the MPK Mini **and** the Nitro together. The same values are then written into the
+> snapshot. **One snapshot** (`name: "factory"`, `rack.variant: "drums+keys"`, `rack.declared`): no device swap, no golem
+> relaunch, no hand graft; `SNAPSHOT.json` `reference_kit` says what each layer covers. The **demo take** of Library ▸
+> Tracks ▸ Recordings is the kit's second layer (`<kit>/demo-take/`, audio, outside the repository: `GOLEM_SHELL_KIT`,
+> default `~/golem-doc-work/reference`), kept as recorded. The rest of every read still comes from the bench, so from
+> the extracted code; `kit_warnings` says when an entry of the kit no longer has the shape the bridge returns — the
+> signal to re-record it with the hardware plugged. `--live-rack` gives the behaviour described below (the hardware of
+> the machine that day), which stays the way to record or check the kit.
+
 The Gear pages need real hardware. Fixed on 2026-10-21: **Volt 276** (sound card, two inputs) +
 **FCB1010 with the UnO2 chip** (pedalboard, on the card's MIDI port), and **two variants**, because the machine has
 not enough USB ports for both: **`drums`** adds the **Alesis Nitro** (electronic drums), **`keys`** adds the

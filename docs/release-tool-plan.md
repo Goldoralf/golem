@@ -156,7 +156,12 @@ golem.fm, so nothing is built for it; the target is maestrium.
    `shell_snapshot.py --factory --smoke` (19 s). A full extraction at e8cfe1fb made 58 examples of 58, none failed.
    The graft scripts are not moved: step 2 replaces them.
 2. **Canned hardware.** The reads of each device (Volt, FCB, Nitro, MPK) are recorded once into a versioned reference
-   set the bench replays: no swap, no hand graft. Re-recorded only when the Gear pages change.
+   set the bench replays: no swap, no hand graft. Re-recorded only when the Gear pages change. **Done 2026-11-27**
+   (`tools/shell_overlay.py`): the rack is declared in `tools/shell/reference-rack.json` and the demo take lives in the
+   kit (`~/golem-doc-work/reference/demo-take`, audio, outside the repository); both are replayed while the pages
+   render (GET reads and the WebSocket state), then written into the snapshot. The hand grafts (`merge_gear.py`,
+   `graft_take.py`) are no longer needed. The rack file was assembled from the entries of earlier snapshots: to
+   re-record with the hardware plugged at the next occasion.
 3. **By section of the menu.** `--only live|designer|songs|library/<tab>|settings/<tab>|companion`; the tool works out
    the sections a change touches from the files changed between two versions, re-extracts those and merges them into
    the existing shell; a change in a shared file says so and redoes everything. The manifest records each section's

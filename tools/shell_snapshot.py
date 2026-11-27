@@ -29,6 +29,8 @@ import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import shell_overlay  # noqa: E402 — le kit de référence (matériel, prise de démo) rejoué pendant l'extraction
 
 # ── les lectures ─────────────────────────────────────────────────────────────────────────────────
 DEFAULT_READS = [
@@ -648,7 +650,7 @@ _HIDDEN_JS = ("() => [...new Set([...document.querySelectorAll('[data-doc]')].fi
 
 
 def crawl(base, rack_pages, phone_pages, settle_ms=1500, log=print, shot=None, click=None, anchors=None, boot_skip=None,
-          ro=False, hidden=None, posts=None):
+          ro=False, hidden=None, posts=None, overlay=None, example=None):
     """Ouvre chaque page, relève ses lectures GET /api/… (chemin + requête). Les écritures sont INTERCEPTÉES (règle 3
     du CLAUDE.md) même sur un bridge jetable : le relevé ne doit pas dépendre d'un geste qui aurait changé l'état."""
     from playwright.sync_api import sync_playwright
@@ -670,7 +672,22 @@ def crawl(base, rack_pages, phone_pages, settle_ms=1500, log=print, shot=None, c
                             return route.continue_()
                         return route.fulfill(status=200, content_type="application/json", body='{"ok": true}')
                     u = urllib.parse.urlsplit(r.url)
-                    seen.append(u.path + ("?" + u.query if u.query else ""))
+                    full = u.path + ("?" + u.query if u.query else "")
+                    seen.append(full)
+                    # LE KIT DE RÉFÉRENCE (tools/shell_overlay.py) : la page voit le matériel et la prise de démo déclarés,
+                    # pas ceux du poste — elle est RENDUE avec, ses ancres et sa capture sont donc vraies au commit extrait
+                    if overlay and (overlay.covers(full, example) or u.path == "/api/state"):
+                        try:
+                            whole = overlay.whole(full, example)
+                            if whole is not None:
+                                return route.fulfill(status=200, content_type="application/json", body=json.dumps(whole))
+                            resp = route.fetch()
+                            data = overlay.read(full, resp.json(), example)
+                            if u.path == "/api/state":
+                                data = overlay.state(data, example)
+                            return route.fulfill(status=resp.status, content_type="application/json", body=json.dumps(data))
+                        except Exception:
+                            pass
                     return route.continue_()
                 page = browser.new_page(viewport={"width": size[0], "height": size[1]})
                 answers = {}
@@ -690,6 +707,18 @@ def crawl(base, rack_pages, phone_pages, settle_ms=1500, log=print, shot=None, c
                 if boot_skip:                                    # « Open the app anyway » : l'écran /loading passé
                     page.add_init_script("try { sessionStorage.setItem('golemBootSkip', '%s'); } catch (e) {}" % boot_skip)
                 page.route("**/api/**", guard)
+                if overlay:
+                    # l'ÉTAT arrive par le WebSocket : mêmes clés remplacées (le matériel branché, state.hotplug)
+                    def ws_route(ws, overlay=overlay, example=example):
+                        server = ws.connect_to_server()
+
+                        def from_server(msg):
+                            try:
+                                ws.send(json.dumps(overlay.state(json.loads(msg), example)))
+                            except Exception:
+                                ws.send(msg)
+                        server.on_message(from_server)
+                    page.route_web_socket(re.compile(r".*/ws(\?.*)?$"), ws_route)
                 try:
                     # ro : l'écran tel que golem.fm le montre (?shell=ro) — ce qui y est caché se mesure à part
                     page.goto(_page_url(base, target, ro), wait_until="domcontentloaded")
@@ -964,7 +993,7 @@ def _post(base, path, body):
         return json.loads(r.read() or b"null")
 
 
-def make_example(base, ex, base_reads, settle_ms, log, out_dir):
+def make_example(base, ex, base_reads, settle_ms, log, out_dir, overlay=None):
     """Rejoue l'exemple, visite sa page, rend {name, title, route, state, reads}. Bridge JETABLE seulement : ces
     écritures (recall, sandbox_apply) changent l'état d'un rack — jamais contre un vrai bridge."""
     pid, slot = ex.get("preset"), None
@@ -973,10 +1002,12 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
         act = next(s for s in (sl.get("setlists") if isinstance(sl, dict) else sl) if s.get("active"))
         slot = next(i for i, ln in enumerate(act["lines"]) if ln.get("title") == ex["line"])
         pid = act["lines"][slot]["preset"]
-    for path, body in ex.get("gestures") or []:
+    # un geste qui demande l'appareil lui-même (« This is a drum module ») : le kit de référence en porte le résultat
+    canned = bool(overlay) and overlay.skip_gestures(ex["name"])
+    for path, body in ([] if canned else ex.get("gestures") or []):
         _post(base, path, body)
     try:
-        return _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir)
+        return _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir, overlay)
     finally:
         # ce qui remet le bridge jetable comme avant part TOUJOURS, même quand l'exemple échoue : le suivant part du même
         # état (2026-11-27 — un exemple en échec laissait son geste en place, et faisait tomber toute l'extraction)
@@ -987,7 +1018,7 @@ def make_example(base, ex, base_reads, settle_ms, log, out_dir):
                 log("  example %s: undo %s failed (%s)" % (ex["name"], path, e))
 
 
-def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir):
+def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir, overlay=None):
     doc = _get(base, "/api/preset/" + urllib.parse.quote(pid, safe=":"))
     # le brouillon du Designer = ce preset à cette scène (sinon le Designer et le WebSocket se contredisent)
     _post(base, "/api/sandbox_apply", {"preset": doc, "scene": ex["scene"]})
@@ -1003,20 +1034,28 @@ def _make_example(base, ex, pid, slot, base_reads, settle_ms, log, out_dir):
     phone = ex["route"].startswith("/app/m.html")                # le Companion se mesure à 390×844
     by_page = crawl(base, [] if phone else [ex["route"]], [ex["route"]] if phone else [], settle_ms, log=lambda *_: None,
                     shot=os.path.join(shots, ex["name"] + ".png"),
-                    click=ex.get("click"), anchors=anchors, boot_skip=t0, ro=True, hidden=hidden, posts=posts)
+                    click=ex.get("click"), anchors=anchors, boot_skip=t0, ro=True, hidden=hidden, posts=posts,
+                    overlay=overlay, example=ex["name"])
     reads = {}
     for r in by_page.get(ex["route"], []):
         if VOLATILE.match(r) or _never(r, True):
             continue
         try:
-            data = redact(_get(base, r))
+            live = _get(base, r)
         except Exception:
+            live = None
+        if overlay and overlay.covers(r, ex["name"]):       # ce que la page a VU : la lecture du banc passée par le kit
+            live = overlay.read(r, live if live is not None else {}, ex["name"])
+        if live is None:
             continue
+        data = redact(live)
         if data != base_reads.get(r):
             reads[r] = data
     for key, data in ((posts.get(ex["route"]) or {}).get("answers") or {}).items():
         reads[key] = redact(data)                            # « POST /api/blocks/status » : servie telle quelle
     st = redact(_get(base, "/api/state"))
+    if overlay:
+        st = overlay.state(st, ex["name"])
     # un exemple montre UN RACK QUI JOUE : le démarrage est fini et le moteur répond. Le bridge jetable n'a pas de
     # REAPER ; sans ceci, /live montrerait l'écran « /loading » (showBoot, app/boot-model.mjs). Rien d'autre n'est retouché.
     st.pop("boot", None)
@@ -1234,8 +1273,8 @@ def separation_from(url, out_dir, log=print):
 # exemples — assez pour que l'outil casse AU COMMIT qui le casse (un bridge jetable qui ne démarre plus, une route
 # changée, une lecture qui fuit), pas trois semaines plus tard au moment de ré-épingler. Sans moteur ni démos : la CI
 # n'a ni Golem Engine ni REAPER ; le chemin avec moteur se vérifie sur le rack (docs/release-checklist.md).
-SMOKE_PAGES = ["#/live", "#/designer", "/app/m.html?tab=live&mode=now"]
-SMOKE_EXAMPLES = ["golem-rising-live", "companion-now"]
+SMOKE_PAGES = ["#/live", "#/designer", "#/system/gear/controllers", "/app/m.html?tab=live&mode=now"]
+SMOKE_EXAMPLES = ["golem-rising-live", "reference-controllers", "companion-now"]     # reference-controllers : le rack déclaré
 
 
 def smoke_problems(res, out_dir):
@@ -1259,12 +1298,16 @@ def smoke_problems(res, out_dir):
     for must in ("/api/state", "/api/presets", "/api/effects"):
         if must not in man.get("written", []):
             bad.append("%s is not in the snapshot" % must)
+    if not (man.get("rack") or {}).get("declared") and os.path.isfile(shell_overlay.RACK_FILE):
+        bad.append("the declared reference rack (tools/shell/reference-rack.json) was not applied")
+    if man.get("kit_warnings"):
+        bad.append("the reference kit's shape is stale: " + "; ".join(man["kit_warnings"][:3]))
     return bad
 
 
 def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True, demos=True, take=None,
                      take_title=None, separation=None, reference=REFERENCE_URL, take_drop=None,
-                     bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False):
+                     bench_engine="golem-engine", only_examples=None, only_pages=None, smoke=False, overlay=None):
     """Bridge jetable d'usine → relevé par page → instantané expurgé et vérifié, + `SNAPSHOT.json`.
 
     `only_pages` / `only_examples` : un sous-ensemble (des routes, des noms) — le résultat est alors PARTIEL et le dit
@@ -1288,7 +1331,13 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
             seed_demos(br.root, log)
         if take:
             seed_take(br.root, take, take_title, log, take_drop)
-        rack_seen = rack_check(base, reference)
+        declared = overlay.rack() if overlay else None
+        if declared:
+            # LE RACK DÉCLARÉ (tools/shell/reference-rack.json) : plus besoin que le matériel soit branché ce jour-là
+            rack_seen = {"reference": REFERENCE_RACK, "variant": declared["variant"], "seen": sorted(declared["seen"]),
+                         "missing": [], "complete": True, "declared": declared.get("recorded")}
+        else:
+            rack_seen = rack_check(base, reference)
         log("reference rack (%s): seen %s%s" % (rack_seen["variant"] or "no variant", ", ".join(rack_seen["seen"]) or "nothing",
                                           "" if rack_seen["complete"] else " — MISSING " + ", ".join(rack_seen["missing"])))
         rack, phone = factory_pages(base, cu)
@@ -1297,13 +1346,19 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         if only_pages is not None:
             rack, phone = [p for p in rack if p in only_pages], [p for p in phone if p in only_pages]
         page_anchors, page_posts = {}, {}
-        by_page = crawl(base, rack, phone, settle_ms, log, anchors=page_anchors, posts=page_posts)
+        by_page = crawl(base, rack, phone, settle_ms, log, anchors=page_anchors, posts=page_posts, overlay=overlay)
         observed = sorted({r for v in by_page.values() for r in v if not VOLATILE.match(r) and not _never(r, True)})
         listed = list(dict.fromkeys(observed + reads_for(base) + take_reads(base) + kit_reads(base)))
         res = snapshot(base, out_dir, listed, log, factory=True)
         res["media"] = collect_media(base, out_dir, res["written"], log)
         if separation:
             separation_from(separation, out_dir, log)
+        kit_warnings = []
+        if overlay:                                         # APRÈS l'écriture expurgée : le kit ne porte rien de personnel
+            kit_media, kit_warnings = overlay.apply_to_snapshot(out_dir, res, out_path, log)
+            res["media"].update(kit_media)
+            for w in kit_warnings:
+                log("  reference kit ⚠ %s" % w)
         base_reads = {}
         for r in res["written"]:
             with open(out_path(out_dir, r), encoding="utf-8") as f:
@@ -1313,12 +1368,13 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         # noté et les autres continuent — avant, un seul sur soixante faisait perdre toute l'extraction
         examples, examples_failed = [], []
         for ex in EXAMPLES:
-            if ex.get("rack") not in (None, rack_seen["variant"]):
+            # « drums+keys » : le rack déclaré a les deux appareils, chaque exemple matériel se fait
+            if ex.get("rack") not in (None, rack_seen["variant"]) and rack_seen["variant"] != "drums+keys":
                 continue
             if only_examples is not None and ex["name"] not in only_examples:
                 continue
             try:
-                examples.append(make_example(base, ex, base_reads, settle_ms, log, out_dir))
+                examples.append(make_example(base, ex, base_reads, settle_ms, log, out_dir, overlay))
             except Exception as e:
                 why = ("%s: %s" % (type(e).__name__, e)).splitlines()[0][:300]
                 examples_failed.append({"name": ex["name"], "route": ex["route"], "why": why})
@@ -1343,6 +1399,9 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
         "media": res.get("media", {}),
         "machine": sorted(r for r in res["written"] if MACHINE.match(r)),
         "rack": rack_seen,
+        # le kit de référence rejoué pendant l'extraction (tools/shell_overlay.py) : ce que chaque couche couvre, d'où elle
+        # vient, et les entrées dont la forme a vieilli (le signal pour le réenregistrer, matériel branché)
+        "reference_kit": overlay.describe() if overlay else [], "kit_warnings": kit_warnings if overlay else [],
         # les lectures faites en POST (servies par les exemples sous « POST /api/… »), et ce que chaque page ÉCRIT au
         # chargement sans aucun geste — hors de ces lectures, chaque entrée est un bug de la page
         "post_reads": list(POST_READS),
@@ -1393,6 +1452,11 @@ def main(argv=None):
     ap.add_argument("--smoke", action="store_true",
                     help="with --factory: the mini-shell CI runs (two rack pages, one Companion page, two examples) and its "
                          "checks; exits 1 when something is wrong. Use with --no-engine --no-demos where no engine is installed")
+    ap.add_argument("--live-rack", action="store_true",
+                    help="with --factory: show the hardware plugged into THIS machine (the way before the reference kit), "
+                         "instead of the declared reference rack and demo take (tools/shell_overlay.py)")
+    ap.add_argument("--kit", help="with --factory: the reference kit's folder (demo take); default $GOLEM_SHELL_KIT or "
+                                  "~/golem-doc-work/reference")
     ap.add_argument("--out", default=os.path.join(ROOT, "shell-snapshot"))
     ap.add_argument("--list", help="a file: one GET read per line")
     ap.add_argument("--private-name", action="append", default=[], help="a person's name to pseudonymize everywhere")
@@ -1404,7 +1468,8 @@ def main(argv=None):
     if a.factory:
         os.makedirs(a.out, exist_ok=True)
         collect_private(a.private_name)
-        r = factory_snapshot(a.out, a.rev, engine=not a.no_engine, demos=not a.no_demos, take=a.take, bench_engine=a.bench_engine,
+        overlay = shell_overlay.Overlay() if a.live_rack else shell_overlay.Overlay.load(kit=a.kit)
+        r = factory_snapshot(a.out, a.rev, overlay=overlay, engine=not a.no_engine, demos=not a.no_demos, take=a.take, bench_engine=a.bench_engine,
                              take_title=a.take_title, separation=a.separation_from,
                              reference=a.reference, take_drop=a.take_drop_role, smoke=a.smoke,
                              only_examples=a.examples.split(",") if a.examples else None,

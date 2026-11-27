@@ -1,0 +1,272 @@
+{
+ "what": "the reference rack: Universal Audio Volt 276 (FCB1010 UnO2 on its MIDI port), AKAI MPK Mini Mk II, Alesis Nitro — both USB devices plugged together",
+ "recorded": {
+  "commit": "4cdf4951deba74b3872cb8f735f727b4ba671080",
+  "made": "2026-11-22",
+  "how": "assembled from the entries the maintainer's rack returned in earlier snapshots (the MPK on 2026-11-22, the Nitro on 2026-10-23, unbound then bound). To re-record with the hardware plugged when the Gear pages change shape: shape_warnings in SNAPSHOT.json says when."
+ },
+ "rack": {
+  "variant": "drums+keys",
+  "seen": [
+   "MPK Mini",
+   "Nitro",
+   "Volt 276"
+  ]
+ },
+ "set": {
+  "/api/controllers": {
+   "controllers": [
+    {
+     "key": null,
+     "name": "MPK Mini Mk II",
+     "usb": "09e8:0045",
+     "kind": "midi",
+     "roles": [],
+     "person": null,
+     "nth": null,
+     "kit": null,
+     "known": false,
+     "connected": true,
+     "port": 1,
+     "hw": "hw:II",
+     "first_seen": null,
+     "last_seen": null,
+     "id": null,
+     "profile": null,
+     "calibrated": null,
+     "model": {
+      "id": "akai-mpk-mini-mk2",
+      "name": "AKAI MPK Mini Mk II",
+      "can_program": true
+     },
+     "channels": null,
+     "split": false
+    },
+    {
+     "key": null,
+     "name": "Alesis Nitro",
+     "usb": "13b2:009c",
+     "kind": "midi",
+     "roles": [],
+     "person": null,
+     "nth": null,
+     "kit": null,
+     "known": false,
+     "connected": true,
+     "port": 2,
+     "hw": "hw:Nitro",
+     "first_seen": null,
+     "last_seen": null,
+     "id": null,
+     "profile": null,
+     "calibrated": null,
+     "model": null,
+     "channels": null,
+     "split": false
+    }
+   ]
+  },
+  "/api/devices": {
+   "devices": [
+    {
+     "key": null,
+     "name": "MPK Mini Mk II",
+     "usb": "09e8:0045",
+     "kind": "midi",
+     "roles": [],
+     "person": null,
+     "nth": null,
+     "kit": null,
+     "known": false,
+     "connected": true,
+     "port": 1,
+     "hw": "hw:II",
+     "first_seen": null,
+     "last_seen": null,
+     "calibrated": null
+    },
+    {
+     "key": null,
+     "name": "Alesis Nitro",
+     "usb": "13b2:009c",
+     "kind": "midi",
+     "roles": [],
+     "person": null,
+     "nth": null,
+     "kit": null,
+     "known": false,
+     "connected": true,
+     "port": 2,
+     "hw": "hw:Nitro",
+     "first_seen": null,
+     "last_seen": null,
+     "calibrated": null
+    }
+   ]
+  },
+  "/api/soundcard": {
+   "card": {
+    "alsa": "V276",
+    "name": "Volt 276",
+    "present": true
+   },
+   "playback_open": true,
+   "capture_open": true,
+   "midi": {
+    "present": true,
+    "in_active": true,
+    "out_active": true
+   },
+   "usb": [
+    {
+     "name": "MPK Mini Mk II",
+     "kind": "midi",
+     "active": true
+    },
+    {
+     "name": "Alesis Nitro",
+     "kind": "midi",
+     "active": true
+    }
+   ],
+   "binding": {}
+  },
+  "/api/cards": {
+   "connected": [
+    {
+     "index": 1,
+     "id": "V276",
+     "name": "Universal Audio Volt 276",
+     "known": false,
+     "ignored": false,
+     "active": false,
+     "candidate": true
+    }
+   ],
+   "active": ""
+  }
+ },
+ "state": {
+  "hotplug": {
+   "devices": [
+    {
+     "id": "II",
+     "name": "AKAI MPK Mini Mk II",
+     "usb": "09e8:0045",
+     "kind": "unknown",
+     "label": "unknown MIDI device",
+     "propose": true
+    },
+    {
+     "id": "Nitro",
+     "name": "Alesis‭ Alesis Nitro",
+     "usb": "13b2:009c",
+     "kind": "drums",
+     "match": "Alesis Nitro",
+     "label": "drum module — Alesis Nitro",
+     "bound": false,
+     "propose": true
+    }
+   ],
+   "events": [
+    {
+     "at": "2026-10-23T01:20:17",
+     "ev": "plug",
+     "name": "Alesis‭ Alesis Nitro",
+     "kind": "drums",
+     "label": "drum module — Alesis Nitro"
+    },
+    {
+     "at": "2026-11-22T00:20:20",
+     "ev": "plug",
+     "name": "AKAI MPK Mini Mk II",
+     "kind": "unknown",
+     "label": "unknown MIDI device"
+    }
+   ]
+  }
+ },
+ "examples": {
+  "reference-drums-bound": {
+   "skip_gestures": true,
+   "set": {
+    "/api/devices": {
+     "devices": [
+      {
+       "key": "13b2:009c",
+       "name": "Alesis Nitro",
+       "usb": "13b2:009c",
+       "kind": "midi",
+       "roles": [
+        "drums"
+       ],
+       "person": null,
+       "nth": null,
+       "kit": {
+        "id": "alesis-nitro",
+        "name": "Alesis Nitro",
+        "confidence": "verified",
+        "auto": true,
+        "fallback": false
+       },
+       "known": true,
+       "connected": true,
+       "port": 1,
+       "hw": "hw:Nitro",
+       "first_seen": "2026-10-23 01:26",
+       "last_seen": "2026-10-23 01:26",
+       "calibrated": null
+      },
+      {
+       "key": null,
+       "name": "MPK Mini Mk II",
+       "usb": "09e8:0045",
+       "kind": "midi",
+       "roles": [],
+       "person": null,
+       "nth": null,
+       "kit": null,
+       "known": false,
+       "connected": true,
+       "port": 2,
+       "hw": "hw:II",
+       "first_seen": null,
+       "last_seen": null,
+       "calibrated": null
+      }
+     ]
+    },
+    "/api/controllers": {
+     "controllers": [
+      {
+       "key": null,
+       "name": "MPK Mini Mk II",
+       "usb": "09e8:0045",
+       "kind": "midi",
+       "roles": [],
+       "person": null,
+       "nth": null,
+       "kit": null,
+       "known": false,
+       "connected": true,
+       "port": 1,
+       "hw": "hw:II",
+       "first_seen": null,
+       "last_seen": null,
+       "id": null,
+       "profile": null,
+       "calibrated": null,
+       "model": {
+        "id": "akai-mpk-mini-mk2",
+        "name": "AKAI MPK Mini Mk II",
+        "can_program": true
+       },
+       "channels": null,
+       "split": false
+      }
+     ]
+    }
+   }
+  }
+ }
+}

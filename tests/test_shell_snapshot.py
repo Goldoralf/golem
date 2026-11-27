@@ -236,11 +236,12 @@ def test_la_mini_coquille_dit_ce_qui_ne_va_pas(tmp_path):
     (tmp_path / "SNAPSHOT.json").write_text(json.dumps(man))
     res = {"refused": [("/api/x", "trace")], "examples_failed": [{"name": "companion-now", "why": "boom"}]}
     bad = "\n".join(S.smoke_problems(res, str(tmp_path)))
-    for want in ("refused", "companion-now (boom)", "examples not made: companion-now", "page #/designer made no read",
+    for want in ("refused", "companion-now (boom)", "examples not made: reference-controllers, companion-now", "page #/designer made no read",
+                 "the declared reference rack", "page #/system/gear/controllers made no read",
                  "page /app/m.html?tab=live&mode=now made no read", "/api/effects is not in the snapshot"):
         assert want in bad, want
     ok = {"examples": S.SMOKE_EXAMPLES, "pages": {p: ["/api/state"] for p in S.SMOKE_PAGES},
-          "written": ["/api/state", "/api/presets", "/api/effects"]}
+          "written": ["/api/state", "/api/presets", "/api/effects"], "rack": {"declared": {"commit": "x"}}, "kit_warnings": []}
     (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
     assert S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)) == []
     assert S.smoke_problems({"refused": []}, str(tmp_path / "nowhere"))[0].startswith("no SNAPSHOT.json")

@@ -34,12 +34,6 @@
   "url": "https://github.com/DISTRHO/PawPaw/releases/download/v1.1/PawPaw-macOS-universal-v1.1.0.pkg",
   "sha256": "97a1187b2afdf5b7b59f041256dd0b4de22f4c041fed25a7f8e536a7822b39fe"
  },
- "dragonfly": {
-  "_comment": "Dragonfly Reverb (Michael Willis, GPL-3) : les blocs reverb (Hall), reverb-plate et reverb-room. effects-macos.json les nommait, rien ne les installait : mesuré sur un MacBook Air le 2026-11-04, la réverbe se taisait sur ~45 presets d'usine. Image universelle (arm64 + x86_64) ; son paquet n'est PAS signé, l'empreinte épinglée est le seul contrôle. Il pose VST3, VST2, LV2 et CLAP dans /Library/Audio/Plug-Ins.",
-  "version": "3.2.10",
-  "url": "https://github.com/michaelwillis/dragonfly-reverb/releases/download/3.2.10/dragonfly-reverb-3.2.10-macos-universal.dmg",
-  "sha256": "e0b854b92a4e51ce5851320fb1a9f91ab1a4309f997de070e175b3e5cab4adaf"
- },
  "golem_fx": {
   "_comment": "golem-fx (les effets de golem, GPL-3) : 58 VST3 « GoleM FX <Nom>.vst3 » à la racine de l'archive, release golem-fx-0.8.1 de Goldoralf/golem-binaries (golem-fx 7d79340 ; empreinte recalculée sur l'archive téléchargée et comparée au SHA256SUMS de la release, 2026-11-26 ; 0.8 = 0.7 + Organ et Octafuzz, trois circuits de Dist ajoutés à la fin, le bend de Pitch ; 0.8.1 = même code que 0.8, recompilé, presets et données remis à jour). Posés par provision/golem_fx.py (provision/desktop.py setup) dans ~/Library/Audio/Plug-Ins/VST3 (sans droits d'administrateur ; bundles universels, signés ad hoc) ; un échec n'est pas fatal, les blocs gardent leurs plugins d'origine.",
   "version": "0.8.1",
@@ -49,23 +43,8 @@
  "manual": [
   {
    "name": "Surge XT",
-   "why": "the Spring Reverb, Frequency Shifter and Treemonster blocks (Surge XT Effects, free, VST3, Apple silicon).",
+   "why": "the Frequency Shifter block (Surge XT Effects, free, VST3, Apple silicon).",
    "url": "https://github.com/surge-synthesizer/releases-xt/releases/tag/1.3.4"
-  },
-  {
-   "name": "x42 Limiter and Autotune",
-   "why": "the Limiter and Pitch Correct blocks (LV2, Apple silicon, free) — take the « mac » packages.",
-   "url": "https://x42-plugins.com/x42/"
-  },
-  {
-   "name": "ZamAudio plugins",
-   "why": "the Granular block (ZamGrains, free).",
-   "url": "https://github.com/zamaudio/zam-plugins/releases/tag/4.5"
-  },
-  {
-   "name": "Spectral Compressor",
-   "why": "the Spectral Comp block (free, nih-plug builds) — copy the VST3 to /Library/Audio/Plug-Ins/VST3.",
-   "url": "https://github.com/robbert-vdh/nih-plug/releases/tag/latest-builds"
   },
   {
    "name": "PaulXStretch",

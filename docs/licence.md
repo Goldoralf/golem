@@ -114,8 +114,8 @@ the upstream URL and the licence file next to it.
 
 - **REAPER** is proprietary and keeps its own licence. golem installs it (`provision/install-reaper.sh`,
   `provision/desktop.py`); it does not redistribute it.
-- **Plugins** (NAM, Vital, Surge XT, sfizz, guitarix, Calf, x42, ZamAudio, DrumGizmo,
-  Dragonfly…) each keep their own licence. None is in the repository: the installer downloads or
+- **Plugins** (golem-fx, NAM, Vital, Surge XT, sfizz, x42, mda, PaulXStretch, DrumGizmo…) each keep their own
+  licence. None is in the repository: the installer downloads or
   builds them from pinned sources. **Settings ▸ About** in the app lists the embedded components
   and their licences (`app/page-licenses.js`, `GET /api/system/libraries` from
   `provision/components.json`).

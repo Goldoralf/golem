@@ -78,7 +78,7 @@ dot, 🔒), remembered by the phone (`localStorage golem.phone.mode`):
 | mode | shown when | content |
 |---|---|---|
 | **Now** | always | title, tempo, key (from the backing catalogue `key`; none without a backing), scene, next song; while the arrangement runs, the count-in, the part now and the next one. Opens **Between songs** when the arrangement is finished or loaded but not started, and **Ready for the show** (Show mode, conductor, nothing played yet) |
-| **Control** | always (🔒 without the right) | `app/mobile-control.js`. ① the foot lists: setlists ▤ or banks ⛓, the one on the foot marked; ② a list's lines: a tap loads the line (`/api/recall {slot}`); a line of another list arms first ("tap again: play this list"), then activates the list and loads; while a song plays the rack answers 409 and the second tap confirms ("stop & load"); ▶ Start / ⏭ Next part / ■ Hold to stop (the former Song tab); ③ the play screen: ◀ ▶ (the foot list's playable lines, like `live-bankbar.js`), the title opens the lines, the five stomps SW 6-10 (`/api/stomp {switch}`; service blocks show whether they play, like /live) and a Tuner tile, the scenes at the bottom under the thumb (`/api/recall {scene}`), colours, names and **animations** from the preset (`preset.anims`; the rules are read from `app/style.css` by `app/anim-tiles.mjs`, still tiles when Display ▸ Animations is Off). **Phone turned sideways**: the rack's real /live page, `/app/?desktop=1&embed=live#/live` (no top menu, no Designer/Songs/Library links, no tools, no automatic REC), scaled to the phone (logical height 552 px). Without `rights.control` the same screen, greyed (sideways: a veil takes the taps), says why and offers "Sign in with golem.fm" |
+| **Control** | always (🔒 without the right) | `app/mobile-control.js`. ① the foot lists: setlists ▤ or banks ⛓, the one on the foot marked; ② a list's lines: a tap loads the line (`/api/recall {slot}`); a line of another list arms first ("tap again: play this list"), then activates the list and loads; while a song plays the rack answers 409 and the second tap confirms ("stop & load"); ▶ Start / ⏭ Next part / ■ Hold to stop (the former Song tab); ③ the play screen: ◀ ▶ (the foot list's playable lines, like `live-bankbar.js`), the title opens the lines, the five stomps SW 6-10 (`/api/stomp {switch}`; service blocks show whether they play, like /live) and a Tuner tile, the scenes at the bottom under the thumb (`/api/recall {scene}`), colours, names and **animations** from the preset (`preset.anims`; the rules are read from `app/style.css` by `app/anim-tiles.mjs`, still tiles when Display ▸ Animations is Off). **Phone turned sideways**: the rack's real /live page, `/app/?desktop=1&embed=live#/live` (no top menu, no Designer/Songs/Library links, no tools, no automatic REC; the setlist chip of the top menu moves into the lines window opened by the title — "⇄ Change setlist or bank" in place of "Open in Designer", `live-bankbar.js`), scaled to the phone (logical height 552 px). Without `rights.control` the same screen, greyed (sideways: a veil takes the taps), says why and offers "Sign in with golem.fm" |
 | **Mine** | the person has lanes | my lanes: state of the scene, level, my stomps (tap = toggle); keys lanes show sound, instrument, zone, transposition per scene (`lane_stomps.instruments_by_scene`); opens the **Tuner** sheet |
 | **Lyrics** | the person has a voice lane | lyrics of the backing (`/api/backing/meta/<slug>`); `[Chorus]`-style markers follow the current part, else the whole text; size from `prefs.lyrics_size`, "A− text" / "A+ text" for the session. "No lyrics for this song" / "No lyrics: this song has no backing track" |
 | **Beat** | the device has no lines | bar and beat, count-in, next part |
@@ -113,7 +113,19 @@ on its row before the tap; the rights come from `whoami.rights` (`auth.rights_of
 - Wake lock: `navigator.wakeLock` does not exist over plain http on the LAN, so `lib.keepAwake`
   falls back to a muted looping video (`app/media/keepawake.*`). Web app manifests
   `app/manifest.webmanifest` and `app/m.webmanifest` give full screen from "Add to home screen"
-  (mostly iOS; Chrome Android needs HTTPS for an installed app).
+  (mostly iOS; Chrome Android needs HTTPS for an installed app, or the flag "Insecure origins treated as
+  secure" set to the golem's address). `m.webmanifest` leaves the orientation free (`any`): locked upright,
+  an installed Companion would never show Control sideways nor the tablet display.
+- **Full screen on Android without installing** (2026-11-26, `app/fullscreen.mjs`): System ▸ Display ▸ Full
+  screen, and a ⛶ button next to 📱 in the tablet display, call the Fullscreen API, which works over plain
+  http after a tap and hides the address bar and the status bar. A reload leaves full screen (a browser rule):
+  the button stays. Not shown where the API is missing (iPhone Safari).
+- **Full screen at the first tap** (Settings ▸ System ▸ Display, `display.fullscreen`, **on by default**, one setting for
+  every device): a browser never enters full screen without a gesture, so on any phone or tablet (touch screen, not
+  the rack's own screen, not inside an iframe, not a browser already covering the screen) a transparent veil takes the
+  first tap: it goes to full screen and does **nothing else** (a tap to wake the screen never toggles a stomp). The
+  veil also covers the iframes of the tablet display and of Control sideways. It comes back after a reload or an exit
+  by the system (back gesture), not after "Leave full screen". `app/fullscreen.mjs`, `bridge/display.py`.
 
 Dev: `golem phone` opens the Companion at 390×844 with a **Who** selector and a 🎼 conductor switch.
 

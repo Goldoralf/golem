@@ -2,6 +2,8 @@
 
 > **Status: CODED** — three spectral blocks (`spectral-comp`, `stretch`, `freeze`) in the catalog, built from
 > pinned sources by `provision/install-spectral.sh`; validated on the bench, not yet judged by ear.
+> **2026-11-27:** golem-fx plays `spectral-comp` (gfx-spectralcomp); Spectral Compressor and its Rust toolchain left the
+> installers, and `install-spectral.sh` places PaulXStretch only ([golem-fx-migration.md](golem-fx-migration.md)).
 > **Freeze is QUARANTINED** since 2026-11-12 (catalog v35, the maintainer's call: it does not work well) — out of the drawer,
 > the AI vocabulary and the compile until it is reworked. **Freeze is RETIRED** since catalog v48 (2026-11-15): its
 > documents become `granular`; `GoleM Freeze` left the installer and its `plugins/` source left the repository the

@@ -472,7 +472,7 @@ export function LivePage({ rig }) {
 function PedalboardLive({ rig, presets }) {
   // LES PÉDALES SUR LES STOMPS (menu de vue ▸ « Pedals on the stomps ») : les moteurs de golem-fx, chargés à la demande
   const disp = (rig.state && rig.state.display) || {};
-  STILL.on = tilesStill({ local: isLocalHost(location.hostname), display: { animations: disp.animations || 'auto', blinks: disp.blinks !== false } });
+  STILL.on = tilesStill({ local: isLocalHost(location.hostname), display: { animations: disp.animations || 'auto' } });
   STILL.style = disp.still_tiles || 'pedals';
   STILL.bpm = (rig.state && rig.state.tempo) || 120;
   // style « Pedals » des cases figées : les pédales sur les stomps, comme le menu de vue

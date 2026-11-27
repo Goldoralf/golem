@@ -467,20 +467,15 @@ def setup():
     # le bloc reste barré et l'onglet Libraries le dit. Airwindows TapeDelay2 n'en est plus (2026-11-15) : le bloc
     # Tape Delay (Airwindows) est retiré (catalogue v48).
     if sys.platform == "win32":
-        step("desktop plugins: Dragonfly Reverb, Surge XT Effects, Dexed")
-        # les réverbes Dragonfly (2026-10-22) : la table Windows les nommait, rien ne les posait — sans elles
-        # presque toute l'usine jouait sans réverbe.
-        try:
-            from provision import dragonfly
-            dragonfly.install()
-        except Exception as exc:
-            print(f"⚠ Dragonfly Reverb not installed ({exc}) — the Reverb, Plate and Room blocks stay unavailable.")
+        step("desktop plugins: Surge XT Effects, Dexed")
+        # Dragonfly Reverb : RETIRÉ (2026-11-27) — gfx-reverb joue Reverb, Plate et Room (docs/golem-fx-migration.md).
+        # Le désinstalleur nettoie encore une install d'avant.
         # Surge XT Effects (2026-10-22) : les trois blocs surge-* — la table le disait installé, rien ne le posait
         try:
             from provision import surge
             surge.install()
         except Exception as exc:
-            print(f"⚠ Surge XT Effects not installed ({exc}) — the Spring, Freq Shifter and Treemonster blocks stay unavailable.")
+            print(f"⚠ Surge XT Effects not installed ({exc}) — the Freq Shifter block stays unavailable.")
         # Dexed (2026-11-20) : le synthé du bloc ep (piano électrique) — il existait pour Windows, rien ne le posait
         try:
             from provision import dexed
@@ -496,15 +491,16 @@ def setup():
         except Exception as exc:
             print(f"⚠ Golem Engine not installed ({exc}) — golem plays on REAPER.")
     # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release épinglée (pins.json `golem_fx`, 0.8.1 depuis le 2026-11-26),
-    # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Dragonfly ; macOS :
-    # ~/Library/Audio/Plug-Ins/VST3). Non fatal : sans eux, les blocs gardent leurs plugins d'origine.
+    # dans le dossier VST3 PAR UTILISATEUR que REAPER parcourt (Windows : celui de Surge et Dexed ; macOS :
+    # ~/Library/Audio/Plug-Ins/VST3). Non fatal ; sans eux, les blocs qu'ils jouent sont indisponibles, sauf ceux qui
+    # ont un JSFX de golem ou un plugin de REAPER en repli.
     if sys.platform in ("win32", "darwin"):
         step("golem's own effects (golem-fx)")
         try:
             from provision import golem_fx
             golem_fx.install()
         except Exception as exc:
-            print(f"⚠ golem-fx not installed ({exc}) — the blocks keep playing their previous plugins.")
+            print(f"⚠ golem-fx not installed ({exc}) — most effect blocks are unavailable.")
     for path in install_shortcuts():
         print(f"Shortcut: {path}")
     print(f"golem is ready in {ROOT}.")

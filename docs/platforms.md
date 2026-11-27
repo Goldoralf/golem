@@ -276,6 +276,10 @@ installed Proteus (`install-system.ps1 -Proteus`). On macOS the elevated step in
 `provision/macos/pins.json`): the first real Mac test found the reverb silent on ~45 factory presets without it.
 **2026-11-15:** Proteus and Airwindows TapeDelay2 left the installers on all three OS — their blocks (`boost`,
 `delay-tape-aw`) were retired in catalog v48 (`docs/golem-fx-migration.md`).
+**2026-11-27:** Dragonfly left the installers too (Windows `provision/dragonfly.py` deleted, macOS `--dragonfly`
+removed), with the ZamAudio and Spectral Compressor manual pins on macOS: golem-fx plays `reverb`, `reverb-plate`,
+`reverb-room`, `granular` and `spectral-comp`. Their names stay in the tables below as the fallback a machine plays
+when it has the plugin and not golem-fx.
 
 **Mapped on both:** the NAM-based `pedal-nam`, `preamp-nam`, `comp-nam`, the
 Dragonfly reverbs, `granular` (ZamGrains), `spectral-comp`, `stretch`, and the MDA

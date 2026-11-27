@@ -62,6 +62,23 @@ function GolemUpdateCard() {
   </section>`;
 }
 
+// ── carte golem-fx (2026-11-27) : les effets de golem — la version épinglée par cette release (le manifeste,
+// provision/components.json), sa présence sur la machine, et combien de blocs il joue ici (/api/effects `golem_fx`) ──
+function GolemFxCard() {
+  const { data: libs } = useAsync(() => fetch('/api/system/libraries').then(r => r.json()), []);
+  const { data: fx } = useAsync(() => fetch('/api/effects').then(r => r.json()), []);
+  const c = libs && (libs.components || []).find(x => x.id === 'golem-fx');
+  const n = fx && Array.isArray(fx.golem_fx) ? fx.golem_fx.length : null;
+  // compacte : elle partage la colonne avec la carte golem, et la page ne défile pas
+  return html`<section class="card-panel gfx-card">
+    <h3>golem-fx <b class="gfx-ver">${c ? (c.version || '—') : '…'}</b>
+      ${c && c.installed != null ? html`<span class=${cls('upd-status', c.installed ? 'ok' : 'warn')}>${c.installed ? '✓ installed' : '✗ missing'}</span>` : ''}</h3>
+    <p class="muted lic-p">golem's own effects: ${n == null ? '…' : n} effect blocks play on its pedals here. golem installs it
+      and each release pins its version · ${c ? (c.license || '?') : '…'} · <span class="liblic-url">github.com/Goldoralf/golem-binaries</span>
+      ${c && c.installed === false ? html`<br /><b>Without it, most effect blocks are unavailable.</b>` : ''}</p>
+  </section>`;
+}
+
 // ── carte licence golem : le contrat open source du produit — texte de l'avocat (livrable L5 §2, 2026-10-20),
 // resserré pour tenir à l'écran ; il dit exactement ce que déclarent LICENSE, LICENSE.MIT, TRADEMARK.md et
 // docs/licence.md (une page qui affirme une licence que le dépôt ne déclare pas serait fausse) ──
@@ -80,12 +97,47 @@ function GolemLicenseCard() {
     <ul class="lic-points muted">
       <li>✓ run, read, modify, share and fork it — for any purpose</li>
       <li>⚠ a redistributed fork publishes its source under the GPL and takes its own name</li>
-      <li>ℹ REAPER and the plugins keep their own licenses — ${tab('reaper', 'REAPER')} and ${tab('libs', 'Libraries')} tabs</li>
+      <li>ℹ the Golem Engine, REAPER and the plugins keep their own licenses — ${tab('engine', 'Golem Engine')}, ${tab('reaper', 'REAPER')} and ${tab('libs', 'Libraries')} tabs</li>
     </ul>
     <p class="muted lic-p"><b>Trademark notice:</b> “golem” and “golem.fm” are trademarks of Raphaël Mucchielli, not licensed
       under the GPL: a modified redistributed version must remove them. Amp, pedal and instrument names are trademarks
       of their owners, used only to describe a sound; golem is not affiliated with or endorsed by them.</p>
     <p class="muted lic-full">Full texts: <span class="liblic-url">gnu.org/licenses/gpl-3.0</span> · <span class="liblic-url">LICENSE.MIT</span> · <span class="liblic-url">TRADEMARK.md</span></p>
+  </section>`;
+}
+
+// ── GOLEM ENGINE (2026-11-27 : « on ne parle pas du tout d'Ardour ? ») : le moteur par défaut sous Linux et Windows,
+// construit depuis Ardour — sa version, celle que la release épingle, et ses sources (GPL : obligation, pas politesse) ──
+function EngineVersionCard() {
+  const { data: e, err } = useAsync(() => fetch('/api/system/golem-engine').then(r => r.json()), []);
+  const st = !e ? null : !e.installed ? ['warn', '✗ not installed'] : !e.pinned || e.version === e.pinned ? ['ok', '✓ matches this release']
+    : e.dev ? ['idle', 'development build'] : ['warn', 'differs from this release'];
+  return html`<section class="card-panel">
+    <h3>Golem Engine</h3>
+    <div class="upd-rows">
+      <div class="upd-row"><label>On this machine</label><b>${e ? (e.version || (e.installed ? '?' : '—')) : (err ? '✗' : '…')}</b>
+        ${st ? html`<span class=${cls('upd-status', st[0])}>${st[1]}</span>` : ''}</div>
+      <div class="upd-row"><label>Pinned by this release</label><b>${e ? (e.pinned || '—') : '…'}</b></div>
+      <div class="upd-row"><label>Audio engine now</label><b>${e ? (e.active ? 'Golem Engine' : 'REAPER') : '…'}</b></div>
+    </div>
+    <p class="muted" style="margin-top:12px">golem's own audio engine, <b>the default on Linux and Windows</b>. golem installs it and
+      each release pins its version; it updates with golem. Switch engines in Settings ▸ Engines.</p>
+  </section>`;
+}
+
+function EngineLicenseCard() {
+  return html`<section class="card-panel lic-card">
+    <h3>License</h3>
+    <div class="upd-rows">
+      <div class="upd-row"><label>License</label><b>GNU GPL v2 or later</b></div>
+      <div class="upd-row"><label>Built from</label><span><b>Ardour 9.9</b> — Paul Davis and the Ardour developers</span></div>
+      <div class="upd-row"><label>Sources</label><span class="liblic-url">github.com/Goldoralf/golem-engine</span></div>
+      <div class="upd-row"><label>Ardour</label><span class="liblic-url">ardour.org</span></div>
+    </div>
+    <p class="muted lic-p">The Golem Engine is <b>free software</b>: Ardour, the open-source digital audio workstation,
+      with golem's changes on top. The exact sources of every binary golem installs are in the repository above,
+      one release tag per version. Like Ardour, it comes with <b>ABSOLUTELY NO WARRANTY</b>.</p>
+    <p class="muted lic-p">golem is not affiliated with or endorsed by the Ardour project.</p>
   </section>`;
 }
 
@@ -301,7 +353,7 @@ function LibrariesPanel() {
   </div>`;
 }
 
-const SUB_TABS = [['golem', 'golem'], ['reaper', 'REAPER'], ['libs', 'Libraries']];
+const SUB_TABS = [['golem', 'golem'], ['engine', 'Golem Engine'], ['reaper', 'REAPER'], ['libs', 'Libraries']];
 
 // ABOUT (mockups/settings-nav.html, écran 7 — ex-« Licenses ») : la version ET les mises à jour, puis les licences
 export function LicensesPage({ rig, sub }) {
@@ -315,7 +367,8 @@ export function LicensesPage({ rig, sub }) {
         ${SUB_TABS.map(([id, label]) => html`<button class=${cls('sys-tab', tab === id && 'on')}
           onClick=${() => setTab(id)}>${label}</button>`)}
       </div>
-      ${tab === 'golem' ? html`<div class="pg-body"><div class="upd-grid"><${GolemUpdateCard} /><${GolemLicenseCard} /></div></div>`
+      ${tab === 'golem' ? html`<div class="pg-body"><div class="upd-grid"><div class="upd-col"><${GolemUpdateCard} /><${GolemFxCard} /></div><${GolemLicenseCard} /></div></div>`
+      : tab === 'engine' ? html`<div class="pg-body"><div class="upd-grid"><${EngineVersionCard} /><${EngineLicenseCard} /></div></div>`
       : tab === 'reaper' ? html`<div class="pg-body"><div class="upd-grid"><${ReaperVersioningCard} /><${ReaperLicenseCard} /></div></div>`
       : html`<${LibrariesPanel} />`}
     </div>`;

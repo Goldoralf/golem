@@ -68,7 +68,7 @@ def phases(S):
         {"id": "plugins", "step": "system", "label": "Ready-made plugins", "est": 85},
         # PRÉCOMPILÉS (Goldoralf/golem-binaries, 2026-10-23) : 18 Mo + leurs bibliothèques, ~30 s. Un plugin qu'il faut
         # compiler (binaire indisponible) ajoute sa durée mesurée par `@@est-add` (provision/lib-prebuilt.sh compiling) ;
-        # compilés, les 4 faisaient 756 s à 6 cœurs
+        # compilés, les 4 d'alors faisaient 756 s à 6 cœurs (3 depuis le 2026-11-27 : Prisma et Spectral Compressor retirés)
         {"id": "build", "step": "system", "label": "Plugins built for golem", "est": round(30 * (0.5 + 0.5 * f))},
         {"id": "golem", "step": "system", "label": "golem itself", "est": 25},
         {"id": "sounds", "step": "system", "label": f"Sounds — {gb}" if mb else "Sounds", "est": round(mb / SOUNDS_MB_S),
@@ -83,7 +83,7 @@ def phases(S):
 
 # le ↻ Try again d'un manque non fatal (`soft_fail <id>` dans provision/install.sh) : le script qui l'installe, seul
 RETRY = {"zconvo": ("sudo", "install-zconvo.sh"), "nam": ("sudo", "install-nam.sh"), "sfizz": ("sudo", "install-sfizz.sh"),
-         "prisma": ("sudo", "install-prisma.sh"), "spectral": ("sudo", "install-spectral.sh"),
+         "spectral": ("sudo", "install-spectral.sh"),
          "golem-fx": ("user", "install-golem-fx.sh"),          # golem-fx : dans ~/.vst3, sans sudo
          "golem-engine": ("user", "install-golem-engine.sh"),
          "captures": ("user", "fetch-factory-captures.sh")}  # le moteur : dans ~/opt/golem-engine, sans sudo

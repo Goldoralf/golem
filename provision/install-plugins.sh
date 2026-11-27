@@ -18,12 +18,10 @@ USER_HOME="${USER_HOME:-$HOME}"
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib-receipt.sh"    # reçu d'install (sous sudo : celui de $SUDO_USER)
 
 echo "== 1. Plugins LV2 par apt (universe) =="
-# calf-plugins        : chorus/flanger/phaser/tremolo/rotary (Calf *)
-# x42-plugins         : dpl (limiter), IR Convolver (cab), x42-eq
-# dragonfly-reverb-lv2: reverb hall/plate/room/early
-# guitarix-lv2        : gx_* (wah, octaver gx_oc_2, vibrato, detune, muff, scream, echocat, shimmer…)
-# zam-plugins         : Zam* (ZamGrains = granular freeze, ZamGEQ31, ZaMaximX2…)
-# mda-lv2             : mda (RingMod, Degrade=bitcrusher, RezFilter, SubSynth, TalkBox…)
+# x42-plugins         : IR Convolver (repli du cab), dpl (limiter) et fat1 là où golem-fx manque
+# mda-lv2             : Degrade (bloc bitcrusher), RingMod là où golem-fx manque
+# Retirés le 2026-11-27 (docs/golem-fx-migration.md) : calf-plugins, dragonfly-reverb-lv2, guitarix-lv2, zam-plugins —
+# golem-fx joue tous leurs blocs. Un rack qui les a déjà les garde (le désinstalleur les nettoie).
 # avldrums.lv2 (+soundfont) : moteur de batterie « avldrums » (blocs drums)
 # drumgizmo           : moteur de batterie multi-micro (kit Aasimonster, cf. fetch-assets.sh)
 #   ⚠ ces deux-là étaient ABSENTS d'ici : présents sur le poste de dev par une install
@@ -31,7 +29,7 @@ echo "== 1. Plugins LV2 par apt (universe) =="
 #   des trois moteurs de batterie (2026-08-02).
 apt-get -o DPkg::Lock::Timeout=300 update -qq || echo "  ⚠ un dépôt a échoué — on continue avec l'index disponible"
 # une seule liste : celle qu'on demande à apt est celle que le reçu note comme explicite (apt.requested)
-APT_PKGS=(calf-plugins x42-plugins dragonfly-reverb-lv2 guitarix-lv2 zam-plugins mda-lv2
+APT_PKGS=(x42-plugins mda-lv2
           avldrums.lv2 avldrums.lv2-soundfont drumgizmo)
 receipt apt-snapshot before
 receipt apt-requested "${APT_PKGS[@]}"
@@ -122,8 +120,7 @@ echo "== 5. MANUELS (non automatisés ici — voir docs) =="
 echo "   NAM        -> ~/.lv2/neural_amp_modeler.lv2 (github mikeoliphant, manuel)"
 echo "   Vital/Vitalium -> voir l'étape 4 ci-dessus (aucun paquet ne l'installe)"
 echo "   sfizz      -> ./provision/install-sfizz.sh"
-echo "   Prisma (Grit) -> ./provision/install-prisma.sh (build depuis la source)"
-echo "   Spectral Comp / Stretch -> ./provision/install-spectral.sh (build depuis la source, docs/spectral.md)"
+echo "   Stretch    -> ./provision/install-spectral.sh (PaulXStretch, docs/spectral.md)"
 
 echo
 echo "✓ Plugins apt + Surge installés. REDÉMARRER Reaper pour le rescan LV2."

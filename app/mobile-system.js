@@ -4,6 +4,7 @@
 // rack), Account (se connecter avec golem.fm). Ce qui demande un droit le dit sur sa ligne, AVANT qu'on tape : les
 // droits viennent de whoami.rights (auth.rights_of), jamais recopiés ici.
 import { html, useState, useEffect, useRef, post, cls } from './lib.js';
+import { canFullscreen, toggleFullscreen, useFullscreen } from './fullscreen.mjs';
 
 const api = p => fetch(p).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
 const errOf = e => (e && e.body && e.body.error) || String((e && e.message) || e);
@@ -77,6 +78,7 @@ function ThisGolem({ st, back }) {
 // ── DISPLAY : l'affichage de CE téléphone (docs/devices-people.md §4 ter) ──
 function DisplayPage({ back }) {
   const [err, setErr] = useState('');
+  const full = useFullscreen();
   const pick = async d => {
     setErr('');
     try { await post('/api/auth/display', { display: d }); if (d === 'tablet') location.replace('/app/m.html'); }
@@ -88,6 +90,9 @@ function DisplayPage({ back }) {
       <button class="cs-mi" onClick=${back}><span class="ic">📱</span><div><b>Phone display</b><small>the Companion: upright, one hand. This is the current display.</small></div><span class="cs-need ok">ON</span></button>
       <button class="cs-mi" onClick=${() => pick('tablet')}><span class="ic">▭</span><div><b>Tablet display</b><small>the full golem app, sideways and smaller. The 📱 button in a corner brings you back.</small></div><em>›</em></button>
     </div>
+    ${canFullscreen() ? html`<div class="cs-menu">
+      <button class="cs-mi" onClick=${toggleFullscreen}><span class="ic">⛶</span><div><b>Full screen</b><small>hides the address bar and the status bar. A reload leaves full screen; unless the rack turned it off (System ▸ Display), the first tap brings it back.</small></div><span class=${cls('cs-need', full && 'ok')}>${full ? 'ON' : 'OFF'}</span></button>
+    </div>` : ''}
     <p class="c-sub pad">The display never changes what this phone may do: loading songs, scenes and stomps still need the conductor right.</p>
     ${err ? html`<p class="c-err">${err}</p>` : ''}
   </div>`;

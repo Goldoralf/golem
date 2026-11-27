@@ -406,6 +406,31 @@ def engines_list():
             "engines": engines.descriptors()}
 
 
+@router.get("/api/system/golem-engine")
+def golem_engine_about():
+    """Settings ▸ About ▸ Golem Engine (2026-11-27) : la version là (le paquet installé, ou l'arbre de dev), celle que
+    cette release de golem épingle, et les sources — le moteur lie Ardour, GPL-2.0-or-later : dire où sont les sources
+    exactes de chaque binaire est une obligation (docs/ardour-plan.md, D2)."""
+    import subprocess
+    from provision import golem_engine as ge
+    from . import engines
+    d = ge.engine_dir()
+    present = (d / ge.RUN).is_file() or (d / "golem" / "engine" / "run.py").is_file()
+    dev = present and (d / ".git").exists()
+    ver = ge.version_of(d) if present else None
+    if present and not ver and dev:                       # un arbre de dev n'a pas de VERSION : son tag git
+        try:
+            ver = subprocess.run(["git", "-C", str(d), "describe", "--tags", "--always"], capture_output=True,
+                                 text=True, timeout=3).stdout.strip().removeprefix("golem-engine-") or None
+        except Exception:
+            ver = None
+    desc = next((e for e in engines.descriptors() if e.get("id") == "ardour"), {})
+    return {"installed": present, "dev": dev, "version": ver, "pinned": ge.VERSION or None,
+            "active": engines.current() == "ardour", "by": desc.get("by"), "license": "GPL-2.0-or-later",
+            "sources_url": desc.get("sources_url") or "https://github.com/Goldoralf/golem-engine",
+            "upstream_url": "https://ardour.org"}
+
+
 @router.post("/api/engine")
 async def engine_select(body: dict):
     """Choisir le moteur. Le choix est écrit (config/engine.json) et, s'il diffère du moteur qui tourne, la BASCULE
@@ -432,7 +457,7 @@ async def engine_select(body: dict):
 
 @router.get("/api/system/display")
 def display_get():
-    """Les animations de l'écran : {animations: auto|on|off, blinks, still_tiles: pedals|glyphs|textures} (bridge/display.py)."""
+    """L'affichage : {animations: auto|on|off, still_tiles: pedals|glyphs|textures, fullscreen} (bridge/display.py)."""
     from . import display
     return display.get()
 
@@ -444,7 +469,7 @@ async def display_set(body: dict):
     from .app import _broadcast
     body = body or {}
     try:
-        d = display.set_(body.get("animations"), body.get("blinks"), body.get("still_tiles"))
+        d = display.set_(body.get("animations"), body.get("still_tiles"), body.get("fullscreen"))
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
     await _broadcast()

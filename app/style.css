@@ -621,6 +621,9 @@ img.net-qr{background:#f3f4f6; border-radius:10px; padding:6px; box-sizing:borde
 /* Update : 2 cartes côte à côte (GoleM + moteur Reaper) — la page kiosk ne scrolle pas */
 .upd-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:0; align-items:start}   /* bords alignés sur la ligne d'onglets : la page (.system.pg-fit) porte déjà les 22 px (2026-10-03) */
 .upd-grid .card-panel{margin:0}
+.upd-col{display:flex; flex-direction:column; gap:16px; min-width:0}   /* About ▸ golem : golem puis golem-fx, à gauche (2026-11-27) */
+.gfx-card h3{display:flex; align-items:center; gap:10px; margin-bottom:0} .gfx-card .gfx-ver{font-weight:600; color:var(--muted, #9aa)}
+.gfx-card .lic-p{margin-top:6px}
 /* Update : rangées + changelog */
 .upd-rows{display:flex; flex-direction:column; gap:8px}
 .upd-row b.warnish{color:var(--rock)}
@@ -7699,6 +7702,8 @@ button.linkish{white-space:nowrap}
 .tb-sl-nm{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 /* « ✎ Open preset in Designer » dans le sélecteur de /live (2026-10-15) */
 .live-picker-h .lp-designer{min-height:40px; padding:0 14px; font-weight:700; margin-right:8px}
+/* /live intégré au téléphone (?embed=live) : la page y est réduite (~70 %) — le changement de liste reste une vraie cible */
+.live-picker-h .lp-lists{min-height:52px; padding:0 18px; font-size:16px; font-weight:700; margin-right:8px; border-color:var(--accent)}
 
 /* ═══════════ /live — les pages RÉPÈTE et CONCERT (docs/live-pages.md, 2026-10-15) — live-pages.js ═══════════ */
 .lp{height:100%; display:flex; flex-direction:column; gap:8px; padding:10px 12px; background:#0b0d10; min-height:0; overflow:hidden}
@@ -8338,7 +8343,29 @@ button.mode-live{background:transparent; cursor:pointer}
 .hv-empty{color:var(--muted); font-size:12px; line-height:1.4}
 .hv-m{color:var(--muted); font-size:11.5px}
 /* ── SETTINGS ▸ SYSTEM ▸ DISPLAY (2026-11-25, bridge/display.py) : les animations de l'écran ── */
-.dp-page{display:flex; flex-direction:column; gap:12px; padding:12px 0; min-height:0; width:100%}
+.dp-page{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:12px; padding:12px 0; min-height:0; width:100%; align-items:start}
+.dp-side{display:flex; flex-direction:column; gap:12px; min-width:0}
+.dp-lbl{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:2px}
+.dp-lbl small{font-size:11px; text-transform:none; letter-spacing:0; font-weight:400}
+.dp-seg{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px}
+.dp-sb{min-height:44px; border-radius:10px; border:1px solid var(--line); background:var(--bg2, rgba(255,255,255,.03)); color:inherit; font-size:14px; font-weight:700; cursor:pointer}
+.dp-sb.on{border-color:var(--sect, #b06cf0); background:rgba(176,108,240,.14); color:var(--sect, #b06cf0)}
+.dp-sb:disabled{opacity:.6; cursor:default}
+.dp-say{margin:-2px 0 0; font-size:12.5px; line-height:1.4; min-height:2.8em}
+.dp-sw{display:flex; align-items:center; gap:12px; text-align:left; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:transparent; color:inherit; cursor:pointer; min-height:56px}
+.dp-sw.on{border-color:var(--sect, #b06cf0); background:rgba(176,108,240,.08)}
+.dp-sw-t{display:flex; flex-direction:column; gap:3px; flex:1; min-width:0} .dp-sw-t b{font-size:14px} .dp-sw-t small{font-size:12px; color:var(--muted); line-height:1.35}
+.dp-sw i{flex:none; width:42px; height:24px; border-radius:12px; background:var(--line); position:relative; transition:background .15s}
+.dp-sw i em{position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s}
+.dp-sw.on i{background:var(--sect, #b06cf0)} .dp-sw.on i em{left:21px}
+.dp-sw:disabled{opacity:.6; cursor:default}
+.dp-warn{margin:0; font-size:12.5px; color:#e8b04a; line-height:1.4}
+.dp-anim{display:flex; gap:8px; align-items:stretch}
+.dp-seg2{grid-template-columns:repeat(2,minmax(0,1fr)); flex:1}
+.dp-sb small{display:block; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; opacity:.8}
+.dp-sb.auto{border-style:dashed}
+.dp-auto{min-height:44px; padding:0 12px; flex:none} .dp-auto .dp-sw-t{flex:none}
+.dp-seg.dim, .dp-say.dim{opacity:.35}
 .dp-card{border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:12px 14px; display:flex; flex-direction:column; gap:10px}
 .dp-h{display:flex; align-items:baseline; gap:10px} .dp-h b{font-size:15px} .dp-now{margin-left:auto; font-size:12px; color:var(--muted)}
 .dp-modes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}

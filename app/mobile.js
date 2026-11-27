@@ -17,6 +17,7 @@ import { PhoneCaptures } from './capture-module.js';
 import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
 import { ControlPage } from './mobile-control.js';
 import { SystemPage } from './mobile-system.js';
+import { canFullscreen, toggleFullscreen, useFullscreen, startAutoFullscreen, setFullscreenPref } from './fullscreen.mjs';
 
 const api = p => fetch(p).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
 const LANE_TAG = { guitar: 'GTR', bass: 'BASS', voice: 'VOX', keys: 'KEYS', 'keys-pads': 'KEYS', pads: 'PADS', drums: 'DRUM', line: 'LINE' };
@@ -439,6 +440,7 @@ function Companion() {
   useWakeLock();
   const { state: st, wsUp } = useRigState();
   setDisplay(st && st.display);                     // les animations de l'écran (Settings ▸ System ▸ Display)
+  setFullscreenPref(st && st.display && st.display.fullscreen);   // le premier tap = plein écran (fullscreen.mjs)
   const c = useCompanion(st);
   const qp = new URL(location.href).searchParams;
   const t0 = qp.get('tab');
@@ -520,6 +522,7 @@ function TabletDisplay() {
   const [box, setBox] = useState({ w: innerWidth, h: innerHeight });
   useEffect(() => { const f = () => setBox({ w: innerWidth, h: innerHeight }); addEventListener('resize', f); return () => removeEventListener('resize', f); }, []);
   const [busy, setBusy] = useState(false);
+  const full = useFullscreen();
   const back = async () => { setBusy(true); try { await post('/api/auth/display', { display: 'phone' }); } catch (_) { /* la pastille reste */ }
     location.replace('/app/m.html'); };
   const land = box.w > box.h;
@@ -527,7 +530,9 @@ function TabletDisplay() {
   return html`<div class="m-tab-host">
     ${land ? html`<iframe class="m-land-f" src="/app/?desktop=1#/live" title="golem"
         style=${`width:${APP_W}px;height:${APP_H}px;left:${Math.round((box.w - APP_W * k) / 2)}px;top:${Math.round((box.h - APP_H * k) / 2)}px;transform:scale(${k})`}></iframe>
-      <button class="m-tab-back" disabled=${busy} onClick=${back} title="Back to the phone display" aria-label="Back to the phone display">📱</button>`
+      <button class="m-tab-back" disabled=${busy} onClick=${back} title="Back to the phone display" aria-label="Back to the phone display">📱</button>
+      ${canFullscreen() ? html`<button class=${cls('m-tab-back m-tab-full', full && 'on')} onClick=${toggleFullscreen}
+        title=${full ? 'Leave full screen' : 'Full screen'} aria-label=${full ? 'Leave full screen' : 'Full screen'}>⛶</button>` : ''}`
     : html`<div class="m-turn"><div class="m-turn-ico">⟳</div><b>Turn your phone sideways</b>
         <span>This phone shows the tablet display: the full golem app, made smaller.</span>
         <button class="c-btn wide" disabled=${busy} onClick=${back}><b>Back to the phone display</b><small>the Companion</small></button></div>`}
@@ -545,5 +550,6 @@ function Root() {
 export function mountCompanion(el) {
   watchErrors('companion');                  // docs/diagnostics.md §7.2
   startAnimStepper();                        // les animations infinies au pas (le téléphone aussi : sa batterie)
+  startAutoFullscreen();                     // le premier tap = plein écran, si le rack le veut (Settings ▸ System ▸ Display)
   render(html`<${Root} />`, el);
 }

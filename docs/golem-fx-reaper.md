@@ -6,7 +6,8 @@
 > **2026-11-15:** the installers ship golem-fx 0.8.1 since 2026-11-26 (0.8.1: 0.8's code rebuilt, with the levelled Organ presets and the gesture flag; 0.4 on 2026-11-15, 0.6 on 2026-11-17, 0.7 earlier on 2026-11-26;
 > 0.8 adds Organ and Octafuzz, three Dist circuits at the end of its list and Pitch's bend, [golem-fx-sheet.md](golem-fx-sheet.md) §4; prebuilt VST3, Linux / Windows / macOS — [installer.md](installer.md)
 > §2, Pins), and REAPER on Windows and macOS now plays golem-fx blocks when the plugin is installed, exactly as on
-> Linux. The third-party fallbacks (guitarix, Calf, Dragonfly, Zam…) stay installed until a later step.
+> Linux. The third-party fallbacks (guitarix, Calf, Dragonfly, Zam, Prisma, Spectral Compressor) left the installers
+> on 2026-11-27 ([golem-fx-migration.md](golem-fx-migration.md)).
 
 Related: [ardour-plan.md](ardour-plan.md) (D3: golem-fx blocks replace REAPER's stock plugins), [designer-glyphs-pedals.md](designer-glyphs-pedals.md).
 

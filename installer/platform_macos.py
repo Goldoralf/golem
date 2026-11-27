@@ -88,7 +88,7 @@ def ui():
         "connect": "form",
         "finish": "Open golem",
         "permission": [
-            "Installing needs macOS' permission, once: a macOS window asks for an administrator's password to install Reaper in /Applications and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb) in /Library/Audio/Plug-Ins. Approve it when it appears.",
+            "Installing needs macOS' permission, once: a macOS window asks for an administrator's password to install Reaper in /Applications and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium) in /Library/Audio/Plug-Ins. Approve it when it appears.",
             "That is the only part that runs as administrator. golem itself is copied to your folder and always runs as you; golem never sees nor keeps the password — macOS asks for it."],
         "next": [
             ["", "Settings ▸ Soundcard", ": pick your audio interface (Core Audio) — until then golem uses the Mac's default input and output."],
@@ -96,7 +96,7 @@ def ui():
             ["warn", "A2 amp captures", " don't play on macOS yet: the official NAM plugin cannot read that format. golem marks those blocks and offers a non-A2 capture."],
         ],
         "first_run": "golem starts when you close the installer below. The first start takes a minute or two (Reaper scans your plugins). Until Reaper is licensed, it shows its evaluation window at every start — close it; golem keeps running behind it. macOS may ask once whether Python may control « System Events » (to hide Reaper): allow it.",
-        "done_note": "Only Reaper (in /Applications) and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, Dragonfly Reverb, in /Library/Audio/Plug-Ins) were installed with administrator rights. golem itself runs as you, in its folder.",
+        "done_note": "Only Reaper (in /Applications) and the plugins golem plays (NAM, AVL Drumkits, sfizz, Vitalium, in /Library/Audio/Plug-Ins) were installed with administrator rights. golem itself runs as you, in its folder.",
         "vital": True,
         "vital_installer": "macOS installer",
         "manual": _manual(src),
@@ -381,8 +381,7 @@ def system_switches(src):
         sw.append("--vitalium")
     if "sfizz" in p:                                   # le piano Keys et les kits SFZ importés (docs/drums-kit.md §8)
         sw.append("--sfizz")
-    if "dragonfly" in p:                               # les trois réverbes (2026-11-04 : muettes sans elles)
-        sw.append("--dragonfly")
+    # Dragonfly Reverb : retiré le 2026-11-27 (gfx-reverb joue les trois réverbes)
     if not reaper_detect(src)["found"]:
         sw.append("--reaper")
     return sw

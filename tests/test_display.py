@@ -16,15 +16,19 @@ def cfg(tmp_path, monkeypatch):
 
 
 def test_le_reglage_a_un_defaut_et_refuse_l_inconnu(cfg):
-    assert display.get() == {"animations": "auto", "blinks": True, "still_tiles": "pedals"}
+    assert display.get() == {"animations": "auto", "still_tiles": "pedals", "fullscreen": True}
     assert display.set_("on")["animations"] == "on"
-    assert display.set_(blinks=False) == {"animations": "on", "blinks": False, "still_tiles": "pedals"}
+    assert display.set_(fullscreen=True) == {"animations": "on", "still_tiles": "pedals", "fullscreen": True}
     assert display.set_(still_tiles="glyphs")["still_tiles"] == "glyphs"
     with pytest.raises(ValueError):
         display.set_(still_tiles="neon")
     with pytest.raises(ValueError):
         display.set_("sometimes")
     assert display.brief()["animations"] == "on"
+    # le plein écran au premier tap : vrai par défaut, un booléen ou rien
+    assert display.set_(fullscreen=False)["fullscreen"] is False
+    with pytest.raises(ValueError):
+        display.set_(fullscreen="yes")
 
 
 def test_health_propose_de_calmer_l_ecran_quand_ca_claque_animations_actives(cfg):

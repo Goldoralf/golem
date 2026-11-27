@@ -16,6 +16,9 @@ import { patchDraft } from './designer-model.js';
 import { useCpuMany, StageChip, StageCpuSheet } from './cpu-budget.js';   // docs/cpu-budget.md, lot 4
 
 const recall = (preset, scene) => post('/api/recall', { preset, scene });
+// /live INTÉGRÉ AU TÉLÉPHONE (?embed=live, 2026-11-26) : pas de top menu, donc pas de puce de setlist (elle vit dans la
+// topbar) ni de Designer (un téléphone n'y va pas). La fenêtre des lignes porte alors le changement de liste.
+const EMBED = new URLSearchParams(location.search).get('embed') === 'live';
 
 // le label de la ligne (tap) ouvre LES LIGNES DE LA LISTE AU PIED (LivePicker, plus bas) — tap = la ligne, comme ◀ ▶
 // OUVRIR CE QUI JOUE DANS LE DESIGNER (2026-10-15) : le preset, ou le PATCH joué comme un preset (`patch:<id>`,
@@ -36,7 +39,7 @@ async function openPlaying(id) {
 // de la topbar choisit déjà ce que joue le pédalier. Elle montre maintenant les chansons de la setlist (ou les sons de la
 // bank) choisie là-haut, dans l'ordre des banks ; un tap charge LA LIGNE — sa chanson, son tempo, ses stems, son
 // arrangement — comme ◀ ▶ et le pied. Un preset quelconque se joue depuis Songs ▸ Presets.
-function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose, cpu }) {
+function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose, onLists, cpu }) {
   const kind = !playingId ? null : playingId === 'sandbox-try' ? 'draft' : playingId.startsWith('patch:') ? 'patch' : 'preset';
   const sounds = foot && foot.kind === 'sounds';
   return html`<div class="live-picker" onClick=${onClose}>
@@ -44,7 +47,9 @@ function LivePicker({ foot, rows, slot, current, playingId, onPick, onClose, cpu
       <div class="live-picker-h"><b><span class=${'slv-type ' + (sounds ? 'bank' : 'setlist')}>${sounds ? '⛓ BANK' : '▤ SETLIST'}</span>
         ${esc((foot && foot.name) || '—')} <small>${sounds ? 'a sound per bank' : 'its songs, in bank order'}</small></b>
         <span class="grow"></span>
-        ${kind ? html`<button class="mini lp-designer" title=${'open what is playing now — ' + (current && current.name ? current.name : playingId) + ' — in the Designer'}
+        ${EMBED ? html`<button class="mini lp-lists" title="choose what the pedalboard plays — a setlist of songs or a bank of sounds"
+          onClick=${() => { onClose(); onLists(); }}>⇄ Change setlist or bank</button>`
+        : kind ? html`<button class="mini lp-designer" title=${'open what is playing now — ' + (current && current.name ? current.name : playingId) + ' — in the Designer'}
           onClick=${() => { onClose(); openPlaying(playingId); }}>✎ Open ${kind} in Designer</button>` : ''}
         <button class="close" style="position:static" onClick=${onClose}>×</button></div>
       <div class="live-picker-grid">
@@ -226,7 +231,8 @@ export function BankBar({ rig, presets, badges, trial }) {
       rows=${navSlots.map(i => { const l = lines[i], p = l.preset && list.find(x => x.id === l.preset);
         const name = p ? String(p.name || '').replace(/^⛓\s*/, '') : '';
         return { slot: i, preset: l.preset, title: titleOf(i), sub: l.patch ? 'patch' : (name && name !== titleOf(i) ? name : '') }; })}
-      onPick=${i => { post('/api/recall', { slot: i }); setPicker(false); }} onClose=${() => setPicker(false)} />` : ''}
+      onPick=${i => { post('/api/recall', { slot: i }); setPicker(false); }} onClose=${() => setPicker(false)}
+      onLists=${() => setSlPick(true)} />` : ''}
     ${slPick ? html`<${LiveSetlistPicker} current=${(banks && banks.id) || ''}
       onDone=${() => { setSlPick(false); setBkTick(t => t + 1); }} onClose=${() => setSlPick(false)} />` : ''}
   </div>`;

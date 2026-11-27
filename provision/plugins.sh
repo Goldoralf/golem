@@ -54,9 +54,7 @@ fi
 # AIDA-X, Ratatouille et Aether : RETIRÉS de l'install (2026-11-15) — aucun bloc ne s'en sert plus (le bloc amp
 # joue NAM). Le désinstallateur garde leurs entrées : une install plus ancienne les a posés.
 
-# --- À scripter au prochain bump (VST3, pas de .lv2 simple) -----------------
-echo "  ℹ ChowDSP (Chow Centaur/Tape/Phaser) : VST3 depuis chowdsp.com → $VST3"
-echo "  ℹ GxPlugins/OD : couverts par 'guitarix' (apt) ou releases brummer10"
+# ChowDSP et GxPlugins : plus rien à signaler (2026-11-27) — golem-fx joue les blocs qu'ils couvraient.
 
 echo
 echo "  LV2 installés dans : $LV2"

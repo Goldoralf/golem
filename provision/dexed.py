@@ -7,7 +7,7 @@ main sur le poste de dev, le banc passe : la voix SysEx est lue, le piano sonne.
 CLAP, standalone) est épinglée à son empreinte (celle que GitHub publie pour la release) ; on n'en tire que le bundle
 VST3 que la table nomme.
 
-Pas de droits d'administrateur : comme provision/dragonfly.py, le bundle va dans le dossier VST3 par utilisateur
+Pas de droits d'administrateur : comme provision/surge.py, le bundle va dans le dossier VST3 par utilisateur
 que REAPER et le Golem Engine parcourent (%LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM). Linux :
 provision/plugins.sh (~/.vst3).
 
@@ -47,7 +47,7 @@ def installed():
 
 def _record(paths, existed):
     """Reçu d'install (docs/uninstall.md §9.2) : le bundle posé, dans un reçu qui EXISTE seulement (comme
-    dragonfly). Jamais d'exception — un reçu raté ne casse pas l'installation."""
+    surge). Jamais d'exception — un reçu raté ne casse pas l'installation."""
     try:
         import importlib.util
         spec = importlib.util.spec_from_file_location("golem_receipt", Path(__file__).with_name("receipt.py"))

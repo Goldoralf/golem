@@ -21,7 +21,7 @@ test('au pas, figée ou libre', () => {
   assert.equal(sortOf('lp-fire', { tile: true }, { local: true, display: { animations: 'on' } }), 'free');
   assert.equal(sortOf('lp-fire', { tile: true }, { local: false, display: { animations: 'off' } }), 'freeze');
   // les voyants : au pas, ou tenus allumés
-  assert.equal(sortOf('led-pulse', {}, { display: { animations: 'auto', blinks: false } }), 'hold');
+  assert.equal(sortOf('led-pulse', {}, { display: { animations: 'off' } }), 'hold');      // figées partout : voyants tenus
 });
 
 test("l'écran local est celui de la machine qui joue le son", () => {
@@ -65,7 +65,7 @@ test("le minuteur met en pause et ne touche l'animation qu'à la bascule", () =>
 test('cases figées : le curseur et les voyants sont tenus allumés, sans pas (0 image au repos)', () => {
   assert.equal(sortOf('golem-caret', {}, { local: true }), 'hold');                            // auto, écran local
   assert.equal(sortOf('golem-caret', {}, { local: false, display: { animations: 'off' } }), 'hold');
-  assert.equal(sortOf('golem-caret', {}, { local: true, display: { animations: 'on', blinks: true } }), 'step');
+  assert.equal(sortOf('golem-caret', {}, { local: true, display: { animations: 'on' } }), 'step');
   const led = fake('led-pulse', 1600, {});
   run([led], [100, 800, 1600, 2400], { local: true });
   assert.deepEqual(led.writes, [0]);                  // posé allumé une fois, plus jamais touché
@@ -79,7 +79,7 @@ test('une case figée en local repart quand le réglage la permet', () => {
   const realSet = globalThis.setInterval;
   globalThis.setInterval = f => { tick = f; return 1; };
   try {
-    startAnimStepper({ getAnimations: () => anims }, () => now, { local: true, display: () => ({ animations: allow ? 'on' : 'auto', blinks: true }), where: () => fire.where });
+    startAnimStepper({ getAnimations: () => anims }, () => now, { local: true, display: () => ({ animations: allow ? 'on' : 'auto' }), where: () => fire.where });
     assert.equal(fire.paused, true);
     assert.deepEqual(fire.writes, [350]);             // figée au tiers de son cycle, une seule écriture
     for (now of [200, 400]) tick();
@@ -103,7 +103,7 @@ test('les cases figées se rendent sans animation : classe racine selon le régl
   globalThis.setInterval = f => { tick = f; return 1; };
   try {
     startAnimStepper({ getAnimations: () => [], documentElement: root }, () => 0,
-      { local: true, display: () => ({ animations: allow ? 'on' : 'auto', blinks: true }) });
+      { local: true, display: () => ({ animations: allow ? 'on' : 'auto' }) });
     assert.equal(cls.has(STILL_CLASS), true);
     allow = true; tick();
     assert.equal(cls.has(STILL_CLASS), false);        // « Animated everywhere » : les cases retrouvent leurs animations

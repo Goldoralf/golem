@@ -16,12 +16,13 @@
 //    tiers du cycle ne reste qu'en filet pour une animation que ce CSS ne viserait pas. Un écran
 //    déporté (tablette, téléphone) dessine avec son propre processeur et les garde animées. Le réglage de
 //    Settings ▸ System ▸ Display (bridge/display.py, l'état diffusé `display`) décide : auto (ce qui précède), on
-//    (animées partout), off (figées partout) ; `blinks` faux tient les voyants allumés, sans clignoter.
+//    (animées partout), off (figées partout). Les voyants suivent : cases figées = voyants tenus allumés (2026-11-27,
+//    l'ancien réglage `blinks` est retiré).
 //  - « free » : les spinners (une rotation au pas ne tourne pas) et les aperçus du sélecteur d'effet (.fx-opt).
 
 export const TICK_MS = 200;                  // le minuteur ne coûte rien : seule une BASCULE produit une image
 // le réglage du moment, posé par l'app à chaque état reçu (main.js, mobile.js) ; défaut tant que rien n'est arrivé
-export const DISPLAY_DEFAULT = { animations: 'auto', blinks: true };
+export const DISPLAY_DEFAULT = { animations: 'auto' };
 export const setDisplay = d => { globalThis.__golemDisplay = d && typeof d === 'object' ? { ...DISPLAY_DEFAULT, ...d } : DISPLAY_DEFAULT; };
 const currentDisplay = () => globalThis.__golemDisplay || DISPLAY_DEFAULT;
 const FREEZE_AT = 0.35;                      // l'image retenue d'une case figée : au tiers de son cycle
@@ -39,7 +40,7 @@ export function stepPlan(timing) {
 export const isLocalHost = h => ['127.0.0.1', 'localhost', '::1', '[::1]'].includes(String(h || '').toLowerCase());
 
 // au pas, figée, tenue ou libre ? `where` : { tile, picker } — l'élément est dans une case animée, dans le sélecteur.
-// `display` : le réglage {animations: auto|on|off, blinks}. « hold » = tenue sur son état allumé (voyants sans clignoter).
+// `display` : le réglage {animations: auto|on|off}. « hold » = tenue sur son état allumé (voyants sans clignoter).
 // QUAND LES CASES SONT FIGÉES, RIEN NE CLIGNOTE NON PLUS (2026-11-26, maquette « /live statique ») : le curseur du
 // logo et les voyants sont tenus allumés — la règle de cet écran est 0 image au repos, pas 2.
 export function sortOf(name, where, { local = false, display = DISPLAY_DEFAULT } = {}) {
@@ -47,7 +48,7 @@ export function sortOf(name, where, { local = false, display = DISPLAY_DEFAULT }
   const m = display.animations || 'auto';
   const still = m === 'off' || (m !== 'on' && local);
   if (where && where.tile) return still ? 'freeze' : 'free';
-  return display.blinks === false || still ? 'hold' : 'step';
+  return still ? 'hold' : 'step';
 }
 
 // les cases du Live sont-elles figées ? Alors on les rend SANS animation (classe racine STILL_CLASS)
@@ -67,7 +68,7 @@ const whereOf = el => ({
 export function startAnimStepper(doc = globalThis.document, clock = () => performance.now(),
   { local = isLocalHost(globalThis.location && globalThis.location.hostname), display = currentDisplay, where = whereOf } = {}) {
   if (!doc || typeof doc.getAnimations !== 'function') return () => {};
-  const keyOf = d => (d.animations || 'auto') + '|' + (d.blinks !== false);
+  const keyOf = d => d.animations || 'auto';
   let seen = new WeakMap(), shown = keyOf(display());
   const root = doc.documentElement;
   const tick = () => {

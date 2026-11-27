@@ -198,10 +198,11 @@ log "Plugins (releases GitHub : NAM, Dexed)"
 # plugins-deb.sh (Proteus, ChowDSP BYOD) : RETIRÉ (2026-11-15) — aucun bloc ne s'en sert plus.
 
 # golem-fx (2026-11-15, docs/golem-fx-reaper.md) : les effets de golem, release épinglée (provision/golem_fx.py VERSION) précompilée, dans
-# ~/.vst3. Non fatal : sans eux, les blocs jouent leurs plugins d'origine (guitarix, Calf… restent installés).
+# ~/.vst3. Non fatal, mais depuis le 2026-11-27 golem n'installe plus les plugins d'origine (guitarix, Calf, Dragonfly…) :
+# sans golem-fx, ces blocs sont indisponibles (le tiroir le dit).
 log "golem-fx (les effets de golem — VST3 précompilés)"
-"$HERE/install-golem-fx.sh" || soft_fail golem-fx "golem-fx NON installé — les blocs gardent leurs plugins d'origine" \
-  "golem's own effects (golem-fx) could not be installed — the blocks play their previous plugins. Tap Retry."
+"$HERE/install-golem-fx.sh" || soft_fail golem-fx "golem-fx NON installé — la plupart des blocs d'effet sont indisponibles" \
+  "golem's own effects (golem-fx) could not be installed — most effect blocks are unavailable. Tap Retry."
 
 # SWS : RETIRÉ de l'install (2026-09-22). Il était posé « requis par les scènes » — faux : le moteur
 # de scènes est golem_rig (union materialization), LiveConfigs n'a jamais servi (audit 2026-09-21), et
@@ -214,7 +215,7 @@ log "golem-fx (les effets de golem — VST3 précompilés)"
 # second dev) : une machine fraîchement provisionnée démarrait donc SANS les effets des blocs
 # ni le sampler des claviers. Un script d'install qui laisse la moitié du rig dehors n'est pas
 # un script d'install.
-log "Plugins LV2 des blocs FX (Calf, x42, guitarix, ZamAudio, mda…)"
+log "Plugins LV2 des blocs (x42, mda, batteries…)"
 sudo "$HERE/install-plugins.sh"
 bash "$HERE/install-capture.sh"
 # Vital / Vitalium : AUCUN paquet ne l'installe (install-plugins.sh, étape 4) — l'écran le dit, au lieu d'une ligne
@@ -283,7 +284,7 @@ sudo "$HERE/install-sfizz.sh" || soft_fail sfizz "sfizz NON installé — le blo
 # l'écran, qui allonge la phase d'autant (lib-prebuilt.sh `compiling`)
 mark phase build
 
-mark sub "IR convolver fix (cab block) — 1 of 4"
+mark sub "IR convolver fix (cab block) — 1 of 3"
 log "Convolveur d'IR corrigé (bloc cab) — compilé depuis la source avec notre patch"
 # Celui du paquet x42-plugins tue Reaper ~1 fois sur 10 sur des presets rapprochés
 # (docs/audit-2026-10-01-crash-convolveur.md). Non fatal comme les autres sources tierces — mais ici
@@ -291,7 +292,7 @@ log "Convolveur d'IR corrigé (bloc cab) — compilé depuis la source avec notr
 sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-zconvo.sh" || soft_fail zconvo "convolveur corrigé NON installé — celui d'apt reste en service et peut faire tomber Reaper sur des changements de preset rapprochés (Settings ▸ Licences ▸ Libraries : zeroconvo.lv2 (fixed build) = missing)" \
   "The IR convolver fix could not be built — cabs play with the standard convolver, which can stop the engine on very fast patch changes."
 
-mark sub "NAM fix (amp and pedal blocks) — 2 of 4"
+mark sub "NAM fix (amp and pedal blocks) — 2 of 3"
 log "Ampli NAM corrigé (blocs amp / pedal NAM) — compilé depuis la source avec notre patch"
 # La release v0.2.2 tue Reaper sur des changements de patch rapprochés (docs/audit-2026-10-14-crash-nam.md).
 if ! sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-nam.sh"; then
@@ -304,15 +305,12 @@ if ! sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-nam.sh"; the
   fi
 fi
 
-mark sub "Prisma (Grit block) — 3 of 4"
-log "Prisma (bloc Grit) et les blocs spectraux (Spectral Comp, Stretch) — compilés depuis la source"
-# Même règle : une source tierce qui casse ne tue pas l'install. Prisma n'était chaîné NULLE PART
-# (trouvé le 2026-09-25) : un rack neuf n'avait pas de bloc Grit, et rien ne le disait.
-sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-prisma.sh" || soft_fail prisma "Prisma NON installé — le bloc Grit restera muet (Settings ▸ Licences ▸ Libraries)" \
-  "Prisma could not be built — the Grit block stays silent."
-mark sub "Spectral blocks (Spectral Comp, Stretch) — 4 of 4"
-sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-spectral.sh" || soft_fail spectral "blocs spectraux NON installés — Spectral Comp et Stretch resteront muets (Settings ▸ Licences ▸ Libraries)" \
-  "The spectral blocks could not be built — Spectral Comp and Stretch stay silent."
+# Prisma (bloc Grit) et Spectral Compressor : RETIRÉS (2026-11-27) — gfx-grit et gfx-spectralcomp jouent ces blocs
+# (docs/golem-fx-migration.md). Reste le Stretch (PaulXStretch), que golem-fx ne joue pas encore.
+mark sub "Stretch block (PaulXStretch) — 3 of 3"
+log "PaulXStretch (bloc Stretch) — précompilé, ou compilé depuis la source"
+sudo env GOLEM_INSTALLER="${GOLEM_INSTALLER:-}" "$HERE/install-spectral.sh" || soft_fail spectral "PaulXStretch NON installé — le bloc Stretch restera muet (Settings ▸ About ▸ Libraries)" \
+  "PaulXStretch could not be installed — the Stretch block stays silent."
 
 # --- 5. Config Reaper : symlinks + OSC + device audio -----------------------
 mark phase golem

@@ -290,7 +290,9 @@ placed before it on the Click track (`golem_click.lua`).
 - **Shell.** `main.js` is the topbar plus a hash router. `NAV` lists Live, Designer, Songs, Library
   and Settings; the Settings route is `#/system`. `PAGES` maps routes to `page-live.js`,
   `page-designer.js`, `page-songs.js`, `page-library.js` and `page-systeme.js`. The current mode
-  can hide pages (`mode.ui.pages`).
+  can hide pages (`mode.ui.pages`). The Songs, Library and Settings icons reopen the hub's last tab (`HUB_DEPTH`:
+  Songs one level, Library and Settings two; never an open item; `localStorage` `golem.nav.last`, per screen);
+  tapped while already in the hub, an icon goes back to the hub's first page.
 - **`lib.js`.** `api`, `post`, `useAsync`; `useRigState` (the WebSocket, reconnecting every
   1.5 s); `useRoute`, `go`; the topbar slots `setTopAction`, `setTopSlot`, `setTopIO`; `HubPage`;
   `savePresetEverywhere`.

@@ -161,7 +161,8 @@ apart from **steps** — what the server runs (`installer/phases.py`):
   failure), and it now targets `library/di-refs/`, where the bridge reads them (it was `library/di/`). Windows and
   macOS (`desktop_steps._sound_di`) do the same, and check the archive's pinned hash, which they did not.
 - **Prebuilt plugins (2026-10-23).** The plugins golem used to compile at every install — the IR convolver and NAM
-  with our crash fixes, Prisma, Spectral Compressor, PaulXStretch — are built once by a GitHub Action in
+  with our crash fixes, Prisma, Spectral Compressor, PaulXStretch (only PaulXStretch of the last three since 2026-11-27,
+  [golem-fx-migration.md](golem-fx-migration.md)) — are built once by a GitHub Action in
   the **public** repository [`Goldoralf/golem-binaries`](https://github.com/Goldoralf/golem-binaries) (same pinned
   commits and patches, `-march=x86-64-v3` at most, no AVX-512) and published as release `linux-plugins-v2` (v1 until 2026-11-03). Each
   `install-*.sh` first runs `provision/fetch-prebuilt.sh` (archive pinned in `downloads.sha256`; the patch marker is
@@ -196,7 +197,8 @@ apart from **steps** — what the server runs (`installer/phases.py`):
 `provision/macos/pins.json` (version, URL, sha256 — read with `plutil` on macOS). The Microsoft
 runtime has no fixed URL: its **signature** is checked instead. A component already present is left
 as is (never downgrade someone's REAPER) and is judged after installation. Unsigned third-party
-installers (AVL, sfizz, PawPaw) and the Dragonfly archive are trusted only through their pinned hash.
+installers (AVL, sfizz, PawPaw) are trusted only through their pinned hash (the Dragonfly archive was too, until it
+left the installers on 2026-11-27).
 
 **golem-fx on all three OS (CODED 2026-11-15).** golem's own effects ship as a prebuilt release
 (`golem-fx-0.8.1` in Goldoralf/golem-binaries since 2026-11-26, 58 `GoleM FX <Name>.vst3` bundles), pinned per OS and placed
@@ -453,7 +455,7 @@ nothing.
 - **`golem update`** from the installer (same screens, steps "source" and "system --light").
 - Uninstall on Windows and macOS (the Linux one is coded: [`uninstall.md`](uninstall.md) §4).
 - Windows: ffmpeg (preview encoding) is not installed; block plugins other than the core, AVL, sfizz,
-  Vitalium, Dragonfly, Surge XT Effects and golem-fx are not installed (blocks say "plugin not installed on this
+  Vitalium, Surge XT Effects, Dexed and golem-fx are not installed (blocks say "plugin not installed on this
   machine"); a block whose plugin has no Windows build says "only available on a Linux golem" unless a golem
   JSFX plays it ([platforms.md](platforms.md) §5).
 - macOS: signing / notarisation.

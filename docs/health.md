@@ -244,9 +244,11 @@ The product cannot ask every user to disable a graphics card. It must:
   remembers the last size any program asked for, so REAPER came back with the Golem Engine's buffer. At each switch
   away from REAPER, its buffer is now written explicitly into `reaper.ini` (`ReaperEngine.keep_audio`, called by
   `engine/switch.py` once REAPER has stopped). Test: `tests/test_engine_switch.py`.
-- **Display** (Settings ▸ System ▸ Display, `bridge/display.py`): the Live tile animations are Auto, On or Off,
-  what a still tile shows (Pedals, Glyphs, Textures: [anim-packs.md](anim-packs.md) §8.4), and the status lights blink or
-  stay lit. See [pitfalls/ui.md](pitfalls/ui.md#an-endless-animation-steals-the-audio-thread).
+- **Display** (Settings ▸ System ▸ Display, `bridge/display.py`): the Live tile animations are On or Off, with an Auto switch (on: golem picks Off on the
+  audio machine and On on tablets and phones, and shows its pick; tapping the other choice turns Auto off — 2026-11-27),
+  what a still tile shows (Pedals, Glyphs, Textures: [anim-packs.md](anim-packs.md) §8.4), and full screen at the first
+  tap on phones and tablets. The status lights follow the animations: still tiles, lights held lit (the separate
+  "blinks" setting was removed on 2026-11-27). See [pitfalls/ui.md](pitfalls/ui.md#an-endless-animation-steals-the-audio-thread).
   - A Health fact "Display" turns orange only when the tiles move on the audio machine while the sound clicks.
   - Its repair, `display_animations` → Auto ("Calm the screen"), counts clicks for 2 minutes and can be undone.
   - Like every repair that changes the machine, it is not offered while you play.

@@ -75,9 +75,11 @@ def test_la_vraie_liste(tmp_path):
     for n in ("pipewire-audio", "pipewire-jack", "wireplumber", "python3-venv", "python3-pip", "git", "curl", "xvfb"):
         assert pkgs[n] == "req", n
     # les plugins de la distribution sont optionnels : un bloc muet, pas une install morte
-    for n in ("calf-plugins", "guitarix", "zam-plugins", "x42-plugins", "dragonfly-reverb", "ir.lv2",
-              "ardour-lv2-plugins", "setbfree", "qpwgraph"):
+    for n in ("x42-plugins", "setbfree", "qpwgraph"):
         assert pkgs[n] == "opt", n
+    # golem-fx joue leurs blocs (2026-11-27) ; ir.lv2 et ardour-lv2-plugins ne servaient à aucun bloc
+    for n in ("calf-plugins", "guitarix", "zam-plugins", "dragonfly-reverb", "ir.lv2", "ardour-lv2-plugins"):
+        assert n not in pkgs, n
     # LSP : retiré le 2026-11-15, aucun bloc ne s'en servait
     assert "lsp-plugins" not in pkgs and "lsp-plugins-lv2" not in pkgs
 

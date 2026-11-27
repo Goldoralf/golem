@@ -4,7 +4,7 @@
 # Le pendant de provision/windows/install-system.ps1 : lancé UNE fois par installer/platform_macos.py
 # derrière la fenêtre d'administrateur de macOS (osascript « with administrator privileges »).
 #
-#   install-system.sh --log FICHIER [--reaper] [--nam] [--avldrums] [--sfizz] [--vitalium] [--dragonfly]
+#   install-system.sh --log FICHIER [--reaper] [--nam] [--avldrums] [--sfizz] [--vitalium]
 #
 # Chaque fichier vient de provision/macos/pins.json (adresse ET empreinte) : une empreinte qui ne
 # correspond pas ARRÊTE l'étape, on ne pose pas un binaire que personne n'a vérifié. Écrit SANS Mac :
@@ -15,7 +15,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 PINS="$HERE/pins.json"
 LOG=/dev/stdout
-DO_REAPER=0; DO_NAM=0; DO_AVL=0; DO_SFIZZ=0; DO_VITALIUM=0; DO_DRAGONFLY=0
+DO_REAPER=0; DO_NAM=0; DO_AVL=0; DO_SFIZZ=0; DO_VITALIUM=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --log) LOG="$2"; shift ;;
@@ -24,7 +24,6 @@ while [ $# -gt 0 ]; do
     --avldrums) DO_AVL=1 ;;
     --sfizz) DO_SFIZZ=1 ;;
     --vitalium) DO_VITALIUM=1 ;;
-    --dragonfly) DO_DRAGONFLY=1 ;;
     *) echo "unknown option $1" >>"$LOG"; exit 2 ;;
   esac
   shift
@@ -180,38 +179,7 @@ if [ "$DO_VITALIUM" = 1 ]; then
   fi
 fi
 
-# ── un paquet dans une image disque : Dragonfly ──
-install_dmg_pkg() {  # install_dmg_pkg <clé de pins.json> <nom> — l'image se démonte même si le paquet échoue
-  local dmg mnt pkg rc=0
-  dmg="$(fetch "$1")" || exit 1
-  mnt="$(mktemp -d /tmp/golem-$1.XXXX)"
-  mount_dmg "$dmg" "$mnt"
-  pkg="$(find "$mnt" -maxdepth 2 -name '*.pkg' | head -1)"
-  if [ -z "$pkg" ]; then
-    rc=1; printf '✗ %s\n' "$2: no installer package in the disk image" >&2
-  elif ! installer -pkg "$pkg" -target /; then
-    rc=1; printf '✗ %s\n' "$2: the package did not install" >&2
-  fi
-  unmount_dmg "$mnt"
-  rmdir "$mnt" 2>/dev/null
-  [ "$rc" = 0 ] || exit 1
-}
-
-# ── Dragonfly Reverb : les blocs reverb, reverb-plate, reverb-room (VST3 que effects-macos.json nomme) ──
-# 2026-11-04, MacBook Air : la table macOS les nommait, rien ne les posait — la réverbe se taisait sur ~45 presets.
-if [ "$DO_DRAGONFLY" = 1 ]; then
-  if [ -d "/Library/Audio/Plug-Ins/VST3/DragonflyPlateReverb.vst3" ] && [ -d "/Library/Audio/Plug-Ins/VST3/DragonflyRoomReverb.vst3" ] \
-     && [ -d "/Library/Audio/Plug-Ins/VST3/DragonflyHallReverb.vst3" ]; then
-    ok "Dragonfly Reverb already installed — kept as is"
-  else
-    say "Dragonfly Reverb $(pin dragonfly.version) (Hall, Plate, Room — VST3)"
-    install_dmg_pkg dragonfly "Dragonfly Reverb"
-    for b in DragonflyHallReverb DragonflyPlateReverb DragonflyRoomReverb; do
-      [ -d "/Library/Audio/Plug-Ins/VST3/$b.vst3" ] || fail "$b.vst3 missing after the Dragonfly installer"
-    done
-    ok "Dragonfly Reverb in /Library/Audio/Plug-Ins/VST3"
-  fi
-fi
+# Dragonfly Reverb : RETIRÉ (2026-11-27) — gfx-reverb joue Reverb, Plate et Room (docs/golem-fx-migration.md).
 
 # Proteus (le bloc boost) : RETIRÉ (2026-11-15) — le bloc est retiré du catalogue (v48).
 

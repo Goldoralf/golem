@@ -64,7 +64,8 @@ The uninstallers (`provision/uninstall.py`, `provision/uninstall_win.py`) keep t
 them: an older install placed them and must still be cleaned up. **What stays until golem-fx ships in the
 installers** (it does since 2026-11-15, below — they stay until a later step): guitarix, Calf, x42 / fat1, Dragonfly, ZamAudio, mda, Surge XT, Prisma, PaulXStretch, Spectral
 Compressor (nih-plug), zeroconvo, NAM, sfizz, setBfree, Dexed, Vital, AVL Drumkits, DrumGizmo — they still play blocks:
-the effects wherever golem-fx is not installed, the rest as instruments, captures and cabs. `reaper/Scripts/golem_rig.lua` keeps its dead Ratatouille path for now.
+the effects wherever golem-fx is not installed, the rest as instruments, captures and cabs. **Since 2026-11-27 (below), guitarix,
+Calf, Dragonfly, ZamAudio, Prisma and Spectral Compressor are gone too.** `reaper/Scripts/golem_rig.lua` keeps its dead Ratatouille path for now.
 
 ### Catalogue v49: Spectral Comp and Morph (2026-11-15)
 
@@ -110,9 +111,38 @@ from the seven blocks that carried it: no catalogue block is pending any more, s
 7d79340, 58 VST3) on all three OS, pinned and placed without admin rights ([installer.md](installer.md) §2, Pins), and
 Windows and macOS now play golem-fx blocks when the plugin is installed, as Linux does
 ([golem-fx-reaper.md](golem-fx-reaper.md)). The golem-fx-only blocks (Met, Emet, Shem, Tape, Glitch…) are therefore
-offered on Windows and macOS too. The third-party fallbacks — guitarix, Calf, Dragonfly, ZamAudio and the rest of the
-list above — **stay installed** until a later step retires them: they still play a block wherever golem-fx is missing
-or fails to install.
+offered on Windows and macOS too. The third-party fallbacks stayed installed until 2026-11-27 (next section).
+
+### The fallbacks leave the installers (2026-11-27)
+
+**CODED** — the maintainer: the About page lists "plenty of libraries" to delete, and the fallbacks go **everywhere**,
+not only from the page (the GPL listing must say what golem installs). golem no longer installs a third-party plugin
+whose every block golem-fx plays:
+
+| Gone | Its blocks, now golem-fx | Where it was installed |
+|---|---|---|
+| guitarix | wahs, autowah, shimmer, graphic EQ, octaver, vibrato, detune | Linux (`install-plugins.sh`, `packages.txt`) |
+| Calf | chorus, tremolo, rotary | Linux |
+| Dragonfly Reverb | reverb, plate, room | Linux, Windows (`provision/dragonfly.py`, deleted), macOS (`install-system.sh --dragonfly`) |
+| ZamAudio | granular | Linux; macOS manual pin |
+| Prisma | grit (gfx-grit since v51) | Linux (`install-prisma.sh`, deleted) |
+| Spectral Compressor (nih-plug) and Rust | spectral-comp | Linux (`install-spectral.sh` now builds PaulXStretch only); macOS manual pin |
+
+Also gone: `ir.lv2` and `ardour-lv2-plugins` (apt, no block ever used them) and the macOS manual pin "x42 Limiter and
+Autotune" (golem-fx plays both blocks). `provision/components.json` drops their cards (About ▸ Libraries), and
+About ▸ golem gains a golem-fx card (pinned version, installed or not, how many blocks it plays here).
+
+**Kept**, because a block still needs them: x42-plugins and fat1 (the IR convolver's fallback, and the limiter and
+pitch correction on a Linux machine without golem-fx), zeroconvo (cab), mda (`bitcrusher`), Surge XT (`surge-freqshift`),
+PaulXStretch and FFTW (`stretch`), NAM, and the instruments (sfizz, setBfree, Dexed, Vital / Vitalium, AVL Drumkits,
+DrumGizmo). The five "ready in golem-fx, not wired yet" blocks of §3 are the next step: they will free mda, Surge XT,
+PaulXStretch and x42.
+
+**Consequence:** where golem-fx fails to install, a block without a fallback of golem's own (a golem JSFX on Windows
+and macOS, a REAPER plugin such as ReaEQ or ReaDelay) has no plugin: the drawer says "not installed" and the installer
+says "most effect blocks are unavailable". The catalogue keeps the original plugin names: a machine that still has
+them, an older install or the user's own, plays them where golem-fx is missing. The uninstallers keep their entries
+for all of them, since an older install placed them.
 
 ## 2. Will golem have only golem-fx pedals?
 

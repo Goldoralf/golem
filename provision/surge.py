@@ -6,7 +6,7 @@
 pas. L'archive officielle « pluginsonly » win64 est épinglée à son empreinte ; on n'en tire que le bundle VST3
 « Surge XT Effects » (le synthé Surge XT lui-même n'est pas un bloc).
 
-Pas de droits d'administrateur : comme provision/dragonfly.py, le bundle va dans le dossier VST3 par utilisateur
+Pas de droits d'administrateur : comme provision/dexed.py, le bundle va dans le dossier VST3 par utilisateur
 que REAPER parcourt déjà (%LOCALAPPDATA%\\Programs\\Common\\VST3\\GoleM).
 
     python provision/surge.py            # pose Surge XT Effects là où REAPER le trouve

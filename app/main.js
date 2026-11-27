@@ -2,6 +2,7 @@
 // GoleM — shell de l'app (topbar + routeur). Preact+htm, sans build.
 import { html, render, useRoute, go, useRigState, useTopSlot, useTopAction, useActionHost, useTopIO, useRef, useState, useEffect, useAsync, cls, post } from './lib.js';
 import { Icon } from './icons.js';
+import { startAutoFullscreen, setFullscreenPref } from './fullscreen.mjs';   // le premier tap d'une tablette = plein écran
 import { trackShellGeometry } from './shell-geom.js';
 import { LivePage } from './page-live.js';
 import { LoadingPage } from './page-loading.js';
@@ -44,6 +45,28 @@ const NAV = [
 const NAV_ACTIVE = { live: 'live', songs: 'songs', designer: 'designer',
   library: 'library', amps: 'library', foot: 'library', banks: 'library', setlists: 'songs',
   system: 'settings', systeme: 'settings', api: 'settings' };
+
+// ── LE DERNIER ONGLET DE CHAQUE HUB (2026-11-26) ──────────────────────────────────────────────────────────────
+// « Sur /live on enregistre, on veut aller écouter la prise : trois clics. » L'icône d'un hub rouvre l'onglet où on l'a
+// laissé. On retient l'ONGLET, pas l'élément ouvert : Songs ▸ <onglet> (1 niveau), Library ▸ <groupe> ▸ <onglet> et
+// Settings ▸ <onglet> ▸ <sous-onglet> (2 niveaux) — une chanson en édition rouverte trois heures après surprend plus
+// qu'elle n'aide. Déjà dans le hub, son icône ramène à sa première page : la sortie reste à un tap. Par écran
+// (localStorage) : la tablette et l'écran du rack ont chacun leur mémoire. Live et Designer n'ont pas d'onglets.
+const HUB_DEPTH = { songs: 1, library: 2, system: 2 };
+const LAST_KEY = 'golem.nav.last';
+const readLast = () => { try { return JSON.parse(localStorage.getItem(LAST_KEY) || '{}') || {}; } catch (e) { return {}; } };
+function rememberTab(route) {
+  const segs = route.split('?')[0].split('/').filter(Boolean);
+  const hub = segs[0] === 'systeme' ? 'system' : segs[0];
+  const depth = HUB_DEPTH[hub];
+  if (!depth) return;
+  const keep = segs.slice(1, 1 + depth).filter(x => !x.startsWith('+'));   // « +new », « +import » : des gestes, pas des onglets
+  const last = readLast();
+  const val = [hub, ...keep].join('/');
+  if (last[hub] === val) return;
+  last[hub] = val;
+  try { localStorage.setItem(LAST_KEY, JSON.stringify(last)); } catch (e) { /* navigation privée : pas de mémoire */ }
+}
 
 // 'systeme' = alias legacy (anciens liens/bookmarks) -> même hub
 const PAGES = { live: LivePage, songs: SongsPage, designer: DesignerPage, library: LibraryPage,
@@ -245,6 +268,7 @@ function App() {
   const route = useRoute();
   const rig = useRigState();
   setDisplay(rig.state && rig.state.display);          // les animations de l'écran (Settings ▸ System ▸ Display)
+  setFullscreenPref(rig.state && rig.state.display && rig.state.display.fullscreen);
   // L'ÉCRAN DE CHARGEMENT (mockups/loading.html) remplace /live tant que le premier preset ne joue pas. « Open the
   // app anyway » (seulement quand quelque chose traîne) sort POUR CE démarrage (t0) ; un restart le ramène.
   const [bootSkip, setBootSkip] = useState(() => { try { return Number(sessionStorage.getItem('golemBootSkip')) || null; } catch (e) { return null; } });
@@ -283,6 +307,8 @@ function App() {
   const gate = pages && !pages.includes(base) && base !== 'live';   // route interdite -> Live
   const active = gate ? 'live' : (NAV_ACTIVE[base] || 'live');
   const Page = gate ? LivePage : (PAGES[base] || LivePage);
+  useEffect(() => { if (!gate) rememberTab(route); }, [route, gate]);
+  const lastTab = readLast();
   const hold = useRef(null);
   // SORTIE DU MODE VERROUILLÉ — appui long 2 s sur le logo. Version robuste au DOIGT (bug Gig
   // 2026-07-31) : l'ancienne annulait sur onPointerLeave, or un vrai doigt micro-bouge et sort
@@ -379,7 +405,7 @@ function App() {
           <${Icon} id=${mode.id} fallback=${mode.icon} /> ${mode.name}</span>` : ''}
         <nav class="tb-nav">
           ${nav.map(n => { const dot = n.id === 'settings' ? (serviceBadges(withDemo(rig.state)).settings || (healthDot(rig.state) || {}).badge) : null;
-            return html`<a class=${cls('tb-navitem', active === n.id && 'on')} data-doc=${'nav.' + n.id} href=${'#/' + n.route}
+            return html`<a class=${cls('tb-navitem', active === n.id && 'on')} data-doc=${'nav.' + n.id} href=${'#/' + (active !== n.id && lastTab[n.route] || n.route)}
               data-sect=${n.id} title=${n.label + (dot ? ' — something needs your attention in API' : '')} aria-label=${n.label}>${ICONS[n.id]}${dot ? html`<i class=${'svc-dot ' + dot}></i>` : ''}</a>`; })}
         </nav>
         <div class="tb-slot">${slot}</div>
@@ -396,6 +422,7 @@ function App() {
 
 watchErrors('rack');
 startAnimStepper();                          // les animations infinies au pas : la fenêtre ne vole plus l'audio
+startAutoFullscreen();                               // jamais sur l'écran local ni dans une iframe (fullscreen.mjs)
 render(html`<${App} />`, document.getElementById('app'));
 // fenêtre du poste de travail : elle retrouve sa taille (no-op sur le rack et dans un onglet
 // ordinaire — la mémoire ne s'active que sur ?shell=, posé par provision/golem).

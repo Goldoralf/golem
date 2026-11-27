@@ -34,14 +34,13 @@ Related: [blocks-doctrine.md](blocks-doctrine.md) (catalogue, quarantine) ·
 
 | Script | What it installs | Where |
 |---|---|---|
-| `packages.txt` (apt) | Calf, x42-plugins, Dragonfly, Guitarix + GxPlugins, ZamPlugins, mda-lv2… | system |
-| `install-plugins.sh` (sudo) | the LV2 set the catalogue needs (Calf, x42, Dragonfly, guitarix, zam, mda, avldrums, DrumGizmo…) | system |
+| `packages.txt` (apt) | x42-plugins, setBfree, the system tools | system |
+| `install-plugins.sh` (sudo) | the LV2 set the catalogue still needs (x42, mda, avldrums, DrumGizmo) and Surge XT | system |
 | `plugins.sh` | pinned GitHub releases, checked against `downloads.sha256` (`lib-fetch.sh` `fetch_verified`): NAM LV2 v0.2.2 (base only, see §3), Dexed VST3 | `~/.lv2`, `~/.vst3` |
 | `install-zconvo.sh` | **patched** IR convolver (§3) | `~/.lv2/zeroconvo.lv2` |
 | `install-nam.sh` | **patched** NAM LV2 (§3) | `~/.lv2/neural_amp_modeler.lv2` |
 | `install-sfizz.sh` | sfizz (piano block, SFZ kits) from the sfztools OBS repository, falling back to the repository's `.deb` files if its key expired; never leaves a broken `sources.list.d` behind | system |
-| `install-prisma.sh` | Prisma, compiled from source at a pinned commit, free variant. No block plays it since catalogue v51 (golem-fx plays `grit`); still installed until the installers drop it | `~/.vst3/Prisma.vst3` |
-| `install-spectral.sh` | Spectral Compressor (nih-plug) and PaulXStretch, compiled from pinned sources, no JACK | `~/.clap`, `~/.vst3` |
+| `install-spectral.sh` | PaulXStretch (the `stretch` block), prebuilt or compiled from a pinned source, no JACK | `~/.clap`, `~/.vst3` |
 
 Every optional step is non-fatal: on failure `install.sh` prints which block will stay struck and where
 to see it (System ▸ Licences ▸ Libraries). Scripts run with `sudo` install system headers but build and
@@ -50,7 +49,9 @@ place user plugins as the calling user (`$SUDO_USER`), otherwise REAPER would ne
 **Left the install on 2026-11-15** (no block uses them any more; the uninstaller still removes what older installs
 placed): AIDA-X, Ratatouille, Aether (`plugins.sh`), Proteus and BYOD (`plugins-deb.sh`, deleted), LSP
 (`packages.txt`), Airwindows TapeDelay2 (`airwindows.py`, deleted), GoleM Freeze (`install-spectral.sh`, and its
-`plugins/` source). See `docs/golem-fx-migration.md`.
+`plugins/` source). **Left on 2026-11-27** (golem-fx plays all their blocks): guitarix, Calf, Dragonfly, ZamAudio,
+`ir.lv2`, `ardour-lv2-plugins` (`packages.txt`, `install-plugins.sh`), Prisma (`install-prisma.sh`, deleted), Spectral
+Compressor and its Rust toolchain (`install-spectral.sh`). See `docs/golem-fx-migration.md`.
 
 ## 3. Plugins we compile and patch
 
@@ -92,13 +93,11 @@ and installs over it since 2026-10-22 ([platforms.md](platforms.md) §5.2).
 | Family | Plugins | Blocks |
 |---|---|---|
 | Neural capture | **NAM LV2** (A1 and A2; `quality_scale` port = A2 quality scaling) | amp/pedal/outboard capture blocks |
-| Convolution | **zeroconvo.lv2** (fixed build), ir.lv2 | `cab` |
-| Reverb | Dragonfly (Hall/Room/Plate/Early), Calf Reverb, a-Reverb | reverbs |
-| Delay | ReaDelay (REAPER), Calf Vintage Delay, a-Delay | delays |
-| Dynamics / EQ | Calf, ZamPlugins, x42 (dpl limiter, fil4 EQ), ReaGate/ReaEQ/ReaComp/ReaXcomp | dynamics, eq, voice chain |
-| Drive / amp sims | Guitarix + GxPlugins | drives, wah, octave… |
-| Pitch | x42 fat1 (pitch correction), REAPER JSFX | `pitch-correct`, pitch blocks |
-| Spectral / lofi | Spectral Compressor, PaulXStretch | `spectral-comp`, `stretch` (`grit`: golem-fx only since catalogue v51) |
+| golem-fx | **golem-fx** VST3 (golem's own, `install-golem-fx.sh`) | nearly every effect block ([golem-fx-migration.md](golem-fx-migration.md) §3) |
+| Convolution | **zeroconvo.lv2** (fixed build), x42 IR Convolver (fallback) | `cab`, `ir-fx` |
+| REAPER's own | ReaGate, ReaComp, ReaEQ, ReaDelay, ReaPitch, JSFX | fallbacks where golem-fx is missing |
+| Not yet on golem-fx | mda Degrade, Surge XT Effects, PaulXStretch | `bitcrusher`, `surge-freqshift`, `stretch` |
+| Fallbacks still installed | x42 dpl and fat1 | `limiter`, `pitch-correct` on Linux without golem-fx |
 | Instruments | Vital / Vitalium, Dexed, setBfree, sfizz, RS5k, avldrums, DrumGizmo | keys and drum blocks |
 | GoleM JSFX | `reaper/Effects/` (`golem_killswitch`, `golem_deesser`, `golem_click`, `golem_drumseq`, `golem_sample_trig`, `golem_super8` looper, `golem_tuner`…) | service and utility blocks |
 

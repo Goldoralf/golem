@@ -13,17 +13,9 @@ qpwgraph?
 
 # --- Plugins packagés dans les dépôts Ubuntu (universe) ---
 # NB: lsp-plugins retiré (2026-11-15) : aucun bloc ne s'en servait.
-calf-plugins?
-guitarix?
-zam-plugins?
+# NB: calf-plugins, guitarix, zam-plugins, dragonfly-reverb retirés (2026-11-27) : golem-fx joue tous leurs blocs
+#     (docs/golem-fx-migration.md) ; ir.lv2 et ardour-lv2-plugins aussi : aucun bloc ne s'en servait.
 x42-plugins?
-
-# --- Reverb (algorithmique + convolution) — TOUT EN LV2 (Reaper ne lit pas LADSPA) ---
-dragonfly-reverb?         # Hall / Room / Plate / Early Reflections (LV2)
-ir.lv2?                   # reverb par convolution (charge des IR de vraies salles)
-
-# --- Delay + suites mixtes (delay/reverb/dynamique) — LV2 ---
-ardour-lv2-plugins?       # a-Delay, a-Reverb (propres, modernes)
 # NB: invada-studio-plugins-lv2 retiré (2026-11-03) : aucun bloc ne s'en servait, et Ubuntu 26.04 ne l'a plus.
 # NB: tap-plugins / rev-plugins existent mais sont LADSPA → invisibles dans Reaper (écartés).
 

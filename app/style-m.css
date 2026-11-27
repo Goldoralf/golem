@@ -368,5 +368,6 @@ svg.glyph{width:1em; height:1em; vertical-align:-.14em; flex-shrink:0; overflow:
 .m-tab-host { position: fixed; inset: 0; background: #000; overflow: hidden; }
 .m-tab-back { position: absolute; left: calc(6px + env(safe-area-inset-left)); bottom: calc(6px + env(safe-area-inset-bottom));
   width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(20, 23, 29, .85); font-size: 18px; z-index: 5; }
+.m-tab-full { left: calc(52px + env(safe-area-inset-left)); } .m-tab-full.on { border-color: var(--accent); color: var(--accent); }
 .m-turn { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
 .m-turn-ico { font-size: 54px; color: var(--accent); } .m-turn b { font-size: 20px; } .m-turn span { color: var(--muted); max-width: 30ch; }

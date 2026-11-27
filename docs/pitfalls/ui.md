@@ -164,7 +164,8 @@ is about 10 messages and 60 KB a second.
     - **Auto** (default): what is described above.
     - **On**: animated everywhere, for a computer with headroom.
     - **Off**: still everywhere.
-  - The status lights can be held lit instead of blinking.
+  - The status lights follow: wherever the tiles are still (Off, or Auto on the audio machine) they are held lit.
+    There is no separate setting any more (removed 2026-11-27).
   - When the sound clicks with animations On, Health shows a "Display" card. Its repair, "Calm the
     screen", sets Auto again and counts clicks for 2 minutes.
 - Free by design: spinners (a stepped rotation does not turn) and the effect picker's previews (`.fx-opt`).

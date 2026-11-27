@@ -12,11 +12,12 @@ ces deux-là par install() ci-dessous, depuis `provision/desktop.py setup` (l'é
 
 Pas de droits d'administrateur, nulle part : les bundles vont dans le dossier VST3 PAR UTILISATEUR que REAPER
 parcourt déjà — ~/.vst3 (Linux, là où tools/golem-fx-install.py pose les builds de dev), %LOCALAPPDATA%\\Programs\\
-Common\\VST3\\GoleM (Windows, à côté de Dragonfly et Surge), ~/Library/Audio/Plug-Ins/VST3 (macOS ; un
+Common\\VST3\\GoleM (Windows, à côté de Surge et Dexed), ~/Library/Audio/Plug-Ins/VST3 (macOS ; un
 téléchargement par urllib ne porte pas l'attribut de quarantaine). bridge/rig.py golem_fx_dirs() y regarde.
 
 Chaque bundle posé entre au reçu d'install (le désinstalleur le retire). Une pose qui échoue n'est jamais fatale :
-les blocs gardent leurs plugins d'origine (guitarix, Calf, Dragonfly, Zam… restent installés).
+golem n'installe plus les plugins d'origine (guitarix, Calf, Dragonfly, Zam… retirés le 2026-11-27) : les blocs sans
+JSFX ni plugin de REAPER en repli sont alors indisponibles, et le tiroir le dit.
 
 Un BUILD DE DEV posé par tools/golem-fx-install.py (son journal ~/.local/share/golem/golem-fx-installed.json) est
 plus neuf que la release : il est GARDÉ tel quel, et le journal de l'install le dit. La release est la base.

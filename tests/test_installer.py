@@ -38,7 +38,7 @@ def _linux():
 
 def test_le_manifeste_est_lisible_et_chaque_composant_a_une_licence_et_une_source():
     comps = libraries.load_manifest()
-    assert len(comps) >= 40
+    assert len(comps) >= 35          # 38 depuis le 2026-11-27 : les replis que golem-fx remplace sont sortis
     for c in comps:
         assert c.get("name") and c.get("license") and c.get("url") and c.get("kind"), c["id"]
         assert c.get("check"), f"{c['id']} : pas de check — on ne saurait pas dire s'il est là"

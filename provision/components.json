@@ -2,6 +2,27 @@
   "_doc": "Manifeste des composants libres (et du seul commercial : Reaper) embarqués par GoleM — docs/installer.md §5. Servi par GET /api/system/libraries (System ▸ Licences ▸ Libraries) avec l'état RÉELLEMENT installé, et lu par l'installateur pour la taille. `check` : dpkg (un des noms de paquet), glob (chemins, ~ et $ROOT acceptés), pip (module dans le venv), always (vendu avec le dépôt). `pack` : di (requis) | piano | drums — décision 2026-09-09 : AUCUNE capture livrée, le rack neuf est vide ; il garde la liste EXHAUSTIVE du matériel (library/catalog/effects.json : amplis, pédales, baffles) et les presets de blocs, les captures viennent de golem.fm / Tone3000. Obligation GPL : dire ce qu'on embarque et d'où ça vient. `check_mac` (2026-10-04) : le même sous macOS (/Applications, /Library/Audio/Plug-Ins et ~/Library/Audio/Plug-Ins, ou which) — docs/platforms.md M3. `check_win` (2026-10-03) : le contrôle sous Windows (glob avec %ProgramFiles% / %CommonProgramFiles%, ou which) ; sans lui, un composant qui n'est ni python, ni asset, ni js n'est pas utilisé par GoleM sous Windows et s'affiche « Linux only » (bridge/libraries.py).",
   "components": [
     {
+      "id": "golem-engine",
+      "name": "Golem Engine",
+      "by": "golem, built from Ardour 9.9 (Paul Davis and the Ardour developers)",
+      "what": "golem's own audio engine, the default on Linux and Windows — Ardour with golem's changes; prebuilt release, installed with golem",
+      "license": "GPL-2.0-or-later",
+      "url": "https://github.com/Goldoralf/golem-engine",
+      "kind": "engine",
+      "check_win": {
+        "glob": [
+          "~/golem-engine/golem/engine/run.py",
+          "~/opt/golem-engine/golem/engine/run.py"
+        ]
+      },
+      "check": {
+        "glob": [
+          "~/golem-engine/golem/engine/run.sh",
+          "~/opt/golem-engine/golem/engine/run.sh"
+        ]
+      }
+    },
+    {
       "id": "reaper",
       "name": "REAPER",
       "by": "Cockos",
@@ -100,7 +121,7 @@
       "id": "x42",
       "name": "x42-plugins",
       "by": "Robin Gareus",
-      "what": "fil4 parametric EQ, dpl limiter, tuner (its IR convolver is replaced by our patched build)",
+      "what": "dpl limiter and the IR convolver, played where golem-fx is missing (the cab block uses our patched zeroconvo build)",
       "license": "GPL-2.0",
       "url": "https://x42-plugins.com",
       "kind": "plugin",
@@ -129,7 +150,7 @@
       "id": "fat1",
       "name": "fat1.lv2 (x42 Auto-Tune)",
       "by": "Robin Gareus / Fons Adriaensen",
-      "what": "vocal pitch correction (zita-at1)",
+      "what": "vocal pitch correction (zita-at1), played where golem-fx is missing",
       "license": "GPL-2.0",
       "url": "https://github.com/x42/fat1.lv2",
       "kind": "plugin",
@@ -264,7 +285,7 @@
       "id": "surge-xt",
       "name": "Surge XT",
       "by": "Surge Synth Team",
-      "what": "spring reverb, frequency shifter, Treemonster",
+      "what": "frequency shifter (the Freq Shift block); Treemonster where golem-fx is missing",
       "license": "GPL-3.0",
       "url": "https://surge-synthesizer.github.io",
       "kind": "plugin",
@@ -296,24 +317,10 @@
       }
     },
     {
-      "id": "prisma",
-      "name": "Prisma",
-      "by": "UnplugRed",
-      "what": "modular multiband distortion — the Grit block (built from source, free variant)",
-      "license": "AGPL-3.0-or-later",
-      "url": "https://github.com/unplugred/vsts",
-      "kind": "plugin",
-      "check": {
-        "glob": [
-          "~/.vst3/Prisma.vst3"
-        ]
-      }
-    },
-    {
       "id": "fftw3",
       "name": "FFTW 3",
       "by": "Matteo Frigo & Steven G. Johnson (MIT)",
-      "what": "fast Fourier transforms — the spectral blocks (PaulXStretch)",
+      "what": "fast Fourier transforms — PaulXStretch (the Stretch block) and the IR convolver",
       "license": "GPL-2.0-or-later",
       "url": "https://www.fftw.org",
       "kind": "system",
@@ -355,151 +362,10 @@
       }
     },
     {
-      "id": "nih-plug",
-      "name": "nih-plug",
-      "by": "Robbert van der Helm",
-      "what": "Rust plugin framework — Spectral Compressor and golem's own spectral blocks (built from source)",
-      "license": "ISC",
-      "url": "https://github.com/robbert-vdh/nih-plug",
-      "kind": "engine",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
-          "/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap",
-          "~/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/Spectral Compressor.vst3",
-          "%CommonProgramFiles%/CLAP/Spectral Compressor.clap"
-        ]
-      },
-      "check": {
-        "glob": [
-          "~/.clap/Spectral Compressor.clap",
-          "~/.vst3/Spectral Compressor.vst3"
-        ]
-      }
-    },
-    {
-      "id": "spectral-compressor",
-      "name": "Spectral Compressor",
-      "by": "Robbert van der Helm",
-      "what": "per-bin spectral compander — the Spectral Comp block (built from source)",
-      "license": "GPL-3.0-or-later",
-      "url": "https://github.com/robbert-vdh/nih-plug/tree/master/plugins/spectral_compressor",
-      "kind": "plugin",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/Spectral Compressor.vst3",
-          "/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap",
-          "~/Library/Audio/Plug-Ins/CLAP/Spectral Compressor.clap"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/Spectral Compressor.vst3",
-          "%CommonProgramFiles%/CLAP/Spectral Compressor.clap"
-        ]
-      },
-      "check": {
-        "glob": [
-          "~/.clap/Spectral Compressor.clap",
-          "~/.vst3/Spectral Compressor.vst3"
-        ]
-      }
-    },
-    {
-      "id": "guitarix",
-      "name": "Guitarix",
-      "by": "Guitarix team",
-      "what": "wahs, detune (vocal doubler), shimmer, tuner",
-      "license": "GPL-3.0",
-      "url": "https://guitarix.org",
-      "kind": "plugin",
-      "check": {
-        "dpkg": [
-          "guitarix-lv2",
-          "guitarix"
-        ]
-      }
-    },
-    {
-      "id": "calf",
-      "name": "Calf Studio Gear",
-      "by": "Calf team",
-      "what": "Multi Chorus and friends",
-      "license": "LGPL-2.1",
-      "url": "https://calf-studio-gear.org",
-      "kind": "plugin",
-      "check": {
-        "dpkg": [
-          "calf-plugins"
-        ]
-      }
-    },
-    {
-      "id": "dragonfly",
-      "name": "Dragonfly Reverb",
-      "by": "Michael Willis",
-      "what": "plate / room / hall reverbs",
-      "license": "GPL-3.0",
-      "url": "https://github.com/michaelwillis/dragonfly-reverb",
-      "kind": "plugin",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/Dragonfly*.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/Dragonfly*.vst3",
-          "/Library/Audio/Plug-Ins/VST3/DragonflyReverb*.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/DragonflyReverb*.vst3"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/Dragonfly*.vst3",
-          "%CommonProgramFiles%/VST3/DragonflyReverb*.vst3"
-        ]
-      },
-      "check": {
-        "dpkg": [
-          "dragonfly-reverb",
-          "dragonfly-reverb-lv2"
-        ]
-      }
-    },
-    {
-      "id": "zam",
-      "name": "ZamAudio plugins",
-      "by": "Damien Zammit",
-      "what": "granular freeze, graphic EQ, maximizer",
-      "license": "GPL-2.0",
-      "url": "https://www.zamaudio.com",
-      "kind": "plugin",
-      "check_mac": {
-        "glob": [
-          "/Library/Audio/Plug-Ins/VST3/Zam*.vst3",
-          "~/Library/Audio/Plug-Ins/VST3/Zam*.vst3"
-        ]
-      },
-      "check_win": {
-        "glob": [
-          "%CommonProgramFiles%/VST3/Zam*.vst3"
-        ]
-      },
-      "check": {
-        "dpkg": [
-          "zam-plugins"
-        ]
-      }
-    },
-    {
       "id": "mda",
       "name": "mda-lv2",
       "by": "David Robillard (port)",
-      "what": "Degrade bitcrusher & lo-fi",
+      "what": "Degrade — the Bitcrusher block; RingMod where golem-fx is missing",
       "license": "GPL-3.0",
       "url": "https://gitlab.com/drobilla/mda-lv2",
       "kind": "plugin",

@@ -244,7 +244,9 @@ edition**. Each one as its own small plan.
 
 `ardour.json` → `selectable: true` on Linux with measured capabilities; installer engine screen;
 verified engine switch with rollback (`audio-engine-choice.md` E2–E4); Ardour pitfalls in
-`docs/pitfalls/`; GPL sources linked from Settings ▸ About; user docs.
+`docs/pitfalls/`; GPL sources linked from Settings ▸ About (**done 2026-11-27**: tab About ▸ Golem Engine — version on the
+machine, version pinned by the release, the engine running, licence, Ardour credit and the sources repository,
+`GET /api/system/golem-engine`; a Golem Engine card in Libraries); user docs.
 
 ## 6. Decisions (taken 2026-11-10)
 

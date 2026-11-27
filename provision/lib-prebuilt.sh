@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Les plugins PRÉCOMPILÉS (Goldoralf/golem-binaries) pour install-zconvo/nam/prisma/spectral.sh : on essaie le binaire
+# Les plugins PRÉCOMPILÉS (Goldoralf/golem-binaries) pour install-zconvo/nam/spectral.sh : on essaie le binaire
 # épinglé d'abord, on compile les mêmes commits seulement s'il manque (2026-10-23 : ~10 min de moins par install).
 # À sourcer APRÈS avoir posé USER_NAME et lib-receipt.sh.
 #   prebuilt <asset> <dossier> <bundle>     0 = posé (chez l'utilisateur), 1 = à compiler

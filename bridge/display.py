@@ -9,11 +9,16 @@ elles ne coûtent rien d'audible (le rack Linux de dev, 2026-11-25) : le choix r
     animations : "auto" (défaut) — figées sur l'écran LOCAL (l'app servie par 127.0.0.1/localhost), animées sur une
                  tablette ou un téléphone, qui dessinent avec leur propre processeur ;
                  "on" — animées partout ; "off" — figées partout.
-    blinks     : les voyants d'état clignotent (au pas : deux images par seconde, app/anim-stepper.mjs) ; faux = fixes.
-                 Quand les cases sont figées, les voyants sont tenus allumés quel que soit ce réglage (0 image au repos).
+    (les voyants qui clignotent — le _ du logo, le point REC — SUIVENT les animations depuis le 2026-11-27 : figées, ils
+     sont tenus allumés, 0 image au repos ; l'ancien réglage `blinks` est retiré, un réglage de moins ; et
+     une valeur restée dans display.json est ignorée.)
     still_tiles: ce que montre une case FIGÉE (docs/anim-packs.md §8.4, 2026-11-26) : "pedals" (défaut) — la pédale
                  golem-fx du bloc sur les stomps, l'image fixe de l'effet sur les scènes ; "glyphs" — le glyphe golem-fx
                  en grand ; "textures" — l'image fixe de l'effet partout. Sans effet sur des cases animées.
+    fullscreen : le PREMIER TAP met l'app en plein écran (2026-11-26, vrai par défaut) sur tout appareil qui l'ouvre dans
+                 un navigateur — téléphone (les deux affichages) ou tablette. Le navigateur exige un geste : on ne peut
+                 pas démarrer en plein écran, seulement prendre le premier tap pour ça (app/fullscreen.mjs). Sans objet
+                 sur l'écran local (la fenêtre du rack l'est déjà).
 
 Fichier : config/display.json (état local, .gitignore). Le choix part dans l'état diffusé (`display`) : chaque écran
 l'applique sans recharger. Health le propose quand le son claque avec les animations actives (bridge/fixes.py)."""
@@ -24,7 +29,7 @@ from . import config as C
 
 MODES = ("auto", "on", "off")
 STILL_STYLES = ("pedals", "glyphs", "textures")
-DEFAULTS = {"animations": "auto", "blinks": True, "still_tiles": "pedals"}
+DEFAULTS = {"animations": "auto", "still_tiles": "pedals", "fullscreen": True}
 PATH = lambda: os.path.join(C.CONFIG_DIR, "display.json")   # noqa: E731 — le dossier de config du MOMENT
 
 _BRIEF = {"key": None, "value": None}
@@ -40,28 +45,28 @@ def get():
     if isinstance(d, dict):
         if d.get("animations") in MODES:
             out["animations"] = d["animations"]
-        if isinstance(d.get("blinks"), bool):
-            out["blinks"] = d["blinks"]
         if d.get("still_tiles") in STILL_STYLES:
             out["still_tiles"] = d["still_tiles"]
+        if isinstance(d.get("fullscreen"), bool):
+            out["fullscreen"] = d["fullscreen"]
     return out
 
 
-def set_(animations=None, blinks=None, still_tiles=None):
+def set_(animations=None, still_tiles=None, fullscreen=None):
     """Change le réglage ; rend le réglage complet. ValueError si une valeur est hors liste."""
     cur = get()
     if animations is not None:
         if animations not in MODES:
             raise ValueError(f"animations must be one of {list(MODES)}")
         cur["animations"] = animations
-    if blinks is not None:
-        if not isinstance(blinks, bool):
-            raise ValueError("blinks must be true or false")
-        cur["blinks"] = blinks
     if still_tiles is not None:
         if still_tiles not in STILL_STYLES:
             raise ValueError(f"still_tiles must be one of {list(STILL_STYLES)}")
         cur["still_tiles"] = still_tiles
+    if fullscreen is not None:
+        if not isinstance(fullscreen, bool):
+            raise ValueError("fullscreen must be true or false")
+        cur["fullscreen"] = fullscreen
     from .store import _write_json_atomic
     os.makedirs(os.path.dirname(PATH()), exist_ok=True)
     _write_json_atomic(PATH(), cur)

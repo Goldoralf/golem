@@ -187,7 +187,7 @@ export function ControlPage({ st, c, rights, onTuner, onSignIn }) {
   // figées (Settings ▸ System ▸ Display : Off). Le téléphone n'est pas la machine qui joue le son : « Auto » anime.
   const anims = (current && current.anims) || {};
   const disp = st.display || {};
-  const still = tilesStill({ local: false, display: { animations: disp.animations || 'auto', blinks: disp.blinks !== false } });
+  const still = tilesStill({ local: false, display: { animations: disp.animations || 'auto' } });
   const vu = (st.levels && (st.levels.in1 ?? st.levels.guitar)) || 0;
   const tile = (anim, color) => ({ cls: still ? '' : animClass(anim),
     style: '--c:' + color + ';--pc:' + color + (!still && (anim === 'vu' || String(anim || '').includes('/')) ? ';--vu:' + vu : '') });

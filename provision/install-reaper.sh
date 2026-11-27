@@ -5,10 +5,10 @@
 # Version épinglée pour la reproductibilité ; bump volontaire.
 set -euo pipefail
 
-REAPER_VERSION="${REAPER_VERSION:-7.79}"   # ← vérifier https://www.reaper.fm/download.php et bumper
+REAPER_VERSION="${REAPER_VERSION:-7.86}"   # ← vérifier https://www.reaper.fm/download.php et bumper
 # SHA-256 du tarball épinglé (audit 2026-08-12, M-3) : un download se VÉRIFIE avant de
 # s'installer. Bumper la version = re-calculer ce hash (sha256sum du .tar.xz officiel).
-REAPER_SHA256="${REAPER_SHA256:-a420b47fc5a1bef2ba6ecbf4937bb67b094333f0daa318dfe702d5fcdaa38846}"
+REAPER_SHA256="${REAPER_SHA256:-c2f9d8616bd1dc6175993b82451e1c6e352c6761e7ae6d72400a3f3dfb03bedb}"
 REAPER_MAJOR="${REAPER_VERSION%%.*}"
 PKG="reaper${REAPER_VERSION/./}_linux_x86_64"
 URL="https://www.reaper.fm/files/${REAPER_MAJOR}.x/${PKG}.tar.xz"

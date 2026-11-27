@@ -1,9 +1,9 @@
 {
  "_comment": "Ce que GoleM installe sous macOS, à versions ÉPINGLÉES — le pendant de provision/windows/pins.json (docs/platforms.md). Lu par bridge/reaper_update.py (Licenses ▸ Reaper), installer/platform_macos.py et provision/macos/install-system.sh (avec plutil). Empreintes calculées le 2026-10-04 sur les fichiers officiels (sha256). Bumper une version = recalculer son sha256 dans le même commit. `manual` : ce que l'utilisateur pose lui-même — affiché sur la dernière page de l'installateur.",
  "reaper": {
-  "version": "7.79",
-  "url": "https://www.reaper.fm/files/7.x/reaper779_universal.dmg",
-  "sha256": "2493cea3cd6105d84bbf02710280d73ea8a119f06370152773483767fade8602"
+  "version": "7.86",
+  "url": "https://www.reaper.fm/files/7.x/reaper786_universal.dmg",
+  "sha256": "259f140eccd919b57d1faf5b2851a35ca077dd9993ca7cc5eb28d6d57b777866"
  },
  "nam_golem": {
   "_comment": "NeuralAmpModeler 0.7.15 bâti par golem depuis le tag amont (MIT, source inchangée) : les versions officielles 0.7.14/0.7.15 ne publient aucun binaire, et 0.7.13 ne lit pas les captures A2. Posé PAR-DESSUS le 0.7.13 officiel (dont l'installeur reste le propriétaire, désinstallation comprise). Run : https://github.com/Goldoralf/NeuralAmpModelerPlugin/actions/runs/39812387332. Mesuré le 2026-10-22 : A2.nam transforme le son (0.7.13 le laissait passer à sec), A1 identique.",

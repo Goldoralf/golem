@@ -6,9 +6,9 @@
   "sha256": "67b5635e80ea51072b87941312d00ec8927c4db9ba18938f7ad2d27b328b95fb"
  },
  "reaper": {
-  "version": "7.79",
-  "url": "https://www.reaper.fm/files/7.x/reaper779_x64-install.exe",
-  "sha256": "f07714d894a073df40e88568f8aa524a74230f574b0688df681f9b7c0877f9df",
+  "version": "7.86",
+  "url": "https://www.reaper.fm/files/7.x/reaper786_x64-install.exe",
+  "sha256": "02af50cc5c5417b92efde1e8fbdb4f37564e8545c3da409782ecbe7c0e90df76",
   "signer": "Cockos Incorporated"
  },
  "nam_golem": {

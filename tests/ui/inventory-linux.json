@@ -1296,6 +1296,24 @@
   "button | golem",
   "button | ⟳ Check For Releases"
  ],
+ "#/system/about/engine": [
+  "a | Designer",
+  "a | Library",
+  "a | Live",
+  "a | Settings",
+  "a | Songs",
+  "button | About",
+  "button | Connect",
+  "button | Content",
+  "button | Engines",
+  "button | Gear",
+  "button | Golem Engine",
+  "button | Libraries",
+  "button | Mode",
+  "button | REAPER",
+  "button | System",
+  "button | golem"
+ ],
  "#/system/about/libs": [
   "a | Designer",
   "a | Library",

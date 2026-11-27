@@ -92,3 +92,47 @@ def test_sans_kit_la_commande_s_arrete_avant_d_extraire(tmp_path):
             return {}
     bad = "\n".join(R.preconditions(NoKit(), engine=False, kit=str(tmp_path)))
     assert "no declared reference rack" in bad and "no demo take" in bad and "--record-take" in bad
+
+
+# ── ce que golem.fm a demandé à la remise (2026-11-27) ──────────────────────────────────────────────────────────────
+def test_un_exemple_change_dit_si_l_ecran_a_bouge():
+    assert R.kind_of_change({"route": ["a", "b"], "pixels": 0.4}) == "route changed"
+    assert R.kind_of_change({"anchors_gone": ["health.guard"], "reads": ["/api/x"]}) == "screen redrawn (anchors changed)"
+    assert R.kind_of_change({"pixels": 0.25}) == "screen changed (25 % of the pixels)"
+    assert R.kind_of_change({"pixels": 0.004}) == "screen nearly the same"
+    assert R.kind_of_change({"reads": ["/api/sandbox"]}) == "data only"
+
+
+def test_la_remise_porte_les_mots_les_lectures_neuves_et_les_commits(tmp_path):
+    man = _man(tmp_path)
+    rep = {"added": [], "removed": [], "sections": {}, "pages": {},
+           "changed": {"factory-health": {"anchors_gone": ["health.guard"], "anchors_new": ["health.fact:display"]},
+                       "golem-rising-designer": {"reads": ["/api/sandbox"]},
+                       "companion-song": {"route": ["/app/m.html?tab=song", "/app/m.html?tab=live&mode=control"]}}}
+    app = {"reads_added": ["/api/system/display", "/api/system/golem-engine"], "reads_removed": ["/api/take/transcribe"],
+           "commits": ["18b605b7 Health V2, Display settings"]}
+    text = R.handover("v9.9.9", "c" * 40, "/pins/factory", man, rep, "4cdf4951", [], app=app, notes="- **Health is V2**: redrawn.")
+    assert "## What changed on screen, in words" in text and "- **Health is V2**: redrawn." in text
+    assert "| factory-health | screen redrawn (anchors changed) | anchors gone: health.guard; anchors new: health.fact:display |" in text
+    assert "| companion-song | route changed | route /app/m.html?tab=song → /app/m.html?tab=live&mode=control |" in text
+    assert text.index("| companion-song |") < text.index("| golem-rising-designer | data only |")     # l'écran d'abord, les données après
+    assert "`/api/system/display`, `/api/system/golem-engine`" in text and "no longer names: `/api/take/transcribe`" in text
+    assert "- 18b605b7 Health V2, Display settings" in text
+
+
+def test_une_coquille_deja_re_epinglee_se_compare_a_celle_d_avant(tmp_path):
+    work = tmp_path / "work"
+    pin = work / "pin-f0c0d5a2"
+    pin.mkdir(parents=True)
+    assert R.remembered_previous(str(pin), str(work)) == (None, None)                  # jamais comparée : rien à retrouver
+    (pin / "impact.json").write_text(json.dumps({"old": {"commit": "4cdf4951deba"}}))
+    assert R.remembered_previous(str(pin), str(work)) == ("4cdf4951deba", None)
+    old = work / "pin-4cdf4951" / "factory"
+    old.mkdir(parents=True)
+    (old / "SNAPSHOT.json").write_text("{}")
+    assert R.remembered_previous(str(pin), str(work)) == ("4cdf4951deba", str(old))
+
+
+def test_l_onglet_golem_engine_est_parcouru():
+    cu = S._check_ui()
+    assert "#/system/about/engine" in cu.RACK_PAGES and S.section_of("#/system/about/engine") == "settings/about"

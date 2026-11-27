@@ -245,3 +245,18 @@ def test_la_mini_coquille_dit_ce_qui_ne_va_pas(tmp_path):
     (tmp_path / "SNAPSHOT.json").write_text(json.dumps(ok))
     assert S.smoke_problems({"refused": [], "examples_failed": []}, str(tmp_path)) == []
     assert S.smoke_problems({"refused": []}, str(tmp_path / "nowhere"))[0].startswith("no SNAPSHOT.json")
+
+
+def test_l_app_ne_lit_aucun_de_ses_fichiers_par_un_chemin_absolu():
+    """golem.fm sert l'app sous /golem-app/<commit>/ : un `fetch('/app/…')` y donne 404 (2026-11-27, app/anim-tiles.mjs —
+    le Companion de la coquille perdait ses animations). Un fichier de l'app se lit relativement au module."""
+    import glob
+    import re
+    bad = []
+    for path in glob.glob(os.path.join(ROOT, "app", "*.js")) + glob.glob(os.path.join(ROOT, "app", "*.mjs")):
+        if path.endswith(".test.mjs"):
+            continue
+        for i, line in enumerate(open(path, encoding="utf-8"), 1):
+            if re.search(r"""(fetch|import)\(\s*['"`]/app/""", line):
+                bad.append("%s:%d" % (os.path.basename(path), i))
+    assert bad == []

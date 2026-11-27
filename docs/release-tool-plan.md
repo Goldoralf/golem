@@ -177,9 +177,12 @@ golem.fm, so nothing is built for it; the target is maestrium.
 4. **Independent examples.** A failing example stops nothing; only the failed ones are rerun. **Done 2026-11-27**: a
    failed example is recorded in `SNAPSHOT.json` (`examples_failed`, with its reason), its undo always runs, and
    `--examples a,b` reruns a chosen few (the result then says `partial`).
-5. **Noise sorted by the tool.** **First part done 2026-11-27**: `doc-impact.py` no longer asks for a review when
-   only volatile reads differ (disk, CPU, backups: `NOISE`) and no pixel moved. Left: freeze the clock and the
-   animations in the bench, so the pixel diff itself stops seeing them.
+5. **Noise sorted by the tool.** **Done 2026-11-27, by measuring instead of freezing.** Two extractions of the same
+   app code were compared: **no pixel differed** (the bench already renders still), so there is no clock or animation
+   to freeze. The noise was in the reads: the bench's boot time, the time of the read, a heartbeat counter, "3 s ago",
+   Unix dates in the state, the free disk. `doc-impact.py` compares reads without them (`stable`, `VOLATILE_KEYS`) and
+   does not ask for a review when only volatile reads differ (`NOISE`: disk, CPU, backups). After that, the same two
+   extractions differ by one example, and it is a true difference.
 6. **One command on the rack.** **Done 2026-11-27**: `tools/shell_release.py v0.7.3` checks what it needs (the
    reference kit, a bench engine), extracts the full shell at the tag's commit, controls it (no failed example, no
    refused read, the kit at the right shape; each problem says the exact command to redo it), measures the doc impact
@@ -187,8 +190,18 @@ golem.fm, so nothing is built for it; the target is maestrium.
    doc pages to review, the anchors gone, the commands). Everything lands in `~/golem-doc-work/pin-<commit>/`; no
    other repository is touched. Run on v0.7.3: 7 minutes, 62 examples, ready to hand over; 10 sections to review,
    6 unchanged, 22 doc pages to look at. The shell carries its version (`SNAPSHOT.json` `shell.version`).
-7. **The docs.** maestrium's `content/docs` becomes the official source; the rack copy is retired; each page records
-   the shell it was written against. The exact flow is proposed to the golem-fm session before anything changes.
+7. **The docs.** **PROPOSED 2026-11-27, sent to the golem-fm session; the maintainer decides.** What happened at the
+   v0.7.3 re-pin shows the flow that works: the rack hands over facts, golem.fm writes.
+   - **One source**: maestrium's `frontend/src/content/docs`. The rack copy (`~/golem-doc-work/docs-pages`, drifted
+     since 2026-10-22) and `check_pages.py` are retired; golem.fm's own test already measures every anchor.
+   - **The rack's part is the handover**: per section, each changed example with what changed (route, screen
+     redrawn, data only), the anchors gone, the API addresses the app now names, the commits that touched `app/`, and
+     `--notes`: what changed on screen, in words. golem.fm asked for those last three after the v0.7.3 re-pin; they
+     are in `HANDOVER.md` now.
+   - **Each page records the shell it was reread against**: one file next to the pages (`reviewed.json`, page →
+     shell version), stamped by golem.fm when a page is reread. A page that cites an example changed since its stamp
+     is behind: golem.fm's test can say it, and `tools/snapshot.py` can show "doc pages behind" per site.
+   - This replaces [user-docs.md](user-docs.md) §8's "the rack writes the golem pages and golem.fm copies them".
 
 **A shell has a version: the golem release it comes from** (`shell v0.7.3` = the app at tag v0.7.3, its factory
 snapshot, its examples), in its manifest with the commit, the catalogue version and the date. The maintainer lifted

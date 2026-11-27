@@ -55,7 +55,7 @@ RACK_PAGES = [
     "#/system/engines/audio", "#/system/engines/separation",
     "#/system/content/storage", "#/system/content/factory",
     "#/system/connect/wifi", "#/system/connect/devices", "#/system/connect/golemfm", "#/system/connect/tone3000",
-    "#/system/about/golem", "#/system/about/libs",
+    "#/system/about/golem", "#/system/about/engine", "#/system/about/libs",
     # la vérification de première installation (docs/health.md §2), en démo : pendant le geste 2, puis le bilan
     "/app/?boot=firstcheck#/live", "/app/?boot=firstcheck&at=input#/live", "/app/?boot=firstcheck&at=done#/live",
 ]

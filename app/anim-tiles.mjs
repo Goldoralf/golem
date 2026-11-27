@@ -16,7 +16,9 @@ const keep = r => {
 
 export function loadTileAnims() {
   if (_done) return _done;
-  _done = fetch('/app/style.css').then(r => r.text()).then(txt => {
+  // RELATIF À CE MODULE, jamais « /app/style.css » : la coquille de golem.fm sert l'app sous /golem-app/<commit>/, où le
+  // chemin absolu donnait 404 — le Companion en mode Control y perdait ses animations (vu sur le site, 2026-11-27)
+  _done = fetch(new URL('./style.css', import.meta.url)).then(r => r.text()).then(txt => {
     const src = new CSSStyleSheet();
     src.replaceSync(txt.replace(/@import[^;]+;/g, ''));        // replaceSync refuse les @import
     const out = [];

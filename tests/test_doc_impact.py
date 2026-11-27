@@ -93,3 +93,20 @@ def test_une_page_n_est_citee_que_pour_un_exemple_a_relire(tmp_path):
     (tmp_path / "b.en.md").write_text('::golem{example="factory-storage"}\n')
     rep = {"removed": [], "changed": {"factory-storage": {"reads": ["/api/storage"]}, "golem-rising-live": {"pixels": 0.2}}}
     assert D.pages_citing(str(tmp_path), rep) == {"a.en.md": ["example golem-rising-live"]}     # b ne cite que du bruit
+
+
+def test_les_horodatages_ne_font_pas_un_changement():
+    a = {"boot": {"done": 1.0, "now": 2.0}, "now": 5, "hb": 88079, "scene_id": "B",
+         "idle": {"waiting_for": "in use (screen, 3 s ago)"}, "takes": [{"dir": "perf-1", "now": 1}]}
+    b = {"boot": {"done": 9.0, "now": 9.5}, "now": 6, "hb": 86459, "scene_id": "B",
+         "idle": {"waiting_for": "in use (screen, 1 s ago)"}, "takes": [{"dir": "perf-1", "now": 2}]}
+    assert D.stable(a) == D.stable(b)
+    assert D.stable(dict(a, scene_id="C")) != D.stable(b)                 # un vrai changement reste un changement
+    assert D.stable({"x": "3 songs"}) == {"x": "3 songs"} and D.stable({"x": "2 min ago"}) == {"x": "N ago"}
+
+
+def test_une_date_unix_et_le_disque_du_poste_sont_du_bruit():
+    a = {"health": {"level": "warn", "at": 1795789803.992}, "updated": 1795789803, "disk": {"free": 5}, "bpm": 120, "rate": 1440000}
+    b = {"health": {"level": "warn", "at": 1795787737.67}, "updated": 1795787740, "disk": {"free": 9}, "bpm": 120, "rate": 1440000}
+    assert D.stable(a) == D.stable(b) and D.stable(a)["bpm"] == 120 and D.stable(a)["rate"] == 1440000     # un nombre ordinaire reste
+    assert D.stable({"ok": True}) == {"ok": True}

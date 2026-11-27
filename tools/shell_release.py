@@ -78,6 +78,19 @@ def online_shell(fm=FM, work=WORK):
     return commit, d if os.path.isfile(os.path.join(d, "SNAPSHOT.json")) else None
 
 
+def remembered_previous(pin, work=WORK):
+    """La coquille à laquelle ce pin a été comparé la première fois : (commit, dossier ou None)."""
+    try:
+        with open(os.path.join(pin, "impact.json"), encoding="utf-8") as f:
+            commit = (json.load(f).get("old") or {}).get("commit")
+    except (OSError, ValueError):
+        return None, None
+    if not commit:
+        return None, None
+    d = os.path.join(work, "pin-" + commit[:8], "factory")
+    return commit, d if os.path.isfile(os.path.join(d, "SNAPSHOT.json")) else None
+
+
 def preconditions(overlay, engine, kit):
     """Ce qui manque pour une coquille complète : [] quand tout est là."""
     bad = []
@@ -96,6 +109,35 @@ def preconditions(overlay, engine, kit):
     except ImportError:
         bad.append("Playwright is not installed in this Python (use .venv/bin/python)")
     return bad
+
+
+def app_reads(commit):
+    """Les adresses /api/… que le code de l'app CITE à ce commit (une chaîne dans app/*.js) — pas ce qu'un relevé a vu :
+    une page que le relevé ne parcourt pas lit quand même, et golem.fm doit classer chaque lecture de l'app."""
+    out = _git("grep", "-h", "-o", "-E", r"/api/[A-Za-z0-9_./-]+", commit, "--", "app") or ""
+    return {r.rstrip("/.") for r in out.splitlines() if len(r) > 5}
+
+
+def app_changes(old, new):
+    """Ce qui a changé dans l'APP entre deux coquilles : {reads_added, reads_removed, commits: [sujets]}.
+    Demandé par golem.fm (2026-11-27) : deux lectures neuves non classées chez eux, et « Health est passé en V2 » qu'une
+    ancre partie ne disait pas — le sujet des commits qui ont touché app/ le dit."""
+    if not (old and new) or old == new:
+        return None
+    a, b = app_reads(old), app_reads(new)
+    log = _git("log", "--format=%h %s", "--reverse", "%s..%s" % (old, new), "--", "app") or ""
+    return {"reads_added": sorted(b - a), "reads_removed": sorted(a - b), "commits": log.splitlines()}
+
+
+def kind_of_change(d):
+    """Un exemple changé : l'ÉCRAN a-t-il bougé (route, ancres, pixels) ou seulement ses données ?"""
+    if "route" in d or "click" in d:
+        return "route changed"
+    if any(k in d for k in ("anchors_gone", "anchors_new", "anchors_now_hidden")):
+        return "screen redrawn (anchors changed)"
+    if "pixels" in d:
+        return "screen changed (%d %% of the pixels)" % round(100 * d["pixels"]) if d["pixels"] >= 0.01 else "screen nearly the same"
+    return "data only"
 
 
 def problems(snap_dir):
@@ -127,7 +169,7 @@ def problems(snap_dir):
     return bad
 
 
-def handover(version, commit, snap_dir, man, rep, prev_commit, bad):
+def handover(version, commit, snap_dir, man, rep, prev_commit, bad, app=None, notes=None):
     """La remise, en Markdown : ce que golem.fm lit avant de ré-épingler."""
     out = ["# Empty shell %s — handover" % version, "",
            "- golem commit: `%s`" % commit,
@@ -139,6 +181,8 @@ def handover(version, commit, snap_dir, man, rep, prev_commit, bad):
            "- compared with the shell online: `%s`" % (prev_commit or "not found — no impact measured"), ""]
     if bad:
         out += ["## NOT ready to hand over", ""] + ["- " + b for b in bad] + [""]
+    if notes:                                            # ce que la session du rack sait et qu'aucune mesure ne dit
+        out += ["## What changed on screen, in words", "", notes.strip(), ""]
     if rep:
         secs = rep.get("sections") or {}
         out += ["## Sections of the menu", "", "| Section | Status | Examples to review | Anchors gone |", "|---|---|---|---|"]
@@ -148,10 +192,29 @@ def handover(version, commit, snap_dir, man, rep, prev_commit, bad):
         if rep.get("added") or rep.get("removed"):
             out += ["", "Examples new: %s. Removed: %s." % (", ".join(rep.get("added") or []) or "none",
                                                            ", ".join(rep.get("removed") or []) or "none")]
+        changed = rep.get("changed") or {}
+        if changed:
+            out += ["", "## Each changed example", "", "| Example | What changed | Detail |", "|---|---|---|"]
+            for name in sorted(changed, key=lambda n: (kind_of_change(changed[n]) == "data only", n)):
+                d = changed[name]
+                detail = "; ".join(filter(None, [
+                    ("route %s → %s" % tuple(d["route"])) if "route" in d else "",
+                    ("anchors gone: " + ", ".join(d["anchors_gone"])) if d.get("anchors_gone") else "",
+                    ("anchors new: " + ", ".join(d["anchors_new"])) if d.get("anchors_new") else "",
+                    ("now hidden in ?shell=ro: " + ", ".join(d["anchors_now_hidden"])) if d.get("anchors_now_hidden") else "",
+                    ("reads: " + ", ".join(d["reads"])) if d.get("reads") else ""]))
+                out.append("| %s | %s | %s |" % (name, kind_of_change(d), detail or "—"))
         out += ["", "## Doc pages to look at", ""]
         pages = rep.get("pages") or {}
         out += ["- `%s`: %s" % (p, ", ".join(why)) for p, why in sorted(pages.items())] or ["None cites a changed example."]
         out.append("")
+    if app:
+        out += ["## The app since the shell online", "",
+                "API addresses the app's code names now and did not (reads to classify in `golemShell/reads.json`, or writes): "
+                + (", ".join("`%s`" % r for r in app["reads_added"]) or "none") + ".", "",
+                "Addresses it no longer names: " + (", ".join("`%s`" % r for r in app["reads_removed"]) or "none") + ".", "",
+                "Commits that touched `app/` (%d), oldest first — a screen redrawn is named here:" % len(app["commits"]), ""]
+        out += ["- " + c for c in app["commits"]] + [""]
     out += ["## What golem.fm runs", "",
             "```", "cd ~/code/maestrium/backend && uv run python tools/sync_golem_app.py %s --snapshot %s" % (commit, snap_dir),
             "uv run pytest -q tests/test_golem_app_vendor.py", "```", "",
@@ -167,6 +230,8 @@ def main(argv=None):
     ap.add_argument("--keep", action="store_true", help="keep an extraction already made at this commit")
     ap.add_argument("--no-engine", action="store_true")
     ap.add_argument("--kit", help="the reference kit's folder (default $GOLEM_SHELL_KIT or ~/golem-doc-work/reference)")
+    ap.add_argument("--notes", metavar="FILE", help="a text file put in the handover as is: what changed on screen, in words "
+                                                    "(a layout redrawn, a tab renamed) — what no measurement says")
     ap.add_argument("--work", default=WORK, help="where the pin folders live (default ~/golem-doc-work)")
     a = ap.parse_args(argv)
     if not (a.version or a.rev):
@@ -215,6 +280,10 @@ def main(argv=None):
         print("   ✗ " + b)
 
     prev_commit, prev = online_shell(work=a.work)
+    if prev_commit == commit:
+        # golem.fm a DÉJÀ ré-épinglé sur cette coquille : « en ligne » la désigne elle-même. La comparaison se fait avec
+        # celle d'avant, que la première mesure a notée (impact.json) — sinon la remise perdait ses sections (2026-11-27)
+        prev_commit, prev = remembered_previous(pin, a.work)
     if a.previous:
         prev, prev_commit = a.previous, (json.load(open(os.path.join(a.previous, "SNAPSHOT.json"), encoding="utf-8")).get("commit"))
     rep = None
@@ -240,7 +309,11 @@ def main(argv=None):
     else:
         print("3. doc impact: no previous shell found in %s (pin-%s) — not measured" % (a.work, str(prev_commit)[:8]))
 
-    text = handover(version, commit, snap, man, rep, prev_commit, bad)
+    notes = None
+    if a.notes:
+        with open(a.notes, encoding="utf-8") as f:
+            notes = f.read()
+    text = handover(version, commit, snap, man, rep, prev_commit, bad, app=app_changes(prev_commit, commit), notes=notes)
     with open(os.path.join(pin, "HANDOVER.md"), "w", encoding="utf-8") as f:
         f.write(text)
     print("4. handover written: %s" % os.path.join(pin, "HANDOVER.md"))

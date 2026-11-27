@@ -99,7 +99,7 @@ def compare(old, new):
         if hidden:
             d["anchors_now_hidden"] = sorted(hidden)
         ra, rb = a.get("reads") or {}, b.get("reads") or {}
-        reads = sorted(k for k in set(ra) | set(rb) if ra.get(k) != rb.get(k))
+        reads = sorted(k for k in set(ra) | set(rb) if stable(ra.get(k)) != stable(rb.get(k)))
         if reads:
             d["reads"] = reads
         if so and sn and os.path.exists(os.path.join(so, name + ".png")) and os.path.exists(os.path.join(sn, name + ".png")):
@@ -115,6 +115,27 @@ def compare(old, new):
         report["app_files"] = [ln.split("|")[0].strip() for ln in r.stdout.splitlines() if "|" in ln]
     report["sections"] = by_section(report, en)
     return report
+
+
+# CE QUI CHANGE À CHAQUE EXTRACTION sans rien dire de l'écran (mesuré le 2026-11-27 entre deux extractions du même code :
+# aucun pixel ne différait, dix exemples « changés » quand même) : l'heure du démarrage du banc (`boot`), l'heure du
+# relevé (`now`), un compteur de battement (`hb`), une durée dite en clair (« in use (screen, 3 s ago) »).
+# Et, dans l'état : toute date Unix (`at`, `t`, `skipped_at`, `updated`…) et le disque libre du poste (`disk`).
+VOLATILE_KEYS = {"boot", "now", "hb", "last_took", "disk"}
+_AGO = re.compile(r"\b\d+(\.\d+)? ?(s|sec|min|h|d) ago\b")
+
+
+def stable(x):
+    """La même lecture sans ses horodatages : ce qu'on compare d'une coquille à l'autre."""
+    if isinstance(x, dict):
+        return {k: stable(v) for k, v in x.items() if k not in VOLATILE_KEYS}
+    if isinstance(x, list):
+        return [stable(v) for v in x]
+    if isinstance(x, str):
+        return _AGO.sub("N ago", x)
+    if isinstance(x, (int, float)) and not isinstance(x, bool) and 1.5e9 < x < 2.5e9:
+        return "<time>"                                  # une date Unix (2017 à 2049) : l'heure du relevé, pas un contenu
+    return x
 
 
 def to_review(d):

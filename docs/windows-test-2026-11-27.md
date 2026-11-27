@@ -62,31 +62,69 @@ hash and signature are checked the same way in check 2).
 > Filled in by the Windows agent. Keep the shape: the Linux session reads it line by line. One of `PASS`, `FAIL`,
 > `NOT RUN` per check, then what was seen (versions, log lines, what the user heard). Short and factual: no "I think".
 
-- Date and time (local):
-- golem commit on this box (`git log -1 --oneline`):
-- Engine selected at start, and at the end:
-- REAPER installed before (Settings ▸ About ▸ REAPER):
-- REAPER installed after:
-- REAPER title bar after (licence text):
-- Sound card (ASIO driver name, buffer):
+- Date and time (local): 2026-11-27, 19:27 → 19:35
+- golem commit on this box (`git log -1 --oneline`): `191664af Docs: handoff note for the Windows test of REAPER 7.86`
+  (then `python -m provision.desktop setup`: golem-fx 0.8.2, Golem Engine 9.9-g8 already there)
+- Engine selected at start, and at the end: REAPER / REAPER
+- REAPER installed before (Settings ▸ About ▸ REAPER): **7.27**, not 7.79 — `REAPER (x64).golem-prev` already held
+  7.79 (an earlier 7.27 → 7.79 update had been swapped back, see `bridge/desktop_reaper.py:163`)
+- REAPER installed after: **7.86** (`reaper.exe` ProductVersion 7.86); `golem-prev` now holds 7.27 (the 7.79 copy is gone)
+- REAPER title bar after (licence text): `golem-set [modified] - REAPER v7.86 - EVALUATION LICENSE`
+- Sound card (ASIO driver name, buffer): Universal Audio Volt, 48 kHz, 256 samples (12.2 ms)
 
 | # | Result | What was seen |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | PASS | `GET /api/system/reaper-update`: installed 7.27, pinned 7.86, status `update-available`; licence `registered` |
+| 2 | FAIL (install PASS, rollback FAIL) | Download, `sha256 verified against the pinned release`, one UAC prompt, `keeping REAPER 7.27 next to it`, `REAPER 7.27 → 7.86`, engine restarted, OSC link alive. Then 7.86 ran in **EVALUATION** with this box's licence key (the same key 7.79 already refused) → golem started the automatic rollback, as designed. The rollback then **failed**: WM_CLOSE posted, REAPER 7.86 did not close in 180 s (no visible dialog among its windows, project still `[modified]`), worker ended `{"ok":false,"rolled_back":false,"error":"REAPER is still open — check its save prompt"}`. No second UAC prompt (never reached). The card then shows **installed 7.86 = pinned, status `up-to-date`** — it does not show that the update failed and the licence is lost |
+| 3 | PASS | Played by the user on 7.86 (evaluation mode): "everything sounds good" |
+| 4 | PASS (one oddity) | `tools\doctor.py`: no incident on REAPER, a plugin or the card; engine REAPER 7.86 talking to the bridge; 0 dropouts; setlist "Factory Guitar" 15 presets, every block ready. Only open incident: golem.fm unreachable (network, unrelated). Drift line: `REAPER 7.27 → 7.86 · plugins 673 → 614` (see below) |
+| 5 | NOT RUN | — |
 
-**Log excerpt** (only if a check failed, or if something looked odd):
+**Log excerpt** (card log, check 2):
 
 ```
+⏳ downloading REAPER 7.86…
+✓ downloaded reaper786_x64-install.exe
+✓ sha256 verified against the pinned release
+⏳ stopping audio engine (project saved)…
+✓ project saved
+✓ audio engine stopped
+⏳ Windows asks for permission on the PC screen — approve it there
+✓ sha256 OK (pinned)
+→ keeping REAPER 7.27 next to it
+✓ REAPER 7.27 → 7.86
+✓ system step done
+⏳ restarting audio engine…
+⏳ verifying (engine boots + rig link alive)…
+✗ REAPER 7.86 runs in EVALUATION — your license key is not accepted; going back to 7.27 (Windows asks once more)…
+✓ project saved
+✗ REAPER is still open — check its save prompt
 ```
 
 **Anything else noticed** (even outside the checks):
 
+- REAPER's plugin count fell from 673 to 614 across the update (`presets/.fx-inventory.json`, written 19:28:21 by
+  7.86: 133 VST3, 61 VST, 29 VST3i, 8 VSTi, 151 LV2, 22 LV2i, 2 CLAP, 204 JS…). The 7.27 inventory was overwritten,
+  so which 59 went missing is not known. No block of the factory setlist is affected.
+- The licence refusal is not specific to 7.86: this box's key was already refused by 7.79. It is a property of the
+  key, not of the 7.86 build — but every user whose key stops at 7.27-era versions will hit the same rollback path.
+- The licence, checked after the test: REAPER 7.86 (Help ▸ About ▸ License) says **"license couldn't be decoded"**
+  (REAPER's own text — not in golem's code). `%APPDATA%\REAPER\reaper-license.rk` is intact: 363 bytes, one line,
+  pure ASCII, no BOM, no CR/LF, written 2024-11-15 11:08 — two minutes after REAPER 7.27 was installed, so by
+  REAPER 7.27 itself when the key was typed; golem never rewrote it. Same file: accepted by 7.27, "couldn't be
+  decoded" by 7.79 and 7.86 → the key's format/generation, not a copy or encoding fault. The file already survives
+  every update (it lives outside the install folder): re-importing the same key changes nothing; a current key from
+  Cockos, imported once, would be kept by every later update. Not confirmed with Cockos.
+- What this means for users: someone holding an old key who taps Install 7.86 gets an update that loses the licence,
+  then (as seen here) a rollback that can fail silently. The user owns the decision on this box (handled later).
+- The box is left on REAPER 7.86 in evaluation (plays normally). The user will sort out the licence on 2026-11-28.
+- The user approved the update procedure as tested.
+
 **Verdict of the Windows agent** — one of: `GO` (7.86 can ship for Windows) · `NO-GO` (say which check) · `GO WITH
-RESERVE` (say what):
+RESERVE` (say what): **GO WITH RESERVE.** 7.86 installs through golem (pin hash, Cockos install, one UAC) and plays
+on Windows. Reserve: the automatic rollback after a licence loss failed because REAPER did not close on WM_CLOSE,
+and the card then reports `up-to-date` instead of the failure — the user is left in evaluation without being told.
+Rollback (check 5) not tried.
 
 ## Sending it back
 

@@ -227,7 +227,7 @@ the job fails with `reports disabled on this rack`, which golem.fm displays as i
 | `GET /api/diag/{id}/download` | the zip, for local troubleshooting |
 | `POST /api/diag/settings {auto}` | the box; stored in `config/diag.json` `{"auto": bool}` (absent = ticked) |
 | MCP `diag_report` | last `report.json` + timeline tail, admin only ([`rack-mcp.md`](rack-mcp.md)) |
-| `tools/check-report.py [--kind …] [--keep]` | builds a package on the running rack and checks manifest, hashes, size, vocabulary and whitelist, then greps the personal data the rack knows about itself (roster names, preset names, `$USER`, hostname, token, LAN addresses) as whole words, like the scrubber ("Raph" inside `graph_equalizer` is not a leak). Removes the package from the index unless `--keep` |
+| `tools/check-report.py [--kind …] [--keep]` | builds a package on the running rack and checks manifest, hashes, size, vocabulary and whitelist, then greps the personal data the rack knows about itself (roster names, preset names, `$USER`, hostname, token, LAN addresses) as whole words, like the scrubber (a short user name found inside `graph_equalizer` is not a leak). Removes the package from the index unless `--keep` |
 
 ## 6. Tests
 

@@ -116,8 +116,8 @@ def main():
     blob = b"".join(z.read(n) for n in names).decode("utf-8", "replace")
     known = pii_known()
     for label, val in known.items():
-        # mot ENTIER, comme le scrubber (bridge/scrub.py Scrubber._rx) : le prénom « Raph » se trouvait dans
-        # « graph_equalizer » (un plugin LSP du journal REAPER) — une fausse fuite (2026-11-24)
+        # mot ENTIER, comme le scrubber (bridge/scrub.py Scrubber._rx) : un nom d'utilisateur court se trouvait
+        # DANS un mot (« graph_equalizer », un plugin LSP du journal REAPER) — une fausse fuite (2026-11-24)
         if re.search(r"(?<!\w)" + re.escape(val) + r"(?!\w)", blob, re.IGNORECASE):
             fails.append(f"PII : {label} présent dans le paquet")
     for rx, label in ((r"gmt_[A-Za-z0-9_\-]{6,}", "jeton gmt_"), (r"\b192\.168\.\d+\.\d+\b", "IP LAN"),

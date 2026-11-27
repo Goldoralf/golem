@@ -291,12 +291,81 @@ def take_from_snapshot(snapshot_dir, out_dir, how, out_path=None):
     return layer
 
 
+def rack_from_snapshots(dirs, out_path=None, made=None):
+    """RÉENREGISTRE le rack de référence depuis une ou plusieurs extractions `--live-rack --section settings/gear`, prises
+    avec le VRAI matériel branché (le poste n'a pas assez de ports USB pour le Nitro ET le MPK : une passe par appareil,
+    fusionnées ici). Les entrées sont unies par appareil (son identifiant USB), les ports renumérotés ; l'exemple
+    « reference-drums-bound » garde le Nitro lié tel que la passe Nitro l'a relevé. Rend la couche."""
+    if out_path is None:
+        import shell_snapshot
+        out_path = shell_snapshot.out_path
+
+    def read(d, r):
+        try:
+            with open(out_path(d, r), encoding="utf-8") as f:
+                return json.load(f)
+        except (OSError, ValueError):
+            return {}
+
+    def union(lists, key):
+        out, seen = [], set()
+        for lst in lists:
+            for e in lst or []:
+                k = e.get(key) or e.get("name")
+                if k not in seen:
+                    seen.add(k)
+                    out.append(copy.deepcopy(e))
+        for i, e in enumerate(out, 1):
+            if "port" in e:
+                e["port"] = i
+        return out
+    snaps = []
+    for d in dirs:
+        with open(os.path.join(d, "SNAPSHOT.json"), encoding="utf-8") as f:
+            snaps.append((d, json.load(f)))
+    # la carte son : celle de la passe qui la voit présente
+    sc = next((read(d, "/api/soundcard") for d, _ in snaps if (read(d, "/api/soundcard").get("card") or {}).get("present")),
+              read(snaps[0][0], "/api/soundcard"))
+    cards = union([read(d, "/api/cards").get("connected") for d, _ in snaps], "id")
+    volt = [c for c in cards if "Volt" in c.get("name", "")] or cards[:1]
+    hp = [(read(d, "/api/state").get("hotplug") or {}) for d, _ in snaps]
+    layer = {
+        "what": "the reference rack: Universal Audio Volt 276 (FCB1010 UnO2 on its MIDI port), AKAI MPK Mini Mk II, Alesis Nitro "
+                "— both USB devices plugged together",
+        "recorded": {"commit": ",".join(sorted({m.get("commit", "?")[:8] for _, m in snaps})), "made": made or snaps[0][1].get("made"),
+                     "how": "recorded with the hardware plugged, one pass per USB device, merged by tools/shell_overlay.py --record-rack"},
+        "rack": {"variant": "drums+keys", "seen": sorted({w for _, m in snaps for w in (m.get("rack") or {}).get("seen") or []})},
+        "set": {"/api/controllers": {"controllers": union([read(d, "/api/controllers").get("controllers") for d, _ in snaps], "usb")},
+                "/api/devices": {"devices": union([read(d, "/api/devices").get("devices") for d, _ in snaps], "usb")},
+                "/api/soundcard": {"card": sc.get("card"), "playback_open": True, "capture_open": True, "midi": sc.get("midi"),
+                                   "usb": union([read(d, "/api/soundcard").get("usb") for d, _ in snaps], "name"), "binding": {}},
+                "/api/cards": {"connected": volt, "active": read(snaps[0][0], "/api/cards").get("active", "")}},
+        "state": {"hotplug": {"devices": union([h.get("devices") for h in hp], "usb"),
+                              "events": [e for h in hp for e in h.get("events") or []]}},
+        "examples": {},
+    }
+    for d, m in snaps:                                   # le Nitro lié : l'exemple de la passe Nitro, tel quel
+        p = os.path.join(d, "examples", "reference-drums-bound.json")
+        if os.path.isfile(p):
+            with open(p, encoding="utf-8") as f:
+                reads = json.load(f).get("reads") or {}
+            layer["examples"]["reference-drums-bound"] = {"skip_gestures": True, "set": {
+                k: v for k, v in reads.items() if k in ("/api/devices", "/api/controllers")}}
+    return layer
+
+
 if __name__ == "__main__":
     import sys
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    if len(sys.argv) == 4 and sys.argv[1] == "--record-take":
+    if len(sys.argv) >= 3 and sys.argv[1] == "--record-rack":
+        lay = rack_from_snapshots(sys.argv[2:])
+        with open(RACK_FILE, "w", encoding="utf-8") as f:
+            json.dump(lay, f, ensure_ascii=False, indent=1)
+        print("reference rack recorded from %d pass(es): %s -> %s" % (len(sys.argv) - 2, ", ".join(lay["rack"]["seen"]), RACK_FILE))
+    elif len(sys.argv) == 4 and sys.argv[1] == "--record-take":
         lay = take_from_snapshot(sys.argv[2], os.path.join(sys.argv[3], "demo-take"), "taken from the published snapshot")
         print("demo take recorded: %d track(s) -> %s" % (len(lay["media"]), os.path.join(sys.argv[3], "demo-take")))
     else:
-        print("usage: shell_overlay.py --record-take <snapshot dir> <kit dir>", file=sys.stderr)
+        print("usage: shell_overlay.py --record-take <snapshot dir> <kit dir>\n"
+              "       shell_overlay.py --record-rack <live-rack snapshot dir> [<second pass dir>]", file=sys.stderr)
         sys.exit(2)

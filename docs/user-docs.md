@@ -88,6 +88,10 @@ they are written (a screen needs an answer) and they describe the **reference ra
 > the extracted code; `kit_warnings` says when an entry of the kit no longer has the shape the bridge returns — the
 > signal to re-record it with the hardware plugged. `--live-rack` gives the behaviour described below (the hardware of
 > the machine that day), which stays the way to record or check the kit.
+> **Re-recording the rack** (one pass per USB device, the machine has not enough ports for both): plug the MPK, restart
+> golem, `tools/shell_snapshot.py --factory --live-rack --section settings/gear --out <dir-keys>`; plug the Nitro instead,
+> restart golem, the same into `<dir-drums>`; then `tools/shell_overlay.py --record-rack <dir-keys> <dir-drums>` writes
+> `tools/shell/reference-rack.json`.
 
 The Gear pages need real hardware. Fixed on 2026-10-21: **Volt 276** (sound card, two inputs) +
 **FCB1010 with the UnO2 chip** (pedalboard, on the card's MIDI port), and **two variants**, because the machine has

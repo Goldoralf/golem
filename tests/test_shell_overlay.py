@@ -120,3 +120,33 @@ def test_le_rack_du_depot_est_coherent_avec_les_exemples():
     assert ports == sorted(set(ports))
     assert all(S.MACHINE.match(r) for r in rack["set"])                  # le kit ne touche que des lectures « machine »
     assert not S.leaks(rack)                                             # rien de personnel dans le dépôt public
+
+
+def test_le_rack_se_reenregistre_en_deux_passes(tmp_path):
+    """Pas assez de ports USB pour le Nitro ET le MPK : une passe par appareil, fusionnées par appareil."""
+    def snap(d, devices, card_present, seen, bound=None):
+        (d / "examples").mkdir(parents=True)
+        json.dump({"commit": "c" * 40, "made": "2026-12-01", "rack": {"seen": seen}}, open(d / "SNAPSHOT.json", "w"))
+        for read, data in (("/api/controllers", {"controllers": devices}), ("/api/devices", {"devices": devices}),
+                           ("/api/soundcard", {"card": {"name": "Volt 276", "present": card_present}, "midi": {"present": True},
+                                               "usb": [{"name": x["name"], "kind": "midi"} for x in devices]}),
+                           ("/api/cards", {"connected": [{"id": "V276", "name": "Universal Audio Volt 276"}], "active": ""}),
+                           ("/api/state", {"hotplug": {"devices": [{"usb": x["usb"], "name": x["name"]} for x in devices], "events": []}})):
+            p = S.out_path(str(d), read)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            json.dump(data, open(p, "w"))
+        if bound:
+            json.dump({"reads": {"/api/devices": {"devices": bound}, "/api/sandbox": {}}}, open(d / "examples" / "reference-drums-bound.json", "w"))
+        return str(d)
+    keys = snap(tmp_path / "keys", [{"name": "Volt 276", "usb": "v", "port": 1}, {"name": "MPK Mini Mk II", "usb": "m", "port": 2}],
+                True, ["Volt 276", "MPK Mini"])
+    drums = snap(tmp_path / "drums", [{"name": "Volt 276", "usb": "v", "port": 1}, {"name": "Alesis Nitro", "usb": "n", "port": 2}],
+                 True, ["Volt 276", "Nitro"], bound=[{"name": "Alesis Nitro", "usb": "n", "roles": ["drums"], "port": 1}])
+    lay = O.rack_from_snapshots([keys, drums])
+    ctl = lay["set"]["/api/controllers"]["controllers"]
+    assert [(c["name"], c["port"]) for c in ctl] == [("Volt 276", 1), ("MPK Mini Mk II", 2), ("Alesis Nitro", 3)]
+    assert [u["name"] for u in lay["set"]["/api/soundcard"]["usb"]] == ["Volt 276", "MPK Mini Mk II", "Alesis Nitro"]
+    assert lay["rack"] == {"variant": "drums+keys", "seen": ["MPK Mini", "Nitro", "Volt 276"]}
+    assert lay["examples"]["reference-drums-bound"]["set"] == {"/api/devices": {"devices": [{"name": "Alesis Nitro", "usb": "n",
+                                                                                              "roles": ["drums"], "port": 1}]}}
+    assert len(lay["state"]["hotplug"]["devices"]) == 3 and "one pass per USB device" in lay["recorded"]["how"]

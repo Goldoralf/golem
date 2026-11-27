@@ -1,3 +1,15 @@
 {
- "_comment": "Les RETARDS VOULUS (tools/golem_inventory.py, docs/release-checklist.md A1) : une épingle laissée derrière la dernière version publiée, avec sa raison. Clé = celle du composant (golem_fx, golem_engine.linux, golem_engine.windows, reaper, linux_plugins, factory_demos, dexed, nam_lv2, nam_vst3, surge, sfizz, paulxstretch). Valeur = {\"pinned\": \"la version épinglée\", \"latest\": \"la dernière publiée QUAND on a décidé\", \"reason\": \"pourquoi, en anglais (le snapshot l'affiche)\", \"date\": \"AAAA-MM-JJ\"}. La raison ne vaut que pour ce couple : dès qu'une version plus récente sort, la ligne redevient rouge."
+ "_comment": "Les RETARDS VOULUS (tools/golem_inventory.py, docs/release-checklist.md A1) : une épingle laissée derrière la dernière version publiée, avec sa raison. Clé = celle du composant (golem_fx, golem_engine.linux, golem_engine.windows, reaper, linux_plugins, factory_demos, dexed, nam_lv2, nam_vst3, surge, sfizz, paulxstretch). Valeur = {\"pinned\": \"la version épinglée\", \"latest\": \"la dernière publiée QUAND on a décidé\", \"reason\": \"pourquoi, en anglais (le snapshot l'affiche)\", \"date\": \"AAAA-MM-JJ\"}. La raison ne vaut que pour ce couple : dès qu'une version plus récente sort, la ligne redevient rouge.",
+ "dexed": {
+  "pinned": "1.0.1",
+  "latest": "v1.1.1",
+  "date": "2026-11-27",
+  "reason": "1.1.1 was published the same day (preset import, cartridge saving, Windows VU meter); wait a few weeks before trying it on the rig"
+ },
+ "nam_lv2": {
+  "pinned": "v0.2.2",
+  "latest": "v0.2.3",
+  "date": "2026-11-27",
+  "reason": "golem's crash patch (nam-thread-safe-worker) must be rebased on 0.2.3, the prebuilt archive rebuilt and the 50-recall crash bench rerun: a task of its own"
+ }
 }

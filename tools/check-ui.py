@@ -168,7 +168,9 @@ class Bridge:
                "GOLEM_PORT": str(self.port), "GOLEM_OSC_RECV": str(free_port()), "GOLEM_OSC_SEND": str(free_port()),
                "GOLEM_NO_REACH": "1", "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1",
                # 2026-10-31 : sans lui, le banc ouvrait le pédalier du rack voisin (bank 0 + LEDs SW6-8 → stomps du live)
-               "GOLEM_NO_HW_MIDI": "1"}
+               "GOLEM_NO_HW_MIDI": "1",
+               # 2026-11-27 : un banc ne touche JAMAIS aux cartes du poste — sans lui, il réécrivait la règle WirePlumber du rack
+               "GOLEM_CARD_GUARD": "0"}
         # LA MÊME MACHINE PARTOUT (2026-11-22) : depuis que REAPER est optionnel (2026-11-18), les moteurs présents se
         # lisent sur la machine — le runner n'en a aucun (Settings ▸ Engines sans « ✓ Selected », CI rouge), le poste
         # du mainteneur les deux. Le banc pose la sienne : REAPER installé (un fichier), pas de Golem Engine.

@@ -76,6 +76,7 @@ def main():
                # un bridge de contrôle n'ouvre jamais le vrai pédalier, et ne se bat pas pour les ports OSC du golem qui
                # tourne à côté (lancé sur le rack le 2026-11-09 : code 3 sans ça)
                "GOLEM_NO_HW_MIDI": "1", "GOLEM_NO_REACH": "1",
+               "GOLEM_CARD_GUARD": "0",   # 2026-11-27 : un banc ne touche JAMAIS aux cartes du poste — sans lui, il réécrivait la règle WirePlumber du rack
                "GOLEM_OSC_RECV": os.environ.get("GOLEM_OSC_RECV") or str(free_port()),
                "GOLEM_OSC_SEND": os.environ.get("GOLEM_OSC_SEND") or str(free_port())}
         with log_path.open("w", encoding="utf-8") as log:

@@ -1427,6 +1427,7 @@ def factory_snapshot(out_dir, rev="HEAD", settle_ms=1500, log=print, engine=True
     # le bridge jetable hérite de l'environnement : le moteur se choisit AVANT son démarrage. Sans moteur ou sous REAPER,
     # on le force à REAPER — sinon il se croirait sur le Golem Engine (le défaut) en face d'un REAPER.
     engine_env = golem_engine_env(br.tmp.name) if ge else {"GOLEM_ENGINE": "reaper"}
+    engine_env["GOLEM_CARD_GUARD"] = "0"   # check-ui.Bridge le pose déjà ; ses moteurs aussi (2026-11-27, règle WirePlumber)
     os.environ.update(engine_env)
     br.extra_env.update(engine_env)       # APRÈS les réglages du banc (check-ui.Bridge) : son « pas de Golem Engine » l'écrasait
     with br as base, ((GolemEngine if ge else Engine)(br, log) if engine else contextlib.nullcontext()):

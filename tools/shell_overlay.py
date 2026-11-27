@@ -312,6 +312,8 @@ def rack_from_snapshots(dirs, out_path=None, made=None):
         for lst in lists:
             for e in lst or []:
                 k = e.get(key) or e.get("name")
+                if e.get("kind") == "audio":            # une AUTRE carte du poste (dongle, casque…) : pas le rack de référence
+                    continue
                 if k not in seen:
                     seen.add(k)
                     out.append(copy.deepcopy(e))
@@ -349,8 +351,12 @@ def rack_from_snapshots(dirs, out_path=None, made=None):
         if os.path.isfile(p):
             with open(p, encoding="utf-8") as f:
                 reads = json.load(f).get("reads") or {}
+            # la liste de la passe, sans les autres cartes du poste ; ports renumérotés comme ailleurs
             layer["examples"]["reference-drums-bound"] = {"skip_gestures": True, "set": {
-                k: v for k, v in reads.items() if k in ("/api/devices", "/api/controllers")}}
+                # + les appareils des AUTRES passes : le rack de référence les a tous branchés ensemble
+                k: {kk: union([vv, layer["set"].get(k, {}).get(kk)], "usb") if isinstance(vv, list) else vv
+                    for kk, vv in v.items()}
+                for k, v in reads.items() if k in ("/api/devices", "/api/controllers")}}
     return layer
 
 

@@ -81,7 +81,8 @@ class Bench:
         self.port, osc_send, osc_recv = RIG.free_port(), RIG.free_port(), RIG.free_port()
         self.env = {**os.environ, "GOLEM_RUNTIME_DIR": str(runtime), "GOLEM_REAPER_RESOURCE_DIR": str(resource),
                     "GOLEM_PORT": str(self.port), "GOLEM_OSC_SEND": str(osc_send), "GOLEM_OSC_RECV": str(osc_recv),
-                    "GOLEM_NO_REACH": "1", "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1", "GOLEM_NO_HW_MIDI": "1", "GOLEM_BENCH_CARD": "golem-bench"}
+                    "GOLEM_NO_REACH": "1", "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1", "GOLEM_NO_HW_MIDI": "1", "GOLEM_BENCH_CARD": "golem-bench",
+                    "GOLEM_CARD_GUARD": "0"}   # 2026-11-27 : un banc ne touche JAMAIS aux cartes du poste — sans lui, il réécrivait la règle WirePlumber du rack
         RIG.py_in_root(self.root, self.env, "from bridge import factory; factory.seed()")
         self.log("factory content seeded")
         RIG.prepare_reaper(self.root, resource, self.env, osc_send, osc_recv, self.log, self.reaper)

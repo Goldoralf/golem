@@ -1765,6 +1765,8 @@ def main():
                "GOLEM_NO_REACH": "1", "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1",
                # ni pédalier ni Whammy : le banc tourne sur la machine du rack, son MIDI matériel n'est pas à lui
                "GOLEM_NO_HW_MIDI": "1",
+               # ni la règle WirePlumber ni le profil PipeWire du poste (2026-11-27 : un banc réécrivait celle du rack)
+               "GOLEM_CARD_GUARD": "0",
                "GOLEM_BENCH_CARD": "golem-bench"}
         if golem_engine and a.real_card:
             card_id, card_name = real_card_setup(root, log)

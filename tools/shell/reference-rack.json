@@ -1,16 +1,17 @@
 {
  "what": "the reference rack: Universal Audio Volt 276 (FCB1010 UnO2 on its MIDI port), AKAI MPK Mini Mk II, Alesis Nitro — both USB devices plugged together",
  "recorded": {
-  "commit": "4cdf4951deba74b3872cb8f735f727b4ba671080",
-  "made": "2026-11-22",
-  "how": "assembled from the entries the maintainer's rack returned in earlier snapshots (the MPK on 2026-11-22, the Nitro on 2026-10-23, unbound then bound). To re-record with the hardware plugged when the Gear pages change shape: shape_warnings in SNAPSHOT.json says when."
+  "commit": "06e644ff",
+  "made": "2026-11-27",
+  "how": "recorded with the hardware plugged, one pass per USB device, merged by tools/shell_overlay.py --record-rack"
  },
  "rack": {
   "variant": "drums+keys",
   "seen": [
    "MPK Mini",
    "Nitro",
-   "Volt 276"
+   "Volt 276",
+   "fcb1010"
   ]
  },
  "set": {
@@ -121,12 +122,12 @@
     {
      "name": "MPK Mini Mk II",
      "kind": "midi",
-     "active": true
+     "active": false
     },
     {
      "name": "Alesis Nitro",
      "kind": "midi",
-     "active": true
+     "active": false
     }
    ],
    "binding": {}
@@ -134,7 +135,7 @@
   "/api/cards": {
    "connected": [
     {
-     "index": 1,
+     "index": 3,
      "id": "V276",
      "name": "Universal Audio Volt 276",
      "known": false,
@@ -170,18 +171,18 @@
    ],
    "events": [
     {
-     "at": "2026-10-23T01:20:17",
-     "ev": "plug",
-     "name": "Alesis‭ Alesis Nitro",
-     "kind": "drums",
-     "label": "drum module — Alesis Nitro"
-    },
-    {
-     "at": "2026-11-22T00:20:20",
+     "at": "2026-11-27T20:10:43",
      "ev": "plug",
      "name": "AKAI MPK Mini Mk II",
      "kind": "unknown",
      "label": "unknown MIDI device"
+    },
+    {
+     "at": "2026-11-27T19:58:37",
+     "ev": "plug",
+     "name": "Alesis‭ Alesis Nitro",
+     "kind": "drums",
+     "label": "drum module — Alesis Nitro"
     }
    ]
   }
@@ -213,8 +214,8 @@
        "connected": true,
        "port": 1,
        "hw": "hw:Nitro",
-       "first_seen": "2026-10-23 01:26",
-       "last_seen": "2026-10-23 01:26",
+       "first_seen": "2026-11-27 20:00",
+       "last_seen": "2026-11-27 20:00",
        "calibrated": null
       },
       {
@@ -233,36 +234,6 @@
        "first_seen": null,
        "last_seen": null,
        "calibrated": null
-      }
-     ]
-    },
-    "/api/controllers": {
-     "controllers": [
-      {
-       "key": null,
-       "name": "MPK Mini Mk II",
-       "usb": "09e8:0045",
-       "kind": "midi",
-       "roles": [],
-       "person": null,
-       "nth": null,
-       "kit": null,
-       "known": false,
-       "connected": true,
-       "port": 1,
-       "hw": "hw:II",
-       "first_seen": null,
-       "last_seen": null,
-       "id": null,
-       "profile": null,
-       "calibrated": null,
-       "model": {
-        "id": "akai-mpk-mini-mk2",
-        "name": "AKAI MPK Mini Mk II",
-        "can_program": true
-       },
-       "channels": null,
-       "split": false
       }
      ]
     }

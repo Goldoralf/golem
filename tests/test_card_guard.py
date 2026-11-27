@@ -122,3 +122,16 @@ def test_un_autre_programme_en_alsa_direct_on_le_nomme(rig, monkeypatch):
     assert sent == [] and guarded == []
     monkeypatch.setattr(state, "audio", a)
     assert fixes.suggest({"id": "audio", "level": "bad"}) is None    # rien que golem puisse fermer à sa place
+
+
+def test_un_banc_qui_lance_un_bridge_coupe_la_garde_des_cartes():
+    """2026-11-27 : le bridge jetable de shell_snapshot (via check-ui.Bridge) a réécrit la règle WirePlumber du poste
+    sur un dongle USB et passé son profil PipeWire à « off ». Tout outil qui lance un bridge (`GOLEM_RUNTIME_DIR` +
+    `GOLEM_PORT`) pose GOLEM_CARD_GUARD=0."""
+    import pathlib
+    import re
+    tools = pathlib.Path(__file__).resolve().parent.parent / "tools"
+    sans = [p.name for p in sorted(tools.glob("*.py"))
+            if '"GOLEM_PORT"' in (s := p.read_text(encoding="utf-8")) and '"GOLEM_RUNTIME_DIR"' in s
+            and not re.search(r'"GOLEM_CARD_GUARD"\]?\s*[:=]\s*"0"', s)]
+    assert sans == []

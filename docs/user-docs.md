@@ -88,10 +88,13 @@ they are written (a screen needs an answer) and they describe the **reference ra
 > the extracted code; `kit_warnings` says when an entry of the kit no longer has the shape the bridge returns — the
 > signal to re-record it with the hardware plugged. `--live-rack` gives the behaviour described below (the hardware of
 > the machine that day), which stays the way to record or check the kit.
-> **Re-recording the rack** (one pass per USB device, the machine has not enough ports for both): plug the MPK, restart
-> golem, `tools/shell_snapshot.py --factory --live-rack --section settings/gear --out <dir-keys>`; plug the Nitro instead,
-> restart golem, the same into `<dir-drums>`; then `tools/shell_overlay.py --record-rack <dir-keys> <dir-drums>` writes
-> `tools/shell/reference-rack.json`.
+> **Re-recording the rack** (one pass per USB device, the machine has not enough ports for both): plug the MPK,
+> `GOLEM_ALSA_CARD=V276 tools/shell_snapshot.py --factory --live-rack --section settings/gear --out <dir-keys>`; plug the
+> Nitro instead, the same into `<dir-drums>`; then `tools/shell_overlay.py --record-rack <dir-keys> <dir-drums>` writes
+> `tools/shell/reference-rack.json`. `GOLEM_ALSA_CARD` matters: the disposable bridge has no configuration and would
+> otherwise take the first USB card of the machine (on 2026-11-27, a USB audio dongle, which put the Volt among the MIDI
+> devices and bound the drums to it). Other sound cards of the machine are left out of the merge. The disposable bridge
+> never touches the machine's cards (`GOLEM_CARD_GUARD=0` in every bench).
 
 The Gear pages need real hardware. Fixed on 2026-10-21: **Volt 276** (sound card, two inputs) +
 **FCB1010 with the UnO2 chip** (pedalboard, on the card's MIDI port), and **two variants**, because the machine has

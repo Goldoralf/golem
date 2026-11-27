@@ -110,7 +110,9 @@ it without relaunching it; `pkill -x reaper` also killed the bench's REAPER. The
 
 ## 5. Cutting a release
 
-Follow [release-checklist.md](release-checklist.md) first: pins, what an update brings, the whole suite, the notes.
+Run **`tools/release.py vX.Y.Z`** first ([release-checklist.md](release-checklist.md)): it walks the pins, what an update
+brings, the whole suite, the rig, the notes, and ends by asking for `release.sh` in the maintainer's terminal;
+`release.sh` refuses to sign until its record is complete (`GOLEM_RELEASE_NO_RECORD=1` overrides it, said in the notes).
 
 1. Everything on `main`, CI green on that commit, `tools/public_export.py --summary` at 0 forbidden occurrences.
 2. `tools/release.sh vX.Y.Z notes.md`: an **annotated, signed** tag, version bumped (`v0.6.1` → `v0.6.2` for fixes) —

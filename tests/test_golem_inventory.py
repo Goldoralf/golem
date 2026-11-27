@@ -125,3 +125,21 @@ def test_le_fichier_des_retards_voulus_est_lisible():
         if key.startswith("_"):
             continue
         assert {"pinned", "latest", "reason", "date"} <= set(h), key
+
+
+def test_les_pages_de_doc_en_retard_se_comptent(tmp_path):
+    ctx = _ctx(tmp_path)
+    fm = tmp_path / "home" / "code" / "maestrium"
+    (fm / "frontend" / "src" / "content" / "docs").mkdir(parents=True)
+    (fm / "frontend" / "public" / "golem-app" / "snapshots" / "factory").mkdir(parents=True)
+    (fm / ".git").mkdir()
+    (fm / "frontend" / "public" / "golem-app" / "snapshots" / "factory" / "SNAPSHOT.json").write_text(
+        json.dumps({"screens": {"factory-health": "aaaa", "companion-now": "cccc"}}))
+    (fm / "frontend" / "src" / "content" / "docs" / "reviewed.json").write_text(json.dumps({
+        "pages": {"golem/health.en.md": {"shell": "v1", "examples": {"factory-health": "aaaa"}},
+                  "start/phone.en.md": {"shell": "v1", "examples": {"companion-now": "bbbb"}}},
+        "never_reread": ["golem/live-screen.en.md"]}))
+    ctx.sh = lambda *cmd, cwd=None, net=False: "x" if cmd[:3] == ("git", "-C", str(fm)) else None
+    rows = {r["label"]: r for r in inv.read_fm(ctx)["rows"]}
+    r = rows["Doc pages behind"]
+    assert r["value"] == "2 of 3 · 1 whose screen changed · 1 never reread" and r["status"] == "warn"

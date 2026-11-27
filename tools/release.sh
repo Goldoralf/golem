@@ -24,6 +24,11 @@ grep -qF "$(cut -d' ' -f2 "$KEY")" provision/release-signers || die "the key is 
 git fetch -q origin
 [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ] || die "HEAD is not origin/main — push first"
 git rev-parse -q --verify "refs/tags/$TAG" >/dev/null && die "$TAG already exists — never move a published tag"
+# LE RECORD DE tools/release.py (2026-11-27, docs/release-checklist.md) : chaque étape avant la signature est faite, ou
+# sautée avec sa raison. GOLEM_RELEASE_NO_RECORD=1 passe outre — à dire dans les notes, jamais en silence.
+if [ "${GOLEM_RELEASE_NO_RECORD:-0}" != 1 ]; then
+  python3 tools/release.py "$TAG" --check-record || die "the release steps are not done — run tools/release.py $TAG (or GOLEM_RELEASE_NO_RECORD=1, and say why in the notes)"
+fi
 HEAD=$(git rev-parse HEAD)
 ci=$(gh run list -R "$REPO_SLUG" -L 20 --json headSha,name,conclusion \
        -q ".[] | select(.headSha==\"$HEAD\") | select(.name==\"CI\") | .conclusion" | head -1)

@@ -5,6 +5,12 @@
 > while 9.9-g8 was published; a first name blocked the public scan; a manifest change broke CI because only the tests
 > of the subject had run. The mechanics of the tag itself are in [update.md](update.md) §5.
 
+**Since 2026-11-27 the checklist is a tool**: `tools/release.py vX.Y.Z` walks every item below in order — it measures
+what can be measured, reminds what only the maintainer does (play the rig, move REAPER, read the notes), and runs the
+rest after a yes. It resumes where it stopped (`--status`), never skips without a written reason (`--skip ID "why"`,
+which also lands in the notes), and `tools/release.sh` refuses to sign until every step before the signature is done.
+`--dry-run` shows the whole list at once. The items stay here as the reference of what each step checks.
+
 ## A. What the release installs
 
 1. **Every pin against the latest release we published**: run `tools/snapshot.py` (one page, every entity: here,

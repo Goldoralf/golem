@@ -1,6 +1,6 @@
 # The release tool and the snapshot page — plan
 
-> **Status: PROPOSED** (2026-11-27). Asked by the maintainer after v0.7.2 shipped the Golem Engine 9.9-g3 on Linux
+> **Status: CODED** (2026-11-27; proposed and validated the same day). Asked by the maintainer after v0.7.2 shipped the Golem Engine 9.9-g3 on Linux
 > and REAPER 7.79 while 9.9-g8 and 7.86 were published: "we publish from my local golem, and there are things to do
 > or to remind me at each step". Two tools: `tools/release.py`, which walks a release step by step, and
 > `tools/snapshot.py`, which writes one HTML page saying where every golem entity stands. The rules they enforce are
@@ -222,8 +222,14 @@ the shell freeze on 2026-11-27: the next shell is v0.7.3 or later, after step 1.
 3. `tools/bump.py <component> <version>`: writes every pin file of a component and recomputes the hashes. **Done 2026-11-27**
    (golem-fx, golem-engine, reaper, factory-demos, dexed, surge).
 4. The empty shell (§3 bis).
-5. `tools/release.py`: state file, the step runner (check / reminder / action), then the steps in order.
-6. `release.sh` refuses unless the release record says every step is done or skipped with a reason.
+5. `tools/release.py`: state file, the step runner (check / reminder / action), then the steps in order. **Done 2026-11-27**:
+   24 steps in nine phases; in a terminal it asks, without one (`!` from a Claude session) it stops at the first step
+   that needs an answer and prints the command that gives it (`--done`, `--yes`, `--skip ID "reason"`). A dry run on
+   v0.7.4 found, the first time: REAPER 7.79 while 7.86 is out, Dexed and NAM LV2 behind, the factory demos rendered
+   with golem-fx 0.6, this rack's engine built before its sources. `tools/snapshot.py` also shows golem.fm's doc pages
+   behind (from its `content/docs/reviewed.json`).
+6. `release.sh` refuses unless the release record says every step is done or skipped with a reason. **Done 2026-11-27**
+   (`tools/release.py --check-record`; `GOLEM_RELEASE_NO_RECORD=1` overrides it).
 
 ## 5. The release record
 

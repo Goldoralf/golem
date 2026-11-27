@@ -402,8 +402,20 @@ def read_fm(ctx):
     if since and since != "0":
         rows.append(row("Not released", f"{since} commit{'s' if since != '1' else ''} since {last}", "warn"))
     docs = ctx.git(ctx.fm_repo, "log", "-1", "--format=%cs", "--", "frontend/src/content/docs")
-    rows.append(row("Its docs", docs and f"last change {docs} · shell not recorded", "warn" if docs else "na",
-                    note="no page records the shell it was written against"))
+    rows.append(row("Its docs", docs and f"last change {docs}", "ok" if docs else "na"))
+    # LES PAGES DE DOC EN RETARD (circuit accepté le 2026-11-27) : golem.fm note, pour chaque page relue, la signature
+    # d'écran de chaque exemple cité (content/docs/reviewed.json) ; une page est en retard quand un de ces exemples a une
+    # autre signature dans la coquille épinglée, ou quand elle n'a jamais été relue
+    rv = ctx.json(ctx.fm_repo / "frontend" / "src" / "content" / "docs" / "reviewed.json")
+    screens = (ctx.json(ctx.fm_repo / "frontend" / "public" / "golem-app" / "snapshots" / "factory" / "SNAPSHOT.json") or {}).get("screens") or {}
+    if isinstance(rv, dict):
+        pages = rv.get("pages") or {}
+        moved = [p for p, v in pages.items() if any(screens.get(n) != sig for n, sig in (v.get("examples") or {}).items())]
+        never = list(rv.get("never_reread") or [])
+        n = len(moved) + len(never)
+        rows.append(row("Doc pages behind", f"{n} of {len(pages) + len(never)}" + (f" · {len(moved)} whose screen changed" if moved else "")
+                        + (f" · {len(never)} never reread" if never else ""), "warn" if n else "ok",
+                        fix="reread them against the shell golem.fm serves, then stamp reviewed.json (golem.fm)" if n else ""))
     fxsrc = ctx.json(ctx.fm_repo / "frontend" / "src" / "lib" / "golemFx" / "SOURCE.json") or {}
     fx = fxsrc.get("tag") or fxsrc.get("ref")
     pinned = _const(ctx.read("provision", "golem_fx.py"), "VERSION")

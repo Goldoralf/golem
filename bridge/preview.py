@@ -915,13 +915,16 @@ def batch(ids=None, force=False, seq_of=None):
                 _BATCH["stopped"] = "a take started — run it again after, it resumes"; break
             _BATCH["current"] = patch_id
             if patch_id.startswith(DP.PREFIX):           # les démos d'un kit de batterie (docs/drums-library.md)
-                item.update(DP.render_kit(patch_id[len(DP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(20000): next(c)), force))
+                item.update(DP.render_kit(patch_id[len(DP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(20000): next(c)),
+                                          force=force))
                 _BATCH["done"] = n + 1
                 log.info(f"lot de démos : {patch_id} → {item['status']}" + (f" ({item.get('reason')})" if item.get("reason") else ""))
                 continue
             if patch_id.startswith(SP.PREFIX):
                 # un seq NEUF par clip : golem_preview dédoublonne sur (seq, scène) et chaque référence rend la scène A
-                item.update(SP.render(patch_id[len(SP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(10000): next(c)), force))
+                # force PAR NOM : en troisième position il tombait dans refs (lot forcé mort au 1er son, 2026-11-27)
+                item.update(SP.render(patch_id[len(SP.PREFIX):], seq_of or (lambda c=__import__("itertools").count(10000): next(c)),
+                                      force=force))
                 if item.get("status") == "rendered":
                     SP.push_user(patch_id[len(SP.PREFIX):])  # un preset de l'utilisateur va à golem.fm ; l'usine, non
                 _BATCH["done"] = n + 1

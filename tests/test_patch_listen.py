@@ -353,3 +353,17 @@ def test_une_entree_est_empruntee_sans_toucher_la_carte(monkeypatch):
     assert card["inputs"][0]["role"] == "voice"                  # la vraie carte n'est pas touchée
     monkeypatch.setattr(inputmap, "current", lambda: {"inputs": []})
     assert PV._borrowed_imap("bass") == (None, None)
+
+
+def test_le_lot_force_passe_force_par_nom_aux_sons_et_aux_kits(monkeypatch):
+    """2026-11-27 : `force` passé en 3e position tombait dans `refs` de sound_preview.render — le lot forcé mourait
+    au premier son de clavier (« 'bool' object is not iterable »)."""
+    from bridge import sound_preview as SP, drum_preview as DP
+    seen = []
+    monkeypatch.setattr(SP, "render", lambda sound, seq_of, refs=None, force=False:
+                        seen.append(("sound", refs, force)) or {"status": "skipped", "reason": "x"})
+    monkeypatch.setattr(DP, "render_kit", lambda kit, seq_of, force=False:
+                        seen.append(("kit", None, force)) or {"status": "skipped", "reason": "x"})
+    PV.batch([SP.PREFIX + "piano:a", DP.PREFIX + "kit-a"], force=True)
+    assert PV.batch_status()["stopped"] is None
+    assert seen == [("sound", None, True), ("kit", None, True)]

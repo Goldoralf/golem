@@ -177,7 +177,8 @@ the shell freeze on 2026-11-27: the next shell is v0.7.3 or later, after step 1.
    tests). **Done 2026-11-27.**
 2. `tools/snapshot.py` on top of it — useful on its own from day one. **Done 2026-11-27**; a delay kept on purpose is
    written in `provision/pins-held.json`.
-3. `tools/bump.py <component> <version>`: writes every pin file of a component and recomputes the hashes.
+3. `tools/bump.py <component> <version>`: writes every pin file of a component and recomputes the hashes. **Done 2026-11-27**
+   (golem-fx, golem-engine, reaper, factory-demos, dexed, surge).
 4. The empty shell (§3 bis).
 5. `tools/release.py`: state file, the step runner (check / reminder / action), then the steps in order.
 6. `release.sh` refuses unless the release record says every step is done or skipped with a reason.

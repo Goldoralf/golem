@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Lanceur macOS (docs/platforms.md, M7) : apps dans ~/Applications, prérequis dits."""
+import json
 import os
 import plistlib
 from pathlib import Path
@@ -37,7 +38,10 @@ def test_missing_reaper_and_nam_are_said_with_the_pinned_urls(tmp_path, monkeypa
     monkeypatch.setattr(desktop.Path, "home", lambda: tmp_path)
     missing = desktop.mac_prerequisites()
     assert len(missing) in (1, 2)                      # NAM peut exister dans /Library sur la machine de test
-    assert "reaper779_universal.dmg" in missing[0]
+    # l'adresse est celle de pins.json (ce test ne casse pas quand REAPER monte : tools/bump.py reaper)
+    pin_url = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "provision", "macos",
+                                          "pins.json"), encoding="utf-8"))["reaper"]["url"]
+    assert pin_url.rsplit("/", 1)[-1] in missing[0] and pin_url.endswith("_universal.dmg")
 
 
 def test_the_double_click_installer_is_executable_lf_bash():

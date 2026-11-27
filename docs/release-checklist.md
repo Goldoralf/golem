@@ -23,7 +23,10 @@
 
    `tests/test_pins_coherent.py` fails when two of these files disagree. It cannot know that a newer release exists:
    that comparison is this item.
-2. **Every hash recomputed on the downloaded asset** and compared with the release's `SHA256SUMS`.
+2. **Every hash recomputed on the downloaded asset** and compared with the release's `SHA256SUMS`:
+   `tools/bump.py <component> <version>` does both and writes every file of the pin (golem-fx, golem-engine, reaper,
+   factory-demos, dexed, surge; `--dry-run` to look first). It refuses REAPER until it was played on the rig, and it
+   lists what still quotes the old version. NAM LV2 and the prebuilt Linux plugins are not automated (it says why).
 3. **What an update brings, not only a fresh install.** For every pin that moved: is it caught up at the restart that
    follows an update ([update.md](update.md) §3 bis)? If not, fix it, or the notes say what to run.
 4. **Factory content**: the factory bundle in the repository is the one golem.fm expects (see

@@ -54,12 +54,14 @@ def _mac(monkeypatch, app):
 
 
 def test_the_engine_version_is_read_from_the_app_bundle(tmp_path, monkeypatch):
-    app = _app(tmp_path, "7.79")
+    # la version ÉPINGLÉE se lit dans pins.json : ce test ne casse pas quand REAPER monte (tools/bump.py reaper)
+    pin = json.load(open(os.path.join(ROOT, "provision", "macos", "pins.json"), encoding="utf-8"))["reaper"]["version"]
+    app = _app(tmp_path, pin)
     _mac(monkeypatch, app)
-    assert reaper_update.installed_version() == "7.79"
+    assert reaper_update.installed_version() == pin
     st = reaper_update.status(check=False)
-    assert (st["installed"], st["pinned"], st["status"]) == ("7.79", "7.79", "up-to-date")
-    assert st["versions"] == [{"version": "7.79", "active": True}]
+    assert (st["installed"], st["pinned"], st["status"]) == (pin, pin, "up-to-date")
+    assert st["versions"] == [{"version": pin, "active": True}]
     assert st["can_update"] is False and "macOS" in st["update_unavailable_why"]
 
 

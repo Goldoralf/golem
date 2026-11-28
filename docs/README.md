@@ -112,6 +112,7 @@ to contribute), [`../CLAUDE.md`](../CLAUDE.md) (the briefing for AI coding agent
 | [ardour-plan.md](ardour-plan.md) | FIXED | Action plan for the Golem Engine: fork strategy, engine contract, block homogeneity, phases A0–A5 |
 | [release-signing.md](release-signing.md) | CODED, inactive until a key is declared | Verifying signed release tags |
 | [windows-test-2026-11-23.md](windows-test-2026-11-23.md) | TO DO | Handoff note for the live test on the Windows dev box: what the fresh Windows 11 VM found, what is fixed, what to check; deleted once done |
+| [windows-test-2026-11-27.md](windows-test-2026-11-27.md) | TO DO (round 2) | Handoff note for the Windows test of REAPER 7.86: round 1 results, then the rollback fix to check (forced close, honest card); deleted once done |
 | [update.md](update.md) | CODED | The "Update to …" button of Settings ▸ About, installs from an archive, and how to cut a release |
 | [release-checklist.md](release-checklist.md) | FIXED | The checklist followed for every release: pins against the latest published, what an update brings, the whole suite, the notes |
 | [release-tool-plan.md](release-tool-plan.md) | CODED | The guided release tool, the snapshot page of every golem entity, and the scripted empty shell: the audit of the publication chain and the build order |

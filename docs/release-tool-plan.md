@@ -122,6 +122,16 @@ pin), and a status: ✅ aligned · 🟠 behind on purpose (with the reason) · �
 
 A header line says "next release: vX.Y.Z — N red, M orange", and each red line names the step of §2 that fixes it.
 
+**Refreshed from the page** (2026-11-28): `tools/snapshot.py --serve` serves the page on `127.0.0.1:8779` (`--port`,
+`--no-open`) with a **↻ Refresh** button (and an *offline* box) that runs the inventory again (~7 s) and reloads. It is
+not a route of the bridge: the page only means something on the maintainer's machine (sibling repositories, `gh`
+signed in) and works with golem stopped. One gesture, read-only; guards: it listens on 127.0.0.1 only, demands a local
+`Host` (DNS rebinding) and a custom header on the POST (another site cannot send it). Opened as `file://`, the page shows
+the command instead of the button.
+
+**The empty shell kept on purpose**: `provision/pins-held.json` key `shell`, `{pinned: <commit of the shell golem.fm
+serves>, latest: <the release>}`. The panel is orange with the reason for that release only; the next one turns it red.
+
 ## 3 bis. The empty shell — what the audit found, and the plan
 
 **The chain** (audit of 2026-11-27, all five repositories read): golem (git objects at a commit) + a snapshot folder →

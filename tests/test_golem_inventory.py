@@ -143,3 +143,86 @@ def test_les_pages_de_doc_en_retard_se_comptent(tmp_path):
     rows = {r["label"]: r for r in inv.read_fm(ctx)["rows"]}
     r = rows["Doc pages behind"]
     assert r["value"] == "2 of 3 · 1 whose screen changed · 1 never reread" and r["status"] == "warn"
+
+
+# ── --serve : la page et son bouton ↻ (2026-11-28) ───────────────────────────────────────────────────────────────────
+def _fake(offline):
+    return {"made": "2026-11-28 10:00", "offline": offline, "last_release": "v0.7.4",
+            "counts": {"bad": 0, "warn": 1, "ok": 2}, "todo": [], "entities": []}
+
+
+def _call(port, method, path, body=None, headers=None):
+    import http.client
+    c = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+    c.request(method, path, body=json.dumps(body) if body is not None else None, headers=headers or {})
+    r = c.getresponse()
+    out = r.status, r.read().decode()
+    c.close()
+    return out
+
+
+def test_serve_rend_la_page_et_le_bouton_relance_l_inventaire(tmp_path):
+    import threading
+    calls = []
+    srv = snap.make_server(0, out=str(tmp_path / "snap.html"), collect=lambda off: calls.append(off) or _fake(off))
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    port = srv.server_address[1]
+    try:
+        assert srv.server_address[0] == "127.0.0.1" and calls == [False]          # l'inventaire au démarrage
+        st, page = _call(port, "GET", "/")
+        assert st == 200 and 'id="rf"' in page and "location.protocol==='file:'" in page
+        ok = {snap.HEADER: "1", "Content-Type": "application/json"}
+        st, body = _call(port, "POST", "/refresh", {"offline": True}, ok)
+        assert st == 200 and json.loads(body)["ok"] and calls == [False, True]
+        assert (tmp_path / "snap.html").read_text().count('id="rf-off" checked') == 1   # la page réécrite, offline coché
+        # les gardes : sans l'en-tête maison (un autre site), avec un Host étranger (rebinding DNS), une autre adresse
+        assert _call(port, "POST", "/refresh", {}, {"Content-Type": "application/json"})[0] == 403
+        assert _call(port, "POST", "/refresh", {}, {**ok, "Host": "evil.example:%d" % port})[0] == 403
+        assert _call(port, "GET", "/", headers={"Host": "evil.example"})[0] == 403
+        assert _call(port, "GET", "/../etc/passwd")[0] == 404
+        assert calls == [False, True]
+    finally:
+        srv.shutdown()
+        srv.server_close()
+
+
+def test_serve_un_inventaire_qui_plante_se_dit_sans_tuer_le_serveur(tmp_path):
+    import threading
+    state = {"n": 0}
+
+    def collect(off):
+        state["n"] += 1
+        if state["n"] > 1:
+            raise RuntimeError("gh is not signed in")
+        return _fake(off)
+    srv = snap.make_server(0, out=str(tmp_path / "snap.html"), collect=collect)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    port = srv.server_address[1]
+    try:
+        st, body = _call(port, "POST", "/refresh", {}, {snap.HEADER: "1", "Content-Type": "application/json"})
+        assert st == 500 and "gh is not signed in" in json.loads(body)["error"]
+        assert _call(port, "GET", "/")[0] == 200                                   # la dernière page reste servie
+    finally:
+        srv.shutdown()
+        srv.server_close()
+
+
+def test_une_coquille_gardee_exprès_est_orange_pour_cette_release_seulement(tmp_path):
+    """2026-11-28 : « on ne fabrique pas la coquille vide » pour v0.7.4 — orange avec sa raison ; à la release suivante,
+    rouge de nouveau."""
+    def ctx_for(last, held):
+        ctx = _ctx(tmp_path, held=held)
+        app = ctx.fm_repo / "frontend" / "public" / "golem-app"
+        (app / "snapshots" / "factory").mkdir(parents=True, exist_ok=True)
+        (app / "SOURCE.json").write_text(json.dumps({"commit": "60b5277c23666aa6"}))
+        (app / "snapshots" / "factory" / "SNAPSHOT.json").write_text(json.dumps({"made": "2026-11-27", "catalog_version": 52}))
+        answers = {("describe", "--tags", "--abbrev=0"): last, ("rev-list", "--count"): "3"}
+        ctx.git = lambda repo, *a: next((v for k, v in answers.items() if a[:len(k)] == k), "v0.7.3-9-g60b5277c")
+        return ctx
+    held = {"shell": {"pinned": "60b5277c", "latest": "v0.7.4", "reason": "small differences", "date": "2026-11-28"}}
+    e = inv.read_shell(ctx_for("v0.7.4", held))
+    target = next(r for r in e["rows"] if r["label"] == "Target")
+    assert e["status"] == "warn" and "kept on purpose: small differences" in target["note"] and not target["fix"]
+    e = inv.read_shell(ctx_for("v0.7.5", held))                       # la release suivante : la raison ne vaut plus
+    assert e["status"] == "bad" and "v0.7.5" in next(r for r in e["rows"] if r["label"] == "Target")["fix"]
+    assert inv.read_shell(ctx_for("v0.7.4", {}))["status"] == "bad"

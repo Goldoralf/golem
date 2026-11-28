@@ -374,13 +374,18 @@ def read_shell(ctx):
         desc = ctx.git(ctx.root, "describe", "--tags", commit) or commit[:7]
         n = ctx.git(ctx.root, "rev-list", "--count", f"{commit}..{last or 'HEAD'}", "--", "app")
         changed = int(n) if (n or "").isdigit() else None
+        # UN RETARD VOULU de la coquille (2026-11-28 : « on ne fabrique pas la coquille vide » pour v0.7.4) : clé `shell`
+        # de pins-held.json, {pinned: commit de la coquille servie, latest: la release}. Il ne vaut que pour ce couple.
+        h = holds(ctx).get("shell") or {}
+        kept = bool(changed and h and commit.startswith(str(h.get("pinned") or "-")) and h.get("latest") == last)
+        st = ("warn" if kept else "bad") if changed else "ok"
         rows.append(row("Last extraction", f"{commit[:7]} = {desc} · {snap.get('made') or '?'} · catalogue "
-                                           f"{snap.get('catalog_version') or '?'}", "bad" if changed else "ok"))
+                                           f"{snap.get('catalog_version') or '?'}", st))
         rows.append(row("Target", f"shell {last}" + (f" · {changed} commit{'s' if changed != 1 else ''} touched the app since"
-                                                     if changed else " · the app did not change"),
-                        "bad" if changed else "ok",
+                                                     if changed else " · the app did not change"), st,
+                        note="kept on purpose: " + str(h.get("reason") or "no reason written") if kept else "",
                         fix=f"extract shell {last} (tools/shell_snapshot.py --factory --rev {last}), measure the doc impact, "
-                            "hand it to golem.fm" if changed else ""))
+                            "hand it to golem.fm" if changed and not kept else ""))
     else:
         rows.append(row("Last extraction", None))
     site = (ctx.json(ctx.site_repo / "SITE.json") or {}).get("shell_commit")

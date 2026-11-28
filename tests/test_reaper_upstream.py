@@ -21,6 +21,10 @@ def _fresh(monkeypatch, tmp_path):
     monkeypatch.setattr(R, "ACTIVE", str(active))
     monkeypatch.setattr(R, "WINDOWS", False)       # la mécanique du RACK, quel que soit l'OS du test
     monkeypatch.setattr(R, "MACOS", False)         # macOS aussi (cinq tests rouges au premier passage macOS, 2026-11-22)
+    # le dernier résultat écrit sur disque : jamais celui de la machine
+    monkeypatch.setattr(R, "_last_path", lambda: str(tmp_path / "reaper-update-last.json"))
+    monkeypatch.setattr(R, "_LAST_LOADED", False)
+    monkeypatch.setitem(R._PROG, "last", None)
     return R._UP
 
 
@@ -51,7 +55,7 @@ def _fake_engine(monkeypatch, verify, elevated_fails=False):
     from bridge import desktop_reaper as D
     calls = []
     monkeypatch.setattr(D, "download", lambda ver, url, sha, log: (calls.append(("download", url, sha)) or ("x.exe", "h")))
-    monkeypatch.setattr(D, "stop_engine", lambda log: calls.append(("stop",)) or ["reaper.exe"])
+    monkeypatch.setattr(D, "stop_engine", lambda log, force_after=None: calls.append(("stop", force_after)) or ["reaper.exe"])
     monkeypatch.setattr(D, "start_engine", lambda reopen: calls.append(("start",)))
     monkeypatch.setattr(D, "reaper_dir", lambda: "C:/PF/REAPER (x64)")
 
@@ -72,6 +76,7 @@ def test_windows_update_verifiee_puis_rollback_si_le_moteur_ne_revient_pas(monke
     last = D.run_update("7.27", "7.79", True, "https://pin/reaper779.exe", "ab" * 32, noop, noop)
     assert last["ok"] and calls[0] == ("download", "https://pin/reaper779.exe", "ab" * 32)
     assert [c[0] for c in calls] == ["download", "stop", "elevated", "start"]
+    assert ("stop", None) in calls                  # l'arrêt de la mise à jour reste poli : jamais forcé
     # non validée : l'URL officielle de Cockos, AUCUNE empreinte prétendue
     D, calls = _fake_engine(monkeypatch, verify=False)
     last = D.run_update("7.27", "7.81", False, "https://pin/reaper779.exe", "ab" * 32, noop, noop)
@@ -103,6 +108,109 @@ def test_une_mise_a_jour_qui_perd_la_licence_revient_en_arriere(monkeypatch):
     monkeypatch.setattr(D, "wait_title", lambda version, timeout=30: "REAPER v7.79 - Registered to alex (Commercial license)")
     assert D.run_update("7.27", "7.79", True, "u", "s", noop, noop)["ok"]
     assert ("elevated", "-ReaperSwap") not in calls
+
+
+def _lose_licence(monkeypatch, D):
+    titles = iter(["REAPER v7.27 - Registered to alex (Commercial license)"])
+    monkeypatch.setattr(D, "reaper_title", lambda: next(titles, None))
+    monkeypatch.setattr(D, "wait_title", lambda version, timeout=30: "golem-set - REAPER v7.86 - EVALUATION LICENSE")
+
+
+def test_le_retour_arriere_ferme_de_force_et_seulement_lui(monkeypatch):
+    """2026-11-27 : la 7.86 en évaluation ignorait WM_CLOSE — le retour, et lui seul, demande la fermeture forcée."""
+    D, calls = _fake_engine(monkeypatch, verify=True)
+    _lose_licence(monkeypatch, D)
+    noop = lambda *a: None
+    last = D.run_update("7.27", "7.86", True, "u", "s", noop, noop)
+    assert last["rolled_back"] and last["license_lost"]
+    stops = [c for c in calls if c[0] == "stop"]
+    assert stops == [("stop", None), ("stop", D.ROLLBACK_CLOSE_TIMEOUT)]
+
+
+def test_un_retour_arriere_qui_echoue_ne_dit_pas_engine_unchanged(monkeypatch):
+    """2026-11-27, Windows : retour en échec → le résultat disait seulement « REAPER is still open », la carte
+    ajoutait « engine unchanged » et affichait « up-to-date ». Il dit maintenant que 7.86 est restée installée."""
+    D, calls = _fake_engine(monkeypatch, verify=True)
+    _lose_licence(monkeypatch, D)
+
+    def stop(log, force_after=None):
+        calls.append(("stop", force_after))
+        if force_after:
+            raise RuntimeError("REAPER is still open — check its save prompt")
+        return ["reaper.exe"]
+    monkeypatch.setattr(D, "stop_engine", stop)
+    lines = []
+    last = D.run_update("7.27", "7.86", True, "u", "s", lambda *a: None, lines.append)
+    assert not last["ok"] and not last["rolled_back"] and last["license_lost"]
+    assert "7.86 is still the installed engine" in last["error"] and "does not accept your license" in last["error"]
+    assert "still open" in last["rollback_error"]
+    assert ("elevated", "-ReaperSwap") not in calls and calls[-1] == ("start",)   # REAPER relancé s'il était tombé
+    assert any(ln.startswith("✗ rollback failed") for ln in lines)
+
+
+def test_stop_engine_force_la_fermeture_quand_on_le_lui_demande(monkeypatch):
+    """La vraie stop_engine, doublée autour : WM_CLOSE sans effet → fermeture forcée (retour) ou erreur (sinon)."""
+    from bridge import desktop_audio, desktop_reaper as D
+    from provision import desktop, desktop_window
+    alive = {"v": True}
+    killed = []
+    monkeypatch.setattr(desktop, "reaper_running", lambda: alive["v"])
+    monkeypatch.setattr(desktop, "reaper_binary", lambda: "C:/PF/REAPER (x64)/reaper.exe")
+    monkeypatch.setattr(desktop, "_backend_pids", lambda: [4242])
+    monkeypatch.setattr(desktop_audio, "_snapshot_reaper", lambda target=None: {"PROJECT": __file__})
+    monkeypatch.setattr(desktop_audio, "_reopen_args", lambda binary, snap: ["reaper.exe", "golem-set.rpp"])
+    monkeypatch.setattr(desktop_audio, "save_project_in_place", lambda: "golem-set.rpp")
+    monkeypatch.setattr(desktop_window, "request_reaper_close", lambda pids: 1)       # WM_CLOSE ignoré
+    monkeypatch.setattr(desktop_window, "force_close_reaper",
+                        lambda pids: killed.append(pids) or alive.update(v=False) or 1)
+    monkeypatch.setattr(D.time, "sleep", lambda s: None)
+    lines = []
+    assert D.stop_engine(lines.append, force_after=3) == ["reaper.exe", "golem-set.rpp"]
+    assert killed == [[4242]] and any("closing it by force" in ln for ln in lines)
+    alive["v"], killed[:] = True, []
+    monkeypatch.setattr(desktop_window, "force_close_reaper", lambda pids: killed.append(pids) or 0)
+    with pytest.raises(RuntimeError, match="still open"):
+        D.stop_engine(lines.append)                                   # arrêt ordinaire : jamais forcé
+    assert killed == []
+
+
+def test_le_dernier_resultat_survit_au_redemarrage_du_bridge(monkeypatch):
+    monkeypatch.setattr(R, "installed_version", lambda path=None: "7.86")
+    monkeypatch.setattr(R, "pinned_version", lambda: "7.86")
+    R._PROG["last"] = {"ok": False, "from": "7.27", "to": "7.86", "rolled_back": False, "license_lost": True,
+                       "error": "x"}
+    R._save_last()
+    # « redémarrage » : la mémoire est vide, le fichier est relu à la première lecture de la carte
+    monkeypatch.setitem(R._PROG, "last", None)
+    monkeypatch.setattr(R, "_LAST_LOADED", False)
+    st = R.status(check=False)
+    assert st["last"]["license_lost"] and st["last"]["running"] == "7.86" and st["last"]["at"] > 0
+    assert st["status"] == "up-to-date" and "license" in st     # versions égales : c'est l'écran qui nuance
+
+
+def test_la_licence_de_la_carte_ne_se_lit_que_sous_windows(monkeypatch):
+    from bridge import desktop_reaper as D
+    monkeypatch.setattr(D, "license_state", lambda title=None: "evaluation")
+    assert R._license() is None
+    monkeypatch.setattr(R, "WINDOWS", True)
+    assert R._license() == "evaluation"
+
+
+def test_le_worker_windows_garde_from_to_et_ecrit_le_resultat(monkeypatch):
+    from bridge import desktop_reaper as D
+    monkeypatch.setattr(R, "installed_version", lambda path=None: "7.86")
+    monkeypatch.setattr(R, "_win_pin", lambda: {"url": "u", "sha256": "s"})
+
+    def boom(*a, **k):
+        raise RuntimeError("REAPER is still open — check its save prompt")
+    monkeypatch.setattr(D, "run_update", boom)
+    monkeypatch.setitem(R._PROG, "busy", True)
+    R._win_worker("7.27", "7.86")
+    last = R._PROG["last"]
+    assert last["from"] == "7.27" and last["to"] == "7.86" and last["running"] == "7.86"
+    assert R._PROG["busy"] is False
+    import json, pathlib
+    assert json.loads(pathlib.Path(R._last_path()).read_text())["running"] == "7.86"
 
 
 def test_windows_permission_refusee_le_moteur_repart_tel_quel(monkeypatch):

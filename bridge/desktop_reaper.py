@@ -24,6 +24,7 @@ NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 PREV_SUFFIX = ".golem-prev"
 VERIFY_TIMEOUT = 60
 UAC_TIMEOUT = 600                     # l'invite attend quelqu'un devant le PC
+ROLLBACK_CLOSE_TIMEOUT = 20           # retour arrière : WM_CLOSE, puis la fermeture forcée (stop_engine)
 
 
 def reaper_dir():
@@ -100,7 +101,7 @@ def elevated(args, log):
             install_receipt.merge_pending()          # ce que le script élevé a noté (REAPER (x64).golem-prev…)
 
 
-def stop_engine(log):
+def stop_engine(log, force_after=None):
     """Ferme le REAPER de la session comme le changement de buffer : projet sauvé, fenêtre fermée
     poliment, jamais tué. Rend les arguments pour le rouvrir sur le même projet."""
     from provision import desktop
@@ -128,10 +129,24 @@ def stop_engine(log):
         log("✓ project saved")
     if not request_reaper_close(desktop._backend_pids()):
         raise RuntimeError("could not close this session's REAPER window")
-    for _ in range(180):
+    for _ in range(force_after or 180):
         if not desktop.reaper_running():
             return reopen
         time.sleep(1)
+    if force_after:
+        # ⚠ 2026-11-27 (Windows, 7.27 → 7.86) : la 7.86 tournait en ÉVALUATION, le retour arrière lui a envoyé
+        # WM_CLOSE… et elle ne s'est jamais fermée (aucune boîte visible, projet resté « [modified] » : la
+        # sauvegarde par OSC n'était pas passée non plus). Le retour abandonnait au bout de 180 s et laissait
+        # l'utilisateur en évaluation. Ici seulement — un REAPER que CETTE mise à jour vient d'ouvrir, sur un
+        # projet enregistré juste avant elle — on le ferme de force : on n'y perd que ce que le rebuild réécrit.
+        from provision.desktop_window import force_close_reaper
+        log(f"⚠ REAPER did not close within {force_after} s — closing it by force "
+            f"(this update started it; the project was saved before)")
+        force_close_reaper(desktop._backend_pids())
+        for _ in range(40):
+            if not desktop.reaper_running():
+                return reopen
+            time.sleep(0.5)
     raise RuntimeError("REAPER is still open — check its save prompt")
 
 
@@ -233,13 +248,12 @@ def run_update(old, new, validated, pin_url, pin_sha, step, log):
     step("restart", "⏳ restarting audio engine…")
     start_engine(reopen)
     step("verify", "⏳ verifying (engine boots + rig link alive)…")
-    why = None
+    lost = False
     if verify_alive():
         title = wait_title(new)
         lic_after = license_state(title)
         if lic_before == "registered" and lic_after == "evaluation":
-            why = (f"REAPER {new} does not accept your license key ({old} did) — rolled back to {old}, "
-                   f"still registered. Check the key in REAPER's About ▸ License, or ask Cockos.")
+            lost = True
             step("rollback", f"✗ REAPER {new} runs in EVALUATION — your license key is not accepted; "
                              f"going back to {old} (Windows asks once more)…")
         else:
@@ -248,14 +262,35 @@ def run_update(old, new, validated, pin_url, pin_sha, step, log):
             return {"ok": True, "from": old, "to": new, "rolled_back": False, "validated": validated}
     else:
         step("rollback", f"✗ engine {new} did not come back — rolling back to {old}…")
-    stop_engine(log)
-    elevated(["-ReaperSwap", "-ReaperDir", str(reaper_dir())], log)
+    why = (f"REAPER {new} does not accept your license key ({old} did)" if lost
+           else f"engine {new} failed verification")
+    failed = rollback(reopen, log)
+    if failed:
+        # LE RETOUR A ÉCHOUÉ (2026-11-27) : le résultat ne dit plus « engine unchanged » — c'est {new} qui tourne
+        return {"ok": False, "from": old, "to": new, "rolled_back": False, "validated": validated,
+                "license_lost": lost, "rollback_error": failed,
+                "error": f"{why} — going back to {old} failed ({failed}); REAPER {new} is still the installed engine"}
+    return {"ok": False, "from": old, "to": new, "rolled_back": True, "validated": validated,
+            "license_lost": lost,
+            "error": f"{why} — rolled back to {old}"
+                     + (", still registered. Check the key in REAPER's About ▸ License, or ask Cockos." if lost else "")}
+
+
+def rollback(reopen, log):
+    """Échange l'install active et la précédente, REAPER relancé dans tous les cas. Rend None, ou ce qui a échoué
+    (le moteur qui tourne alors est celui qu'on voulait quitter — l'appelant le DIT)."""
+    try:
+        stop_engine(log, force_after=ROLLBACK_CLOSE_TIMEOUT)
+        elevated(["-ReaperSwap", "-ReaperDir", str(reaper_dir())], log)
+    except Exception as e:
+        log(f"✗ rollback failed: {e}")
+        with contextlib.suppress(Exception):
+            start_engine(reopen)                     # no-op s'il tourne encore ; sinon il repart tel quel
+        return str(e)
     start_engine(reopen)
     log("✓ rolled back — previous engine is up" if verify_alive()
         else "⚠ rollback done but engine still not verified — check the Dashboard")
-    return {"ok": False, "from": old, "to": new, "rolled_back": True, "validated": validated,
-            "license_lost": bool(why),
-            "error": why or f"engine {new} failed verification — rolled back to {old}"}
+    return None
 
 
 def run_switch(old, ver, step, log):
@@ -275,9 +310,9 @@ def run_switch(old, ver, step, log):
         log(f"✓ engine {ver} is up — set loaded, OSC link alive")
         return {"ok": True, "from": old, "to": ver, "rolled_back": False, "switch": True}
     step("rollback", f"✗ engine {ver} did not come back — switching back to {old}…")
-    stop_engine(log)
-    elevated(["-ReaperSwap", "-ReaperDir", str(reaper_dir())], log)
-    start_engine(reopen)
-    verify_alive()
+    failed = rollback(reopen, log)
+    if failed:
+        return {"ok": False, "from": old, "to": ver, "rolled_back": False, "switch": True, "rollback_error": failed,
+                "error": f"engine {ver} failed verification — switching back to {old} failed ({failed})"}
     return {"ok": False, "from": old, "to": ver, "rolled_back": True, "switch": True,
             "error": f"engine {ver} failed verification — switched back to {old}"}

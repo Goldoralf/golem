@@ -52,6 +52,8 @@ VERIFY_TIMEOUT = 60                                     # s max pour running+con
 
 _LOCK = threading.Lock()
 _PROG = {"busy": False, "step": None, "log": [], "last": None}   # last = résultat de la dernière update
+_LAST_FILE = "reaper-update-last.json"
+_LAST_LOADED = False
 
 
 # ── WINDOWS (2026-10-03) ──────────────────────────────────────────────────────────────────────────
@@ -259,6 +261,7 @@ def status(check=True):
     seconde plus tard, et l'écran la relit (`upstream_checking`)."""
     if check and not _PROG["busy"]:
         upstream_check()
+    _load_last()
     inst, pin = installed_version(), pinned_version()
     if _PROG["busy"]:
         st = "busy"
@@ -279,6 +282,8 @@ def status(check=True):
             "versions": vers, "unvalidated": bool(inst and pin and _vtuple(inst) > _vtuple(pin)),
             "busy": _PROG["busy"], "step": _PROG["step"], "log": list(_PROG["log"]),
             "last": _PROG["last"],
+            # une licence perdue par la mise à jour se voit sur la carte tant que REAPER reste en évaluation
+            "license": _license(),
             # la version PUBLIÉE par Cockos : une INFORMATION, jamais une cible (aucun bouton)
             "upstream": up, "upstream_at": _UP["at"] or None, "upstream_error": _UP["error"],
             "upstream_checking": _UP["checking"],
@@ -297,6 +302,69 @@ def _log(line):
 def _step(name, line):
     _PROG["step"] = name
     _log(line)
+
+
+# ── LE DERNIER RÉSULTAT SURVIT AU BRIDGE (2026-11-27) ──────────────────────────────────────────────────
+# Sous Windows, une mise à jour 7.27 → 7.86 a perdu la licence, puis son retour arrière a échoué : la carte
+# disait « up-to-date » (versions égales) et « engine unchanged » (faux), et ce qu'il en restait — en
+# mémoire seulement — disparaissait au premier redémarrage du bridge. Le résultat est écrit sur disque, avec
+# la version qui tourne À LA FIN (`running`) : l'écran juge sur pièce si le moteur a changé.
+def _last_path():
+    return C.runtime_file(_LAST_FILE)
+
+
+def _save_last():
+    last = _PROG["last"]
+    try:
+        path = _last_path()
+        if last is None:
+            with __import__("contextlib").suppress(FileNotFoundError):
+                os.remove(path)
+            return
+        last.setdefault("at", int(time.time()))
+        if "running" not in last:
+            try:
+                last["running"] = installed_version()
+            except Exception as e:
+                _swallowed(e, "reaper_update._save_last.running")
+                last["running"] = None
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(last, f)
+        os.replace(tmp, path)
+    except Exception as e:
+        _swallowed(e, "reaper_update._save_last")
+
+
+def _load_last():
+    global _LAST_LOADED
+    if _LAST_LOADED:
+        return
+    _LAST_LOADED = True
+    if _PROG["last"] is not None or _PROG["busy"]:
+        return
+    try:
+        with open(_last_path(), encoding="utf-8") as f:
+            d = json.load(f)
+        if isinstance(d, dict):
+            _PROG["last"] = d
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        _swallowed(e, "reaper_update._load_last")
+
+
+def _license():
+    """Ce que REAPER AFFICHE (Windows, titre de sa fenêtre) : 'registered' | 'evaluation' | None."""
+    if not WINDOWS:
+        return None
+    try:
+        from . import desktop_reaper
+        return desktop_reaper.license_state()
+    except Exception as e:
+        _swallowed(e, "reaper_update._license")
+        return None
 
 
 def _run(cmd, timeout, **kw):
@@ -508,6 +576,7 @@ def _worker(old_ver, new_ver, validated=True):
                 _start_reaper()
     finally:
         _PROG["busy"], _PROG["step"] = False, None
+        _save_last()
 
 
 def start_update(version=None):
@@ -542,7 +611,7 @@ def start_update(version=None):
     return True, None
 
 
-def _win_run(job):
+def _win_run(job, old_ver, new_ver):
     """Enveloppe des workers Windows : même `last`, même relance best-effort qu'au rack."""
     try:
         _PROG["last"] = job()
@@ -550,23 +619,22 @@ def _win_run(job):
         _log(f"✗ {e}")
         _PROG["last"] = {"ok": False, "rolled_back": False, "error": str(e)}
     finally:
+        _PROG["last"].setdefault("from", old_ver)
+        _PROG["last"].setdefault("to", new_ver)
         _PROG["busy"], _PROG["step"] = False, None
+        _save_last()
 
 
 def _win_worker(old_ver, new_ver, validated=True):
     from . import desktop_reaper
     pin = _win_pin()
     _win_run(lambda: desktop_reaper.run_update(old_ver, new_ver, validated, pin.get("url"), pin.get("sha256"),
-                                               _step, _log))
-    _PROG["last"].setdefault("from", old_ver)
-    _PROG["last"].setdefault("to", new_ver)
+                                               _step, _log), old_ver, new_ver)
 
 
 def _win_switch_worker(old_ver, ver):
     from . import desktop_reaper
-    _win_run(lambda: desktop_reaper.run_switch(old_ver, ver, _step, _log))
-    _PROG["last"].setdefault("from", old_ver)
-    _PROG["last"].setdefault("to", ver)
+    _win_run(lambda: desktop_reaper.run_switch(old_ver, ver, _step, _log), old_ver, ver)
 
 
 def _switch_worker(old_ver, ver):
@@ -600,6 +668,7 @@ def _switch_worker(old_ver, ver):
                 _start_reaper()
     finally:
         _PROG["busy"], _PROG["step"] = False, None
+        _save_last()
 
 
 def start_switch(version):

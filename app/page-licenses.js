@@ -194,8 +194,18 @@ function ReaperVersioningCard() {
     'not-installed': ['warn', 'engine not found'],
     'no-pin': ['idle', 'no pinned version'],
   };
-  const [stState, stLabel] = (r && STATUS[r.status]) || ['idle', '…'];
+  let [stState, stLabel] = (r && STATUS[r.status]) || ['idle', '…'];
   const last = r && r.last;
+  // CE QUI TOURNE À LA FIN du dernier geste (`running`, écrit par le bridge) : si ce n'est plus la version de
+  // départ, le moteur A changé — 2026-11-27 la carte disait « engine unchanged » alors que 7.86 tournait.
+  const changed = !!(last && last.running && last.from && last.running !== last.from);
+  // … sauf si la licence perdue est revenue (clé actuelle importée) : rester sur la nouvelle version est alors un choix
+  const unfinished = !busy && last && !last.ok && !last.rolled_back && changed
+    && !(last.license_lost && r.license === 'registered');
+  // licence perdue par la mise à jour, et REAPER toujours en évaluation : ça se voit tant que ce n'est pas réglé
+  const lostLic = !busy && last && last.license_lost && r.license === 'evaluation';
+  if (lostLic) [stState, stLabel] = ['warn', '⚠ license not accepted — evaluation'];
+  else if (unfinished) [stState, stLabel] = ['warn', '⚠ last update did not finish'];
   return html`<section class="card-panel">
     <h3>Versioning</h3>
     <div class="upd-rows">
@@ -225,10 +235,19 @@ function ReaperVersioningCard() {
     </div>
     ${busy && r.log.length ? html`
       <div class="upd-log">${r.log.map(l => html`<div class="upd-log-line">${l}</div>`)}</div>` : ''}
-    ${!busy && last ? html`
+    ${!busy && last && !lostLic ? html`
       <p class=${last.ok ? 'muted' : 'muted warn'} style="margin-top:10px">
         ${last.ok ? `✓ engine updated ${last.from} → ${last.to}`
-    : `✗ ${last.error}${last.rolled_back ? '' : ' — engine unchanged'}`}</p>` : ''}
+    : `✗ ${last.error}${last.rolled_back || changed ? '' : ' — engine unchanged'}`}</p>` : ''}
+    ${lostLic ? html`<div class="upd-warn">
+      <b>REAPER ${r.installed} runs in evaluation: it does not accept your license key${last.from ? ` (${last.from} did)` : ''}.</b>
+      <ul>
+        ${!last.rolled_back && changed ? html`<li>Going back to ${last.from} automatically failed${last.rollback_error ? ` (${last.rollback_error})` : ''}.</li>` : ''}
+        <li>Older REAPER keys can be refused by newer versions. Get your current key from Cockos and paste it in
+          the <b>License</b> card, then restart REAPER.</li>
+        ${(r.versions || []).some(v => !v.active && v.version === last.from)
+          ? html`<li>Or go back with « Use ${last.from} » above.</li>` : ''}
+      </ul></div>` : ''}
     ${/* L'INSTALL NON VALIDÉE, ce qu'elle coûte, DIT AVANT le geste — pas dans une infobulle. */''}
     ${armed('u') ? html`<div class="upd-warn">
       <b>Install REAPER ${r.upstream} without a golem release?</b>
@@ -252,7 +271,8 @@ function ReaperVersioningCard() {
           ${armed('u') ? `install ${r.upstream} now?` : `⬆ Install ${r.upstream}`}</button>` : ''}
       ${err ? html`<span class="perf-err">✗ ${err}</span>` : ''}
     </div>`}
-    ${r && r.can_update === false ? '' : html`<p class="muted" style="margin-top:12px">Engine updates are bound to the version <b>validated with the
+    ${/* l'encadré de licence prend sa place : le panneau ne défile pas, et ce texte parle de FAIRE une mise à jour */''}
+    ${r && r.can_update === false || lostLic ? '' : html`<p class="muted" style="margin-top:12px">Engine updates are bound to the version <b>validated with the
       installed golem release</b> — that one is verified against a checksum and has been played on a rig.
       A newer version published by Cockos can be installed from here too, <b>with neither guarantee</b>,
       and the previous engine stays one tap away. Updating <b>interrupts audio

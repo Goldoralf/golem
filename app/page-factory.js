@@ -25,6 +25,8 @@ function FactoryDemos() {
   const [pt, setPt] = useState(null);
   const [b, setB] = useState(null);
   const [err, setErr] = useState('');
+  const [refs, setRefs] = useState(null);
+  useEffect(() => { fetch('/api/preview/refs').then(r => r.json()).then(d => setRefs((d && d.refs) || [])).catch(() => setRefs([])); }, []);
   const load = () => {
     fetch('/api/patches').then(r => r.json()).then(d => setPt((d.patches || []).filter(x => x.factory && !PAD_ROLES.includes(x.role)))).catch(() => {});
     fetch('/api/preview/batch').then(r => r.json()).then(setB).catch(() => {});
@@ -32,8 +34,17 @@ function FactoryDemos() {
   useEffect(() => { load(); }, []);
   const running = !!(b && b.running);
   useEffect(() => { if (!running) return; const t = setInterval(load, 3000); return () => clearInterval(t); }, [running]);
-  if (!pt) return '';
+  if (!pt || !refs) return '';
+  // LES DÉMOS D'USINE ARRIVENT AVEC golem (2026-11-28, le mainteneur : « pourquoi ce panneau ? ») : l'archive factory-demos est
+  // téléchargée à l'installation et à chaque mise à jour (bridge/factory_demos.py). Ce qui manque, ce sont les patches
+  // qu'AUCUNE DI de ce golem ne sait rendre — les voix : leurs phrases de référence ne sont pas enregistrées. Le bouton
+  // ne leur servirait à rien : ils se comptent à part, et le rendu ne s'offre que s'il reste un patch qu'il peut rendre.
+  const refRole = x => ({ voice: 'voice', bass: 'bass', keys: 'keys', drums: 'drums' }[x.role] || 'guitar');
+  const canRender = x => refs.some(r => r.role === refRole(x) && r.available);
+  const noRef = pt.filter(x => !x.preview && !canRender(x));
+  const missing = pt.filter(x => !x.preview && canRender(x));
   const have = pt.filter(x => x.preview).length;
+  const noRefRoles = [...new Set(noRef.map(refRole))];
   const go = async () => { setErr(''); const r = await post('/api/preview/batch', {}).catch(e => (e.body || { error: String(e) }));
     if (r && r.error) setErr(r.error); load(); };
   const stop = async () => { await post('/api/preview/batch/stop', {}).catch(() => {}); load(); };
@@ -41,16 +52,20 @@ function FactoryDemos() {
   const failed = ((b && b.items) || []).filter(i => i.status === 'failed');
   return html`<div class="fac-cap">
     <div class="fac-cap-hd"><b>Sound demos</b>
-      <span class=${cls('muted', have === pt.length && 'ok')}>${have} of ${pt.length} factory patches can be heard ${have === pt.length ? '✓' : ''}</span></div>
-    <div class="row">
+      <span class=${cls('muted', !missing.length && 'ok')}>${have} of ${pt.length} factory patches can be heard ${!missing.length ? '✓' : ''}</span></div>
+    <p class="muted">They come with golem: downloaded at install and with every update.</p>
+    ${noRef.length ? html`<p class="muted" title=${noRef.map(x => x.name).join('\n')}>
+      ${noRef.length} ${noRefRoles.join(' / ')} patch${noRef.length > 1 ? 'es have' : ' has'} no demo yet: no ${noRefRoles.join(' / ')} reference
+      phrase is recorded, so nothing can play through ${noRef.length > 1 ? 'them' : 'it'}.</p>` : ''}
+    ${missing.length || running ? html`<div class="row">
       ${running
         ? html`<button class="primary edit-only" onClick=${stop} title="stops after the patch being rendered">■ Stop</button>
             <span class="muted">${b.done} of ${b.total}${b.current ? ' — ' + esc(b.current.replace(/^factory-/, '')) : ''}</span>`
         : html`<button class="primary edit-only" onClick=${go}
             title="renders a reference phrase through every factory patch, scene by scene — takes the engine, nobody should play; demos already up to date are skipped">
-            🎧 ${have ? 'Render the missing demos' : 'Render the factory demos'}</button>
+            🎧 Render ${missing.length} missing demo${missing.length > 1 ? 's' : ''}</button>
             ${b && b.stopped ? html`<span class="muted">${esc(b.stopped)}</span>` : ''}`}
-    </div>
+    </div>` : ''}
     ${!running && (skipped.length || failed.length) ? html`<p class="muted" title=${[...skipped, ...failed].map(i => i.id + ': ' + (i.reason || i.status)).join('\n')}>
       ${skipped.length ? `${skipped.length} skipped — no reference phrase or no input for them yet` : ''}${skipped.length && failed.length ? ' · ' : ''}${failed.length ? `${failed.length} failed` : ''}</p>` : ''}
     ${err ? html`<p class="bad">✗ ${esc(err)}</p>` : ''}

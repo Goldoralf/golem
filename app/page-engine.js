@@ -48,6 +48,19 @@ export function EnginePanel({ rig }) {
   const [sw, setSw] = useState(null);                       // la bascule en cours : {phase, to, error?}
   const running = !!((rig && rig.state) || {}).reaper_running;
   useEffect(() => { if (!armed) return; const t = setTimeout(() => setArmed(null), 4000); return () => clearTimeout(t); }, [armed]);
+  // LA BASCULE SE LIT CHEZ LE BRIDGE, PAS DANS CE COMPOSANT (2026-11-28, le mainteneur : « la page ne se met pas à jour, on ne sait
+  // pas quand la bascule est faite ; il faut aller sur un autre lien et revenir »). Le moteur s'arrête pendant la bascule
+  // et l'écran se redessine : un état local perdu laissait la page muette. Au montage, elle reprend la bascule en cours
+  // (ou son résultat récent) ; et elle relit les moteurs quand celui qui tourne change d'état.
+  useEffect(() => {
+    fetch('/api/engine/switch').then(r => r.json()).then(s => {
+      if (!s || !s.phase || s.phase === 'idle') return;
+      const recent = s.at && (Date.now() / 1000 - s.at) < 120;
+      if (PHASE[s.phase]) { setSw(s); setBusy(true); }
+      else if (recent) { setSw(s); if (s.phase === 'failed') setErr(s.error || 'switch failed'); }
+    }).catch(() => {});
+  }, []);
+  useEffect(() => { reload(); }, [running]);
   useEffect(() => {
     if (!sw || !PHASE[sw.phase]) return;
     const t = setInterval(async () => {

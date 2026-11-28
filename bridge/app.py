@@ -2494,16 +2494,23 @@ def _do_tuner(on):
     on = bool(on)
     n, role, tid = store.tuner_source(load_preset(state.preset_id) if state.preset_id else None)
     from . import tunings as _tun
+    from . import mixer as _mixer
     tu = _tun.resolve(tid, role)                     # les cordes que /live affiche (6/7/8, basse 4/5)
+    was_on = bool(state.tuner.get("on"))
+    state.tuner = {**state.tuner, "on": on, "role": role,
+                   "tuning": ({"id": tu["id"], "label": tu["label"], "midi": tu["midi"]} if tu else None),
+                   **({} if on else {"active": False})}
+    # L'ACCORDEUR COUPE TOUT (2026-11-28) : le silence AVANT l'armement, les niveaux APRÈS le désarmement (mixer.applied_levels)
+    if on and not was_on:
+        _mixer.push()
     if on and _tuner_in_sent["n"] != n:
         write_command({"action": "extstate", "key": "tuner_in", "value": str(n)})
         _tuner_in_sent["n"] = n
         recall_mod._later(0.4, write_command, {"action": "tuner", "on": True})
     else:
         write_command({"action": "tuner", "on": on})
-    state.tuner = {**state.tuner, "on": on, "role": role,
-                   "tuning": ({"id": tu["id"], "label": tu["label"], "midi": tu["midi"]} if tu else None),
-                   **({} if on else {"active": False})}
+    if was_on and not on:
+        _mixer.push()
     state.touch()
 
 

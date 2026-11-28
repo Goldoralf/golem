@@ -92,14 +92,15 @@ export const lastFixUndo = (last, now) => (last && last.undo && !last.incident &
 // le nom d'un fait pour un musicien (le bridge nomme pour le diagnostic) ; un fait inconnu garde son nom
 const PLAIN = { engine: 'Audio engine', audio: 'Sound card', dropouts: 'Clicks', pedalboard: 'Pedalboard', playing: 'Sound loaded',
   setlist: 'Setlist', plugins: 'Plugins', disk: 'Disk', golemfm: 'golem.fm', scripts: 'Scripts', perf: 'Processor speed',
-  cpu: 'CPU budget', environment: 'Since last start', display: 'Display', safemode: 'Card safe mode' };
+  cpu: 'CPU budget', environment: 'Since last start', display: 'Display', safemode: 'Card safe mode', midi: 'MIDI devices' };
 export const plainName = f => PLAIN[f && f.id] || (f && f.name) || '';
 
 // le titre d'une carte « Needs you » : ce qui se passe, pas le nom de la sonde
 const PROBLEM = { dropouts: 'Clicks in the sound', golemfm: 'golem.fm is out of reach', engine: 'The audio engine is not playing',
   audio: 'The sound card is not playing', pedalboard: 'The pedalboard does not answer', playing: 'The sound is not fully loaded',
   setlist: 'The setlist is not ready', plugins: 'Plugins are missing', disk: 'The disk is almost full', scripts: 'A script failed',
-  perf: 'The processor is saving power', cpu: 'The CPU budget is not measured', display: 'Moving tiles may cause the clicks' };
+  perf: 'The processor is saving power', cpu: 'The CPU budget is not measured', display: 'Moving tiles may cause the clicks',
+  midi: 'A MIDI device is not reachable' };
 export const problemTitle = f => PROBLEM[f && f.id] || plainName(f);
 
 // une INFORMATION, pas un problème : ce qui a changé depuis le dernier démarrage (une mise à jour se dit, elle n'alarme

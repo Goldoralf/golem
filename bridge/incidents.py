@@ -43,10 +43,10 @@ HINTS = ("cable", "gain", "power", "other")
 # les faits de Health qui ouvrent un incident, et à partir de quel niveau ; les autres (setlist, plugins,
 # environnement) disent un état, pas une panne
 WATCH = {"engine": "warn", "audio": "bad", "dropouts": "bad", "pedalboard": "warn", "playing": "bad",
-         "disk": "warn", "scripts": "warn", "golemfm": "warn"}
+         "disk": "warn", "scripts": "warn", "golemfm": "warn", "midi": "warn"}
 TITLES = {"engine": "REAPER not answering", "audio": "Sound card stopped", "dropouts": "Audio dropouts",
           "pedalboard": "Pedalboard or MIDI problem", "playing": "Files not loaded", "disk": "Disk almost full",
-          "scripts": "A script error in REAPER", "golemfm": "golem.fm unreachable"}
+          "scripts": "A script error in REAPER", "golemfm": "golem.fm unreachable", "midi": "MIDI device problem"}
 _RANK = {"ok": 0, "wait": 1, "warn": 2, "bad": 3}
 
 

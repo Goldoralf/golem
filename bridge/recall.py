@@ -970,6 +970,11 @@ def emit_sandbox_preset(preset, scene, action="rig_recall"):
             # dès qu'un patch porte un groove. Le bridge a le document exact, brouillon du Designer compris.
             cmd["bpm"], cmd["bpm_from"] = preset["bpm"], "preset"
         write_command(cmd)
+        if action == "rig_recall" and (state.tuner or {}).get("on"):
+            # un rebuild REAPER relit config/mixer.json : l'accordeur armé doit rester silencieux (2026-11-28)
+            with contextlib.suppress(Exception):
+                from . import mixer as _mixer
+                _mixer.push()
         # PAS de trigger_action ici : golem_watch (defer) route la commande vers golem_rig.
         # L'action _RS… pointait sur golem_apply (ancien moteur) -> double exécution (audit 2026-07-07).
         with contextlib.suppress(Exception):

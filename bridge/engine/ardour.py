@@ -584,7 +584,7 @@ class ArdourEngine(EngineAdapter):
                 log.info(f"ardour : {s.get('id') or s.get('path')} {s.get('type') or ''} {s.get('param') or ''} — {s['why']}")
             plan["bpm"] = _bpm(cmd)
             from .. import mixer
-            plan["mixer"] = mixer.levels()             # les trims du rig, reposés à chaque rappel (docs/mixer.md)
+            plan["mixer"] = mixer.applied_levels()     # les trims du rig, reposés à chaque rappel (docs/mixer.md) ; tout coupé si l'accordeur est armé
             write_presets(plan)
             write_captures(plan)
             write_host_states(plan)

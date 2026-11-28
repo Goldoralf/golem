@@ -1181,7 +1181,6 @@
   "button | Storage",
   "button | System",
   "button | ⬇ Download the factory captures (#)",
-  "button | 🎧 Render the missing demos",
   "switch | Shown"
  ],
  "#/system/connect/wifi": [

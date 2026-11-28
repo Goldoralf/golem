@@ -7,8 +7,10 @@
 // jamais le fader de piste (niveau de scène, autorité du preset) ni le bloc Volume (pédale EXP).
 // Les niveaux sont du RIG : ils survivent aux recalls et aux redémarrages (config/mixer.json).
 //
-// LE TRIM ATTÉNUE : 0 dB = unité, en haut du fader — pas de gain. Tout se somme dans une seule
-// paire sur une petite carte, et c'est là que ça clippe (bug volume 2026-07-23).
+// 0 dB = UNITÉ, AUX TROIS QUARTS DU FADER (2026-11-28, le mainteneur : « la première fois tout est à fond ; il faudrait un
+// niveau 0, pouvoir descendre beaucoup et monter un peu » — et le clic doit pouvoir être vraiment plus fort). Avant,
+// le trim ne faisait qu'atténuer (0 dB en haut, bug volume 2026-07-23) : le gain revient, borné à +10 dB, et le
+// trait du 0 se voit sur chaque rail. Course comme une table de mixage : fine autour de 0, serrée vers −∞.
 //
 // LINK — PAS UN MODE (refonte 2026-08-07, verdict : « j'aurais mis juste une case à
 // cocher »). Chaque tranche porte une case PERMANENTE ; dès que deux sont cochées, bouger l'un
@@ -19,31 +21,44 @@
 // ⚠ LE DELTA EST BORNÉ, PAS LES MEMBRES. Clamper chaque membre séparément détruit précisément
 // ce que le groupe doit préserver : dès qu'un membre touche 0 dB il sature pendant que les
 // autres continuent, et les écarts s'écrasent EN SILENCE. Le groupe touche le mur d'un bloc.
-// Corollaire assumé : tout étant à 0 par défaut, un groupe ne peut que descendre.
+// Un groupe monte jusqu'à ce que son membre le plus haut touche +10 dB.
 //
 // Le mix d'ENREGISTREMENT suit ces niveaux (recopié sur le send vers la piste Recording) : la
 // prise porte le mix complet tel qu'entendu ; les DI, eux, restent bruts.
 import { html, useState, useRef, useAsync, post, cls, esc, LoadGuard } from './lib.js';
 
-const DB_MIN = -60, DB_MAX = 0;
+const DB_MIN = -60, DB_MAX = 10;
 const clampDb = v => Math.max(DB_MIN, Math.min(DB_MAX, Math.round(v * 2) / 2));
+// la course : [dB, fraction de hauteur], linéaire entre deux points
+const CURVE = [[-60, 0], [-40, 0.12], [-20, 0.32], [-10, 0.5], [0, 0.75], [10, 1]];
+const lerp = (x, a, b) => a[1] + (x - a[0]) * (b[1] - a[1]) / (b[0] - a[0]);
+export const dbToFrac = db => { const v = Math.max(DB_MIN, Math.min(DB_MAX, db ?? 0));
+  for (let i = 1; i < CURVE.length; i++) if (v <= CURVE[i][0]) return lerp(v, CURVE[i - 1], CURVE[i]);
+  return 1; };
+export const fracToDb = f => { const v = Math.max(0, Math.min(1, f));
+  for (let i = 1; i < CURVE.length; i++) if (v <= CURVE[i][1]) {
+    const [a, b] = [CURVE[i - 1], CURVE[i]]; return a[0] + (v - a[1]) * (b[0] - a[0]) / (b[1] - a[1]); }
+  return DB_MAX; };
+const UNITY = dbToFrac(0) * 100;
 const fmt = db => (db == null || db <= DB_MIN) ? '−∞' : (db === 0 ? '0' : (db > 0 ? '+' : '−') + Math.abs(db).toFixed(Math.abs(db) < 10 ? 1 : 0));
 
-// fader vertical tactile : géométrie linéaire en dB (-60..0), bas de course = −∞ (send coupé).
+// fader vertical tactile : la course CURVE (−60..+10, 0 aux trois quarts), bas de course = −∞ (send coupé) ; un double
+// tap ramène à 0 dB.
 // mode 'solo' : le tap saute à la position (attendu au doigt, et vrai aussi pour une tranche
 // cochée SEULE — un groupe d'un est un fader normal). mode 'group' : le tap ne saute pas, le
 // parent n'exploite que le DELTA depuis le début du geste.
 // Throttle ~8/s (chaque envoi = une écriture de .command.json + un tick Reaper), envoi FINAL
 // garanti au relâchement.
-function Fader({ db, mode = 'solo', onStart, onChange, disabled }) {
+function Fader({ db, mode = 'solo', onStart, onChange, disabled, max = DB_MAX }) {
   const ref = useRef(null);
   const throttle = useRef({ t: 0, timer: null, last: null });
-  const pct = Math.max(0, Math.min(100, ((db ?? 0) - DB_MIN) / (DB_MAX - DB_MIN) * 100));
+  const pct = dbToFrac(db) * 100;
 
   const dbAt = (clientY) => {
     const r = ref.current.getBoundingClientRect();
     const frac = 1 - Math.max(0, Math.min(1, (clientY - r.top) / r.height));
-    return clampDb(DB_MIN + frac * (DB_MAX - DB_MIN));
+    const v = Math.min(max, clampDb(fracToDb(frac)));        // une boucle du looper s'arrête à 0 dB (son JSFX)
+    return Math.abs(v) <= 0.75 ? 0 : v;                     // l'unité « accroche » : un doigt ne vise pas un demi-dB
   };
   const send = (v, final) => {
     const th = throttle.current;
@@ -75,9 +90,11 @@ function Fader({ db, mode = 'solo', onStart, onChange, disabled }) {
     el.addEventListener('pointerup', up);
   };
 
-  return html`<div class=${cls('lmx-fader', disabled && 'off')} ref=${ref} onPointerDown=${down}>
+  return html`<div class=${cls('lmx-fader', disabled && 'off')} ref=${ref} onPointerDown=${down}
+    onDblClick=${() => { if (!disabled && mode === 'solo') onChange(0); }}>
     <div class="lmx-rail">
       <div class="lmx-fill" style=${`height:${pct}%`} />
+      <div class="lmx-unity" style=${`bottom:${UNITY}%`} title="0 dB — double tap to come back here" />
       <div class="lmx-knob" style=${`bottom:calc(${pct}% - 9px)`} />
     </div>
   </div>`;
@@ -107,6 +124,7 @@ export function LiveMixer({ rig, onClose }) {
 
   // une tranche de BOUCLE (« loop:N ») : son volume vit dans le looper (et la table du preset), pas dans un send
   const loopSlot = id => String(id).startsWith('loop:') ? +String(id).slice(5) : null;
+  const maxOf = id => (loopSlot(id) != null ? 0 : DB_MAX);     // le plafond d'une tranche (une boucle : 0 dB)
   const postLoop = (id, ch) => post('/api/looper', { op: 'level', slot: loopSlot(id), ...ch }).catch(() => {});
   const postOne = (id, db) => {
     setLocal(l => ({ ...l, [id]: { ...l[id], db } }));
@@ -145,7 +163,7 @@ export function LiveMixer({ rig, onClose }) {
     // ⚠ borner le DELTA (pas les membres) : le groupe touche le mur d'un seul bloc, les écarts
     // survivent. Clamper membre par membre les écraserait dès qu'un seul sature.
     const delta = Math.max(DB_MIN - Math.min(...bases),
-                  Math.min(DB_MAX - Math.max(...bases), db - g.first));
+                  Math.min(...g.ids.map(s => maxOf(s) - g.base[s]), db - g.first));
     postGroup(Object.fromEntries(g.ids.map(s => [s, clampDb(g.base[s] + delta)])));
   };
 
@@ -173,7 +191,7 @@ export function LiveMixer({ rig, onClose }) {
           title=${s.present ? '' : 'not in this preset — the level is kept and will apply when it is'}>
           <i>${esc(s.label)}</i><small>${esc(s.sub || '')}</small>
           <div class="lmx-body">
-            <${Fader} db=${v.db ?? 0} disabled=${!s.present} mode=${modeFor(s.id)}
+            <${Fader} db=${v.db ?? 0} disabled=${!s.present} mode=${modeFor(s.id)} max=${maxOf(s.id)}
               onStart=${startFor(s.id)} onChange=${changeFor(s.id)} />
             ${/* la gouttière est RÉSERVÉE sur les 8 même sans mesure : sinon les knobs des
                   tranches qui en ont une ne sont pas sur la même verticale que les autres, et
@@ -195,8 +213,8 @@ export function LiveMixer({ rig, onClose }) {
       })}
     </section>
     <section class="card-panel lmx-foot">
-      <span class="muted">⚠ Trim <b>attenuates</b> — 0 dB is unity, there is no boost. It composes with
-        the scene level and the volume pedal, it replaces neither.</span>
+      <span class="muted"><b>0 dB</b> (the line) is unity — double tap a fader to come back to it. Up to <b>+10 dB</b> above:
+        louder, but it can clip the card. It composes with the scene level and the volume pedal, it replaces neither.</span>
     </section>
   </div>`;
 }

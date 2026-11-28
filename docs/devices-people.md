@@ -98,7 +98,7 @@ on its row before the tap; the rights come from `whoami.rights` (`auth.rights_of
 - **Between songs** computes what to prepare: tuning and capo against the previous line, instruments
   to put down or pick up (my lines now vs in the next song, `GET /api/lane/mine?preset=`), "You
   sing", the line note, the first part and count-in.
-- **Tuner**: the rack tuner is global (it does not mute but covers /live): never armed automatically
+- **Tuner**: the rack tuner is global (it mutes every output while armed — [mixer.md](mixer.md) — and covers /live): never armed automatically
   during a song, and switched off only by the phone that switched it on.
 - **Flags**: during a take, each tap adds `{at, sec, by}` with the person, song and part
   (`POST /api/take/flag`, 409 when nothing records); they go into `take.json` `flags[]`;

@@ -37,10 +37,11 @@ export function useViewOverride(key) {
 // ── LES PÉDALES SUR LES STOMPS (docs/designer-glyphs-pedals.md, maquette L1) : chaque case de stomp du pédalier montre
 // la pédale de son bloc (dessinée par golem-fx). Une préférence de CET écran, retenue (localStorage) : un écran de scène
 // la garde d'un soir à l'autre ; jamais un réglage du preset ni du mode.
+// ALLUMÉE PAR DÉFAUT (2026-11-28, le mainteneur) : seul un « non » explicite ('0') l'éteint.
 const PKEY = 'golem.live.pedals';
-export const livePedals = () => { try { return localStorage.getItem(PKEY) === '1'; } catch { return false; } };
+export const livePedals = () => { try { return localStorage.getItem(PKEY) !== '0'; } catch { return true; } };
 export function setLivePedals(on) {
-  try { if (on) localStorage.setItem(PKEY, '1'); else localStorage.removeItem(PKEY); } catch { /* privé */ }
+  try { localStorage.setItem(PKEY, on ? '1' : '0'); } catch { /* privé */ }
   window.dispatchEvent(new Event('golem:live-pedals'));
 }
 export function useLivePedals() {

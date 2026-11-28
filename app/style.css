@@ -2293,6 +2293,7 @@ html.tiles-still .lpad .lcy-it{animation:none}
           border:1px solid var(--line)}
 .lmx-fill{position:absolute; left:0; right:0; bottom:0; border-radius:0 0 7px 7px;
           background:linear-gradient(180deg,#3d9be9,#2ecc71)}
+.lmx-unity{position:absolute; left:-6px; right:-6px; height:2px; margin-bottom:-1px; background:rgba(255,255,255,.55); border-radius:1px; pointer-events:none}
 .lmx-knob{position:absolute; left:-8px; right:-8px; height:18px; border-radius:5px;
           background:#dfe6ee; border:1px solid #9fb0c2; box-shadow:0 2px 6px rgba(0,0,0,.5)}
 .lmx-meter{position:relative; width:7px; border-radius:4px; background:#0f1318;
@@ -6570,7 +6571,7 @@ button.linkish{white-space:nowrap}
 /* ── System ▸ Audio Engine (coquille 2026-10-06, docs/audio-engine-choice.md) — préfixe eng- ── */
 .eng-page{flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; padding:12px 14px}
 /* les cartes prennent la hauteur de leur contenu (2026-11-17 : elles remplissaient la page, trop grosses) */
-.eng-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; align-items:start; max-width:860px}
+.eng-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; align-items:stretch}   /* même hauteur, toute la largeur (2026-11-28) */
 .eng-card{display:flex; flex-direction:column; gap:6px; padding:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px; min-height:0}
 .eng-card.eng-on{border-color:var(--funk); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--funk) 40%, transparent)}
 .eng-card.eng-off{opacity:.62}
@@ -6589,7 +6590,7 @@ button.linkish{white-space:nowrap}
 .eng-feat .f{font-size:11px; padding:3px 7px; border-radius:6px; background:var(--panel2); color:var(--text)}
 .eng-feat .f.plan{color:var(--muted)}
 .eng-feat .f.no{color:var(--muted); text-decoration:line-through; opacity:.7}
-.eng-foot{margin-top:6px; display:flex; align-items:center; gap:10px; font-size:12px}
+.eng-foot{margin-top:auto; padding-top:6px; display:flex; align-items:center; gap:10px; font-size:12px}
 .eng-btn{min-height:44px; padding:0 18px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); font-weight:600; cursor:pointer}
 .eng-btn.on{color:var(--funk); border-color:color-mix(in srgb, var(--funk) 50%, transparent); background:transparent}
 .eng-btn:disabled{cursor:default}
@@ -8202,6 +8203,22 @@ button.linkish{white-space:nowrap}
    défile — un panneau qui défilait seul, sous la carte, se lisait mal. Cela remplace « la page ne scrolle jamais » de .sc-detail. */
 .system.pg-fit > .sc-page{gap:8px; padding-top:6px; overflow-y:auto}
 .system.pg-fit > .sc-page .sc-detail{min-height:80px; flex:none; overflow:visible}
+/* une prise ouverte : la face arrière se compacte, la fiche tient sous elle sans que l'onglet défile (2026-11-28) */
+.sc-board2.sc-compact{gap:6px}
+.sc-board2.sc-compact .sc-group{gap:3px}
+.sc-board2.sc-compact .sc-group-lbl{font-size:10px}
+.sc-board2.sc-compact .sc-group-jacks{gap:8px}
+.sc-board2.sc-compact .sc-jack{gap:2px; padding:4px 6px; min-width:64px}
+.sc-board2.sc-compact .sc-g{width:28px; height:28px; margin:2px 0}
+.sc-board2.sc-compact .sc-g.xl{width:32px; height:32px; margin:0}
+.sc-board2.sc-compact .sc-g.usb{width:32px; height:22px; margin:5px 0}
+.sc-board2.sc-compact .sc-sub{display:none}
+.sc-board2.sc-compact .sc-lbl{font-size:10px; min-height:12px}
+.sc-board2.sc-compact .sc-rl small{display:none}
+.sc-board2.sc-compact .sc-row .sc-group{padding:4px 12px}
+.sc-board2.sc-compact .sc-tag{height:15px}
+.sc-board2.sc-compact .sc-rl{padding:4px 6px}
+.sc-board2.sc-compact .sc-link{margin:0 -4px 12px}
 /* LA PAGE MODE (mockups/mode-page.html, C + E, 2026-10-20) : la liste des modes à gauche, la fiche à droite, en trois
    temps ; ou tous les modes côte à côte. Le sélecteur de vue est dans la barre du haut. */
 .mode-body{padding-top:12px}

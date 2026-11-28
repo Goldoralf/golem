@@ -216,3 +216,33 @@ def test_la_route_rend_les_faits_du_cache(rack):
     d = R.health_facts()
     assert d["verdict"]["level"] == "ok" and len(d["facts"]) == 14
     assert R.health_facts(fresh=1)["at"] >= d["at"]
+
+
+# ── le pédalier n'est accusé que de ce qui le regarde (2026-11-28, « The pedalboard does not answer » à tort) ──────────
+def test_un_defaut_du_clavier_n_accuse_plus_le_pedalier(rack, monkeypatch):
+    monkeypatch.setattr(rack, "midi", {"ok": False, "issues": [
+        "Keys controller input opened by NOBODY -> Keys lane dead (stale midiins mask)"]})
+    d = H.facts(fresh=True)
+    assert _by(d, "pedalboard")["level"] == "ok"
+    m = _by(d, "midi")
+    assert m["level"] == "warn" and m["text"].startswith("Keys controller input")
+
+
+def test_le_midi_in_de_la_carte_tenu_par_reaper_reste_un_defaut_du_pedalier(rack, monkeypatch):
+    monkeypatch.setattr(rack, "midi", {"ok": False, "issues": ["REAPER HOLDS THE SOUND CARD'S MIDI IN -> pedalboard mute"]})
+    d = H.facts(fresh=True)
+    assert _by(d, "pedalboard")["level"] == "warn" and "pedalboard mute" in _by(d, "pedalboard")["text"]
+    assert not any(f["id"] == "midi" for f in d["facts"])
+
+
+def test_une_sonde_sans_reponse_n_alarme_pas_un_pedalier_qu_on_entend(rack, monkeypatch):
+    """La sortie DIN va à la Whammy (configuration de jeu) : la sonde reste muette, les switches arrivent."""
+    import bridge.pedalboard as PB
+    import bridge.foot as F
+    monkeypatch.setattr(PB, "active", lambda: {"id": "fcb1010-uno2", "name": "FCB1010", "source": "measured", "stale": True})
+    monkeypatch.setattr(F, "last_heard", lambda: time.time() - 30)
+    f = _by(H.facts(fresh=True), "pedalboard")
+    assert f["level"] == "ok" and "switches heard" in f["text"]
+    monkeypatch.setattr(F, "last_heard", lambda: None)
+    f = _by(H.facts(fresh=True), "pedalboard")
+    assert f["level"] == "wait" and "press a switch" in f["text"]

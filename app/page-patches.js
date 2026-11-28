@@ -410,8 +410,10 @@ export function PatchesPage({ rig } = {}) {
               <button class="mini demo-play" disabled=${!clip}
                 title=${clip ? 'listen to scene ' + (curSc.name || curSc.id) + ' — reference: ' + (x.preview.ref || '') : 'no clip for this scene yet'}
                 onClick=${() => clip && playDemo(clip)}>🎧</button>
-              ${refPick(x)}
-              <button class="mini demo-regen edit-only" disabled=${!!genId} title="regenerate the sound guide"
+              ${/* LA DI SE CHOISIT QUAND IL N'Y A PAS ENCORE DE DÉMO (2026-11-28, le mainteneur : « elle est déjà enregistrée, pourquoi
+                    choisir une DI ici ? ») : ↻ refait la démo avec la DI qu'elle garde (preview.chosen) */''}
+              <button class="mini demo-regen edit-only" disabled=${!!genId}
+                title=${'regenerate the sound guide — reference: ' + ((x.preview && (x.preview.chosen || x.preview.ref)) || 'auto')}
                 onClick=${() => genDemo(x.id, refOf(x))}>↻</button></div>`;
             return html`<div class="ps-demo"><button class="demo-listen edit-only" disabled=${!!genId}
               title=${(isMidi ? 'plays a reference MIDI phrase on this ' : 're-amps a reference DI through this ') + roleLb.toLowerCase() + ' patch, scene by scene — takes the engine a few s, restores it after'}

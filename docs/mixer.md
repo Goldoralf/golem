@@ -17,8 +17,15 @@ Rules that must not move:
 
 - **Trims are rig state, not preset data.** A recall never touches them: your monitor mix does not
   change because the next song started.
-- **The trim attenuates only.** Range −60…0 dB (`mixer.DB_MIN`, `DB_MAX`); 0 dB = unity, −60 = send
-  at zero. Gain right before the converter brings back clipping.
+- **0 dB is unity, and a little gain is allowed** (changed 2026-11-28 by the maintainer: "the click must be able to
+  be really louder; the first time, everything is at the top"). Range −60…+10 dB (`mixer.DB_MIN`, `DB_MAX`); 0 dB =
+  unity and the default, drawn as a line three quarters up the fader (double tap returns to it), −60 = send at zero.
+  Above 0 dB the card can clip: it is the user's gesture. Looper loops keep their own level, capped at 0 dB (the
+  JSFX). The Golem Engine needs the engine's `apply_out` clamp raised to +10 (golem-engine, next engine release).
+- **The tuner mutes every source** (2026-11-28: "as on stage, nobody wants to hear the musician tune"). While it is
+  armed, `mixer.applied_levels()` sends every source muted, without touching `config/mixer.json`; disarmed, the saved
+  levels come back. The mute is always explicit (golem_rig leaves a source without `mute` untouched). A rebuild while
+  tuning (REAPER rereads `config/mixer.json`) is followed by a fresh push. The tuner listens upstream of every send.
 - **The Volume block stays a playing control**, upstream; the mixer acts downstream on the send.
   Never two authorities on the same stage.
 - **Recording DIs stay raw**: they do not go through the mixer.
@@ -82,7 +89,7 @@ In `golem_rig.lua`:
 
 ## 4. Screen
 
-`/live` ▸ mixer button → `app/live-mixer.js`: one strip per source, attenuator faders, mute, absent
+`/live` ▸ mixer button → `app/live-mixer.js`: one strip per source, faders −∞…+10 dB with the 0 dB line, mute, absent
 sources greyed.
 
 **Grouping is not a mode**: each strip has a permanent link checkbox (it replaces the dB readout).

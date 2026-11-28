@@ -416,7 +416,9 @@ export function SoundcardPage({ rig }) {
       ${/* LA FACE ARRIÈRE EN DEUX RANGÉES (maquette validée 2026-09-09) : la CARTE branchée (entrées, sorties,
             PHONES) et le RACK (USB 1..4 + MIDI DIN, propriété du serveur, toujours là). Au-delà de 6 jacks dans
             un groupe : pastilles en lignes de 9. La carte que le mode attend se replie dans la rangée carte. */''}
-      <div class="sc-board2">
+      ${/* UNE PRISE OUVERTE COMPACTE LA FACE ARRIÈRE (2026-11-28, le mainteneur : « le panneau génère un scroll, lecture et mise à jour
+            peu ergonomiques ») : glyphes réduits, sous-libellés tus — la fiche prend la place, l'onglet ne défile plus. */''}
+      <div class=${cls('sc-board2', det && 'sc-compact')}>
         <div class="sc-row">
           <div class="sc-rl"><b>CARD</b><small class=${cls(!(sc && sc.card && sc.card.present) && 'off')}>${sc && sc.card && sc.card.present ? esc(sc.card.name || sc.card.alsa) : 'none'}</small></div>
           ${Group('INPUTS', nIn > 6

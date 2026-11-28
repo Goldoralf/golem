@@ -211,20 +211,55 @@ def _f_pedalboard(st):
     midi = getattr(st, "midi", None) or {}
     src = "pedalboard · .midi.json"
     name = pb.get("name") or pb.get("id") or "pedalboard"
-    if midi.get("ok") is False and midi.get("issues"):
-        issue = midi["issues"][0]
-        issue = issue.get("text") or issue.get("msg") if isinstance(issue, dict) else str(issue)
-        return _fact("pedalboard", "Pedalboard & MIDI", "warn", str(issue)[:140], src,
+    # ⚠ FAUSSE ALERTE CORRIGÉE (2026-11-28, le mainteneur : « The pedalboard does not answer — alors qu'il marche très bien ») :
+    # (1) TOUT défaut MIDI (le clavier, la Whammy) tombait sur ce fait — seuls ceux du pédalier y restent, les autres ont
+    # leur fait (`_f_midi`) ; (2) une sonde d'identité sans réponse alarmait, alors que c'est la configuration de JEU
+    # d'un rig à une seule sortie DIN (le câble va à la Whammy, pedalboard.reachable). Un pédalier ne fait qu'ÉMETTRE :
+    # la preuve qu'il marche, c'est un switch ENTENDU (foot.last_heard).
+    mine = [t for t in _midi_issues(midi) if _is_pedal_issue(t)]
+    if mine:
+        return _fact("pedalboard", "Pedalboard & MIDI", "warn", mine[0][:140], src,
                      fix={"label": "Pedalboard →", "go": "system/gear/board"})
+    heard = None
+    with contextlib.suppress(Exception):
+        from . import foot
+        heard = foot.last_heard()
     if pb.get("source") == "measured" and not pb.get("stale"):
         return _fact("pedalboard", "Pedalboard & MIDI", "ok", f"{name} · confirmed by the chip"
                      + (f" · firmware {pb['firmware']}" if pb.get("firmware") else ""), src)
+    if pb.get("source") in ("measured", "declared") and heard:
+        return _fact("pedalboard", "Pedalboard & MIDI", "ok", f"{name} · switches heard"
+                     + (" — not identified by the probe (the MIDI OUT goes elsewhere)" if pb.get("stale") else ""), src)
     if pb.get("source") == "measured":
-        return _fact("pedalboard", "Pedalboard & MIDI", "warn", f"{name} · measured earlier, the last probe got no answer — still usable",
-                     src, fix={"label": "Pedalboard →", "go": "system/gear/board"})
+        return _fact("pedalboard", "Pedalboard & MIDI", "wait", f"{name} · measured earlier — press a switch to confirm", src)
     if pb.get("source") == "declared":
         return _fact("pedalboard", "Pedalboard & MIDI", "wait", f"{name} · declared, not confirmed — press a switch", src)
     return _fact("pedalboard", "Pedalboard & MIDI", "wait", "no pedalboard declared", src)
+
+
+def _midi_issues(midi):
+    if midi.get("ok") is not False:
+        return []
+    out = []
+    for i in midi.get("issues") or []:
+        out.append(str((i.get("text") or i.get("msg") or "") if isinstance(i, dict) else i))
+    return [t for t in out if t]
+
+
+def _is_pedal_issue(text):
+    """Un défaut du PÉDALIER (golem_midi.lua : « … MIDI IN -> pedalboard mute »), pas du clavier ni de la Whammy."""
+    t = text.lower()
+    return "pedalboard" in t or ("midi in " in t and "keys" not in t)
+
+
+def _f_midi(st):
+    """Les autres appareils MIDI (le clavier, la Whammy) : leur défaut a son propre fait, il n'accuse plus le pédalier.
+    Absent tant que rien ne cloche."""
+    other = [t for t in _midi_issues(getattr(st, "midi", None) or {}) if not _is_pedal_issue(t)]
+    if not other:
+        return None
+    return _fact("midi", "MIDI devices", "warn", other[0][:140] + (f" (+{len(other) - 1} more)" if len(other) > 1 else ""),
+                 ".midi.json", fix={"label": "Controllers →", "go": "system/gear/controllers"})
 
 
 def _f_playing(st):
@@ -648,7 +683,7 @@ def compute():
         boot = boot_progress.doc()
     probes = (lambda: _f_engine(st), lambda: _f_audio(st), lambda: _f_dropouts(st), lambda: _f_pedalboard(st),
               lambda: _f_playing(st), _f_setlist, _f_plugins, _f_disk, lambda: _f_golemfm(boot), _f_scripts,
-              lambda: _f_perf(st), _f_cpu, _f_environment, lambda: _f_display(st), lambda: _f_safemode(st))
+              lambda: _f_perf(st), _f_cpu, _f_environment, lambda: _f_display(st), lambda: _f_safemode(st), lambda: _f_midi(st))
     facts = []
     for fn in probes:
         try:

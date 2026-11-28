@@ -23,10 +23,11 @@ morceau suivant : les niveaux vivent dans config/mixer.json (état du rig, hors 
 recall ne les touche pas — golem_rig relit ce fichier à chaque matérialisation pour reposer
 les trims sur les sends qu'il vient de recréer.
 
-── LE TRIM ATTÉNUE ──────────────────────────────────────────────────────────────────────────
-0 dB = unité, jamais de gain. Tout se somme dans une seule paire sur une petite carte, et
-c'est là que ça clippe — un fader qui peut ajouter 6 dB juste avant le convertisseur, c'est le
-bug de volume de juillet qui revient. -60 dB vaut -inf (send à zéro).
+── 0 dB = UNITÉ, ET UN PEU DE GAIN ───────────────────────────────────────────────────────────
+Jusqu'au 2026-11-28 le trim ne faisait qu'atténuer (0 dB en haut : le bug de volume de juillet venait d'un gain
+juste avant le convertisseur). Le mainteneur l'a rouvert : le clic doit pouvoir être vraiment plus fort, et un mixer qui
+s'ouvre « tout à fond » ne laisse rien à monter. Le trim va donc jusqu'à +10 dB ; 0 dB reste l'unité et la valeur
+par défaut, -60 dB vaut -inf (send à zéro). Ce qui monte au-dessus de 0 peut clipper la carte : c'est un geste.
 """
 import json
 import os
@@ -40,7 +41,7 @@ from .state import state
 
 MIXER_FILE = os.path.join(C.CONFIG_DIR, "mixer.json")
 
-DB_MIN, DB_MAX = -60.0, 0.0            # -60 = silence (le send passe à 0), 0 = unité
+DB_MIN, DB_MAX = -60.0, 10.0           # -60 = silence (le send passe à 0), 0 = unité, +10 = le gain permis
 
 # Blocs de service qui produisent du son -> id de source mixer. Le clic est permanent ; les
 # autres existent selon le preset (lane Players).
@@ -118,9 +119,26 @@ def set_levels(changes):
     return out
 
 
+# L'ACCORDEUR COUPE TOUT (2026-11-28, le mainteneur : « comme en concert, on ne veut pas entendre le musicien s'accorder »).
+# Il passe par le mixer, que les deux moteurs appliquent (golem_rig : B_MUTE des sends ; Golem Engine : mute des routes) :
+# tant qu'il est armé, chaque source part « mute », sans toucher config/mixer.json ; désarmé, les niveaux enregistrés
+# reviennent. Le mute est TOUJOURS explicite : golem_rig ne touche pas une source sans « mute », et une source jamais
+# réglée resterait coupée. L'accordeur écoute la chaîne d'entrée (rec-FX / sonde d'entrée), en amont de tout send.
+ALL_SOURCES = tuple("in%d" % n for n in range(1, 9)) + ("in101",) + tuple(SERVICE_SOURCES.values()) \
+    + tuple(sid for _, sid, _, _ in STANDARD_PARTS) + ("click",)
+
+
+def applied_levels():
+    """Ce qui part vers le moteur : les niveaux enregistrés, tout coupé tant que l'accordeur est armé."""
+    lv = levels()
+    silent = bool((state.tuner or {}).get("on"))
+    return {sid: {**(lv.get(sid) or {}), "mute": True if silent else bool((lv.get(sid) or {}).get("mute"))}
+            for sid in dict.fromkeys(ALL_SOURCES + tuple(lv))}
+
+
 def push():
     """Émet l'application à chaud (action mixer_apply, routée vers golem_rig — sans rebuild)."""
-    commands.write_command({"action": "mixer_apply", "levels": levels()})
+    commands.write_command({"action": "mixer_apply", "levels": applied_levels()})
 
 
 def _service_blocks_of(preset):
